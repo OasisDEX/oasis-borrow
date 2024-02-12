@@ -1,5 +1,4 @@
 import { Skeleton } from 'components/Skeleton'
-import { Tag } from 'components/Tag'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'theme-ui'
@@ -44,11 +43,7 @@ export const PortfolioOverviewSkeleton = () => {
         />
         <PortfolioOverviewItem
           header={tPortfolio('available-to-migrate')}
-          value={
-            <Tag sx={{ mt: 2 }} variant="tagInteractive">
-              {tPortfolio('coming-soon')}
-            </Tag>
-          }
+          value={<Skeleton sx={{ width: '120px', height: '28px', mt: 2, mb: 1 }} />}
         />
       </Flex>
     </Flex>

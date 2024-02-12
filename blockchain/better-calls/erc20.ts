@@ -41,7 +41,7 @@ export function tokenBalance({ token, account, networkId }: TokenBalanceArgs): P
   })
 }
 
-export function tokenAllowance({
+export async function tokenAllowance({
   owner,
   spender,
   token,
@@ -56,9 +56,13 @@ export function tokenAllowance({
   const { tokens } = contracts
 
   const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
-  return contract.allowance(owner, spender).then((result) => {
-    return amountFromWei(new BigNumber(result.toString()), token)
-  })
+
+  // Reading decimals from chain instead of local config because of oracless mode.
+  // amountFromWei uses local config to determine token precision which doesn't have all tokens defined
+  const decimals = await contract.decimals()
+  const allowance = await contract.allowance(owner, spender)
+
+  return amountFromWei(new BigNumber(allowance.toString()), decimals)
 }
 
 export async function createApproveTransaction({
@@ -88,9 +92,13 @@ export async function createApproveTransaction({
 
   const contract = Erc20__factory.connect(tokens[token].address, signer)
 
+  // Reading decimals from chain instead of local config because of oracless mode.
+  // amountFromWei uses local config to determine token precision which doesn't have all tokens defined
+  const decimals = await contract.decimals()
+
   const ethersAmount = amount.eq(maxUint256)
     ? ethers.constants.MaxUint256
-    : ethers.BigNumber.from(amountToWei(amount, token).toString())
+    : ethers.BigNumber.from(amountToWei(amount, decimals).toString())
 
   return await contract.approve(spender, ethersAmount)
 }

@@ -33,6 +33,9 @@ export const RcSlider: FC<RcSliderProps> = ({
           borderColor: 'unset !important',
           boxShadow: 'unset !important',
         },
+        '.rc-slider-disabled ': {
+          background: 'unset',
+        },
       }}
     >
       <Slider

@@ -1,5 +1,5 @@
 import { NetworkConfigHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
-import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
+import { AaveLikePosition, IPosition, IRiskRatio } from "@oasisdex/dma-library";
 import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import BigNumber from 'bignumber.js'
 
@@ -30,6 +30,7 @@ export type AaveHeaderProps = {
 
 export type ManageAaveHeaderProps = AaveHeaderProps & {
   positionId: PositionId
+  currentPosition?: AaveLikePosition
 }
 
 export type SecondaryInputProps = BaseViewProps<EventsRaisedFromSecondaryInput> & {

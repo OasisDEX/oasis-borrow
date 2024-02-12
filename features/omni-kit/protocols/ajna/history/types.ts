@@ -1,6 +1,5 @@
 import type BigNumber from 'bignumber.js'
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import type {
   PositionHistoryEvent,
   PositionHistoryResponse,
@@ -27,14 +26,14 @@ export interface AjnaBorrowerEventsResponse {
 }
 
 export function hasTrigger(
-  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>,
+  event: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<PositionHistoryEvent>,
 ): event is Partial<AaveHistoryEvent> & { trigger: Trigger } {
   return (
     Object.entries(event).find(([key, value]) => key === 'trigger' && value !== null) !== undefined
   )
 }
 
-export interface AjnaHistoryEvent extends PositionHistoryEvent {
+type AjnaHistoryEventExtension = {
   originationFee: BigNumber
   originationFeeInQuoteToken: BigNumber
   quoteTokensAfter: BigNumber
@@ -47,11 +46,7 @@ export interface AjnaHistoryEvent extends PositionHistoryEvent {
   totalFeeInQuoteToken: BigNumber
 }
 
-export type AjnaBorrowerEvent = {
-  id: string
-  kind: string
-  timestamp: number
-  txHash: string
+type AjnaBorrowerEventExtension = {
   settledDebt: BigNumber
   debtToCover: BigNumber
   collateralForLiquidation: BigNumber
@@ -60,3 +55,7 @@ export type AjnaBorrowerEvent = {
     id: string
   }
 }
+
+export type AjnaHistoryEvent = PositionHistoryEvent &
+  AjnaHistoryEventExtension &
+  AjnaBorrowerEventExtension

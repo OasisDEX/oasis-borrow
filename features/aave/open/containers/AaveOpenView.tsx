@@ -41,9 +41,8 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
       isOpenView
       strategyConfig={config}
       currentPosition={state.context.currentPosition}
-      collateralPrice={state.context.collateralPrice}
-      tokenPrice={state.context.tokenPrice}
-      debtPrice={state.context.debtPrice}
+      collateralPrice={state.context.balance?.collateral.price}
+      debtPrice={state.context.balance?.debt.price}
       nextPosition={
         hasUserInteracted(state) ? state.context.transition?.simulation.position : undefined
       }

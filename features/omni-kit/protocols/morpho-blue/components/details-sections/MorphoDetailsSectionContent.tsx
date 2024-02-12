@@ -1,11 +1,21 @@
+import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import {
+  OmniCardDataCollateralDepositedModal,
+  OmniCardDataLiquidationPriceModal,
+  OmniCardDataPositionDebtModal,
   OmniContentCard,
+  useOmniCardDataBuyingPower,
   useOmniCardDataLiquidationPrice,
   useOmniCardDataLtv,
+  useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
+import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
+import { getMorphoLiquidationPenalty } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
@@ -21,6 +31,8 @@ export const MorphoDetailsSectionContent: FC = () => {
       productType,
       quotePrice,
       quoteToken,
+      isOpening,
+      isProxyWithManyPositions,
     },
   } = useOmniGeneralContext()
   const {
@@ -31,19 +43,24 @@ export const MorphoDetailsSectionContent: FC = () => {
     dynamicMetadata: {
       values: { changeVariant },
     },
-  } = useOmniProductContext(OmniProductType.Borrow || OmniProductType.Multiply)
+  } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
+
+  const castedPosition = position as MorphoBluePosition
 
   const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPrice))
-    : position.liquidationPrice
+    ? normalizeValue(one.div(castedPosition.liquidationPrice))
+    : castedPosition.liquidationPrice
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
   const ratioToCurrentPrice = one.minus(
     isShort
-      ? normalizeValue(one.div(position.liquidationToMarketPrice))
-      : position.liquidationToMarketPrice,
+      ? normalizeValue(one.div(castedPosition.liquidationToMarketPrice))
+      : castedPosition.liquidationToMarketPrice,
   )
+  const liquidationPenalty = getMorphoLiquidationPenalty({
+    maxLtv: castedPosition.maxRiskRatio.loanToValue,
+  })
 
   const commonContentCardData = {
     changeVariant,
@@ -54,30 +71,107 @@ export const MorphoDetailsSectionContent: FC = () => {
     afterLiquidationPrice: afterLiquidationPrice,
     liquidationPrice: liquidationPrice,
     unit: priceFormat,
-    ratioToCurrentPrice: ratioToCurrentPrice,
+    ratioToCurrentPrice,
+    modal: (
+      <OmniCardDataLiquidationPriceModal
+        liquidationPenalty={liquidationPenalty}
+        liquidationPrice={liquidationPrice}
+        priceFormat={priceFormat}
+        ratioToCurrentPrice={ratioToCurrentPrice}
+      />
+    ),
   })
 
   const ltvContentCardCommonData = useOmniCardDataLtv({
     afterLtv: simulation?.riskRatio.loanToValue,
-    ltv: position.riskRatio.loanToValue,
-    maxLtv: position.maxRiskRatio.loanToValue,
+    ltv: castedPosition.riskRatio.loanToValue,
+    maxLtv: castedPosition.maxRiskRatio.loanToValue,
+    modal: (
+      <MorphoCardDataLtvModal
+        ltv={castedPosition.riskRatio.loanToValue}
+        maxLtv={castedPosition.maxRiskRatio.loanToValue}
+      />
+    ),
   })
 
   const collateralDepositedContentCardCommonData = useOmniCardDataTokensValue({
     afterTokensAmount: simulation?.collateralAmount,
-    tokensAmount: position.collateralAmount,
+    tokensAmount: castedPosition.collateralAmount,
     tokensPrice: collateralPrice,
     tokensSymbol: collateralToken,
     translationCardName: 'collateral-deposited',
+    modal: (
+      <OmniCardDataCollateralDepositedModal
+        collateralAmount={castedPosition.collateralAmount}
+        collateralToken={collateralToken}
+      />
+    ),
   })
 
   const positionDebtContentCardCommonData = useOmniCardDataTokensValue({
     afterTokensAmount: simulation?.debtAmount,
-    tokensAmount: position.debtAmount,
+    tokensAmount: castedPosition.debtAmount,
     tokensPrice: quotePrice,
     tokensSymbol: quoteToken,
     translationCardName: 'position-debt',
+    modal: (
+      <OmniCardDataPositionDebtModal
+        debtAmount={castedPosition.debtAmount}
+        quoteToken={quoteToken}
+      />
+    ),
   })
+
+  const buyingPowerContentCardCommonData = useOmniCardDataBuyingPower({
+    buyingPower: castedPosition.buyingPower,
+    collateralPrice,
+    collateralToken,
+    afterBuyingPower: simulation?.buyingPower,
+  })
+
+  const netValue = castedPosition.collateralAmount
+    .times(collateralPrice)
+    .minus(castedPosition.debtAmount.times(quotePrice))
+  const afterNetValue = simulation?.collateralAmount
+    .times(collateralPrice)
+    .minus(simulation?.debtAmount.times(quotePrice))
+
+  const netValueContentCardCommonData = useOmniCardDataNetValue({
+    afterNetValue,
+    netValue,
+    ...(!isOpening && !isProxyWithManyPositions && {}),
+  })
+
+  const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
+    !isOpening
+      ? getOmniNetValuePnlData({
+          cumulatives: {
+            cumulativeDepositUSD: castedPosition.pnl.cumulatives.borrowCumulativeDepositUSD,
+            cumulativeWithdrawUSD: castedPosition.pnl.cumulatives.borrowCumulativeWithdrawUSD,
+            cumulativeFeesUSD: castedPosition.pnl.cumulatives.borrowCumulativeFeesUSD,
+            cumulativeWithdrawInCollateralToken:
+              castedPosition.pnl.cumulatives.borrowCumulativeCollateralWithdraw,
+            cumulativeDepositInCollateralToken:
+              castedPosition.pnl.cumulatives.borrowCumulativeCollateralDeposit,
+            cumulativeFeesInCollateralToken:
+              castedPosition.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
+            cumulativeWithdrawInQuoteToken:
+              castedPosition.pnl.cumulatives.borrowCumulativeWithdrawInQuoteToken,
+            cumulativeDepositInQuoteToken:
+              castedPosition.pnl.cumulatives.borrowCumulativeDepositInQuoteToken,
+            cumulativeFeesInQuoteToken:
+              castedPosition.pnl.cumulatives.borrowCumulativeFeesInQuoteToken,
+          },
+          productType,
+          collateralTokenPrice: collateralPrice,
+          debtTokenPrice: quotePrice,
+          netValueInCollateralToken: netValue.div(collateralPrice),
+          netValueInDebtToken: netValue.div(quotePrice),
+          collateralToken,
+          debtToken: quoteToken,
+        })
+      : undefined,
+  )
 
   return (
     <>
@@ -90,6 +184,16 @@ export const MorphoDetailsSectionContent: FC = () => {
             {...collateralDepositedContentCardCommonData}
           />
           <OmniContentCard {...commonContentCardData} {...positionDebtContentCardCommonData} />
+        </>
+      )}
+      {productType === OmniProductType.Multiply && (
+        <>
+          <OmniContentCard
+            {...commonContentCardData}
+            {...netValueContentCardCommonData}
+            {...netValueContentCardAjnaData}
+          />
+          <OmniContentCard {...commonContentCardData} {...buyingPowerContentCardCommonData} />
         </>
       )}
     </>

@@ -1,30 +1,38 @@
 import { AppLink } from 'components/Links'
 import React from 'react'
-import { Button, Spinner } from 'theme-ui'
+import { Button, Link, Spinner } from 'theme-ui'
 
 export interface SidebarSectionFooterButtonProps {
-  variant?: string
-  label: string
-  steps?: [number, number]
   disabled?: boolean
   hidden?: boolean
   isLoading?: boolean
-  action?: () => void
+  label: string
+  steps?: [number, number]
   url?: string
+  variant?: string
+  withoutNextLink?: boolean
+  action?: () => void
 }
 
 export function SidebarSectionFooterButton({
   hidden,
   url,
+  withoutNextLink,
   ...rest
 }: SidebarSectionFooterButtonProps) {
   return (
     <>
       {!hidden &&
         (url ? (
-          <AppLink href={url} sx={{ display: 'block' }}>
-            <SidebarSectionFooterButtonIner {...rest} />
-          </AppLink>
+          withoutNextLink ? (
+            <Link href={url} sx={{ display: 'block' }}>
+              <SidebarSectionFooterButtonIner {...rest} />
+            </Link>
+          ) : (
+            <AppLink href={url} sx={{ display: 'block' }}>
+              <SidebarSectionFooterButtonIner {...rest} />
+            </AppLink>
+          )
         ) : (
           <SidebarSectionFooterButtonIner {...rest} />
         ))}

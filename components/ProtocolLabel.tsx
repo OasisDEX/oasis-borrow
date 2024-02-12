@@ -13,7 +13,7 @@ export function ProtocolLabel({ network, protocol }: ProtocolLabelProps) {
         alignItems: 'center',
         columnGap: 2,
         height: '30px',
-        pr: 1,
+        pr: network ? 1 : '12px',
         pl: '12px',
         border: '1px solid',
         borderColor: 'neutral20',
@@ -27,23 +27,25 @@ export function ProtocolLabel({ network, protocol }: ProtocolLabelProps) {
         alt={lendingProtocolsByName[protocol].label}
         sx={{ height: `${10 * lendingProtocolsByName[protocol].logoScale}px` }}
       />
-      <Flex
-        sx={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '20px',
-          height: '20px',
-          border: '1px solid',
-          borderColor: 'neutral20',
-          borderRadius: 'ellipse',
-        }}
-      >
-        <Image
-          src={networksByName[network].badge}
-          alt={networksByName[network].label}
-          sx={{ width: '12px', height: '12px' }}
-        />
-      </Flex>
+      {network && (
+        <Flex
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '20px',
+            height: '20px',
+            border: '1px solid',
+            borderColor: 'neutral20',
+            borderRadius: 'ellipse',
+          }}
+        >
+          <Image
+            src={networksByName[network].badge}
+            alt={networksByName[network].label}
+            sx={{ width: '12px', height: '12px' }}
+          />
+        </Flex>
+      )}
     </Box>
   )
 }

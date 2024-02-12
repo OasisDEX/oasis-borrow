@@ -1,6 +1,5 @@
 import { networksById } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
-import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { getOmniPositionUrl } from 'features/omni-kit/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
@@ -12,7 +11,7 @@ import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import type { Theme } from 'theme-ui'
-import { Box, Button, Flex, Heading, Image, Text, ThemeUIProvider } from 'theme-ui'
+import { Box, Button, Flex, Heading, Image, Link, Text, ThemeUIProvider } from 'theme-ui'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export interface OmniDupePositionModalProps {
@@ -46,7 +45,6 @@ export function OmniDupePositionModal({
 }: OmniDupePositionModalProps) {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
-
   const positionIds = events.map(
     (event) =>
       dpmAccounts.find(
@@ -93,11 +91,11 @@ export function OmniDupePositionModal({
               {t(`omni-kit.dupe-modal.description-${type}-${amount}`)}{' '}
               {t('omni-kit.dupe-modal.help')}
             </Text>
-            <AppLink href={primaryLink} onClick={closeModal} sx={{ width: '100%' }}>
+            <Link href={primaryLink} onClick={closeModal} sx={{ width: '100%' }}>
               <Button variant="primary" sx={{ width: '100%' }}>
                 {primaryText}
               </Button>
-            </AppLink>
+            </Link>
             <Button variant="textual" onClick={closeModal} sx={{ mt: '24px', p: 0 }}>
               {t('omni-kit.dupe-modal.cta-textual')}
             </Button>

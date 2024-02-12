@@ -1,5 +1,4 @@
 import type { LendingPosition, Strategy, SupplyPosition, SwapData } from '@oasisdex/dma-library'
-import { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
@@ -76,11 +75,12 @@ export type LendingMetadata = CommonMetadata & {
     afterBuyingPower: BigNumber | undefined
     afterPositionDebt: BigNumber | undefined
     changeVariant: 'positive' | 'negative'
-    collateralMax: BigNumber
+    withdrawMax: BigNumber
     debtMax: BigNumber
     debtMin: BigNumber
     paybackMax: BigNumber
     shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
+    maxSliderAsMaxLtv?: boolean
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode
@@ -158,7 +158,7 @@ interface OmniValidationMessage {
   data?: { [key: string]: string | number }
 }
 
-type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
+export type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
   errors: OmniValidationMessage[]
   warnings: OmniValidationMessage[]
   notices: OmniValidationMessage[]
@@ -289,7 +289,7 @@ export function OmniProductContextProvider({
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
-  if (isAjnaPosition(simulation?.position) && isAjnaPosition(position) && simulation) {
+  if (simulation && 'riskRatio' in simulation.position && 'riskRatio' in position) {
     isIncreasingPositionRisk = simulation.position.riskRatio.loanToValue.gte(
       position.riskRatio.loanToValue,
     )
@@ -405,8 +405,4 @@ export function OmniProductContextProvider({
         </multiplyContext.Provider>
       )
   }
-}
-
-function isAjnaPosition(position: any): position is AjnaPosition {
-  return position instanceof AjnaPosition && typeof position.riskRatio === 'object'
 }

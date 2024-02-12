@@ -12,6 +12,7 @@ const automationQuery = gql`
       executedBlock
       removedBlock
       triggerData
+      triggerType
       owner
     }
   }
@@ -25,12 +26,18 @@ type AutomationQueryResponse = {
     executedBlock: string
     removedBlock: string
     triggerData: string
+    triggerType: string
     owner: string
   }[]
 }
 
+type AutomationSupportedNetworks =
+  | NetworkIds.MAINNET
+  // | NetworkIds.ARBITRUMMAINNET
+  // | NetworkIds.OPTIMISMMAINNET
+  | NetworkIds.BASEMAINNET
 export type AutomationResponse = {
-  networkId: AutomationSupportedNetworks // currently just mainnet
+  networkId: AutomationSupportedNetworks
   triggers: {
     id: string
     account: string
@@ -38,27 +45,32 @@ export type AutomationResponse = {
     executedBlock: string
     removedBlock: string
     triggerData: string
+    triggerType: string
     owner: string
   }
 }[]
 
-export type AutomationSupportedNetworks = NetworkIds.MAINNET
-
 const subgraphListDict = {
-  [NetworkIds.MAINNET]: 'oasis/automation',
-} as Record<AutomationSupportedNetworks, string>
+  [NetworkIds.MAINNET]: 'summer-automation',
+  // [NetworkIds.ARBITRUMMAINNET]: 'summer-automation-arbitrum',
+  // [NetworkIds.OPTIMISMMAINNET]: 'summer-automation-optimism',
+  [NetworkIds.BASEMAINNET]: 'summer-automation-base',
+} as Record<Partial<NetworkIds>, string>
 
 export const getAutomationData = async ({
   addresses,
   network,
 }: {
   addresses: string[]
-  network: AutomationSupportedNetworks
+  network: NetworkIds
 }) => {
+  if (!subgraphListDict[network]) {
+    return []
+  }
   const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
     1000 * configCacheTime.backend,
   )
-  const subgraphUrl = `${appConfig.parameters.subgraphs.baseUrl}/${subgraphListDict[network]}`
+  const subgraphUrl = `${appConfig.parameters.subgraphs.baseShortUrl}/${subgraphListDict[network]}`
   const params = { proxyAddresses: addresses.map((addr) => addr.toLowerCase()) }
   const automationCall = request<AutomationQueryResponse>(
     subgraphUrl,
@@ -78,5 +90,5 @@ export const getAutomationData = async ({
       })
       .flat()
   })
-  return positionsAutomationList
+  return positionsAutomationList as AutomationResponse
 }

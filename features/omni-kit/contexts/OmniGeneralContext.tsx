@@ -1,3 +1,4 @@
+import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
@@ -10,8 +11,10 @@ import {
   isOmniStepWithTransaction,
 } from 'features/omni-kit/contexts'
 import { isShortPosition } from 'features/omni-kit/helpers'
+import { useOmniSlippage } from 'features/omni-kit/hooks'
 import type {
   OmniProductType,
+  OmniProtocolSettings,
   OmniSidebarEditingStep,
   OmniSidebarStep,
   OmniSupportedNetworkIds,
@@ -39,11 +42,11 @@ interface OmniGeneralContextProviderProps {
   isProxyWithManyPositions: boolean
   network: NetworkConfig
   networkId: OmniSupportedNetworkIds
-  walletNetwork: NetworkConfig
   owner: string
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
+  protocolRaw: string
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number
@@ -51,10 +54,17 @@ interface OmniGeneralContextProviderProps {
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
+  settings: OmniProtocolSettings
   slippage: BigNumber
   steps: OmniSidebarStep[]
   singleToken?: boolean
   lendingOnly?: boolean
+  walletNetwork: NetworkConfig
+}
+
+export enum OmniSlippageSourceSettings {
+  USER_SETTINGS = 'userSettings',
+  STRATEGY_CONFIGS = 'strategyConfig',
 }
 
 type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'steps'> & {
@@ -63,6 +73,9 @@ type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'step
   isShort: boolean
   priceFormat: string
   gasEstimation: GasEstimationContext | undefined
+  slippageSource: OmniSlippageSourceSettings
+  isYieldLoop: boolean
+  isStrategyWithDefaultSlippage: boolean
 }
 
 interface OmniGeneralContextSteps {
@@ -86,6 +99,7 @@ interface OmniGeneralContextTx {
   isTxSuccess: boolean
   isTxWaitingForApproval: boolean
   setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
+  setSlippageSource: Dispatch<SetStateAction<OmniSlippageSourceSettings>>
   setGasEstimation: Dispatch<SetStateAction<GasEstimationContext | undefined>>
   txDetails?: TxDetails
 }
@@ -113,14 +127,15 @@ export function OmniGeneralContextProvider({
   const {
     collateralBalance,
     collateralToken,
-    quoteBalance,
-    quoteToken,
-    owner,
-    slippage,
     isOpening,
     isProxyWithManyPositions,
     network,
     networkId,
+    owner,
+    quoteBalance,
+    quoteToken,
+    settings,
+    slippage,
     walletNetwork,
     singleToken,
     lendingOnly,
@@ -130,7 +145,16 @@ export function OmniGeneralContextProvider({
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
   const [txDetails, setTxDetails] = useState<TxDetails>()
   const [gasEstimation, setGasEstimation] = useState<GasEstimationContext>()
+
   const isShort = isShortPosition({ collateralToken })
+  const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
+
+  const {
+    slippage: resolvedSlippage,
+    slippageSource,
+    setSlippageSource,
+    isStrategyWithDefaultSlippage,
+  } = useOmniSlippage({ slippage, strategies: { isYieldLoop } })
 
   const shiftStep = (direction: 'next' | 'prev') => {
     const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
@@ -158,6 +182,7 @@ export function OmniGeneralContextProvider({
     return {
       ...getOmniTxStatuses(txDetails?.txStatus),
       setTxDetails,
+      setSlippageSource,
       setGasEstimation,
       txDetails,
     }
@@ -165,24 +190,29 @@ export function OmniGeneralContextProvider({
 
   const context: OmniGeneralContext = useMemo(() => {
     const isOwner = isOpening || owner === walletAddress
+
     return {
       environment: {
         ...props,
+        collateralBalance,
         gasEstimation,
+        isOwner,
+        isProxyWithManyPositions,
+        isShort,
         network,
         networkId,
-        isShort,
-        isProxyWithManyPositions,
         priceFormat: isShort
           ? `${quoteToken}/${collateralToken}`
           : `${collateralToken}/${quoteToken}`,
-        isOwner,
-        shouldSwitchNetwork: isOwner && network.id !== walletNetwork.id,
-        slippage,
-        collateralBalance,
         quoteBalance,
         singleToken,
         lendingOnly,
+        settings,
+        shouldSwitchNetwork: isOwner && network.id !== walletNetwork.id,
+        slippage: resolvedSlippage,
+        slippageSource,
+        isYieldLoop,
+        isStrategyWithDefaultSlippage,
       },
       steps: setupStepManager(),
       tx: setupTxManager(),
@@ -195,6 +225,7 @@ export function OmniGeneralContextProvider({
     txDetails,
     walletAddress,
     slippage,
+    slippageSource,
     walletNetwork,
     gasEstimation,
   ])

@@ -7,6 +7,7 @@ export const omniMultiplyFormReset = {
   depositAmountUSD: undefined,
   generateAmount: undefined,
   generateAmountUSD: undefined,
+  generateAmountMax: false,
   paybackAmount: undefined,
   paybackAmountUSD: undefined,
   paybackAmountMax: false,

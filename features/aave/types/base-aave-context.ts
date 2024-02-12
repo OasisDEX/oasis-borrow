@@ -8,7 +8,7 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
 import { IStrategyConfig } from './strategy-config'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
+import { AutomationAddTriggerData, AutomationAddTriggerLambda } from 'features/automation/common/txDefinitions.types'
 import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -109,6 +109,7 @@ export interface BaseAaveContext {
   stopLossLevel?: BigNumber
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
+  stopLossTxDataLambda?: AutomationAddTriggerLambda
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData

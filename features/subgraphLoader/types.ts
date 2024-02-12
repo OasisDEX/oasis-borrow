@@ -1,3 +1,4 @@
+import type { EarnCumulativesRawData, LendingCumulativesRawData } from '@oasisdex/dma-library'
 import type { AjnaRewardsSource } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import type {
@@ -10,13 +11,16 @@ import type {
   AjnaBorrowerEventsResponse,
   AjnaHistoryResponse,
 } from 'features/omni-kit/protocols/ajna/history/types'
+import type { MorphoBorrowerEventsResponse } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type {
   AaveCumulativesResponse,
   AavePositionHistoryResponse,
+  PositionHistoryResponse,
 } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
+import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 
 export type Subgraphs = {
   Ajna: {
@@ -42,8 +46,14 @@ export type Subgraphs = {
   Discover: {
     getMakerDiscoverPositions: { walletAddress: string }
   }
-  TempGraph: {
-    tempMethod: undefined
+  Morpho: {
+    getMorphoDpmPositions: { dpmProxyAddress: string[] }
+    getMorphoPositionAggregatedData: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      quoteAddress: string
+    }
+    getMorphoCumulatives: { dpmProxyAddress: string; marketId: string }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -78,34 +88,8 @@ export type SubgraphsResponses = {
     }>
     getAjnaCumulatives: SubgraphBaseResponse<{
       account: {
-        earnPositions: {
-          earnCumulativeDepositUSD: number
-          earnCumulativeDepositInQuoteToken: number
-          earnCumulativeDepositInCollateralToken: number
-          earnCumulativeWithdrawUSD: number
-          earnCumulativeWithdrawInQuoteToken: number
-          earnCumulativeWithdrawInCollateralToken: number
-          earnCumulativeFeesUSD: number
-          earnCumulativeFeesInQuoteToken: number
-          earnCumulativeFeesInCollateralToken: number
-          earnCumulativeQuoteTokenDeposit: number
-          earnCumulativeQuoteTokenWithdraw: number
-        }[]
-        borrowPositions: {
-          borrowCumulativeDepositUSD: number
-          borrowCumulativeDepositInQuoteToken: number
-          borrowCumulativeDepositInCollateralToken: number
-          borrowCumulativeWithdrawUSD: number
-          borrowCumulativeWithdrawInQuoteToken: number
-          borrowCumulativeWithdrawInCollateralToken: number
-          borrowCumulativeCollateralDeposit: number
-          borrowCumulativeCollateralWithdraw: number
-          borrowCumulativeDebtDeposit: number
-          borrowCumulativeDebtWithdraw: number
-          borrowCumulativeFeesUSD: number
-          borrowCumulativeFeesInQuoteToken: number
-          borrowCumulativeFeesInCollateralToken: number
-        }[]
+        earnPositions: EarnCumulativesRawData[]
+        borrowPositions: LendingCumulativesRawData[]
       }
     }>
     getAjnaPoolsData: SubgraphBaseResponse<{
@@ -144,8 +128,17 @@ export type SubgraphsResponses = {
   Discover: {
     getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
   }
-  TempGraph: {
-    tempMethod: SubgraphBaseResponse<undefined>
+  Morpho: {
+    getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
+    getMorphoPositionAggregatedData: SubgraphBaseResponse<{
+      summerEvents: PositionHistoryResponse[]
+      borrowerEvents: MorphoBorrowerEventsResponse[]
+    }>
+    getMorphoCumulatives: SubgraphBaseResponse<{
+      account: {
+        borrowPositions: LendingCumulativesRawData[]
+      }
+    }>
   }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{
@@ -174,6 +167,6 @@ export type SubgraphMethodsRecord = {
   [key in keyof (Subgraphs['Aave'] &
     Subgraphs['Ajna'] &
     Subgraphs['Discover'] &
-    Subgraphs['TempGraph'] &
+    Subgraphs['Morpho'] &
     Subgraphs['Referral'])]: string
 }

@@ -12,7 +12,7 @@ import type {
   OmniFormDefaults,
   OmniProductType,
   OmniProtocolHookProps,
-  OmniSidebarStepsSet,
+  OmniProtocolSettings,
   OmniSupportedNetworkIds,
 } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
@@ -51,7 +51,6 @@ interface OmniProductControllerProps<Auction, History, Position> {
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
-  protocolRaw: string
   protocolHook: (params: OmniProtocolHookProps) => {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
@@ -60,11 +59,11 @@ interface OmniProductControllerProps<Auction, History, Position> {
     errors: string[]
   }
   quoteToken: string
+  settings: OmniProtocolSettings
   seoTags: {
     productKey: string
     descriptionKey: string
   }
-  steps: OmniSidebarStepsSet
 }
 
 export const OmniProductController = <Auction, History, Position>({
@@ -75,11 +74,10 @@ export const OmniProductController = <Auction, History, Position>({
   positionId,
   productType,
   protocol,
-  protocolRaw,
   protocolHook,
   quoteToken,
+  settings,
   seoTags,
-  steps,
   singleToken,
   lendingOnly,
 }: OmniProductControllerProps<Auction, History, Position>) => {
@@ -91,6 +89,7 @@ export const OmniProductController = <Auction, History, Position>({
   const network = getNetworkById(networkId)
   const walletNetwork = getNetworkById(chainId || networkId)
   const isOpening = !positionId
+  const protocolRaw = settings.rawName[networkId] as string
 
   const {
     data: {
@@ -222,6 +221,7 @@ export const OmniProductController = <Auction, History, Position>({
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
+                      protocolRaw={protocolRaw}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
@@ -231,8 +231,9 @@ export const OmniProductController = <Auction, History, Position>({
                       quotePrecision={quotePrecision}
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
+                      settings={settings}
                       slippage={slippage}
-                      steps={steps[castedProductType][isOpening ? 'setup' : 'manage']}
+                      steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,

@@ -1,6 +1,8 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
+import faqMultiply from 'features/content/faqs/morphoblue/multiply/en'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -14,7 +16,12 @@ import {
   MorphoDetailsSectionContent,
   MorphoDetailsSectionFooter,
 } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
-import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import {
+  getMorphoBorrowWithdrawMax,
+  getMorphoNotifications,
+  morphoFlowStateFilter,
+} from 'features/omni-kit/protocols/morpho-blue/helpers'
+import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
@@ -37,6 +44,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      collateralPrecision,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -48,7 +56,10 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
     protocolLabel: LendingProtocolLabel.morphoblue,
   })
 
-  const notifications: DetailsSectionNotificationItem[] = []
+  const notifications: DetailsSectionNotificationItem[] = getMorphoNotifications({
+    productType,
+    auction: productContext.position.positionAuction as MorphoHistoryEvent,
+  })
 
   switch (productType) {
     case OmniProductType.Borrow:
@@ -57,6 +68,10 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       const simulation = productContext.position.currentPosition.simulation as
         | MorphoBluePosition
         | undefined
+      const cachedSimulation = productContext.position.cachedPosition?.simulation as
+        | MorphoBluePosition
+        | undefined
+      const resolvedSimulation = simulation || cachedSimulation
 
       return {
         notifications,
@@ -79,7 +94,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             txStatus: txDetails?.txStatus,
           }),
           afterBuyingPower: simulation?.buyingPower,
-          shouldShowDynamicLtv: () => true,
+          shouldShowDynamicLtv: () => false,
           debtMin: zero,
           debtMax: getOmniBorrowDebtMax({
             digits: quotePrecision,
@@ -88,8 +103,12 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           }),
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
-          afterPositionDebt: simulation?.debtAmount,
-          collateralMax: simulation?.collateralAvailable ?? position.collateralAmount,
+          afterPositionDebt: resolvedSimulation?.debtAmount,
+          withdrawMax: getMorphoBorrowWithdrawMax({
+            collateralPrecision,
+            position,
+            simulation,
+          }),
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
             position,
@@ -99,9 +118,10 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             productType,
           }),
           footerColumns: 2,
+          maxSliderAsMaxLtv: true,
         },
         elements: {
-          faq: <></>,
+          faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
           highlighterOrderInformation: undefined,
           overviewContent: <MorphoDetailsSectionContent />,
           overviewFooter: <MorphoDetailsSectionFooter />,

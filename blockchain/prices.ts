@@ -1,10 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
-import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { bindNodeCallback, combineLatest, forkJoin, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
 import type { Context } from './network.types'
@@ -19,88 +18,22 @@ import type {
 } from './prices.types'
 import { getToken } from './tokensMetadata'
 
-export async function getGasPrice(): Promise<GasPriceParams> {
-  const response = await fetch(`/api/gasPrice`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
+export async function getGasPrice(networkId?: NetworkIds): Promise<GasPriceParams> {
+  const response = await fetch(
+    networkId ? `/api/gasPrice?networkId=${networkId}` : `/api/gasPrice`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
     },
-  })
+  )
   if (response.status !== 200) throw new Error(await response.text())
   const { maxFeePerGas, maxPriorityFeePerGas } = await response.json()
   return {
     maxFeePerGas: new BigNumber(maxFeePerGas).shiftedBy(9),
     maxPriorityFeePerGas: new BigNumber(maxPriorityFeePerGas).shiftedBy(9),
   }
-}
-
-/*
- * @deprecated use `createGasPriceOnNetwork$` instead
- */
-export function createGasPrice$(
-  onEveryBlock$: Observable<number>,
-  context$: Observable<Context>,
-): GasPrice$ {
-  const minersTip = new BigNumber(5000000000)
-
-  const blockNativeRequest$ = ajax({
-    url: '/api/gasPrice',
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  }).pipe(
-    tap((response) => {
-      if (response.status !== 200) throw new Error(response.responseText)
-      return response
-    }),
-    map(({ response }) => {
-      const maxFeePerGas = new BigNumber(response.maxFeePerGas)
-      const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
-      return {
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-      } as GasPriceParams
-    }),
-  )
-
-  return combineLatest(onEveryBlock$, context$, blockNativeRequest$).pipe(
-    switchMap(([, { web3 }]) =>
-      combineLatest(context$, bindNodeCallback(web3.eth.getBlockNumber)()),
-    ),
-    switchMap(([{ web3, chainId }, blockNumber]) => {
-      return combineLatest(
-        blockNativeRequest$,
-        bindNodeCallback(web3.eth.getBlock)(blockNumber),
-        of(chainId),
-      )
-    }),
-    map(([blockNativeResp, block, chainId]): GasPriceParams => {
-      const blockNative = blockNativeResp as GasPriceParams
-      const gasFees = {
-        maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
-        maxPriorityFeePerGas: minersTip,
-      } as GasPriceParams
-
-      // Increase maxFeePerGas by 20% when on goerli
-      if (chainId === NetworkIds.GOERLI) {
-        gasFees.maxFeePerGas = new BigNumber((block as any).baseFeePerGas)
-          .multipliedBy(1.15)
-          .plus(minersTip)
-      }
-
-      if (blockNative.maxFeePerGas.gt(0) && chainId !== NetworkIds.GOERLI) {
-        gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
-        gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
-          blockNative.maxPriorityFeePerGas,
-        )
-      }
-
-      return gasFees
-    }),
-    distinctUntilChanged(isEqual),
-    shareReplay(1),
-  )
 }
 
 export function createGasPriceOnNetwork$(
@@ -128,7 +61,11 @@ export function createGasPriceOnNetwork$(
   )
 }
 
-function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
+function getPrice(
+  tickers: Tickers,
+  tickerServiceLabels: Array<string | undefined>,
+  errorLocation?: string,
+) {
   const errorsArray = []
   for (const label of tickerServiceLabels) {
     if (label && tickers[label]) {
@@ -137,7 +74,9 @@ function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefine
     errorsArray.push({ label, tickerServiceLabels })
   }
 
-  throw new Error(`No price data for given token - ${JSON.stringify(errorsArray)}`)
+  throw new Error(
+    `No price data for given token - ${JSON.stringify(errorsArray)} in ${errorLocation}`,
+  )
 }
 
 export function getTokenPriceSources(token: string) {
@@ -158,10 +97,9 @@ export function getTokenPriceSources(token: string) {
   ]
 }
 
-export function getTokenPrice(token: string, tickers: Tickers) {
+export function getTokenPrice(token: string, tickers: Tickers, errorLocation?: string) {
   const priceSources = getTokenPriceSources(token)
-  priceSources.filter(Boolean).length === 0 && console.warn('No price sources set for ', token)
-  return getPrice(tickers, priceSources)
+  return getPrice(tickers, priceSources, errorLocation)
 }
 
 export function createTokenPriceInUSD$(
@@ -174,7 +112,7 @@ export function createTokenPriceInUSD$(
       forkJoin(
         tokens.map((token) => {
           try {
-            const tokenPrice = getTokenPrice(token, tickers)
+            const tokenPrice = getTokenPrice(token, tickers, 'createTokenPriceInUSD$')
 
             return of({
               [token]: new BigNumber(tokenPrice),

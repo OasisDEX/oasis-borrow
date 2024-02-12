@@ -3,27 +3,34 @@ import type { DpmOperationParams } from 'blockchain/better-calls/dpm-account'
 import { estimateGas, executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import type { EthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
-import { getEthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
+import type { TransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
+import { getTransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import type { ethers } from 'ethers'
+import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import type { AaveBasicBuy, AaveBasicSell } from 'helpers/triggers'
-import {
-  getLtvNumberFromDecodedParam,
-  getMaxGasFeeFromDecodedParam,
-  parsePriceFromDecodedParam,
-} from 'helpers/triggers'
+import { allDefined } from 'helpers/allDefined'
 import type {
+  AaveStopLossToCollateral,
+  AaveStopLossToDebt,
+  DmaAaveBasicBuy,
+  DmaAaveBasicSell,
   SetupAaveBasicAutomationParams,
   SetupBasicAutoResponse,
   SetupBasicAutoResponseWithRequiredTransaction,
-} from 'helpers/triggers/setup-triggers'
+  SparkStopLossToCollateral,
+  SparkStopLossToDebt,
+} from 'helpers/triggers'
 import {
+  getIntFromDecodedParam,
+  getLtvNumberFromDecodedParam,
   hasTransaction,
+  parsePriceFromDecodedParam,
   setupAaveAutoBuy,
   setupAaveAutoSell,
-} from 'helpers/triggers/setup-triggers'
+  TriggerAction,
+  TRIGGERS_PRICE_DECIMALS,
+} from 'helpers/triggers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -32,15 +39,28 @@ import { actions, createMachine, interpret } from 'xstate'
 
 import { createDebouncingMachine } from './debouncingMachine'
 import type { PositionLike } from './triggersCommon'
-import { TriggerFlow } from './triggersCommon'
 
 const { assign, sendTo } = actions
 
-export type BasicAutomationAaveState = 'idle' | 'editing' | 'review' | 'tx' | 'txDone' | 'txFailed'
+export type BasicAutomationAaveState =
+  | 'idle'
+  | 'editing'
+  | 'review'
+  | 'remove'
+  | 'tx'
+  | 'txDone'
+  | 'txFailed'
 
-export type BasicAutoTrigger = AaveBasicBuy | AaveBasicSell
+export type BasicAutoTrigger = DmaAaveBasicBuy | DmaAaveBasicSell
+export type AaveLikeStopLossTriggers =
+  | AaveStopLossToCollateral
+  | AaveStopLossToDebt
+  | SparkStopLossToCollateral
+  | SparkStopLossToDebt
 
-export type BasicAutomationAaveEvent<Trigger extends BasicAutoTrigger> =
+export type AaveLikeAutomationTriggers = BasicAutoTrigger | AaveLikeStopLossTriggers
+
+export type BasicAutomationAaveEvent<Trigger extends AaveLikeAutomationTriggers> =
   | { type: 'SET_EXECUTION_TRIGGER_LTV'; executionTriggerLTV: number }
   | { type: 'SET_TARGET_TRIGGER_LTV'; targetTriggerLTV: number }
   | { type: 'SET_PRICE'; price?: BigNumber }
@@ -54,6 +74,7 @@ export type BasicAutomationAaveEvent<Trigger extends BasicAutoTrigger> =
   | { type: 'GAS_ESTIMATION_UPDATED'; gasEstimation: HasGasEstimation }
   | { type: 'SIGNER_UPDATED'; signer?: ethers.Signer }
   | { type: 'GO_TO_EDITING' }
+  | { type: 'REMOVE_TRIGGER' }
   | { type: 'REVIEW_TRANSACTION' }
   | { type: 'START_TRANSACTION' }
   | { type: 'TRANSACTION_COMPLETED' }
@@ -74,6 +95,7 @@ type InternalRequestEventParams = {
   usePrice?: boolean
   maxGasFee?: number
   position?: PositionLike
+  action?: TriggerAction
 }
 
 type InternalParametersRequestEvent = {
@@ -103,7 +125,8 @@ const areInternalRequestParamsValid = (
     !!params.executionTriggerLTV &&
     !!params.targetTriggerLTV &&
     !!params.position &&
-    !!params.maxGasFee
+    !!params.maxGasFee &&
+    !!params.action
   )
 }
 
@@ -116,13 +139,16 @@ const areParamsValid = (
   return !!params.signer && !!params.networkId && !!params.setupTriggerResponse && !!params.position
 }
 
-export type BasicAutomationAaveContext<Trigger extends BasicAutoTrigger> = {
+export type BasicAutomationAaveContext<Trigger extends AaveLikeAutomationTriggers> = {
   isLoading: boolean
   defaults: BasicAutomationAaveFormDefaults
   position?: PositionLike
   executionTriggerLTV?: number
   targetTriggerLTV?: number
   price?: BigNumber
+  maxCoverage?: number
+  ltv?: number
+  usePriceInput: boolean
   usePrice: boolean
   maxGasFee: number
   currentTrigger?: Trigger
@@ -131,8 +157,8 @@ export type BasicAutomationAaveContext<Trigger extends BasicAutoTrigger> = {
   signer?: ethers.Signer
   networkId: NetworkIds
   retryCount: number
-  flow: TriggerFlow
-  feature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
+  action: TriggerAction
+  feature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL | AutomationFeatures.STOP_LOSS
 }
 
 type ContextForTransaction = {
@@ -142,7 +168,7 @@ type ContextForTransaction = {
   setupTriggerResponse: SetupBasicAutoResponseWithRequiredTransaction
 }
 
-const ensureValidContextForTransaction = <Trigger extends BasicAutoTrigger>(
+const ensureValidContextForTransaction = <Trigger extends AaveLikeAutomationTriggers>(
   context: BasicAutomationAaveContext<Trigger>,
 ): context is BasicAutomationAaveContext<Trigger> & ContextForTransaction => {
   return (
@@ -150,16 +176,24 @@ const ensureValidContextForTransaction = <Trigger extends BasicAutoTrigger>(
   )
 }
 
-const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined) => {
+const getPriceFromDecodedParam = (
+  trigger: AaveLikeAutomationTriggers | undefined,
+): string | undefined => {
   if (trigger?.decodedParams === undefined) {
     return undefined
   }
 
   if ('maxBuyPrice' in trigger.decodedParams) {
+    if (trigger.decodedParams.maxBuyPrice === maxUint256.toString()) {
+      return undefined
+    }
     return trigger.decodedParams.maxBuyPrice
   }
 
   if ('minSellPrice' in trigger.decodedParams) {
+    if (trigger.decodedParams.minSellPrice === '0') {
+      return undefined
+    }
     return trigger.decodedParams.minSellPrice
   }
 
@@ -167,32 +201,58 @@ const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined) => {
 }
 
 const getDefaults = (
-  context: BasicAutomationAaveContext<BasicAutoTrigger>,
-): Pick<
-  BasicAutomationAaveContext<BasicAutoTrigger>,
-  'executionTriggerLTV' | 'targetTriggerLTV' | 'price' | 'maxGasFee' | 'usePrice'
-> => {
-  return {
-    maxGasFee:
-      getMaxGasFeeFromDecodedParam(context.currentTrigger?.decodedParams.maxBaseFeeInGwei) ?? 300,
-    usePrice: true,
-    executionTriggerLTV:
-      getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.executionLtv) ??
-      context.defaults.executionTriggerLTV,
-    targetTriggerLTV:
-      getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.targetLtv) ??
-      context.defaults.targetTriggerLTV,
-    price: parsePriceFromDecodedParam(
-      getPriceFromDecodedParam(context.currentTrigger),
-      context.position?.debt.token.decimals,
-    ),
+  context: BasicAutomationAaveContext<AaveLikeAutomationTriggers>,
+):
+  | Pick<
+      BasicAutomationAaveContext<BasicAutoTrigger>,
+      'maxGasFee' | 'usePrice' | 'executionTriggerLTV' | 'targetTriggerLTV' | 'price'
+    >
+  | Pick<
+      BasicAutomationAaveContext<AaveLikeStopLossTriggers>,
+      'maxCoverage' | 'usePrice' | 'ltv' | 'price'
+    > => {
+  const price = parsePriceFromDecodedParam(
+    getPriceFromDecodedParam(context.currentTrigger),
+    TRIGGERS_PRICE_DECIMALS,
+  )
+  if (
+    context.feature === AutomationFeatures.AUTO_SELL ||
+    context.feature === AutomationFeatures.AUTO_BUY
+  ) {
+    const decodedParams = context.currentTrigger?.decodedParams as BasicAutoTrigger['decodedParams']
+    return {
+      maxGasFee: decodedParams?.maxBaseFeeInGwei ? Number(decodedParams.maxBaseFeeInGwei) : 300,
+      usePrice: context.currentTrigger ? allDefined(price) : true,
+      executionTriggerLTV:
+        getLtvNumberFromDecodedParam(decodedParams?.executionLtv) ??
+        context.defaults.executionTriggerLTV,
+      targetTriggerLTV:
+        getLtvNumberFromDecodedParam(decodedParams?.targetLtv) ?? context.defaults.targetTriggerLTV,
+      price: price,
+    }
   }
+  if (context.feature === AutomationFeatures.STOP_LOSS) {
+    const decodedParams = context.currentTrigger
+      ?.decodedParams as AaveLikeStopLossTriggers['decodedParams']
+    return {
+      maxCoverage: getIntFromDecodedParam(decodedParams?.maxCoverage),
+      usePrice: allDefined(price),
+      ltv:
+        getLtvNumberFromDecodedParam(decodedParams?.executionLtv) ??
+        context.defaults.executionTriggerLTV,
+      price: price,
+    }
+  }
+  throw new Error('Feature not implemented')
 }
 
-const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
-  automationFeature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL,
+const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTriggers>(
+  automationFeature:
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.STOP_LOSS,
   action: (params: SetupAaveBasicAutomationParams) => Promise<SetupBasicAutoResponse>,
-  triggerType: 119 | 120,
+  triggerType: 119 | 120 | 111 | 112 | 117 | 118,
 ) =>
   createMachine(
     {
@@ -211,6 +271,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
           targetTriggerLTV: 0,
           maxGasFee: 300,
         },
+        usePriceInput: true,
         maxGasFee: 300,
         usePrice: true,
         gasEstimation: {
@@ -218,7 +279,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
         },
         networkId: NetworkIds.MAINNET,
         retryCount: 0,
-        flow: TriggerFlow.add,
+        action: TriggerAction.Add,
         feature: automationFeature,
       },
       preserveActionOrder: true,
@@ -263,6 +324,11 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             UPDATE_DEFAULT_VALUES: {
               actions: ['updateDefaultValues', 'setDefaultValues'],
             },
+            REMOVE_TRIGGER: {
+              actions: ['setRemoveAction'],
+              cond: 'canRemove',
+              target: 'remove',
+            },
           },
         },
         editing: {
@@ -289,9 +355,26 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
               cond: 'isReviewable',
               target: 'review',
             },
+            REMOVE_TRIGGER: {
+              actions: ['setRemoveAction'],
+              cond: 'canRemove',
+              target: 'remove',
+            },
           },
         },
         review: {
+          entry: ['sendRequest'],
+          on: {
+            RESET: {
+              target: 'idle',
+            },
+            START_TRANSACTION: {
+              target: 'tx',
+              cond: 'canStartTransaction',
+            },
+          },
+        },
+        remove: {
           entry: ['sendRequest'],
           on: {
             RESET: {
@@ -319,7 +402,13 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             },
           },
         },
-        txDone: {},
+        txDone: {
+          on: {
+            RESET: {
+              target: 'idle',
+            },
+          },
+        },
         txFailed: {
           entry: ['incrementRetryCount'],
           always: [{ target: 'review' }],
@@ -361,6 +450,9 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             context.gasEstimation.gasEstimationStatus === GasEstimationStatus.calculated
           )
         },
+        canRemove: (context) => {
+          return context.currentTrigger !== undefined
+        },
       },
       actions: {
         setDefaultValues: assign((context) => ({
@@ -391,20 +483,20 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
         incrementRetryCount: assign((context) => ({
           retryCount: context.retryCount + 1,
         })),
-        sendRequest: sendTo(
-          'getParameters',
-          (context): InternalParametersRequestEvent => ({
+        sendRequest: sendTo('getParameters', (context): InternalParametersRequestEvent => {
+          return {
             type: 'PARAMETERS_REQUESTED',
             params: {
               executionTriggerLTV: context.executionTriggerLTV,
               targetTriggerLTV: context.targetTriggerLTV,
               position: context.position,
-              price: context.price,
+              price: context.usePriceInput ? context.price : undefined,
               maxGasFee: context.maxGasFee,
-              usePrice: context.usePrice,
+              usePrice: context.usePriceInput ? context.usePrice : false,
+              action: context.action,
             },
-          }),
-        ),
+          }
+        }),
         getGasEstimation: sendTo(
           'gasEstimation',
           (context, event): InternalGasEstimationEvent => ({
@@ -431,20 +523,23 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
           if (event.currentTrigger) {
             return {
               currentTrigger: event.currentTrigger,
-              flow: TriggerFlow.edit,
+              action: TriggerAction.Update,
             }
           }
           return {
             currentTrigger: undefined,
-            flow: TriggerFlow.add,
+            action: TriggerAction.Add,
           }
         }),
         updateSigner: assign((_, event) => ({
           signer: event.signer,
         })),
+        setRemoveAction: assign(() => ({
+          action: TriggerAction.Remove,
+        })),
       },
       services: {
-        getParameters: () => (callback, onReceive) => {
+        getParameters: (context) => (callback, onReceive) => {
           const machine = interpret(createDebouncingMachine(action), {
             id: `${automationFeature}ParametersDebounceMachine`,
           }).start()
@@ -473,7 +568,8 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                   collateralAddress: event.params.position.collateral.token.address,
                   debtAddress: event.params.position.debt.token.address,
                 },
-                networkId: NetworkIds.MAINNET,
+                networkId: context.networkId,
+                action: event.params.action,
               }
               machine.send({
                 type: 'REQUEST_UPDATED',
@@ -502,7 +598,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
               const { signer, networkId, setupTriggerResponse, position } = event.params
 
               let gas: string = ''
-              let fee: EthereumTransactionFee | undefined = undefined
+              let fee: TransactionFee | undefined = undefined
 
               try {
                 gas = await estimateGas({
@@ -512,7 +608,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                   proxyAddress: position.dpm,
                 })
 
-                fee = await getEthereumTransactionFee({ estimatedGas: gas })
+                fee = await getTransactionFee({ estimatedGas: gas, networkId })
               } catch (error) {
                 console.error(error)
 
@@ -588,18 +684,19 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
     },
   )
 
-export const autoBuyTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<AaveBasicBuy>(
+export const autoBuyTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<DmaAaveBasicBuy>(
   AutomationFeatures.AUTO_BUY,
   setupAaveAutoBuy,
   119,
 )
 
-export const autoSellTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<AaveBasicSell>(
+export const autoSellTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<DmaAaveBasicSell>(
   AutomationFeatures.AUTO_SELL,
   setupAaveAutoSell,
   120,
 )
-export type AutoBuyTriggerAaveContext = BasicAutomationAaveContext<AaveBasicBuy>
-export type AutoSellTriggerAaveContext = BasicAutomationAaveContext<AaveBasicSell>
-export type AutoBuyTriggerAaveEvent = BasicAutomationAaveEvent<AaveBasicBuy>
-export type AutoSellTriggerAaveEvent = BasicAutomationAaveEvent<AaveBasicSell>
+
+export type AutoBuyTriggerAaveContext = BasicAutomationAaveContext<DmaAaveBasicBuy>
+export type AutoSellTriggerAaveContext = BasicAutomationAaveContext<DmaAaveBasicSell>
+export type AutoBuyTriggerAaveEvent = BasicAutomationAaveEvent<DmaAaveBasicBuy>
+export type AutoSellTriggerAaveEvent = BasicAutomationAaveEvent<DmaAaveBasicSell>

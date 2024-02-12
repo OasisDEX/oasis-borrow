@@ -504,7 +504,13 @@
       "stop-loss-debt-executed": "Stop loss to debt executed",
       "stop-loss-token-added": "Stop loss to {{token}} added",
       "stop-loss-token-removed": "Stop loss to {{token}} removed",
-      "stop-loss-token-executed": "Stop loss to {{token}} executed"
+      "stop-loss-token-executed": "Stop loss to {{token}} executed",
+      "basic-buy-added": "Auto buy added",
+      "basic-buy-removed": "Auto buy removed",
+      "basic-buy-executed": "Auto buy executed",
+      "basic-sell-added": "Auto sell added",
+      "basic-sell-removed": "Auto sell removed",
+      "basic-sell-executed": "Auto sell executed"
     }
   },
   "triggers": {
@@ -845,7 +851,7 @@
       "supply-apy": "Supply APY: {{rate}}",
       "supply-apy-note": "(Please note that this is only the lending market APY, and any yield from the underlying tokens such as rETH, wstETH or sDAI is not taken into account)",
       "first-description-line": "The cost to borrow is the percentage this position is paying on its net value, using the debt APY minus the APY for the collateral supplied.",
-      "third-description-line": "The borrow cost expressed in {{debtToken}} amount over one year. This amount is an estimate that changes with the changes in the rates. Your effective real cost will be determined by your PNL.",
+      "third-description-line": "This value represent how much your debt will grow in one year. It's your current debt times the borrow rate. This amount is an estimate that changes with the changes in the rates. Your net value growth will be positive or negative in 1 year determined by your PNL, effective collateral growth due to interest and realized debt rate.",
       "positive-negative-line": " If the values are positive you are paying to borrow, if negative you are paid to borrow."
     }
   },
@@ -932,7 +938,7 @@
     "protocols-aave": "Borrow, Multiply and Earn on multiple tokens with the top liquidity protocol.  ",
     "protocols-ajna": "Borrow, Multiply and Earn on anything.<br>No governance. No Oracles.",
     "protocols-maker": "Borrow, Multiply and Earn with<br>the Maker Protocol. Builders of DAI.",
-    "protocols-morpho-blue": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "protocols-morpho-blue": "Borrow and multiply on a new flexible and efficient protocol with isolated pairs.",
     "protocols-spark": "Borrow, Multiply and Earn on Spark.<br>The advanced lending powered by Maker.",
     "protocols-more": "View everything possible on {{protocol}}",
     "referrals": "Referrals",
@@ -1110,11 +1116,11 @@
       "description": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi."
     },
     "morpho": {
-      "title": "Summer.fi × Morpho",
-      "description": "Morpho is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
+      "title": "Summer.fi × Morpho Blue",
+      "description": "Morpho Blue is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "morphoProductPage": {
-      "title": "{{productType}} - Summer.fi × Morpho"
+      "title": "{{productType}} - Summer.fi × Morpho Blue"
     },
     "aaveProductPage": {
       "simple-earn": {
@@ -1416,7 +1422,8 @@
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
-    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>."
+    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+    "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell."
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -1426,10 +1433,11 @@
     "auto-buy-trigger-greater-than-auto-take-profit": "Setting your trigger ratio at this level may result in your Auto-Buy Trigger not executing. Find out more <0>here</0>.",
     "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-buy-with-no-max-price-threshold": "WARNING: You are setting an auto buy trigger with no maximum buy price threshold",
+    "auto-sell-with-no-min-price-threshold": "WARNING: You are setting an auto sell trigger with no minimum sell price threshold",
     "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@summer.fi</0>",
     "auto-sell-target-close-to-auto-buy-trigger": "Setting a higher Target Ratio would trigger your existing Auto-Buy. If you want to use a higher trigger ratio, please adjust your Auto-Buy trigger first.",
     "auto-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first.",
-    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
+    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-take-profit-trigger-lower-than-auto-buy-trigger": "Setting your Target Price at this level may result in your Auto-Buy not executing. Find out more <0>here</0>.",
     "auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger": "Setting your Target Price at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
@@ -1580,6 +1588,7 @@
     "setup-stop-loss": {
       "header": "Protect against unnecessary losses",
       "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
+      "content-generic": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either collateral or debt token at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
     "get-protection": {
@@ -1595,6 +1604,14 @@
     "history-coming-soon": {
       "header": "History not supported",
       "description": "We currently don't support {{protocol}} {{proxyVersion}} history on the {{network}}."
+    },
+    "too-low-net-value-for-protection": {
+      "header": "You need to have a minimum of ${{netValue}} of net value in this position before you can set up Automated Protection",
+      "description": "Summer.fi Automated Protection allows you to set up a dynamic Stop-Loss or Auto-Sell Strategy on your position based on the Loan to Value. This can protect your position from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works, here."
+    },
+    "too-low-net-value-for-optimization": {
+      "header": "You need to have a minimum of ${{netValue}} of net value in this position before you can set up Automated Optimization",
+      "description": "Summer.fi Optimization allows you to set up a dynamic Auto-Buy on your position based on the Loan to Value. This will increase your exposure to the collateral asset as the price changed. Learn more about how it works, here."
     }
   },
   "view": "View",
@@ -1710,6 +1727,7 @@
   "setup": "Setup",
   "protection": {
     "stop-loss": "Stop-Loss",
+    "stop-loss-to": "Stop loss to:",
     "stop-loss-protection": "Stop-Loss Protection",
     "confirmation-text": "Confirm your Stop-Loss setup.",
     "navigate-cancel": "Cancel downside protection",
@@ -2150,10 +2168,14 @@
     "cancelling-form-title": "Cancelling Auto-Sell",
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
+    "ltv-too-low-for-auto-sell": "Auto-Sell is not available as your Loan to Value is too low. Please <0>increase your Loan to value</0> above 1% before using Auto-Sell.",
+    "ltv-too-low-for-auto-buy": "Auto-Buy is not available as your Loan to Value is too low. Please <0>increase your Loan to Value</0> above 1% before using Auto-Buy.",
+
     "collateral-after-next-sell": "Collateral after next sell",
     "confirmation": "Confirm your auto-sell setup.",
     "continual-sell-no-threshold": "Recurring sell order with no min",
     "continual-sell-threshold": "Recurring sell order down to {{amount}}/{{token}}",
+    "continual-sell-threshold-v2": "Recurring sell order down to {{amount}} {{denomination}}",
     "edit-form-title": "Edit Auto-Sell",
     "estimated-transaction-cost": "Estimated transaction cost",
     "next-sell-price": "Next sell price: {{amount}}",
@@ -2167,6 +2189,7 @@
     "set-trigger-description": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a min sell price of ${{minSellPrice}}/{{token}}. Learn More ",
     "set-trigger-description-ltv": "You are creating a recurring sell action to trigger at a LTV of {{executionLTV}}%, decreasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at ${{executionPrice}} {{denomination}}, with a min sell price of ${{minSellPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-ltv-no-threshold": "You are creating a recurring sell action to trigger at a LTV of {{executionLTV}}%, decreasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at ${{executionPrice}} {{denomination}}. With no min sell price. Learn More ",
+    "set-trigger-description-ltv-without-threshold": "You are creating a recurring sell action to trigger at a LTV of {{executionLTV}}%, decreasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at ${{executionPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min sell price. Learn More ",
     "setting-form-title": "Setting Auto-Sell",
     "setup-transaction-cost": "Setup transaction cost",
@@ -2197,6 +2220,7 @@
     "confirmation-text": "Confirm your Auto-Buy setup.",
     "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Recurring buy order up to {{amount}}/{{token}}",
+    "continual-buy-threshold-v2": "Recurring buy order up to {{amount}} {{denomination}}",
     "continual-buy-no-threshold": "Recurring buy order with no max",
     "min-ratio": "min. ratio with Stop-Loss/Auto-Sell",
     "next-buy-price": "Next buy price: {{amount}}",
@@ -2249,6 +2273,7 @@
     "set-trigger-description-ltv": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}, with a Max Buy price of {{maxBuyPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More ",
     "set-trigger-description-ltv-no-threshold": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}. With no min buy price. Learn More ",
+    "set-trigger-description-ltv-without-threshold": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}. Learn More ",
     "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
@@ -2501,7 +2526,7 @@
           "spark-wsteth-eth": "Spark wstETH yield multiple",
           "spark-reth-eth": "Spark rETH yield multiple"
         },
-        "current-yield": "Current yield",
+        "current-yield": "APY",
         "90-day-avg-yield": "90 Day Avg",
         "total-value-locked": "Total value locked"
       },
@@ -2683,17 +2708,24 @@
       "liquidation-price": {
         "title": "Liquidation Price",
         "footnote-below": "below current price",
-        "footnote-above": "above current price"
+        "footnote-above": "above current price",
+        "modal-description": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+        "modal-footnote-title": "Liquidation Penalty",
+        "modal-footnote-description": "The Liquidation Penalty is the % that will be added to the debt as a penalty in case of liquidation.",
+        "modal-footnote-below": "This is {{ratioToCurrentPrice}} below current price",
+        "modal-footnote-above": "This is {{ratioToCurrentPrice}} above current price"
       },
       "ltv": {
         "title": "Loan to Value",
         "footnote": "Max LTV:"
       },
       "collateral-deposited": {
-        "title": "Collateral Deposited"
+        "title": "Collateral Deposited",
+        "modal-description": "This is the amount of tokens you have as collateral for your debt."
       },
       "position-debt": {
-        "title": "Position Debt"
+        "title": "Position Debt",
+        "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
       },
       "net-value": {
         "title": "Net Value",
@@ -2706,10 +2738,13 @@
         "title": "Borrow Rate"
       },
       "available-to-withdraw": {
-        "title": "Available to Withdraw"
+        "title": "Available to Withdraw",
+        "modal-description-lend": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
+        "modal-description-supply": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out."
       },
       "available-to-borrow": {
-        "title": "Available to Borrow"
+        "title": "Available to Borrow",
+        "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       },
       "total-exposure": {
         "title": "Total {{tokensSymbol}} exposure"
@@ -2758,6 +2793,10 @@
     },
     "validations": {
       "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty {{protocolLabel}} positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+    },
+    "history": {
+      "title": "History is coming soon",
+      "notice": "We're currently building human readable history for {{protocol}}. Check back in a few weeks to see your position history."
     }
   },
   "ajna": {
@@ -2775,10 +2814,6 @@
       "ajna-twitter": "Ajna Twitter",
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
-    },
-    "history": {
-      "title": "History is coming soon",
-      "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
     },
     "content-card": {
       "liquidation-price": {
@@ -2798,12 +2833,6 @@
         "modal-subtitle": "To avoid liquidation, always ensure your TP < LUP",
         "modal-lup": "Lowest Utilization Price"
       },
-      "collateral-deposited": {
-        "modal-description": "This is the amount of tokens you have as collateral for your debt."
-      },
-      "position-debt": {
-        "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
-      },
       "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount.",
       "borrow-rate": {
         "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
@@ -2814,13 +2843,6 @@
         "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
         "modal-footnote-title": "Cost to borrow {{quoteToken}}",
         "modal-footnote-description": "The borrow rate expressed in {{quoteToken}} amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
-      },
-      "available-to-withdraw": {
-        "modal-description": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
-        "modal-earn-description": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out."
-      },
-      "available-to-borrow": {
-        "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       },
       "total-earnings": {
         "title": "Total Earnings",
@@ -3008,7 +3030,7 @@
       "debt-less-then-dust-limit": "The minimum debt for a position in this pool is {{minDebtAmount}}. Please update the parameters of this action to ensure the position has debt above {{minDebtAmount}} or no debt",
       "debt-less-then-dust-limit-multiply": "Minimum debt generated is below the pool minimum. Please increase your deposit size or increase the LTV (if available).",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
-      "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
+      "not-enough-liquidity": "You cannot generate more debt than available liquidity. Current liquidity for {{collateralToken}}/{{quoteToken}} is {{amount}} {{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "liquidation-price-close-to-market-price": "Warning your Liquidation Price is close to Market price please check that your liquidation Price is not above Market price to avoid being liquidated with this action.",
@@ -3031,8 +3053,7 @@
       "regular-rewards": "Regular rewards",
       "total-rewards": "Total rewards",
       "claimable-today": "Claimable today",
-      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming.",
-      "previous-deployment-rewards": "Please note that the previous deployment token rewards are not yet displayed, these will be shown when they become claimable."
+      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming."
     },
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
@@ -3050,6 +3071,18 @@
     }
   },
   "morpho": {
+    "content-card": {
+      "ltv": {
+        "footnote": "Max Loan to Value",
+        "modal-description": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+        "modal-footnote-description": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral. If your LTV rises above the Max Loan to Value, the position is undercollateralised and could be liquidated."
+      },
+      "borrow-rate": {
+        "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing with utilization of the pool.",
+        "modal-footnote": "Cost to borrow",
+        "modal-footnote-description": "The borrow rate expressed in TKN amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
+      }
+    },
     "position-page": {
       "common": {
         "form": {
@@ -3059,6 +3092,12 @@
             "manage": "Manage your Morpho {{productType}} Position",
             "transaction": "Confirm your Morpho {{productType}} Position",
             "transition": "Switch your Morpho {{productType}} Position"
+          }
+        },
+        "notifications": {
+          "got-liquidated": {
+            "title": "This position got liquidated",
+            "message": "The liquidation process is over you can now reclaim any collateral left."
           }
         }
       }
@@ -3083,6 +3122,7 @@
       "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset. Read more about",
       "earn": "Earn long term yields to compound your crypto capital. Read more about"
     },
+    "featured": "Featured",
     "promo-cards": {
       "7-day-avg-apy": "7 day avg APY",
       "active-management": "Active management",
@@ -3149,6 +3189,11 @@
         "title": "Looking for a custom pool?",
         "description": "Find any pool on Ajna and open a position using Ajna Permissionless.",
         "cta": "Search custom pools"
+      },
+      "migration": {
+        "title": "Switch to Summer.fi, you have {{migrationsCount}} positions available to migrate.",
+        "description": "Migrate to Summer.fi for benefits like stop loss, one click multiply and automated management.",
+        "cta": "View Positions ->"
       }
     }
   },
@@ -3207,7 +3252,8 @@
   },
   "aave": {
     "header": {
-      "current-market-price": "Current Market Price"
+      "current-market-price": "Current Market Price",
+      "current-ltv": "Current LTV"
     },
     "errors": {
       "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",

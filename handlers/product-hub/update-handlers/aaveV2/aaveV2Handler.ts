@@ -22,7 +22,7 @@ import { aaveV2ProductHubProducts } from './aaveV2Products'
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // Multiply: max multiple, liq available, variable fee
   // Earn: 7 day net APY, liq available
-  const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
+  const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers, 'aaveV2Handler'))
   const primaryTokensList = [
     ...new Set(
       flatten(

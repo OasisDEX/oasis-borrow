@@ -6,6 +6,7 @@ import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ajnaExtensionTheme } from 'theme'
+import { Text } from 'theme-ui'
 
 export function useAjnaCardDataNetValueLending(
   netValuePnlData?: OmniNetValuePnlDataReturnType,
@@ -14,13 +15,13 @@ export function useAjnaCardDataNetValueLending(
   return netValuePnlData
     ? {
         extra: (
-          <>
+          <Text as="p" variant="paragraph4">
             {netValuePnlData.pnl?.percentage &&
               `${t('omni-kit.content-card.net-value.footnote')} ${
                 netValuePnlData.pnl.percentage.gte(zero) ? '+' : ''
               }
       ${formatDecimalAsPercent(netValuePnlData.pnl.percentage)}`}
-          </>
+          </Text>
         ),
         modal: <OmniMultiplyNetValueModal {...netValuePnlData} theme={ajnaExtensionTheme} />,
       }

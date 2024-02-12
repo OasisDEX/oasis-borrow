@@ -5,10 +5,7 @@ import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
-import type {
-  AjnaBorrowerEvent,
-  AjnaHistoryEvent,
-} from 'features/omni-kit/protocols/ajna/history/types'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import { getHistoryEventLabel } from 'features/positionHistory/getHistoryEventLabel'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -24,7 +21,7 @@ interface PositionHistoryItemProps {
   }
   isOracless?: boolean
   isShort?: boolean
-  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<AjnaBorrowerEvent>
+  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent>
   priceFormat?: string
   quoteToken: string
   networkId: NetworkIds

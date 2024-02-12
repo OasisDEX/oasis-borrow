@@ -404,13 +404,31 @@ export function createOpenAaveStateMachine(
             },
             txStopLoss: {
               on: {
-                NEXT_STEP: {
-                  target: 'txStopLossInProgress',
-                },
+                NEXT_STEP: [
+                  {
+                    cond: 'isStopLossLambda',
+                    target: 'txStopLossLambdaInProgress',
+                  },
+                  {
+                    cond: 'isStopLossStandard',
+                    target: 'txStopLossInProgress',
+                  },
+                ],
               },
             },
             txStopLossInProgress: {
               entry: ['spawnStopLossStateMachine'],
+              on: {
+                TRANSACTION_COMPLETED: {
+                  target: 'txSuccess',
+                },
+                TRANSACTION_FAILED: {
+                  target: 'stopLossTxFailure',
+                  actions: ['updateContext'],
+                },
+              },
+            },
+            txStopLossLambdaInProgress: {
               on: {
                 TRANSACTION_COMPLETED: {
                   target: 'txSuccess',
@@ -493,6 +511,9 @@ export function createOpenAaveStateMachine(
         SET_STOP_LOSS_TX_DATA: {
           actions: 'updateContext',
         },
+        SET_STOP_LOSS_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
         SET_STOP_LOSS_SKIPPED: {
           actions: 'updateContext',
         },
@@ -537,6 +558,8 @@ export function createOpenAaveStateMachine(
           }),
         isAllowanceNeeded,
         isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => !stopLossSkipped && !!stopLossLevel,
+        isStopLossStandard: ({ stopLossTxData }) => !!stopLossTxData,
+        isStopLossLambda: ({ stopLossTxDataLambda }) => !!stopLossTxDataLambda,
         isEthersTransaction: ({ strategyConfig }) =>
           strategyConfig.executeTransactionWith === 'ethers',
       },

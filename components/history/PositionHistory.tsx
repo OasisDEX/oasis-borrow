@@ -4,14 +4,18 @@ import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
 import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
+import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
 interface PositionHistoryProps {
   collateralToken: string
-  historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]
+  historyEvents:
+    | Partial<AjnaHistoryEvent>[]
+    | Partial<AaveHistoryEvent>[]
+    | Partial<PositionHistoryEvent>[]
   isOracless?: boolean
   isShort?: boolean
   priceFormat?: string

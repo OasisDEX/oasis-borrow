@@ -24,6 +24,7 @@ export const tokensOptimism = {
   SDAI: contractDesc(erc20, optimism.common.SDAI),
   SUSD: contractDesc(erc20, optimism.common.SUSD),
   STETH: contractDesc(erc20, optimism.common.STETH),
+  STYETH: contractDesc(erc20, optimism.common.STYETH),
   TBTC: contractDesc(erc20, optimism.common.TBTC),
   USDT: contractDesc(erc20, optimism.common.USDT),
   'USDC.E': contractDesc(erc20, optimism.common['USDC.E']),

@@ -21,6 +21,7 @@ export const tokensArbitrum = {
   RETH: contractDesc(erc20, arbitrum.common.RETH),
   SDAI: contractDesc(erc20, arbitrum.common.SDAI),
   STETH: contractDesc(erc20, arbitrum.common.STETH),
+  STYETH: contractDesc(erc20, arbitrum.common.STYETH),
   TBTC: contractDesc(erc20, arbitrum.common.TBTC),
   USDC: contractDesc(erc20, arbitrum.common.USDC),
   'USDC.E': contractDesc(erc20, arbitrum.common['USDC.E']),

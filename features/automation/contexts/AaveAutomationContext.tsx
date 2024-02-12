@@ -33,7 +33,7 @@ export function AaveAutomationContext({
   const commonData = useMemo(
     () => ({
       controller: aaveManageVault.address,
-      nextCollateralPrice: aaveManageVault.context.collateralPrice || zero,
+      nextCollateralPrice: aaveManageVault.context.balance?.collateral.price || zero,
       token: aaveManageVault.context.tokens.collateral,
     }),
     [aaveManageVault],

@@ -3,9 +3,12 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromWei } from 'blockchain/utils'
 import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
+import { LendingProtocol } from 'lendingProtocols'
 import type { ActorRefFrom, StateFrom } from 'xstate'
 import { actions, createMachine } from 'xstate'
 
@@ -45,6 +48,38 @@ export const isAutoSellEnabled = ({
   )
 }
 
+export const getCurrentOptimizationView = ({
+  triggers,
+}: GetTriggersResponse): 'auto-buy' | undefined => {
+  if (triggers.aaveBasicBuy) {
+    return 'auto-buy'
+  }
+  return undefined
+}
+
+export const getCurrentProtectionView = ({
+  triggers,
+}: GetTriggersResponse): 'auto-sell' | 'stop-loss' | undefined => {
+  if (
+    triggers.aaveStopLossToDebt ||
+    triggers.aaveStopLossToCollateral ||
+    triggers.aaveStopLossToCollateralDMA ||
+    triggers.aaveStopLossToDebtDMA ||
+    triggers.sparkStopLossToDebt ||
+    triggers.sparkStopLossToCollateral ||
+    triggers.sparkStopLossToCollateralDMA ||
+    triggers.sparkStopLossToDebtDMA
+  ) {
+    return 'stop-loss'
+  }
+
+  if (triggers.aaveBasicSell) {
+    return 'auto-sell'
+  }
+
+  return undefined
+}
+
 export const areTriggersLoading = (state: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   return state.matches('loading')
 }
@@ -55,6 +90,42 @@ export const hasActiveOptimization = ({
   return context.currentTriggers.triggers.aaveBasicBuy !== undefined
 }
 
+export const hasActiveProtection = ({
+  context,
+}: StateFrom<typeof triggersAaveStateMachine>): boolean => {
+  const protocol = context.strategyConfig.protocol
+  const {
+    aaveStopLossToCollateral,
+    sparkStopLossToCollateral,
+    aaveStopLossToCollateralDMA,
+    aaveStopLossToDebtDMA,
+    sparkStopLossToCollateralDMA,
+    sparkStopLossToDebtDMA,
+    sparkStopLossToDebt,
+    aaveStopLossToDebt,
+    aaveBasicSell,
+  } = context.currentTriggers.triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(
+        aaveStopLossToCollateral,
+        aaveStopLossToDebt,
+        aaveBasicSell,
+        aaveStopLossToCollateralDMA,
+        aaveStopLossToDebtDMA,
+      )
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(
+        sparkStopLossToCollateral,
+        sparkStopLossToDebt,
+        sparkStopLossToCollateralDMA,
+        sparkStopLossToDebtDMA,
+      )
+    case LendingProtocol.AaveV2:
+      return false
+  }
+}
+
 export type TriggersAaveContext = {
   readonly strategyConfig: IStrategyConfig
   readonly dpm?: UserDpmAccount
@@ -63,6 +134,7 @@ export type TriggersAaveContext = {
   protectionCurrentView?: 'auto-sell' | 'stop-loss' | undefined
   showAutoBuyBanner: boolean
   showAutoSellBanner: boolean
+  showStopLossBanner: boolean
   currentTriggers: GetTriggersResponse
   signer?: ethers.Signer
   autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
@@ -72,9 +144,11 @@ export type TriggersAaveContext = {
 function mapPositionToAutoBuyPosition({
   position,
   dpm,
+  strategyConfig,
 }: {
   position: AaveLikePosition
   dpm?: UserDpmAccount
+  strategyConfig: IStrategyConfig
 }): PositionLike | undefined {
   if (!dpm) {
     return undefined
@@ -98,6 +172,7 @@ function mapPositionToAutoBuyPosition({
       amount: amountFromWei(position.debt.amount, position.debt.precision),
     },
     dpm: dpm.proxy,
+    pricesDenomination: strategyConfig.strategyType === StrategyType.Short ? 'debt' : 'collateral',
   }
 }
 
@@ -119,12 +194,6 @@ export const triggersAaveStateMachine = createMachine(
     entry: [],
     id: 'triggersStateMachine',
     initial: 'loading',
-    // invoke: [
-    //   {
-    //     src: 'checkTheTransactions',
-    //     id: 'checkTheTransactions',
-    //   },
-    // ],
     states: {
       idle: {
         on: {
@@ -149,7 +218,12 @@ export const triggersAaveStateMachine = createMachine(
             id: 'getTriggers',
             onDone: {
               target: 'idle',
-              actions: ['updateTriggers', 'sendAutoBuyTrigger', 'sendAutoSellTrigger'],
+              actions: [
+                'updateTriggers',
+                'sendAutoBuyTrigger',
+                'sendAutoSellTrigger',
+                'updateCurrentViews',
+              ],
             },
           },
         ],
@@ -180,17 +254,28 @@ export const triggersAaveStateMachine = createMachine(
         optimizationCurrentView: 'auto-buy' as const,
         showAutoBuyBanner: false,
       })),
-      setAutoSellView: assign(() => ({
+      setAutoSellView: assign((context) => ({
         protectionCurrentView: 'auto-sell' as const,
         showAutoSellBanner: false,
+        showStopLossBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.STOP_LOSS,
+        ),
       })),
-      setStopLossView: assign(() => ({
+      setStopLossView: assign((context) => ({
         protectionCurrentView: 'stop-loss' as const,
-        showAutoSellBanner: true,
+        showAutoSellBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.AUTO_SELL,
+        ),
+        showStopLossBanner: false,
       })),
-      resetProtection: assign(() => ({
+      resetProtection: assign((context) => ({
         protectionCurrentView: undefined,
-        showAutoSellBanner: true,
+        showAutoSellBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.AUTO_SELL,
+        ),
+        showStopLossBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.STOP_LOSS,
+        ),
       })),
       updatePosition: assign((context, event) => ({
         position: event.position,
@@ -216,6 +301,24 @@ export const triggersAaveStateMachine = createMachine(
       updateTriggers: assign((context, event) => ({
         currentTriggers: event.data,
       })),
+      updateCurrentViews: assign((context, event) => {
+        const currentOptimizationView = getCurrentOptimizationView(event.data)
+        const currentProtectionView = getCurrentProtectionView(event.data)
+
+        return {
+          showStopLossBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS) &&
+            currentProtectionView !== 'stop-loss',
+          showAutoBuyBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY) &&
+            currentOptimizationView !== 'auto-buy',
+          showAutoSellBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL) &&
+            currentProtectionView !== 'auto-sell',
+          optimizationCurrentView: getCurrentOptimizationView(event.data),
+          protectionCurrentView: getCurrentProtectionView(event.data),
+        }
+      }),
       updateAutoBuyDefaults: sendTo(
         (context) => {
           return context.autoBuyTrigger
@@ -304,24 +407,6 @@ export const triggersAaveStateMachine = createMachine(
         }
         return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
       },
-      // checkTheTransactions: (context) => (callback) => {
-      //   const autoSellTriggerListener = context.autoSellTrigger.subscribe((state) => {
-      //     if (state.matches('txDone')) {
-      //       callback({ type: 'TRANSACTION_DONE' })
-      //     }
-      //   })
-      //
-      //   const autoBuyTriggerListener = context.autoBuyTrigger.subscribe((state) => {
-      //     if (state.matches('txDone')) {
-      //       callback({ type: 'TRANSACTION_DONE' })
-      //     }
-      //   })
-      //
-      //   return () => {
-      //     autoSellTriggerListener.unsubscribe()
-      //     autoBuyTriggerListener.unsubscribe()
-      //   }
-      // },
     },
   },
 )

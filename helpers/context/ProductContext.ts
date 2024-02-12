@@ -102,7 +102,7 @@ export function setupProductContext(
     connectedContext$,
     context$,
     everyBlock$,
-    gasPrice$,
+    gasPriceOnNetwork$,
     once$,
     onEveryBlock$,
     txHelpers$,
@@ -132,10 +132,17 @@ export function setupProductContext(
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
 
   function addGasEstimation$<S extends HasGasEstimation>(
+    // only mainnet here
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
   ): Observable<S> {
-    return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
+    return doGasEstimation(
+      gasPriceOnNetwork$(NetworkIds.MAINNET),
+      daiEthTokenPrice$,
+      txHelpers$,
+      state,
+      call,
+    )
   }
 
   // protocols
@@ -550,7 +557,7 @@ export function setupProductContext(
     shareReplay(1),
   )
 
-  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
+  const gasEstimation$ = curry(getGasEstimation$)(context$, gasPriceOnNetwork$, daiEthTokenPrice$)
 
   const commonTransactionServices = transactionContextService(context$)
 

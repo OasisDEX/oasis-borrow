@@ -26,7 +26,7 @@ export const parsePriceFromDecodedParam = (
   return bigNumber.div(ten.pow(decimals))
 }
 
-export const getMaxGasFeeFromDecodedParam = (decodedParam: string | undefined) => {
+export const getIntFromDecodedParam = (decodedParam: string | undefined) => {
   if (!decodedParam) {
     return undefined
   }

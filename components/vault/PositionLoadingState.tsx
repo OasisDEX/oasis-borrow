@@ -50,6 +50,33 @@ function SidebarLoadingState() {
   )
 }
 
+export function PositionLoadingOverviewState() {
+  return (
+    <DetailsSection
+      title={
+        <DetailsSectionTitle>
+          <Skeleton width="150px" height="24px" />
+        </DetailsSectionTitle>
+      }
+      content={
+        <DetailsSectionContentCardWrapper>
+          <ContentCardLoadingState />
+          <ContentCardLoadingState />
+          <ContentCardLoadingState />
+          <ContentCardLoadingState />
+        </DetailsSectionContentCardWrapper>
+      }
+      footer={
+        <DetailsSectionFooterItemWrapper>
+          <ContentFooterLoadingState />
+          <ContentFooterLoadingState />
+          <ContentFooterLoadingState />
+        </DetailsSectionFooterItemWrapper>
+      }
+    />
+  )
+}
+
 export function PositionLoadingState({
   header = <Skeleton width="300px" height={4} sx={{ mb: '10px' }} />,
   ...rest
@@ -68,28 +95,7 @@ export function PositionLoadingState({
         sx={{ mt: '12px', mb: '42px' }}
       />
       <Grid variant="vaultContainer">
-        <DetailsSection
-          title={
-            <DetailsSectionTitle>
-              <Skeleton width="150px" height="24px" />
-            </DetailsSectionTitle>
-          }
-          content={
-            <DetailsSectionContentCardWrapper>
-              <ContentCardLoadingState />
-              <ContentCardLoadingState />
-              <ContentCardLoadingState />
-              <ContentCardLoadingState />
-            </DetailsSectionContentCardWrapper>
-          }
-          footer={
-            <DetailsSectionFooterItemWrapper>
-              <ContentFooterLoadingState />
-              <ContentFooterLoadingState />
-              <ContentFooterLoadingState />
-            </DetailsSectionFooterItemWrapper>
-          }
-        />
+        <PositionLoadingOverviewState />
         <SidebarSection
           title={<Skeleton width="150px" height="24px" />}
           content={

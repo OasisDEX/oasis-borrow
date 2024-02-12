@@ -55,6 +55,7 @@ export function OmniFormView({
       network,
       networkId,
       lendingOnly,
+      quotePrecision,
     },
     steps: {
       currentStep,
@@ -105,6 +106,7 @@ export function OmniFormView({
       isOpening,
       quoteToken,
       state,
+      quotePrecision,
     }),
     filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
     onProxiesAvailable: (events, dpmAccounts) => {
@@ -181,6 +183,7 @@ export function OmniFormView({
     isTxSuccess,
     shouldSwitchNetwork,
     walletAddress,
+    uiDropdown: state.uiDropdown,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
     collateralAddress,
@@ -243,6 +246,7 @@ export function OmniFormView({
       disabled: suppressValidation ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
+      withoutNextLink: true,
       ...primaryButtonActions,
     },
     textButton: {

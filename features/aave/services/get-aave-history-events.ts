@@ -83,6 +83,10 @@ export async function getAaveHistoryEvents(
             trigger: event.trigger ?? undefined,
           }),
         )
+        // Ajna & Morpho have additional mapping later (mapLendingEvents.ts), so there is no issue with
+        // overlapping events from different protocols. Aave & Spark doesn't so this one-liner will do the job
+        // until we will rewrite it to omni-kit
+        .filter((item) => !item.kind.includes('Ajna'))
         .sort((a, b) => b.timestamp - a.timestamp),
       positionCumulatives: positions[0]
         ? {

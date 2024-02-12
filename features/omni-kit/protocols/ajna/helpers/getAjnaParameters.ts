@@ -1,8 +1,9 @@
 import type {
   AjnaCommonDependencies,
   AjnaCommonPayload,
-  AjnaStrategy,
+  AjnaPosition,
   Network,
+  SummerStrategy,
 } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -25,7 +26,8 @@ import {
   getAjnaCumulatives,
   getAjnaPoolAddress,
   getAjnaPoolData,
-  getMaxIncreasedValue,
+  getMaxIncreasedOrDecreasedValue,
+  MaxValueResolverMode,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type {
@@ -79,7 +81,7 @@ export async function getAjnaParameters({
   slippage,
   state,
   walletAddress,
-}: AjnaTxHandlerInput): Promise<AjnaStrategy<OmniGenericPosition> | undefined> {
+}: AjnaTxHandlerInput): Promise<SummerStrategy<OmniGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
 
   const { action, dpmAddress } = state
@@ -130,8 +132,23 @@ export async function getAjnaParameters({
           ...state,
           paybackAmount:
             state.paybackAmount && state.paybackAmountMax
-              ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.paybackAmount,
+                  apy: position.pool.interestRate,
+                  precision: quotePrecision,
+                })
               : state.paybackAmount,
+          withdrawAmount:
+            state.withdrawAmount &&
+            state.withdrawAmountMax &&
+            !(position as AjnaPosition)?.debtAmount.isZero()
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.withdrawAmount,
+                  apy: position.pool.interestRate,
+                  mode: MaxValueResolverMode.DECREASED,
+                  precision: collateralPrecision,
+                })
+              : state.withdrawAmount,
         },
         commonPayload,
         dependencies,
@@ -212,8 +229,23 @@ export async function getAjnaParameters({
         ...state,
         paybackAmount:
           state.paybackAmount && state.paybackAmountMax
-            ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+            ? getMaxIncreasedOrDecreasedValue({
+                value: state.paybackAmount,
+                apy: position.pool.interestRate,
+                precision: quotePrecision,
+              })
             : state.paybackAmount,
+        withdrawAmount:
+          state.withdrawAmount &&
+          state.withdrawAmountMax &&
+          !(position as AjnaPosition)?.debtAmount.isZero()
+            ? getMaxIncreasedOrDecreasedValue({
+                value: state.withdrawAmount,
+                apy: position.pool.interestRate,
+                mode: MaxValueResolverMode.DECREASED,
+                precision: collateralPrecision,
+              })
+            : state.withdrawAmount,
       }
 
       if (loanToValue) {

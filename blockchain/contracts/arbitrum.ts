@@ -175,10 +175,12 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'WSTETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YFIDAI),
+    'STYETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_STYETHDAI),
+    'RBN-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RBNETH),
+    'AJNA-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_AJNADAI),
   },
   ajnaOraclessPoolPairs: {
-    'YIELDBTC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YIELDBTCWBTC),
-    'YIELDETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YIELDETHETH),
+    'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),
@@ -201,4 +203,5 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, arbitrum.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, arbitrum.common.WSTETHOracle),
 }

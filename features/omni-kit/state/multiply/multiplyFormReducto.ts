@@ -29,6 +29,11 @@ export function useOmniMultiplyFormReducto({ ...rest }: Partial<OmniMultiplyForm
             generateAmount: action.generateAmount,
             generateAmountUSD: action.generateAmountUSD,
           }
+        case 'update-generate-max':
+          return {
+            ...state,
+            generateAmountMax: action.generateAmountMax,
+          }
         case 'update-payback':
           return {
             ...state,

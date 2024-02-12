@@ -14,6 +14,7 @@ import type {
   OmniMultiplyFormActions,
   OmniMultiplyFormState,
 } from 'features/omni-kit/state/multiply'
+import type { OmniNotificationCallbackWithParams } from 'features/omni-kit/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
@@ -56,19 +57,17 @@ type LendingPriceFrozenParams = {
   quoteToken: string
 }
 
-type NotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
-
 const ajnaNotifications: {
-  beingLiquidated: NotificationCallbackWithParams<null>
-  collateralToWithdraw: NotificationCallbackWithParams<null>
-  earningNoApy: NotificationCallbackWithParams<EarningNoApyParams>
-  emptyPosition: NotificationCallbackWithParams<EmptyPositionParams>
-  gotLiquidated: NotificationCallbackWithParams<null>
-  lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
-  safetySwichOpen: NotificationCallbackWithParams<null>
-  safetySwichManage: NotificationCallbackWithParams<null>
-  nearLup: NotificationCallbackWithParams<null>
-  aboveLup: NotificationCallbackWithParams<null>
+  beingLiquidated: OmniNotificationCallbackWithParams<null>
+  collateralToWithdraw: OmniNotificationCallbackWithParams<null>
+  earningNoApy: OmniNotificationCallbackWithParams<EarningNoApyParams>
+  emptyPosition: OmniNotificationCallbackWithParams<EmptyPositionParams>
+  gotLiquidated: OmniNotificationCallbackWithParams<null>
+  lendingPriceFrozen: OmniNotificationCallbackWithParams<LendingPriceFrozenParams>
+  safetySwichOpen: OmniNotificationCallbackWithParams<null>
+  safetySwichManage: OmniNotificationCallbackWithParams<null>
+  nearLup: OmniNotificationCallbackWithParams<null>
+  aboveLup: OmniNotificationCallbackWithParams<null>
 } = {
   earningNoApy: ({ action }) => ({
     title: {
@@ -288,10 +287,12 @@ export function getAjnaNotifications({
       if (!isOpening) {
         const {
           price,
-          pool: { highestThresholdPrice },
+          pool: { lowestUtilizedPrice, highestThresholdPrice },
           quoteTokenAmount,
         } = position as AjnaEarnPosition
-        const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
+        const earningNoApy =
+          price.lt(highestThresholdPrice) && price.lt(lowestUtilizedPrice) && price.gt(zero)
+
         const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
         const emptyPosition =
           quoteTokenAmount.isZero() && !earnPositionAuction.isCollateralToWithdraw

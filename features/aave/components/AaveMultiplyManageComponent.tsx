@@ -1,11 +1,12 @@
 import type { IPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import { PositionLoadingOverviewState } from 'components/vault/PositionLoadingState'
 import { useAaveContext } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import type { IStrategyConfig } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
@@ -77,7 +78,7 @@ export function AaveMultiplyManageComponent({
           debtTokenReserveConfigurationData,
           aaveHistory,
         ]}
-        customLoader={<AppSpinner />}
+        customLoader={<PositionLoadingOverviewState />}
       >
         {([
           _currentPosition,
