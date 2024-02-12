@@ -15,6 +15,8 @@ export async function getLandingPageBySlug(slug: string, preview: boolean) {
             seoDescription
             seoOgImage {
               url
+              width
+              height
             }
             title
             slug

@@ -23,6 +23,8 @@ function MarketingTemplatePage(props: MarketingTemplatePageProps) {
         title={seoTitle}
         description={seoDescription}
         ogImage={seoOgImage ? seoOgImage.url : undefined}
+        ogImageHeight={seoOgImage ? seoOgImage.height : undefined}
+        ogImageWidth={seoOgImage ? seoOgImage.width : undefined}
       />
       <MarketingTemplateView {...props} />
     </MarketingLayout>

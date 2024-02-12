@@ -150,6 +150,8 @@ export interface MarketingTemplateFreeform {
   seoDescription: string
   seoOgImage: {
     url: string
+    width: number
+    height: number
   } | null
   seoTitle: string
 }

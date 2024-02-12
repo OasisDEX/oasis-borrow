@@ -10,6 +10,8 @@ interface SEOTagsType {
   description: string
   url?: string
   ogImage?: string
+  ogImageWidth?: number
+  ogImageHeight?: number
   twitterImage?: string
   titleParams?: Record<string, string>
 }
@@ -29,26 +31,33 @@ export function PageSEOTags({
   url = INTERNAL_LINKS.homepage,
   ogImage = 'og_default.jpg',
   twitterImage = 'twitter_preview_default.jpg',
+  ogImageHeight,
+  ogImageWidth,
 }: SEOTagsType) {
   const { t } = useTranslation()
 
-  const OGImages = {
+  const staticOgImages = {
     [INTERNAL_LINKS.borrow]: {
-      ogImage: 'og_borrow.jpg',
-      twitterImage: 'twitter_preview_borrow.jpg',
+      ogImage: staticFilesRuntimeUrl(`/static/img/og_images/og_borrow.jpg?${getRandomString()}`),
+      twitterImage: staticFilesRuntimeUrl(
+        `/static/img/og_images/twitter_preview_borrow.jpg?${getRandomString()}`,
+      ),
     },
     [INTERNAL_LINKS.multiply]: {
-      ogImage: 'og_multiply.jpg',
-      twitterImage: 'twitter_preview_multiply.jpg',
+      ogImage: staticFilesRuntimeUrl(`/static/img/og_images/og_multiply.jpg?${getRandomString()}`),
+      twitterImage: staticFilesRuntimeUrl(
+        `/static/img/og_images/twitter_preview_multiply.jpg?${getRandomString()}`,
+      ),
     },
     [INTERNAL_LINKS.earn]: {
-      ogImage: 'og_earn.jpg',
-      twitterImage: 'twitter_preview_earn.jpg',
+      ogImage: staticFilesRuntimeUrl(`/static/img/og_images/og_earn.jpg?${getRandomString()}`),
+      twitterImage: staticFilesRuntimeUrl(
+        `/static/img/og_images/twitter_preview_earn.jpg?${getRandomString()}`,
+      ),
     },
-  }[url] || {
-    ogImage,
-    twitterImage,
-  }
+  }[url]
+
+  const finalOgImages = staticOgImages ?? { ogImage, twitterImage }
 
   // TODO: Add Icon to the title
   const tabTitle = `${titleParams ? t(title, titleParams) : t(title)}`
@@ -76,24 +85,19 @@ export function PageSEOTags({
       <meta property="og:url" content={`${INTERNAL_LINKS.appUrl}${url}`} />
       <link rel="canonical" href={`${INTERNAL_LINKS.appUrl}${url}`} />
 
-      <meta
-        property="og:image"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
-        )}
-      />
+      <meta property="og:image" key="og:image" content={finalOgImages.ogImage} />
       <meta
         property="og:image:secure_url"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
-        )}
+        key="og:image:secure_url"
+        content={finalOgImages.ogImage}
       />
-      <meta
-        name="twitter:image"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.twitterImage}?${getRandomString()}`,
-        )}
-      />
+      <meta name="twitter:image" key="twitter:image" content={finalOgImages.twitterImage} />
+      {ogImageWidth && (
+        <meta property="og:image:width" key="og:image:width" content={String(ogImageWidth)} />
+      )}
+      {ogImageHeight && (
+        <meta property="og:image:height" key="og:image:height" content={String(ogImageHeight)} />
+      )}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:creator" content="@Summerfi_" />
 
