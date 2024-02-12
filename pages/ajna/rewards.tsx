@@ -1,5 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { ProductContextProvider } from 'components/context/ProductContextProvider'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaRewardsController } from 'features/ajna/rewards/controls'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -11,13 +12,15 @@ function AjnaRewardsPage() {
   return (
     <AjnaLayout>
       <FunctionalContextHandler>
-        <WithConnection>
-          <WithTermsOfService>
-            <WithWalletAssociatedRisk>
-              <AjnaRewardsController />
-            </WithWalletAssociatedRisk>
-          </WithTermsOfService>
-        </WithConnection>
+        <ProductContextProvider>
+          <WithConnection>
+            <WithTermsOfService>
+              <WithWalletAssociatedRisk>
+                <AjnaRewardsController />
+              </WithWalletAssociatedRisk>
+            </WithTermsOfService>
+          </WithConnection>
+        </ProductContextProvider>
       </FunctionalContextHandler>
     </AjnaLayout>
   )

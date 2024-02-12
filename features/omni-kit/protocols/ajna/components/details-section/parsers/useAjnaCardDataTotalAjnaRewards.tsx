@@ -10,15 +10,17 @@ import React from 'react'
 
 interface AjnaCardDataTotalAjnaRewardsParams {
   owner: string
+  poolAddress: string
 }
 
 export function useAjnaCardDataTotalAjnaRewards({
   owner,
+  poolAddress,
 }: AjnaCardDataTotalAjnaRewardsParams): OmniContentCardBase & OmniContentCardExtra {
   const {
     isLoading,
     rewards: { bonus, claimable, total },
-  } = useAjnaRewards(owner)
+  } = useAjnaRewards(owner, poolAddress)
 
   return {
     title: { key: 'ajna.content-card.total-ajna-rewards.title' },

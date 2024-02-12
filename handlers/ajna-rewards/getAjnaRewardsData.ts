@@ -14,6 +14,7 @@ const querySchema = z.object({
   networkId: z.string(),
   claimedBonusWeeks: z.string().optional(),
   claimedCoreWeeks: z.string().optional(),
+  poolAddress: z.string().optional(),
 })
 
 const mapStringToNumberArray = (input: string) => input.split(',').map((item) => Number(item))
@@ -72,7 +73,8 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     }
   }
 
-  const { address, networkId, claimedBonusWeeks, claimedCoreWeeks } = querySchema.parse(query)
+  const { address, networkId, claimedBonusWeeks, claimedCoreWeeks, poolAddress } =
+    querySchema.parse(query)
 
   const parsedClaimedBonusWeeks = claimedBonusWeeks?.length
     ? mapStringToNumberArray(claimedBonusWeeks)
@@ -111,17 +113,28 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
       },
     })
 
-    const coreNotClaimableAmount = mapToAmount(
-      await prisma.ajnaRewardsDailyClaim.findMany({
-        where: {
-          ...commonQuery,
-          week_number: {
-            notIn: parsedClaimedCoreWeeks,
-          },
-          source: AjnaRewardsSource.core,
+    const coreNotClaimable = await prisma.ajnaRewardsDailyClaim.findMany({
+      where: {
+        ...commonQuery,
+        week_number: {
+          notIn: parsedClaimedCoreWeeks,
         },
-      }),
-    )
+        ...(poolAddress && {
+          pool_address: poolAddress,
+        }),
+        source: AjnaRewardsSource.core,
+      },
+    })
+
+    const lastDayRewards = (
+      coreNotClaimable[coreNotClaimable.length - 1]
+        ? new BigNumber(coreNotClaimable[coreNotClaimable.length - 1].amount).shiftedBy(
+            NEGATIVE_WAD_PRECISION,
+          )
+        : zero
+    ).toString()
+
+    const coreNotClaimableAmount = mapToAmount(coreNotClaimable)
 
     const bonusNotClaimableAmount = mapToAmount(
       await prisma.ajnaRewardsDailyClaim.findMany({
@@ -130,6 +143,9 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
           week_number: {
             notIn: parsedClaimedBonusWeeks,
           },
+          ...(poolAddress && {
+            pool_address: poolAddress,
+          }),
           source: AjnaRewardsSource.bonus,
         },
       }),
@@ -146,6 +162,7 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
       coreAmount: coreNotClaimableAmount,
       claimableToday,
       claimableBonusToday,
+      lastDayRewards,
       payload,
     }
   } catch (error) {

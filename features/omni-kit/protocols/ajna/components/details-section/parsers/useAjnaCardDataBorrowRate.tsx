@@ -16,6 +16,7 @@ interface AjnaCardDataBorrowRateParams {
   networkId: OmniSupportedNetworkIds
   owner: string
   quoteToken: string
+  poolAddress: string
 }
 
 export function useAjnaCardDataBorrowRate({
@@ -26,11 +27,12 @@ export function useAjnaCardDataBorrowRate({
   networkId,
   owner,
   quoteToken,
+  poolAddress,
 }: AjnaCardDataBorrowRateParams): OmniContentCardExtra {
   const {
     isLoading,
     rewards: { claimable, total },
-  } = useAjnaRewards(owner)
+  } = useAjnaRewards(owner, poolAddress)
 
   return {
     modal: (
