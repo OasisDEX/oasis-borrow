@@ -13,6 +13,9 @@ export async function getLandingPageBySlug(slug: string, preview: boolean) {
           items {
             seoTitle
             seoDescription
+            seoOgImage {
+              url
+            }
             title
             slug
             hero {
