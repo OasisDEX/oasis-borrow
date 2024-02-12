@@ -186,7 +186,7 @@ export function ContentCardLtv({
     modal: <ContentCardLtvModal {...contentCardModalSettings} />,
   }
 
-  if (afterLoanToValue &&maxLoanToValue) {
+  if (afterLoanToValue && maxLoanToValue) {
     contentCardSettings.change = {
       variant: maxLoanToValue.minus(afterLoanToValue).gt(LTVWarningThreshold)
         ? 'positive'
