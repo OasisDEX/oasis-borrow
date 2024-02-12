@@ -627,7 +627,13 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
     case state.matches('frontend.migrate'):
-      return <SidebarMigrateAaveVault state={state} />
+      return state.context.refMigrationMachine !== undefined ? (
+        <SidebarMigrateAaveVault
+          context={{ ...state.context, refMigrationMachine: state.context.refMigrationMachine }}
+        />
+      ) : (
+        <></>
+      )
     default: {
       return <></>
     }

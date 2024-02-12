@@ -997,8 +997,19 @@ export function createManageAaveStateMachine(
             proxyAddress: context.proxyAddress,
           }
         }),
-        spawnMigrationMachine: assign(() => ({
-          refMigrationMachine: spawn(migrateAaveStateMachine, 'migrationMachine'),
+        spawnMigrationMachine: assign((context) => ({
+          refMigrationMachine: spawn(
+            migrateAaveStateMachine.withContext({
+              strategyConfig: context.strategyConfig,
+              reserveData: context.reserveData,
+              currentPosition: context.currentPosition,
+              userSettings: context.userSettings,
+              web3Context: context.web3Context,
+              currentStep: 1,
+              totalSteps: 3,
+            }),
+            'migrationMachine',
+          ),
         })),
       },
     },
