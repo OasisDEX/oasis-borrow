@@ -76,7 +76,7 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     }
   }
 
-  const { address, networkId, claimedBonusWeeks, claimedCoreWeeks, poolAddress, type } =
+  const { address, claimedBonusWeeks, claimedCoreWeeks, poolAddress, type } =
     querySchema.parse(query)
 
   const parsedClaimedBonusWeeks = claimedBonusWeeks?.length
@@ -108,7 +108,6 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     const coreClaimable = await prisma.ajnaRewardsWeeklyClaim.findMany({
       where: {
         user_address: address,
-        chain_id: parseInt(networkId, 10),
         week_number: {
           notIn: parsedClaimedCoreWeeks,
         },
