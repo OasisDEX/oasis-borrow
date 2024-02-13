@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getAjnaRewards } from 'features/ajna/rewards/helpers'
 import type { AjnaRewards } from 'features/ajna/rewards/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useObservable } from 'helpers/observableHook'
@@ -54,7 +55,7 @@ const errorState = {
 export const useAjnaRewards = (
   address?: string,
   poolAddress?: string,
-  type?: 'borrow' | 'earn',
+  type?: OmniProductType.Borrow | OmniProductType.Earn,
 ): AjnaRewardsParamsState => {
   const { walletAddress } = useAccount()
   const { chainId } = useWalletManagement()
