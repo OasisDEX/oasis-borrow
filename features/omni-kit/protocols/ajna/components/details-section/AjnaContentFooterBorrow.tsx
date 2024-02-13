@@ -67,6 +67,7 @@ export function AjnaContentFooterBorrow({
     networkId,
     owner,
     quoteToken,
+    poolAddress: position.pool.poolAddress,
   })
 
   const netValueContentCardCommonData = useOmniCardDataNetValue({

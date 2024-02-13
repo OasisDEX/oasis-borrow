@@ -110,7 +110,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     <PageSEOTags
       title="seo.default.title"
       description="seo.default.description"
-      url={router.pathname || INTERNAL_LINKS.homepage}
+      url={router.asPath || INTERNAL_LINKS.homepage}
     />
   )
 

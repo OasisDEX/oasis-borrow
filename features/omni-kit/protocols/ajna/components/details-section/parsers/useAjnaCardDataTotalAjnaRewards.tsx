@@ -10,15 +10,14 @@ import React from 'react'
 
 interface AjnaCardDataTotalAjnaRewardsParams {
   owner: string
+  poolAddress: string
 }
 
 export function useAjnaCardDataTotalAjnaRewards({
   owner,
+  poolAddress,
 }: AjnaCardDataTotalAjnaRewardsParams): OmniContentCardBase & OmniContentCardExtra {
-  const {
-    isLoading,
-    rewards: { bonus, claimable, total },
-  } = useAjnaRewards(owner)
+  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress)
 
   return {
     title: { key: 'ajna.content-card.total-ajna-rewards.title' },
@@ -27,16 +26,9 @@ export function useAjnaCardDataTotalAjnaRewards({
           extra: <Skeleton width="120px" height="20px" sx={{ mt: 1 }} />,
         }
       : {
-          value: formatCryptoBalance(total),
-          unit: '$AJNA',
-          modal: (
-            <AjnaCardDataTotalAjnaRewardsModal
-              bonus={bonus}
-              claimable={claimable}
-              isLoading={isLoading}
-              total={total}
-            />
-          ),
+          value: formatCryptoBalance(rewards.totalClaimableAndTotalCurrentPeriodEarned),
+          unit: 'AJNA',
+          modal: <AjnaCardDataTotalAjnaRewardsModal rewards={rewards} />,
         }),
   }
 }

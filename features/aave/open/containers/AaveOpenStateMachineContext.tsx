@@ -1,6 +1,7 @@
 import type { AaveLikeTokens } from '@oasisdex/dma-library'
 import { AaveLikePosition } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
+import { getToken } from 'blockchain/tokensMetadata'
 import type { OpenAaveStateMachine } from 'features/aave/open/state'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProxyType } from 'features/aave/types'
@@ -27,11 +28,17 @@ function setupOpenAaveStateContext({
       currentStep: 1,
       totalSteps: 4,
       currentPosition: new AaveLikePosition(
-        { amount: zero, symbol: effectiveStrategy.tokens.debt as AaveLikeTokens, address: '' },
+        {
+          amount: zero,
+          symbol: effectiveStrategy.tokens.debt as AaveLikeTokens,
+          address: '',
+          precision: getToken(effectiveStrategy.tokens.debt).precision,
+        },
         {
           amount: zero,
           symbol: effectiveStrategy.tokens.collateral as AaveLikeTokens,
           address: '',
+          precision: getToken(effectiveStrategy.tokens.collateral).precision,
         },
         zero,
         {

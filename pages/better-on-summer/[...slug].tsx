@@ -29,7 +29,7 @@ export default MarketingTemplatePage
 export async function getServerSideProps({
   locale,
   query: { slug: rawSlug },
-}: GetServerSidePropsContext) {
+}: GetServerSidePropsContext<{ slug: [string] }>) {
   if (!rawSlug) return { redirect: { permanent: false, destination: '/not-found' } }
   const [slug, preview] = Array.isArray(rawSlug) ? rawSlug : [rawSlug]
 

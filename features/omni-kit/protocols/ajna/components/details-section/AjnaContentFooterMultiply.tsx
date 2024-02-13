@@ -84,6 +84,7 @@ export function AjnaContentFooterMultiply({
       quotePrice,
     }),
     debtAmount: position.debtAmount,
+    poolAddress: position.pool.poolAddress,
   })
 
   return (

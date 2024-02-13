@@ -6,6 +6,7 @@ import { AaveStopLossManageDetails } from 'features/aave/components/AaveStopLoss
 import { AutoSellBanner, StopLossBanner } from 'features/aave/components/banners'
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
+import { supportsAaveStopLoss } from 'features/aave/helpers'
 import { useProtectionSidebarDropdown } from 'features/aave/hooks'
 import {
   useManageAaveStateMachineContext,
@@ -18,9 +19,11 @@ import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSell
 import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
 import { isAutoSellEnabled } from 'features/aave/manage/state'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { getLocalAppConfig } from 'helpers/config'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import React, { useEffect, useState } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
@@ -86,10 +89,10 @@ export function ProtectionControlWrapper() {
     state.context.strategyConfig.protocol,
     state.context.strategyConfig.network,
   )
-  const [debtTokenReserveConfigurationData, debtTokenReserveConfigurationDataError] = useObservable(
+  const [reserveConfigurationData, reserveConfigurationDataError] = useObservable(
     aaveLikeReserveConfigurationData$({
-      collateralToken: state.context.strategyConfig.tokens.debt,
-      debtToken: state.context.strategyConfig.tokens.collateral,
+      collateralToken: state.context.strategyConfig.tokens.collateral,
+      debtToken: state.context.strategyConfig.tokens.debt,
     }),
   )
 
@@ -112,6 +115,14 @@ export function ProtectionControlWrapper() {
   const dropdown = useProtectionSidebarDropdown(triggersState, sendTriggerEvent)
 
   const showAutoSell = isAutoSellEnabled(triggersState)
+
+  const isAaveV3 = state.context.strategyConfig.protocol === LendingProtocol.AaveV3
+  const isSpark = state.context.strategyConfig.protocol === LendingProtocol.SparkV3
+  const isAaveV3LambdaEnabled = supportsAaveStopLoss(
+    state.context.strategyConfig.protocol,
+    state.context.strategyConfig.networkId,
+  )
+  const isSparkLambdaEnabled = getLocalAppConfig('features').SparkProtectionLambdaEthereum
 
   if (triggersState.context.protectionCurrentView !== 'stop-loss') {
     return (
@@ -147,14 +158,16 @@ export function ProtectionControlWrapper() {
       </Container>
     )
   }
-  if (triggersState.context.protectionCurrentView === 'stop-loss') {
+  if (
+    triggersState.context.protectionCurrentView === 'stop-loss' &&
+    ((isAaveV3 && isAaveV3LambdaEnabled) ||
+      (isSpark && isSparkLambdaEnabled) ||
+      stopLossLambdaData.stopLossData)
+  ) {
     return (
-      <WithErrorHandler error={[debtTokenReserveConfigurationDataError]}>
-        <WithLoadingIndicator
-          value={[debtTokenReserveConfigurationData]}
-          customLoader={<AppSpinner />}
-        >
-          {([_debtTokenReserveConfigurationData]) => {
+      <WithErrorHandler error={[reserveConfigurationDataError]}>
+        <WithLoadingIndicator value={[reserveConfigurationData]} customLoader={<AppSpinner />}>
+          {([_reserveConfigurationData]) => {
             return (
               <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
                 <Grid variant="vaultContainer">
@@ -164,7 +177,7 @@ export function ProtectionControlWrapper() {
                       stopLossToken={stopLossToken}
                       stopLossLambdaData={stopLossLambdaData}
                       triggers={triggersState.context.currentTriggers.triggers}
-                      debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
+                      reserveConfigurationData={_reserveConfigurationData}
                     />
                     {triggersState.context.showAutoSellBanner && (
                       <AutoSellBanner
@@ -184,7 +197,7 @@ export function ProtectionControlWrapper() {
                       stopLossToken={stopLossToken}
                       setStopLossToken={setStopLossToken}
                       stopLossLambdaData={stopLossLambdaData}
-                      debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
+                      reserveConfigurationData={_reserveConfigurationData}
                       dropdown={dropdown}
                       onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
                     />

@@ -2,6 +2,7 @@ import type { AjnaRewardsWeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
+import { getEpochWeekId } from 'helpers/getEpochWeekId'
 import { zero } from 'helpers/zero'
 import type { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
@@ -14,6 +15,7 @@ const querySchema = z.object({
   networkId: z.string(),
   claimedBonusWeeks: z.string().optional(),
   claimedCoreWeeks: z.string().optional(),
+  poolAddress: z.string().optional(),
 })
 
 const mapStringToNumberArray = (input: string) => input.split(',').map((item) => Number(item))
@@ -72,7 +74,8 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     }
   }
 
-  const { address, networkId, claimedBonusWeeks, claimedCoreWeeks } = querySchema.parse(query)
+  const { address, networkId, claimedBonusWeeks, claimedCoreWeeks, poolAddress } =
+    querySchema.parse(query)
 
   const parsedClaimedBonusWeeks = claimedBonusWeeks?.length
     ? mapStringToNumberArray(claimedBonusWeeks)
@@ -111,14 +114,65 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
       },
     })
 
-    const coreNotClaimableAmount = mapToAmount(
+    const coreNotClaimable = await prisma.ajnaRewardsDailyClaim.findMany({
+      where: {
+        ...commonQuery,
+        week_number: {
+          notIn: parsedClaimedCoreWeeks,
+        },
+        ...(poolAddress && {
+          pool_address: poolAddress,
+        }),
+        source: AjnaRewardsSource.core,
+      },
+    })
+
+    const lastDayRewards = (
+      coreNotClaimable[coreNotClaimable.length - 1]
+        ? new BigNumber(coreNotClaimable[coreNotClaimable.length - 1].amount).shiftedBy(
+            NEGATIVE_WAD_PRECISION,
+          )
+        : zero
+    ).toString()
+
+    const coreNotClaimableAmount = mapToAmount(coreNotClaimable)
+
+    const currentWeekId = getEpochWeekId()
+
+    const currentPeriodPositionEarnedAmount = mapToAmount(
       await prisma.ajnaRewardsDailyClaim.findMany({
         where: {
           ...commonQuery,
-          week_number: {
-            notIn: parsedClaimedCoreWeeks,
+          week_number: currentWeekId,
+          ...(poolAddress && {
+            pool_address: poolAddress,
+          }),
+          source: {
+            in: [AjnaRewardsSource.core, AjnaRewardsSource.bonus],
           },
-          source: AjnaRewardsSource.core,
+        },
+      }),
+    )
+
+    const currentPeriodTotalEarnedAmount = mapToAmount(
+      await prisma.ajnaRewardsDailyClaim.findMany({
+        where: {
+          ...commonQuery,
+          week_number: currentWeekId,
+          source: {
+            in: [AjnaRewardsSource.core, AjnaRewardsSource.bonus],
+          },
+        },
+      }),
+    )
+
+    const totalEarnedToDateAmount = mapToAmount(
+      await prisma.ajnaRewardsDailyClaim.findMany({
+        where: {
+          ...commonQuery,
+          source: {
+            in: [AjnaRewardsSource.core, AjnaRewardsSource.bonus],
+          },
         },
       }),
     )
@@ -130,6 +184,9 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
           week_number: {
             notIn: parsedClaimedBonusWeeks,
           },
+          ...(poolAddress && {
+            pool_address: poolAddress,
+          }),
           source: AjnaRewardsSource.bonus,
         },
       }),
@@ -141,12 +198,22 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     const claimableBonusToday = mapToAmount(bonusClaimable)
     const payload = mapToPayload(claimableTodayData)
 
+    const totalClaimableAndTotalCurrentPeriodEarnedAmount = new BigNumber(claimableToday)
+      .plus(claimableBonusToday)
+      .plus(currentPeriodTotalEarnedAmount)
+      .toString()
+
     return {
       bonusAmount: bonusNotClaimableAmount,
       coreAmount: coreNotClaimableAmount,
       claimableToday,
       claimableBonusToday,
+      lastDayRewards,
       payload,
+      currentPeriodPositionEarned: currentPeriodPositionEarnedAmount,
+      currentPeriodTotalEarned: currentPeriodTotalEarnedAmount,
+      totalClaimableAndTotalCurrentPeriodEarned: totalClaimableAndTotalCurrentPeriodEarnedAmount,
+      totalEarnedToDate: totalEarnedToDateAmount,
     }
   } catch (error) {
     return {

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
+import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
@@ -186,9 +187,11 @@ export function ContentCardLtv({
     modal: <ContentCardLtvModal {...contentCardModalSettings} />,
   }
 
-  if (afterLoanToValue) {
+  if (afterLoanToValue && maxLoanToValue) {
     contentCardSettings.change = {
-      variant: afterLoanToValue.lt(loanToValue) ? 'negative' : 'positive',
+      variant: maxLoanToValue.minus(afterLoanToValue).gt(LTVWarningThreshold)
+        ? 'positive'
+        : 'negative',
       value: `${formatted.afterLoanToValue} ${t('after')}`,
     }
   }

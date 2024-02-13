@@ -2762,6 +2762,15 @@
         "modal-value": "Profit & Loss",
         "modal-footnote-1": "P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction. Gas fees are not taken into account for the PnL."
+      },
+      "rewards": {
+        "title": "Claim rewards",
+        "modal-value-1": "You can claim",
+        "modal-value-2": "tokens now",
+        "modal-value-3": "Total earned in the current period",
+        "modal-value-4": "From this position in current period",
+        "modal-value-5": "Total rewards earned to date",
+        "modal-link": "See all token rewards"
       }
     },
     "form": {
@@ -2829,7 +2838,7 @@
       "borrow-rate": {
         "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
         "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
-        "tooltip-claimable-now": "claimable now",
+        "tooltip-claimable-now": "Claimable now",
         "tooltip-claimable-next-period": "claimable next period",
         "tooltip-earned": "bonus tokens earned",
         "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
@@ -2855,15 +2864,17 @@
         "modal-footnote-description-max": "Above this lending price you will not earn any yield. Select a lending price below this level to earn."
       },
       "projected-annual-rewards": {
-        "title": "Projected Annual Rewards",
-        "modal-description": "At the current weekly distribution and AJNA token price the implied annual rewards rate is."
+        "title": "Annual Reward Rate",
+        "modal-description": "This is the projected annual reward rate based on your earned rewards from the previous day and the current Ajna token price. The rewards and rate cannot be guaranteed and is likely to change as market conditions evolve. The current projected rate is:"
       },
       "total-ajna-rewards": {
-        "title": "Total AJNA Rewards",
+        "title": "Claim rewards",
         "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards. Claimable weekly after tokens are released.",
-        "modal-value-1": "$AJNA claimable now",
-        "modal-value-2": "$AJNA earned, claimable next period",
-        "modal-value-3": "$AJNA bonus tokens earned"
+        "modal-value-1": "You can claim",
+        "modal-value-2": "tokens now",
+        "modal-value-3": "Total earned in the current period",
+        "modal-value-4": "From this position in current period",
+        "modal-value-5": "Total rewards earned to date"
       },
       "buying-power": {
         "tooltip": "There is currently no debt drawed for this pool. Buying power can be calculated after any position draws debt for the first time."

@@ -6,12 +6,56 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface SEOTagsType {
-  title: string
-  description: string
-  url?: string
-  ogImage?: string
-  twitterImage?: string
-  titleParams?: Record<string, string>
+  readonly title: string
+  readonly description: string
+  readonly url?: string
+  readonly ogImage?: string
+  readonly twitterImage?: string
+  readonly titleParams?: Record<string, string>
+}
+
+const getOgImages = (url: string, ogImageParsed: string, twitterImageParsed: string) => {
+  if (url.includes('better-on-summer')) {
+    // if the url changes this should be updated
+    // im assuming the url is /better-on-summer/xxxx
+    const parsedPageName = url.replace('better-on-summer', '').split('/').filter(Boolean)[0]
+    return {
+      ogImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/${parsedPageName}.png?${getRandomString()}`,
+      ),
+      twitterImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/${parsedPageName}.png?${getRandomString()}`,
+      ),
+    }
+  }
+  const staticOgImageParseds = {
+    [INTERNAL_LINKS.borrow]: {
+      ogImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/og_borrow.jpg?${getRandomString()}`,
+      ),
+      twitterImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/twitter_preview_borrow.jpg?${getRandomString()}`,
+      ),
+    },
+    [INTERNAL_LINKS.multiply]: {
+      ogImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/og_multiply.jpg?${getRandomString()}`,
+      ),
+      twitterImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/twitter_preview_multiply.jpg?${getRandomString()}`,
+      ),
+    },
+    [INTERNAL_LINKS.earn]: {
+      ogImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/og_earn.jpg?${getRandomString()}`,
+      ),
+      twitterImageParsed: staticFilesRuntimeUrl(
+        `/static/img/og_images/twitter_preview_earn.jpg?${getRandomString()}`,
+      ),
+    },
+  }[url]
+
+  return staticOgImageParseds ?? { ogImageParsed, twitterImageParsed }
 }
 
 export function PageSEONoFollow() {
@@ -32,24 +76,7 @@ export function PageSEOTags({
 }: SEOTagsType) {
   const { t } = useTranslation()
 
-  const OGImages = {
-    [INTERNAL_LINKS.borrow]: {
-      ogImage: 'og_borrow.jpg',
-      twitterImage: 'twitter_preview_borrow.jpg',
-    },
-    [INTERNAL_LINKS.multiply]: {
-      ogImage: 'og_multiply.jpg',
-      twitterImage: 'twitter_preview_multiply.jpg',
-    },
-    [INTERNAL_LINKS.earn]: {
-      ogImage: 'og_earn.jpg',
-      twitterImage: 'twitter_preview_earn.jpg',
-    },
-  }[url] || {
-    ogImage,
-    twitterImage,
-  }
-
+  const { ogImageParsed, twitterImageParsed } = getOgImages(url, ogImage, twitterImage)
   // TODO: Add Icon to the title
   const tabTitle = `${titleParams ? t(title, titleParams) : t(title)}`
 
@@ -76,24 +103,9 @@ export function PageSEOTags({
       <meta property="og:url" content={`${INTERNAL_LINKS.appUrl}${url}`} />
       <link rel="canonical" href={`${INTERNAL_LINKS.appUrl}${url}`} />
 
-      <meta
-        property="og:image"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
-        )}
-      />
-      <meta
-        property="og:image:secure_url"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
-        )}
-      />
-      <meta
-        name="twitter:image"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.twitterImage}?${getRandomString()}`,
-        )}
-      />
+      <meta property="og:image" key="og:image" content={ogImageParsed} />
+      <meta property="og:image:secure_url" key="og:image:secure_url" content={ogImageParsed} />
+      <meta name="twitter:image" key="twitter:image" content={twitterImageParsed} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:creator" content="@Summerfi_" />
 
