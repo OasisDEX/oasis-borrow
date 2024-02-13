@@ -14,13 +14,6 @@ interface SEOTagsType {
   readonly titleParams?: Record<string, string>
 }
 
-export function PageSEONoFollow() {
-  return (
-    <Head>
-      <meta name="robots" content="noindex, nofollow" />
-    </Head>
-  )
-}
 const getOgImages = (url: string, ogImageParsed: string, twitterImageParsed: string) => {
   if (url.includes('better-on-summer')) {
     // if the url changes this should be updated
@@ -63,6 +56,14 @@ const getOgImages = (url: string, ogImageParsed: string, twitterImageParsed: str
   }[url]
 
   return staticOgImageParseds ?? { ogImageParsed, twitterImageParsed }
+}
+
+export function PageSEONoFollow() {
+  return (
+    <Head>
+      <meta name="robots" content="noindex, nofollow" />
+    </Head>
+  )
 }
 
 export function PageSEOTags({
