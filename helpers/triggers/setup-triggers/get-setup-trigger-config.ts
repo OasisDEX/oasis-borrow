@@ -25,7 +25,7 @@ export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
   return {
     url: `/api/triggers/${params.networkId}/${
       {
-        [LendingProtocol.AaveV3]: 'aavev3',
+        [LendingProtocol.AaveV3]: 'aave3',
         [LendingProtocol.SparkV3]: 'spark',
       }[params.protocol]
     }/${params.path}`,
