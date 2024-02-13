@@ -26,6 +26,11 @@ const defaultRewards: AjnaRewards = {
   total: zero,
   totalUsd: zero,
   lastDayRewardsUsd: zero,
+  ajnaPrice: zero,
+  currentPeriodPositionEarned: zero,
+  currentPeriodTotalEarned: zero,
+  totalClaimableAndTotalCurrentPeriodEarned: zero,
+  totalEarnedToDate: zero,
   payload: {
     bonus: {
       weeks: [],
@@ -109,6 +114,16 @@ export const useAjnaRewards = (address?: string, poolAddress?: string): AjnaRewa
             const claimableBonus = new BigNumber(parseApiResponse.claimableBonusToday)
             const lastDayRewards = new BigNumber(parseApiResponse.lastDayRewards)
             const total = bonus.plus(regular)
+            const currentPeriodPositionEarned = new BigNumber(
+              parseApiResponse.currentPeriodPositionEarned,
+            )
+            const currentPeriodTotalEarned = new BigNumber(
+              parseApiResponse.currentPeriodTotalEarned,
+            )
+            const totalClaimableAndTotalCurrentPeriodEarned = new BigNumber(
+              parseApiResponse.totalClaimableAndTotalCurrentPeriodEarned,
+            )
+            const totalEarnedToDate = new BigNumber(parseApiResponse.totalEarnedToDate)
 
             const payload = parseApiResponse.payload
 
@@ -122,7 +137,12 @@ export const useAjnaRewards = (address?: string, poolAddress?: string): AjnaRewa
                 claimable,
                 payload,
                 claimableBonus,
+                currentPeriodPositionEarned,
+                currentPeriodTotalEarned,
+                totalClaimableAndTotalCurrentPeriodEarned,
+                totalEarnedToDate,
                 lastDayRewardsUsd: lastDayRewards.times(tokenPrices.AJNA),
+                ajnaPrice: tokenPrices.AJNA,
               },
               isError: false,
               isLoading: false,

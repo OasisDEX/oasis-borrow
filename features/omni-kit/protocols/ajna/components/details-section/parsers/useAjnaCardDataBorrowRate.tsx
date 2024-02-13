@@ -29,10 +29,7 @@ export function useAjnaCardDataBorrowRate({
   quoteToken,
   poolAddress,
 }: AjnaCardDataBorrowRateParams): OmniContentCardExtra {
-  const {
-    isLoading,
-    rewards: { claimable, total },
-  } = useAjnaRewards(owner, poolAddress)
+  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress)
 
   return {
     modal: (
@@ -45,8 +42,9 @@ export function useAjnaCardDataBorrowRate({
     ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
       icon: sparks,
       tooltips: {
-        icon: <AjnaCardDataRewardsTooltip {...{ isLoading, claimable, total, isOwner, owner }} />,
+        icon: <AjnaCardDataRewardsTooltip {...{ isLoading, rewards, isOwner, owner }} />,
       },
+      customTooltipWidth: ['300px', '400px'],
     }),
   }
 }
