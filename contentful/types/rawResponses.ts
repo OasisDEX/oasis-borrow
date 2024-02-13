@@ -35,11 +35,6 @@ export interface LandingPageRawResponse {
       items: {
         seoTitle: string
         seoDescription: string
-        seoOgImage: {
-          url: string
-          width: number
-          height: number
-        }
         hero: {
           protocolCollection: {
             items: {
