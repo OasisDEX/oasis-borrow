@@ -5,6 +5,7 @@ import type {
   OmniContentCardExtra,
 } from 'features/omni-kit/components/details-section'
 import { AjnaCardDataTotalAjnaRewardsModal } from 'features/omni-kit/protocols/ajna/components/details-section'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import React from 'react'
 
@@ -17,7 +18,7 @@ export function useAjnaCardDataTotalAjnaRewards({
   owner,
   poolAddress,
 }: AjnaCardDataTotalAjnaRewardsParams): OmniContentCardBase & OmniContentCardExtra {
-  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress)
+  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress, OmniProductType.Earn)
 
   return {
     title: { key: 'ajna.content-card.total-ajna-rewards.title' },

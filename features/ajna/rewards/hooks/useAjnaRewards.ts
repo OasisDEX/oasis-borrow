@@ -51,7 +51,11 @@ const errorState = {
   isLoading: false,
 }
 
-export const useAjnaRewards = (address?: string, poolAddress?: string): AjnaRewardsParamsState => {
+export const useAjnaRewards = (
+  address?: string,
+  poolAddress?: string,
+  type?: 'borrow' | 'earn',
+): AjnaRewardsParamsState => {
   const { walletAddress } = useAccount()
   const { chainId } = useWalletManagement()
   const resolvedAddress = useMemo(() => address || walletAddress, [address, walletAddress])
@@ -99,8 +103,10 @@ export const useAjnaRewards = (address?: string, poolAddress?: string): AjnaRewa
 
           const poolAddressQuery = poolAddress ? `&poolAddress=${poolAddress.toLowerCase()}` : ''
 
+          const typeQuery = type ? `&type=${type.toLowerCase()}` : ''
+
           const apiResponse = await fetch(
-            `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}${bonusWeeksQuery}${regularWeeksQuery}${poolAddressQuery}`,
+            `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}${bonusWeeksQuery}${regularWeeksQuery}${poolAddressQuery}${typeQuery}`,
           )
 
           const parseApiResponse = (await apiResponse.json()) as Awaited<

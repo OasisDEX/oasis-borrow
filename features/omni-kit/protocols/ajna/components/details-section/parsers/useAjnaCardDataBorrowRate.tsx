@@ -5,6 +5,7 @@ import { AjnaCardDataBorrowRateModal } from 'features/omni-kit/protocols/ajna/co
 import { AjnaCardDataRewardsTooltip } from 'features/omni-kit/protocols/ajna/components/details-section/modals/AjnaCardDataRewardsTooltip'
 import { isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 import { sparks } from 'theme/icons'
 
@@ -29,7 +30,7 @@ export function useAjnaCardDataBorrowRate({
   quoteToken,
   poolAddress,
 }: AjnaCardDataBorrowRateParams): OmniContentCardExtra {
-  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress)
+  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress, OmniProductType.Borrow)
 
   return {
     modal: (
