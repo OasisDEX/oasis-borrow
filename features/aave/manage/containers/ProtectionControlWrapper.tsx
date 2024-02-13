@@ -160,9 +160,7 @@ export function ProtectionControlWrapper() {
   }
   if (
     triggersState.context.protectionCurrentView === 'stop-loss' &&
-    ((isAaveV3 && isAaveV3LambdaEnabled) ||
-      (isSpark && isSparkLambdaEnabled) ||
-      stopLossLambdaData.stopLossData)
+    ((isAaveV3 && isAaveV3LambdaEnabled) || (isSpark && isSparkLambdaEnabled))
   ) {
     return (
       <WithErrorHandler error={[reserveConfigurationDataError]}>
