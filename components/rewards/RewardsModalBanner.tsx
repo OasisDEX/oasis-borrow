@@ -8,6 +8,7 @@ interface RewardsModalBannerProps {
   value: string
   unit: string
   subValue: string
+  gradient: [string, string]
   icon?: IconProps['icon']
 }
 
@@ -16,6 +17,7 @@ export const RewardsModalBanner: FC<RewardsModalBannerProps> = ({
   subValue,
   icon,
   unit,
+  gradient,
 }) => {
   return (
     <Flex
@@ -23,7 +25,7 @@ export const RewardsModalBanner: FC<RewardsModalBannerProps> = ({
         alignItems: 'center',
         borderRadius: '16px',
         border: '1px solid #EAEAEA',
-        background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+        background: `linear-gradient(${gradient[0]} 0.35%, ${gradient[1]} 99.18%)`,
         px: 3,
         py: 3,
       }}

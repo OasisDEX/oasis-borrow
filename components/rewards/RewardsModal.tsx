@@ -13,6 +13,7 @@ import { Button, Card, Flex, Link, Text } from 'theme-ui'
 
 interface RewardsModalProps {
   gradient: [string, string]
+  modalBannerGradient: [string, string]
   unit: string
   tokenIcon: IconProps['icon']
   rewards: {
@@ -32,6 +33,7 @@ interface RewardsModalProps {
 export const RewardsModal: FC<RewardsModalProps> = ({
   unit,
   gradient,
+  modalBannerGradient,
   tokenIcon,
   rewards: {
     totalClaimableAndTotalCurrentPeriodEarned,
@@ -82,6 +84,7 @@ export const RewardsModal: FC<RewardsModalProps> = ({
         subValue={formatted.totalClaimableAndTotalCurrentPeriodEarnedUsd}
         unit={unit}
         icon={tokenIcon}
+        gradient={modalBannerGradient}
       />
       <Card variant="rewardsDetails">
         <Flex

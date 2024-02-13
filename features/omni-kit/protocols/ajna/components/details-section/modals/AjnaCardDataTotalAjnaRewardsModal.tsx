@@ -21,6 +21,7 @@ export function AjnaCardDataTotalAjnaRewardsModal({
   return (
     <RewardsModal
       gradient={['#f154db', '#974eea']}
+      modalBannerGradient={['#F0F3FD', '#FCF0FD']}
       unit="AJNA"
       tokenIcon={ajna_circle_color}
       link={INTERNAL_LINKS.ajnaRewards}
