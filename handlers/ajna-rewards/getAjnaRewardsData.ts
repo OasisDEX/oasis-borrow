@@ -147,7 +147,9 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
           ...(poolAddress && {
             pool_address: poolAddress,
           }),
-          source: AjnaRewardsSource.core,
+          source: {
+            in: [AjnaRewardsSource.core, AjnaRewardsSource.bonus],
+          },
         },
       }),
     )
@@ -157,7 +159,9 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
         where: {
           ...commonQuery,
           week_number: currentWeekId,
-          source: AjnaRewardsSource.core,
+          source: {
+            in: [AjnaRewardsSource.core, AjnaRewardsSource.bonus],
+          },
         },
       }),
     )
