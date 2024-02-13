@@ -6,7 +6,7 @@ import { Card, Grid, Heading, Text, ThemeUIProvider } from 'theme-ui'
 export interface DetailsSectionContentSimpleModalProps {
   description?: ReactNode
   theme?: Theme
-  title: string
+  title: ReactNode
   value?: ReactNode
 }
 
