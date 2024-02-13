@@ -2836,8 +2836,8 @@
       },
       "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount.",
       "borrow-rate": {
-        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
-        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards.",
+        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards.",
         "tooltip-claimable-now": "Claimable now",
         "tooltip-claimable-next-period": "claimable next period",
         "tooltip-earned": "bonus tokens earned",
@@ -2869,7 +2869,7 @@
       },
       "total-ajna-rewards": {
         "title": "Claim rewards",
-        "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards. Claimable weekly after tokens are released.",
+        "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards.",
         "modal-value-1": "You can claim",
         "modal-value-2": "tokens now",
         "modal-value-3": "Total earned in the current period",

@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getAjnaRewards } from 'features/ajna/rewards/helpers'
 import type { AjnaRewards } from 'features/ajna/rewards/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useObservable } from 'helpers/observableHook'
@@ -51,7 +52,11 @@ const errorState = {
   isLoading: false,
 }
 
-export const useAjnaRewards = (address?: string, poolAddress?: string): AjnaRewardsParamsState => {
+export const useAjnaRewards = (
+  address?: string,
+  poolAddress?: string,
+  type?: OmniProductType.Borrow | OmniProductType.Earn,
+): AjnaRewardsParamsState => {
   const { walletAddress } = useAccount()
   const { chainId } = useWalletManagement()
   const resolvedAddress = useMemo(() => address || walletAddress, [address, walletAddress])
@@ -99,8 +104,10 @@ export const useAjnaRewards = (address?: string, poolAddress?: string): AjnaRewa
 
           const poolAddressQuery = poolAddress ? `&poolAddress=${poolAddress.toLowerCase()}` : ''
 
+          const typeQuery = type ? `&type=${type.toLowerCase()}` : ''
+
           const apiResponse = await fetch(
-            `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}${bonusWeeksQuery}${regularWeeksQuery}${poolAddressQuery}`,
+            `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}${bonusWeeksQuery}${regularWeeksQuery}${poolAddressQuery}${typeQuery}`,
           )
 
           const parseApiResponse = (await apiResponse.json()) as Awaited<

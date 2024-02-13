@@ -6,6 +6,7 @@ import type {
   OmniContentCardBase,
   OmniContentCardExtra,
 } from 'features/omni-kit/components/details-section'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -23,7 +24,7 @@ export function useAjnaCardDataProjectedAnnualRewards({
   netValueUsd,
 }: AjnaCardDataProjectedAnnualRewardsParams): OmniContentCardBase & OmniContentCardExtra {
   const { t } = useTranslation()
-  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress)
+  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress, OmniProductType.Earn)
 
   const annualRewards = rewards.lastDayRewardsUsd.div(netValueUsd).times(365)
   const formattedValue = formatDecimalAsPercent(annualRewards)
