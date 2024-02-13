@@ -224,7 +224,6 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     const payload = mapToPayload(claimableTodayData)
 
     const totalClaimableAndTotalCurrentPeriodEarnedAmount = new BigNumber(claimableToday)
-      .plus(claimableBonusToday)
       .plus(currentPeriodTotalEarnedAmount)
       .toString()
 
