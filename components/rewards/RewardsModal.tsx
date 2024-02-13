@@ -141,23 +141,26 @@ export const RewardsModal: FC<RewardsModalProps> = ({
           />
         )}
       </Card>
-      <Button
-        variant="primary"
-        sx={{ cursor: 'pointer' }}
-        onClick={() => claimClick && claimClick()}
-      >
-        {btnAsLink ? (
-          <Link
-            href={link}
-            sx={{ textAlign: 'center', fontSize: 'inherit', color: 'inherit' }}
-            target="_blank"
-          >
+
+      {btnAsLink ? (
+        <Link
+          href={link}
+          sx={{ textAlign: 'center', fontSize: 'inherit', color: 'inherit' }}
+          target="_blank"
+        >
+          <Button variant="primary" sx={{ cursor: 'pointer', width: '100%' }}>
             {t('claim')}
-          </Link>
-        ) : (
-          t('claim')
-        )}
-      </Button>
+          </Button>
+        </Link>
+      ) : (
+        <Button
+          variant="primary"
+          sx={{ cursor: 'pointer' }}
+          onClick={() => claimClick && claimClick()}
+        >
+          {t('claim')}
+        </Button>
+      )}
       <Link href={link} sx={{ textAlign: 'center' }} target="_blank">
         {t(linkKey)}
       </Link>
