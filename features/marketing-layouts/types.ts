@@ -148,8 +148,5 @@ export interface MarketingTemplateFreeform {
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
   seoDescription: string
-  seoOgImage: {
-    url: string
-  } | null
   seoTitle: string
 }

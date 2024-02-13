@@ -12,18 +12,13 @@ type MarketingTemplatePageProps = MarketingTemplateFreeform
 function MarketingTemplatePage(props: MarketingTemplatePageProps) {
   const {
     seoDescription,
-    seoOgImage,
     seoTitle,
     palette: { background },
   } = props
 
   return (
     <MarketingLayout topBackground="none" backgroundGradient={background}>
-      <PageSEOTags
-        title={seoTitle}
-        description={seoDescription}
-        ogImage={seoOgImage ? seoOgImage.url : undefined}
-      />
+      <PageSEOTags title={seoTitle} description={seoDescription} />
       <MarketingTemplateView {...props} />
     </MarketingLayout>
   )
@@ -34,7 +29,7 @@ export default MarketingTemplatePage
 export async function getServerSideProps({
   locale,
   query: { slug: rawSlug },
-}: GetServerSidePropsContext) {
+}: GetServerSidePropsContext<{ slug: [string] }>) {
   if (!rawSlug) return { redirect: { permanent: false, destination: '/not-found' } }
   const [slug, preview] = Array.isArray(rawSlug) ? rawSlug : [rawSlug]
 
