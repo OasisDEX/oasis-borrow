@@ -169,6 +169,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         totalFee
         txHash
         withdrawnUSD
+        interestRate
       }
     }
   `,

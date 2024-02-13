@@ -32,18 +32,15 @@ export const ajnaActionDepositGenerateBorrow = ({
   commonPayload,
   dependencies,
   position,
-  simulation,
+  lastEventInterestRate,
 }: {
   state: Pick<OmniBorrowFormState, 'depositAmount' | 'generateAmount'>
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
-  simulation?: AjnaGenericPosition
+  lastEventInterestRate?: BigNumber
 }) => {
   const { depositAmount, generateAmount } = state
-
-  const borrowishPosition = position as AjnaPosition
-  const borrowishSimulation = simulation as AjnaPosition | undefined
 
   return strategies.ajna.borrow.depositBorrow(
     {
@@ -51,9 +48,7 @@ export const ajnaActionDepositGenerateBorrow = ({
       collateralAmount: depositAmount || zero,
       position: position as AjnaPosition,
       quoteAmount: generateAmount || zero,
-      stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
-        borrowishPosition.liquidationPrice,
-      ),
+      stamploanEnabled: !!lastEventInterestRate?.gt(position.pool.interestRate),
     },
     dependencies,
   )
@@ -64,20 +59,17 @@ export const ajnaActionPaybackWithdrawBorrow = ({
   commonPayload,
   dependencies,
   position,
-  simulation,
   quoteBalance,
+  lastEventInterestRate,
 }: {
   state: Pick<OmniBorrowFormState, 'withdrawAmount' | 'paybackAmount'>
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
-  simulation?: AjnaGenericPosition
   quoteBalance: BigNumber
+  lastEventInterestRate?: BigNumber
 }) => {
   const { withdrawAmount, paybackAmount } = state
-
-  const borrowishPosition = position as AjnaPosition
-  const borrowishSimulation = simulation as AjnaPosition | undefined
 
   const resolvedPaybackAmount = resolvePaybackAmount({ paybackAmount, quoteBalance })
 
@@ -87,9 +79,7 @@ export const ajnaActionPaybackWithdrawBorrow = ({
       collateralAmount: withdrawAmount || zero,
       position: position as AjnaPosition,
       quoteAmount: resolvedPaybackAmount,
-      stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
-        borrowishPosition.liquidationPrice,
-      ),
+      stamploanEnabled: !!lastEventInterestRate?.gt(position.pool.interestRate),
     },
     dependencies,
   )

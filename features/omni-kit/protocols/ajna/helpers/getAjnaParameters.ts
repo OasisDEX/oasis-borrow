@@ -59,6 +59,7 @@ interface AjnaTxHandlerInput {
   simulation?: AjnaGenericPosition
   slippage: BigNumber
   state: OmniFormState
+  lastEventInterestRate?: BigNumber
   walletAddress?: string
 }
 
@@ -77,10 +78,10 @@ export async function getAjnaParameters({
   quoteToken,
   quoteBalance,
   rpcProvider,
-  simulation,
   slippage,
   state,
   walletAddress,
+  lastEventInterestRate,
 }: AjnaTxHandlerInput): Promise<SummerStrategy<OmniGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
 
@@ -122,7 +123,7 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
-        simulation,
+        lastEventInterestRate,
       })
     }
     case OmniBorrowFormAction.PaybackBorrow:
@@ -153,8 +154,8 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
-        simulation,
         quoteBalance,
+        lastEventInterestRate,
       })
     }
 
@@ -219,7 +220,7 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
-        simulation,
+        lastEventInterestRate,
       })
     }
     case OmniMultiplyFormAction.PaybackMultiply:
@@ -266,8 +267,8 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
-        simulation,
         quoteBalance,
+        lastEventInterestRate,
       })
     }
     case OmniMultiplyFormAction.DepositQuoteMultiply: {
