@@ -3279,5 +3279,15 @@
         }
       }
     }
+  },
+  "og-tags": {
+    "morpho-blue": {
+      "title": "Morpho Blue is Better on Summer",
+      "description": "Lower costs, higher liquidation LTVs, and less gas costs than all other leading borrow/lend protocols. On Summer get more exposure to your collateral in one click."
+    },
+    "aave": {
+      "title": "AAVE is Better on Summer",
+      "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
+    }
   }
 }
