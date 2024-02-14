@@ -1,4 +1,5 @@
 import type { NetworkIds } from 'blockchain/networks'
+import { networkSetById } from 'blockchain/networks'
 import type { PositionId } from 'features/aave/types'
 import { getPortfolioMigrationsResponse } from 'features/migrations/migrationsClient'
 import { LendingProtocolByProtocolId } from 'features/migrations/types'
@@ -22,7 +23,9 @@ export async function getAssetsForMigration(
   if (address === undefined) {
     return undefined
   }
-  const migrations = await getPortfolioMigrationsResponse(address)
+  const network = networkSetById[args.network]
+  const customRpc = network.isCustomFork ? network.rpcUrl : undefined
+  const migrations = await getPortfolioMigrationsResponse(address, customRpc)
   if (migrations === undefined) {
     return undefined
   }

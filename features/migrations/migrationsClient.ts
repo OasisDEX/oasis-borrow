@@ -11,8 +11,10 @@ import { useCallback, useMemo } from 'react'
 
 export const getPortfolioMigrationsResponse = async (
   address: string,
+  customRpcUrl?: string,
 ): Promise<PortfolioMigrationsResponse | undefined> => {
-  const callUrl = `/api/migrations?address=${address}`
+  const rpcQuery = customRpcUrl ? `&customRpcUrl=${encodeURI(customRpcUrl)}` : ''
+  const callUrl = `/api/migrations?address=${address}${rpcQuery}`
   return await fetch(callUrl, {
     headers: [],
   })
