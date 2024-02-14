@@ -15,33 +15,45 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ethers } from 'ethers'
-import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
+import { ConnectedSidebarSection } from 'features/aave/components'
 import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
-import { StopLossTxCompleteBanner } from 'features/aave/open/sidebars/components/StopLossTxCompleteBanner'
-import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
-import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
-import { AutomationFeatures } from 'features/automation/common/types'
+import {
+  sidebarAutomationFeatureCopyMap,
+  sidebarAutomationLinkMap,
+} from 'features/automation/common/consts'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
 import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
-import { Flex, Grid, Text } from 'theme-ui'
+import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 
 const aaveLambdaStopLossConfig = {
   translationRatioParam: 'vault-changes.loan-to-value',
   sliderStep: 1,
   sliderDirection: 'ltr' as const,
 }
+
+type StopLossSidebarStates =
+  | 'prepare'
+  | 'preparedAdd'
+  | 'preparedUpdate'
+  | 'preparedRemove'
+  | 'addInProgress'
+  | 'updateInProgress'
+  | 'removeInProgress'
+  | 'finished'
 
 export function AaveManagePositionStopLossLambdaSidebar({
   state,
@@ -61,10 +73,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
   onTxFinished: () => void
 }) {
   const { t } = useTranslation()
-  const [isRemovingTrigger, setIsRemovingTrigger] = useState(false)
-  const [transactionStep, setTransactionStep] = useState<
-    'prepare' | 'inProgress' | 'error' | 'finished' | 'removeTrigger' | 'removeTriggerInProgress'
-  >('prepare')
+  const [transactionStep, setTransactionStep] = useState<StopLossSidebarStates>('prepare')
   const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const { strategyConfig } = state.context
   const {
@@ -77,15 +86,13 @@ export function AaveManagePositionStopLossLambdaSidebar({
     ...stopLossParamsRest
   } = getAaveLikeStopLossParams.manage({ state })
   const { tokenPriceUSD$ } = useProductContext()
-  const action = useMemo(
-    () =>
-      isRemovingTrigger
-        ? TriggerAction.Remove
-        : isStopLossEnabled
-        ? TriggerAction.Update
-        : TriggerAction.Add,
-    [isRemovingTrigger, isStopLossEnabled],
-  )
+  console.log('transactionStep', transactionStep)
+  const action = useMemo(() => {
+    if (transactionStep === 'preparedRemove') {
+      return TriggerAction.Remove
+    }
+    return isStopLossEnabled ? TriggerAction.Update : TriggerAction.Add
+  }, [transactionStep, isStopLossEnabled])
   const _tokenPriceUSD$ = useMemo(
     () =>
       tokenPriceUSD$([
@@ -103,13 +110,25 @@ export function AaveManagePositionStopLossLambdaSidebar({
     action,
   })
 
+  const preparedState = {
+    [TriggerAction.Add]: 'preparedAdd',
+    [TriggerAction.Update]: 'preparedUpdate',
+    [TriggerAction.Remove]: 'preparedRemove',
+  }[action] as StopLossSidebarStates
+  const inProgressState = {
+    [TriggerAction.Add]: 'addInProgress',
+    [TriggerAction.Update]: 'updateInProgress',
+    [TriggerAction.Remove]: 'removeInProgress',
+  }[action] as StopLossSidebarStates
+
   const stopLossConfigChanged = useMemo(() => {
-    return stopLossLambdaData.stopLossLevel
-      ? stopLossLambdaData.stopLossLevel &&
-          (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
-            stopLossLambdaData.stopLossToken !== stopLossToken)
-      : true
-  }, [stopLossLambdaData, stopLossLevel, stopLossToken])
+    if (action === TriggerAction.Remove) return true
+    const stopLossDifferentThanLambda =
+      stopLossLambdaData.stopLossLevel &&
+      (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
+        stopLossLambdaData.stopLossToken !== stopLossToken)
+    return stopLossLambdaData.stopLossLevel ? stopLossDifferentThanLambda : true
+  }, [stopLossLambdaData, stopLossLevel, stopLossToken, action])
 
   useEffect(() => {
     if (stopLossLambdaData.stopLossLevel) {
@@ -126,6 +145,11 @@ export function AaveManagePositionStopLossLambdaSidebar({
       })
     }
   }, [])
+
+  const stopLossTranslationParams = {
+    feature: t(sidebarAutomationFeatureCopyMap['stopLoss']),
+    featureName: t(sidebarAutomationFeatureCopyMap['stopLoss']), // the same param, two different names
+  }
 
   const executeCall = async () => {
     const { stopLossTxDataLambda, strategyConfig, web3Context } = state.context
@@ -235,6 +259,30 @@ export function AaveManagePositionStopLossLambdaSidebar({
     </Grid>
   )
 
+  const sidebarPreparedContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
+    <Grid gap={3}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('automation.confirmation-text', stopLossTranslationParams)}
+      </Text>
+      <OpenAaveStopLossInformationLambda
+        stopLossParams={{
+          stopLossLevel,
+          dynamicStopLossPrice,
+          sliderMin,
+          sliderMax,
+          sliderPercentageFill,
+          liquidationPrice,
+          ...stopLossParamsRest,
+        }}
+        tokensPriceData={tokensPriceData}
+        strategyInfo={state.context.strategyInfo}
+        collateralActive={stopLossToken === 'collateral'}
+      />
+    </Grid>
+  ) : (
+    <></>
+  )
+
   const sidebarInProgressContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
     <Grid gap={3}>
       <AddingStopLossAnimation />
@@ -260,12 +308,8 @@ export function AaveManagePositionStopLossLambdaSidebar({
   const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
     <Grid gap={3}>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('automation.cancel-summary-description', {
-          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.STOP_LOSS]),
-        })}
+        {t('automation.cancel-summary-description', stopLossTranslationParams)}
       </Text>
-      <AutomationValidationMessages messages={[]} type="error" />
-      <AutomationValidationMessages messages={[]} type="warning" />
       <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
         {!liquidationPrice.isZero() && (
           <VaultChangesInformationItem
@@ -301,48 +345,62 @@ export function AaveManagePositionStopLossLambdaSidebar({
 
   const sidebarFinishedContent: SidebarSectionProps['content'] = (
     <Grid gap={3}>
-      <StopLossTxCompleteBanner />
-      <StrategyInformationContainer
-        state={state}
-        changeSlippageSource={(from) => {
-          send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-        }}
-      />
+      <Box>
+        <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+          <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
+        </Flex>
+      </Box>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {action === TriggerAction.Add && (
+          <>
+            {t('automation-creation.add-complete-content', stopLossTranslationParams)}{' '}
+            <AppLink
+              href={`https://docs.summer.fi/products/${sidebarAutomationLinkMap['stopLoss']}`}
+              sx={{ fontSize: 2 }}
+            >
+              {t('here')}.
+            </AppLink>
+          </>
+        )}
+        {action === TriggerAction.Remove &&
+          t('automation-creation.remove-complete-content', stopLossTranslationParams)}
+      </Text>
+      <Box>
+        <VaultChangesWithADelayCard />
+      </Box>
     </Grid>
   )
-
-  const primaryButtonLabel = () => {
-    return {
-      prepare: t(isStopLossEnabled ? 'update-stop-loss' : 'add-stop-loss'),
-      inProgress: t('set-up-stop-loss-tx'),
-      error: t('retry'),
-      finished: t('open-earn.aave.vault-form.back-to-editing'),
-      removeTrigger: t('system.remove-trigger'),
-      removeTriggerInProgress: t('system.remove-trigger'),
-    }[transactionStep]
-  }
 
   const executionAction = () => {
     void executeCall()
       .then(() => {
         setTransactionStep('finished')
       })
-      .catch(() => {
-        setTransactionStep('error')
+      .catch((error) => {
+        console.error('error', error)
+        setTransactionStep(preparedState)
       })
   }
 
   const isDisabled = useMemo(() => {
-    if (isGettingStopLossTx) return true
-    if (transactionStep === 'inProgress') return true
-    if (transactionStep === 'finished') return false
-    if (transactionStep === 'removeTrigger') return false
+    if (
+      isGettingStopLossTx ||
+      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
+    ) {
+      return true
+    }
+    if (transactionStep === 'finished') {
+      return false
+    }
     return !stopLossConfigChanged
   }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep])
 
   const primaryButtonAction = () => {
-    if (['removeTrigger', 'prepare'].includes(transactionStep)) {
-      setTransactionStep(transactionStep === 'prepare' ? 'inProgress' : 'removeTriggerInProgress')
+    if (transactionStep === 'prepare') {
+      setTransactionStep(preparedState)
+    }
+    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
+      setTransactionStep(inProgressState)
       stopLossTxCancelablePromise?.cancel()
       executionAction()
     }
@@ -350,33 +408,63 @@ export function AaveManagePositionStopLossLambdaSidebar({
       onTxFinished()
       setTransactionStep('prepare')
     }
-    if (transactionStep === 'error') {
-      executionAction()
-      setTransactionStep('inProgress')
-    }
   }
 
-  const showTextButton =
-    (transactionStep === 'prepare' && isStopLossEnabled && !isRemovingTrigger) ||
-    (isRemovingTrigger && transactionStep !== 'finished')
+  const primaryButtonLabel = () => {
+    const primaryButtonMap = {
+      prepare: {
+        [TriggerAction.Add]: t('automation.add-trigger', stopLossTranslationParams),
+        [TriggerAction.Update]: t('automation.update-trigger', stopLossTranslationParams),
+        [TriggerAction.Remove]: t('automation.cancel-trigger', stopLossTranslationParams),
+      }[action],
+      preparedAdd: t('protection.confirm'),
+      preparedUpdate: t('protection.confirm'),
+      preparedRemove: t('protection.confirm'),
+      addInProgress: t('automation.setting', stopLossTranslationParams),
+      removeInProgress: t('automation.cancelling', stopLossTranslationParams),
+      updateInProgress: t('automation.updating', stopLossTranslationParams),
+      finished: t('open-earn.aave.vault-form.back-to-editing'),
+    } as Record<StopLossSidebarStates, string>
+    return primaryButtonMap[transactionStep]
+  }
 
-  const textButtonLabel = () => {
+  const showSecondaryButton =
+    (transactionStep === 'prepare' && isStopLossEnabled && action !== TriggerAction.Remove) ||
+    (action === TriggerAction.Remove && transactionStep !== 'finished')
+
+  const secondaryButtonLabel = () => {
     if (transactionStep === 'prepare' && isStopLossEnabled) {
       return t('system.remove-trigger')
     }
-    if (isRemovingTrigger) {
+    if (action === TriggerAction.Remove) {
       return t('go-back')
     }
     return ''
   }
-  const textButtonAction = () => {
+  const secondaryButtonAction = () => {
     if (transactionStep === 'prepare' && isStopLossEnabled) {
-      setIsRemovingTrigger(true)
-      setTransactionStep('removeTrigger')
+      setTransactionStep('preparedRemove')
     }
-    if (isRemovingTrigger) {
-      setIsRemovingTrigger(false)
+    if (transactionStep === 'preparedRemove') {
       setTransactionStep('prepare')
+    }
+  }
+
+  const getCurrectStep: () => [number, number] = () => {
+    switch (transactionStep) {
+      case 'prepare':
+        return [1, 3]
+      case 'preparedAdd':
+      case 'preparedUpdate':
+      case 'preparedRemove':
+      case 'addInProgress':
+      case 'updateInProgress':
+      case 'removeInProgress':
+        return [2, 3]
+      case 'finished':
+        return [3, 3]
+      default:
+        return [1, 3]
     }
   }
 
@@ -385,10 +473,12 @@ export function AaveManagePositionStopLossLambdaSidebar({
     dropdown,
     content: {
       prepare: sidebarPreparingContent,
-      error: sidebarPreparingContent,
-      inProgress: sidebarInProgressContent,
-      removeTrigger: sidebarRemoveTriggerContent,
-      removeTriggerInProgress: sidebarRemoveTriggerContent,
+      preparedAdd: sidebarPreparedContent,
+      preparedUpdate: sidebarPreparedContent,
+      preparedRemove: sidebarRemoveTriggerContent,
+      addInProgress: sidebarInProgressContent,
+      updateInProgress: sidebarInProgressContent,
+      removeInProgress: sidebarRemoveTriggerContent,
       finished: sidebarFinishedContent,
     }[transactionStep],
     primaryButton: {
@@ -396,11 +486,12 @@ export function AaveManagePositionStopLossLambdaSidebar({
       disabled: isDisabled,
       label: primaryButtonLabel(),
       action: primaryButtonAction,
+      steps: getCurrectStep(),
     },
-    textButton: showTextButton
+    textButton: showSecondaryButton
       ? {
-          label: textButtonLabel(),
-          action: textButtonAction,
+          label: secondaryButtonLabel(),
+          action: secondaryButtonAction,
         }
       : undefined,
   }
