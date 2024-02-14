@@ -59,7 +59,7 @@
     "@web3-onboard/ledger": "^2.5.2",
     "@web3-onboard/react": "^2.8.12",
     "@web3-onboard/trezor": "^2.4.3",
-    "@web3-onboard/walletconnect": "2.4.6",
+    "@web3-onboard/walletconnect": "2.5.3",
     "@web3-onboard/web3auth": "^2.2.3",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.1",
