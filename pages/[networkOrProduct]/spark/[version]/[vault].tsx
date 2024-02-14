@@ -5,7 +5,6 @@ import { GasEstimationContextProvider } from 'components/context/GasEstimationCo
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
-import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/contexts'
@@ -15,6 +14,7 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { safeGetAddress } from 'helpers/safeGetAddress'
 import type { SparkLendingProtocol } from 'lendingProtocols'
 import { checkIfSpark } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
@@ -115,17 +115,6 @@ function WithSparkStrategy({
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
-}
-
-function safeGetAddress(address: string | undefined) {
-  if (address) {
-    try {
-      return getAddress(address)
-    } catch (e) {
-      return undefined
-    }
-  }
-  return undefined
 }
 
 function Position({

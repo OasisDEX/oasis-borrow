@@ -26,6 +26,7 @@ import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import type { AddressesRelatedWithPosition } from './helpers'
 import { getAaveLikeStrategyConfig, getManageViewInfo, getManageViewInfoExternal } from './helpers'
+import { getAssetsForMigration } from './helpers/getAssetsForMigration'
 import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
@@ -237,6 +238,12 @@ export function setupSparkV3Context(
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
+  const migrationAssets = memoize(
+    ({ positionId }: { positionId: PositionId }) =>
+      getAssetsForMigration({ network: networkId, protocol: LendingProtocol.SparkV3, positionId }),
+    (positionId) => JSON.stringify(positionId),
+  )
+
   const strategyUpdateTrigger = new Subject<StrategyUpdateParams>()
   const strategyConfig$: (
     positionId: PositionId,
@@ -291,7 +298,7 @@ export function setupSparkV3Context(
       chainId: networkId,
       networkName: network,
       lendingProtocol: LendingProtocol.SparkV3,
-      getExternalTokens: () => Promise.resolve({ collateral: 'ETH', debt: 'USDC' }),
+      getExternalTokens: migrationAssets,
     }),
     (args: { positionId: PositionId }) => JSON.stringify(args),
   )

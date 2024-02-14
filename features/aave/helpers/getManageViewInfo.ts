@@ -9,6 +9,8 @@ import type { Observable } from 'rxjs'
 import { from } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
+import type { AssetForMigration } from './getAssetsForMigration'
+
 export function getManageViewInfo(
   deps: {
     strategyConfig$: AaveContext['strategyConfig$']
@@ -72,14 +74,12 @@ export function getManageViewInfoExternal(
     networkName: NetworkNames
     chainId: NetworkIds
     lendingProtocol: AaveLikeLendingProtocol
-    getExternalTokens: (
-      positionId: PositionId,
-    ) => Promise<{ collateral: string; debt: string } | undefined>
+    getExternalTokens: (args: { positionId: PositionId }) => Promise<AssetForMigration | undefined>
   },
   args: { positionId: PositionId },
 ): Observable<ManageViewInfo> {
   const { lendingProtocol, networkName, getExternalTokens } = deps
-  return from(getExternalTokens(args.positionId)).pipe(
+  return from(getExternalTokens({ positionId: args.positionId })).pipe(
     map((tokens) => {
       const strategy = loadStrategyFromTokens(
         tokens?.collateral ?? '',

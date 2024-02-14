@@ -6,7 +6,6 @@ import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { Icon } from 'components/Icon'
 import { AppLayout } from 'components/layouts/AppLayout'
-import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/contexts'
@@ -18,8 +17,8 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { mapAaveLikeProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { useObservable } from 'helpers/observableHook'
-import type { AaveLendingProtocol } from 'lendingProtocols'
-import { checkIfAave } from 'lendingProtocols'
+import { safeGetAddress } from 'helpers/safeGetAddress'
+import { checkIfSpark, type SparkLendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -32,9 +31,9 @@ import { Grid } from 'theme-ui'
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const networkOrProduct = ctx.query.networkOrProduct as string
   const version = ctx.query.version as string
-  const protocol = `aave${version.toLowerCase()}`
+  const protocol = `spark${version.toLowerCase()}`
 
-  if (checkIfAave(protocol) && isSupportedNetwork(networkOrProduct)) {
+  if (checkIfSpark(protocol) && isSupportedNetwork(networkOrProduct)) {
     return {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
@@ -53,13 +52,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function WithAaveStrategy({
+function WithSparkStrategy({
   positionId,
   protocol,
   network,
 }: {
   positionId: PositionId
-  protocol: AaveLendingProtocol
+  protocol: SparkLendingProtocol
   network: NetworkNames
 }) {
   const { t } = useTranslation()
@@ -130,17 +129,6 @@ function WithAaveStrategy({
   )
 }
 
-function safeGetAddress(address: string | undefined) {
-  if (address) {
-    try {
-      return getAddress(address)
-    } catch (e) {
-      return undefined
-    }
-  }
-  return undefined
-}
-
 function Position({
   address,
   protocol,
@@ -148,7 +136,7 @@ function Position({
 }: {
   address: string
   network: NetworkNames
-  protocol: AaveLendingProtocol
+  protocol: SparkLendingProtocol
 }) {
   const { replace } = useRouter()
 
@@ -165,7 +153,7 @@ function Position({
           <AaveContextProvider>
             <WithConnection>
               <WithTermsOfService>
-                <WithAaveStrategy
+                <WithSparkStrategy
                   positionId={{ walletAddress: address, vaultId: undefined, external: true }}
                   protocol={protocol}
                   network={network}
