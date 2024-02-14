@@ -101,12 +101,6 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'GHO',
     icon: getToken('GHO').iconCircle,
   },
-  WLD: {
-    title: 'Worldcoin',
-    description: 'WLD',
-    value: 'WLD',
-    icon: getToken('WLD').iconCircle,
-  },
 }
 
 export const productHubOptionsMapBase: {
@@ -125,7 +119,6 @@ export const productHubOptionsMapBase: {
       DAI: productHubTokenOptions.DAI,
       YFI: productHubTokenOptions.YFI,
       GHO: productHubTokenOptions.GHO,
-      WLD: productHubTokenOptions.WLD,
     },
   },
   multiply: {
@@ -149,7 +142,6 @@ export const productHubOptionsMapBase: {
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
-      WLD: productHubTokenOptions.WLD,
     },
   },
 }
@@ -159,13 +151,11 @@ const productHubOptionsMap = clone(productHubOptionsMapBase)
 if (getLocalAppConfig('features')[FeaturesEnum.AjnaSafetySwitch]) {
   delete productHubOptionsMap.borrow.tokens.YFI
   delete productHubOptionsMap.borrow.tokens.GHO
-  delete productHubOptionsMap.borrow.tokens.WLD
   delete productHubOptionsMap.multiply.tokens.YFI
   delete productHubOptionsMap.multiply.tokens.GHO
   delete productHubOptionsMap.earn.tokens.BTC
   delete productHubOptionsMap.earn.tokens.USDC
   delete productHubOptionsMap.earn.tokens.GHO
-  delete productHubOptionsMap.earn.tokens.WLD
 }
 
 export { productHubOptionsMap }
