@@ -86,7 +86,6 @@ export function AaveManagePositionStopLossLambdaSidebar({
     ...stopLossParamsRest
   } = getAaveLikeStopLossParams.manage({ state })
   const { tokenPriceUSD$ } = useProductContext()
-  console.log('transactionStep', transactionStep)
   const action = useMemo(() => {
     if (transactionStep === 'preparedRemove') {
       return TriggerAction.Remove
