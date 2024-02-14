@@ -9,6 +9,7 @@ export const ajnaDefaultHistoryEvent = {
   addOrRemovePrice: zero,
   originationFee: zero,
   originationFeeInQuoteToken: zero,
+  interestRate: zero,
   settledDebt: zero,
   debtToCover: zero,
   collateralForLiquidation: zero,

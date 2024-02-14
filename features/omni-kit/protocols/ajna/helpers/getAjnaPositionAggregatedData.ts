@@ -50,6 +50,7 @@ export const getAjnaPositionAggregatedData = async (
         ...ajnaDefaultHistoryEvent,
         originationFee: new BigNumber(event.originationFee),
         originationFeeInQuoteToken: new BigNumber(event.originationFeeInQuoteToken),
+        interestRate: new BigNumber(event.interestRate).shiftedBy(NEGATIVE_WAD_PRECISION),
         ...mapPositionHistoryResponseEvent(event),
       })),
       ...response.borrowerEvents

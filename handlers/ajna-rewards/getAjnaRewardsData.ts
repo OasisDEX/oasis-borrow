@@ -1,4 +1,5 @@
 import type { AjnaRewardsWeeklyClaim } from '@prisma/client'
+import { AjnaRewardsPositionType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
@@ -16,6 +17,7 @@ const querySchema = z.object({
   claimedBonusWeeks: z.string().optional(),
   claimedCoreWeeks: z.string().optional(),
   poolAddress: z.string().optional(),
+  type: z.enum([AjnaRewardsPositionType.borrow, AjnaRewardsPositionType.earn]).optional(),
 })
 
 const mapStringToNumberArray = (input: string) => input.split(',').map((item) => Number(item))
@@ -74,7 +76,7 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     }
   }
 
-  const { address, networkId, claimedBonusWeeks, claimedCoreWeeks, poolAddress } =
+  const { address, claimedBonusWeeks, claimedCoreWeeks, poolAddress, type } =
     querySchema.parse(query)
 
   const parsedClaimedBonusWeeks = claimedBonusWeeks?.length
@@ -106,7 +108,6 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     const coreClaimable = await prisma.ajnaRewardsWeeklyClaim.findMany({
       where: {
         user_address: address,
-        chain_id: parseInt(networkId, 10),
         week_number: {
           notIn: parsedClaimedCoreWeeks,
         },
@@ -123,15 +124,33 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
         ...(poolAddress && {
           pool_address: poolAddress,
         }),
+        ...(type && {
+          type,
+        }),
         source: AjnaRewardsSource.core,
       },
     })
 
-    const lastDayRewards = (
-      coreNotClaimable[coreNotClaimable.length - 1]
-        ? new BigNumber(coreNotClaimable[coreNotClaimable.length - 1].amount).shiftedBy(
-            NEGATIVE_WAD_PRECISION,
-          )
+    const lastDayRewards = await prisma.ajnaRewardsDailyClaim.findMany({
+      where: {
+        ...commonQuery,
+        ...(poolAddress && {
+          pool_address: poolAddress,
+        }),
+        ...(type && {
+          type,
+        }),
+        source: AjnaRewardsSource.core,
+      },
+      orderBy: {
+        day_number: 'desc',
+      },
+      take: 1,
+    })
+
+    const lastDayRewardsAmount = (
+      lastDayRewards[0]
+        ? new BigNumber(lastDayRewards[0].amount).shiftedBy(NEGATIVE_WAD_PRECISION)
         : zero
     ).toString()
 
@@ -146,6 +165,9 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
           week_number: currentWeekId,
           ...(poolAddress && {
             pool_address: poolAddress,
+          }),
+          ...(type && {
+            type,
           }),
           source: {
             in: [AjnaRewardsSource.core, AjnaRewardsSource.bonus],
@@ -187,6 +209,9 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
           ...(poolAddress && {
             pool_address: poolAddress,
           }),
+          ...(type && {
+            type,
+          }),
           source: AjnaRewardsSource.bonus,
         },
       }),
@@ -199,7 +224,6 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     const payload = mapToPayload(claimableTodayData)
 
     const totalClaimableAndTotalCurrentPeriodEarnedAmount = new BigNumber(claimableToday)
-      .plus(claimableBonusToday)
       .plus(currentPeriodTotalEarnedAmount)
       .toString()
 
@@ -208,7 +232,7 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
       coreAmount: coreNotClaimableAmount,
       claimableToday,
       claimableBonusToday,
-      lastDayRewards,
+      lastDayRewards: lastDayRewardsAmount,
       payload,
       currentPeriodPositionEarned: currentPeriodPositionEarnedAmount,
       currentPeriodTotalEarned: currentPeriodTotalEarnedAmount,

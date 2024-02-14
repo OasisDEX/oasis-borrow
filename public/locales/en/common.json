@@ -2836,8 +2836,8 @@
       },
       "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount.",
       "borrow-rate": {
-        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
-        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards.",
+        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards.",
         "tooltip-claimable-now": "Claimable now",
         "tooltip-claimable-next-period": "claimable next period",
         "tooltip-earned": "bonus tokens earned",
@@ -2869,7 +2869,7 @@
       },
       "total-ajna-rewards": {
         "title": "Claim rewards",
-        "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards. Claimable weekly after tokens are released.",
+        "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards.",
         "modal-value-1": "You can claim",
         "modal-value-2": "tokens now",
         "modal-value-3": "Total earned in the current period",
@@ -3311,6 +3311,16 @@
       "description-points-1": "Double check your stop loss parameters and make sure they are to your liking under the <strong>“<1>protection tab</1>”</strong",
       "description-points-2": "Manage risk or take advantage of market opportunity with one transaction to increase or decrease exposure under the <strong>“<1>adjust tab</1>”</strong>",
       "description-points-3": "Using your position solely for increasing exposure? <strong>Switch to multiply for advanced analytics like position PnL</strong>"
+    }
+  },
+  "og-tags": {
+    "morpho-blue": {
+      "title": "Morpho Blue is Better on Summer",
+      "description": "Lower costs, higher liquidation LTVs, and less gas costs than all other leading borrow/lend protocols. On Summer get more exposure to your collateral in one click."
+    },
+    "aave": {
+      "title": "AAVE is Better on Summer",
+      "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
     }
   }
 }

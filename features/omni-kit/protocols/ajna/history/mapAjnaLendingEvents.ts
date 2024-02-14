@@ -17,6 +17,7 @@ export const mapAjnaLendingEvents = (events: AjnaHistoryEvent[]): Partial<AjnaHi
       originationFee: event.originationFee,
       originationFeeInQuoteToken: event.originationFeeInQuoteToken,
       isOpen: event.isOpen,
+      interestRate: event.interestRate,
     }
 
     const basicMultiplyData = {
