@@ -28,6 +28,7 @@ type RefTransactionMachine =
 export interface AllowanceStateMachineContext {
   token: string
   customDecimals?: number
+  customTokenAddress?: string
   spender: string
   amount?: BigNumber
   minimumAmount: BigNumber
@@ -78,7 +79,7 @@ export type AllowanceStateMachineEvent =
   | { type: 'RETRY' }
   | { type: 'BACK' }
   | { type: 'CONTINUE' }
-  | { type: 'UPDATE_TOKEN'; token: string; customDecimals?: number }
+  | { type: 'UPDATE_TOKEN'; token: string; customDecimals?: number; customTokenAddress?: string }
   | { type: 'SET_ALLOWANCE'; amount?: BigNumber; allowanceType: AllowanceType }
   | {
       type: 'SET_ALLOWANCE_CONTEXT' | 'RESET_ALLOWANCE_CONTEXT'
@@ -246,7 +247,7 @@ export function createAllowanceStateMachine(
                 signer: context.signer!,
                 amount: getEffectiveAllowanceAmount(context),
                 spender: context.spender,
-                token: context.token,
+                token: context.customTokenAddress ?? context.token,
               },
             })
 
@@ -279,6 +280,7 @@ export function createAllowanceStateMachine(
               type: 'UPDATE_TOKEN',
               token: resolvedTokenSymbol,
               customDecimals: resolvedDecimals,
+              customTokenAddress: context.token,
             })
           }
           return sendBack({ type: 'UPDATE_TOKEN', token: context.token })
