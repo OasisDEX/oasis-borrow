@@ -1,9 +1,9 @@
 import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
-import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
+import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import type { MigrateAaveLikeParameters } from 'actions/aave-like/types/migrate-aave-like-parameters'
-import { ethNullAddress, getRpcProvider } from 'blockchain/networks'
+import { getRpcProvider } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function getMigrationPositionParameters({
@@ -44,7 +44,7 @@ export async function getMigrationPositionParameters({
   const sharedDependencies: SharedAaveLikeDependencies = {
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,
-    user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress,
+    user: userAddress,
     network,
     currentPosition: position,
   }
@@ -55,7 +55,6 @@ export async function getMigrationPositionParameters({
       const dependenciesAaveV3 = {
         ...sharedDependencies,
         addresses: aavev3Addresses,
-        getSwapData: swapCall(aavev3Addresses, networkId),
         protocolType: 'AAVE_V3' as const,
       }
       try {
@@ -70,7 +69,6 @@ export async function getMigrationPositionParameters({
       const dependenciesSparkV3 = {
         ...sharedDependencies,
         addresses: sparkV3Addresses,
-        getSwapData: swapCall(sparkV3Addresses, networkId),
         protocolType: 'Spark' as const,
       }
       return await strategies.spark.migrate.fromEOA(args, dependenciesSparkV3)
