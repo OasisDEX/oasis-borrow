@@ -21,6 +21,7 @@ import type {
 } from 'features/stateMachines/transactionParameters'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -46,6 +47,7 @@ export interface MigrateAaveContext {
   totalSteps: number
 
   strategy?: Strategy<IPosition>
+  estimatedGasPrice?: HasGasEstimation
   allowanceForProtocolToken?: BigNumber
   web3Context?: Context
   userSettings?: UserSettingsState
@@ -263,6 +265,9 @@ export function createMigrateAaveStateMachine(
           actions: ['updateContext', 'requestParameters'],
         },
         CURRENT_POSITION_CHANGED: {
+          actions: ['updateContext'],
+        },
+        GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: ['updateContext'],
         },
       },

@@ -1,4 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { ProductType } from 'features/aave/types'
 import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
@@ -37,4 +38,12 @@ export function getAaveLikeOpenStrategyUrl({
   return `/${network}/${aaveLikeProduct}/${mapAaveLikeProtocol(
     protocol,
   )}/${strategyType.toLocaleLowerCase()}/${slug}`
+}
+
+export function getAaveLikePositionUrl({
+  protocol,
+  network,
+  userDpmAccount: { vaultId },
+}: Pick<AaveVersionProps, 'protocol' | 'network'> & { userDpmAccount: UserDpmAccount }) {
+  return `/${network}/${mapAaveLikeUrlSlug(protocol)}/${mapAaveLikeProtocol(protocol)}/${vaultId}`
 }

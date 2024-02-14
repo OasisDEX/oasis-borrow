@@ -3,6 +3,7 @@ import { useAutomationContext } from 'components/context/AutomationContextProvid
 import { PositionHistory } from 'components/history/PositionHistory'
 import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
+import { DisabledAutomationForMigrationControl } from 'components/vault/DisabledAutomationForMigrationControl'
 import { DisabledOptimizationControl } from 'components/vault/DisabledOptimizationControl'
 import { DisabledProtectionControl } from 'components/vault/DisabledProtectionControl'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
@@ -103,13 +104,16 @@ export function AaveManageTabBar({
   // update banners
   const isProtectionAvailable = netValue.gte(minNetValue) || hasActiveProtectionTrigger
   const isOptimizationAvailable = netValue.gte(minNetValue) || hasActiveOptimizationTrigger
+  const isExternalPosition = state.context.positionId.external
 
   const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [
         {
           value: 'optimization',
           label: t('system.optimization'),
-          content: isOptimizationAvailable ? (
+          content: isExternalPosition ? (
+            <DisabledAutomationForMigrationControl />
+          ) : isOptimizationAvailable ? (
             <OptimizationControl />
           ) : (
             <DisabledOptimizationControl minNetValue={minNetValue} />
@@ -164,9 +168,11 @@ export function AaveManageTabBar({
                 tag: {
                   include: true,
                   active: hasActiveProtectionTrigger,
-                  isLoading: !isAutomationDataLoaded,
+                  isLoading: isExternalPosition ? false : !isAutomationDataLoaded,
                 },
-                content: isProtectionAvailable ? (
+                content: isExternalPosition ? (
+                  <DisabledAutomationForMigrationControl />
+                ) : isProtectionAvailable ? (
                   <ProtectionControlWrapper />
                 ) : (
                   <DisabledProtectionControl minNetValue={minNetValue} />

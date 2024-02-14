@@ -1,7 +1,9 @@
 import { Icon } from 'components/Icon'
+import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { MigrateToSummerIcons } from 'features/aave/components/MigrateToSummerIcons'
+import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { dot } from 'theme/icons'
@@ -13,6 +15,10 @@ export function MigrateStateView({ state, send, isLoading }: MigrateAaveStatePro
   const { t } = useTranslation()
 
   const { protocol, tokens } = state.context.strategyConfig
+
+  const transactionCostWithLoader = useTransactionCostWithLoading({
+    transactionCost: state.context.estimatedGasPrice,
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('migrate.vault-form.title'),
@@ -41,6 +47,15 @@ export function MigrateStateView({ state, send, isLoading }: MigrateAaveStatePro
             ))}
           </Flex>
         </Box>
+        <InfoSection
+          title={''}
+          items={[
+            {
+              label: t('migrate.estimated-transaction-cost'),
+              value: transactionCostWithLoader,
+            },
+          ]}
+        />
       </Grid>
     ),
     primaryButton: {

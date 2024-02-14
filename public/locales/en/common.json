@@ -3290,6 +3290,13 @@
       "title": "Migrate your position into Summer.fi",
       "success-title": "Your position is now accessible on Summer.fi!"
     },
+    "vault-banners": {
+      "automation": {
+        "title": "Switch to Summer.fi to enable advanced features.",
+        "description": "Migrate to Summer.fi for benefits like stop loss, one click multiply and automated management."
+      }
+    },
+    "estimated-transaction-cost": "Estimated transaction cost",
     "welcome-state": {
       "title-1": "Title",
       "description-1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lobortis nisi sed odio venenatis.",

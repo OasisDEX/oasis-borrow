@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { Icon } from 'components/Icon'
+import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
-import { FeesInformation } from 'features/aave/components/order-information/FeesInformation'
+import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
@@ -13,6 +14,15 @@ import type { MigrateAaveStateProps } from './migrateAaveStateProps'
 
 export function MigrateWelcomeStateView({ state, send, isLoading }: MigrateAaveStateProps) {
   const { t } = useTranslation()
+
+  const transactionCostWithLoader = useTransactionCostWithLoading({
+    transactionCost: {
+      gasEstimationStatus: GasEstimationStatus.calculated,
+      gasEstimation: 1500,
+      gasEstimationEth: new BigNumber(0.04),
+      gasEstimationUsd: new BigNumber(12),
+    },
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('migrate.vault-form.title'),
@@ -52,13 +62,14 @@ export function MigrateWelcomeStateView({ state, send, isLoading }: MigrateAaveS
             {t('migrate.welcome-state.description-2')}
           </Text>
         </Box>
-        <FeesInformation
-          estimatedGasPrice={{
-            gasEstimation: 1500,
-            gasEstimationStatus: GasEstimationStatus.calculated,
-            gasEstimationEth: new BigNumber(0.04),
-            gasEstimationUsd: new BigNumber(12),
-          }}
+        <InfoSection
+          title={''}
+          items={[
+            {
+              label: t('migrate.estimated-transaction-cost'),
+              value: transactionCostWithLoader,
+            },
+          ]}
         />
       </Grid>
     ),
