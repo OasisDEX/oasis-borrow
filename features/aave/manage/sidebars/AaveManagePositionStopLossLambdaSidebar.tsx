@@ -223,6 +223,15 @@ export function AaveManagePositionStopLossLambdaSidebar({
           collateralActive={stopLossToken === 'collateral'}
         />
       )}
+      <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+        {t('protection.not-guaranteed')}
+      </Text>
+      <Text as="p" variant="paragraph3">
+        {t('protection.guarantee-factors')}{' '}
+        <AppLink href={EXTERNAL_LINKS.KB.AUTOMATION} sx={{ fontWeight: 'body' }}>
+          {t('protection.learn-more-about-automation')}
+        </AppLink>
+      </Text>
     </Grid>
   )
 
