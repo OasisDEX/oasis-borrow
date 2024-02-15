@@ -155,7 +155,6 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
           options={productHubStrategyFilter}
           onChange={(value) => {
             const multiplyStrategyType = value as ProductHubMultiplyStrategyType[]
-
             onChange(
               {
                 or: selectedFilters.or,
@@ -202,9 +201,9 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         initialValues={queryString.protocol || initialProtocol}
         label={t('product-hub.filters.protocols')}
         options={productHubProtocolFilter}
+        fitContents
         onChange={(value) => {
           const protocol = value as LendingProtocol[]
-
           onChange(
             {
               or: selectedFilters.or,
