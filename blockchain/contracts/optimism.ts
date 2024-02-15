@@ -200,9 +200,19 @@ export const optimismContracts: OptimismContracts = {
     'STYETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_STYETHDAI),
     'RBN-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RBNETH),
     'AJNA-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_AJNADAI),
+    'MRK-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_MKRDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
+    'MWSTETHWPUNKS20-WSTETH': contractDesc(
+      ajnaPool,
+      optimism.ajna.AjnaPoolPairs_MWSTETHWPUNKS20WSTETH,
+    ),
+    'MWSTETHWPUNKS40-WSTETH': contractDesc(
+      ajnaPool,
+      optimism.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
+    ),
+    'APXETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_APXETHETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, optimism.ajna.AjnaRewardsReedemer),
