@@ -24,6 +24,7 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import { useAaveCardDataNetValueLending } from 'features/omni-kit/protocols/aave/components/details-sections/parsers/useAaveCardDataNetValueLending'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -238,6 +239,19 @@ export function AaveMultiplyPositionData({
     translationCardName: 'total-exposure',
   })
 
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives,
+    productType: omniProduct,
+    collateralTokenPrice,
+    debtTokenPrice,
+    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
+    collateralToken: currentPosition.collateral.symbol,
+    debtToken: currentPosition.debt.symbol,
+  })
+
+  const netValueContentCardAaveData = useAaveCardDataNetValueLending(netValuePnlModalData)
+
   return (
     <Grid>
       {stopLossTriggered && (
@@ -263,7 +277,11 @@ export function AaveMultiplyPositionData({
                 isAutomationDataLoaded,
               }}
             />
-            <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
+            <OmniContentCard
+              {...commonContentCardData}
+              {...netValueContentCardCommonData}
+              {...netValueContentCardAaveData}
+            />
             <OmniContentCard {...commonContentCardData} {...buyingPowerContentCardCommonData} />
           </DetailsSectionContentCardWrapper>
         }
