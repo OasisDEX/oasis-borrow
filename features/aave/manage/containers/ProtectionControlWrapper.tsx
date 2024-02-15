@@ -4,10 +4,11 @@ import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { useAaveContext } from 'features/aave/aave-context-provider'
 import { AaveStopLossManageDetails } from 'features/aave/components/AaveStopLossManageDetails'
 import { AutoSellBanner, StopLossBanner } from 'features/aave/components/banners'
+import { TrailingStopLossBanner } from 'features/aave/components/banners/trailing-stop-loss-banner'
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
-import { supportsAaveStopLoss } from 'features/aave/helpers'
 import { useProtectionSidebarDropdown } from 'features/aave/hooks'
+import { AaveStopLossSelector } from 'features/aave/manage/containers/AaveStopLossSelector'
 import {
   useManageAaveStateMachineContext,
   useTriggersAaveStateMachineContext,
@@ -17,13 +18,17 @@ import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculat
 import { AaveManagePositionStopLossLambdaSidebar } from 'features/aave/manage/sidebars/AaveManagePositionStopLossLambdaSidebar'
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
 import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
-import { isAutoSellEnabled } from 'features/aave/manage/state'
+import {
+  hasActiveAutoSell,
+  hasActiveStopLoss,
+  hasActiveTrailingStopLoss,
+  isAutoSellEnabled,
+} from 'features/aave/manage/state'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { getLocalAppConfig } from 'helpers/config'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
 import React, { useEffect, useState } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
@@ -115,80 +120,106 @@ export function ProtectionControlWrapper() {
   const dropdown = useProtectionSidebarDropdown(triggersState, sendTriggerEvent)
 
   const showAutoSell = isAutoSellEnabled(triggersState)
-
-  const isAaveV3 = state.context.strategyConfig.protocol === LendingProtocol.AaveV3
-  const isSpark = state.context.strategyConfig.protocol === LendingProtocol.SparkV3
-  const isAaveV3LambdaEnabled = supportsAaveStopLoss(
-    state.context.strategyConfig.protocol,
-    state.context.strategyConfig.networkId,
-  )
-  const isSparkLambdaEnabled = getLocalAppConfig('features').SparkProtectionLambdaEthereum
-
-  if (triggersState.context.protectionCurrentView !== 'stop-loss') {
-    return (
-      <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-        <Grid variant="vaultContainer">
-          <Grid gap={3} mb={[0, 5]}>
-            {triggersState.context.protectionCurrentView === 'auto-sell' &&
-              autoSellDetailsLayoutProps && (
-                <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
-              )}
-            {triggersState.context.showAutoSellBanner && (
-              <AutoSellBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_SELL' })} />
-            )}
-            {triggersState.context.showStopLossBanner && (
-              <StopLossBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_STOP_LOSS' })} />
-            )}
-          </Grid>
-          {triggersState.context.protectionCurrentView === 'auto-sell' &&
-            autoSellState.context.position && (
-              <Box>
-                <AutoSellSidebarAaveVault
-                  strategy={state.context.strategyConfig}
-                  state={{ ...autoSellState.context, position: autoSellState.context.position }}
-                  isStateMatch={(s) => autoSellState.matches(s)}
-                  canTransitWith={(s) => autoSellState.can(s)}
-                  updateState={sendAutoSellEvent}
-                  isEditing={autoSellState.value === 'editing'}
-                  dropdown={dropdown}
-                />
-              </Box>
-            )}
-        </Grid>
-      </Container>
+  const hasStopLoss = hasActiveStopLoss(triggersState)
+  const hasTrailingStopLoss = hasActiveTrailingStopLoss(triggersState)
+  const hasAutoSell = hasActiveAutoSell(triggersState)
+  const showStopLossBanner =
+    !hasStopLoss &&
+    triggersState.context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS)
+  const showTrailingStopLossBanner =
+    !hasTrailingStopLoss &&
+    triggersState.context.strategyConfig.isAutomationFeatureEnabled(
+      AutomationFeatures.TRAILING_STOP_LOSS,
     )
-  }
-  if (
-    triggersState.context.protectionCurrentView === 'stop-loss' &&
-    ((isAaveV3 && isAaveV3LambdaEnabled) || (isSpark && isSparkLambdaEnabled))
-  ) {
+  const showAutoSellBanner =
+    !hasAutoSell &&
+    triggersState.context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL)
+
+  console.log(
+    'setup',
+    JSON.stringify(
+      {
+        currentProtectionView: triggersState.context.protectionCurrentView,
+        hasStopLoss,
+        hasAutoSell,
+        showStopLossBanner,
+        showAutoSellBanner,
+      },
+      null,
+      2,
+    ),
+  )
+
+  if (triggersState.context.protectionCurrentView) {
+    if (triggersState.context.protectionCurrentView === 'stop-loss-selector') {
+      return <AaveStopLossSelector sendTriggerEvent={sendTriggerEvent} />
+    }
+    const isTriggersLoading = triggersState.matches('loading') ? undefined : true
     return (
       <WithErrorHandler error={[reserveConfigurationDataError]}>
-        <WithLoadingIndicator value={[reserveConfigurationData]} customLoader={<AppSpinner />}>
+        <WithLoadingIndicator
+          value={[reserveConfigurationData, isTriggersLoading]}
+          customLoader={<AppSpinner />}
+        >
           {([_reserveConfigurationData]) => {
             return (
               <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
                 <Grid variant="vaultContainer">
                   <Grid gap={3} mb={[0, 5]}>
-                    <AaveStopLossManageDetails
-                      state={state}
-                      stopLossToken={stopLossToken}
-                      stopLossLambdaData={stopLossLambdaData}
-                      triggers={triggersState.context.currentTriggers.triggers}
-                      reserveConfigurationData={_reserveConfigurationData}
-                    />
-                    {triggersState.context.showAutoSellBanner && (
-                      <AutoSellBanner
-                        buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_SELL' })}
+                    {(hasStopLoss ||
+                      triggersState.context.protectionCurrentView === 'stop-loss') && (
+                      <AaveStopLossManageDetails
+                        state={state}
+                        stopLossToken={stopLossToken}
+                        stopLossLambdaData={stopLossLambdaData}
+                        triggers={triggersState.context.currentTriggers.triggers}
+                        reserveConfigurationData={_reserveConfigurationData}
                       />
                     )}
-                    {triggersState.context.showStopLossBanner && (
+                    {(hasAutoSell || triggersState.context.protectionCurrentView === 'auto-sell') &&
+                      autoSellDetailsLayoutProps && (
+                        <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
+                      )}
+                    {showAutoSellBanner && (
+                      <AutoSellBanner
+                        buttonClicked={() =>
+                          sendTriggerEvent({ type: 'CHANGE_VIEW', view: 'auto-sell' })
+                        }
+                      />
+                    )}
+                    {showStopLossBanner && (
                       <StopLossBanner
-                        buttonClicked={() => sendTriggerEvent({ type: 'SHOW_STOP_LOSS' })}
+                        buttonClicked={() =>
+                          sendTriggerEvent({ type: 'CHANGE_VIEW', view: 'stop-loss-selector' })
+                        }
+                      />
+                    )}
+                    {showTrailingStopLossBanner && (
+                      <TrailingStopLossBanner
+                        buttonClicked={() =>
+                          sendTriggerEvent({ type: 'CHANGE_VIEW', view: 'trailing-stop-loss' })
+                        }
                       />
                     )}
                   </Grid>
-                  <Box>
+                  {triggersState.context.protectionCurrentView === 'auto-sell' &&
+                    autoSellState.context.position && (
+                      <Box>
+                        <AutoSellSidebarAaveVault
+                          strategy={state.context.strategyConfig}
+                          state={{
+                            ...autoSellState.context,
+                            position: autoSellState.context.position,
+                          }}
+                          isStateMatch={(s) => autoSellState.matches(s)}
+                          canTransitWith={(s) => autoSellState.can(s)}
+                          updateState={sendAutoSellEvent}
+                          isEditing={autoSellState.value === 'editing'}
+                          dropdown={dropdown}
+                        />
+                      </Box>
+                    )}
+                  {triggersState.context.protectionCurrentView === 'stop-loss' && (
                     <AaveManagePositionStopLossLambdaSidebar
                       state={state}
                       send={send}
@@ -199,7 +230,7 @@ export function ProtectionControlWrapper() {
                       dropdown={dropdown}
                       onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
                     />
-                  </Box>
+                  )}
                 </Grid>
               </Container>
             )
@@ -217,8 +248,10 @@ export function ProtectionControlWrapper() {
           autoSellDetailsLayoutProps && (
             <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
           )}
-        {showAutoSell && triggersState.context.showAutoSellBanner && (
-          <AutoSellBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_SELL' })} />
+        {showAutoSell && showAutoSellBanner && (
+          <AutoSellBanner
+            buttonClicked={() => sendTriggerEvent({ type: 'CHANGE_VIEW', view: 'auto-sell' })}
+          />
         )}
       </>
     )

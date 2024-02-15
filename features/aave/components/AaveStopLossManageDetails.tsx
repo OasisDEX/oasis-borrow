@@ -70,6 +70,7 @@ export const AaveStopLossManageDetails = ({
         stopLossLambdaData.stopLossToken !== stopLossToken)
     )
   }, [stopLossLambdaData, stopLossLevel, stopLossToken])
+
   return (
     <StopLossDetailsLayout
       token={token}

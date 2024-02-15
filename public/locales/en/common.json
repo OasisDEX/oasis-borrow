@@ -1584,6 +1584,11 @@
       "content-generic": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either collateral or debt token at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
+    "setup-trailing-stop-loss": {
+      "header": "Trailing Stop-Loss",
+      "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
+      "button": "Setup Trailing Stop-Loss"
+    },
     "get-protection": {
       "header": "Get vault protection",
       "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from liquidation if it drops below your chosen collateralization ratio.",
