@@ -24,8 +24,13 @@ export async function getAssetsForMigration(
     return undefined
   }
   const network = networkSetById[args.network]
-  const customRpc = network.isCustomFork ? network.rpcUrl : undefined
-  const migrations = await getPortfolioMigrationsResponse(address, customRpc)
+  const fork = network.isCustomFork
+    ? {
+        customRpcUrl: network.rpcUrl,
+        chainId: args.network,
+      }
+    : undefined
+  const migrations = await getPortfolioMigrationsResponse(address, fork)
   if (migrations === undefined) {
     return undefined
   }
