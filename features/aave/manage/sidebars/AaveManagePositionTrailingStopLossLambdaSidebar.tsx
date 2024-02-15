@@ -36,12 +36,11 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
 import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 
 const aaveLambdaStopLossConfig = {
-  translationRatioParam: 'vault-changes.loan-to-value',
   sliderStep: 1,
   sliderDirection: 'ltr' as const,
 }
@@ -56,7 +55,7 @@ type StopLossSidebarStates =
   | 'removeInProgress'
   | 'finished'
 
-export function AaveManagePositionStopLossLambdaSidebar({
+export function AaveManagePositionTrailingStopLossLambdaSidebar({
   state,
   send,
   dropdown,
@@ -200,12 +199,15 @@ export function AaveManagePositionStopLossLambdaSidebar({
         active={stopLossToken}
       />
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('protection.set-downside-protection-desc', {
-          ratioParam: t(aaveLambdaStopLossConfig.translationRatioParam),
-        })}{' '}
-        <AppLink href={EXTERNAL_LINKS.KB.STOP_LOSS} sx={{ fontSize: 2 }}>
-          {t('here')}.
-        </AppLink>
+        <Trans
+          i18nKey="protection.set-distance-protection-desc"
+          values={{
+            distance: t('protection.trailing-stop-loss-price-distance'),
+          }}
+          components={{
+            1: <AppLink href={'#'} sx={{ fontSize: 2 }} />,
+          }}
+        />
       </Text>
       <SliderValuePicker
         disabled={false}
@@ -226,9 +228,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
           stopLossTxCancelablePromise?.cancel()
         }}
         useRcSlider
-        leftLabel={t('protection.stop-loss-something', {
-          value: t(aaveLambdaStopLossConfig.translationRatioParam),
-        })}
+        leftLabel={t('protection.trailing-distance')}
         rightLabel={t('slider.set-stoploss.right-label')}
         direction={aaveLambdaStopLossConfig.sliderDirection}
       />
@@ -470,7 +470,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
   }
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('system.stop-loss'),
+    title: t('system.trailing-stop-loss'),
     dropdown,
     content: {
       prepare: sidebarPreparingContent,

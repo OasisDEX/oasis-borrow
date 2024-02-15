@@ -14,6 +14,8 @@ export const DmaSparkStopLossToDebtV2ID = 126n as const
 export const DmaAaveBasicBuyV2ID = 121n as const
 export const DmaAaveBasicSellV2ID = 122n as const
 
+export const DmaAaveTrailingStopLoss = 10005n as const
+
 export interface GetTriggersParams {
   networkId: NetworkIds
   dpm: UserDpmAccount
@@ -180,6 +182,27 @@ export type DmaAaveBasicSell = {
   }
 }
 
+export type DmaAaveTrailingStopLoss = {
+  triggerTypeName: 'DmaAaveTrailingStopLoss'
+  triggerType: typeof DmaAaveTrailingStopLoss
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    collateralOracle: string
+    collateralAddedRoundId: string
+    debtOracle: string
+    debtAddedRoundId: string
+    trailingDistance: string
+    closeToCollateral: string
+  }
+}
+
 export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 
 export type GetTriggersResponse = {
@@ -194,5 +217,6 @@ export type GetTriggersResponse = {
     sparkStopLossToDebtDMA?: SparkStopLossToDebtDMA
     aaveBasicBuy?: DmaAaveBasicBuy
     aaveBasicSell?: DmaAaveBasicSell
+    aaveTrailingStopLossDMA?: DmaAaveTrailingStopLoss
   }
 }

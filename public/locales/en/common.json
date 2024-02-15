@@ -1244,6 +1244,7 @@
     "protection": "Protection",
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
+    "trailing-stop-loss": "Trailing Stop-Loss",
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
@@ -1586,7 +1587,7 @@
     },
     "setup-trailing-stop-loss": {
       "header": "Trailing Stop-Loss",
-      "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
+      "content": "Reduce the risk of ruin with automated Stop-Loss. THIS NEEDS COPY",
       "button": "Setup Trailing Stop-Loss"
     },
     "get-protection": {
@@ -1731,6 +1732,9 @@
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
+    "trailing-stop-loss-price-distance": "Trailing Stop-Loss Price Distance",
+    "trailing-distance": "Trailing Distance",
+    "set-distance-protection-desc": "Set your {{distance}}. This indicates the maximum price distance that your stop loss price will be from your position. When your position’s Loan to value goes down, your trailing Stop will follow it. <1> Read how to think about Trailing Stop here </1>",
     "set-downside-protection-desc": "Set the {{ratioParam}} trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
     "setting-downside-protection": "Setting Stop-Loss Protection",

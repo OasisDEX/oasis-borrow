@@ -171,11 +171,10 @@ export const hasActiveTrailingStopLoss = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  // TODO: implement actual trigger name
-  const { aaveBasicSell: _aaveBasicSell } = context.currentTriggers.triggers
+  const { aaveTrailingStopLossDMA } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
-      return !true // :)
+      return isAnyValueDefined(aaveTrailingStopLossDMA)
     case LendingProtocol.SparkV3:
       return false
     case LendingProtocol.AaveV2:
