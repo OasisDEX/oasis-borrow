@@ -1720,6 +1720,7 @@
   "setup": "Setup",
   "protection": {
     "stop-loss": "Stop-Loss",
+    "stop-loss-to": "Stop loss to:",
     "stop-loss-protection": "Stop-Loss Protection",
     "confirmation-text": "Confirm your Stop-Loss setup.",
     "navigate-cancel": "Cancel downside protection",
@@ -2761,6 +2762,15 @@
         "modal-value": "Profit & Loss",
         "modal-footnote-1": "P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction. Gas fees are not taken into account for the PnL."
+      },
+      "rewards": {
+        "title": "Claim rewards",
+        "modal-value-1": "You can claim",
+        "modal-value-2": "tokens now",
+        "modal-value-3": "Total earned in the current period",
+        "modal-value-4": "From this position in current period",
+        "modal-value-5": "Total rewards earned to date",
+        "modal-link": "See all token rewards"
       }
     },
     "form": {
@@ -2826,9 +2836,9 @@
       },
       "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount.",
       "borrow-rate": {
-        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
-        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
-        "tooltip-claimable-now": "claimable now",
+        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards.",
+        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards.",
+        "tooltip-claimable-now": "Claimable now",
         "tooltip-claimable-next-period": "claimable next period",
         "tooltip-earned": "bonus tokens earned",
         "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
@@ -2854,15 +2864,17 @@
         "modal-footnote-description-max": "Above this lending price you will not earn any yield. Select a lending price below this level to earn."
       },
       "projected-annual-rewards": {
-        "title": "Projected Annual Rewards",
-        "modal-description": "At the current weekly distribution and AJNA token price the implied annual rewards rate is."
+        "title": "Annual Reward Rate",
+        "modal-description": "This is the projected annual reward rate based on your earned rewards from the previous day and the current Ajna token price. The rewards and rate cannot be guaranteed and is likely to change as market conditions evolve. The current projected rate is:"
       },
       "total-ajna-rewards": {
-        "title": "Total AJNA Rewards",
-        "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards. Claimable weekly after tokens are released.",
-        "modal-value-1": "$AJNA claimable now",
-        "modal-value-2": "$AJNA earned, claimable next period",
-        "modal-value-3": "$AJNA bonus tokens earned"
+        "title": "Claim rewards",
+        "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards.",
+        "modal-value-1": "You can claim",
+        "modal-value-2": "tokens now",
+        "modal-value-3": "Total earned in the current period",
+        "modal-value-4": "From this position in current period",
+        "modal-value-5": "Total rewards earned to date"
       },
       "buying-power": {
         "tooltip": "There is currently no debt drawed for this pool. Buying power can be calculated after any position draws debt for the first time."
@@ -3015,7 +3027,8 @@
       "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would make your position eligible for liquidation. Please enter a lower amount.",
       "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would make your position eligible for liquidation. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
-      "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
+      "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}. Please choose a lower amount.",
+      "withdraw-not-available": "You do not currently have any balance that is available for withdrawal. Please check back later.",
       "after-lup-index-bigger-than-htp-index-deposit": "You cannot adjust this position as there is not enough available liquidity in the pool. Please wait for more available liquidity.",
       "after-lup-index-bigger-than-htp-index-withdraw": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
       "debt-less-then-dust-limit": "The minimum debt for a position in this pool is {{minDebtAmount}}. Please update the parameters of this action to ensure the position has debt above {{minDebtAmount}} or no debt",
@@ -3266,6 +3279,16 @@
           }
         }
       }
+    }
+  },
+  "og-tags": {
+    "morpho-blue": {
+      "title": "Morpho Blue is Better on Summer",
+      "description": "Lower costs, higher liquidation LTVs, and less gas costs than all other leading borrow/lend protocols. On Summer get more exposure to your collateral in one click."
+    },
+    "aave": {
+      "title": "AAVE is Better on Summer",
+      "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
     }
   }
 }

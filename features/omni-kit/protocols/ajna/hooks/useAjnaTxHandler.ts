@@ -4,6 +4,7 @@ import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaParameters } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { useAccount } from 'helpers/useAccount'
 
@@ -28,6 +29,7 @@ export function useAjnaTxHandler(): () => void {
     form: { state },
     position: {
       currentPosition: { position, simulation },
+      history,
     },
     dynamicMetadata: {
       validations: { isFormValid },
@@ -42,6 +44,13 @@ export function useAjnaTxHandler(): () => void {
   if (omniMetadataSupplyHandlerGuard(handlers)) {
     onSuccess = handlers.customReset
   }
+
+  const castedHistory = history as AjnaHistoryEvent[]
+
+  const lastEventInterestRate =
+    castedHistory[0] && 'interestRate' in castedHistory[0]
+      ? castedHistory[0].interestRate
+      : undefined
 
   return useOmniTxHandler({
     getOmniParameters: () =>
@@ -64,6 +73,7 @@ export function useAjnaTxHandler(): () => void {
         slippage,
         state,
         walletAddress,
+        lastEventInterestRate,
       }),
     customState,
     onSuccess,

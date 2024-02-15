@@ -14,6 +14,13 @@ export type AutomationAddTriggerData =
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotV2AddTriggerData
 
+export type AutomationAddTriggerLambda = {
+  data: string
+  to: string
+  encodedTriggerData: string
+  triggerTxData: string
+}
+
 export type AutomationAddTriggerTxDef =
   | TransactionDef<AutomationBotAddTriggerData>
   | TransactionDef<AutomationBotAddAggregatorTriggerData>

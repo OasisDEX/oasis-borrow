@@ -24,10 +24,8 @@ import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { getLocalAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { getAaveLikeOpenStrategyUrl } from 'helpers/getAaveLikeStrategyUrl'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
@@ -366,7 +364,11 @@ function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveSta
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      action: () => location && location.reload(),
+      action: () => {
+        send({
+          type: 'BACK_TO_EDITING',
+        })
+      },
     },
   }
 
@@ -395,14 +397,11 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: getAaveLikeOpenStrategyUrl({
-        aaveLikeProduct:
-          state.context.strategyConfig.protocol === LendingProtocol.SparkV3 ? 'spark' : 'aave',
-        protocol: state.context.strategyConfig.protocol,
-        slug: state.context.strategyConfig.urlSlug,
-        strategyType: state.context.strategyConfig.type,
-        network: state.context.strategyConfig.network,
-      }),
+      action: () => {
+        send({
+          type: 'BACK_TO_EDITING',
+        })
+      },
     },
   }
 

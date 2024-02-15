@@ -131,7 +131,7 @@ export const commonDataMapper = ({
           ? {
               ...getPositionsAutomations({
                 triggers: automations ? [automations.triggers] : [],
-                defaultList: dpm.protocol !== 'AAVE' ? emptyAutomations : {},
+                defaultList: !['AAVE', 'Spark'].includes(dpm.protocol) ? emptyAutomations : {},
               }),
             }
           : {}),

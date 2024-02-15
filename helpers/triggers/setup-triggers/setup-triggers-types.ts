@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { LendingProtocol } from 'lendingProtocols'
+import type { SupportedLambdaProtocols } from 'helpers/triggers/common'
 
 export enum AutoBuyTriggerCustomErrorCodes {}
 
@@ -78,7 +78,7 @@ export interface SetupAaveBasicAutomationParams {
   strategy: StrategyLike
   triggerType: number
   networkId: number
-  protocol: LendingProtocol
+  protocol: SupportedLambdaProtocols
   action: TriggerAction
 }
 
@@ -97,7 +97,38 @@ export type SetupBasicAutoResponse = {
   transaction?: {
     data: string
     to: string
+    triggerTxData?: string
   }
+}
+
+export type SetupBasicStopLossResponse = {
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
+  encodedTriggerData?: string
+  simulation?: {
+    collateralAmountAfterExecution: string
+    debtAmountAfterExecution: string
+    executionLTV: string
+    targetLTV: string
+    targetLTVWithDeviation: [string, string]
+    targetMultiple: string
+  }
+  transaction?: {
+    data: string
+    to: string
+    triggerTxData?: string
+  }
+}
+
+export interface SetupAaveStopLossParams {
+  executionToken: string
+  executionLTV: BigNumber
+  targetLTV: BigNumber
+  dpm: string
+  strategy: StrategyLike
+  networkId: number
+  protocol: SupportedLambdaProtocols
+  action: TriggerAction
 }
 
 export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {

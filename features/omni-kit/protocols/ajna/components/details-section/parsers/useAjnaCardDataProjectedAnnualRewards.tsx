@@ -1,31 +1,50 @@
+import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
+import { Skeleton } from 'components/Skeleton'
+import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import type {
   OmniContentCardBase,
   OmniContentCardExtra,
 } from 'features/omni-kit/components/details-section'
-import { notAvailable } from 'handlers/portfolio/constants'
+import { OmniProductType } from 'features/omni-kit/types'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 
-// interface AjnaCardDataProjectedAnnualRewardsParams {
-//
-// }
+interface AjnaCardDataProjectedAnnualRewardsParams {
+  owner: string
+  poolAddress: string
+  netValueUsd: BigNumber
+}
 
-export function useAjnaCardDataProjectedAnnualRewards(): OmniContentCardBase &
-  OmniContentCardExtra {
+export function useAjnaCardDataProjectedAnnualRewards({
+  owner,
+  poolAddress,
+  netValueUsd,
+}: AjnaCardDataProjectedAnnualRewardsParams): OmniContentCardBase & OmniContentCardExtra {
   const { t } = useTranslation()
+  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress, OmniProductType.Earn)
+
+  const annualRewards = rewards.lastDayRewardsUsd.div(netValueUsd).times(365)
+  const formattedValue = formatDecimalAsPercent(annualRewards)
 
   return {
     title: { key: 'ajna.content-card.projected-annual-rewards.title' },
-    value: notAvailable,
-    modal: (
-      <DetailsSectionContentSimpleModal
-        title={t('ajna.content-card.projected-annual-rewards.title')}
-        description={t('ajna.content-card.projected-annual-rewards.modal-description')}
-        value={notAvailable}
-        theme={ajnaExtensionTheme}
-      />
-    ),
+    ...(isLoading
+      ? {
+          extra: <Skeleton width="120px" height="20px" sx={{ mt: 1 }} />,
+        }
+      : {
+          value: formattedValue,
+          modal: (
+            <DetailsSectionContentSimpleModal
+              title={t('ajna.content-card.projected-annual-rewards.title')}
+              description={t('ajna.content-card.projected-annual-rewards.modal-description')}
+              value={formattedValue}
+              theme={ajnaExtensionTheme}
+            />
+          ),
+        }),
   }
 }

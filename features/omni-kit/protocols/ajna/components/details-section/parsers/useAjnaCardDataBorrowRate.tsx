@@ -5,6 +5,7 @@ import { AjnaCardDataBorrowRateModal } from 'features/omni-kit/protocols/ajna/co
 import { AjnaCardDataRewardsTooltip } from 'features/omni-kit/protocols/ajna/components/details-section/modals/AjnaCardDataRewardsTooltip'
 import { isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 import { sparks } from 'theme/icons'
 
@@ -16,6 +17,7 @@ interface AjnaCardDataBorrowRateParams {
   networkId: OmniSupportedNetworkIds
   owner: string
   quoteToken: string
+  poolAddress: string
 }
 
 export function useAjnaCardDataBorrowRate({
@@ -26,11 +28,9 @@ export function useAjnaCardDataBorrowRate({
   networkId,
   owner,
   quoteToken,
+  poolAddress,
 }: AjnaCardDataBorrowRateParams): OmniContentCardExtra {
-  const {
-    isLoading,
-    rewards: { claimable, total },
-  } = useAjnaRewards(owner)
+  const { isLoading, rewards } = useAjnaRewards(owner, poolAddress, OmniProductType.Borrow)
 
   return {
     modal: (
@@ -43,8 +43,9 @@ export function useAjnaCardDataBorrowRate({
     ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
       icon: sparks,
       tooltips: {
-        icon: <AjnaCardDataRewardsTooltip {...{ isLoading, claimable, total, isOwner, owner }} />,
+        icon: <AjnaCardDataRewardsTooltip {...{ isLoading, rewards, isOwner, owner }} />,
       },
+      customTooltipWidth: ['300px', '400px'],
     }),
   }
 }

@@ -40,6 +40,7 @@ export interface OmniContentCardExtra {
     icon?: ReactNode
     value?: ReactNode
   }
+  customTooltipWidth?: string[]
 }
 
 export interface OmniContentCardDataWithModal {
@@ -75,6 +76,7 @@ export function OmniContentCard({
     icon: iconTooltip,
     value: valueTooltip,
   } = {},
+  customTooltipWidth,
   unit,
   value,
 }: OmniContentCardProps) {
@@ -95,7 +97,7 @@ export function OmniContentCard({
               ml: iconPosition === 'after' ? 1 : 0,
             }}
             tooltipSx={{
-              width: '300px',
+              width: customTooltipWidth || '300px',
               fontSize: 1,
               whiteSpace: 'initial',
               textAlign: 'left',
