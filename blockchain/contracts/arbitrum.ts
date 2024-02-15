@@ -178,7 +178,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'STYETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_STYETHDAI),
     'RBN-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RBNETH),
     'AJNA-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_AJNADAI),
-    'MRK-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_MKRDAI),
+    'MKR-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_MKRDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
