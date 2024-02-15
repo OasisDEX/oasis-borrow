@@ -54,8 +54,11 @@ export const supportedIlks = [
 
 export const tokensMainnet = {
   ...getCollateralTokens({ ...mainnet.maker.pips, ...mainnet.common }, supportedIlks),
+  AAVE: contractDesc(erc20, mainnet.common.AAVE),
+  BAL: contractDesc(erc20, mainnet.common.BAL),
   AJNA: contractDesc(erc20, mainnet.common.AJNA),
   CBETH: contractDesc(erc20, mainnet.common.CBETH),
+  CRV: contractDesc(erc20, mainnet.common.CRV),
   DAI: contractDesc(erc20, mainnet.common.DAI),
   ETH: contractDesc(erc20, mainnet.common.WETH),
   // See @oasisdex/addresses package for info

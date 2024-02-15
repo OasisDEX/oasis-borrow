@@ -8,6 +8,7 @@ import {
   DebtInput,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
@@ -17,6 +18,7 @@ import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
 import { SLIPPAGE_YIELD_LOOP } from 'features/userSettings/userSettings.constants'
 import { getLocalAppConfig } from 'helpers/config'
+import { parseLendingStrategies } from 'helpers/parseLendingStrategies'
 import { LendingProtocol } from 'lendingProtocols'
 import { FeaturesEnum } from 'types/config'
 
@@ -369,3 +371,9 @@ export const ethereumSparkV3Strategies: IStrategyConfig[] = [
   ...multiplyStategies,
   ...earnStrategies,
 ]
+
+export const ethereumSparkV3lendingStrategies: IStrategyConfig[] = parseLendingStrategies(
+  depositTokensConfigList,
+  NetworkNames.ethereumMainnet,
+  LendingProtocol.SparkV3,
+)

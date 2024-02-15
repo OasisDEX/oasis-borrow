@@ -15,6 +15,7 @@ interface OmniHeadlinePropsParams {
   quoteAddress?: string
   quoteIcon?: string
   quoteToken?: string
+  singleToken?: boolean
 }
 
 export function getOmniHeadlineProps({
@@ -26,13 +27,14 @@ export function getOmniHeadlineProps({
   quoteIcon,
   quoteToken,
   networkName,
+  singleToken = false,
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
-  const title = t('omni-kit.headline.title', {
+  const title = t(singleToken ? 'omni-kit.headline.title-single' : 'omni-kit.headline.title', {
     collateralToken,
     productType: upperFirst(productType),
-    quoteToken,
+    quoteToken: singleToken ? quoteToken : undefined,
   })
   const id = positionId ? ` #${positionId}` : ''
 
@@ -40,7 +42,7 @@ export function getOmniHeadlineProps({
     ...(collateralToken && quoteToken && collateralIcon && quoteIcon
       ? {
           header: `${title}${id}`,
-          tokens: [collateralIcon, quoteIcon],
+          tokens: singleToken ? [quoteIcon] : [collateralIcon, quoteIcon],
           protocol: {
             network: networkName,
             protocol,

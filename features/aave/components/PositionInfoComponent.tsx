@@ -15,7 +15,7 @@ import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType } from 'features/aave/types'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import {

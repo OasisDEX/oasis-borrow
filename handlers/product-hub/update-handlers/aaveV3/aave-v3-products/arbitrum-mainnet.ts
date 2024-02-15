@@ -1,8 +1,10 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 import { type ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
+import { getTokenGroup } from 'handlers/product-hub/helpers/get-token-group'
 import type { AaveProductHubItemSeed } from 'handlers/product-hub/update-handlers/aaveV3/aave-v3-products/types'
+import { parseLendingProducts } from 'helpers/parseLendingProducts'
 import { LendingProtocol } from 'lendingProtocols'
 
 const aaveSeed: AaveProductHubItemSeed[] = [
@@ -144,8 +146,15 @@ const multiplyProducts = aaveSeed
     }
   })
 
+const lendingProducts = parseLendingProducts(
+  depositTokensConfigList,
+  NetworkNames.arbitrumMainnet,
+  LendingProtocol.AaveV3,
+)
+
 export const aaveV3ArbitrumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
   ...borrowProducts,
   ...earnProducts,
   ...multiplyProducts,
+  ...lendingProducts,
 ]

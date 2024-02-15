@@ -45,6 +45,8 @@ interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
   isOracless?: boolean
+  singleToken?: boolean
+  lendingOnly?: boolean
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
@@ -76,6 +78,8 @@ export const OmniProductController = <Auction, History, Position>({
   quoteToken,
   settings,
   seoTags,
+  singleToken,
+  lendingOnly,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
 
@@ -172,17 +176,22 @@ export const OmniProductController = <Auction, History, Position>({
                 { slippage },
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
+                const pageSeoTitle =
+                  dpmPosition.collateralToken === dpmPosition.quoteToken
+                    ? 'seo.title-single-token'
+                    : 'seo.title-product-w-tokens'
 
                 return (
                   <>
                     <PageSEOTags
-                      title="seo.title-product-w-tokens"
+                      title={pageSeoTitle}
                       titleParams={{
                         product: t(seoTags.productKey, {
                           productType: upperFirst(castedProductType),
                         }),
                         protocol: upperFirst(protocol),
                         token1: dpmPosition.collateralToken,
+                        token: dpmPosition.collateralToken,
                         token2: dpmPosition.quoteToken,
                       }}
                       description={seoTags.descriptionKey}
@@ -216,6 +225,8 @@ export const OmniProductController = <Auction, History, Position>({
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
+                      singleToken={singleToken}
+                      lendingOnly={lendingOnly}
                       quoteIcon={tokensIcons.quoteToken}
                       quotePrecision={quotePrecision}
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}

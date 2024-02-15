@@ -11,7 +11,7 @@ import { Container, Flex, Grid } from 'theme-ui'
 
 function ContentCardLoadingState() {
   return (
-    <Grid gap="12px" sx={{ mt: '12px', px: 2, '&:nth-child(n+3)': { mb: '-2px' } }}>
+    <Grid gap="12px" sx={{ mt: '12px', px: 2, '&:nth-of-type(n+3)': { mb: '-2px' } }}>
       <Skeleton width="50%" />
       <Skeleton height="32px" />
       <Skeleton width="25%" sx={{ mb: 3 }} />
@@ -30,7 +30,7 @@ function ContentFooterLoadingState() {
         flexBasis: ['100%', null, null, '25%'],
         p: 3,
         pl: 0,
-        '&:nth-child(-n+3)': {
+        '&:nth-of-type(-n+3)': {
           flexGrow: 1,
         },
       }}
@@ -43,7 +43,7 @@ function ContentFooterLoadingState() {
 
 function SidebarLoadingState() {
   return (
-    <Flex sx={{ gap: '12px', flexDirection: 'column', '&:first-child': { mb: 3 } }}>
+    <Flex sx={{ gap: '12px', flexDirection: 'column', '&:first-of-type': { mb: 3 } }}>
       <Skeleton width="50%" />
       <Skeleton height="74px" />
     </Flex>

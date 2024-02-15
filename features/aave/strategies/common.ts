@@ -1,5 +1,7 @@
 import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import type { ManagePositionAvailableActions, ProductType, StrategyType } from 'features/aave/types'
+import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import type { FeaturesEnum } from 'types/config'
 
 export type ProductTypeConfig = {
@@ -15,6 +17,14 @@ export type TokenPairConfig = {
   collateral: string
   debt: string
   strategyType: StrategyType
+  productTypes: Partial<Record<ProductType, ProductTypeConfig>>
+}
+
+export type TokenDepositConfig = {
+  deposit: string
+  strategyType: StrategyType
+  networkId: NetworkIds
+  protocol: AaveLendingProtocol | SparkLendingProtocol
   productTypes: Partial<Record<ProductType, ProductTypeConfig>>
 }
 

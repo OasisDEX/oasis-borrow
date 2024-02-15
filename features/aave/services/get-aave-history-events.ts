@@ -3,7 +3,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import type {
   AaveCumulativeData,
   AaveHistoryEvent,
-} from 'features/omni-kit/protocols/aave/history/types'
+} from 'features/omni-kit/protocols/aave-like/history/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
 

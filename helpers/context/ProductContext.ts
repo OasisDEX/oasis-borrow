@@ -651,11 +651,28 @@ export function setupProductContext(
       ).join('-')}`,
   )
 
+  const aaveV3LikePosition$ = memoize(
+    curry(getMorphoPosition$)(onEveryBlock$),
+    (
+      collateralPrice: BigNumber,
+      quotePrice: BigNumber,
+      dpmPositionData: DpmPositionData,
+      network: NetworkIds,
+      tokensPrecision?: OmniTokensPrecision,
+    ) =>
+      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+        .decimalPlaces(2)
+        .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
+        tokensPrecision ?? {},
+      ).join('-')}`,
+  )
+
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
     // aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
     aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
+    aaveV3LikePosition$,
     addGasEstimation$,
     ajnaPosition$,
     allowance$,

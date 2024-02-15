@@ -2,7 +2,7 @@ export type { AaveContext } from './aave-context'
 export { setupAaveV2Context } from './setup-aave-v2-context'
 export { setupAaveV3Context } from './setup-aave-v3-context'
 export {
-  strategies,
+  aaveLikeStrategies as strategies,
   aaveStrategiesList,
   getAaveStrategy,
   loadStrategyFromTokens,

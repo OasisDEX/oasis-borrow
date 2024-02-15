@@ -1,5 +1,8 @@
-import type { NetworkIds } from 'blockchain/networks'
-import type { SparkV3UserAccountData, SparkV3UserAccountDataParameters } from 'blockchain/spark-v3'
+import type {
+  SparkV3SupportedNetwork,
+  SparkV3UserAccountData,
+  SparkV3UserAccountDataParameters,
+} from 'blockchain/spark-v3'
 import type {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
@@ -7,7 +10,7 @@ import type {
 
 export function mapSparkUserAccountData$(
   blockchainCall: (params: SparkV3UserAccountDataParameters) => Promise<SparkV3UserAccountData>,
-  args: AaveLikeUserAccountDataArgs & { networkId: NetworkIds.MAINNET },
+  args: AaveLikeUserAccountDataArgs & { networkId: SparkV3SupportedNetwork },
 ): Promise<AaveLikeUserAccountData> {
   return blockchainCall(args).then((userAccountData) => {
     return {
@@ -17,6 +20,7 @@ export function mapSparkUserAccountData$(
       currentLiquidationThreshold: userAccountData.currentLiquidationThreshold,
       ltv: userAccountData.ltv,
       healthFactor: userAccountData.healthFactor,
+      address: args.address,
     }
   })
 }

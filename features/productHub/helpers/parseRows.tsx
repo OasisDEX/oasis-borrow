@@ -14,22 +14,22 @@ export function parseRows(
   product: ProductHubProductType,
   chainId?: NetworkIds,
 ): AssetsTableRowData[] {
-  return rows.map((row) => {
+  return rows.map((productHubItem) => {
     const { depositToken, label, network, primaryToken, protocol, reverseTokens, secondaryToken } =
-      row
+      productHubItem
     const icons = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
     const asset = product === ProductHubProductType.Earn ? depositToken || primaryToken : label
 
     if (reverseTokens) icons.reverse()
 
-    const url = getActionUrl({ ...row, networkId: chainId, product: [product] })
+    const url = getActionUrl({ ...productHubItem, networkId: chainId, product: [product] })
     const urlDisabled = url === '/'
 
     return {
       [product === ProductHubProductType.Earn ? 'depositToken' : 'collateralDebt']: (
         <AssetsTableDataCellAsset asset={asset} icons={icons} />
       ),
-      ...parseProduct(row, product),
+      ...parseProduct(productHubItem, product),
       protocolNetwork: (
         <ProtocolLabel
           network={Array.isArray(network) ? network[0] : network}

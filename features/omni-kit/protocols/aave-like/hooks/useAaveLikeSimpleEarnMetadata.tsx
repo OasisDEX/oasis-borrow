@@ -1,0 +1,91 @@
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
+import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { SimpleEarnFooter } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnFooter'
+import { SimpleEarnHeader } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnHeader'
+import { SimpleEarnOverview } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnOverview'
+import { useAaveLikeSidebarTitle } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSidebarTitle'
+import { OmniProductType } from 'features/omni-kit/types'
+import { useAppConfig } from 'helpers/config'
+import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+import React from 'react'
+import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
+
+export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) => {
+  const {
+    AaveLikeSimpleEarnSafetySwitch: aaveLikeSimpleEarnSafetySwitchOn,
+    AaveLikeSimpleEarnSuppressValidation: aaveLikeSimpleEarnSuppressValidation,
+  } = useAppConfig('features')
+  const {
+    environment: { productType },
+    steps: { currentStep },
+  } = useOmniGeneralContext()
+
+  const validations = {
+    isFormValid: true,
+    hasErrors: false,
+    isFormFrozen: false,
+    errors: [],
+    warnings: [],
+    notices: [],
+    successes: [],
+  }
+
+  const notifications: DetailsSectionNotificationItem[] = []
+
+  switch (productType) {
+    case OmniProductType.Earn:
+      const TempFormOrder = () => <div>Form order</div>
+
+      return {
+        notifications,
+        validations,
+        handlers: {
+          customReset: () => null,
+          txSuccessEarnHandler: () => null,
+        },
+        filters: {
+          flowStateFilter: (event: CreatePositionEvent) =>
+            extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.AaveV3 &&
+            (event.args.positionType.toLocaleLowerCase() as OmniProductType) ===
+              OmniProductType.Earn,
+        },
+        values: {
+          interestRate: zero,
+          isFormEmpty: productContext.form.state.depositAmount?.eq(zero) ?? false,
+          afterBuyingPower: zero,
+          shouldShowDynamicLtv: () => true,
+          debtMin: zero,
+          debtMax: zero,
+          changeVariant: '',
+          paybackMax: zero,
+          sidebarTitle: useAaveLikeSidebarTitle({
+            currentStep,
+            productType,
+          }),
+          footerColumns: 3,
+          earnWithdrawMax: zero,
+        },
+        elements: {
+          faq: <></>,
+          highlighterOrderInformation: undefined,
+          overviewHeader: <SimpleEarnHeader />,
+          overviewContent: <SimpleEarnOverview />,
+          overviewFooter: <SimpleEarnFooter />,
+          earnFormOrder: TempFormOrder,
+          earnFormOrderAsElement: () => <TempFormOrder />,
+        },
+        featureToggles: {
+          safetySwitch: aaveLikeSimpleEarnSafetySwitchOn,
+          suppressValidation: aaveLikeSimpleEarnSuppressValidation,
+        },
+      } as SupplyMetadata
+
+    case OmniProductType.Borrow:
+    case OmniProductType.Multiply:
+    default:
+      throw new Error('Aave Simple deposit does not support borrow/multiply')
+  }
+}

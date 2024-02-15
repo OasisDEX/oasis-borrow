@@ -35,7 +35,6 @@ export function tokenBalance({ token, account, networkId }: TokenBalanceArgs): P
   const contracts = getNetworkContracts(networkId)
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
-
   const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
   return contract.balanceOf(account).then((result) => {
     return amountFromWei(new BigNumber(result.toString()), token)
