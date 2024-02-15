@@ -55,7 +55,10 @@ export const getAjnaMinMaxAndRange = ({
   }
 
   // Generate ranges from lup to max
-  const lupToMaxRange = [lowestUtilizedPrice]
+  const lupToMaxRange = [
+    // Condition to handle special case since LUP can be potentially lower than HTP for a while
+    lowestUtilizedPrice.gt(highestThresholdPrice) ? lowestUtilizedPrice : highestThresholdPrice,
+  ]
 
   while (lupToMaxRange[lupToMaxRange.length - 1].lt(lupToMaxRange[0].times(one.plus(lupOffset)))) {
     lupToMaxRange.push(lupToMaxRange[lupToMaxRange.length - 1].times(1.005))
