@@ -1,8 +1,10 @@
+import { getOnChainPosition } from 'actions/aave-like'
 import type BigNumber from 'bignumber.js'
 import type { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteOperationExecutorTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
+import { ethNullAddress } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
@@ -28,7 +30,7 @@ import type {
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
-import { combineLatest, iif, of } from 'rxjs'
+import { combineLatest, from, iif, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 
@@ -204,6 +206,22 @@ export function getOpenAaveV2PositionStateMachineServices(
     savePositionToDb$: () => {
       // TODO: replace with actual implementation.
       return of({ type: 'SWITCH_SUCCESS' })
+    },
+    currentPosition$: (context) => {
+      return from(
+        getOnChainPosition({
+          networkId: context.strategyConfig.networkId,
+          proxyAddress: ethNullAddress,
+          debtToken: context.tokens.debt,
+          protocol: context.strategyConfig.protocol,
+          collateralToken: context.tokens.collateral,
+        }),
+      ).pipe(
+        map((position) => ({
+          type: 'CURRENT_POSITION_CHANGED',
+          currentPosition: position,
+        })),
+      )
     },
     reserveData$: xstateReserveDataService(aaveReserveData$),
   }
