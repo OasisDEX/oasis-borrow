@@ -14,7 +14,7 @@ import {
   productHubEmptyPoolWeeklyApyTooltip,
   productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, shortenTokenSymbol } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
 export function parsePoolResponse(
@@ -61,6 +61,9 @@ export function parsePoolResponse(
         const fee = interestRate.toString()
         const weeklyNetApy = lendApr.toString()
 
+        const resolvedCollateralToken = shortenTokenSymbol({ token: collateralToken })
+        const resolvedQuoteToken = shortenTokenSymbol({ token: collateralToken })
+
         return {
           ...(isPoolNotEmpty &&
             !isOracless && {
@@ -71,7 +74,7 @@ export function parsePoolResponse(
           }),
           liquidity,
           earnStrategy: EarnStrategies.liquidity_provision,
-          earnStrategyDescription: `${collateralToken}/${quoteToken} LP`,
+          earnStrategyDescription: `${resolvedCollateralToken}/${resolvedQuoteToken} LP`,
           fee,
           managementType: 'active',
           networkId,

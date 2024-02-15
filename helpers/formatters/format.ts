@@ -150,6 +150,20 @@ export function formatAddress(address: string, first: number = 4, last: number =
   return `${address.slice(0, first)}...${address.slice(-last)}`
 }
 
+export function shortenTokenSymbol({
+  token,
+  length = 15,
+  first = 3,
+  last = 3,
+}: {
+  token: string
+  length?: number
+  first?: number
+  last?: number
+}) {
+  return token.length > length ? `${token.slice(0, first)}...${token.slice(-last)}` : token
+}
+
 export function formatBigNumber(amount: BigNumber, digits: number) {
   return amount.dp(digits, BigNumber.ROUND_DOWN).toString()
 }
