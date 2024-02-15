@@ -198,6 +198,7 @@ export const useProductHubFilters = ({
         initialValues={queryString.protocol || initialProtocol}
         label={t('product-hub.filters.protocols')}
         options={productHubProtocolFilter}
+        fitContents
         onChange={(value) => {
           const protocol = value as LendingProtocol[]
 
