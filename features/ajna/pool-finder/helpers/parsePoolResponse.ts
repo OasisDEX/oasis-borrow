@@ -62,7 +62,7 @@ export function parsePoolResponse(
         const weeklyNetApy = lendApr.toString()
 
         const resolvedCollateralToken = shortenTokenSymbol({ token: collateralToken })
-        const resolvedQuoteToken = shortenTokenSymbol({ token: collateralToken })
+        const resolvedQuoteToken = shortenTokenSymbol({ token: quoteToken })
 
         return {
           ...(isPoolNotEmpty &&
