@@ -61,7 +61,7 @@ export const getReserveConfigurationDataCall = (dpm: DpmSubgraphData, token: str
 }
 
 interface CommonDataMapperParams {
-  automations?: AutomationResponse[number]
+  automations?: AutomationResponse[number]['triggers'][]
   dpm: DpmSubgraphData
   positionIdAsString?: boolean
   prices: TokensPricesList
@@ -130,7 +130,7 @@ export const commonDataMapper = ({
         ...(dpm.positionType !== OmniProductType.Earn
           ? {
               ...getPositionsAutomations({
-                triggers: automations ? [automations.triggers] : [],
+                triggers: automations ?? [],
                 defaultList: !['AAVE', 'Spark'].includes(dpm.protocol) ? emptyAutomations : {},
               }),
             }
