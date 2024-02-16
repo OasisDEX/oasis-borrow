@@ -32,7 +32,6 @@ export const MorphoDetailsSectionContent: FC = () => {
       quotePrice,
       quoteToken,
       isOpening,
-      isProxyWithManyPositions,
     },
   } = useOmniGeneralContext()
   const {
@@ -139,7 +138,7 @@ export const MorphoDetailsSectionContent: FC = () => {
   const netValueContentCardCommonData = useOmniCardDataNetValue({
     afterNetValue,
     netValue,
-    ...(!isOpening && !isProxyWithManyPositions && {}),
+    ...(!isOpening && {}),
   })
 
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
@@ -150,9 +149,9 @@ export const MorphoDetailsSectionContent: FC = () => {
             cumulativeWithdrawUSD: castedPosition.pnl.cumulatives.borrowCumulativeWithdrawUSD,
             cumulativeFeesUSD: castedPosition.pnl.cumulatives.borrowCumulativeFeesUSD,
             cumulativeWithdrawInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeCollateralWithdraw,
+              castedPosition.pnl.cumulatives.borrowCumulativeWithdrawInCollateralToken,
             cumulativeDepositInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeCollateralDeposit,
+              castedPosition.pnl.cumulatives.borrowCumulativeDepositInCollateralToken,
             cumulativeFeesInCollateralToken:
               castedPosition.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
             cumulativeWithdrawInQuoteToken:
