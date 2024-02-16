@@ -449,13 +449,17 @@ export function AaveManagePositionStopLossLambdaSidebar({
 
   const showSecondaryButton =
     (transactionStep === 'prepare' && isStopLossEnabled && action !== TriggerAction.Remove) ||
-    (action === TriggerAction.Remove && transactionStep !== 'finished')
+    (action === TriggerAction.Remove && transactionStep !== 'finished') ||
+    ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
 
   const secondaryButtonLabel = () => {
     if (transactionStep === 'prepare' && isStopLossEnabled) {
       return t('system.remove-trigger')
     }
-    if (action === TriggerAction.Remove) {
+    if (
+      action === TriggerAction.Remove ||
+      ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
+    ) {
       return t('go-back')
     }
     return ''
@@ -464,7 +468,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     if (transactionStep === 'prepare' && isStopLossEnabled) {
       setTransactionStep('preparedRemove')
     }
-    if (transactionStep === 'preparedRemove') {
+    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
       setTransactionStep('prepare')
     }
   }
