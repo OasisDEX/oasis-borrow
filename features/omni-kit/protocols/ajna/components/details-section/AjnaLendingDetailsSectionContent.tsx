@@ -50,7 +50,6 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   collateralToken,
   isOpening,
   isOracless,
-  isProxyWithManyPositions,
   isShort,
   isSimulationLoading,
   position,
@@ -156,19 +155,19 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const netValueContentCardCommonData = useOmniCardDataNetValue({
     afterNetValue,
     netValue,
-    ...(!isOpening && !isProxyWithManyPositions && {}),
+    ...(!isOpening && {}),
   })
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
-    !isOpening && !isProxyWithManyPositions
+    !isOpening
       ? getOmniNetValuePnlData({
           cumulatives: {
             cumulativeDepositUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD,
             cumulativeWithdrawUSD: position.pnl.cumulatives.borrowCumulativeWithdrawUSD,
             cumulativeFeesUSD: position.pnl.cumulatives.borrowCumulativeFeesUSD,
             cumulativeWithdrawInCollateralToken:
-              position.pnl.cumulatives.borrowCumulativeCollateralWithdraw,
+              position.pnl.cumulatives.borrowCumulativeWithdrawInCollateralToken,
             cumulativeDepositInCollateralToken:
-              position.pnl.cumulatives.borrowCumulativeCollateralDeposit,
+              position.pnl.cumulatives.borrowCumulativeDepositInCollateralToken,
             cumulativeFeesInCollateralToken:
               position.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
             cumulativeWithdrawInQuoteToken:
