@@ -1,3 +1,4 @@
+import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -70,8 +71,15 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
               autoSell: { enabled: false },
               stopLoss: { enabled: false },
               takeProfit: { enabled: false },
-              ...getPositionsAutomations({ triggers } as {
-                triggers: AutomationResponse[number]['triggers'][]
+              ...getPositionsAutomations({
+                triggers: triggers.map((trigger) => ({
+                  ...trigger,
+                  ...decodeTriggerDataAsJson(
+                    trigger.commandAddress,
+                    NetworkIds.MAINNET,
+                    trigger.triggerData,
+                  ),
+                })) as unknown as AutomationResponse[number]['triggers'][],
               }),
             }),
           },
