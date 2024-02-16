@@ -55,7 +55,7 @@ type StopLossSidebarStates =
   | 'removeInProgress'
   | 'finished'
 
-const refreshDataTime = 5 * 1000
+const refreshDataTime = 10 * 1000
 
 export function AaveManagePositionStopLossLambdaSidebar({
   state,
@@ -151,9 +151,9 @@ export function AaveManagePositionStopLossLambdaSidebar({
 
   useEffect(() => {
     if (refreshingTriggerData) {
-      setRefreshingTriggerData(false)
-      onTxFinished()
       setTimeout(() => {
+        setRefreshingTriggerData(false)
+        onTxFinished()
         if (stopLossLambdaData.triggerId !== triggerId) {
           setTriggerId(stopLossLambdaData.triggerId ?? '0')
           setRefreshingTriggerData(false)
@@ -393,7 +393,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     void executeCall()
       .then(() => {
         setTransactionStep('finished')
-        setRefreshingTriggerData(true)
+        action !== TriggerAction.Remove && setRefreshingTriggerData(true)
       })
       .catch((error) => {
         console.error('error', error)
@@ -501,7 +501,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
       finished: sidebarFinishedContent,
     }[transactionStep],
     primaryButton: {
-      isLoading: isGettingStopLossTx,
+      isLoading: isGettingStopLossTx || refreshingTriggerData,
       disabled: isDisabled,
       label: primaryButtonLabel(),
       action: primaryButtonAction,
