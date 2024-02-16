@@ -146,7 +146,7 @@ export function AjnaRewardCard() {
     <Box
       sx={{
         position: 'relative',
-        width: '420px',
+        maxWidth: '420px',
         mx: 'auto',
         p: '24px',
         textAlign: 'center',
