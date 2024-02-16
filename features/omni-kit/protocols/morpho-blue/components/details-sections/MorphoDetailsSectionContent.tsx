@@ -138,7 +138,6 @@ export const MorphoDetailsSectionContent: FC = () => {
   const netValueContentCardCommonData = useOmniCardDataNetValue({
     afterNetValue,
     netValue,
-    ...(!isOpening && {}),
   })
 
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(

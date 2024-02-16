@@ -155,7 +155,6 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const netValueContentCardCommonData = useOmniCardDataNetValue({
     afterNetValue,
     netValue,
-    ...(!isOpening && {}),
   })
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
     !isOpening
