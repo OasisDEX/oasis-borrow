@@ -1,12 +1,13 @@
 import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
+import { NetworkIds } from 'blockchain/networks'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { useAaveContext } from 'features/aave/aave-context-provider'
 import { AaveStopLossManageDetails } from 'features/aave/components/AaveStopLossManageDetails'
 import { AutoSellBanner, StopLossBanner } from 'features/aave/components/banners'
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
-import { supportsAaveStopLoss } from 'features/aave/helpers'
 import { useProtectionSidebarDropdown } from 'features/aave/hooks'
 import {
   useManageAaveStateMachineContext,
@@ -77,6 +78,12 @@ function getAutoSellDetailsLayoutProps(
 export function ProtectionControlWrapper() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
+  const {
+    AaveV3ProtectionLambdaBase,
+    AaveV3ProtectionLambdaArbitrum,
+    AaveV3ProtectionLambdaOptimism,
+    AaveV3ProtectionLambdaEthereum,
+  } = getLocalAppConfig('features')
 
   const triggersStateMachine = useTriggersAaveStateMachineContext()
   const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
@@ -118,10 +125,12 @@ export function ProtectionControlWrapper() {
 
   const isAaveV3 = state.context.strategyConfig.protocol === LendingProtocol.AaveV3
   const isSpark = state.context.strategyConfig.protocol === LendingProtocol.SparkV3
-  const isAaveV3LambdaEnabled = supportsAaveStopLoss(
-    state.context.strategyConfig.protocol,
-    state.context.strategyConfig.networkId,
-  )
+  const isAaveV3LambdaEnabled = {
+    [NetworkIds.MAINNET]: AaveV3ProtectionLambdaEthereum,
+    [NetworkIds.OPTIMISMMAINNET]: AaveV3ProtectionLambdaOptimism,
+    [NetworkIds.ARBITRUMMAINNET]: AaveV3ProtectionLambdaArbitrum,
+    [NetworkIds.BASEMAINNET]: AaveV3ProtectionLambdaBase,
+  }[state.context.strategyConfig.networkId as AaveV3SupportedNetwork]
   const isSparkLambdaEnabled = getLocalAppConfig('features').SparkProtectionLambdaEthereum
 
   if (triggersState.context.protectionCurrentView !== 'stop-loss') {
