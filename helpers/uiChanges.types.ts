@@ -30,7 +30,7 @@ import type { TabChange, TabChangeAction } from 'features/generalManageVault/Tab
 import type {
   NotificationChange,
   NotificationChangeAction,
-} from 'features/notifications/notificationChange'
+} from 'features/deprecated/notifications/notificationChange'
 import type { SwapWidgetChangeAction, SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
 import type { Observable } from 'rxjs'
 

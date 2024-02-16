@@ -19,7 +19,7 @@ import {
 } from 'features/follow/common/followedVaultsLimitReached'
 import { tabChangeReducer } from 'features/generalManageVault/TabChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
-import { NOTIFICATION_CHANGE, notificationReducer } from 'features/notifications/notificationChange'
+import { NOTIFICATION_CHANGE, notificationReducer } from 'features/deprecated/notifications/notificationChange'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   swapWidgetChangeReducer,
