@@ -47,7 +47,9 @@ export function OpenAaveStopLossInformationLambda({
   const collateralDuringLiquidation = getCollateralDuringLiquidation({
     lockedCollateral,
     debt,
-    liquidationPrice: stopLossParams.liquidationPrice,
+    liquidationPrice: stopLossParams.liquidationPrice.eq(zero)
+      ? one
+      : stopLossParams.liquidationPrice,
     liquidationPenalty: strategyInfo.liquidationBonus,
   })
 

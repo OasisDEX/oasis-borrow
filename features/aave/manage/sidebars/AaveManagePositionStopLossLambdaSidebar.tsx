@@ -55,6 +55,8 @@ type StopLossSidebarStates =
   | 'removeInProgress'
   | 'finished'
 
+const refreshDataTime = 10 * 1000
+
 export function AaveManagePositionStopLossLambdaSidebar({
   state,
   send,
@@ -73,6 +75,8 @@ export function AaveManagePositionStopLossLambdaSidebar({
   onTxFinished: () => void
 }) {
   const { t } = useTranslation()
+  const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
+  const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<StopLossSidebarStates>('prepare')
   const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const { strategyConfig } = state.context
@@ -144,6 +148,21 @@ export function AaveManagePositionStopLossLambdaSidebar({
       })
     }
   }, [])
+
+  useEffect(() => {
+    if (refreshingTriggerData) {
+      setTimeout(() => {
+        setRefreshingTriggerData(false)
+        onTxFinished()
+        if (stopLossLambdaData.triggerId !== triggerId) {
+          setTriggerId(stopLossLambdaData.triggerId ?? '0')
+          setRefreshingTriggerData(false)
+        } else {
+          setRefreshingTriggerData(true)
+        }
+      }, refreshDataTime)
+    }
+  }, [refreshingTriggerData])
 
   const stopLossTranslationParams = {
     feature: t(sidebarAutomationFeatureCopyMap['stopLoss']),
@@ -374,6 +393,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     void executeCall()
       .then(() => {
         setTransactionStep('finished')
+        action !== TriggerAction.Remove && setRefreshingTriggerData(true)
       })
       .catch((error) => {
         console.error('error', error)
@@ -429,13 +449,17 @@ export function AaveManagePositionStopLossLambdaSidebar({
 
   const showSecondaryButton =
     (transactionStep === 'prepare' && isStopLossEnabled && action !== TriggerAction.Remove) ||
-    (action === TriggerAction.Remove && transactionStep !== 'finished')
+    (action === TriggerAction.Remove && transactionStep !== 'finished') ||
+    ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
 
   const secondaryButtonLabel = () => {
     if (transactionStep === 'prepare' && isStopLossEnabled) {
       return t('system.remove-trigger')
     }
-    if (action === TriggerAction.Remove) {
+    if (
+      action === TriggerAction.Remove ||
+      ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
+    ) {
       return t('go-back')
     }
     return ''
@@ -444,7 +468,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     if (transactionStep === 'prepare' && isStopLossEnabled) {
       setTransactionStep('preparedRemove')
     }
-    if (transactionStep === 'preparedRemove') {
+    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
       setTransactionStep('prepare')
     }
   }
@@ -481,7 +505,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
       finished: sidebarFinishedContent,
     }[transactionStep],
     primaryButton: {
-      isLoading: isGettingStopLossTx,
+      isLoading: isGettingStopLossTx || refreshingTriggerData,
       disabled: isDisabled,
       label: primaryButtonLabel(),
       action: primaryButtonAction,
