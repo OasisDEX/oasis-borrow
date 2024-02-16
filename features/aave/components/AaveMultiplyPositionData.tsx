@@ -258,13 +258,6 @@ export function AaveMultiplyPositionData({
 
   const netValueContentCardAaveData = useAaveCardDataNetValueLending(netValuePnlModalData)
 
-  console.log('asd123qwe', {
-    isAutomationAvailable,
-    stopLossLevel,
-    isStopLossEnabled,
-    isAutomationDataLoaded,
-  })
-
   return (
     <Grid>
       {stopLossTriggered && (
