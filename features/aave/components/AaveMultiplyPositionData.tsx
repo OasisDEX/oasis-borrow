@@ -1,5 +1,4 @@
 import type { IPosition } from '@oasisdex/dma-library'
-import { useActor } from '@xstate/react'
 import { getCurrentPositionLibCallData } from 'actions/aave-like/helpers'
 import type BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
@@ -10,8 +9,6 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
-import { useTriggersAaveStateMachineContext } from 'features/aave/manage/contexts'
-import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
@@ -84,9 +81,6 @@ export function AaveMultiplyPositionData({
     },
     automationTriggersData: { isAutomationDataLoaded },
   } = useAutomationContext()
-  const triggersStateMachine = useTriggersAaveStateMachineContext()
-  const [triggersState] = useActor(triggersStateMachine)
-  const stopLossLambdaData = mapStopLossFromLambda(triggersState.context.currentTriggers.triggers)
   const currentPositionThings = calculateViewValuesForPosition(
     currentPosition,
     collateralTokenPrice,
@@ -277,10 +271,9 @@ export function AaveMultiplyPositionData({
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={nextPosition?.category.maxLoanToValue}
               automation={{
-                isAutomationAvailable:
-                  !!stopLossLambdaData.stopLossTriggerName ?? isAutomationAvailable,
-                stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2) || stopLossLevel, // still needs to be divided by 100
-                isStopLossEnabled: !!stopLossLambdaData.stopLossTriggerName ?? isStopLossEnabled,
+                isAutomationAvailable,
+                stopLossLevel,
+                isStopLossEnabled,
                 isAutomationDataLoaded,
               }}
             />
