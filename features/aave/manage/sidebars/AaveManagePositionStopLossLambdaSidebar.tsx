@@ -55,6 +55,8 @@ type StopLossSidebarStates =
   | 'removeInProgress'
   | 'finished'
 
+const refreshDataTime = 5 * 1000
+
 export function AaveManagePositionStopLossLambdaSidebar({
   state,
   send,
@@ -73,6 +75,8 @@ export function AaveManagePositionStopLossLambdaSidebar({
   onTxFinished: () => void
 }) {
   const { t } = useTranslation()
+  const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
+  const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<StopLossSidebarStates>('prepare')
   const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const { strategyConfig } = state.context
@@ -144,6 +148,21 @@ export function AaveManagePositionStopLossLambdaSidebar({
       })
     }
   }, [])
+
+  useEffect(() => {
+    if (refreshingTriggerData) {
+      setRefreshingTriggerData(false)
+      onTxFinished()
+      setTimeout(() => {
+        if (stopLossLambdaData.triggerId !== triggerId) {
+          setTriggerId(stopLossLambdaData.triggerId ?? '0')
+          setRefreshingTriggerData(false)
+        } else {
+          setRefreshingTriggerData(true)
+        }
+      }, refreshDataTime)
+    }
+  }, [refreshingTriggerData])
 
   const stopLossTranslationParams = {
     feature: t(sidebarAutomationFeatureCopyMap['stopLoss']),
@@ -374,6 +393,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     void executeCall()
       .then(() => {
         setTransactionStep('finished')
+        setRefreshingTriggerData(true)
       })
       .catch((error) => {
         console.error('error', error)

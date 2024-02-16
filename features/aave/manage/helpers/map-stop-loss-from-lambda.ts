@@ -33,6 +33,7 @@ export const mapStopLossFromLambda = (triggers?: StopLossTriggers) => {
         ? ('debt' as const)
         : ('collateral' as const),
       stopLossData: trigger,
+      triggerId: trigger.triggerId,
       stopLossTriggerName,
     }
   }
