@@ -14,10 +14,6 @@ import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protecti
 import { formChangeReducer } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
 import {
-  NOTIFICATION_CHANGE,
-  notificationReducer,
-} from 'features/deprecated/notifications/notificationChange'
-import {
   FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   followedVaultsLimitReachedChangeReducer,
 } from 'features/follow/common/followedVaultsLimitReached'

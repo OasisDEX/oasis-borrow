@@ -1,5 +1,5 @@
-import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { NotificationsCenter } from 'components/deprecated/notifications/NotificationsCenter'
+import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { getUnreadNotificationCount } from 'features/deprecated/notifications/helpers'
 import type { NotificationChange } from 'features/deprecated/notifications/notificationChange'
 import { NOTIFICATION_CHANGE } from 'features/deprecated/notifications/notificationChange'
