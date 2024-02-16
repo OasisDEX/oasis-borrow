@@ -1,4 +1,5 @@
 import type { IPosition } from '@oasisdex/dma-library'
+import { normalizeValue } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
 import type BigNumber from 'bignumber.js'
 
@@ -42,9 +43,9 @@ export function calculateViewValuesForPosition(
   const profitFromProvidingCollateral = collateralLiquidityRate
     .times(collateral)
     .times(collateralTokenPrice)
-  const netBorrowCostPercentage = costOfBorrowingDebt
-    .minus(profitFromProvidingCollateral)
-    .div(netValue)
+  const netBorrowCostPercentage = normalizeValue(
+    costOfBorrowingDebt.minus(profitFromProvidingCollateral).div(netValue),
+  )
 
   return {
     collateral,
