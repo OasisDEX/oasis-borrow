@@ -8,6 +8,7 @@ import {
   getMakerPositionInfo,
 } from 'handlers/portfolio/positions/handlers/maker/helpers'
 import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
+import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -69,7 +70,9 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
               autoSell: { enabled: false },
               stopLoss: { enabled: false },
               takeProfit: { enabled: false },
-              ...getPositionsAutomations({ triggers }),
+              ...getPositionsAutomations({ triggers } as {
+                triggers: AutomationResponse[number]['triggers'][]
+              }),
             }),
           },
           details: getMakerPositionDetails({
