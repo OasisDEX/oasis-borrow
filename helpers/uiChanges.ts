@@ -14,12 +14,15 @@ import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protecti
 import { formChangeReducer } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
 import {
+  NOTIFICATION_CHANGE,
+  notificationReducer,
+} from 'features/deprecated/notifications/notificationChange'
+import {
   FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   followedVaultsLimitReachedChangeReducer,
 } from 'features/follow/common/followedVaultsLimitReached'
 import { tabChangeReducer } from 'features/generalManageVault/TabChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
-import { NOTIFICATION_CHANGE, notificationReducer } from 'features/deprecated/notifications/notificationChange'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   swapWidgetChangeReducer,
@@ -43,7 +46,6 @@ function initializeUIChanges() {
     CONSTANT_MULTIPLE_FORM_CHANGE,
     constantMultipleFormChangeReducer,
   )
-  uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
   uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
   uiChangesSubject.configureSubject(

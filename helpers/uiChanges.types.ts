@@ -23,14 +23,14 @@ import type {
   StopLossFormChangeAction,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import type {
+  NotificationChange,
+  NotificationChangeAction,
+} from 'features/deprecated/notifications/notificationChange'
+import type {
   FollowedVaultsLimitReachedChange,
   FollowedVaultsLimitReachedChangeAction,
 } from 'features/follow/common/followedVaultsLimitReached'
 import type { TabChange, TabChangeAction } from 'features/generalManageVault/TabChange.types'
-import type {
-  NotificationChange,
-  NotificationChangeAction,
-} from 'features/deprecated/notifications/notificationChange'
 import type { SwapWidgetChangeAction, SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
 import type { Observable } from 'rxjs'
 
