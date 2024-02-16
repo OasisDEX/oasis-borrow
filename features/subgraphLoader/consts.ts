@@ -469,7 +469,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
             latestInterestRates {
               rate
             }
-            liquidataionLTV
+            liquidationRatio
             debtToken {
               address
               decimals

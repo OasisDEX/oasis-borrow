@@ -13,7 +13,7 @@ export interface MorphoDpmPositionsMarket {
       rate: string
     },
   ]
-  liquidataionLTV: string
+  liquidationRatio: string
   debtToken: {
     address: string
     decimals: string
