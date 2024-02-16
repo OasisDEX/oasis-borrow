@@ -97,25 +97,27 @@ export const RewardsModal: FC<RewardsModalProps> = ({
           onClick={() => setExpanded((prev) => !prev)}
         >
           <Flex sx={{ alignItems: 'center' }}>
-            {t('omni-kit.content-card.rewards.modal-value-1')}
-            <Icon size={20} icon={tokenIcon} sx={{ mx: 1 }} />
-            <Text
-              as="span"
-              className="withGradient"
-              sx={{
-                backgroundImage,
-                WebkitBackgroundClip: 'text',
-                backgroundSize: '100% 100%',
-                backgroundPosition: '0 0',
-                backgroundRepeat: 'no-repeat',
-                backgroundColor: gradient[0],
-                textFillColor: 'transparent',
-                mr: 1,
-              }}
-            >
-              {formatted.claimable}
+            <Text as="p">
+              {t('omni-kit.content-card.rewards.modal-value-1')}
+              <Icon size={20} icon={tokenIcon} sx={{ mx: 1, verticalAlign: 'middle', mb: '3px' }} />
+              <Text
+                as="span"
+                className="withGradient"
+                sx={{
+                  backgroundImage,
+                  WebkitBackgroundClip: 'text',
+                  backgroundSize: '100% 100%',
+                  backgroundPosition: '0 0',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundColor: gradient[0],
+                  textFillColor: 'transparent',
+                  mr: 1,
+                }}
+              >
+                {formatted.claimable}
+              </Text>
+              {t('omni-kit.content-card.rewards.modal-value-2')}
             </Text>
-            {t('omni-kit.content-card.rewards.modal-value-2')}
           </Flex>
           <Flex sx={{ alignItems: 'center' }}>
             <Icon size={12} icon={expanded ? chevron_up : chevron_down} sx={{ mx: 1 }} />
