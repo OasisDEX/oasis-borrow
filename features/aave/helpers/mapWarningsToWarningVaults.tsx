@@ -29,6 +29,8 @@ export function mapWarningsToWarningVaults(
           return 'autoBuyTargetCloseToStopLossTrigger'
         case TriggersApiWarningCode.AutoSellWithNoMinPriceThreshold:
           return 'settingAutoSellTriggerWithNoThreshold'
+        case TriggersApiWarningCode.StopLossTriggeredImmediately:
+          return 'stopLossTriggeredImmediately'
         default:
           return undefined
       }

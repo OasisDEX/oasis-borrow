@@ -3,6 +3,7 @@ import type BigNumber from 'bignumber.js'
 import { PositionLoadingOverviewState } from 'components/vault/PositionLoadingState'
 import { useAaveContext } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
+import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import type { IStrategyConfig } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
@@ -10,6 +11,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
+import type { Sender, StateFrom } from 'xstate'
 
 import { AaveMultiplyPositionData } from './AaveMultiplyPositionData'
 
@@ -23,6 +25,8 @@ export type AaveManageComponentProps = {
   debtPrice?: BigNumber
   dpmProxy?: string
   cumulatives?: AaveCumulativeData
+  triggersState?: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent?: Sender<TriggersAaveEvent>
 }
 
 export function AaveMultiplyManageComponent({
@@ -34,6 +38,8 @@ export function AaveMultiplyManageComponent({
   dpmProxy,
   isOpenView,
   cumulatives,
+  triggersState,
+  sendTriggerEvent,
 }: AaveManageComponentProps) {
   const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$, aaveHistory$ } =
     useAaveContext(strategyConfig.protocol, strategyConfig.network)
@@ -104,6 +110,8 @@ export function AaveMultiplyManageComponent({
               isAutomationAvailable={isAutomationAvailable}
               lendingProtocol={strategyConfig.protocol}
               productType={strategyConfig.type}
+              triggersState={triggersState}
+              sendTriggerEvent={sendTriggerEvent}
             />
           )
         }}

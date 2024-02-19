@@ -31,6 +31,7 @@ export type VaultWarningMessage =
   | 'autoBuyTriggerGreaterThanAutoTakeProfit'
   | 'constantMultipleBuyTriggerGreaterThanAutoTakeProfit'
   | 'existingTakeProfitTriggerAfterVaultReopen'
+  | 'stopLossTriggeredImmediately'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean

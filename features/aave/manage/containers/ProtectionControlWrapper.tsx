@@ -9,15 +9,16 @@ import { AutoSellBanner, StopLossBanner } from 'features/aave/components/banners
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
 import { useProtectionSidebarDropdown } from 'features/aave/hooks'
-import {
-  useManageAaveStateMachineContext,
-  useTriggersAaveStateMachineContext,
-} from 'features/aave/manage/contexts'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import { AaveManagePositionStopLossLambdaSidebar } from 'features/aave/manage/sidebars/AaveManagePositionStopLossLambdaSidebar'
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
-import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
+import type {
+  AutoSellTriggerAaveContext,
+  TriggersAaveEvent,
+  triggersAaveStateMachine,
+} from 'features/aave/manage/state'
 import { isAutoSellEnabled } from 'features/aave/manage/state'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getLocalAppConfig } from 'helpers/config'
@@ -27,6 +28,7 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { useEffect, useState } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
+import type { Sender, StateFrom } from 'xstate'
 
 function getAutoSellDetailsLayoutProps(
   context: AutoSellTriggerAaveContext,
@@ -75,7 +77,13 @@ function getAutoSellDetailsLayoutProps(
   }
 }
 
-export function ProtectionControlWrapper() {
+export function ProtectionControlWrapper({
+  triggersState,
+  sendTriggerEvent,
+}: {
+  triggersState: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent: Sender<TriggersAaveEvent>
+}) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
   const {
@@ -85,8 +93,6 @@ export function ProtectionControlWrapper() {
     AaveV3ProtectionLambdaEthereum,
   } = getLocalAppConfig('features')
 
-  const triggersStateMachine = useTriggersAaveStateMachineContext()
-  const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
   const [autoSellState, sendAutoSellEvent] = useActor(triggersState.context.autoSellTrigger)
   const stopLossLambdaData = mapStopLossFromLambda(triggersState.context.currentTriggers.triggers)
   const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>(

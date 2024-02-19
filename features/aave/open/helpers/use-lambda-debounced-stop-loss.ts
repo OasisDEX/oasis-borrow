@@ -5,7 +5,12 @@ import { cancelable } from 'cancelable-promise'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
-import type { SetupBasicStopLossResponse, TriggerAction } from 'helpers/triggers/setup-triggers'
+import type {
+  SetupBasicStopLossResponse,
+  TriggerAction,
+  TriggersApiError,
+  TriggersApiWarning,
+} from 'helpers/triggers/setup-triggers'
 import { setupAaveLikeStopLoss } from 'helpers/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { hundred, one } from 'helpers/zero'
@@ -25,12 +30,19 @@ export const useLambdaDebouncedStopLoss = ({
   action: TriggerAction
 }) => {
   const [isGettingStopLossTx, setIsGettingStopLossTx] = useState(false)
+  const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
+  const [errors, setErrors] = useState<TriggersApiError[]>([])
   const [stopLossTxCancelablePromise, setStopLossTxCancelablePromise] =
     useState<CancelablePromise<SetupBasicStopLossResponse>>()
   const { strategyConfig } = state.context
   const { tokens } = getAddresses(strategyConfig.networkId, strategyConfig.protocol)
   const collateralAddress = tokens[eth2weth(state.context.tokens.collateral) as keyof typeof tokens]
   const debtAddress = tokens[eth2weth(state.context.tokens.debt) as keyof typeof tokens]
+
+  const clearWarningsAndErrors = () => {
+    setWarnings([])
+    setErrors([])
+  }
 
   useDebouncedEffect(
     () => {
@@ -41,6 +53,7 @@ export const useLambdaDebouncedStopLoss = ({
       }
       if (!isGettingStopLossTx) {
         setIsGettingStopLossTx(true)
+        clearWarningsAndErrors()
       }
       const openingLtv =
         context.userInput.riskRatio?.loanToValue ?? context.defaultRiskRatio?.loanToValue
@@ -80,6 +93,8 @@ export const useLambdaDebouncedStopLoss = ({
               },
             })
           }
+          res.warnings && setWarnings(res.warnings)
+          res.errors && setErrors(res.errors)
         })
         .catch((error) => {
           send({
@@ -97,5 +112,7 @@ export const useLambdaDebouncedStopLoss = ({
   return {
     stopLossTxCancelablePromise,
     isGettingStopLossTx,
+    warnings,
+    errors,
   }
 }

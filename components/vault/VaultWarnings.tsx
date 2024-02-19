@@ -78,6 +78,8 @@ export function VaultWarnings({
         return translate('auto-sell-target-close-to-auto-buy-trigger')
       case 'stopLossTriggerCloseToAutoSellTrigger':
         return translate('stop-loss-trigger-close-to-auto-sell-trigger')
+      case 'stopLossTriggeredImmediately':
+        return translate('stop-loss-triggered-immediately')
       case 'autoBuyTargetCloseToStopLossTrigger':
         return translate('auto-buy-target-close-to-stop-loss-trigger')
       case 'autoBuyTargetCloseToAutoSellTrigger':
