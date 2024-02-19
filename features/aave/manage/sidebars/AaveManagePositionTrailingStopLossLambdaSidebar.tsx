@@ -18,12 +18,12 @@ import {
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ethers } from 'ethers'
 import { ConnectedSidebarSection } from 'features/aave/components'
-import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
+// import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
-import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
+import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
+import { useLambdaDebouncedTrailingStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-trailing-stop-loss'
 import {
   sidebarAutomationFeatureCopyMap,
   sidebarAutomationLinkMap,
@@ -31,7 +31,6 @@ import {
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
 import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
@@ -40,12 +39,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 
-const aaveLambdaStopLossConfig = {
-  sliderStep: 1,
-  sliderDirection: 'ltr' as const,
-}
-
-type StopLossSidebarStates =
+type TrailingStopLossSidebarStates =
   | 'prepare'
   | 'preparedAdd'
   | 'preparedUpdate'
@@ -60,81 +54,107 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   send,
   dropdown,
   stopLossLambdaData,
-  stopLossToken,
-  setStopLossToken,
+  trailingStopLossLambdaData,
+  trailingStopLossToken,
+  setTrailingStopLossToken,
   reserveConfigurationData,
   onTxFinished,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
   stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
   trailingStopLossLambdaData: ReturnType<typeof mapTrailingStopLossFromLambda>
-  stopLossToken: 'debt' | 'collateral'
-  setStopLossToken: (token: 'debt' | 'collateral') => void
+  trailingStopLossToken: 'debt' | 'collateral'
+  setTrailingStopLossToken: (token: 'debt' | 'collateral') => void
   reserveConfigurationData: AaveLikeReserveConfigurationData
   onTxFinished: () => void
 }) {
   const { t } = useTranslation()
-  const [transactionStep, setTransactionStep] = useState<StopLossSidebarStates>('prepare')
-  const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
+  const [transactionStep, setTransactionStep] = useState<TrailingStopLossSidebarStates>('prepare')
+  const isRegularStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
+  const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
   const { strategyConfig } = state.context
   const {
-    stopLossLevel,
-    dynamicStopLossPrice,
+    trailingDistance,
     sliderMin,
     sliderMax,
     sliderPercentageFill,
     liquidationPrice,
-    ...stopLossParamsRest
-  } = getAaveLikeStopLossParams.manage({ state })
+    collateralTokenPrice,
+    sliderStep,
+    // ...stopLossParamsRest
+  } = getAaveLikeTrailingStopLossParams.manage({ state })
   const { tokenPriceUSD$ } = useProductContext()
   const action = useMemo(() => {
+    const anyStopLoss = isTrailingStopLossEnabled || isRegularStopLossEnabled
     if (transactionStep === 'preparedRemove') {
       return TriggerAction.Remove
     }
-    return isStopLossEnabled ? TriggerAction.Update : TriggerAction.Add
-  }, [transactionStep, isStopLossEnabled])
+    return anyStopLoss ? TriggerAction.Update : TriggerAction.Add
+  }, [transactionStep, isTrailingStopLossEnabled, isRegularStopLossEnabled])
+  console.log(
+    'params',
+    JSON.stringify(
+      {
+        trailingDistance: trailingDistance.toString(),
+        sliderMin: sliderMin.toString(),
+        sliderMax: sliderMax.toString(),
+        collateralTokenPrice: collateralTokenPrice.toString(),
+        sliderPercentageFill: sliderPercentageFill.toString(),
+      },
+      null,
+      2,
+    ),
+  )
   const _tokenPriceUSD$ = useMemo(
     () =>
       tokenPriceUSD$([
         'ETH',
-        stopLossToken === 'debt' ? strategyConfig.tokens.debt : strategyConfig.tokens.collateral,
+        trailingStopLossToken === 'debt'
+          ? strategyConfig.tokens.debt
+          : strategyConfig.tokens.collateral,
       ]),
-    [stopLossToken, strategyConfig.tokens.collateral, strategyConfig.tokens.debt, tokenPriceUSD$],
+    [
+      trailingStopLossToken,
+      strategyConfig.tokens.collateral,
+      strategyConfig.tokens.debt,
+      tokenPriceUSD$,
+    ],
   )
-  const [tokensPriceData] = useObservable(_tokenPriceUSD$)
-  const { stopLossTxCancelablePromise, isGettingStopLossTx } = useLambdaDebouncedStopLoss({
-    state,
-    stopLossLevel,
-    stopLossToken,
-    send,
-    action,
-  })
+  // const [tokensPriceData] = useObservable(_tokenPriceUSD$)
+  const { trailingStopLossTxCancelablePromise, isGettingTrailingStopLossTx } =
+    useLambdaDebouncedTrailingStopLoss({
+      state,
+      trailingDistance,
+      trailingStopLossToken,
+      send,
+      action,
+    })
 
   const preparedState = {
     [TriggerAction.Add]: 'preparedAdd',
     [TriggerAction.Update]: 'preparedUpdate',
     [TriggerAction.Remove]: 'preparedRemove',
-  }[action] as StopLossSidebarStates
+  }[action] as TrailingStopLossSidebarStates
   const inProgressState = {
     [TriggerAction.Add]: 'addInProgress',
     [TriggerAction.Update]: 'updateInProgress',
     [TriggerAction.Remove]: 'removeInProgress',
-  }[action] as StopLossSidebarStates
+  }[action] as TrailingStopLossSidebarStates
 
-  const stopLossConfigChanged = useMemo(() => {
+  const trailingStopLossConfigChanged = useMemo(() => {
     if (action === TriggerAction.Remove) return true
-    const stopLossDifferentThanLambda =
-      stopLossLambdaData.stopLossLevel &&
-      (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
-        stopLossLambdaData.stopLossToken !== stopLossToken)
-    return stopLossLambdaData.stopLossLevel ? stopLossDifferentThanLambda : true
-  }, [stopLossLambdaData, stopLossLevel, stopLossToken, action])
+    const trailingStopLossDifferentThanLambda =
+      trailingStopLossLambdaData.trailingDistance &&
+      (!trailingDistance.eq(trailingStopLossLambdaData.trailingDistance) ||
+        trailingStopLossLambdaData.trailingStopLossToken !== trailingStopLossToken)
+    return trailingStopLossLambdaData.trailingDistance ? trailingStopLossDifferentThanLambda : true
+  }, [trailingStopLossLambdaData, trailingDistance, trailingStopLossToken, action])
 
   useEffect(() => {
-    if (stopLossLambdaData.stopLossLevel) {
+    if (trailingStopLossLambdaData.trailingDistance) {
       send({
         type: 'SET_STOP_LOSS_LEVEL',
-        stopLossLevel: stopLossLambdaData.stopLossLevel,
+        stopLossLevel: trailingStopLossLambdaData.trailingDistance,
       })
     } else {
       send({
@@ -188,15 +208,15 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
           {
             id: 'debt',
             label: t('close-to', { token: strategyConfig.tokens.debt }),
-            action: () => setStopLossToken('debt'),
+            action: () => setTrailingStopLossToken('debt'),
           },
           {
             id: 'collateral',
             label: t('close-to', { token: strategyConfig.tokens.collateral }),
-            action: () => setStopLossToken('collateral'),
+            action: () => setTrailingStopLossToken('collateral'),
           },
         ]}
-        active={stopLossToken}
+        active={trailingStopLossToken}
       />
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         <Trans
@@ -211,28 +231,33 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
       </Text>
       <SliderValuePicker
         disabled={false}
-        step={aaveLambdaStopLossConfig.sliderStep}
-        leftBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))}
+        step={sliderStep}
+        leftBoundryFormatter={(x: BigNumber) =>
+          x.isZero()
+            ? '-'
+            : `${formatAmount(sliderMax.minus(x), strategyConfig.tokens.debt)} ${
+                strategyConfig.tokens.debt
+              }/${strategyConfig.tokens.collateral}`
+        }
         rightBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD'))}
         sliderPercentageFill={sliderPercentageFill}
-        lastValue={stopLossLevel}
-        maxBoundry={sliderMax}
+        lastValue={trailingDistance}
         minBoundry={sliderMin}
-        rightBoundry={dynamicStopLossPrice}
-        leftBoundry={stopLossLevel}
-        onChange={(slLevel) => {
+        maxBoundry={sliderMax.minus(sliderStep)}
+        rightBoundry={collateralTokenPrice}
+        leftBoundry={trailingDistance}
+        onChange={(trailingDistance) => {
           send({
-            type: 'SET_STOP_LOSS_LEVEL',
-            stopLossLevel: slLevel,
+            type: 'SET_TRAILING_STOP_LOSS_LEVEL',
+            trailingDistance,
           })
-          stopLossTxCancelablePromise?.cancel()
+          trailingStopLossTxCancelablePromise?.cancel()
         }}
         useRcSlider
         leftLabel={t('protection.trailing-distance')}
         rightLabel={t('slider.set-stoploss.right-label')}
-        direction={aaveLambdaStopLossConfig.sliderDirection}
       />
-      {!!state.context.strategyInfo && (
+      {/* {!!state.context.strategyInfo && (
         <OpenAaveStopLossInformationLambda
           stopLossParams={{
             stopLossLevel,
@@ -245,9 +270,9 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
           }}
           tokensPriceData={tokensPriceData}
           strategyInfo={state.context.strategyInfo}
-          collateralActive={stopLossToken === 'collateral'}
+          collateralActive={trailingStopLossToken === 'collateral'}
         />
-      )}
+      )} */}
       <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
         {t('protection.not-guaranteed')}
       </Text>
@@ -265,7 +290,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('automation.confirmation-text', stopLossTranslationParams)}
       </Text>
-      <OpenAaveStopLossInformationLambda
+      {/* <OpenAaveStopLossInformationLambda
         stopLossParams={{
           stopLossLevel,
           dynamicStopLossPrice,
@@ -277,8 +302,8 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         }}
         tokensPriceData={tokensPriceData}
         strategyInfo={state.context.strategyInfo}
-        collateralActive={stopLossToken === 'collateral'}
-      />
+        collateralActive={trailingStopLossToken === 'collateral'}
+      /> */}
     </Grid>
   ) : (
     <></>
@@ -287,7 +312,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   const sidebarInProgressContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
     <Grid gap={3}>
       <AddingStopLossAnimation />
-      <OpenAaveStopLossInformationLambda
+      {/* <OpenAaveStopLossInformationLambda
         stopLossParams={{
           stopLossLevel,
           dynamicStopLossPrice,
@@ -299,8 +324,8 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         }}
         tokensPriceData={tokensPriceData}
         strategyInfo={state.context.strategyInfo}
-        collateralActive={stopLossToken === 'collateral'}
-      />
+        collateralActive={trailingStopLossToken === 'collateral'}
+      /> */}
     </Grid>
   ) : (
     <></>
@@ -322,7 +347,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
           label={`${t('cancel-stoploss.stop-loss-coll-ratio')}`}
           value={
             <Flex>
-              {formatPercent(stopLossLevel)}
+              {formatPercent(trailingDistance)}
               <VaultChangesInformationArrow />
               n/a
             </Flex>
@@ -385,7 +410,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
 
   const isDisabled = useMemo(() => {
     if (
-      isGettingStopLossTx ||
+      isGettingTrailingStopLossTx ||
       ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
     ) {
       return true
@@ -393,8 +418,8 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     if (transactionStep === 'finished') {
       return false
     }
-    return !stopLossConfigChanged
-  }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep])
+    return !trailingStopLossConfigChanged
+  }, [isGettingTrailingStopLossTx, trailingStopLossConfigChanged, transactionStep])
 
   const primaryButtonAction = () => {
     if (transactionStep === 'prepare') {
@@ -402,7 +427,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     }
     if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
       setTransactionStep(inProgressState)
-      stopLossTxCancelablePromise?.cancel()
+      trailingStopLossTxCancelablePromise?.cancel()
       executionAction()
     }
     if (transactionStep === 'finished') {
@@ -425,16 +450,18 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
       removeInProgress: t('automation.cancelling', stopLossTranslationParams),
       updateInProgress: t('automation.updating', stopLossTranslationParams),
       finished: t('open-earn.aave.vault-form.back-to-editing'),
-    } as Record<StopLossSidebarStates, string>
+    } as Record<TrailingStopLossSidebarStates, string>
     return primaryButtonMap[transactionStep]
   }
 
   const showSecondaryButton =
-    (transactionStep === 'prepare' && isStopLossEnabled && action !== TriggerAction.Remove) ||
+    (transactionStep === 'prepare' &&
+      isTrailingStopLossEnabled &&
+      action !== TriggerAction.Remove) ||
     (action === TriggerAction.Remove && transactionStep !== 'finished')
 
   const secondaryButtonLabel = () => {
-    if (transactionStep === 'prepare' && isStopLossEnabled) {
+    if (transactionStep === 'prepare' && isTrailingStopLossEnabled) {
       return t('system.remove-trigger')
     }
     if (action === TriggerAction.Remove) {
@@ -443,7 +470,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     return ''
   }
   const secondaryButtonAction = () => {
-    if (transactionStep === 'prepare' && isStopLossEnabled) {
+    if (transactionStep === 'prepare' && isTrailingStopLossEnabled) {
       setTransactionStep('preparedRemove')
     }
     if (transactionStep === 'preparedRemove') {
@@ -483,7 +510,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
       finished: sidebarFinishedContent,
     }[transactionStep],
     primaryButton: {
-      isLoading: isGettingStopLossTx,
+      isLoading: isGettingTrailingStopLossTx,
       disabled: isDisabled,
       label: primaryButtonLabel(),
       action: primaryButtonAction,

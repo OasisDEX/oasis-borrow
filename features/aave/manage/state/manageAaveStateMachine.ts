@@ -621,7 +621,13 @@ export function createManageAaveStateMachine(
         SET_STOP_LOSS_LEVEL: {
           actions: 'updateContext',
         },
+        SET_TRAILING_STOP_LOSS_LEVEL: {
+          actions: 'updateContext',
+        },
         SET_STOP_LOSS_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
+        SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA: {
           actions: 'updateContext',
         },
         USE_SLIPPAGE: {

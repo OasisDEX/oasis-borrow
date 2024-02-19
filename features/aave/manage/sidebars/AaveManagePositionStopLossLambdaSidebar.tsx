@@ -46,7 +46,6 @@ import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 const aaveLambdaStopLossConfig = {
   translationRatioParam: 'vault-changes.loan-to-value',
   sliderStep: 1,
-  sliderDirection: 'ltr' as const,
 }
 
 type StopLossSidebarStates =
@@ -253,7 +252,6 @@ export function AaveManagePositionStopLossLambdaSidebar({
           value: t(aaveLambdaStopLossConfig.translationRatioParam),
         })}
         rightLabel={t('slider.set-stoploss.right-label')}
-        direction={aaveLambdaStopLossConfig.sliderDirection}
       />
       <>
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />

@@ -174,6 +174,7 @@ export function AaveManageTabBar({
                 },
                 content: isProtectionAvailable ? (
                   <ProtectionControlWrapper
+                    aaveReserveState={aaveReserveState}
                     triggersState={triggersState}
                     sendTriggerEvent={sendTriggerEvent}
                   />

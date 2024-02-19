@@ -14,7 +14,7 @@ export const DmaSparkStopLossToDebtV2ID = 126n as const
 export const DmaAaveBasicBuyV2ID = 121n as const
 export const DmaAaveBasicSellV2ID = 122n as const
 
-export const DmaAaveTrailingStopLoss = 10005n as const
+export const DmaAaveTrailingStopLossID = 10005n as const
 
 export interface GetTriggersParams {
   networkId: NetworkIds
@@ -184,7 +184,7 @@ export type DmaAaveBasicSell = {
 
 export type DmaAaveTrailingStopLoss = {
   triggerTypeName: 'DmaAaveTrailingStopLoss'
-  triggerType: typeof DmaAaveTrailingStopLoss
+  triggerType: typeof DmaAaveTrailingStopLossID
   triggerId: string
   triggerData: string
   decodedParams: {

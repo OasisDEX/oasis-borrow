@@ -138,6 +138,16 @@ export interface SetupAaveStopLossParams {
   action: TriggerAction
 }
 
+export interface SetupAaveTrailingStopLossParams {
+  dpm: string
+  executionToken: string
+  trailingDistance: BigNumber
+  networkId: number
+  strategy: StrategyLike
+  protocol: SupportedLambdaProtocols
+  action: TriggerAction
+}
+
 export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {
   transaction: { data: string; to: string }
 }
