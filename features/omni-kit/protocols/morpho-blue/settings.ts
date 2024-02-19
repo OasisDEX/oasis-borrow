@@ -16,6 +16,7 @@ export const settings: OmniProtocolSettings = {
       'WSTETH',
       'WEETH',
       'OSETH',
+      'RETH',
       'SDAI',
       'SDAI',
       'USDC',
@@ -52,5 +53,6 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string }> = {
     'WBTC-USDT': '0xa921ef34e2fc7a27ccc50ae7e4b154e16c9799d3387076c421423ef52ac4df99',
     'WSTETH-USDT': '0xe7e9694b754c4d4f7e21faf7223f6fa71abaeb10296a4c43a54a7977149687d2',
     'ETH-USDT': '0xdbffac82c2dc7e8aa781bd05746530b0068d80929f23ac1628580e27810bc0c5',
+    'RETH-ETH': '0x3c83f77bde9541f8d3d82533b19bbc1f97eb2f1098bb991728acbfbede09cc5d',
   },
 }

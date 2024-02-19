@@ -11,7 +11,6 @@ import { SetupWeb3Context } from 'blockchain/web3Context'
 import { accountContext, AccountContextProvider } from 'components/context/AccountContextProvider'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
-import { NotificationSocketProvider } from 'components/context/NotificationSocketProvider'
 import {
   preloadAppDataContext,
   PreloadAppDataContextProvider,
@@ -171,22 +170,20 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                       <Web3OnBoardConnectorProvider>
                         <Web3ReactProvider {...{ getLibrary }}>
                           <SetupWeb3Context>
-                            <NotificationSocketProvider>
-                              <SharedUIProvider>
-                                <TopBannerDynamic />
-                                <AccountContextProvider>
-                                  <MigrationsProvider>
-                                    <DeferedContextProvider context={accountContext}>
-                                      <Component {...pageProps} />
-                                      <CookieBannerDynamic
-                                        setValue={cookiesSetValue}
-                                        value={cookiesValue}
-                                      />
-                                    </DeferedContextProvider>
-                                  </MigrationsProvider>
-                                </AccountContextProvider>
-                              </SharedUIProvider>
-                            </NotificationSocketProvider>
+                            <SharedUIProvider>
+                              <TopBannerDynamic />
+                              <AccountContextProvider>
+                                <MigrationsProvider>
+                                  <DeferedContextProvider context={accountContext}>
+                                    <Component {...pageProps} />
+                                    <CookieBannerDynamic
+                                      setValue={cookiesSetValue}
+                                      value={cookiesValue}
+                                    />
+                                  </DeferedContextProvider>
+                                </MigrationsProvider>
+                              </AccountContextProvider>
+                            </SharedUIProvider>
                           </SetupWeb3Context>
                         </Web3ReactProvider>
                       </Web3OnBoardConnectorProvider>

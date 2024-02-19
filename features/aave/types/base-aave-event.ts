@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network.types'
 import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
-import { IRiskRatio } from '@oasisdex/dma-library'
+import { type AaveLikePosition, IRiskRatio } from "@oasisdex/dma-library";
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
 import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
@@ -59,6 +59,7 @@ export type BaseAaveEvent =
   | { type: 'DPM_PROXY_RECEIVED'; userDpmAccount: UserDpmAccount }
   | { type: 'SET_BALANCE'; balance: StrategyTokenBalance }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: AaveLikePosition }
   | UpdateCollateralActionType
   | UpdateClosingAction
   | UpdateDebtActionType

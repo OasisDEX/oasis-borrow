@@ -9,17 +9,18 @@ import type { BasicAutomationDetailsViewProps } from 'features/aave/components/B
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
 import { useProtectionSidebarDropdown } from 'features/aave/hooks'
 import { AaveStopLossSelector } from 'features/aave/manage/containers/AaveStopLossSelector'
-import {
-  useManageAaveStateMachineContext,
-  useTriggersAaveStateMachineContext,
-} from 'features/aave/manage/contexts'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import { AaveManagePositionStopLossLambdaSidebar } from 'features/aave/manage/sidebars/AaveManagePositionStopLossLambdaSidebar'
 import { AaveManagePositionTrailingStopLossLambdaSidebar } from 'features/aave/manage/sidebars/AaveManagePositionTrailingStopLossLambdaSidebar'
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
-import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
+import type {
+  AutoSellTriggerAaveContext,
+  TriggersAaveEvent,
+  triggersAaveStateMachine,
+} from 'features/aave/manage/state'
 import {
   hasActiveAutoSell,
   hasActiveStopLoss,
@@ -33,6 +34,7 @@ import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React, { useEffect, useState } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
+import type { Sender, StateFrom } from 'xstate'
 
 function getAutoSellDetailsLayoutProps(
   context: AutoSellTriggerAaveContext,
@@ -81,12 +83,16 @@ function getAutoSellDetailsLayoutProps(
   }
 }
 
-export function ProtectionControlWrapper() {
+export function ProtectionControlWrapper({
+  triggersState,
+  sendTriggerEvent,
+}: {
+  triggersState: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent: Sender<TriggersAaveEvent>
+}) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
 
-  const triggersStateMachine = useTriggersAaveStateMachineContext()
-  const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
   const [autoSellState, sendAutoSellEvent] = useActor(triggersState.context.autoSellTrigger)
   const stopLossLambdaData = mapStopLossFromLambda(triggersState.context.currentTriggers.triggers)
   const trailingStopLossLambdaData = mapTrailingStopLossFromLambda(

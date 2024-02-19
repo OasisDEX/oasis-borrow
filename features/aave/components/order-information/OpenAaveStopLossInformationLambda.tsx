@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import type { Tickers } from 'blockchain/prices.types'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { DimmedList } from 'components/DImmedList'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
 import type { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
@@ -28,14 +27,8 @@ export function OpenAaveStopLossInformationLambda({
   const { t } = useTranslation()
   const collateralToken = strategyInfo.tokens.collateral
   const debtToken = strategyInfo.tokens.debt
-  const formattedStopLossLevel = stopLossParams.stopLossLevel
   const lockedCollateral = stopLossParams.lockedCollateral
   const debt = stopLossParams.debt
-  const executionPrice = collateralPriceAtRatio({
-    colRatio: formattedStopLossLevel.isZero() ? zero : one.div(formattedStopLossLevel.div(100)),
-    collateral: lockedCollateral,
-    vaultDebt: debt,
-  })
 
   const afterMaxToken = stopLossParams.dynamicStopLossPrice.isZero()
     ? zero
@@ -47,7 +40,9 @@ export function OpenAaveStopLossInformationLambda({
   const collateralDuringLiquidation = getCollateralDuringLiquidation({
     lockedCollateral,
     debt,
-    liquidationPrice: stopLossParams.liquidationPrice,
+    liquidationPrice: stopLossParams.liquidationPrice.eq(zero)
+      ? one
+      : stopLossParams.liquidationPrice,
     liquidationPenalty: strategyInfo.liquidationBonus,
   })
 
@@ -55,22 +50,24 @@ export function OpenAaveStopLossInformationLambda({
 
   const maxTokenOrDebtToken = collateralActive
     ? `${formatAmount(afterMaxToken, collateralToken)} ${collateralToken}`
-    : `${formatAmount(afterMaxToken.multipliedBy(executionPrice), debtToken)} ${debtToken}`
+    : `${formatAmount(
+        afterMaxToken.multipliedBy(stopLossParams.dynamicStopLossPrice),
+        debtToken,
+      )} ${debtToken}`
 
   const savingTokenOrDebtToken = collateralActive
     ? `${formatAmount(savingCompareToLiquidation, collateralToken)} ${collateralToken}`
     : `${formatAmount(
-        savingCompareToLiquidation.multipliedBy(executionPrice),
+        savingCompareToLiquidation.multipliedBy(stopLossParams.dynamicStopLossPrice),
         debtToken,
       )} ${debtToken}`
 
   const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
   const closeVaultGasPrice = new BigNumber(50) // gwei
-  const tokenPriceSelector = collateralActive ? collateralToken : debtToken
   const estimatedFeesWhenSlTriggered = formatFiatBalance(
     closeVaultGasEstimation
       .multipliedBy(closeVaultGasPrice)
-      .multipliedBy(tokensPriceData ? tokensPriceData[tokenPriceSelector] : one)
+      .multipliedBy(tokensPriceData && tokensPriceData['ETH'] ? tokensPriceData['ETH'] : one)
       .dividedBy(new BigNumber(10).pow(9)),
   )
 

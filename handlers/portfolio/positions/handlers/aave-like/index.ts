@@ -40,7 +40,9 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
   apiVaults,
   debug,
 }) => {
-  const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
+  const positionAutomations = allPositionsAutomations
+    .filter(filterAutomation(dpm))
+    .map((automation) => automation.triggers)
   const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     automations: positionAutomations,
     dpm,
@@ -125,7 +127,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
   apiVaults,
   debug,
 }) => {
-  const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
+  const positionAutomations = allPositionsAutomations
+    .filter(filterAutomation(dpm))
+    .map((automation) => automation.triggers)
   const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     automations: positionAutomations,
     dpm,

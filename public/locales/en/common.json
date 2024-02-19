@@ -1372,6 +1372,7 @@
     "auto-buy-execution-ltv-near-to-auto-sell-trigger": "Setting your Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Trigger ratio first",
     "auto-buy-max-price-requred": "Please enter a maximum buy price or select <1>Set No Threshold<1>",
     "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first",
+    "stop-loss-trigger-ltv-lower-than-auto-buy": "Your Auto-Buy will trigger your Stop-Loss.",
     "auto-sell-execution-ltv-smaller-than-current-ltv": "Your execution LTV is smaller than your current LTV",
     "auto-sell-execution-ltv-smaller-than-target": "Your execution LTV is smaller than your target LTV. Please adjust your target LTV",
     "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
@@ -1417,7 +1418,8 @@
     "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
-    "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell."
+    "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell.",
+    "auto-sell-will-make-stop-loss-not-trigger": "Your Auto-Sell will make your stop loss not trigger."
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -1451,7 +1453,8 @@
     "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
-    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio."
+    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
+    "stop-loss-triggered-immediately": "Stop loss will be triggered immediately."
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",

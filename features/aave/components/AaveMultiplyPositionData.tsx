@@ -9,6 +9,8 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
+import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
+import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
@@ -24,6 +26,7 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import { useAaveCardDataNetValueLending } from 'features/omni-kit/protocols/aave/components/details-sections/parsers/useAaveCardDataNetValueLending'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -38,6 +41,7 @@ import type {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+import type { Sender, StateFrom } from 'xstate'
 
 import { CostToBorrowContentCardModal } from './CostToBorrowContentCard'
 
@@ -55,6 +59,9 @@ type AaveMultiplyPositionDataProps = {
   cumulatives?: AaveCumulativeData
   lendingProtocol: LendingProtocol
   productType: ProductType
+  // triggersState is available _only_ in manage view (this component is used for both open and manage)
+  triggersState?: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent?: Sender<TriggersAaveEvent>
 }
 
 export function AaveMultiplyPositionData({
@@ -71,9 +78,11 @@ export function AaveMultiplyPositionData({
   cumulatives,
   lendingProtocol,
   productType,
+  triggersState,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
+  const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
   const {
     triggerData: {
       stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
@@ -238,6 +247,19 @@ export function AaveMultiplyPositionData({
     translationCardName: 'total-exposure',
   })
 
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives,
+    productType: omniProduct,
+    collateralTokenPrice,
+    debtTokenPrice,
+    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
+    collateralToken: currentPosition.collateral.symbol,
+    debtToken: currentPosition.debt.symbol,
+  })
+
+  const netValueContentCardAaveData = useAaveCardDataNetValueLending(netValuePnlModalData)
+
   return (
     <Grid>
       {stopLossTriggered && (
@@ -257,13 +279,18 @@ export function AaveMultiplyPositionData({
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={nextPosition?.category.maxLoanToValue}
               automation={{
-                isAutomationAvailable,
-                stopLossLevel,
-                isStopLossEnabled,
+                isAutomationAvailable:
+                  !!stopLossLambdaData.stopLossTriggerName ?? isAutomationAvailable,
+                stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2) || stopLossLevel, // still needs to be divided by 100
+                isStopLossEnabled: !!stopLossLambdaData.stopLossTriggerName ?? isStopLossEnabled,
                 isAutomationDataLoaded,
               }}
             />
-            <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
+            <OmniContentCard
+              {...commonContentCardData}
+              {...netValueContentCardCommonData}
+              {...netValueContentCardAaveData}
+            />
             <OmniContentCard {...commonContentCardData} {...buyingPowerContentCardCommonData} />
           </DetailsSectionContentCardWrapper>
         }

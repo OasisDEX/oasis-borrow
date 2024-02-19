@@ -2,7 +2,7 @@ import type {
   Notification,
   NotificationChannels,
   NotificationSubscription,
-} from 'features/notifications/types'
+} from 'features/deprecated/notifications/types'
 
 export const notificationInitialState: NotificationChange = {
   numberOfNotifications: 0,

@@ -43,6 +43,11 @@ export function mapErrorsToErrorVaults(
           return 'tooLowLtvToSetupAutoSell'
         case TriggersApiErrorCode.AutoSellNotAvailableDueToTooHighStopLoss:
           return 'tooHighStopLossToSetupAutoSell'
+        case TriggersApiErrorCode.StopLossTriggerLowerThanAutoBuy:
+          return 'stopLossTriggerLtvLowerThanAutoBuy'
+        case TriggersApiErrorCode.StopLossNeverTriggeredWithLowerAutoSellMinSellPrice:
+        case TriggersApiErrorCode.StopLossNeverTriggeredWithNoAutoSellMinSellPrice:
+          return 'autoSellWillBlockStopLoss'
         default:
           return undefined
       }

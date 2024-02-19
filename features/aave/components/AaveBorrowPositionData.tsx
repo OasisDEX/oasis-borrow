@@ -11,6 +11,8 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCard'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
+import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
+import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
@@ -41,6 +43,7 @@ import type {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+import type { Sender, StateFrom } from 'xstate'
 
 type AaveBorrowPositionDataProps = {
   currentPosition: IPosition
@@ -55,6 +58,9 @@ type AaveBorrowPositionDataProps = {
   strategyType: StrategyType
   lendingProtocol: LendingProtocol
   cumulatives?: AaveCumulativeData
+  // triggersState is available _only_ in manage view (this component is used for both open and manage)
+  triggersState?: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent?: Sender<TriggersAaveEvent>
 }
 
 export function AaveBorrowPositionData({
@@ -70,9 +76,11 @@ export function AaveBorrowPositionData({
   strategyType,
   lendingProtocol,
   cumulatives,
+  triggersState,
 }: AaveBorrowPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
+  const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
   const {
     triggerData: {
       stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
@@ -283,10 +291,11 @@ export function AaveBorrowPositionData({
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={nextPosition?.category.maxLoanToValue}
               automation={{
-                isAutomationAvailable,
+                isAutomationAvailable:
+                  !!stopLossLambdaData.stopLossTriggerName ?? isAutomationAvailable,
+                stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2) || stopLossLevel, // still needs to be divided by 100
+                isStopLossEnabled: !!stopLossLambdaData.stopLossTriggerName ?? isStopLossEnabled,
                 isAutomationDataLoaded,
-                isStopLossEnabled,
-                stopLossLevel,
               }}
             />
             <OmniContentCard
