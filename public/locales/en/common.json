@@ -2317,6 +2317,9 @@
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
     "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
   },
+  "trailing-stop-loss": {
+    "title": "Trailing Stop-Loss"
+  },
   "automation": {
     "setup": "{{feature}} Setup",
     "trigger-added": "{{feature}} Enabled",
