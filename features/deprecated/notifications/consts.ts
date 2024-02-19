@@ -1,4 +1,7 @@
-import { NotificationSubscriptionTypes, NotificationTypes } from 'features/notifications/types'
+import {
+  NotificationSubscriptionTypes,
+  NotificationTypes,
+} from 'features/deprecated/notifications/types'
 
 export const criticalNotifications = [
   NotificationTypes.APPROACHING_LIQUIDATION,

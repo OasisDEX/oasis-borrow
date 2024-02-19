@@ -1,4 +1,3 @@
-import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type {
   AdjustAaveParameters,
   CloseAaveParameters,
@@ -111,7 +110,6 @@ export type ManageAaveEvent =
       ownerAddress: string
       effectiveProxyAddress: string
     }
-  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: AaveLikePosition }
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | {
       type: 'HISTORY_UPDATED'

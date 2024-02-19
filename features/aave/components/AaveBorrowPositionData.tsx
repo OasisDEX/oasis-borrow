@@ -284,9 +284,9 @@ export function AaveBorrowPositionData({
               maxLoanToValue={nextPosition?.category.maxLoanToValue}
               automation={{
                 isAutomationAvailable,
-                isAutomationDataLoaded,
-                isStopLossEnabled,
                 stopLossLevel,
+                isStopLossEnabled,
+                isAutomationDataLoaded,
               }}
             />
             <OmniContentCard

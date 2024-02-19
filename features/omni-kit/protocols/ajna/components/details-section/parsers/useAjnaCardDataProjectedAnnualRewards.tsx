@@ -1,3 +1,4 @@
+import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
 import { Skeleton } from 'components/Skeleton'
@@ -26,7 +27,7 @@ export function useAjnaCardDataProjectedAnnualRewards({
   const { t } = useTranslation()
   const { isLoading, rewards } = useAjnaRewards(owner, poolAddress, OmniProductType.Earn)
 
-  const annualRewards = rewards.lastDayRewardsUsd.div(netValueUsd).times(365)
+  const annualRewards = normalizeValue(rewards.lastDayRewardsUsd.div(netValueUsd).times(365))
   const formattedValue = formatDecimalAsPercent(annualRewards)
 
   return {

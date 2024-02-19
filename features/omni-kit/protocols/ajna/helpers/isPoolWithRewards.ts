@@ -23,6 +23,7 @@ const poolsWithRewardsEthereum = [
   'WSTETH-ETH',
   'WSTETH-USDC',
   'YFI-DAI',
+  'MKR-DAI',
 ]
 const poolsWithRewardsBase = ['CBETH-ETH', 'ETH-USDC', 'WSTETH-ETH']
 

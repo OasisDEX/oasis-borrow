@@ -42,8 +42,9 @@ type PortfolioPositionsViewFiltersType = {
 
 const filterEmptyPosition =
   (isFilterOn: boolean = false) =>
-  ({ netValue }: PortfolioPosition) =>
-    isFilterOn || netValue >= 0.01
+  ({ netValue, isOraclessAndNotEmpty }: PortfolioPosition) => {
+    return isFilterOn || netValue >= 0.01 || isOraclessAndNotEmpty
+  }
 
 export const PortfolioPositionsView = ({
   address,

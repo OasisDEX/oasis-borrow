@@ -164,6 +164,10 @@ export function createOpenAaveStateMachine(
           src: 'reserveData$',
           id: 'reserveData$',
         },
+        {
+          src: 'currentPosition$',
+          id: 'currentPosition$',
+        },
       ],
       id: 'openAaveStateMachine',
       type: 'parallel',
@@ -519,6 +523,9 @@ export function createOpenAaveStateMachine(
         },
         UPDATE_RESERVE_DATA: {
           actions: 'updateContext',
+        },
+        CURRENT_POSITION_CHANGED: {
+          actions: ['updateContext'],
         },
       },
     },

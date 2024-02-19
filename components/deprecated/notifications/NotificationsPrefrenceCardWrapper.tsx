@@ -1,14 +1,14 @@
 import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
-import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
-import { notificationPreferences } from 'features/notifications/consts'
-import type { NotificationChange } from 'features/notifications/notificationChange'
-import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
+import { NotificationPreferenceCard } from 'components/deprecated/notifications/NotificationPreferenceCard'
+import { notificationPreferences } from 'features/deprecated/notifications/consts'
+import type { NotificationChange } from 'features/deprecated/notifications/notificationChange'
+import { NOTIFICATION_CHANGE } from 'features/deprecated/notifications/notificationChange'
 import {
   NotificationChannelTypes,
   NotificationSubscriptionTypes,
-} from 'features/notifications/types'
+} from 'features/deprecated/notifications/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useCallback, useEffect } from 'react'
 

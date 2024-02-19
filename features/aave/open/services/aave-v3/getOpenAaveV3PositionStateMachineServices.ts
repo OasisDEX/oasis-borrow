@@ -1,8 +1,10 @@
+import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import type { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteOperationExecutorTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
+import { ethNullAddress } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
@@ -33,7 +35,7 @@ import type {
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
-import { combineLatest, iif, of, throwError } from 'rxjs'
+import { combineLatest, from, iif, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 
@@ -251,6 +253,22 @@ export function getOpenAaveV3PositionStateMachineServices(
           console.error('Error saving to the DB:', error)
           return of({ type: 'SAVE_POSITION_ERROR', error })
         }),
+      )
+    },
+    currentPosition$: (context) => {
+      return from(
+        getOnChainPosition({
+          networkId: context.strategyConfig.networkId,
+          proxyAddress: ethNullAddress,
+          debtToken: context.tokens.debt,
+          protocol: context.strategyConfig.protocol,
+          collateralToken: context.tokens.collateral,
+        }),
+      ).pipe(
+        map((position) => ({
+          type: 'CURRENT_POSITION_CHANGED',
+          currentPosition: position,
+        })),
       )
     },
     reserveData$: xstateReserveDataService(aaveReserveData$),

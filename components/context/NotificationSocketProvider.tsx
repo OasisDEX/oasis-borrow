@@ -3,12 +3,12 @@ import { NetworkIds } from 'blockchain/networks'
 import {
   firstNotificationsRelevantDate,
   maxNumberOfNotifications,
-} from 'features/notifications/consts'
-import { prepareNotificationMessageHandlers } from 'features/notifications/handlers'
+} from 'features/deprecated/notifications/consts'
+import { prepareNotificationMessageHandlers } from 'features/deprecated/notifications/handlers'
 import {
   NOTIFICATION_CHANGE,
   notificationInitialState,
-} from 'features/notifications/notificationChange'
+} from 'features/deprecated/notifications/notificationChange'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'

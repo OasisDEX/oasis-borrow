@@ -34,7 +34,6 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
   depositAmount,
   isOpening,
   isOracless,
-  isProxyWithManyPositions,
   isShort,
   isSimulationLoading,
   position,
@@ -66,11 +65,10 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
   const totalEarningsContentCardAjnaData = useAjnaCardDataTotalEarnings({
     quoteToken,
     withoutFees: position.totalEarnings.withoutFees,
-    ...(!isOracless &&
-      !isProxyWithManyPositions && {
-        pnlUSD: position.pnl.withoutFees,
-        withFees: position.totalEarnings.withFees,
-      }),
+    ...(!isOracless && {
+      pnlUSD: position.pnl.withoutFees,
+      withFees: position.totalEarnings.withFees,
+    }),
   })
 
   const netValueContentCardCommonData = useOmniCardDataTokensValue({

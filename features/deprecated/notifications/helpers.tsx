@@ -1,7 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import type { Notification, NotificationAdditionalData } from 'features/notifications/types'
-import { NotificationTypes } from 'features/notifications/types'
+import type {
+  Notification,
+  NotificationAdditionalData,
+} from 'features/deprecated/notifications/types'
+import { NotificationTypes } from 'features/deprecated/notifications/types'
 import { formatAmount } from 'helpers/formatters/format'
 import { Trans } from 'next-i18next'
 import React from 'react'

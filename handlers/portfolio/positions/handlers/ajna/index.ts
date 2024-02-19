@@ -11,6 +11,7 @@ import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {
+  getAjnaIsOraclessAndNotEmpty,
   getAjnaPositionDetails,
   getAjnaPositionInfo,
   getAjnaPositionNetValue,
@@ -134,6 +135,11 @@ async function getAjnaPositions({
               position,
               quotePrice,
               type,
+            }),
+            isOraclessAndNotEmpty: getAjnaIsOraclessAndNotEmpty({
+              position,
+              type,
+              isOracless,
             }),
             openDate: Number(protocolEvents[0].timestamp),
             positionId: Number(positionId),
