@@ -12,6 +12,7 @@ export enum AutoSellTriggerCustomWarningCodes {}
 export enum TriggersApiErrorCode {
   MinSellPriceIsNotSet = 'min-sell-price-is-not-set',
   MaxBuyPriceIsNotSet = 'max-buy-price-is-not-set',
+  StopLossTriggerLowerThanAutoBuy = 'stop-loss-trigger-ltv-lower-than-auto-buy',
   ExecutionPriceBiggerThanMaxBuyPrice = 'execution-price-bigger-than-max-buy-price',
   ExecutionPriceSmallerThanMinSellPrice = 'execution-price-smaller-than-min-sell-price',
   ExecutionLTVSmallerThanTargetLTV = 'execution-ltv-smaller-than-target-ltv',

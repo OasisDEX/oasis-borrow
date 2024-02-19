@@ -52,6 +52,7 @@ export type VaultErrorMessage =
   | 'executionLTVSmallerThanTargetLTV'
   | 'executionLTVBiggerThanTargetLTV'
   | 'executionLTVBiggerThanCurrentLTV'
+  | 'stopLossTriggerLtvLowerThanAutoBuy'
   | 'executionLTVSmallerThanCurrentLTV'
   | 'executionLTVNearToAutoSellTrigger'
   | 'tooLowLtvToSetupAutoSell'

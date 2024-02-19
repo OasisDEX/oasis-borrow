@@ -166,6 +166,8 @@ export function VaultErrors({
         return translate('auto-buy-trigger-lower-than-auto-sell-target')
       case 'stopLossTriggerHigherThanAutoBuyTarget':
         return translate('stop-loss-trigger-higher-than-auto-buy-target')
+      case 'stopLossTriggerLtvLowerThanAutoBuy':
+        return translate('stop-loss-trigger-ltv-lower-than-auto-buy')
       case 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled':
         return translate('cant-setup-auto-buy-or-sell-when-constant-multiple-enabled', { autoType })
       case 'minSellPriceWillPreventSellTrigger':
