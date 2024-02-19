@@ -149,7 +149,7 @@ export function AaveManageTabBar({
                 triggersState={triggersState}
                 sendTriggerEvent={sendTriggerEvent}
               />
-              <SidebarManageAaveVault />
+              <SidebarManageAaveVault triggersState={triggersState} />
             </Grid>
           ),
         },

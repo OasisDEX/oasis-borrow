@@ -20,7 +20,7 @@ interface VaultErrorsProps {
   maxGenerateAmount?: BigNumber
   ilkData?: { debtFloor: BigNumber; token: string }
   maxWithdrawAmount?: BigNumber
-  autoType?: 'Auto-Buy' | 'Auto-Sell'
+  autoType?: 'Auto-Buy' | 'Auto-Sell' | 'Stop-Loss'
   infoBag?: Record<string, string>
 }
 
@@ -202,6 +202,8 @@ export function VaultErrors({
         return translate('sl-too-high-for-auto-sell', {
           maxLTV: infoBag?.['maxLTV'],
         })
+      case 'autoSellWillBlockStopLoss':
+        return translate('auto-sell-will-make-stop-loss-not-trigger')
 
       default:
         throw new UnreachableCaseError(message)
