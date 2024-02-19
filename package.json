@@ -46,7 +46,7 @@
     "@oasisdex/addresses": "0.1.43",
     "@oasisdex/automation": "1.6.0-alpha.9",
     "@oasisdex/dma-library": "0.6.25",
-    "@oasisdex/dma-library-migration": "npm:@oasisdex/dma-library@0.6.23-rc-migration.6",
+    "@oasisdex/dma-library-migration": "npm:@oasisdex/dma-library@0.6.26-rc-migration.1",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
