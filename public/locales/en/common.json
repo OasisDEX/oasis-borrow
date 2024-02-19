@@ -1371,6 +1371,7 @@
     "auto-buy-execution-ltv-near-to-auto-sell-trigger": "Setting your Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Trigger ratio first",
     "auto-buy-max-price-requred": "Please enter a maximum buy price or select <1>Set No Threshold<1>",
     "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first",
+    "stop-loss-trigger-ltv-lower-than-auto-buy": "Your Auto-Buy will trigger your Stop-Loss.",
     "auto-sell-execution-ltv-smaller-than-current-ltv": "Your execution LTV is smaller than your current LTV",
     "auto-sell-execution-ltv-smaller-than-target": "Your execution LTV is smaller than your target LTV. Please adjust your target LTV",
     "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
