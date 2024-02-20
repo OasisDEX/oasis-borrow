@@ -34,6 +34,7 @@ export enum TriggersApiErrorCode {
   StopLossTriggeredByAutoBuy = 'stop-loss-triggered-by-auto-buy',
   StopLossNeverTriggeredWithNoAutoSellMinSellPrice = 'stop-loss-never-triggered-with-no-auto-sell-min-sell-price',
   StopLossNeverTriggeredWithLowerAutoSellMinSellPrice = 'stop-loss-never-triggered-with-lower-auto-sell-min-sell-price',
+  AutoSellNeverTriggeredWithCurrentStopLoss = 'auto-sell-never-triggered-with-current-stop-loss',
 }
 
 export enum TriggersApiWarningCode {

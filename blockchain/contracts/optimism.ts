@@ -213,6 +213,7 @@ export const optimismContracts: OptimismContracts = {
       optimism.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
     ),
     'APXETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_APXETHETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, optimism.ajna.AjnaRewardsReedemer),
