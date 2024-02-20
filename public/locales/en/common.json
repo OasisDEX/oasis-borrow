@@ -1419,7 +1419,8 @@
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell.",
     "auto-sell-will-make-stop-loss-not-trigger": "Your Auto-Sell will make your stop loss not trigger.",
-    "stop-loss-triggered-by-auto-buy": "Your Stop-Loss will be triggered by your Auto-Buy."
+    "stop-loss-triggered-by-auto-buy": "Your Stop-Loss will be triggered by your Auto-Buy.",
+    "auto-sell-never-triggered-with-current-stop-loss":"Your Auto-Sell will never be triggered with your current Stop-Loss trigger."
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
