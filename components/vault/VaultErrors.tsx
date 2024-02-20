@@ -206,6 +206,10 @@ export function VaultErrors({
         })
       case 'autoSellWillBlockStopLoss':
         return translate('auto-sell-will-make-stop-loss-not-trigger')
+      case 'stopLossTriggeredByAutoBuy':
+        return translate('stop-loss-triggered-by-auto-buy')
+      case 'autoSellNeverTriggeredWithCurrentStopLoss':
+        return translate('auto-sell-never-triggered-with-current-stop-loss')
 
       default:
         throw new UnreachableCaseError(message)
