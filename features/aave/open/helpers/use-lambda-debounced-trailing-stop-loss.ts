@@ -6,7 +6,7 @@ import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/Sidebar
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import type {
-  SetupBasicStopLossResponse,
+  SetupTrailingStopLossResponse,
   TriggerAction,
   TriggersApiError,
   TriggersApiWarning,
@@ -34,7 +34,7 @@ export const useLambdaDebouncedTrailingStopLoss = ({
   const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
   const [errors, setErrors] = useState<TriggersApiError[]>([])
   const [trailingStopLossTxCancelablePromise, setTrailingStopLossTxCancelablePromise] =
-    useState<CancelablePromise<SetupBasicStopLossResponse>>()
+    useState<CancelablePromise<SetupTrailingStopLossResponse>>()
   const { strategyConfig } = state.context
   const { tokens } = getAddresses(strategyConfig.networkId, strategyConfig.protocol)
   const collateralAddress = tokens[eth2weth(state.context.tokens.collateral) as keyof typeof tokens]

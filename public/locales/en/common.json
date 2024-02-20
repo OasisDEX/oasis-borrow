@@ -1807,7 +1807,11 @@
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
     "stop-loss-something": "Stop-Loss {{value}}",
     "current-stop-loss-something": "The current Stop-Loss {{value}} is:",
-    "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell"
+    "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell",
+    "regular-stop-loss": "Regular Stop-Loss",
+    "trailing-stop-loss": "Trailing Stop-Loss",
+    "current-stop-loss-overwrite": "Adding {{addingStopLossType}} will overwrite your current {{currentStopLossType}} (in one transaction), please be aware of that.",
+    "current-stop-loss-overwrite-click-here": "<1>Click here to view the details of your {{currentStopLossType}}</1>."
   },
   "newsletter": {
     "title": "Stay up to date with Summer.fi",

@@ -4,7 +4,6 @@ import { getOverrides } from 'blockchain/better-calls/utils/get-overrides'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import type { ContextConnected } from 'blockchain/network.types'
 import { ActionPills } from 'components/ActionPills'
-import { useProductContext } from 'components/context/ProductContextProvider'
 import { DimmedList } from 'components/DImmedList'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
@@ -23,6 +22,7 @@ import { ConnectedSidebarSection } from 'features/aave/components'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import type { TriggersAaveEvent } from 'features/aave/manage/state'
 import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
 import { useLambdaDebouncedTrailingStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-trailing-stop-loss'
 import {
@@ -33,11 +33,11 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
-import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import type { Sender } from 'xstate'
 
 type TrailingStopLossSidebarStates =
   | 'prepare'
@@ -49,6 +49,8 @@ type TrailingStopLossSidebarStates =
   | 'removeInProgress'
   | 'finished'
 
+const refreshDataTime = 10 * 1000
+
 export function AaveManagePositionTrailingStopLossLambdaSidebar({
   state,
   send,
@@ -57,23 +59,24 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   trailingStopLossLambdaData,
   trailingStopLossToken,
   setTrailingStopLossToken,
-  reserveConfigurationData,
   onTxFinished,
+  sendTriggerEvent,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
   stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
   trailingStopLossLambdaData: ReturnType<typeof mapTrailingStopLossFromLambda>
   trailingStopLossToken: 'debt' | 'collateral'
   setTrailingStopLossToken: (token: 'debt' | 'collateral') => void
-  reserveConfigurationData: AaveLikeReserveConfigurationData
   onTxFinished: () => void
+  sendTriggerEvent: Sender<TriggersAaveEvent>
 }) {
   const { t } = useTranslation()
   const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
+  const [triggerId, setTriggerId] = useState<string>(trailingStopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<TrailingStopLossSidebarStates>('prepare')
   const isRegularStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
-  const { strategyConfig } = state.context
+  const { strategyConfig, strategyInfo, trailingStopLossTxDataLambda, web3Context } = state.context
   const {
     trailingDistance,
     trailingDistanceValue,
@@ -91,7 +94,6 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     trailingStopLossLambdaData,
     trailingStopLossToken,
   })
-  const { tokenPriceUSD$ } = useProductContext()
   const action = useMemo(() => {
     const anyStopLoss = isTrailingStopLossEnabled || isRegularStopLossEnabled
     if (transactionStep === 'preparedRemove') {
@@ -100,22 +102,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     return anyStopLoss ? TriggerAction.Update : TriggerAction.Add
   }, [transactionStep, isTrailingStopLossEnabled, isRegularStopLossEnabled])
   const selectedTokenLabel = strategyConfig.tokens[trailingStopLossToken]
-  const _tokenPriceUSD$ = useMemo(
-    () =>
-      tokenPriceUSD$([
-        'ETH',
-        trailingStopLossToken === 'debt'
-          ? strategyConfig.tokens.debt
-          : strategyConfig.tokens.collateral,
-      ]),
-    [
-      trailingStopLossToken,
-      strategyConfig.tokens.collateral,
-      strategyConfig.tokens.debt,
-      tokenPriceUSD$,
-    ],
-  )
-  // const [tokensPriceData] = useObservable(_tokenPriceUSD$)
+
   const { trailingStopLossTxCancelablePromise, isGettingTrailingStopLossTx } =
     useLambdaDebouncedTrailingStopLoss({
       state,
@@ -155,7 +142,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     } else {
       send({
         type: 'SET_TRAILING_STOP_LOSS_LEVEL',
-        trailingDistance: trailingDistanceValue,
+        trailingDistance: sliderMax.minus(sliderStep),
       })
     }
   }, []) // should remain empty
@@ -181,7 +168,6 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   }
 
   const executeCall = async () => {
-    const { trailingStopLossTxDataLambda, strategyConfig, web3Context } = state.context
     if (trailingStopLossTxDataLambda) {
       const proxyAddress = trailingStopLossTxDataLambda.to
       const networkId = strategyConfig.networkId
@@ -306,6 +292,42 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         leftLabel={t('protection.trailing-distance')}
         rightLabel={t('slider.set-stoploss.right-label')}
       />
+      {!!stopLossLambdaData.stopLossLevel && (
+        <MessageCard
+          messages={[
+            t('protection.current-stop-loss-overwrite', {
+              addingStopLossType: t('protection.trailing-stop-loss'),
+              currentStopLossType: t('protection.regular-stop-loss'),
+            }),
+            <Trans
+              i18nKey="protection.current-stop-loss-overwrite-click-here"
+              values={{
+                currentStopLossType: t('protection.regular-stop-loss'),
+              }}
+              components={{
+                1: (
+                  <Text
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                    onClick={() => {
+                      sendTriggerEvent({
+                        type: 'CHANGE_VIEW',
+                        view: 'stop-loss',
+                      })
+                    }}
+                  />
+                ),
+              }}
+            />,
+          ]}
+          type="warning"
+          withBullet={false}
+        />
+      )}
       {stopLossInformationPanel}
       <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
         {t('protection.not-guaranteed')}
@@ -319,7 +341,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     </Grid>
   )
 
-  const sidebarPreparedContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
+  const sidebarPreparedContent: SidebarSectionProps['content'] = strategyInfo ? (
     <Grid gap={3}>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('automation.confirmation-text', stopLossTranslationParams)}
@@ -330,7 +352,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     <></>
   )
 
-  const sidebarInProgressContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
+  const sidebarInProgressContent: SidebarSectionProps['content'] = strategyInfo ? (
     <Grid gap={3}>
       <AddingStopLossAnimation />
       {stopLossInformationPanel}
@@ -339,7 +361,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     <></>
   )
 
-  const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
+  const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = strategyInfo ? (
     <Grid gap={3}>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('automation.cancel-summary-description', stopLossTranslationParams)}
@@ -519,7 +541,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
       finished: sidebarFinishedContent,
     }[transactionStep],
     primaryButton: {
-      isLoading: isGettingTrailingStopLossTx,
+      isLoading: isGettingTrailingStopLossTx || refreshingTriggerData,
       disabled: isDisabled,
       label: primaryButtonLabel(),
       action: primaryButtonAction,

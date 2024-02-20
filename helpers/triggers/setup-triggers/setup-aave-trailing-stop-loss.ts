@@ -5,14 +5,13 @@ import { LendingProtocol } from 'lendingProtocols'
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
   SetupAaveTrailingStopLossParams,
-  SetupBasicAutoResponse,
-  SetupBasicStopLossResponse,
+  SetupTrailingStopLossResponse,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
 export const setupAaveLikeTrailingStopLoss = async (
   params: SetupAaveTrailingStopLossParams,
-): Promise<SetupBasicStopLossResponse> => {
+): Promise<SetupTrailingStopLossResponse> => {
   const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-trailing-stop-loss' })
 
   const triggerTypeMap = {
@@ -56,11 +55,11 @@ export const setupAaveLikeTrailingStopLoss = async (
   }
 
   if (response.status === 400) {
-    return (await response.json()) as Pick<SetupBasicAutoResponse, 'errors'>
+    return (await response.json()) as Pick<SetupTrailingStopLossResponse, 'errors'>
   }
 
   if (response.status === 200) {
-    return (await response.json()) as Omit<SetupBasicAutoResponse, 'errors'>
+    return (await response.json()) as Omit<SetupTrailingStopLossResponse, 'errors'>
   }
 
   const responseBody = await response.text()

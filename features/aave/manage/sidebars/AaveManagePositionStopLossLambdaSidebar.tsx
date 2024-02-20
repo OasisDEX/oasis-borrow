@@ -25,6 +25,7 @@ import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aav
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import type { TriggersAaveEvent } from 'features/aave/manage/state'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
 import {
@@ -39,9 +40,10 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
 import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import type { Sender } from 'xstate'
 
 const aaveLambdaStopLossConfig = {
   translationRatioParam: 'vault-changes.loan-to-value',
@@ -66,9 +68,11 @@ export function AaveManagePositionStopLossLambdaSidebar({
   dropdown,
   stopLossLambdaData,
   stopLossToken,
+  trailingStopLossLambdaData,
   setStopLossToken,
   reserveConfigurationData,
   onTxFinished,
+  sendTriggerEvent,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
   stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
@@ -77,12 +81,14 @@ export function AaveManagePositionStopLossLambdaSidebar({
   setStopLossToken: (token: 'debt' | 'collateral') => void
   reserveConfigurationData: AaveLikeReserveConfigurationData
   onTxFinished: () => void
+  sendTriggerEvent: Sender<TriggersAaveEvent>
 }) {
   const { t } = useTranslation()
   const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
   const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<StopLossSidebarStates>('prepare')
-  const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
+  const isRegularStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
+  const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
   const { strategyConfig } = state.context
   const {
     stopLossLevel,
@@ -95,11 +101,12 @@ export function AaveManagePositionStopLossLambdaSidebar({
   } = getAaveLikeStopLossParams.manage({ state })
   const { tokenPriceUSD$ } = useProductContext()
   const action = useMemo(() => {
+    const anyStopLoss = isTrailingStopLossEnabled || isRegularStopLossEnabled
     if (transactionStep === 'preparedRemove') {
       return TriggerAction.Remove
     }
-    return isStopLossEnabled ? TriggerAction.Update : TriggerAction.Add
-  }, [transactionStep, isStopLossEnabled])
+    return anyStopLoss ? TriggerAction.Update : TriggerAction.Add
+  }, [transactionStep, isTrailingStopLossEnabled, isRegularStopLossEnabled])
   const _tokenPriceUSD$ = useMemo(
     () =>
       tokenPriceUSD$([
@@ -253,6 +260,42 @@ export function AaveManagePositionStopLossLambdaSidebar({
         })}
         rightLabel={t('slider.set-stoploss.right-label')}
       />
+      {!!trailingStopLossLambdaData.trailingDistance && (
+        <MessageCard
+          messages={[
+            t('protection.current-stop-loss-overwrite', {
+              addingStopLossType: t('protection.regular-stop-loss'),
+              currentStopLossType: t('protection.trailing-stop-loss'),
+            }),
+            <Trans
+              i18nKey="protection.current-stop-loss-overwrite-click-here"
+              values={{
+                currentStopLossType: t('protection.trailing-stop-loss'),
+              }}
+              components={{
+                1: (
+                  <Text
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                    onClick={() => {
+                      sendTriggerEvent({
+                        type: 'CHANGE_VIEW',
+                        view: 'trailing-stop-loss',
+                      })
+                    }}
+                  />
+                ),
+              }}
+            />,
+          ]}
+          type="warning"
+          withBullet={false}
+        />
+      )}
       <>
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
@@ -456,12 +499,14 @@ export function AaveManagePositionStopLossLambdaSidebar({
   }
 
   const showSecondaryButton =
-    (transactionStep === 'prepare' && isStopLossEnabled && action !== TriggerAction.Remove) ||
+    (transactionStep === 'prepare' &&
+      isRegularStopLossEnabled &&
+      action !== TriggerAction.Remove) ||
     (action === TriggerAction.Remove && transactionStep !== 'finished') ||
     ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
 
   const secondaryButtonLabel = () => {
-    if (transactionStep === 'prepare' && isStopLossEnabled) {
+    if (transactionStep === 'prepare' && isRegularStopLossEnabled) {
       return t('system.remove-trigger')
     }
     if (
@@ -473,7 +518,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     return ''
   }
   const secondaryButtonAction = () => {
-    if (transactionStep === 'prepare' && isStopLossEnabled) {
+    if (transactionStep === 'prepare' && isRegularStopLossEnabled) {
       setTransactionStep('preparedRemove')
     }
     if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {

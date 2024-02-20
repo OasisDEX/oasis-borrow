@@ -24,10 +24,11 @@ export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTrigger
     const trailingDistance = trigger.decodedParams.trailingDistance
     return {
       trailingDistance: new BigNumber(Number(trailingDistance)).div(trailingStopLossDenomination),
-      trailingStopLossToken: trailingStopLossTriggerName.includes('Debt')
-        ? ('debt' as const)
-        : ('collateral' as const),
+      trailingStopLossToken: trigger.decodedParams.closeToCollateral
+        ? ('collateral' as const)
+        : ('debt' as const),
       trailingStopLossData: trigger,
+      triggerId: trigger.triggerId,
       trailingStopLossTriggerName,
     }
   }

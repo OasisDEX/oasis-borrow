@@ -214,6 +214,7 @@ export function ProtectionControlWrapper({
             trailingStopLossLambdaData={trailingStopLossLambdaData}
             reserveConfigurationData={aaveReserveState}
             dropdown={dropdown}
+            sendTriggerEvent={sendTriggerEvent}
             onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
           />
         )}
@@ -225,8 +226,8 @@ export function ProtectionControlWrapper({
             setTrailingStopLossToken={setTrailingStopLossToken}
             stopLossLambdaData={stopLossLambdaData}
             trailingStopLossLambdaData={trailingStopLossLambdaData}
-            reserveConfigurationData={aaveReserveState}
             dropdown={dropdown}
+            sendTriggerEvent={sendTriggerEvent}
             onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
           />
         )}
