@@ -53,6 +53,7 @@ function useSetupTriggersStateContext(
     triggersAaveStateMachine.withContext({
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
+      showAutoBuyBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
       currentTriggers: {

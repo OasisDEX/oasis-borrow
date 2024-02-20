@@ -24,6 +24,9 @@ export function useProtectionSidebarDropdown(
   const isAutoSellEnabledForStrategy = context.strategyConfig.isAutomationFeatureEnabled(
     AutomationFeatures.AUTO_SELL,
   )
+  const isTrailingStopLossEnabledForStrategy = context.strategyConfig.isAutomationFeatureEnabled(
+    AutomationFeatures.TRAILING_STOP_LOSS,
+  )
 
   let items: SidebarSectionHeaderSelectItem[] = []
   if (isStopLossEnabledForStrategy) {
@@ -34,7 +37,10 @@ export function useProtectionSidebarDropdown(
       icon: circle_exchange,
       panel: AutomationFeatures.STOP_LOSS,
       action: () => {
-        sender({ type: 'CHANGE_VIEW', view: 'stop-loss-selector' })
+        sender({
+          type: 'CHANGE_VIEW',
+          view: isTrailingStopLossEnabledForStrategy ? 'stop-loss-selector' : 'stop-loss',
+        })
       },
     })
   }

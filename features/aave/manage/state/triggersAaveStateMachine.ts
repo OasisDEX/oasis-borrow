@@ -206,6 +206,7 @@ export type TriggersAaveContext = {
   readonly dpm?: UserDpmAccount
   position?: AaveLikePosition
   optimizationCurrentView?: 'auto-buy' | undefined
+  showAutoBuyBanner: boolean
   protectionCurrentView?:
     | 'auto-buy'
     | 'auto-sell'
@@ -326,6 +327,7 @@ export const triggersAaveStateMachine = createMachine(
     actions: {
       setAutoBuyView: assign(() => ({
         optimizationCurrentView: 'auto-buy' as const,
+        showAutoBuyBanner: false,
       })),
       changeView: assign((context, { view }) => ({
         protectionCurrentView: view,
@@ -358,9 +360,13 @@ export const triggersAaveStateMachine = createMachine(
         currentTriggers: event.data,
       })),
       updateCurrentViews: assign((context, event) => {
+        const currentOptimizationView = getCurrentOptimizationView(event.data)
         return {
           optimizationCurrentView: getCurrentOptimizationView(event.data),
           protectionCurrentView: getCurrentProtectionView(event.data),
+          showAutoBuyBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY) &&
+            currentOptimizationView !== 'auto-buy',
         }
       }),
       updateAutoBuyDefaults: sendTo(
