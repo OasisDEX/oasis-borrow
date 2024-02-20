@@ -1,16 +1,12 @@
-import BigNumber from 'bignumber.js'
-import { estimateGas } from 'blockchain/better-calls/dpm-account'
-import { getOverrides } from 'blockchain/better-calls/utils/get-overrides'
-import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network.types'
+import { executeTransaction } from 'blockchain/better-calls/dpm-account'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { ethers } from 'ethers'
 import {
   ConnectedSidebarSection,
   OpenAaveStopLossInformation,
   StopLossTwoTxRequirement,
 } from 'features/aave/components'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -18,34 +14,18 @@ import { Grid } from 'theme-ui'
 
 export function StopLossLambdaInProgressStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const { signer } = useWalletManagement()
   const { stopLossTxDataLambda } = state.context
 
   useEffect(() => {
     const executeCall = async () => {
-      const { strategyConfig, web3Context } = state.context
-      if (stopLossTxDataLambda) {
-        const proxyAddress = stopLossTxDataLambda.to
-        const networkId = strategyConfig.networkId
-        const contracts = getNetworkContracts(networkId, web3Context?.chainId)
-        ensureContractsExist(networkId, contracts, ['automationBotV2'])
-        const signer = (web3Context as ContextConnected)?.transactionProvider
-        const bnValue = new BigNumber(0)
-        const data = stopLossTxDataLambda.data
-        const value = ethers.utils.parseEther(bnValue.toString()).toHexString()
-        const gasLimit = await estimateGas({
-          networkId,
-          proxyAddress,
-          signer,
-          value: bnValue,
-          to: proxyAddress,
-          data,
-        })
-        return signer.sendTransaction({
-          ...(await getOverrides(signer)),
-          to: proxyAddress,
-          data,
-          value,
-          gasLimit: gasLimit ?? undefined,
+      const { strategyConfig } = state.context
+      if (stopLossTxDataLambda && signer) {
+        return await executeTransaction({
+          data: stopLossTxDataLambda.data,
+          to: stopLossTxDataLambda.to,
+          signer: signer,
+          networkId: strategyConfig.networkId,
         })
       }
       return null

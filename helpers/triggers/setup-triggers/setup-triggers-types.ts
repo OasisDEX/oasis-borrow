@@ -76,6 +76,11 @@ export enum TriggerAction {
   Update = 'update',
 }
 
+export type TriggerTransaction = {
+  data: string
+  to: string
+}
+
 export interface SetupAaveBasicAutomationParams {
   price: BigNumber | undefined
   executionLTV: BigNumber
@@ -102,11 +107,7 @@ export type SetupBasicAutoResponse = {
     targetLTVWithDeviation: [string, string]
     targetMultiple: string
   }
-  transaction?: {
-    data: string
-    to: string
-    triggerTxData?: string
-  }
+  transaction?: TriggerTransaction
 }
 
 export type SetupBasicStopLossResponse = {
@@ -121,11 +122,7 @@ export type SetupBasicStopLossResponse = {
     targetLTVWithDeviation: [string, string]
     targetMultiple: string
   }
-  transaction?: {
-    data: string
-    to: string
-    triggerTxData?: string
-  }
+  transaction?: TriggerTransaction
 }
 
 export interface SetupAaveStopLossParams {
@@ -214,7 +211,7 @@ export type SetupTrailingStopLossResponse = {
 }
 
 export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {
-  transaction: { data: string; to: string }
+  transaction: TriggerTransaction
 }
 
 export const hasTransaction = (

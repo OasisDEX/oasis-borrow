@@ -153,7 +153,7 @@ export async function createExecuteOperationExecutorTransaction({
 
 export interface DpmOperationParams {
   networkId: NetworkIds
-  proxyAddress: string
+  proxyAddress?: string
   signer: ethers.Signer
   value?: BigNumber
   data: string
@@ -168,7 +168,7 @@ export async function estimateGas({
   value,
   to,
 }: DpmOperationParams) {
-  await validateParameters({ signer, networkId, proxyAddress })
+  await validateParameters({ signer, networkId, proxyAddress: proxyAddress ?? to })
 
   try {
     const result = await signer.estimateGas({
@@ -180,7 +180,9 @@ export async function estimateGas({
 
     return new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0)
   } catch (e) {
-    const message = `Error estimating gas. Action: ${data} on proxy: ${proxyAddress}. Network: ${networkId}`
+    const message = `Error estimating gas. Action: ${data} on proxy: ${
+      proxyAddress ?? to
+    }. Network: ${networkId}`
     console.error(message, e)
     throw new Error(message, {
       cause: e,
@@ -196,7 +198,7 @@ export async function executeTransaction({
   value,
   to,
 }: DpmOperationParams) {
-  await validateParameters({ signer, networkId, proxyAddress })
+  await validateParameters({ signer, networkId, proxyAddress: proxyAddress ?? to })
 
   const dangerTransactionEnabled = isDangerTransactionEnabled()
 

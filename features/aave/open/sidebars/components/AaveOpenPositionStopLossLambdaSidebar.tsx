@@ -1,6 +1,5 @@
 import type BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
-import { useProductContext } from 'components/context/ProductContextProvider'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -10,11 +9,9 @@ import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { TriggerAction } from 'helpers/triggers'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'
 
@@ -33,16 +30,6 @@ export function AaveOpenPositionStopLossLambdaSidebar({
   const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>('debt')
   const { strategyConfig } = state.context
   const stopLossParams = getAaveLikeStopLossParams.open({ state })
-  const { tokenPriceUSD$ } = useProductContext()
-  const _tokenPriceUSD$ = useMemo(
-    () =>
-      tokenPriceUSD$([
-        'ETH',
-        stopLossToken === 'debt' ? strategyConfig.tokens.debt : strategyConfig.tokens.collateral,
-      ]),
-    [stopLossToken, strategyConfig.tokens.collateral, strategyConfig.tokens.debt, tokenPriceUSD$],
-  )
-  const [tokensPriceData, tokensPriceDataError] = useObservable(_tokenPriceUSD$)
   const { stopLossLevel, dynamicStopLossPrice, sliderMin, sliderMax, sliderPercentageFill } =
     stopLossParams
   const { stopLossTxCancelablePromise, isGettingStopLossTx } = useLambdaDebouncedStopLoss({
@@ -111,7 +98,6 @@ export function AaveOpenPositionStopLossLambdaSidebar({
         {!!state.context.strategyInfo && (
           <OpenAaveStopLossInformationLambda
             stopLossParams={stopLossParams}
-            tokensPriceData={tokensPriceData}
             strategyInfo={state.context.strategyInfo}
             collateralActive={stopLossToken === 'collateral'}
           />
@@ -132,15 +118,13 @@ export function AaveOpenPositionStopLossLambdaSidebar({
   }
 
   return (
-    <WithErrorHandler error={[tokensPriceDataError]}>
-      <ConnectedSidebarSection
-        {...sidebarSectionProps}
-        textButton={{
-          label: t('open-earn.aave.vault-form.back-to-editing'),
-          action: () => send('BACK_TO_EDITING'),
-        }}
-        context={state.context}
-      />
-    </WithErrorHandler>
+    <ConnectedSidebarSection
+      {...sidebarSectionProps}
+      textButton={{
+        label: t('open-earn.aave.vault-form.back-to-editing'),
+        action: () => send('BACK_TO_EDITING'),
+      }}
+      context={state.context}
+    />
   )
 }

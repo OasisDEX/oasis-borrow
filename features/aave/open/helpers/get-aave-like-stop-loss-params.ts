@@ -45,6 +45,10 @@ export const getAaveLikeStopLossParams = {
       liquidationRatio: one.div(liquidationRatio),
       stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
     })
+
+    const stopLossTxData = state.context.stopLossTxDataLambda
+    const strategy = state.context.strategyConfig
+
     return {
       stopLossLevel,
       positionRatio,
@@ -56,6 +60,8 @@ export const getAaveLikeStopLossParams = {
       liquidationPrice,
       sliderPercentageFill,
       dynamicStopLossPrice,
+      stopLossTxData,
+      strategy,
     }
   }),
   manage: memoize(({ state }: Pick<ManageAaveStateProps, 'state'>) => {
@@ -87,6 +93,10 @@ export const getAaveLikeStopLossParams = {
       liquidationRatio: one.div(liquidationRatio),
       stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
     })
+
+    const stopLossTxData = state.context.stopLossTxDataLambda
+    const strategy = state.context.strategyConfig
+
     return {
       stopLossLevel,
       positionRatio,
@@ -98,6 +108,8 @@ export const getAaveLikeStopLossParams = {
       liquidationPrice,
       sliderPercentageFill,
       dynamicStopLossPrice,
+      stopLossTxData,
+      strategy,
     }
   }),
 }
