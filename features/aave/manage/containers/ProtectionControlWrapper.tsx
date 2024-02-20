@@ -1,6 +1,5 @@
 import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
-import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { AaveStopLossManageDetails } from 'features/aave/components/AaveStopLossManageDetails'
 import { AaveTrailingStopLossManageDetails } from 'features/aave/components/AaveTrailingStopLossManageDetails'
 import { AutoSellBanner, StopLossBanner } from 'features/aave/components/banners'
@@ -12,7 +11,7 @@ import { AaveStopLossSelector } from 'features/aave/manage/containers/AaveStopLo
 import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
-import { getProtectionControlVisibilityToggles } from 'features/aave/manage/helpers/protection-control-wrapper-visibility-toggles'
+import { getProtectionControlUIstate } from 'features/aave/manage/helpers/protection-control-wrapper-ui-state'
 import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import { AaveManagePositionStopLossLambdaSidebar } from 'features/aave/manage/sidebars/AaveManagePositionStopLossLambdaSidebar'
 import { AaveManagePositionTrailingStopLossLambdaSidebar } from 'features/aave/manage/sidebars/AaveManagePositionTrailingStopLossLambdaSidebar'
@@ -118,120 +117,120 @@ export function ProtectionControlWrapper({
   }, [shouldLoadTriggers])
 
   const dropdown = useProtectionSidebarDropdown(triggersState, sendTriggerEvent)
-  const visibilityToggles = getProtectionControlVisibilityToggles(triggersState)
+  const protectionControlUI = getProtectionControlUIstate(triggersState)
   const goToView = (view: TriggersViews) => () => sendTriggerEvent({ type: 'CHANGE_VIEW', view })
-
-  if (triggersState.context.protectionCurrentView) {
-    if (triggersState.context.protectionCurrentView === 'stop-loss-selector') {
-      return <AaveStopLossSelector sendTriggerEvent={sendTriggerEvent} />
-    }
-    const isTriggersLoading = triggersState.matches('loading')
-    if (isTriggersLoading) {
-      return (
-        <Container variant="vaultPageContainer">
-          <AppSpinner variant="" />
-        </Container>
-      )
-    }
+  if (triggersState.context.protectionCurrentView === 'stop-loss-selector') {
+    return <AaveStopLossSelector sendTriggerEvent={sendTriggerEvent} />
+  }
+  const isTriggersLoading = triggersState.matches('loading')
+  if (isTriggersLoading) {
     return (
-      <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-        <Grid variant="vaultContainer">
-          <Grid gap={3} mb={[0, 5]}>
-            {/** this is visible when we're adding a new trigger */}
-            {visibilityToggles.stopLossConfiguring && (
-              <AaveStopLossManageDetails
-                state={state}
-                stopLossToken={stopLossToken}
-                stopLossLambdaData={stopLossLambdaData}
-                triggers={triggersState.context.currentTriggers.triggers}
-                reserveConfigurationData={aaveReserveState}
-              />
-            )}
-            {visibilityToggles.autoSellConfiguring && autoSellDetailsLayoutProps && (
-              <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
-            )}
-            {visibilityToggles.trailingStopLossConfiguring && autoSellDetailsLayoutProps && (
-              <AaveTrailingStopLossManageDetails />
-            )}
-            {/** this is visible when we're adding a new trigger */}
-            {/** its because we want the adding panel always at the top */}
-            {/** this is visible when theres current trigger */}
-            {visibilityToggles.stopLossViewing && (
-              <AaveStopLossManageDetails
-                state={state}
-                stopLossToken={stopLossToken}
-                stopLossLambdaData={stopLossLambdaData}
-                triggers={triggersState.context.currentTriggers.triggers}
-                reserveConfigurationData={aaveReserveState}
-              />
-            )}
-            {visibilityToggles.autoSellViewing && autoSellDetailsLayoutProps && (
-              <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
-            )}
-            {visibilityToggles.trailingStopLossViewing && autoSellDetailsLayoutProps && (
-              <AaveTrailingStopLossManageDetails />
-            )}
-            {/** this is visible when theres current trigger */}
-            {visibilityToggles.bannerAutoSell && (
-              <AutoSellBanner buttonClicked={goToView('auto-sell')} />
-            )}
-            {visibilityToggles.bannerStopLoss && !visibilityToggles.bannerTrailingStopLoss && (
-              <StopLossBanner buttonClicked={goToView('stop-loss')} />
-            )}
-            {visibilityToggles.bannerTrailingStopLoss && !visibilityToggles.bannerStopLoss && (
-              <TrailingStopLossBanner buttonClicked={goToView('trailing-stop-loss')} />
-            )}
-            {visibilityToggles.bannerStopLoss && visibilityToggles.bannerTrailingStopLoss && (
-              <StopLossBanner buttonClicked={goToView('stop-loss-selector')} />
-            )}
-          </Grid>
-          {visibilityToggles.autoSellSidebar && autoSellState.context.position && (
-            <AutoSellSidebarAaveVault
-              strategy={state.context.strategyConfig}
-              state={{
-                ...autoSellState.context,
-                position: autoSellState.context.position,
-              }}
-              isStateMatch={(s) => autoSellState.matches(s)}
-              canTransitWith={(s) => autoSellState.can(s)}
-              updateState={sendAutoSellEvent}
-              isEditing={autoSellState.value === 'editing'}
-              dropdown={dropdown}
-            />
-          )}
-          {visibilityToggles.stopLossSidebar && (
-            <AaveManagePositionStopLossLambdaSidebar
-              state={state}
-              send={send}
-              stopLossToken={stopLossToken}
-              setStopLossToken={setStopLossToken}
-              stopLossLambdaData={stopLossLambdaData}
-              trailingStopLossLambdaData={trailingStopLossLambdaData}
-              reserveConfigurationData={aaveReserveState}
-              dropdown={dropdown}
-              onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
-            />
-          )}
-          {visibilityToggles.trailingStopLossSidebar && (
-            <AaveManagePositionTrailingStopLossLambdaSidebar
-              state={state}
-              send={send}
-              trailingStopLossToken={trailingStopLossToken}
-              setTrailingStopLossToken={setTrailingStopLossToken}
-              stopLossLambdaData={stopLossLambdaData}
-              trailingStopLossLambdaData={trailingStopLossLambdaData}
-              reserveConfigurationData={aaveReserveState}
-              dropdown={dropdown}
-              onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
-            />
-          )}
-        </Grid>
+      <Container variant="vaultPageContainer">
+        <AppSpinner variant="" />
       </Container>
     )
   }
-
-  // all below is the old protection - so when all of the lambda flags are off
-  // we can remove it when we're sure that the new protection is fine
-
-  return <ProtectionControl />
+  return (
+    <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+      <Grid variant="vaultContainer">
+        <Grid gap={3} mb={[0, 5]}>
+          {/** this is visible when we're adding a new trigger */}
+          {protectionControlUI.stopLoss.configure && (
+            <AaveStopLossManageDetails
+              state={state}
+              stopLossToken={stopLossToken}
+              stopLossLambdaData={stopLossLambdaData}
+              triggers={triggersState.context.currentTriggers.triggers}
+              reserveConfigurationData={aaveReserveState}
+            />
+          )}
+          {protectionControlUI.autoSell.configure && autoSellDetailsLayoutProps && (
+            <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
+          )}
+          {protectionControlUI.trailingStopLoss.configure && trailingStopLossLambdaData && (
+            <AaveTrailingStopLossManageDetails
+              trailingStopLossLambdaData={trailingStopLossLambdaData}
+              trailingStopLossToken={trailingStopLossToken}
+              state={state}
+            />
+          )}
+          {/** this is visible when we're adding a new trigger */}
+          {/** its because we want the adding panel always at the top */}
+          {/** this is visible when theres current trigger */}
+          {protectionControlUI.stopLoss.view && (
+            <AaveStopLossManageDetails
+              state={state}
+              stopLossToken={stopLossToken}
+              stopLossLambdaData={stopLossLambdaData}
+              triggers={triggersState.context.currentTriggers.triggers}
+              reserveConfigurationData={aaveReserveState}
+            />
+          )}
+          {protectionControlUI.autoSell.view && autoSellDetailsLayoutProps && (
+            <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
+          )}
+          {protectionControlUI.trailingStopLoss.view && trailingStopLossLambdaData && (
+            <AaveTrailingStopLossManageDetails
+              trailingStopLossLambdaData={trailingStopLossLambdaData}
+              trailingStopLossToken={trailingStopLossToken}
+              state={state}
+            />
+          )}
+          {/** this is visible when theres current trigger */}
+          {protectionControlUI.autoSell.banner && (
+            <AutoSellBanner buttonClicked={goToView('auto-sell')} />
+          )}
+          {protectionControlUI.stopLoss.banner && !protectionControlUI.trailingStopLoss.banner && (
+            <StopLossBanner buttonClicked={goToView('stop-loss')} />
+          )}
+          {protectionControlUI.trailingStopLoss.banner && !protectionControlUI.stopLoss.banner && (
+            <TrailingStopLossBanner buttonClicked={goToView('trailing-stop-loss')} />
+          )}
+          {protectionControlUI.stopLoss.banner && protectionControlUI.trailingStopLoss.banner && (
+            <StopLossBanner buttonClicked={goToView('stop-loss-selector')} />
+          )}
+        </Grid>
+        {protectionControlUI.autoSell.sidebar && autoSellState.context.position && (
+          <AutoSellSidebarAaveVault
+            strategy={state.context.strategyConfig}
+            state={{
+              ...autoSellState.context,
+              position: autoSellState.context.position,
+            }}
+            isStateMatch={(s) => autoSellState.matches(s)}
+            canTransitWith={(s) => autoSellState.can(s)}
+            updateState={sendAutoSellEvent}
+            isEditing={autoSellState.value === 'editing'}
+            dropdown={dropdown}
+          />
+        )}
+        {protectionControlUI.stopLoss.sidebar && (
+          <AaveManagePositionStopLossLambdaSidebar
+            state={state}
+            send={send}
+            stopLossToken={stopLossToken}
+            setStopLossToken={setStopLossToken}
+            stopLossLambdaData={stopLossLambdaData}
+            trailingStopLossLambdaData={trailingStopLossLambdaData}
+            reserveConfigurationData={aaveReserveState}
+            dropdown={dropdown}
+            onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
+          />
+        )}
+        {protectionControlUI.trailingStopLoss.sidebar && (
+          <AaveManagePositionTrailingStopLossLambdaSidebar
+            state={state}
+            send={send}
+            trailingStopLossToken={trailingStopLossToken}
+            setTrailingStopLossToken={setTrailingStopLossToken}
+            stopLossLambdaData={stopLossLambdaData}
+            trailingStopLossLambdaData={trailingStopLossLambdaData}
+            reserveConfigurationData={aaveReserveState}
+            dropdown={dropdown}
+            onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
+          />
+        )}
+      </Grid>
+    </Container>
+  )
 }

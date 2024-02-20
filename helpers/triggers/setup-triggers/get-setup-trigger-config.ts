@@ -11,7 +11,6 @@ export interface GetSetupTriggerConfigParams {
 }
 
 export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
-  console.log('getSetupTriggerConfig 1')
   if (!supportedLambdaProtocolsList.includes(params.protocol)) {
     throw new Error(
       `Only protocols supported for getting trigger data from API: ${supportedLambdaProtocolsList.join(
@@ -20,19 +19,9 @@ export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
     )
   }
 
-  console.log('getSetupTriggerConfig 2')
   const networkConfig = networkSetById[params.networkId]
   const rpc = networkConfig?.isCustomFork ? networkConfig.rpcUrl : undefined
 
-  console.log('getSetupTriggerConfig 3', {
-    url: `/api/triggers/${params.networkId}/${
-      {
-        [LendingProtocol.AaveV3]: 'aave3',
-        [LendingProtocol.SparkV3]: 'spark',
-      }[params.protocol]
-    }/${params.path}`,
-    customRpc: rpc,
-  })
   return {
     url: `/api/triggers/${params.networkId}/${
       {

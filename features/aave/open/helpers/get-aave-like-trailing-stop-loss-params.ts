@@ -1,24 +1,26 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import {
+  getCollateralDuringLiquidation,
+  getSliderPercentageFill,
+} from 'features/automation/protection/stopLoss/helpers'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
+import { useCallback, useMemo } from 'react'
 
 const getSliderStep = (tokenPrice: BigNumber) => {
   if (tokenPrice.isGreaterThan(100000)) {
-    return 10000
-  }
-  if (tokenPrice.isGreaterThan(10000)) {
     return 1000
   }
-  if (tokenPrice.isGreaterThan(1000)) {
+  if (tokenPrice.isGreaterThan(10000)) {
     return 100
   }
-  if (tokenPrice.isGreaterThan(100)) {
+  if (tokenPrice.isGreaterThan(1000)) {
     return 10
   }
-  if (tokenPrice.isGreaterThan(10)) {
+  if (tokenPrice.isGreaterThan(100)) {
     return 1
   }
   if (tokenPrice.isGreaterThan(1)) {
@@ -28,63 +30,153 @@ const getSliderStep = (tokenPrice: BigNumber) => {
 }
 
 export const getAaveLikeTrailingStopLossParams = {
-  manage: ({ state }: Pick<ManageAaveStateProps, 'state'>) => {
-    // some of the numbers might be counter intuitive
-    // firstly im getting a step for the slider (higher price -> higher step)
-    // then im setting a minimum (highest trailing distance) to be a slider step value
-    // as this is the lowest value that makes sense
-    const collateralTokenPrice = state.context?.strategyInfo?.oracleAssetPrice.collateral || one
-    const sliderStep = getSliderStep(collateralTokenPrice)
-    const sliderMin = new BigNumber(sliderStep)
-    const contextTrailingDistance = state.context.trailingDistance
-    // then the trailing distance - if it's lower (by default) than the slider min, I'm setting it to the slider min
-    const trailingDistance = memoize(
-      // this is NOT actual trailing distance, but the value that will be displayed on the slider
-      // the actual one is calculated in the request later
-      // (this needs to be parsed the other way around as well - the value from lambda)
-      () => {
-        if (contextTrailingDistance) {
-          return contextTrailingDistance.lt(sliderMin) ? sliderMin : contextTrailingDistance
-        }
-        return sliderMin
-      },
-      () => contextTrailingDistance?.toString(),
-    )()
-    // then the maximum value is the price divided by the step, floored and then multiplied by the step
-    // so in the end we get a rounded numbers
-    const sliderMax = new BigNumber(
-      collateralTokenPrice.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
-    ).times(sliderStep)
-    const debt = amountFromWei(
-      state.context.currentPosition?.debt.amount || zero,
-      state.context.currentPosition?.debt.precision,
-    )
+  manage: memoize(
+    ({
+      state,
+      trailingStopLossLambdaData,
+      trailingStopLossToken,
+    }: Pick<ManageAaveStateProps, 'state'> & {
+      trailingStopLossLambdaData: ReturnType<typeof mapTrailingStopLossFromLambda>
+      trailingStopLossToken: 'debt' | 'collateral'
+    }) => {
+      const isCloseToCollateral = trailingStopLossToken === 'collateral'
+      const {
+        strategyInfo,
+        currentPosition,
+        trailingDistance: contextTrailingDistance,
+      } = state.context
+      const debt = amountFromWei(
+        currentPosition?.debt.amount || zero,
+        currentPosition?.debt.precision,
+      )
+      const lockedCollateral = amountFromWei(
+        currentPosition?.collateral.amount || zero,
+        currentPosition?.collateral.precision,
+      )
+      const positionRatio = currentPosition?.riskRatio.loanToValue || zero
+      const liquidationRatio = currentPosition?.category.liquidationThreshold || zero
+      const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
+      // some of the numbers might be counter intuitive
+      // firstly im getting a step for the slider (higher price -> higher step)
+      // then im setting a minimum (highest trailing distance) to be a slider step value
+      // as this is the lowest value that makes sense
+      const collateralTokenPrice = strategyInfo?.oracleAssetPrice.collateral || one
+      const debtTokenPrice = strategyInfo?.oracleAssetPrice.debt || one
+      const sliderStep = getSliderStep(collateralTokenPrice)
+      const sliderMin = new BigNumber(
+        (liquidationPrice || one).div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
+      ).times(sliderStep)
+      // then the maximum value is the price divided by the step, floored and then multiplied by the step
+      // so in the end we get a rounded numbers
+      const sliderMax = new BigNumber(
+        collateralTokenPrice.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
+      ).times(sliderStep)
+      // then the trailing distance - if it's lower (by default) than the slider min, I'm setting it to the slider min
+      // the actual value of the trailing distance used in the TX is called "trailingDistanceValue"
+      const trailingDistance = contextTrailingDistance
+        ? contextTrailingDistance.lt(sliderMin)
+          ? sliderMin
+          : contextTrailingDistance
+        : sliderMax
 
-    const lockedCollateral = amountFromWei(
-      state.context.currentPosition?.collateral.amount || zero,
-      state.context.currentPosition?.collateral.precision,
-    )
-    const positionRatio = state.context.currentPosition?.riskRatio.loanToValue || zero
-    const liquidationRatio = state.context?.currentPosition?.category.liquidationThreshold || zero
-    const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
+      const sliderPercentageFill = getSliderPercentageFill({
+        min: sliderMin,
+        max: sliderMax.minus(sliderStep),
+        value: trailingDistance,
+      })
+      const getTrailingDistanceValue = useCallback(
+        (td: BigNumber) => sliderMax.minus(td),
+        [sliderMax],
+      )
+      const trailingDistanceValue = useMemo(
+        // we use the opposite value when handling state
+        // it's hard to have the slider go from token price to zero, so we do the opposite
+        // then the actual value (distance) is sliderMax (token price) minus "trailingDistance" value
+        () => getTrailingDistanceValue(trailingDistance),
+        [getTrailingDistanceValue, trailingDistance],
+      )
+      const trailingDistanceLambdaValue = useMemo(
+        () =>
+          getTrailingDistanceValue(
+            (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero,
+          ),
+        [getTrailingDistanceValue, trailingStopLossLambdaData],
+      )
 
-    const sliderPercentageFill = getSliderPercentageFill({
-      min: sliderMin,
-      max: sliderMax.minus(sliderStep),
-      value: trailingDistance,
-    })
-    return {
-      trailingDistance,
-      positionRatio,
-      liquidationRatio,
-      sliderMin,
-      sliderMax,
-      debt,
-      lockedCollateral,
-      liquidationPrice,
-      sliderPercentageFill,
-      collateralTokenPrice,
-      sliderStep,
-    }
-  },
+      const collateralPriceInDebt = useMemo(
+        () => collateralTokenPrice.div(debtTokenPrice),
+        [collateralTokenPrice, debtTokenPrice],
+      )
+      const dynamicStopPrice = useMemo(() => {
+        return collateralPriceInDebt.minus(
+          (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero,
+        )
+      }, [collateralPriceInDebt, trailingStopLossLambdaData])
+      const dynamicStopPriceChange = useMemo(() => {
+        return collateralPriceInDebt.minus(trailingDistanceValue)
+      }, [collateralPriceInDebt, trailingDistanceValue])
+      const collateralDuringLiquidation = useMemo(
+        () =>
+          strategyInfo
+            ? getCollateralDuringLiquidation({
+                lockedCollateral,
+                debt,
+                liquidationPrice,
+                liquidationPenalty: strategyInfo.liquidationBonus,
+              })
+            : one,
+        [debt, liquidationPrice, lockedCollateral, strategyInfo],
+      )
+      const estimatedTokenOnSLTrigger = useMemo(
+        () =>
+          isCloseToCollateral
+            ? lockedCollateral.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
+            : lockedCollateral.times(dynamicStopPrice).minus(debt),
+        [debt, dynamicStopPrice, isCloseToCollateral, lockedCollateral],
+      )
+      const estimatedTokenOnSLTriggerChange = useMemo(
+        () =>
+          isCloseToCollateral
+            ? lockedCollateral.times(dynamicStopPriceChange).minus(debt).div(dynamicStopPriceChange)
+            : lockedCollateral.times(dynamicStopPriceChange).minus(debt),
+        [debt, dynamicStopPriceChange, isCloseToCollateral, lockedCollateral],
+      )
+      const savingCompareToLiquidation = useMemo(
+        () =>
+          estimatedTokenOnSLTrigger.minus(
+            isCloseToCollateral
+              ? collateralDuringLiquidation
+              : collateralDuringLiquidation.times(dynamicStopPriceChange),
+          ),
+        [
+          collateralDuringLiquidation,
+          dynamicStopPriceChange,
+          estimatedTokenOnSLTrigger,
+          isCloseToCollateral,
+        ],
+      )
+      return {
+        collateralPriceInDebt,
+        collateralTokenPrice,
+        debt,
+        debtTokenPrice,
+        dynamicStopPrice,
+        dynamicStopPriceChange,
+        estimatedTokenOnSLTrigger,
+        estimatedTokenOnSLTriggerChange,
+        liquidationPrice,
+        liquidationRatio,
+        lockedCollateral,
+        positionRatio,
+        savingCompareToLiquidation,
+        sliderMax,
+        sliderMin,
+        sliderPercentageFill,
+        sliderStep,
+        trailingDistance,
+        trailingDistanceLambdaValue,
+        trailingDistanceValue,
+      }
+    },
+  ),
 }

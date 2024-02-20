@@ -111,6 +111,7 @@ export interface BaseAaveContext {
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
   stopLossTxDataLambda?: AutomationAddTriggerLambda
+  trailingStopLossTxDataLambda?: AutomationAddTriggerLambda
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData

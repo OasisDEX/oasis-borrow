@@ -21,10 +21,12 @@ export const useLambdaDebouncedTrailingStopLoss = ({
   state,
   send,
   trailingDistance,
+  trailingDistanceValue,
   trailingStopLossToken,
   action,
 }: (OpenAaveStateProps | ManageAaveStateProps) & {
   trailingDistance: BigNumber
+  trailingDistanceValue: BigNumber
   trailingStopLossToken: string
   action: TriggerAction
 }) => {
@@ -57,7 +59,7 @@ export const useLambdaDebouncedTrailingStopLoss = ({
       const trailingStopLossTxDataPromise = cancelable(
         setupAaveLikeTrailingStopLoss({
           dpm: dpmAccount,
-          trailingDistance,
+          trailingDistance: trailingDistanceValue,
           networkId: strategyConfig.networkId,
           executionToken: trailingStopLossToken === 'debt' ? debtAddress : collateralAddress,
           protocol: strategyConfig.protocol as SupportedLambdaProtocols,
@@ -68,11 +70,10 @@ export const useLambdaDebouncedTrailingStopLoss = ({
           action,
         }),
       )
-      console.log('setTrailingStopLossTxCancelablePromise')
+
       setTrailingStopLossTxCancelablePromise(trailingStopLossTxDataPromise)
       trailingStopLossTxDataPromise
         .then((res) => {
-          console.log('useLambdaDebouncedTrailingStopLoss res', res)
           if (
             res.transaction &&
             res.encodedTriggerData &&
@@ -93,7 +94,6 @@ export const useLambdaDebouncedTrailingStopLoss = ({
           res.errors && setErrors(res.errors)
         })
         .catch((error) => {
-          console.log('useLambdaDebouncedTrailingStopLoss', error)
           send({
             type: 'TRANSACTION_FAILED',
             error,

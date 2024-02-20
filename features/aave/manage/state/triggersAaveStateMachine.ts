@@ -66,7 +66,7 @@ export const getCurrentOptimizationView = ({
 
 export const getCurrentProtectionView = ({
   triggers,
-}: GetTriggersResponse): 'auto-sell' | 'stop-loss' | undefined => {
+}: GetTriggersResponse): 'auto-sell' | 'stop-loss' | 'trailing-stop-loss' | undefined => {
   if (
     triggers.aaveStopLossToDebt ||
     triggers.aaveStopLossToCollateral ||
@@ -82,6 +82,10 @@ export const getCurrentProtectionView = ({
 
   if (triggers.aaveBasicSell) {
     return 'auto-sell'
+  }
+
+  if (triggers.aaveTrailingStopLossDMA) {
+    return 'trailing-stop-loss'
   }
 
   return undefined

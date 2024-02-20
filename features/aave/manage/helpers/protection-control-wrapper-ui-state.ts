@@ -8,13 +8,14 @@ import {
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { StateFrom } from 'xstate'
 
-export const getProtectionControlVisibilityToggles = (
+export const getProtectionControlUIstate = (
   triggersState: StateFrom<typeof triggersAaveStateMachine>,
 ) => {
   const { protectionCurrentView, strategyConfig } = triggersState.context
   // this set the proper visibility of the protection control elements:
-  // details (and which should come first [the ones youre setting up])
-  // sidebar (active viewing/editing)
+  // view - viewing the existing trigger data
+  // configure - editing the existing trigger data (or creating a new one) is always at the top
+  // sidebar (active when viewing/editing)
   // banners
   const showAutoSell = isAutoSellEnabled(triggersState)
   const hasStopLoss = hasActiveStopLoss(triggersState)
@@ -35,19 +36,23 @@ export const getProtectionControlVisibilityToggles = (
       strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL),
   }
   return {
-    // banners
-    ...banners,
-    // active/configuring (managing or setting up)
-    autoSellConfiguring: protectionCurrentView === 'auto-sell',
-    stopLossConfiguring: protectionCurrentView === 'stop-loss',
-    trailingStopLossConfiguring: protectionCurrentView === 'trailing-stop-loss',
-    // viewing (below the active one)
-    autoSellViewing: hasAutoSell && protectionCurrentView !== 'auto-sell',
-    stopLossViewing: hasStopLoss && protectionCurrentView !== 'stop-loss',
-    trailingStopLossViewing: hasTrailingStopLoss && protectionCurrentView !== 'trailing-stop-loss',
-    // proper sidebar
-    autoSellSidebar: showAutoSell && protectionCurrentView === 'auto-sell',
-    stopLossSidebar: protectionCurrentView === 'stop-loss',
-    trailingStopLossSidebar: protectionCurrentView === 'trailing-stop-loss',
+    autoSell: {
+      view: hasAutoSell && protectionCurrentView !== 'auto-sell',
+      configure: protectionCurrentView === 'auto-sell',
+      sidebar: showAutoSell && protectionCurrentView === 'auto-sell',
+      banner: banners.bannerAutoSell,
+    },
+    stopLoss: {
+      view: hasStopLoss && protectionCurrentView !== 'stop-loss',
+      configure: protectionCurrentView === 'stop-loss',
+      sidebar: protectionCurrentView === 'stop-loss',
+      banner: banners.bannerStopLoss,
+    },
+    trailingStopLoss: {
+      view: hasTrailingStopLoss && protectionCurrentView !== 'trailing-stop-loss',
+      configure: protectionCurrentView === 'trailing-stop-loss',
+      sidebar: protectionCurrentView === 'trailing-stop-loss',
+      banner: banners.bannerTrailingStopLoss,
+    },
   }
 }

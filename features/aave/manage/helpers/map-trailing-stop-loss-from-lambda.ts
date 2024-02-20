@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { trailingStopLossDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/triggers'
 
 type TrailingStopLossTriggers = Pick<GetTriggersResponse['triggers'], 'aaveTrailingStopLossDMA'>
@@ -20,11 +21,9 @@ export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTrigger
     trailingStopLossTriggersNames[0] as keyof TrailingStopLossTriggers
   const trigger = triggers[trailingStopLossTriggerName]
   if (trigger) {
-    const trailingDistance = trigger.decodedParams.trailingDistance || trigger.decodedParams
+    const trailingDistance = trigger.decodedParams.trailingDistance
     return {
-      trailingDistance: trailingDistance
-        ? new BigNumber(Number(trailingDistance)).div(10 ** 2)
-        : undefined,
+      trailingDistance: new BigNumber(Number(trailingDistance)).div(trailingStopLossDenomination),
       trailingStopLossToken: trailingStopLossTriggerName.includes('Debt')
         ? ('debt' as const)
         : ('collateral' as const),
