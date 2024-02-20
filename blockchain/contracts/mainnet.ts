@@ -220,6 +220,7 @@ export const mainnetContracts = {
       mainnet.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
     ),
     'APXETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_APXETHETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, mainnet.ajna.AjnaRewardsReedemer),
