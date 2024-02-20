@@ -59,7 +59,7 @@ export function AaveManageTabBar({
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const triggersStateMachine = useTriggersAaveStateMachineContext()
-  const [triggersState] = useActor(triggersStateMachine)
+  const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
 
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   const PositionInfo = strategyConfig.viewComponents.positionInfo
@@ -113,8 +113,10 @@ export function AaveManageTabBar({
           label: t('system.optimization'),
           content: isExternalPosition ? (
             <DisabledAutomationForMigrationControl />
-          ) : isOptimizationAvailable ? (
-            <OptimizationControl />
+          ) : isOptimizationAvailable && triggersState ? (
+            <OptimizationControl
+              triggersState={triggersState}
+              sendTriggerEvent={sendTriggerEvent} />
           ) : (
             <DisabledOptimizationControl minNetValue={minNetValue} />
           ),
@@ -146,8 +148,10 @@ export function AaveManageTabBar({
                 nextPosition={nextPosition}
                 cumulatives={state.context.cumulatives}
                 dpmProxy={state.context.effectiveProxyAddress}
+                triggersState={triggersState}
+                sendTriggerEvent={sendTriggerEvent}
               />
-              <SidebarManageAaveVault />
+              <SidebarManageAaveVault triggersState={triggersState} />
             </Grid>
           ),
         },
@@ -173,7 +177,10 @@ export function AaveManageTabBar({
                 content: isExternalPosition ? (
                   <DisabledAutomationForMigrationControl />
                 ) : isProtectionAvailable ? (
-                  <ProtectionControlWrapper />
+                  <ProtectionControlWrapper
+                    triggersState={triggersState}
+                    sendTriggerEvent={sendTriggerEvent}
+                  />
                 ) : (
                   <DisabledProtectionControl minNetValue={minNetValue} />
                 ),

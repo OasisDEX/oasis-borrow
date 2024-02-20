@@ -16,9 +16,12 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ethers } from 'ethers'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
+import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
@@ -105,13 +108,14 @@ export function AaveManagePositionStopLossLambdaSidebar({
     [stopLossToken, strategyConfig.tokens.collateral, strategyConfig.tokens.debt, tokenPriceUSD$],
   )
   const [tokensPriceData] = useObservable(_tokenPriceUSD$)
-  const { stopLossTxCancelablePromise, isGettingStopLossTx } = useLambdaDebouncedStopLoss({
-    state,
-    stopLossLevel,
-    stopLossToken,
-    send,
-    action,
-  })
+  const { stopLossTxCancelablePromise, isGettingStopLossTx, errors, warnings } =
+    useLambdaDebouncedStopLoss({
+      state,
+      stopLossLevel,
+      stopLossToken,
+      send,
+      action,
+    })
 
   const preparedState = {
     [TriggerAction.Add]: 'preparedAdd',
@@ -249,6 +253,10 @@ export function AaveManagePositionStopLossLambdaSidebar({
         rightLabel={t('slider.set-stoploss.right-label')}
         direction={aaveLambdaStopLossConfig.sliderDirection}
       />
+      <>
+        <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
+        <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
+      </>
       {!!state.context.strategyInfo && (
         <OpenAaveStopLossInformationLambda
           stopLossParams={{

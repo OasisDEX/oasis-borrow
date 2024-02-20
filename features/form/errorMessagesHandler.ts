@@ -52,11 +52,13 @@ export type VaultErrorMessage =
   | 'executionLTVSmallerThanTargetLTV'
   | 'executionLTVBiggerThanTargetLTV'
   | 'executionLTVBiggerThanCurrentLTV'
+  | 'stopLossTriggerLtvLowerThanAutoBuy'
   | 'executionLTVSmallerThanCurrentLTV'
   | 'executionLTVNearToAutoSellTrigger'
   | 'tooLowLtvToSetupAutoSell'
   | 'tooLowLtvToSetupAutoBuy'
   | 'tooHighStopLossToSetupAutoSell'
+  | 'autoSellWillBlockStopLoss'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean

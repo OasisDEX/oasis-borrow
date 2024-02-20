@@ -13,10 +13,12 @@ import { Skeleton } from 'components/Skeleton'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
+import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type {
   ManageAaveContext,
   ManageAaveEvent,
   ManageAaveStateMachineState,
+  triggersAaveStateMachine,
 } from 'features/aave/manage/state'
 import type { ManagePositionAvailableActions } from 'features/aave/types'
 import { ProductType } from 'features/aave/types'
@@ -32,7 +34,7 @@ import { OpenVaultAnimation } from 'theme/animations'
 import { circle_close, circle_slider } from 'theme/icons'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { match } from 'ts-pattern'
-import type { Sender } from 'xstate'
+import type { Sender, StateFrom } from 'xstate'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
 import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
@@ -503,7 +505,11 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
   return dropdownConfig
 }
 
-export function SidebarManageAaveVault() {
+export function SidebarManageAaveVault({
+  triggersState,
+}: {
+  triggersState?: StateFrom<typeof triggersAaveStateMachine>
+}) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
   const { t } = useTranslation()
@@ -512,16 +518,22 @@ export function SidebarManageAaveVault() {
       stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
     },
   } = useAutomationContext()
+  const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
+  const finalIsStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined || isStopLossEnabled
+  const finalStopLossLevel =
+    (stopLossLambdaData.stopLossLevel && stopLossLambdaData.stopLossLevel.div(100)) || stopLossLevel
 
   function loading(): boolean {
     return isLoading(state)
   }
 
   const stopLossError =
-    isStopLossEnabled &&
-    ((state.context.transition?.simulation?.position.riskRatio.loanToValue.gte(stopLossLevel) &&
+    finalIsStopLossEnabled &&
+    ((state.context.transition?.simulation?.position.riskRatio.loanToValue.gte(
+      finalStopLossLevel,
+    ) &&
       !loading()) ||
-      state.context.userInput.riskRatio?.loanToValue.gte(stopLossLevel))
+      state.context.userInput.riskRatio?.loanToValue.gte(finalStopLossLevel))
 
   const dropdownConfig = getDropdownConfig({ state, send })
 

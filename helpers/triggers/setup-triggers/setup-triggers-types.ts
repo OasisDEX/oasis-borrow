@@ -12,6 +12,7 @@ export enum AutoSellTriggerCustomWarningCodes {}
 export enum TriggersApiErrorCode {
   MinSellPriceIsNotSet = 'min-sell-price-is-not-set',
   MaxBuyPriceIsNotSet = 'max-buy-price-is-not-set',
+  StopLossTriggerLowerThanAutoBuy = 'stop-loss-trigger-ltv-lower-than-auto-buy',
   ExecutionPriceBiggerThanMaxBuyPrice = 'execution-price-bigger-than-max-buy-price',
   ExecutionPriceSmallerThanMinSellPrice = 'execution-price-smaller-than-min-sell-price',
   ExecutionLTVSmallerThanTargetLTV = 'execution-ltv-smaller-than-target-ltv',
@@ -27,6 +28,12 @@ export enum TriggersApiErrorCode {
   TooLowLtvToSetupAutoBuy = 'too-low-ltv-to-setup-auto-buy',
   TooLowLtvToSetupAutoSell = 'too-low-ltv-to-setup-auto-sell',
   AutoSellNotAvailableDueToTooHighStopLoss = 'auto-sell-not-available-due-to-too-high-stop-loss',
+  StopLossTriggerAlreadyExists = 'stop-loss-trigger-already-exists',
+  StopLossTriggerDoesNotExist = 'stop-loss-trigger-does-not-exist',
+  DebtTooHighToSetupStopLoss = 'debt-too-high-to-setup-stop-loss',
+  StopLossTriggeredByAutoBuy = 'stop-loss-triggered-by-auto-buy',
+  StopLossNeverTriggeredWithNoAutoSellMinSellPrice = 'stop-loss-never-triggered-with-no-auto-sell-min-sell-price',
+  StopLossNeverTriggeredWithLowerAutoSellMinSellPrice = 'stop-loss-never-triggered-with-lower-auto-sell-min-sell-price',
 }
 
 export enum TriggersApiWarningCode {
@@ -41,19 +48,19 @@ export enum TriggersApiWarningCode {
   AutoSellTriggeredImmediately = 'auto-sell-triggered-immediately',
   AutoBuyTriggerCloseToStopLossTrigger = 'auto-buy-trigger-close-to-stop-loss-trigger',
   AutoSellWithNoMinPriceThreshold = 'auto-sell-with-no-min-price-threshold',
+  StopLossTriggeredImmediately = 'stop-loss-triggered-immediately',
+  StopLossMakesAutoSellNotTrigger = 'stop-loss-makes-auto-sell-not-trigger',
 }
 
 export type TriggersApiError = {
   code: TriggersApiErrorCode
   message: string
-  prams?: Record<string, string>
   path?: string[]
 }
 
 export type TriggersApiWarning = {
   code: TriggersApiWarningCode
   message: string
-  prams?: Record<string, string>
   path?: string[]
 }
 

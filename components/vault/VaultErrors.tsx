@@ -20,7 +20,7 @@ interface VaultErrorsProps {
   maxGenerateAmount?: BigNumber
   ilkData?: { debtFloor: BigNumber; token: string }
   maxWithdrawAmount?: BigNumber
-  autoType?: 'Auto-Buy' | 'Auto-Sell'
+  autoType?: 'Auto-Buy' | 'Auto-Sell' | 'Stop-Loss'
   infoBag?: Record<string, string>
 }
 
@@ -166,6 +166,8 @@ export function VaultErrors({
         return translate('auto-buy-trigger-lower-than-auto-sell-target')
       case 'stopLossTriggerHigherThanAutoBuyTarget':
         return translate('stop-loss-trigger-higher-than-auto-buy-target')
+      case 'stopLossTriggerLtvLowerThanAutoBuy':
+        return translate('stop-loss-trigger-ltv-lower-than-auto-buy')
       case 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled':
         return translate('cant-setup-auto-buy-or-sell-when-constant-multiple-enabled', { autoType })
       case 'minSellPriceWillPreventSellTrigger':
@@ -202,6 +204,8 @@ export function VaultErrors({
         return translate('sl-too-high-for-auto-sell', {
           maxLTV: infoBag?.['maxLTV'],
         })
+      case 'autoSellWillBlockStopLoss':
+        return translate('auto-sell-will-make-stop-loss-not-trigger')
 
       default:
         throw new UnreachableCaseError(message)

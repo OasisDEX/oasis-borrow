@@ -64,11 +64,10 @@ export function OpenAaveStopLossInformationLambda({
 
   const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
   const closeVaultGasPrice = new BigNumber(50) // gwei
-  const tokenPriceSelector = collateralActive ? collateralToken : debtToken
   const estimatedFeesWhenSlTriggered = formatFiatBalance(
     closeVaultGasEstimation
       .multipliedBy(closeVaultGasPrice)
-      .multipliedBy(tokensPriceData ? tokensPriceData[tokenPriceSelector] : one)
+      .multipliedBy(tokensPriceData && tokensPriceData['ETH'] ? tokensPriceData['ETH'] : one)
       .dividedBy(new BigNumber(10).pow(9)),
   )
 

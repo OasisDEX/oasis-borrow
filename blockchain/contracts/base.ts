@@ -180,6 +180,7 @@ export const baseContracts: MainnetContractsWithOptional = {
     'MWSTETHWPUNKS20-WSTETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_MWSTETHWPUNKS20WSTETH),
     'MWSTETHWPUNKS40-WSTETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH),
     'APXETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_APXETHETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, base.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),

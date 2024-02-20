@@ -4,16 +4,18 @@ import { AutoBuyBanner } from 'features/aave/components/banners'
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
 import { useOptimizationSidebarDropdown } from 'features/aave/hooks'
-import {
-  useManageAaveStateMachineContext,
-  useTriggersAaveStateMachineContext,
-} from 'features/aave/manage/contexts'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import { AutoBuySidebarAaveVault } from 'features/aave/manage/sidebars/AutoBuySidebarAaveVault'
-import type { AutoBuyTriggerAaveContext } from 'features/aave/manage/state'
+import type {
+  AutoBuyTriggerAaveContext,
+  TriggersAaveEvent,
+  triggersAaveStateMachine,
+} from 'features/aave/manage/state'
 import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
+import type { Sender, StateFrom } from 'xstate'
 
 function getAutoBuyDetailsLayoutProps(
   context: AutoBuyTriggerAaveContext,
@@ -62,12 +64,16 @@ function getAutoBuyDetailsLayoutProps(
   }
 }
 
-export function OptimizationControl() {
+export function OptimizationControl({
+  triggersState,
+  sendTriggerEvent,
+}: {
+  triggersState: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent: Sender<TriggersAaveEvent>
+}) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
 
-  const triggersStateMachine = useTriggersAaveStateMachineContext()
-  const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
   const [autoBuyState, sendAutoBuyEvent] = useActor(triggersState.context.autoBuyTrigger)
   const shouldLoadTriggers = useSelector(triggersState.context.autoBuyTrigger, (selector) =>
     selector.matches('txDone'),
