@@ -85,13 +85,13 @@ export const AaveTrailingStopLossManageDetails = ({
             }`}
           />
           <OmniContentCard
-            title="Trailing Stop Loss Price"
+            title="Trailing Stop-Loss Price"
             value={dynamicStopLossPriceValue}
             change={dynamicStopLossPriceChangeValue ? [dynamicStopLossPriceChangeValue] : undefined}
             changeVariant="positive"
           />
           <OmniContentCard
-            title={`Est. ${trailingStopLossToken} on Trailing Stop Loss triggered`}
+            title={`Est. ${trailingStopLossToken} on Trailing Stop-Loss triggered`}
             value={estimatedTokenOnSLTriggerValue}
             change={
               estimatedTokenOnSLTriggerChangeValue

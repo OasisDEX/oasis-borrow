@@ -174,7 +174,7 @@
       },
       "bullet-points": [
         "Multiple positions with the same wallet",
-        "Enables advanced Summer.fi features such as Automation and Stop Loss",
+        "Enables advanced Summer.fi features such as Automation and Stop-Loss",
         "Better security with allowances set and removed within transactions"
       ]
     }
@@ -817,7 +817,7 @@
     "below-current-price": "{{percentage}} below current price",
     "above-current-price": "{{percentage}} above current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
-    "stop-loss-ltv": "Stop Loss LTV: {{percentage}}",
+    "stop-loss-ltv": "Stop-Loss LTV: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
     "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}. This net value doesn't include the cost of the closing fee or the difference that might happen due to slippage or price changes once you close your position. Net value of position if closed will likely be lower.",
@@ -1787,7 +1787,7 @@
     "reopen-position": "Reopen position",
     "stop-loss-triggered": "Stop-Loss triggered",
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
-    "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop Loss event on the right.",
+    "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop-Loss event on the right.",
     "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your {{ratioParam}}.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",

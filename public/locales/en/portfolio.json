@@ -48,7 +48,7 @@
     "autoBuy": "Auto Buy",
     "autoSell": "Auto Sell",
     "takeProfit": "Take Profit",
-    "stopLoss": "Stop Loss"
+    "stopLoss": "Stop-Loss"
   },
   "position-details": {
     "netValue": "Net Value",
@@ -111,7 +111,7 @@
   },
   "ajna-warning": "There has been possible griefing attack vector identified on Ajna Protocol. All Ajna users should close their positions and withdraw their funds. This is not related to any summer.fi contracts, so Maker and Aave users are not affected.",
   "migrations": {
-    "stop-loss": "Stop Loss",
+    "stop-loss": "Stop-Loss",
     "one-click-multiply": "One Click Multiply",
     "advanced-automation": "Advanced Automation"
   }
