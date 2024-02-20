@@ -520,8 +520,7 @@ export function SidebarManageAaveVault({
   const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
   const finalIsStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined || isStopLossEnabled
   const finalStopLossLevel =
-    (stopLossLambdaData.stopLossLevel && stopLossLambdaData.stopLossLevel.div(10 ** 2)) ||
-    stopLossLevel
+    (stopLossLambdaData.stopLossLevel && stopLossLambdaData.stopLossLevel.div(100)) || stopLossLevel
 
   function loading(): boolean {
     return isLoading(state)

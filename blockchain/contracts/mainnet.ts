@@ -208,6 +208,7 @@ export const mainnetContracts = {
     'RBN-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RBNETH),
     'AJNA-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_AJNADAI),
     'MKR-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MKRDAI),
+    'SUSDE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
