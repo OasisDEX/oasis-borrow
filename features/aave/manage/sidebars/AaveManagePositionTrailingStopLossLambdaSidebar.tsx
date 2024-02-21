@@ -441,8 +441,16 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     if (transactionStep === 'finished') {
       return false
     }
+    if (trailingStopLossTxDataLambda === undefined) {
+      return true
+    }
     return !trailingStopLossConfigChanged
-  }, [isGettingTrailingStopLossTx, trailingStopLossConfigChanged, transactionStep])
+  }, [
+    isGettingTrailingStopLossTx,
+    trailingStopLossConfigChanged,
+    transactionStep,
+    trailingStopLossTxDataLambda,
+  ])
 
   const primaryButtonAction = () => {
     if (transactionStep === 'prepare') {

@@ -1,6 +1,4 @@
 import { trailingStopLossDenomination } from 'features/aave/constants'
-import { DmaAaveTrailingStopLossID } from 'helpers/triggers/get-triggers'
-import { LendingProtocol } from 'lendingProtocols'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
@@ -14,14 +12,9 @@ export const setupAaveLikeTrailingStopLoss = async (
 ): Promise<SetupTrailingStopLossResponse> => {
   const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-trailing-stop-loss' })
 
-  const triggerTypeMap = {
-    [LendingProtocol.AaveV3]: DmaAaveTrailingStopLossID.toString(),
-  }
-
   const body = JSON.stringify({
     dpm: params.dpm,
     triggerData: {
-      type: triggerTypeMap[params.protocol as keyof typeof triggerTypeMap],
       trailingDistance: params.trailingDistance
         .times(trailingStopLossDenomination)
         .integerValue()
