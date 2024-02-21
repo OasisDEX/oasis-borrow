@@ -5,7 +5,7 @@ import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/Sidebar
 import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
 import { formatAmount } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -34,14 +34,14 @@ export const AaveTrailingStopLossManageDetails = ({
     trailingStopLossLambdaData,
     trailingStopLossToken,
   })
-
+  const trailingDistanceCurrent = trailingStopLossLambdaData.trailingDistance || zero
   const trailingDistanceDisplayValue = `${formatAmount(
-    trailingStopLossLambdaData.trailingDistance || zero,
+    trailingDistanceCurrent,
     strategyConfig.tokens.debt,
   )} ${strategyConfig.tokens.debt}`
   const trailingDistanceChangeDisplayValue =
     trailingDistanceValue &&
-    !trailingDistanceValue.eq(trailingStopLossLambdaData.trailingDistance || one) &&
+    !trailingDistanceValue.eq(trailingDistanceCurrent) &&
     `${formatAmount(trailingDistanceValue, strategyConfig.tokens.debt)} ${
       strategyConfig.tokens.debt
     }`
@@ -72,7 +72,7 @@ export const AaveTrailingStopLossManageDetails = ({
       content={
         <DetailsSectionContentCardWrapper>
           <OmniContentCard
-            title="Trailing Distance"
+            title={t('protection.trailing-distance')}
             value={trailingDistanceDisplayValue}
             change={
               trailingDistanceChangeDisplayValue ? [trailingDistanceChangeDisplayValue] : undefined
@@ -80,19 +80,21 @@ export const AaveTrailingStopLossManageDetails = ({
             changeVariant="positive"
           />
           <OmniContentCard
-            title="Current Market Price"
+            title={t('protection.current-market-price')}
             value={`${formatAmount(collateralPriceInDebt, strategyConfig.tokens.debt)} ${
               strategyConfig.tokens.debt
             }`}
           />
           <OmniContentCard
-            title="Trailing Stop-Loss Price"
+            title={t('protection.trailing-stop-loss-price')}
             value={dynamicStopLossPriceValue}
             change={dynamicStopLossPriceChangeValue ? [dynamicStopLossPriceChangeValue] : undefined}
             changeVariant="positive"
           />
           <OmniContentCard
-            title={`Est. ${trailingStopLossToken} on Trailing Stop-Loss triggered`}
+            title={t('protection.est-token-on-tsl-trigger', {
+              trailingStopLossToken,
+            })}
             value={estimatedTokenOnSLTriggerValue}
             change={
               estimatedTokenOnSLTriggerChangeValue

@@ -13,7 +13,10 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConnectedSidebarSection } from 'features/aave/components'
+import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import { useGasEstimation } from 'features/aave/hooks/useGasEstimation'
 import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
@@ -113,7 +116,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   }, [transactionStep, isTrailingStopLossEnabled, isRegularStopLossEnabled])
   const selectedTokenLabel = strategyConfig.tokens[trailingStopLossToken]
 
-  const { trailingStopLossTxCancelablePromise, isGettingTrailingStopLossTx } =
+  const { trailingStopLossTxCancelablePromise, isGettingTrailingStopLossTx, errors, warnings } =
     useLambdaDebouncedTrailingStopLoss({
       state,
       trailingDistance,
@@ -284,6 +287,10 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         leftLabel={t('protection.trailing-distance')}
         rightLabel={t('slider.set-stoploss.right-label')}
       />
+      <>
+        <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
+        <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
+      </>
       {!!stopLossLambdaData.stopLossLevel && (
         <MessageCard
           messages={[
