@@ -3321,6 +3321,23 @@
     "aave": {
       "title": "AAVE is Better on Summer",
       "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
+    },
+    "spark": {
+      "title": "Spark is Better on Summer",
+      "description": "Borrow DAI for the lowest rate, Earn Yield with Savings DAI and access DeFi’s most useful features that make Spark an even more powerful protocol."
+    },
+    "maker": {
+      "title": "Maker is Better on Summer",
+      "description": "Borrow and Earn DAI from the oldest and most trusted protocol in DeFi, with best in class automated position management tools from Summer.fi."
+    },
+    "ethena": {
+      "title": "Get paid to boost your sUSDe yield on Summer",
+      "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
+    },
+    "susde": {
+      "title": "Get paid to boost your sUSDe yield on Summer",
+      "description": "Borrow DAI against your sUSDe with AJNA on summer and multiply your staking yield exposure, all while earning $AJNA rewards."
     }
   }
 }
+
