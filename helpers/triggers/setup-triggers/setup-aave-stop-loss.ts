@@ -1,12 +1,3 @@
-import type { SupportedLambdaProtocols } from 'helpers/triggers/common'
-import {
-  DmaAaveStopLossToCollateralV2ID,
-  DmaAaveStopLossToDebtV2ID,
-  DmaSparkStopLossToCollateralV2ID,
-  DmaSparkStopLossToDebtV2ID,
-} from 'helpers/triggers/get-triggers'
-import { LendingProtocol } from 'lendingProtocols'
-
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
   SetupAaveStopLossParams,
@@ -20,24 +11,9 @@ export const setupAaveLikeStopLoss = async (
 ): Promise<SetupBasicStopLossResponse> => {
   const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
 
-  const triggerTypeMap = {
-    [LendingProtocol.AaveV3]: {
-      collateral: DmaAaveStopLossToCollateralV2ID.toString(),
-      debt: DmaAaveStopLossToDebtV2ID.toString(),
-    },
-    [LendingProtocol.SparkV3]: {
-      collateral: DmaSparkStopLossToCollateralV2ID.toString(),
-      debt: DmaSparkStopLossToDebtV2ID.toString(),
-    },
-  }
-
-  const triggerTypePicker: keyof (typeof triggerTypeMap)[SupportedLambdaProtocols] =
-    params.executionToken === params.strategy.collateralAddress ? 'collateral' : 'debt'
-
   const body = JSON.stringify({
     dpm: params.dpm,
     triggerData: {
-      type: triggerTypeMap[params.protocol][triggerTypePicker],
       executionLTV: params.executionLTV
         .times(10 ** 2)
         .integerValue()

@@ -1,8 +1,5 @@
-import BigNumber from 'bignumber.js'
-import { estimateGas } from 'blockchain/better-calls/dpm-account'
-import { getOverrides } from 'blockchain/better-calls/utils/get-overrides'
-import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network.types'
+import type BigNumber from 'bignumber.js'
+import { executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { ActionPills } from 'components/ActionPills'
 import { DimmedList } from 'components/DImmedList'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -16,9 +13,9 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { ethers } from 'ethers'
 import { ConnectedSidebarSection } from 'features/aave/components'
-// import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
+import { useGasEstimation } from 'features/aave/hooks/useGasEstimation'
+import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
@@ -29,6 +26,7 @@ import {
   sidebarAutomationFeatureCopyMap,
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -72,11 +70,23 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
 }) {
   const { t } = useTranslation()
   const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
+  const { signer } = useWalletManagement()
+
   const [triggerId, setTriggerId] = useState<string>(trailingStopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<TrailingStopLossSidebarStates>('prepare')
   const isRegularStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
-  const { strategyConfig, strategyInfo, trailingStopLossTxDataLambda, web3Context } = state.context
+  const { strategyConfig, strategyInfo, trailingStopLossTxDataLambda } = state.context
+  const gasEstimation = useGasEstimation({
+    transaction: trailingStopLossTxDataLambda,
+    networkId: strategyConfig.networkId,
+    signer,
+  })
+  const TransactionCost = useTransactionCostWithLoading({
+    transactionCost: gasEstimation,
+    isLoading: refreshingTriggerData,
+  })
+
   const {
     trailingDistance,
     trailingDistanceValue,
@@ -168,29 +178,12 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   }
 
   const executeCall = async () => {
-    if (trailingStopLossTxDataLambda) {
-      const proxyAddress = trailingStopLossTxDataLambda.to
-      const networkId = strategyConfig.networkId
-      const contracts = getNetworkContracts(networkId, web3Context?.chainId)
-      ensureContractsExist(networkId, contracts, ['automationBotV2'])
-      const signer = (web3Context as ContextConnected)?.transactionProvider
-      const bnValue = new BigNumber(0)
-      const data = trailingStopLossTxDataLambda.data
-      const value = ethers.utils.parseEther(bnValue.toString()).toHexString()
-      const gasLimit = await estimateGas({
-        networkId,
-        proxyAddress,
-        signer,
-        value: bnValue,
-        to: proxyAddress,
-        data,
-      })
-      return signer.sendTransaction({
-        ...(await getOverrides(signer)),
-        to: proxyAddress,
-        data,
-        value,
-        gasLimit: gasLimit ?? undefined,
+    if (trailingStopLossTxDataLambda && signer) {
+      return await executeTransaction({
+        data: trailingStopLossTxDataLambda.data,
+        to: trailingStopLossTxDataLambda.to,
+        signer: signer,
+        networkId: strategyConfig.networkId,
       })
     }
     return null
@@ -226,8 +219,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         label={`${t('protection.estimated-fees-on-trigger', {
           token: selectedTokenLabel,
         })}`}
-        value={<Flex>${'estimatedFeesWhenSlTriggered'}</Flex>}
-        tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
+        value={TransactionCost}
       />
     </DimmedList>
   )
@@ -449,8 +441,16 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     if (transactionStep === 'finished') {
       return false
     }
+    if (trailingStopLossTxDataLambda === undefined) {
+      return true
+    }
     return !trailingStopLossConfigChanged
-  }, [isGettingTrailingStopLossTx, trailingStopLossConfigChanged, transactionStep])
+  }, [
+    isGettingTrailingStopLossTx,
+    trailingStopLossConfigChanged,
+    transactionStep,
+    trailingStopLossTxDataLambda,
+  ])
 
   const primaryButtonAction = () => {
     if (transactionStep === 'prepare') {

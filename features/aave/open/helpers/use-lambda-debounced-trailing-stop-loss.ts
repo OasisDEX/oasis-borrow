@@ -74,19 +74,12 @@ export const useLambdaDebouncedTrailingStopLoss = ({
       setTrailingStopLossTxCancelablePromise(trailingStopLossTxDataPromise)
       trailingStopLossTxDataPromise
         .then((res) => {
-          if (
-            res.transaction &&
-            res.encodedTriggerData &&
-            res.transaction.triggerTxData &&
-            context.effectiveProxyAddress
-          ) {
+          if (res.transaction) {
             send({
               type: 'SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA',
               trailingStopLossTxDataLambda: {
                 to: res.transaction.to,
                 data: res.transaction.data,
-                triggerTxData: res.transaction.triggerTxData,
-                encodedTriggerData: res.encodedTriggerData,
               },
             })
           }

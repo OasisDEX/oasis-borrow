@@ -80,7 +80,7 @@ export const useLambdaDebouncedStopLoss = ({
           if (
             res.transaction &&
             res.encodedTriggerData &&
-            res.transaction.triggerTxData &&
+            res.transaction &&
             context.effectiveProxyAddress
           ) {
             send({
@@ -88,8 +88,6 @@ export const useLambdaDebouncedStopLoss = ({
               stopLossTxDataLambda: {
                 to: res.transaction.to,
                 data: res.transaction.data,
-                triggerTxData: res.transaction.triggerTxData,
-                encodedTriggerData: res.encodedTriggerData,
               },
             })
           }
