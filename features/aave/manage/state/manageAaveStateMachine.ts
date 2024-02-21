@@ -1,4 +1,3 @@
-import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type {
   AdjustAaveParameters,
   CloseAaveParameters,
@@ -107,7 +106,6 @@ export type ManageAaveEvent =
       ownerAddress: string
       effectiveProxyAddress: string
     }
-  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: AaveLikePosition }
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | {
       type: 'HISTORY_UPDATED'
@@ -623,7 +621,13 @@ export function createManageAaveStateMachine(
         SET_STOP_LOSS_LEVEL: {
           actions: 'updateContext',
         },
+        SET_TRAILING_STOP_LOSS_LEVEL: {
+          actions: 'updateContext',
+        },
         SET_STOP_LOSS_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
+        SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA: {
           actions: 'updateContext',
         },
         USE_SLIPPAGE: {

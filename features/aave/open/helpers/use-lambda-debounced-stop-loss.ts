@@ -4,8 +4,14 @@ import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
-import type { SetupBasicStopLossResponse, TriggerAction } from 'helpers/triggers/setup-triggers'
-import { setupAaveStopLoss } from 'helpers/triggers/setup-triggers'
+import type { SupportedLambdaProtocols } from 'helpers/triggers'
+import type {
+  SetupBasicStopLossResponse,
+  TriggerAction,
+  TriggersApiError,
+  TriggersApiWarning,
+} from 'helpers/triggers/setup-triggers'
+import { setupAaveLikeStopLoss } from 'helpers/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { hundred, one } from 'helpers/zero'
 import { useState } from 'react'
@@ -24,12 +30,19 @@ export const useLambdaDebouncedStopLoss = ({
   action: TriggerAction
 }) => {
   const [isGettingStopLossTx, setIsGettingStopLossTx] = useState(false)
+  const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
+  const [errors, setErrors] = useState<TriggersApiError[]>([])
   const [stopLossTxCancelablePromise, setStopLossTxCancelablePromise] =
     useState<CancelablePromise<SetupBasicStopLossResponse>>()
   const { strategyConfig } = state.context
   const { tokens } = getAddresses(strategyConfig.networkId, strategyConfig.protocol)
   const collateralAddress = tokens[eth2weth(state.context.tokens.collateral) as keyof typeof tokens]
   const debtAddress = tokens[eth2weth(state.context.tokens.debt) as keyof typeof tokens]
+
+  const clearWarningsAndErrors = () => {
+    setWarnings([])
+    setErrors([])
+  }
 
   useDebouncedEffect(
     () => {
@@ -40,19 +53,20 @@ export const useLambdaDebouncedStopLoss = ({
       }
       if (!isGettingStopLossTx) {
         setIsGettingStopLossTx(true)
+        clearWarningsAndErrors()
       }
       const openingLtv =
         context.userInput.riskRatio?.loanToValue ?? context.defaultRiskRatio?.loanToValue
       const manageLtv =
         context.userInput.riskRatio?.loanToValue ?? context.currentPosition?.riskRatio?.loanToValue
       const stopLossTxDataPromise = cancelable(
-        setupAaveStopLoss({
+        setupAaveLikeStopLoss({
           dpm: dpmAccount,
           executionLTV: stopLossLevel,
           targetLTV: (openingLtv ?? manageLtv ?? one).times(hundred),
           networkId: strategyConfig.networkId,
           executionToken: stopLossToken === 'debt' ? debtAddress : collateralAddress,
-          protocol: strategyConfig.protocol,
+          protocol: strategyConfig.protocol as SupportedLambdaProtocols,
           strategy: {
             collateralAddress,
             debtAddress,
@@ -66,7 +80,7 @@ export const useLambdaDebouncedStopLoss = ({
           if (
             res.transaction &&
             res.encodedTriggerData &&
-            res.transaction.triggerTxData &&
+            res.transaction &&
             context.effectiveProxyAddress
           ) {
             send({
@@ -74,11 +88,11 @@ export const useLambdaDebouncedStopLoss = ({
               stopLossTxDataLambda: {
                 to: res.transaction.to,
                 data: res.transaction.data,
-                triggerTxData: res.transaction.triggerTxData,
-                encodedTriggerData: res.encodedTriggerData,
               },
             })
           }
+          res.warnings && setWarnings(res.warnings)
+          res.errors && setErrors(res.errors)
         })
         .catch((error) => {
           send({
@@ -96,5 +110,7 @@ export const useLambdaDebouncedStopLoss = ({
   return {
     stopLossTxCancelablePromise,
     isGettingStopLossTx,
+    warnings,
+    errors,
   }
 }

@@ -8,7 +8,7 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
 import { IStrategyConfig } from './strategy-config'
-import { AutomationAddTriggerData, AutomationAddTriggerLambda } from 'features/automation/common/txDefinitions.types'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -17,6 +17,7 @@ import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { TriggerTransaction } from "../../../helpers/triggers";
 
 export type UserInput = {
   riskRatio?: IRiskRatio
@@ -107,9 +108,11 @@ export interface BaseAaveContext {
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
   stopLossLevel?: BigNumber
+  trailingDistance?: BigNumber
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
-  stopLossTxDataLambda?: AutomationAddTriggerLambda
+  stopLossTxDataLambda?: TriggerTransaction
+  trailingStopLossTxDataLambda?: TriggerTransaction
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData

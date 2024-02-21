@@ -54,8 +54,6 @@ function useSetupTriggersStateContext(
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
       showAutoBuyBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY),
-      showAutoSellBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL),
-      showStopLossBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
       currentTriggers: {
@@ -123,7 +121,7 @@ function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
 
   useEffect(() => {
     if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.AUTO_SELL) {
-      triggerStateMachine.send({ type: 'SHOW_AUTO_SELL' })
+      triggerStateMachine.send({ type: 'CHANGE_VIEW', view: 'auto-sell' })
     }
   }, [activeAutomationFeature?.currentProtectionFeature])
   return <>{children}</>

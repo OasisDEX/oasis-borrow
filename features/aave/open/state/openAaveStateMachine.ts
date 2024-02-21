@@ -164,6 +164,10 @@ export function createOpenAaveStateMachine(
           src: 'reserveData$',
           id: 'reserveData$',
         },
+        {
+          src: 'currentPosition$',
+          id: 'currentPosition$',
+        },
       ],
       id: 'openAaveStateMachine',
       type: 'parallel',
@@ -514,11 +518,17 @@ export function createOpenAaveStateMachine(
         SET_STOP_LOSS_TX_DATA_LAMBDA: {
           actions: 'updateContext',
         },
+        SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
         SET_STOP_LOSS_SKIPPED: {
           actions: 'updateContext',
         },
         UPDATE_RESERVE_DATA: {
           actions: 'updateContext',
+        },
+        CURRENT_POSITION_CHANGED: {
+          actions: ['updateContext'],
         },
       },
     },

@@ -1,5 +1,6 @@
 import type { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
 import { ethers } from 'ethers'
+import { useMemo } from 'react'
 
 import { useWeb3OnBoardConnectorContext } from './web3-on-board-connector-provider'
 
@@ -42,19 +43,25 @@ export interface WalletManagementState {
 }
 export function useWalletManagement(): WalletManagementState {
   const { state, disconnect } = useWeb3OnBoardConnectorContext()
-  return {
-    disconnect,
-    connecting: state.status === 'connecting',
-    chainId: state.networkConnectorNetworkId,
-    wallet: state.connector
+  const signer = useMemo(() => {
+    return state.connector
+      ? new ethers.providers.Web3Provider(state.connector.connectorInformation.provider).getSigner()
+      : undefined
+  }, [state.connector])
+  const wallet = useMemo(() => {
+    return state.connector
       ? {
           address: state.connector.connectedAccount,
           chainHexId: state.connector.hexChainId,
           chainId: state.connector.chainId,
         }
-      : undefined,
-    signer: state.connector
-      ? new ethers.providers.Web3Provider(state.connector.connectorInformation.provider).getSigner()
-      : undefined,
+      : undefined
+  }, [state.connector])
+  return {
+    disconnect,
+    connecting: state.status === 'connecting',
+    chainId: state.networkConnectorNetworkId,
+    wallet: wallet,
+    signer: signer,
   }
 }

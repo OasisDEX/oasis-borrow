@@ -17,6 +17,9 @@ export function ProtectionDetailsControl({
   const {
     protocol,
     triggerData: { autoSellTriggerData, stopLossTriggerData },
+    metadata: {
+      stopLossMetadata: { stopLossWriteEnabled },
+    },
   } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -32,7 +35,9 @@ export function ProtectionDetailsControl({
 
   return (
     <>
-      {isStopLossAvailable && <StopLossDetailsControl isStopLossActive={isStopLossActive} />}
+      {stopLossWriteEnabled && isStopLossAvailable && (
+        <StopLossDetailsControl isStopLossActive={isStopLossActive} />
+      )}
       {isAutoSellAvailable && <AutoSell />}
     </>
   )

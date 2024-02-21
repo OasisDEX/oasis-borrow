@@ -1,9 +1,9 @@
 import { TriggerType } from '@oasisdex/automation'
-import type { MakerDiscoverPositionsTrigger } from 'handlers/portfolio/positions/handlers/maker/types'
+import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
 
 interface GetPositionsAutomationsParams {
-  triggers: MakerDiscoverPositionsTrigger[]
+  triggers: AutomationResponse[number]['triggers'][]
   defaultList?: Record<string, boolean> | {}
 }
 
@@ -30,6 +30,7 @@ const triggerTypesMap = {
     TriggerType.DmaAaveStopLossToDebtV2,
     TriggerType.DmaSparkStopLossToCollateralV2,
     TriggerType.DmaSparkStopLossToDebtV2,
+    TriggerType.DmaAaveTrailingStopLossV2,
   ],
   takeProfit: [
     TriggerType.AutoTakeProfitToCollateral,

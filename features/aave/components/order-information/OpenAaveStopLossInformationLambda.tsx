@@ -1,41 +1,40 @@
-import BigNumber from 'bignumber.js'
-import type { Tickers } from 'blockchain/prices.types'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { DimmedList } from 'components/DImmedList'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import { useGasEstimation } from 'features/aave/hooks/useGasEstimation'
+import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import type { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import type { IStrategyInfo } from 'features/aave/types'
 import { getCollateralDuringLiquidation } from 'features/automation/protection/stopLoss/helpers'
-import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
+import { formatAmount } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex } from 'theme-ui'
+import { Flex } from 'theme-ui'
 
 interface OpenAaveStopLossInformationLambdaProps {
   collateralActive: boolean
   strategyInfo: IStrategyInfo
-  tokensPriceData?: Tickers
   stopLossParams: ReturnType<typeof getAaveLikeStopLossParams.open>
 }
 
 export function OpenAaveStopLossInformationLambda({
   collateralActive,
   strategyInfo,
-  tokensPriceData,
   stopLossParams,
 }: OpenAaveStopLossInformationLambdaProps) {
   const { t } = useTranslation()
+  const { signer } = useWalletManagement()
+  const gasEstimation = useGasEstimation({
+    transaction: stopLossParams.stopLossTxData,
+    networkId: stopLossParams.strategy.networkId,
+    signer,
+  })
+  const TransactionCost = useTransactionCostWithLoading({ transactionCost: gasEstimation })
   const collateralToken = strategyInfo.tokens.collateral
   const debtToken = strategyInfo.tokens.debt
-  const formattedStopLossLevel = stopLossParams.stopLossLevel
   const lockedCollateral = stopLossParams.lockedCollateral
   const debt = stopLossParams.debt
-  const executionPrice = collateralPriceAtRatio({
-    colRatio: formattedStopLossLevel.isZero() ? zero : one.div(formattedStopLossLevel.div(100)),
-    collateral: lockedCollateral,
-    vaultDebt: debt,
-  })
 
   const afterMaxToken = stopLossParams.dynamicStopLossPrice.isZero()
     ? zero
@@ -47,7 +46,9 @@ export function OpenAaveStopLossInformationLambda({
   const collateralDuringLiquidation = getCollateralDuringLiquidation({
     lockedCollateral,
     debt,
-    liquidationPrice: stopLossParams.liquidationPrice,
+    liquidationPrice: stopLossParams.liquidationPrice.eq(zero)
+      ? one
+      : stopLossParams.liquidationPrice,
     liquidationPenalty: strategyInfo.liquidationBonus,
   })
 
@@ -55,24 +56,17 @@ export function OpenAaveStopLossInformationLambda({
 
   const maxTokenOrDebtToken = collateralActive
     ? `${formatAmount(afterMaxToken, collateralToken)} ${collateralToken}`
-    : `${formatAmount(afterMaxToken.multipliedBy(executionPrice), debtToken)} ${debtToken}`
+    : `${formatAmount(
+        afterMaxToken.multipliedBy(stopLossParams.dynamicStopLossPrice),
+        debtToken,
+      )} ${debtToken}`
 
   const savingTokenOrDebtToken = collateralActive
     ? `${formatAmount(savingCompareToLiquidation, collateralToken)} ${collateralToken}`
     : `${formatAmount(
-        savingCompareToLiquidation.multipliedBy(executionPrice),
+        savingCompareToLiquidation.multipliedBy(stopLossParams.dynamicStopLossPrice),
         debtToken,
       )} ${debtToken}`
-
-  const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
-  const closeVaultGasPrice = new BigNumber(50) // gwei
-  const tokenPriceSelector = collateralActive ? collateralToken : debtToken
-  const estimatedFeesWhenSlTriggered = formatFiatBalance(
-    closeVaultGasEstimation
-      .multipliedBy(closeVaultGasPrice)
-      .multipliedBy(tokensPriceData ? tokensPriceData[tokenPriceSelector] : one)
-      .dividedBy(new BigNumber(10).pow(9)),
-  )
 
   return (
     <DimmedList>
@@ -94,8 +88,7 @@ export function OpenAaveStopLossInformationLambda({
       />
       <VaultChangesInformationItem
         label={`${t('protection.estimated-fees-on-trigger', { token: collateralToken })}`}
-        value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
-        tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
+        value={TransactionCost}
       />
     </DimmedList>
   )

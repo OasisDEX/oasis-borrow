@@ -1,7 +1,8 @@
+import { PositionLoadingOverviewState } from 'components/vault/PositionLoadingState'
 import { useAaveContext } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
@@ -61,7 +62,7 @@ export function AaveBorrowManageComponent({
           debtTokenReserveConfigurationData,
           aaveHistory,
         ]}
-        customLoader={<AppSpinner />}
+        customLoader={<PositionLoadingOverviewState />}
       >
         {([
           _currentPosition,

@@ -9,6 +9,7 @@ import type {
 export interface AjnaHistoryResponse extends PositionHistoryResponse {
   originationFee: string
   originationFeeInQuoteToken: string
+  interestRate: string
 }
 
 export interface AjnaBorrowerEventsResponse {
@@ -44,6 +45,7 @@ type AjnaHistoryEventExtension = {
   moveQuoteToPrice: BigNumber
   addOrRemovePrice: BigNumber
   totalFeeInQuoteToken: BigNumber
+  interestRate: BigNumber
 }
 
 type AjnaBorrowerEventExtension = {

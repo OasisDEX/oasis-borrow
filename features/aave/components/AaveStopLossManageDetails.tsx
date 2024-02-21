@@ -18,12 +18,12 @@ export const AaveStopLossManageDetails = ({
   state,
   stopLossLambdaData,
   stopLossToken,
-  debtTokenReserveConfigurationData,
+  reserveConfigurationData,
 }: Pick<ManageAaveStateProps, 'state'> & {
   triggers?: GetTriggersResponse['triggers']
   stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
   stopLossToken: 'debt' | 'collateral'
-  debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
+  reserveConfigurationData: AaveLikeReserveConfigurationData
 }) => {
   const { strategyConfig, currentPosition } = state.context
   const {
@@ -70,6 +70,7 @@ export const AaveStopLossManageDetails = ({
         stopLossLambdaData.stopLossToken !== stopLossToken)
     )
   }, [stopLossLambdaData, stopLossLevel, stopLossToken])
+
   return (
     <StopLossDetailsLayout
       token={token}
@@ -81,14 +82,14 @@ export const AaveStopLossManageDetails = ({
       isStopLossEnabled={isStopLossEnabled}
       liquidationRatio={liquidationRatio}
       liquidationPrice={liquidationPrice}
-      liquidationPenalty={debtTokenReserveConfigurationData.liquidationBonus}
+      liquidationPenalty={reserveConfigurationData.liquidationBonus}
       lockedCollateral={lockedCollateral}
       nextPositionRatio={loanToValue.decimalPlaces(5)}
       collateralDuringLiquidation={getCollateralDuringLiquidation({
         lockedCollateral,
         debt,
         liquidationPrice,
-        liquidationPenalty: debtTokenReserveConfigurationData.liquidationBonus,
+        liquidationPenalty: reserveConfigurationData.liquidationBonus,
       })}
       triggerMaxToken={maxToken}
       afterMaxToken={afterMaxToken}

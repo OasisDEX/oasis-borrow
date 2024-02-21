@@ -11,9 +11,10 @@ import {
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
 import { one, zero } from 'helpers/zero'
+import { memoize } from 'lodash'
 
 export const getAaveLikeStopLossParams = {
-  open: ({ state }: Pick<OpenAaveStateProps | OpenAaveEditingStateProps, 'state'>) => {
+  open: memoize(({ state }: Pick<OpenAaveStateProps | OpenAaveEditingStateProps, 'state'>) => {
     const stopLossLevel = state.context.stopLossLevel || zero
     const positionRatio =
       state.context.transition?.simulation.position.riskRatio.loanToValue || zero
@@ -44,6 +45,10 @@ export const getAaveLikeStopLossParams = {
       liquidationRatio: one.div(liquidationRatio),
       stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
     })
+
+    const stopLossTxData = state.context.stopLossTxDataLambda
+    const strategy = state.context.strategyConfig
+
     return {
       stopLossLevel,
       positionRatio,
@@ -55,9 +60,11 @@ export const getAaveLikeStopLossParams = {
       liquidationPrice,
       sliderPercentageFill,
       dynamicStopLossPrice,
+      stopLossTxData,
+      strategy,
     }
-  },
-  manage: ({ state }: Pick<ManageAaveStateProps, 'state'>) => {
+  }),
+  manage: memoize(({ state }: Pick<ManageAaveStateProps, 'state'>) => {
     const stopLossLevel = state.context.stopLossLevel || zero
     const positionRatio = state.context.currentPosition?.riskRatio.loanToValue || zero
     const liquidationRatio = state.context?.currentPosition?.category.liquidationThreshold || zero
@@ -86,6 +93,10 @@ export const getAaveLikeStopLossParams = {
       liquidationRatio: one.div(liquidationRatio),
       stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
     })
+
+    const stopLossTxData = state.context.stopLossTxDataLambda
+    const strategy = state.context.strategyConfig
+
     return {
       stopLossLevel,
       positionRatio,
@@ -97,6 +108,8 @@ export const getAaveLikeStopLossParams = {
       liquidationPrice,
       sliderPercentageFill,
       dynamicStopLossPrice,
+      stopLossTxData,
+      strategy,
     }
-  },
+  }),
 }

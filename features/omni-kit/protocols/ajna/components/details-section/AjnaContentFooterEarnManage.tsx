@@ -24,8 +24,8 @@ interface AjnaContentFooterEarnManageProps {
   networkId: OmniSupportedNetworkIds
   owner: string
   position: AjnaEarnPosition
-  projectedAnnualReward: BigNumber
   quoteToken: string
+  quotePrice: BigNumber
 }
 
 export function AjnaContentFooterEarnManage({
@@ -38,6 +38,8 @@ export function AjnaContentFooterEarnManage({
   networkId,
   owner,
   quoteToken,
+  position,
+  quotePrice,
 }: AjnaContentFooterEarnManageProps) {
   const commonContentCardData = {
     asFooter: true,
@@ -56,10 +58,15 @@ export function AjnaContentFooterEarnManage({
     quoteToken,
   })
 
-  const projectedAnnualRewardsContentCardAjnaData = useAjnaCardDataProjectedAnnualRewards()
+  const projectedAnnualRewardsContentCardAjnaData = useAjnaCardDataProjectedAnnualRewards({
+    owner,
+    netValueUsd: position.quoteTokenAmount.times(quotePrice),
+    poolAddress: position.pool.poolAddress,
+  })
 
   const totalAjnaRewardsContentCardAjnaData = useAjnaCardDataTotalAjnaRewards({
     owner,
+    poolAddress: position.pool.poolAddress,
   })
 
   return (
