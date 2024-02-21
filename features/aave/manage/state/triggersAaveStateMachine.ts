@@ -115,6 +115,7 @@ export const hasActiveProtection = ({
     sparkStopLossToDebt,
     aaveStopLossToDebt,
     aaveBasicSell,
+    aaveTrailingStopLossDMA,
   } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
@@ -124,6 +125,7 @@ export const hasActiveProtection = ({
         aaveBasicSell,
         aaveStopLossToCollateralDMA,
         aaveStopLossToDebtDMA,
+        aaveTrailingStopLossDMA,
       )
     case LendingProtocol.SparkV3:
       return isAnyValueDefined(
