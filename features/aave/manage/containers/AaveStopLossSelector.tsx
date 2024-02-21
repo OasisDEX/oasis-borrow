@@ -4,6 +4,7 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { TriggersAaveEvent } from 'features/aave/manage/state'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Box, Container, Flex, Grid, Image, Text } from 'theme-ui'
 import type { Sender } from 'xstate'
 
@@ -12,12 +13,13 @@ export const AaveStopLossSelector = ({
 }: {
   sendTriggerEvent: Sender<TriggersAaveEvent>
 }) => {
+  const { t } = useTranslation()
   const [selectedStopLossType, setSelectedStopLossType] = useState<
     'stop-loss' | 'trailing-stop-loss'
-  >('stop-loss')
+  >('trailing-stop-loss')
   const stopLossLabelMap = {
-    'stop-loss': 'Regular Stop-Loss',
-    'trailing-stop-loss': 'Trailing Stop-Loss',
+    'stop-loss': t('protection.stop-loss-type-select.regular-stop-loss'),
+    'trailing-stop-loss': t('protection.stop-loss-type-select.trailing-stop-loss'),
   }
   return (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
@@ -28,19 +30,17 @@ export const AaveStopLossSelector = ({
             content={
               <Flex sx={{ flexDirection: 'column' }}>
                 <Text variant="boldParagraph3" sx={{ mb: 2 }}>
-                  Regular Stop-Loss
+                  {t('protection.stop-loss-type-select.regular-stop-loss')}
                 </Text>
                 <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-                  Lorem ipsum dolor sit amet consectetur. Quis cursus volutpat commodo pretium sit
-                  libero habitant in. Platea pellentesque potenti posuere sed.
+                  {t('protection.stop-loss-type-select.regular-stop-loss-description')}
                 </Text>
                 <Box variant="boxes.separator" sx={{ my: 3 }} />
                 <Text variant="boldParagraph3" sx={{ mb: 2 }}>
-                  Trailing Stop-Loss
+                  {t('protection.stop-loss-type-select.trailing-stop-loss')}
                 </Text>
                 <Text variant="paragraph3" sx={{ color: 'neutral80', mb: 4 }}>
-                  Lorem ipsum dolor sit amet consectetur. Quis cursus volutpat commodo pretium sit
-                  libero habitant in. Platea pellentesque potenti posuere sed.
+                  {t('protection.stop-loss-type-select.trailing-stop-loss-description')}
                 </Text>
                 <Image
                   sx={{ width: '90%', margin: '0 auto' }}
@@ -51,12 +51,11 @@ export const AaveStopLossSelector = ({
           />
         </Grid>
         <SidebarSection
-          title={'Select a type of Stop-Loss'}
+          title={t('protection.stop-loss-type-select.sidebar-title')}
           content={
             <Box>
               <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-                Lorem ipsum dolor sit amet consectetur. Quis cursus volutpat commodo pretium sit
-                libero habitant in. Platea pellentesque potenti posuere sed.
+                {t('protection.stop-loss-type-select.sidebar-description')}
               </Text>
               <ActionPills
                 active={selectedStopLossType}

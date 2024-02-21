@@ -5,7 +5,7 @@ import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/Sidebar
 import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
 import { formatAmount } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -20,6 +20,7 @@ export const AaveTrailingStopLossManageDetails = ({
 }) => {
   const { t } = useTranslation()
   const { strategyConfig } = state.context
+  const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
 
   const {
     trailingDistanceValue,
@@ -33,20 +34,19 @@ export const AaveTrailingStopLossManageDetails = ({
     trailingStopLossLambdaData,
     trailingStopLossToken,
   })
-
-  const trailingDistanceDisplayValue = `${
-    trailingStopLossLambdaData.trailingDistance
-      ? formatAmount(trailingStopLossLambdaData.trailingDistance, strategyConfig.tokens.debt)
-      : '-'
-  } ${strategyConfig.tokens.debt}`
+  const trailingDistanceCurrent = trailingStopLossLambdaData.trailingDistance || zero
+  const trailingDistanceDisplayValue = `${formatAmount(
+    trailingDistanceCurrent,
+    strategyConfig.tokens.debt,
+  )} ${strategyConfig.tokens.debt}`
   const trailingDistanceChangeDisplayValue =
     trailingDistanceValue &&
-    !trailingDistanceValue.eq(trailingStopLossLambdaData.trailingDistance || one) &&
+    !trailingDistanceValue.eq(trailingDistanceCurrent) &&
     `${formatAmount(trailingDistanceValue, strategyConfig.tokens.debt)} ${
       strategyConfig.tokens.debt
     }`
   const dynamicStopLossPriceValue = `${formatAmount(
-    dynamicStopPrice,
+    isTrailingStopLossEnabled ? dynamicStopPrice : zero,
     strategyConfig.tokens.debt,
   )} ${strategyConfig.tokens.debt}`
   const dynamicStopLossPriceChangeValue =
@@ -55,11 +55,12 @@ export const AaveTrailingStopLossManageDetails = ({
       strategyConfig.tokens.debt
     }`
   const estimatedTokenOnSLTriggerValue = `${formatAmount(
-    estimatedTokenOnSLTrigger,
+    isTrailingStopLossEnabled ? estimatedTokenOnSLTrigger : zero,
     strategyConfig.tokens[trailingStopLossToken],
   )} ${strategyConfig.tokens[trailingStopLossToken]}`
   const estimatedTokenOnSLTriggerChangeValue =
-    !estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) &&
+    (!estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) ||
+      !isTrailingStopLossEnabled) &&
     `${formatAmount(
       estimatedTokenOnSLTriggerChange,
       strategyConfig.tokens[trailingStopLossToken],
@@ -71,7 +72,7 @@ export const AaveTrailingStopLossManageDetails = ({
       content={
         <DetailsSectionContentCardWrapper>
           <OmniContentCard
-            title="Trailing Distance"
+            title={t('protection.trailing-distance')}
             value={trailingDistanceDisplayValue}
             change={
               trailingDistanceChangeDisplayValue ? [trailingDistanceChangeDisplayValue] : undefined
@@ -79,19 +80,21 @@ export const AaveTrailingStopLossManageDetails = ({
             changeVariant="positive"
           />
           <OmniContentCard
-            title="Current Market Price"
+            title={t('protection.current-market-price')}
             value={`${formatAmount(collateralPriceInDebt, strategyConfig.tokens.debt)} ${
               strategyConfig.tokens.debt
             }`}
           />
           <OmniContentCard
-            title="Trailing Stop-Loss Price"
+            title={t('protection.trailing-stop-loss-price')}
             value={dynamicStopLossPriceValue}
             change={dynamicStopLossPriceChangeValue ? [dynamicStopLossPriceChangeValue] : undefined}
             changeVariant="positive"
           />
           <OmniContentCard
-            title={`Est. ${trailingStopLossToken} on Trailing Stop-Loss triggered`}
+            title={t('protection.est-token-on-tsl-trigger', {
+              trailingStopLossToken,
+            })}
             value={estimatedTokenOnSLTriggerValue}
             change={
               estimatedTokenOnSLTriggerChangeValue

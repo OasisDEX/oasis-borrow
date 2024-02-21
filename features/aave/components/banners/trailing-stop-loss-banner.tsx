@@ -1,7 +1,8 @@
 import { Banner } from 'components/Banner'
 import { bannerGradientPresets } from 'components/Banner.constants'
 import { AppLink } from 'components/Links'
-import { useTranslation } from 'next-i18next'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function TrailingStopLossBanner({ buttonClicked }: { buttonClicked: () => void }) {
@@ -11,12 +12,14 @@ export function TrailingStopLossBanner({ buttonClicked }: { buttonClicked: () =>
     <Banner
       title={t('vault-banners.setup-trailing-stop-loss.header')}
       description={
-        <>
-          {t('vault-banners.setup-trailing-stop-loss.content')}{' '}
-          <AppLink href={'#'} sx={{ fontSize: 2 }}>
-            {t('here')}.
-          </AppLink>
-        </>
+        <Trans
+          i18nKey="vault-banners.setup-trailing-stop-loss.content"
+          components={{
+            1: (
+              <AppLink href={EXTERNAL_LINKS.KB.HOW_TRAILING_STOP_LOSS_WORKS} sx={{ fontSize: 2 }} />
+            ),
+          }}
+        />
       }
       image={{
         src: '/static/img/setup-banner/trailing-stop-loss.svg',
