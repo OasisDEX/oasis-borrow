@@ -1,6 +1,7 @@
 import type { IPosition } from '@oasisdex/dma-library'
 import { getCurrentPositionLibCallData } from 'actions/aave-like/helpers'
 import type BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
@@ -10,6 +11,7 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
+import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType, StrategyType } from 'features/aave/types'
@@ -39,7 +41,7 @@ import type {
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 import type { Sender, StateFrom } from 'xstate'
 
@@ -83,6 +85,9 @@ export function AaveMultiplyPositionData({
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
   const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
+  const trailingStopLossLambdaData = mapTrailingStopLossFromLambda(
+    triggersState?.context.currentTriggers.triggers,
+  )
   const {
     triggerData: {
       stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
@@ -260,6 +265,54 @@ export function AaveMultiplyPositionData({
 
   const netValueContentCardAaveData = useAaveCardDataNetValueLending(netValuePnlModalData)
 
+  const automationData = useMemo(() => {
+    if (trailingStopLossLambdaData.trailingStopLossTriggerName) {
+      const collateral = amountFromWei(
+        currentPosition.collateral.amount || zero,
+        currentPosition.collateral.precision,
+      )
+      const debt = amountFromWei(
+        currentPosition.debt.amount || zero,
+        currentPosition.debt.precision,
+      )
+      const executionPrice = trailingStopLossLambdaData.dynamicParams.executionPrice
+      return {
+        isAutomationAvailable: true,
+        stopLossLevel: debt.div(collateral.times(executionPrice)),
+        isStopLossEnabled: true,
+        isAutomationDataLoaded: true,
+        isTrailingStopLoss: true,
+      }
+    }
+    if (stopLossLambdaData.stopLossTriggerName) {
+      return {
+        isAutomationAvailable: true,
+        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2), // still needs to be divided by 100
+        isStopLossEnabled: true,
+        isAutomationDataLoaded: true,
+      }
+    }
+    return {
+      isAutomationAvailable,
+      stopLossLevel,
+      isStopLossEnabled,
+      isAutomationDataLoaded,
+    }
+  }, [
+    currentPosition.collateral.amount,
+    currentPosition.collateral.precision,
+    currentPosition.debt.amount,
+    currentPosition.debt.precision,
+    isAutomationAvailable,
+    isAutomationDataLoaded,
+    isStopLossEnabled,
+    stopLossLambdaData.stopLossLevel,
+    stopLossLambdaData.stopLossTriggerName,
+    stopLossLevel,
+    trailingStopLossLambdaData.dynamicParams?.executionPrice,
+    trailingStopLossLambdaData.trailingStopLossTriggerName,
+  ])
+
   return (
     <Grid>
       {stopLossTriggered && (
@@ -278,13 +331,7 @@ export function AaveMultiplyPositionData({
               liquidationThreshold={currentPosition.category.liquidationThreshold}
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={nextPosition?.category.maxLoanToValue}
-              automation={{
-                isAutomationAvailable:
-                  !!stopLossLambdaData.stopLossTriggerName ?? isAutomationAvailable,
-                stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2) || stopLossLevel, // still needs to be divided by 100
-                isStopLossEnabled: !!stopLossLambdaData.stopLossTriggerName ?? isStopLossEnabled,
-                isAutomationDataLoaded,
-              }}
+              automation={automationData}
             />
             <OmniContentCard
               {...commonContentCardData}
