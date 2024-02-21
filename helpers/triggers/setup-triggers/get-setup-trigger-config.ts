@@ -7,7 +7,7 @@ import { LendingProtocol } from 'lendingProtocols'
 export interface GetSetupTriggerConfigParams {
   networkId: NetworkIds
   protocol: SupportedLambdaProtocols
-  path: 'auto-buy' | 'auto-sell' | 'dma-stop-loss'
+  path: 'auto-buy' | 'auto-sell' | 'dma-stop-loss' | 'dma-trailing-stop-loss'
 }
 
 export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {

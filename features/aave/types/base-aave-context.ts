@@ -107,9 +107,11 @@ export interface BaseAaveContext {
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
   stopLossLevel?: BigNumber
+  trailingDistance?: BigNumber
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
   stopLossTxDataLambda?: AutomationAddTriggerLambda
+  trailingStopLossTxDataLambda?: AutomationAddTriggerLambda
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData

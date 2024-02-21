@@ -139,6 +139,80 @@ export interface SetupAaveStopLossParams {
   action: TriggerAction
 }
 
+export interface SetupAaveTrailingStopLossParams {
+  dpm: string
+  executionToken: string
+  trailingDistance: BigNumber
+  networkId: number
+  strategy: StrategyLike
+  protocol: SupportedLambdaProtocols
+  action: TriggerAction
+}
+
+export type SetupTrailingStopLossResponse = {
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
+  encodedTriggerData?: string
+  simulation?: {
+    latestPrice?: {
+      tokenRoundId: string
+      denominationRoundId: string
+      token: {
+        id: string
+        symbol: string
+        oraclesToken: [
+          {
+            address: string
+          },
+        ]
+      }
+      denomination: {
+        id: string
+        symbol: string
+        oraclesToken: [
+          {
+            address: string
+          },
+        ]
+      }
+      derivedPrice: string
+    }
+    position?: {
+      hasStablecoinDebt: boolean
+      ltv: string
+      collateral: {
+        balance: string
+        token: {
+          decimals: number
+          symbol: string
+          address: string
+        }
+      }
+      debt: {
+        balance: string
+        token: {
+          decimals: number
+          symbol: string
+          address: string
+        }
+      }
+      address: string
+      prices: {
+        collateralPrice: string
+        debtPrice: string
+      }
+      netValueUSD: string
+      debtValueUSD: string
+      collateralValueUSD: string
+    }
+  }
+  transaction?: {
+    data: string
+    to: string
+    triggerTxData?: string
+  }
+}
+
 export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {
   transaction: { data: string; to: string }
 }

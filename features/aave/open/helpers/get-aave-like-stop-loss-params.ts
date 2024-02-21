@@ -11,9 +11,10 @@ import {
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
 import { one, zero } from 'helpers/zero'
+import { memoize } from 'lodash'
 
 export const getAaveLikeStopLossParams = {
-  open: ({ state }: Pick<OpenAaveStateProps | OpenAaveEditingStateProps, 'state'>) => {
+  open: memoize(({ state }: Pick<OpenAaveStateProps | OpenAaveEditingStateProps, 'state'>) => {
     const stopLossLevel = state.context.stopLossLevel || zero
     const positionRatio =
       state.context.transition?.simulation.position.riskRatio.loanToValue || zero
@@ -56,8 +57,8 @@ export const getAaveLikeStopLossParams = {
       sliderPercentageFill,
       dynamicStopLossPrice,
     }
-  },
-  manage: ({ state }: Pick<ManageAaveStateProps, 'state'>) => {
+  }),
+  manage: memoize(({ state }: Pick<ManageAaveStateProps, 'state'>) => {
     const stopLossLevel = state.context.stopLossLevel || zero
     const positionRatio = state.context.currentPosition?.riskRatio.loanToValue || zero
     const liquidationRatio = state.context?.currentPosition?.category.liquidationThreshold || zero
@@ -98,5 +99,5 @@ export const getAaveLikeStopLossParams = {
       sliderPercentageFill,
       dynamicStopLossPrice,
     }
-  },
+  }),
 }

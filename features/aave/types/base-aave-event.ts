@@ -18,9 +18,11 @@ import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
 
 type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
+  | { type: 'SET_TRAILING_STOP_LOSS_LEVEL'; trailingDistance: BigNumber }
   | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
   | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
   | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: AutomationAddTriggerLambda }
+  | { type: 'SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA'; trailingStopLossTxDataLambda: AutomationAddTriggerLambda }
   | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
 
 

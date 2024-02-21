@@ -13,6 +13,7 @@ export enum AutomationFeatures {
   AUTO_SELL = 'autoSell',
   CONSTANT_MULTIPLE = 'constantMultiple',
   STOP_LOSS = 'stopLoss',
+  TRAILING_STOP_LOSS = 'trailingStopLoss',
   AUTO_TAKE_PROFIT = 'autoTakeProfit',
 }
 
