@@ -26,6 +26,7 @@ export interface DetailsSectionNotificationItem {
   link?: (DetailsSectionNotificationWithAction | DetailsSectionNotificationWithUrl) & {
     translationKey: string
   }
+  sessionStorageParam?: string
   message?: {
     translationKey?: string
     component?: ReactNode
@@ -49,8 +50,10 @@ const notificationColors: { [key in DetailsSectionNotificationType]: string } = 
   warning: 'warning100',
 }
 
-function getSessionStorageKey(title: string): string {
-  return `notification-${kebabCase(title)}-${document.location.pathname}`
+function getSessionStorageKey(title: string, sessionStorageParam?: string): string {
+  return `notification-${kebabCase(title)}${sessionStorageParam ? `-${sessionStorageParam}` : ``}-${
+    document.location.pathname
+  }`
 }
 
 export function DetailsSectionNotification({
@@ -59,9 +62,10 @@ export function DetailsSectionNotification({
 }: DetailsSectionNotificationProps) {
   const [closedNotifications, setClosedNotifications] = useState<number[]>([])
   const { t } = useTranslation()
-  notifications.forEach(({ title }, i) => {
+  notifications.forEach(({ title, sessionStorageParam }, i) => {
     if (
-      sessionStorage.getItem(getSessionStorageKey(title.translationKey)) === 'true' &&
+      sessionStorage.getItem(getSessionStorageKey(title.translationKey, sessionStorageParam)) ===
+        'true' &&
       !closedNotifications.includes(i)
     )
       setClosedNotifications((prev) => [...prev, i])
@@ -82,91 +86,96 @@ export function DetailsSectionNotification({
         overflow: 'hidden',
       }}
     >
-      {notifications.map(({ closable, icon, link, message, title, type = 'notice' }, i) => (
-        <Fragment key={getSessionStorageKey(title.translationKey)}>
-          {!closedNotifications.includes(i) && (
-            <Flex
-              as="li"
-              sx={{
-                columnGap: 3,
-                alignItems: 'center',
-                p: 3,
-                color: 'neutral10',
-                bg: notificationColors[type],
-              }}
-            >
-              {icon && (
-                <Flex
-                  sx={{
-                    flexShrink: 0,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 4,
-                    height: 4,
-                    borderRadius: 'ellipse',
-                    bg: 'rgba(255, 255, 255, 0.2)',
-                  }}
-                >
-                  <Icon icon={icon} size={20} />
-                </Flex>
-              )}
-              <Box>
-                <Text as="p" variant="boldParagraph2" sx={{ color: 'neutral10' }}>
-                  {t(title.translationKey, title.params || {})}
-                </Text>
-                {message && (
-                  <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
-                    {message.component}
-                    {message.translationKey && t(message.translationKey, message.params || {})}
-                  </Text>
+      {notifications.map(
+        ({ closable, icon, link, message, title, type = 'notice', sessionStorageParam }, i) => (
+          <Fragment key={getSessionStorageKey(title.translationKey)}>
+            {!closedNotifications.includes(i) && (
+              <Flex
+                as="li"
+                sx={{
+                  columnGap: 3,
+                  alignItems: 'center',
+                  p: 3,
+                  color: 'neutral10',
+                  bg: notificationColors[type],
+                }}
+              >
+                {icon && (
+                  <Flex
+                    sx={{
+                      flexShrink: 0,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 4,
+                      height: 4,
+                      borderRadius: 'ellipse',
+                      bg: 'rgba(255, 255, 255, 0.2)',
+                    }}
+                  >
+                    <Icon icon={icon} size={20} />
+                  </Flex>
                 )}
-              </Box>
-              {(link || closable) && (
-                <Flex
-                  sx={{
-                    alignItems: 'center',
-                    flexShrink: 0,
-                    columnGap: 3,
-                    ml: 'auto',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {link && (
-                    <>
-                      {link.url && (
-                        <AppLink href={link.url} sx={{ color: 'neutral10' }}>
-                          {t(link.translationKey)}
-                        </AppLink>
-                      )}
-                      {link.action && (
-                        <Button
-                          variant="textual"
-                          sx={{ p: 0, color: 'neutral10' }}
-                          onClick={link.action}
-                        >
-                          {t(link.translationKey)}
-                        </Button>
-                      )}
-                    </>
+                <Box>
+                  <Text as="p" variant="boldParagraph2" sx={{ color: 'neutral10' }}>
+                    {t(title.translationKey, title.params || {})}
+                  </Text>
+                  {message && (
+                    <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
+                      {message.component}
+                      {message.translationKey && t(message.translationKey, message.params || {})}
+                    </Text>
                   )}
-                  {closable && (
-                    <Button
-                      variant="unStyled"
-                      sx={{ mr: 2, p: 0, lineHeight: 0 }}
-                      onClick={() => {
-                        sessionStorage.setItem(getSessionStorageKey(title.translationKey), 'true')
-                        setClosedNotifications((prev) => [...prev, i])
-                      }}
-                    >
-                      <Icon icon={close} />
-                    </Button>
-                  )}
-                </Flex>
-              )}
-            </Flex>
-          )}
-        </Fragment>
-      ))}
+                </Box>
+                {(link || closable) && (
+                  <Flex
+                    sx={{
+                      alignItems: 'center',
+                      flexShrink: 0,
+                      columnGap: 3,
+                      ml: 'auto',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {link && (
+                      <>
+                        {link.url && (
+                          <AppLink href={link.url} sx={{ color: 'neutral10' }}>
+                            {t(link.translationKey)}
+                          </AppLink>
+                        )}
+                        {link.action && (
+                          <Button
+                            variant="textual"
+                            sx={{ p: 0, color: 'neutral10' }}
+                            onClick={link.action}
+                          >
+                            {t(link.translationKey)}
+                          </Button>
+                        )}
+                      </>
+                    )}
+                    {closable && (
+                      <Button
+                        variant="unStyled"
+                        sx={{ mr: 2, p: 0, lineHeight: 0 }}
+                        onClick={() => {
+                          sessionStorage.setItem(
+                            getSessionStorageKey(title.translationKey, sessionStorageParam),
+                            'true',
+                          )
+                          setClosedNotifications((prev) => [...prev, i])
+                        }}
+                      >
+                        <Icon icon={close} />
+                      </Button>
+                    )}
+                  </Flex>
+                )}
+              </Flex>
+            )}
+          </Fragment>
+        ),
+      )}
     </Box>
   )
 }

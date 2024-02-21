@@ -4,6 +4,8 @@ import type { GetTriggersResponse } from 'helpers/triggers'
 
 type TrailingStopLossTriggers = Pick<GetTriggersResponse['triggers'], 'aaveTrailingStopLossDMA'>
 
+const denominate = (value: string) => new BigNumber(Number(value)).div(trailingStopLossDenomination)
+
 export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTriggers) => {
   if (!triggers) {
     return {}
@@ -21,14 +23,17 @@ export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTrigger
     trailingStopLossTriggersNames[0] as keyof TrailingStopLossTriggers
   const trigger = triggers[trailingStopLossTriggerName]
   if (trigger) {
-    const trailingDistance = trigger.decodedParams.trailingDistance
     return {
-      trailingDistance: new BigNumber(Number(trailingDistance)).div(trailingStopLossDenomination),
+      trailingDistance: denominate(trigger.decodedParams.trailingDistance),
       trailingStopLossToken: trigger.decodedParams.closeToCollateral
         ? ('collateral' as const)
         : ('debt' as const),
       trailingStopLossData: trigger,
       triggerId: trigger.triggerId,
+      dynamicParams: {
+        executionPrice: denominate(trigger.dynamicParams.executionPrice),
+        originalExecutionPrice: denominate(trigger.dynamicParams.originalExecutionPrice),
+      },
       trailingStopLossTriggerName,
     }
   }

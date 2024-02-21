@@ -13,10 +13,12 @@ export const AaveTrailingStopLossManageDetails = ({
   trailingStopLossLambdaData,
   trailingStopLossToken,
   state,
+  isEditing,
 }: {
   trailingStopLossLambdaData: ReturnType<typeof mapTrailingStopLossFromLambda>
   state: ManageAaveStateProps['state']
   trailingStopLossToken: 'debt' | 'collateral'
+  isEditing: boolean
 }) => {
   const { t } = useTranslation()
   const { strategyConfig } = state.context
@@ -40,6 +42,7 @@ export const AaveTrailingStopLossManageDetails = ({
     strategyConfig.tokens.debt,
   )} ${strategyConfig.tokens.debt}`
   const trailingDistanceChangeDisplayValue =
+    isEditing &&
     trailingDistanceValue &&
     !trailingDistanceValue.eq(trailingDistanceCurrent) &&
     `${formatAmount(trailingDistanceValue, strategyConfig.tokens.debt)} ${
@@ -50,6 +53,7 @@ export const AaveTrailingStopLossManageDetails = ({
     strategyConfig.tokens.debt,
   )} ${strategyConfig.tokens.debt}`
   const dynamicStopLossPriceChangeValue =
+    isEditing &&
     !dynamicStopPrice.eq(dynamicStopPriceChange) &&
     `${formatAmount(dynamicStopPriceChange, strategyConfig.tokens.debt)} ${
       strategyConfig.tokens.debt
@@ -59,6 +63,7 @@ export const AaveTrailingStopLossManageDetails = ({
     strategyConfig.tokens[trailingStopLossToken],
   )} ${strategyConfig.tokens[trailingStopLossToken]}`
   const estimatedTokenOnSLTriggerChangeValue =
+    isEditing &&
     (!estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) ||
       !isTrailingStopLossEnabled) &&
     `${formatAmount(

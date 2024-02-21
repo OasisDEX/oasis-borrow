@@ -152,6 +152,7 @@ export function ProtectionControlWrapper({
               trailingStopLossLambdaData={trailingStopLossLambdaData}
               trailingStopLossToken={trailingStopLossToken}
               state={state}
+              isEditing
             />
           )}
           {/** this is visible when we're adding a new trigger */}
@@ -174,6 +175,7 @@ export function ProtectionControlWrapper({
               trailingStopLossLambdaData={trailingStopLossLambdaData}
               trailingStopLossToken={trailingStopLossToken}
               state={state}
+              isEditing={false}
             />
           )}
           {/** this is visible when theres current trigger */}

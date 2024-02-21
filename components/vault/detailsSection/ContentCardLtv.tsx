@@ -9,7 +9,7 @@ import { useModal } from 'helpers/modalHook'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { theme } from 'theme'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
@@ -37,6 +37,7 @@ interface ContentCardLtvModalProps {
   stopLossLevel?: BigNumber
   isStopLossEnabled?: boolean
   isAutomationDataLoaded?: boolean
+  isTrailingStopLoss?: boolean
 }
 
 function ContentCardLtvModal({
@@ -47,6 +48,7 @@ function ContentCardLtvModal({
   isStopLossEnabled,
   isAutomationDataLoaded,
   stopLossLevel,
+  isTrailingStopLoss,
 }: ContentCardLtvModalProps) {
   const { close: closeModal } = useModal()
   const { t } = useTranslation()
@@ -88,10 +90,18 @@ function ContentCardLtvModal({
       </Card>
       {isAutomationAvailable && (
         <>
-          <Heading variant="header4">{t('aave-position-modal.ltv.fourth-header')}</Heading>
+          <Heading variant="header4">
+            {isTrailingStopLoss
+              ? t('aave-position-modal.ltv.trailing-fourth-header')
+              : t('aave-position-modal.ltv.fourth-header')}
+          </Heading>
           <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
             <Trans
-              i18nKey="aave-position-modal.ltv.fourth-description-line"
+              i18nKey={
+                isTrailingStopLoss
+                  ? 'aave-position-modal.ltv.trailing-fourth-description-line'
+                  : 'aave-position-modal.ltv.fourth-description-line'
+              }
               components={[
                 <Text
                   key="goToProtection"
@@ -137,6 +147,7 @@ interface ContentCardLtvProps {
     isAutomationDataLoaded: boolean
     isAutomationAvailable?: boolean
     stopLossLevel?: BigNumber
+    isTrailingStopLoss?: boolean
   }
 }
 
@@ -148,8 +159,13 @@ export function ContentCardLtv({
   automation,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
-  const { stopLossLevel, isStopLossEnabled, isAutomationDataLoaded, isAutomationAvailable } =
-    automation
+  const {
+    stopLossLevel,
+    isStopLossEnabled,
+    isAutomationDataLoaded,
+    isAutomationAvailable,
+    isTrailingStopLoss,
+  } = automation
 
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
@@ -166,19 +182,37 @@ export function ContentCardLtv({
     stopLossLevel,
     isStopLossEnabled,
     isAutomationDataLoaded,
+    isTrailingStopLoss,
   }
+
+  const footnote = useMemo(() => {
+    if (isTrailingStopLoss) {
+      return t('manage-earn-vault.trailing-stop-loss-ltv', {
+        percentage: formatted.stopLossLevel,
+      })
+    }
+    if (isAutomationAvailable && isStopLossEnabled && stopLossLevel) {
+      return t('manage-earn-vault.stop-loss-ltv', {
+        percentage: formatted.stopLossLevel,
+      })
+    }
+    return t('manage-earn-vault.liquidation-threshold', {
+      percentage: formatted.liquidationThreshold,
+    })
+  }, [
+    formatted.liquidationThreshold,
+    formatted.stopLossLevel,
+    isAutomationAvailable,
+    isStopLossEnabled,
+    stopLossLevel,
+    t,
+    isTrailingStopLoss,
+  ])
 
   const contentCardSettings: ContentCardProps = {
     title: t('system.loan-to-value'),
     value: formatted.loanToValue,
-    footnote:
-      isAutomationAvailable && isStopLossEnabled && stopLossLevel
-        ? t('manage-earn-vault.stop-loss-ltv', {
-            percentage: formatted.stopLossLevel,
-          })
-        : t('manage-earn-vault.liquidation-threshold', {
-            percentage: formatted.liquidationThreshold,
-          }),
+    footnote,
     customBackground:
       afterLoanToValue && !liquidationThreshold.eq(zero)
         ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
