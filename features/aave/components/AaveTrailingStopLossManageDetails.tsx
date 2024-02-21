@@ -5,7 +5,7 @@ import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/Sidebar
 import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
 import { formatAmount } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -20,6 +20,7 @@ export const AaveTrailingStopLossManageDetails = ({
 }) => {
   const { t } = useTranslation()
   const { strategyConfig } = state.context
+  const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
 
   const {
     trailingDistanceValue,
@@ -34,11 +35,10 @@ export const AaveTrailingStopLossManageDetails = ({
     trailingStopLossToken,
   })
 
-  const trailingDistanceDisplayValue = `${
-    trailingStopLossLambdaData.trailingDistance
-      ? formatAmount(trailingStopLossLambdaData.trailingDistance, strategyConfig.tokens.debt)
-      : '-'
-  } ${strategyConfig.tokens.debt}`
+  const trailingDistanceDisplayValue = `${formatAmount(
+    trailingStopLossLambdaData.trailingDistance || zero,
+    strategyConfig.tokens.debt,
+  )} ${strategyConfig.tokens.debt}`
   const trailingDistanceChangeDisplayValue =
     trailingDistanceValue &&
     !trailingDistanceValue.eq(trailingStopLossLambdaData.trailingDistance || one) &&
@@ -46,7 +46,7 @@ export const AaveTrailingStopLossManageDetails = ({
       strategyConfig.tokens.debt
     }`
   const dynamicStopLossPriceValue = `${formatAmount(
-    dynamicStopPrice,
+    isTrailingStopLossEnabled ? dynamicStopPrice : zero,
     strategyConfig.tokens.debt,
   )} ${strategyConfig.tokens.debt}`
   const dynamicStopLossPriceChangeValue =
@@ -55,11 +55,12 @@ export const AaveTrailingStopLossManageDetails = ({
       strategyConfig.tokens.debt
     }`
   const estimatedTokenOnSLTriggerValue = `${formatAmount(
-    estimatedTokenOnSLTrigger,
+    isTrailingStopLossEnabled ? estimatedTokenOnSLTrigger : zero,
     strategyConfig.tokens[trailingStopLossToken],
   )} ${strategyConfig.tokens[trailingStopLossToken]}`
   const estimatedTokenOnSLTriggerChangeValue =
-    !estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) &&
+    (!estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) ||
+      !isTrailingStopLossEnabled) &&
     `${formatAmount(
       estimatedTokenOnSLTriggerChange,
       strategyConfig.tokens[trailingStopLossToken],
