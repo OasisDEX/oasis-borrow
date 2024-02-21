@@ -2372,7 +2372,8 @@
       "is-stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
       "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
     },
-    "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction."
+    "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction.",
+    "trailing-stop-loss-execution-price-increased": "As the price increased, the Trailing Stop-Loss price changed to {{executionPrice}} {{token}} ({{delta}}) from the original {{originalExecutionPrice}} {{token}}"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -3343,4 +3344,3 @@
     }
   }
 }
-

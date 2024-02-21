@@ -7,6 +7,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
@@ -33,6 +34,7 @@ import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/histor
 import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -42,6 +44,7 @@ import type {
 } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
+import { bell } from 'theme/icons'
 import { Grid } from 'theme-ui'
 import type { Sender, StateFrom } from 'xstate'
 
@@ -313,6 +316,37 @@ export function AaveMultiplyPositionData({
     trailingStopLossLambdaData.trailingStopLossTriggerName,
   ])
 
+  const trailingStopLossnotifications = useMemo<DetailsSectionNotificationItem[]>(() => {
+    if (trailingStopLossLambdaData.trailingStopLossTriggerName) {
+      const { executionPrice, originalExecutionPrice } = trailingStopLossLambdaData.dynamicParams
+      if (executionPrice.gt(originalExecutionPrice)) {
+        return [
+          {
+            title: {
+              translationKey: 'automation.trailing-stop-loss-execution-price-increased',
+              params: {
+                executionPrice: formatCryptoBalance(executionPrice),
+                originalExecutionPrice: formatCryptoBalance(originalExecutionPrice),
+                delta: `+${formatCryptoBalance(executionPrice.minus(originalExecutionPrice))} ${
+                  currentPosition.debt.symbol
+                }`,
+                token: currentPosition.debt.symbol,
+              },
+            },
+            sessionStorageParam: formatCryptoBalance(executionPrice),
+            closable: true,
+            icon: bell,
+          },
+        ]
+      }
+    }
+    return []
+  }, [
+    currentPosition.debt.symbol,
+    trailingStopLossLambdaData.dynamicParams,
+    trailingStopLossLambdaData.trailingStopLossTriggerName,
+  ])
+
   return (
     <Grid>
       {stopLossTriggered && (
@@ -320,6 +354,7 @@ export function AaveMultiplyPositionData({
       )}
       <DetailsSection
         title={t('system.overview')}
+        notifications={[...trailingStopLossnotifications]}
         content={
           <DetailsSectionContentCardWrapper>
             <OmniContentCard
