@@ -15,9 +15,22 @@ export const settings: OmniProtocolSettings = {
     [NetworkIds.MAINNET]: 'Ajna_rc13',
     [NetworkIds.GOERLI]: 'Ajna_rc13',
     [NetworkIds.BASEMAINNET]: 'Ajna_rc14',
+    [NetworkIds.OPTIMISMMAINNET]: 'Ajna_rc14',
+    [NetworkIds.ARBITRUMMAINNET]: 'Ajna_rc14',
   },
-  supportedNetworkIds: [NetworkIds.BASEMAINNET, NetworkIds.GOERLI, NetworkIds.MAINNET],
-  supportedMainnetNetworkIds: [NetworkIds.BASEMAINNET, NetworkIds.MAINNET],
+  supportedNetworkIds: [
+    NetworkIds.BASEMAINNET,
+    NetworkIds.GOERLI,
+    NetworkIds.MAINNET,
+    NetworkIds.OPTIMISMMAINNET,
+    NetworkIds.ARBITRUMMAINNET,
+  ],
+  supportedMainnetNetworkIds: [
+    NetworkIds.BASEMAINNET,
+    NetworkIds.MAINNET,
+    NetworkIds.OPTIMISMMAINNET,
+    NetworkIds.ARBITRUMMAINNET,
+  ],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Earn, OmniProductType.Multiply],
   supportedMultiplyTokens: {
     [NetworkIds.MAINNET]: [
@@ -31,6 +44,8 @@ export const settings: OmniProtocolSettings = {
       'WSTETH',
       'YFI',
       'MKR',
+      'ARB',
+      'OP',
     ],
     [NetworkIds.GOERLI]: [],
     [NetworkIds.BASEMAINNET]: ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH'],
