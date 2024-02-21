@@ -1,14 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import type { SupportedLambdaProtocols } from 'helpers/triggers/common'
 
-export enum AutoBuyTriggerCustomErrorCodes {}
-
-export enum AutoBuyTriggerCustomWarningCodes {}
-
-export enum AutoSellTriggerCustomErrorCodes {}
-
-export enum AutoSellTriggerCustomWarningCodes {}
-
 export enum TriggersApiErrorCode {
   MinSellPriceIsNotSet = 'min-sell-price-is-not-set',
   MaxBuyPriceIsNotSet = 'max-buy-price-is-not-set',
@@ -150,64 +142,8 @@ export type SetupTrailingStopLossResponse = {
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
   encodedTriggerData?: string
-  simulation?: {
-    latestPrice?: {
-      tokenRoundId: string
-      denominationRoundId: string
-      token: {
-        id: string
-        symbol: string
-        oraclesToken: [
-          {
-            address: string
-          },
-        ]
-      }
-      denomination: {
-        id: string
-        symbol: string
-        oraclesToken: [
-          {
-            address: string
-          },
-        ]
-      }
-      derivedPrice: string
-    }
-    position?: {
-      hasStablecoinDebt: boolean
-      ltv: string
-      collateral: {
-        balance: string
-        token: {
-          decimals: number
-          symbol: string
-          address: string
-        }
-      }
-      debt: {
-        balance: string
-        token: {
-          decimals: number
-          symbol: string
-          address: string
-        }
-      }
-      address: string
-      prices: {
-        collateralPrice: string
-        debtPrice: string
-      }
-      netValueUSD: string
-      debtValueUSD: string
-      collateralValueUSD: string
-    }
-  }
-  transaction?: {
-    data: string
-    to: string
-    triggerTxData?: string
-  }
+  simulation?: unknown
+  transaction?: TriggerTransaction
 }
 
 export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {
