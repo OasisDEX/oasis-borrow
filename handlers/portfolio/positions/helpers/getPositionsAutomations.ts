@@ -30,6 +30,7 @@ const triggerTypesMap = {
     TriggerType.DmaAaveStopLossToDebtV2,
     TriggerType.DmaSparkStopLossToCollateralV2,
     TriggerType.DmaSparkStopLossToDebtV2,
+    TriggerType.DmaAaveTrailingStopLossV2,
   ],
   takeProfit: [
     TriggerType.AutoTakeProfitToCollateral,
