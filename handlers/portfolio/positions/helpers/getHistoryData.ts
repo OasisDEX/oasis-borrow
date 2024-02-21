@@ -58,10 +58,10 @@ export type HistorySupportedNetworks =
   | NetworkIds.BASEMAINNET
 
 const subgraphListDict = {
-  [NetworkIds.MAINNET]: 'oasis/oasis-history',
-  [NetworkIds.ARBITRUMMAINNET]: 'oasis/oasis-history-arbitrum',
-  [NetworkIds.OPTIMISMMAINNET]: 'oasis/oasis-history-optimism',
-  [NetworkIds.BASEMAINNET]: 'oasis/oasis-history-base',
+  [NetworkIds.MAINNET]: 'summer-oasis-history',
+  [NetworkIds.ARBITRUMMAINNET]: 'summer-oasis-history-arbitrum',
+  [NetworkIds.OPTIMISMMAINNET]: 'summer-oasis-history-optimism',
+  [NetworkIds.BASEMAINNET]: 'summer-oasis-history-base',
 } as Record<HistorySupportedNetworks, string>
 
 export const getHistoryData = async ({
@@ -74,7 +74,7 @@ export const getHistoryData = async ({
   const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
     1000 * configCacheTime.backend,
   )
-  const subgraphUrl = `${appConfig.parameters.subgraphs.baseUrl}/${subgraphListDict[network]}`
+  const subgraphUrl = `${appConfig.parameters.subgraphs.baseShortUrl}/${subgraphListDict[network]}`
   const params = { proxyAddresses: addresses.map((addr) => addr.toLowerCase()) }
   try {
     const historyCall = request<HistoryQueryResponse>(subgraphUrl, historyQuery, params).then(
