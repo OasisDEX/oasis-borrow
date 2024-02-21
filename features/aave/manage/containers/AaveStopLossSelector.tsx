@@ -16,10 +16,10 @@ export const AaveStopLossSelector = ({
   const { t } = useTranslation()
   const [selectedStopLossType, setSelectedStopLossType] = useState<
     'stop-loss' | 'trailing-stop-loss'
-  >('stop-loss')
+  >('trailing-stop-loss')
   const stopLossLabelMap = {
-    'stop-loss': 'Regular Stop-Loss',
-    'trailing-stop-loss': 'Trailing Stop-Loss',
+    'stop-loss': t('protection.stop-loss-type-select.regular-stop-loss'),
+    'trailing-stop-loss': t('protection.stop-loss-type-select.trailing-stop-loss'),
   }
   return (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
@@ -51,7 +51,7 @@ export const AaveStopLossSelector = ({
           />
         </Grid>
         <SidebarSection
-          title={'Select a type of Stop-Loss'}
+          title={t('protection.stop-loss-type-select.sidebar-title')}
           content={
             <Box>
               <Text variant="paragraph3" sx={{ color: 'neutral80' }}>

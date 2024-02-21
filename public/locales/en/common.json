@@ -1822,6 +1822,7 @@
       "regular-stop-loss-description": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either USDC or the Collateral Asset at your desired Price or LTV.",
       "trailing-stop-loss": "Trailing Stop-Loss",
       "trailing-stop-loss-description": "Set-up a Trailing Stop-Loss if you want a stop loss that moves up with the price. Perfect for following bullish trends. See the image below for an example.",
+      "sidebar-title": "Select a type of Stop-Loss",
       "sidebar-description": "Choose between a Regular or Trailing Stop-loss. A Regular Stop-Loss does not automatically update, whilst a Trailing Stop-Loss moves up if the price moves up by your set Trailing Distance."
     }
   },
