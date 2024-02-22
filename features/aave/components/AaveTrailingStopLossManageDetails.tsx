@@ -45,6 +45,7 @@ export const AaveTrailingStopLossManageDetails = ({
     trailingDistanceToken,
   )} ${trailingDistanceToken}`
   const trailingDistanceChangeDisplayValue =
+    isEditing &&
     trailingDistanceValue &&
     !trailingDistanceValue.eq(trailingStopLossLambdaData.trailingDistance || one) &&
     `${formatAmount(trailingDistanceValue, trailingDistanceToken)} ${trailingDistanceToken}`
@@ -53,6 +54,7 @@ export const AaveTrailingStopLossManageDetails = ({
     trailingDistanceToken,
   )} ${trailingDistanceToken}`
   const dynamicStopLossPriceChangeValue =
+    isEditing &&
     !dynamicStopPrice.eq(dynamicStopPriceChange) &&
     `${formatAmount(dynamicStopPriceChange, trailingDistanceToken)} ${trailingDistanceToken}`
   const estimatedTokenOnSLTriggerValue = `${formatAmount(
@@ -60,6 +62,7 @@ export const AaveTrailingStopLossManageDetails = ({
     strategyConfig.tokens[trailingStopLossToken],
   )} ${strategyConfig.tokens[trailingStopLossToken]}`
   const estimatedTokenOnSLTriggerChangeValue =
+    isEditing &&
     !estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) &&
     `${formatAmount(
       estimatedTokenOnSLTriggerChange,
