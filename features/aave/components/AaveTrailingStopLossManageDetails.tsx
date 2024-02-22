@@ -37,26 +37,40 @@ export const AaveTrailingStopLossManageDetails = ({
   })
 
   const isShort = strategyConfig.strategyType === StrategyType.Short
+  const currentMarketPrice = useMemo(() => {
+    if (!strategyInfo) {
+      return zero
+    }
+    return isShort
+      ? strategyInfo.oracleAssetPrice.debt.div(strategyInfo.oracleAssetPrice.collateral)
+      : strategyInfo.oracleAssetPrice.collateral.div(strategyInfo.oracleAssetPrice.debt)
+  }, [isShort, strategyInfo])
+  const trailingSLTokenPair = useMemo(() => {
+    if (isShort) {
+      return `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
+    }
+    return `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
+  }, [isShort, strategyConfig.tokens.collateral, strategyConfig.tokens.debt])
   const trailingDistanceToken = isShort
     ? strategyConfig.tokens.collateral
     : strategyConfig.tokens.debt
   const trailingDistanceDisplayValue = `${formatAmount(
     trailingStopLossLambdaData.trailingDistance || zero,
     trailingDistanceToken,
-  )} ${trailingDistanceToken}`
+  )} ${trailingSLTokenPair}`
   const trailingDistanceChangeDisplayValue =
     isEditing &&
     trailingDistanceValue &&
     !trailingDistanceValue.eq(trailingStopLossLambdaData.trailingDistance || one) &&
-    `${formatAmount(trailingDistanceValue, trailingDistanceToken)} ${trailingDistanceToken}`
+    `${formatAmount(trailingDistanceValue, trailingDistanceToken)} ${trailingSLTokenPair}`
   const dynamicStopLossPriceValue = `${formatAmount(
     trailingStopLossLambdaData.trailingDistance ? dynamicStopPrice : zero,
     trailingDistanceToken,
-  )} ${trailingDistanceToken}`
+  )} ${trailingSLTokenPair}`
   const dynamicStopLossPriceChangeValue =
     isEditing &&
     !dynamicStopPrice.eq(dynamicStopPriceChange) &&
-    `${formatAmount(dynamicStopPriceChange, trailingDistanceToken)} ${trailingDistanceToken}`
+    `${formatAmount(dynamicStopPriceChange, trailingDistanceToken)} ${trailingSLTokenPair}`
   const estimatedTokenOnSLTriggerValue = `${formatAmount(
     trailingStopLossLambdaData.trailingDistance ? estimatedTokenOnSLTrigger : zero,
     strategyConfig.tokens[trailingStopLossToken],
@@ -69,20 +83,6 @@ export const AaveTrailingStopLossManageDetails = ({
       strategyConfig.tokens[trailingStopLossToken],
     )} ${strategyConfig.tokens[trailingStopLossToken]}`
 
-  const currentMarketPrice = useMemo(() => {
-    if (!strategyInfo) {
-      return zero
-    }
-    return isShort
-      ? strategyInfo.oracleAssetPrice.debt.div(strategyInfo.oracleAssetPrice.collateral)
-      : strategyInfo.oracleAssetPrice.collateral.div(strategyInfo.oracleAssetPrice.debt)
-  }, [isShort, strategyInfo])
-  const currentmarketPriceTokens = useMemo(() => {
-    if (isShort) {
-      return `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
-    }
-    return `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
-  }, [isShort, strategyConfig.tokens.collateral, strategyConfig.tokens.debt])
   return (
     <DetailsSection
       title={t('system.trailing-stop-loss')}
@@ -102,7 +102,7 @@ export const AaveTrailingStopLossManageDetails = ({
             value={`${formatAmount(
               currentMarketPrice,
               trailingDistanceToken,
-            )} ${currentmarketPriceTokens}`}
+            )} ${trailingSLTokenPair}`}
           />
           <OmniContentCard
             title={t('protection.trailing-stop-loss-price')}
