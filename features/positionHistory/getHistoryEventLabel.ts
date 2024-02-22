@@ -117,6 +117,7 @@ enum AutomationType {
   'StopLossToCollateral' = 'StopLossToCollateral',
   'BasicBuy' = 'BasicBuy',
   'BasicSell' = 'BasicSell',
+  'TrailingStopLoss' = 'TrailingStopLoss',
 }
 function handleAutomationKinds(
   kind: string,
@@ -135,6 +136,8 @@ function handleAutomationKinds(
     return handleBasicBuyLabel(automationAction, t)
   } else if (automationType.includes(AutomationType.BasicSell)) {
     return handleBasicSellLabel(automationAction, t)
+  } else if (automationType.includes(AutomationType.TrailingStopLoss)) {
+    return handleTrailingStopLossLabel(automationAction, t)
   }
   console.warn('Automation type not found')
   return undefined
@@ -182,6 +185,18 @@ function handleStopLosstoCollateralLabel(
   console.warn('Automation type not found')
   return undefined
 }
+function handleTrailingStopLossLabel(automationAction: string, t: TranslationType) {
+  if (automationAction.includes(AutomationAction.Added)) {
+    return t('position-history.automation.trailing-stop-loss-added')
+  } else if (automationAction.includes(AutomationAction.Executed)) {
+    return t('position-history.automation.trailing-stop-loss-executed')
+  } else if (automationAction.includes(AutomationAction.Removed)) {
+    return t('position-history.automation.trailing-stop-loss-removed')
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
+
 function handleBasicBuyLabel(automationAction: string, t: TranslationType) {
   if (automationAction.includes(AutomationAction.Added)) {
     return t('position-history.automation.basic-buy-added')
