@@ -1,5 +1,6 @@
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
+import { getFormattedPrice } from 'features/aave/helpers'
 import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
@@ -37,31 +38,28 @@ export const AaveTrailingStopLossManageDetails = ({
     trailingStopLossToken,
   })
   const trailingDistanceCurrent = trailingStopLossLambdaData.trailingDistance || zero
-  const trailingDistanceDisplayValue = `${formatAmount(
-    trailingDistanceCurrent,
-    strategyConfig.tokens.debt,
-  )} ${strategyConfig.tokens.debt}`
+  const trailingDistanceDisplayValue = getFormattedPrice(trailingDistanceCurrent, strategyConfig)
   const trailingDistanceChangeDisplayValue =
     isEditing &&
     trailingDistanceValue &&
     !trailingDistanceValue.eq(trailingDistanceCurrent) &&
-    `${formatAmount(trailingDistanceValue, strategyConfig.tokens.debt)} ${
-      strategyConfig.tokens.debt
-    }`
-  const dynamicStopLossPriceValue = `${formatAmount(
+    getFormattedPrice(trailingDistanceValue, strategyConfig)
+
+  const dynamicStopLossPriceValue = getFormattedPrice(
     isTrailingStopLossEnabled ? dynamicStopPrice : zero,
-    strategyConfig.tokens.debt,
-  )} ${strategyConfig.tokens.debt}`
+    strategyConfig,
+  )
   const dynamicStopLossPriceChangeValue =
     isEditing &&
     !dynamicStopPrice.eq(dynamicStopPriceChange) &&
-    `${formatAmount(dynamicStopPriceChange, strategyConfig.tokens.debt)} ${
-      strategyConfig.tokens.debt
-    }`
+    getFormattedPrice(dynamicStopPriceChange, strategyConfig)
+
   const estimatedTokenOnSLTriggerValue = `${formatAmount(
     isTrailingStopLossEnabled ? estimatedTokenOnSLTrigger : zero,
     strategyConfig.tokens[trailingStopLossToken],
   )} ${strategyConfig.tokens[trailingStopLossToken]}`
+
+  const currentMarketPrice = getFormattedPrice(collateralPriceInDebt, strategyConfig)
   const estimatedTokenOnSLTriggerChangeValue =
     isEditing &&
     (!estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) ||
@@ -86,9 +84,7 @@ export const AaveTrailingStopLossManageDetails = ({
           />
           <OmniContentCard
             title={t('protection.current-market-price')}
-            value={`${formatAmount(collateralPriceInDebt, strategyConfig.tokens.debt)} ${
-              strategyConfig.tokens.debt
-            }`}
+            value={currentMarketPrice}
           />
           <OmniContentCard
             title={t('protection.trailing-stop-loss-price')}
