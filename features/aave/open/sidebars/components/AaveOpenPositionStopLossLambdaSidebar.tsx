@@ -30,7 +30,7 @@ export function AaveOpenPositionStopLossLambdaSidebar({
   const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>('debt')
   const { strategyConfig } = state.context
   const stopLossParams = getAaveLikeStopLossParams.open({ state })
-  const { stopLossLevel, dynamicStopLossPrice, sliderMin, sliderMax, sliderPercentageFill } =
+  const { stopLossLevel, dynamicStopLossPriceForView, sliderMin, sliderMax, sliderPercentageFill } =
     stopLossParams
   const { stopLossTxCancelablePromise, isGettingStopLossTx } = useLambdaDebouncedStopLoss({
     state,
@@ -79,7 +79,7 @@ export function AaveOpenPositionStopLossLambdaSidebar({
           lastValue={stopLossLevel}
           maxBoundry={sliderMax}
           minBoundry={sliderMin}
-          rightBoundry={dynamicStopLossPrice}
+          rightBoundry={dynamicStopLossPriceForView}
           leftBoundry={stopLossLevel}
           onChange={(slLevel) => {
             send({

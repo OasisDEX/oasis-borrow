@@ -5,6 +5,7 @@ import type {
   OpenAaveEditingStateProps,
   OpenAaveStateProps,
 } from 'features/aave/open/sidebars/sidebar.types'
+import { StrategyType } from 'features/aave/types'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import {
   getDynamicStopLossPrice,
@@ -49,6 +50,11 @@ export const getAaveLikeStopLossParams = {
     const stopLossTxData = state.context.stopLossTxDataLambda
     const strategy = state.context.strategyConfig
 
+    const dynamicStopLossPriceForView =
+      strategy.strategyType === StrategyType.Short
+        ? one.div(dynamicStopLossPrice)
+        : dynamicStopLossPrice
+
     return {
       stopLossLevel,
       positionRatio,
@@ -62,6 +68,7 @@ export const getAaveLikeStopLossParams = {
       dynamicStopLossPrice,
       stopLossTxData,
       strategy,
+      dynamicStopLossPriceForView,
     }
   }),
   manage: memoize(({ state }: Pick<ManageAaveStateProps, 'state'>) => {
@@ -97,6 +104,11 @@ export const getAaveLikeStopLossParams = {
     const stopLossTxData = state.context.stopLossTxDataLambda
     const strategy = state.context.strategyConfig
 
+    const dynamicStopLossPriceForView =
+      strategy.strategyType === StrategyType.Short
+        ? one.div(dynamicStopLossPrice)
+        : dynamicStopLossPrice
+
     return {
       stopLossLevel,
       positionRatio,
@@ -110,6 +122,7 @@ export const getAaveLikeStopLossParams = {
       dynamicStopLossPrice,
       stopLossTxData,
       strategy,
+      dynamicStopLossPriceForView,
     }
   }),
 }
