@@ -16,7 +16,11 @@ import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADe
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConnectedSidebarSection } from 'features/aave/components'
-import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
+import {
+  getDenominations,
+  mapErrorsToErrorVaults,
+  mapWarningsToWarningVaults,
+} from 'features/aave/helpers'
 import { useGasEstimation } from 'features/aave/hooks/useGasEstimation'
 import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
@@ -25,6 +29,8 @@ import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/Sidebar
 import type { TriggersAaveEvent } from 'features/aave/manage/state'
 import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
 import { useLambdaDebouncedTrailingStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-trailing-stop-loss'
+import type { IStrategyConfig } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
 import {
   sidebarAutomationFeatureCopyMap,
   sidebarAutomationLinkMap,
@@ -34,6 +40,7 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
+import { one } from 'helpers/zero'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -51,6 +58,16 @@ type TrailingStopLossSidebarStates =
   | 'finished'
 
 const refreshDataTime = 10 * 1000
+
+const getFormatters = (trailingDistance: BigNumber, strategyConfig: IStrategyConfig) => {
+  const { denomination, denominationToken } = getDenominations(strategyConfig)
+  const firstFormatter = (x: BigNumber) =>
+    x.isZero() ? '-' : `${formatAmount(trailingDistance, denominationToken)} ${denomination}`
+  const secondFormatter = (x: BigNumber) =>
+    x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${denomination}`
+
+  return [firstFormatter, secondFormatter]
+}
 
 export function AaveManagePositionTrailingStopLossLambdaSidebar({
   state,
@@ -102,6 +119,7 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     dynamicStopPriceChange,
     estimatedTokenOnSLTriggerChange,
     savingCompareToLiquidation,
+    priceRatio,
   } = getAaveLikeTrailingStopLossParams.manage({
     state,
     trailingStopLossLambdaData,
@@ -116,11 +134,20 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   }, [transactionStep, isTrailingStopLossEnabled, isRegularStopLossEnabled])
   const selectedTokenLabel = strategyConfig.tokens[trailingStopLossToken]
 
+  const calculatedTrailingDistanceValue = useMemo(() => {
+    if (strategyConfig.strategyType === StrategyType.Short) {
+      const current = one.div(priceRatio)
+      const dynamic = one.div(priceRatio.plus(trailingDistanceValue))
+      return current.minus(dynamic)
+    }
+    return trailingDistanceValue
+  }, [trailingDistanceValue, priceRatio, strategyConfig.strategyType])
+
   const { trailingStopLossTxCancelablePromise, isGettingTrailingStopLossTx, errors, warnings } =
     useLambdaDebouncedTrailingStopLoss({
       state,
       trailingDistance,
-      trailingDistanceValue,
+      trailingDistanceValue: calculatedTrailingDistanceValue,
       trailingStopLossToken,
       send,
       action,
@@ -179,6 +206,8 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     feature: t(sidebarAutomationFeatureCopyMap['stopLoss']),
     featureName: t(sidebarAutomationFeatureCopyMap['stopLoss']), // the same param, two different names
   }
+
+  const [leftFormatter, rightFormatter] = getFormatters(trailingDistanceValue, strategyConfig)
 
   const executeCall = async () => {
     if (trailingStopLossTxDataLambda && signer) {
@@ -258,18 +287,8 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
       <SliderValuePicker
         disabled={false}
         step={sliderStep}
-        leftBoundryFormatter={(x: BigNumber) =>
-          x.isZero()
-            ? '-'
-            : `${formatAmount(trailingDistanceValue, strategyConfig.tokens.debt)} ${
-                strategyConfig.tokens.collateral
-              }/${strategyConfig.tokens.debt}`
-        }
-        rightBoundryFormatter={(x: BigNumber) =>
-          x.isZero()
-            ? '-'
-            : `${formatAmount(x, strategyConfig.tokens.debt)} ${strategyConfig.tokens.debt}`
-        }
+        leftBoundryFormatter={leftFormatter}
+        rightBoundryFormatter={rightFormatter}
         sliderPercentageFill={sliderPercentageFill}
         lastValue={trailingDistance}
         minBoundry={sliderMin}
