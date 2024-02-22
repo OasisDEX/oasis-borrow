@@ -280,7 +280,9 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
             distance: t('protection.trailing-stop-loss-price-distance'),
           }}
           components={{
-            1: <AppLink href={'#'} sx={{ fontSize: 2 }} />,
+            1: (
+              <AppLink href={EXTERNAL_LINKS.KB.HOW_TRAILING_STOP_LOSS_WORKS} sx={{ fontSize: 2 }} />
+            ),
           }}
         />
       </Text>
