@@ -119,6 +119,8 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     dynamicStopPriceChange,
     estimatedTokenOnSLTriggerChange,
     savingCompareToLiquidation,
+    priceRatio,
+    collateralPriceInDebt,
   } = getAaveLikeTrailingStopLossParams.manage({
     state,
     trailingStopLossLambdaData,
@@ -133,14 +135,20 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   }, [transactionStep, isTrailingStopLossEnabled, isRegularStopLossEnabled])
   const selectedTokenLabel = strategyConfig.tokens[trailingStopLossToken]
 
+  const calculatedTrailingDistanceValue = useMemo(() => {
+    if (strategyConfig.strategyType === StrategyType.Short) {
+      const current = one.div(priceRatio)
+      const dynamic = one.div(priceRatio.plus(trailingDistanceValue))
+      return current.minus(dynamic)
+    }
+    return trailingDistanceValue
+  }, [trailingDistanceValue, priceRatio, strategyConfig.strategyType])
+
   const { trailingStopLossTxCancelablePromise, isGettingTrailingStopLossTx, errors, warnings } =
     useLambdaDebouncedTrailingStopLoss({
       state,
       trailingDistance,
-      trailingDistanceValue:
-        strategyConfig.strategyType === StrategyType.Short
-          ? one.div(trailingDistanceValue)
-          : trailingDistanceValue,
+      trailingDistanceValue: calculatedTrailingDistanceValue,
       trailingStopLossToken,
       send,
       action,
