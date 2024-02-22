@@ -121,11 +121,13 @@ export const getAaveLikeTrailingStopLossParams = {
       )
 
       const dynamicStopPrice = useMemo(() => {
+        const lambdaDistanceValue =
+          (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero
         if (isShort) {
-          return priceRatio.plus(trailingDistanceValue)
+          return priceRatio.plus(lambdaDistanceValue)
         }
-        return priceRatio.minus(trailingDistanceValue)
-      }, [priceRatio, trailingDistanceValue, isShort])
+        return priceRatio.minus(lambdaDistanceValue)
+      }, [trailingStopLossLambdaData, isShort, priceRatio])
       const dynamicStopPriceChange = useMemo(() => {
         if (isShort) {
           return priceRatio.plus(trailingDistanceValue)
@@ -188,32 +190,6 @@ export const getAaveLikeTrailingStopLossParams = {
           isCloseToCollateral,
           isShort,
         ],
-      )
-      console.log(
-        'debuggingValues',
-        JSON.stringify(
-          {
-            isCloseToCollateral: isCloseToCollateral.toString(),
-            trailingDistance: trailingDistance.toString(),
-            trailingDistanceValue: trailingDistanceValue.toString(),
-            trailingDistanceLambdaValue: trailingDistanceLambdaValue.toString(),
-            dynamicStopPrice: dynamicStopPrice.toString(),
-            dynamicStopPriceChange: dynamicStopPriceChange.toString(),
-            lockedCollateral: lockedCollateral.toString(),
-            debt: debt.toString(),
-            prices: {
-              collateralPriceInDebt: collateralPriceInDebt.toString(),
-            },
-            savings: {
-              savingCompareToLiquidation: savingCompareToLiquidation.toString(),
-              collateralDuringLiquidation: collateralDuringLiquidation.toString(),
-              estimatedTokenOnSLTrigger: estimatedTokenOnSLTrigger.toString(),
-              estimatedTokenOnSLTriggerChange: estimatedTokenOnSLTriggerChange.toString(),
-            },
-          },
-          null,
-          2,
-        ),
       )
       return {
         collateralPriceInDebt,
