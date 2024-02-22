@@ -55,6 +55,7 @@ export const getAaveLikeTrailingStopLossParams = {
         currentPosition?.collateral.amount || zero,
         currentPosition?.collateral.precision,
       )
+      const isShort = strategyConfig.strategyType === StrategyType.Short
 
       const positionRatio = currentPosition?.riskRatio.loanToValue || zero
       const liquidationRatio = currentPosition?.category.liquidationThreshold || zero
@@ -67,12 +68,12 @@ export const getAaveLikeTrailingStopLossParams = {
       const debtTokenPrice = strategyInfo?.oracleAssetPrice.debt || one
       const priceRatio = useMemo(
         () =>
-          strategyConfig.strategyType === StrategyType.Short
+          isShort
             ? debtTokenPrice.div(collateralTokenPrice)
             : collateralTokenPrice.div(debtTokenPrice),
-        [collateralTokenPrice, debtTokenPrice, strategyConfig.strategyType],
+        [collateralTokenPrice, debtTokenPrice, isShort],
       )
-      const sliderStep = getSliderStep(collateralTokenPrice)
+      const sliderStep = getSliderStep(isShort ? debtTokenPrice : collateralTokenPrice)
       const sliderMin = new BigNumber(
         (liquidationPrice || one).div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
       ).times(sliderStep)
@@ -81,23 +82,18 @@ export const getAaveLikeTrailingStopLossParams = {
       const sliderMax = new BigNumber(
         priceRatio.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
       ).times(sliderStep)
-      // then the trailing distance - if it's lower (by default) than the slider min, I'm setting it to the slider min
-      // the actual value of the trailing distance used in the TX is called "trailingDistanceValue"
-      const trailingDistance = contextTrailingDistance
-        ? contextTrailingDistance.lt(sliderMin)
-          ? sliderMin
-          : contextTrailingDistance
-        : sliderMax
-
-      const sliderPercentageFill = getSliderPercentageFill({
-        min: sliderMin,
-        max: sliderMax.minus(sliderStep),
-        value: trailingDistance,
-      })
       const getTrailingDistanceValue = useCallback(
         (td: BigNumber) => sliderMax.minus(td),
         [sliderMax],
       )
+      // then the trailing distance - if it's lower (by default) than the slider min, I'm setting it to the slider min
+      // the actual value of the trailing distance used in the TX is called "trailingDistanceValue"
+      const trailingDistance = useMemo(() => {
+        if (contextTrailingDistance) {
+          return contextTrailingDistance.lt(sliderMin) ? sliderMin : contextTrailingDistance
+        }
+        return sliderMax
+      }, [contextTrailingDistance, sliderMax, sliderMin])
       const trailingDistanceValue = useMemo(
         // we use the opposite value when handling state
         // it's hard to have the slider go from token price to zero, so we do the opposite
@@ -107,11 +103,17 @@ export const getAaveLikeTrailingStopLossParams = {
       )
       const trailingDistanceLambdaValue = useMemo(
         () =>
-          getTrailingDistanceValue(
-            (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero,
-          ),
+          trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance
+            ? getTrailingDistanceValue(trailingStopLossLambdaData.trailingDistance)
+            : zero,
         [getTrailingDistanceValue, trailingStopLossLambdaData],
       )
+
+      const sliderPercentageFill = getSliderPercentageFill({
+        min: sliderMin,
+        max: sliderMax.minus(sliderStep),
+        value: trailingDistance,
+      })
 
       const collateralPriceInDebt = useMemo(
         () => collateralTokenPrice.div(debtTokenPrice),
@@ -119,36 +121,20 @@ export const getAaveLikeTrailingStopLossParams = {
       )
 
       const dynamicStopPrice = useMemo(() => {
-        const value =
+        const lambdaDistanceValue =
           (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero
-        if (strategyConfig.strategyType === StrategyType.Short) {
-          return priceRatio.plus(value)
+        if (isShort) {
+          return priceRatio.plus(lambdaDistanceValue)
         }
-        return priceRatio.minus(value)
-      }, [priceRatio, trailingStopLossLambdaData, strategyConfig.strategyType])
-
-      const collateralDynamicStopPrice = useMemo(() => {
-        const value =
-          (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero
-        if (strategyConfig.strategyType === StrategyType.Short) {
-          return collateralPriceInDebt.plus(value)
-        }
-        return collateralPriceInDebt.minus(value)
-      }, [collateralPriceInDebt, trailingStopLossLambdaData, strategyConfig.strategyType])
-
+        return priceRatio.minus(lambdaDistanceValue)
+      }, [trailingStopLossLambdaData, isShort, priceRatio])
       const dynamicStopPriceChange = useMemo(() => {
-        if (strategyConfig.strategyType === StrategyType.Short) {
+        if (isShort) {
           return priceRatio.plus(trailingDistanceValue)
         }
         return priceRatio.minus(trailingDistanceValue)
-      }, [priceRatio, trailingDistanceValue, strategyConfig.strategyType])
+      }, [priceRatio, trailingDistanceValue, isShort])
 
-      const collateralDynamicStopPriceChange = useMemo(() => {
-        if (strategyConfig.strategyType === StrategyType.Short) {
-          return collateralPriceInDebt.plus(trailingDistanceValue)
-        }
-        return collateralPriceInDebt.minus(trailingDistanceValue)
-      }, [collateralPriceInDebt, trailingDistanceValue, strategyConfig.strategyType])
       const collateralDuringLiquidation = useMemo(
         () =>
           strategyInfo
@@ -161,44 +147,50 @@ export const getAaveLikeTrailingStopLossParams = {
             : one,
         [debt, liquidationPrice, lockedCollateral, strategyInfo],
       )
-      const estimatedTokenOnSLTrigger = useMemo(
-        () =>
-          isCloseToCollateral
+      const estimatedTokenOnSLTrigger = useMemo(() => {
+        if (isShort) {
+          return isCloseToCollateral
             ? lockedCollateral
-                .times(collateralDynamicStopPrice)
+                .times(one.div(dynamicStopPrice))
                 .minus(debt)
-                .div(collateralDynamicStopPrice)
-            : lockedCollateral.times(collateralDynamicStopPrice).minus(debt),
-        [debt, collateralDynamicStopPrice, isCloseToCollateral, lockedCollateral],
-      )
-      const estimatedTokenOnSLTriggerChange = useMemo(
-        () =>
-          isCloseToCollateral
+                .div(one.div(dynamicStopPrice))
+            : lockedCollateral.times(one.div(dynamicStopPrice)).minus(debt)
+        }
+        return isCloseToCollateral
+          ? lockedCollateral.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
+          : lockedCollateral.times(dynamicStopPrice).minus(debt)
+      }, [debt, dynamicStopPrice, isCloseToCollateral, isShort, lockedCollateral])
+      const estimatedTokenOnSLTriggerChange = useMemo(() => {
+        if (isShort) {
+          return isCloseToCollateral
             ? lockedCollateral
-                .times(collateralDynamicStopPrice)
+                .times(one.div(dynamicStopPriceChange))
                 .minus(debt)
-                .div(collateralDynamicStopPriceChange)
-            : lockedCollateral.times(collateralDynamicStopPrice).minus(debt),
+                .div(one.div(dynamicStopPriceChange))
+            : lockedCollateral.times(one.div(dynamicStopPriceChange)).minus(debt)
+        }
+        return isCloseToCollateral
+          ? lockedCollateral.times(dynamicStopPriceChange).minus(debt).div(dynamicStopPriceChange)
+          : lockedCollateral.times(dynamicStopPriceChange).minus(debt)
+      }, [debt, dynamicStopPriceChange, isCloseToCollateral, isShort, lockedCollateral])
+
+      const savingCompareToLiquidation = useMemo(
+        () =>
+          estimatedTokenOnSLTrigger.minus(
+            isCloseToCollateral
+              ? collateralDuringLiquidation
+              : collateralDuringLiquidation.times(
+                  isShort ? one.div(dynamicStopPriceChange) : dynamicStopPriceChange,
+                ),
+          ),
         [
+          collateralDuringLiquidation,
+          dynamicStopPriceChange,
+          estimatedTokenOnSLTrigger,
           isCloseToCollateral,
-          lockedCollateral,
-          collateralDynamicStopPrice,
-          debt,
-          collateralDynamicStopPriceChange,
+          isShort,
         ],
       )
-      const savingCompareToLiquidation = useMemo(() => {
-        return estimatedTokenOnSLTrigger.minus(
-          isCloseToCollateral
-            ? collateralDuringLiquidation
-            : collateralDuringLiquidation.times(collateralDynamicStopPriceChange),
-        )
-      }, [
-        collateralDuringLiquidation,
-        collateralDynamicStopPriceChange,
-        estimatedTokenOnSLTrigger,
-        isCloseToCollateral,
-      ])
       return {
         collateralPriceInDebt,
         priceRatio,
