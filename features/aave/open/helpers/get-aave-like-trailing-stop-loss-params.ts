@@ -2,6 +2,7 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import { StrategyType } from 'features/aave/types'
 import {
   getCollateralDuringLiquidation,
   getSliderPercentageFill,
@@ -44,6 +45,7 @@ export const getAaveLikeTrailingStopLossParams = {
         strategyInfo,
         currentPosition,
         trailingDistance: contextTrailingDistance,
+        strategyConfig,
       } = state.context
       const debt = amountFromWei(
         currentPosition?.debt.amount || zero,
@@ -53,6 +55,7 @@ export const getAaveLikeTrailingStopLossParams = {
         currentPosition?.collateral.amount || zero,
         currentPosition?.collateral.precision,
       )
+
       const positionRatio = currentPosition?.riskRatio.loanToValue || zero
       const liquidationRatio = currentPosition?.category.liquidationThreshold || zero
       const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
@@ -62,6 +65,13 @@ export const getAaveLikeTrailingStopLossParams = {
       // as this is the lowest value that makes sense
       const collateralTokenPrice = strategyInfo?.oracleAssetPrice.collateral || one
       const debtTokenPrice = strategyInfo?.oracleAssetPrice.debt || one
+      const priceRatio = useMemo(
+        () =>
+          strategyConfig.strategyType === StrategyType.Short
+            ? debtTokenPrice.div(collateralTokenPrice)
+            : collateralTokenPrice.div(debtTokenPrice),
+        [collateralTokenPrice, debtTokenPrice, strategyConfig.strategyType],
+      )
       const sliderStep = getSliderStep(collateralTokenPrice)
       const sliderMin = new BigNumber(
         (liquidationPrice || one).div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
@@ -69,7 +79,7 @@ export const getAaveLikeTrailingStopLossParams = {
       // then the maximum value is the price divided by the step, floored and then multiplied by the step
       // so in the end we get a rounded numbers
       const sliderMax = new BigNumber(
-        collateralTokenPrice.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
+        priceRatio.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
       ).times(sliderStep)
       // then the trailing distance - if it's lower (by default) than the slider min, I'm setting it to the slider min
       // the actual value of the trailing distance used in the TX is called "trailingDistanceValue"
@@ -108,13 +118,13 @@ export const getAaveLikeTrailingStopLossParams = {
         [collateralTokenPrice, debtTokenPrice],
       )
       const dynamicStopPrice = useMemo(() => {
-        return collateralPriceInDebt.minus(
+        return priceRatio.minus(
           (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero,
         )
-      }, [collateralPriceInDebt, trailingStopLossLambdaData])
+      }, [priceRatio, trailingStopLossLambdaData])
       const dynamicStopPriceChange = useMemo(() => {
-        return collateralPriceInDebt.minus(trailingDistanceValue)
-      }, [collateralPriceInDebt, trailingDistanceValue])
+        return priceRatio.minus(trailingDistanceValue)
+      }, [priceRatio, trailingDistanceValue])
       const collateralDuringLiquidation = useMemo(
         () =>
           strategyInfo
@@ -157,6 +167,7 @@ export const getAaveLikeTrailingStopLossParams = {
       )
       return {
         collateralPriceInDebt,
+        priceRatio,
         collateralTokenPrice,
         debt,
         debtTokenPrice,
