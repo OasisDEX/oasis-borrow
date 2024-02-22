@@ -496,9 +496,9 @@
     "sl-level": "Stop-Loss LTV",
     "swaped": "Swapped",
     "automation": {
-      "trailing-stop-loss-added": "Trailing stop loss added",
-      "trailing-stop-loss-removed": "Trailing stop loss removed",
-      "trailing-stop-loss-executed": "Trailing stop loss executed",
+      "trailing-stop-loss-added": "Trailing Stop-loss added",
+      "trailing-stop-loss-removed": "Trailing Stop-loss removed",
+      "trailing-stop-loss-executed": "Trailing Stop-loss executed",
       "stop-loss-collateral-added": "Stop-Loss to collateral added",
       "stop-loss-collateral-removed": "Stop-Loss to collateral removed",
       "stop-loss-collateral-executed": "Stop-Loss to collateral executed",
