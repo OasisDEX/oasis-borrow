@@ -120,7 +120,6 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     estimatedTokenOnSLTriggerChange,
     savingCompareToLiquidation,
     priceRatio,
-    collateralPriceInDebt,
   } = getAaveLikeTrailingStopLossParams.manage({
     state,
     trailingStopLossLambdaData,
