@@ -1748,7 +1748,7 @@
     "trailing-stop-loss-price": "Trailing Stop-Loss Price",
     "est-token-on-tsl-trigger": "Est. {{trailingStopLossToken}} on Trailing Stop-Loss triggered",
     "trailing-distance": "Trailing Distance",
-    "set-distance-protection-desc": "Set your {{distance}}. This indicates the maximum price distance that your stop loss price will be from your position. When your position’s Loan to value goes down, your trailing Stop will follow it. <1> Read how to think about Trailing Stop here </1>",
+    "set-distance-protection-desc": "Set your {{distance}}. This indicates the maximum price distance that your stop price will be from the market price. When the market price goes up, your stop price will follow it. <1> Read how to think about Trailing Stop-Loss here </1>",
     "set-downside-protection-desc": "Set the {{ratioParam}} trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
     "setting-downside-protection": "Setting Stop-Loss Protection",
