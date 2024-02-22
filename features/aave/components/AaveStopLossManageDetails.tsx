@@ -65,9 +65,10 @@ export const AaveStopLossManageDetails = ({
 
   const stopLossConfigChanged = useMemo(() => {
     return !!(
-      stopLossLambdaData.stopLossLevel &&
-      (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
-        stopLossLambdaData.stopLossToken !== stopLossToken)
+      (stopLossLambdaData.stopLossLevel &&
+        (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
+          stopLossLambdaData.stopLossToken !== stopLossToken)) ||
+      (!stopLossLambdaData.stopLossLevel && stopLossLevel)
     )
   }, [stopLossLambdaData, stopLossLevel, stopLossToken])
 
