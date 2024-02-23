@@ -6,7 +6,7 @@ import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/ge
 import { StrategyType } from 'features/aave/types'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
 import { formatAmount } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -47,7 +47,7 @@ export const AaveTrailingStopLossManageDetails = ({
   const trailingDistanceChangeDisplayValue =
     isEditing &&
     trailingDistanceValue &&
-    !trailingDistanceValue.eq(trailingStopLossLambdaData.trailingDistance || one) &&
+    !currentTrailingDistanceValue.eq(trailingDistanceValue) &&
     `${formatAmount(trailingDistanceValue, trailingDistanceToken)} ${trailingDistanceToken}`
   const dynamicStopLossPriceValue = `${formatAmount(
     trailingStopLossLambdaData.trailingDistance ? dynamicStopPrice : zero,
