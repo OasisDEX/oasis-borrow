@@ -1,3 +1,4 @@
+import { getDenominations } from 'features/aave/helpers'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
@@ -27,6 +28,7 @@ export const AaveStopLossManageDetails = ({
   reserveConfigurationData: AaveLikeReserveConfigurationData
 }) => {
   const { strategyConfig, currentPosition } = state.context
+  const { denomination, denominationToken } = getDenominations(strategyConfig)
   const {
     stopLossLevel,
     debt,
@@ -130,6 +132,8 @@ export const AaveStopLossManageDetails = ({
       afterDynamicStopLossPrice={dynamicStopLossPriceForView}
       isAutomationDataLoaded={true}
       isAutomationAvailable={true}
+      customDynamicStopPriceUnit={denomination}
+      customDynamicStopPriceUnitToken={denominationToken}
     />
   )
 }

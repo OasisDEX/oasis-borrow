@@ -66,8 +66,8 @@ export function ContentCardEstTokenOnTrigger({
 
   const formatTokenOrDebtToken = (val: BigNumber, stopPrice: BigNumber): string => {
     return isCollateralActive
-      ? `${formatAmount(val, token)} ${token}`
-      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')} ${debtToken}`
+      ? `${formatAmount(val, token)}`
+      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')}`
   }
 
   const formatted = {
@@ -93,10 +93,11 @@ export function ContentCardEstTokenOnTrigger({
   const contentCardSettings: ContentCardProps = {
     title: formatted.title,
     modal: <ContentCardEstTokenOnTriggerModal {...contentCardModalSettings} />,
+    unit: symbol,
   }
 
   if (isStopLossEnabled && !triggerMaxToken.isZero()) {
-    contentCardSettings.footnote = `${formatted.savingTokenOrDebtToken} ${t(
+    contentCardSettings.footnote = `${formatted.savingTokenOrDebtToken} ${symbol} ${t(
       'manage-multiply-vault.card.saving-comp-to-liquidation',
     )}`
     contentCardSettings.value = formatted.maxTokenOrDebtToken
@@ -104,9 +105,9 @@ export function ContentCardEstTokenOnTrigger({
 
   if (isEditing)
     contentCardSettings.change = {
-      value: `${t('manage-multiply-vault.card.up-to')} ${formatted.afterMaxTokenOrDebtToken} ${t(
-        'system.cards.common.after',
-      )}`,
+      value: `${t('manage-multiply-vault.card.up-to')} ${
+        formatted.afterMaxTokenOrDebtToken
+      } ${symbol} ${t('system.cards.common.after')}`,
       variant: 'positive',
     }
 

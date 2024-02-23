@@ -19,6 +19,8 @@ interface ContentCardDynamicStopPriceProps {
   dynamicStopLossPrice: BigNumber
   afterDynamicStopLossPrice: BigNumber
   ratioParamTranslationKey: string
+  customUnit?: string
+  customUnitToken?: string
 }
 
 export function ContentCardDynamicStopPriceModal({
@@ -55,13 +57,21 @@ export function ContentCardDynamicStopPrice({
   ratioParamTranslationKey,
   dynamicStopLossPrice,
   afterDynamicStopLossPrice,
+  customUnit,
+  customUnitToken,
 }: ContentCardDynamicStopPriceProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    dynamicStopPrice: `$${formatAmount(dynamicStopLossPrice, 'USD')}`,
+    dynamicStopPrice: `${!customUnit ? '$' : ''}${formatAmount(
+      dynamicStopLossPrice,
+      customUnitToken ?? 'USD',
+    )}`,
     aboveLiquidationPrice: formatAmount(dynamicStopLossPrice.minus(liquidationPrice), 'USD'),
-    afterDynamicStopPrice: `$${formatAmount(afterDynamicStopLossPrice, 'USD')}`,
+    afterDynamicStopPrice: `${!customUnit ? '$' : ''}${formatAmount(
+      afterDynamicStopLossPrice,
+      customUnitToken ?? 'USD',
+    )}${customUnit ? ` ${customUnit}` : ''}`,
   }
 
   const contentCardModalSettings: ContentCardDynamicStopPriceModalProps = {
@@ -81,11 +91,15 @@ export function ContentCardDynamicStopPrice({
       'manage-multiply-vault.card.above-liquidation-price',
     )}`
   }
-  if (isEditing)
+  if (isEditing) {
     contentCardSettings.change = {
       value: `${formatted.afterDynamicStopPrice} ${t('system.cards.common.after')}`,
       variant: 'positive',
     }
+  }
+  if (customUnit) {
+    contentCardSettings.unit = customUnit
+  }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
