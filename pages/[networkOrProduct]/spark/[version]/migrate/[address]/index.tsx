@@ -82,8 +82,8 @@ function WithSparkStrategy({
         <VaultNotice
           status={<Icon size="34px" icon={warning} />}
           withClose={false}
-          header={'No positions to migrate'}
-          subheader={'No positions to migrate'}
+          header={t('migrate.no-position-banner.header')}
+          subheader={t('migrate.no-position-banner.description')}
           color="primary100"
         />
       </Grid>

@@ -3321,6 +3321,10 @@
     }
   },
   "migrate": {
+    "no-position-banner": {
+      "header": "You have no positions to migrate",
+      "description": "You currently have no positions to migrate to Summer.fi"
+    },
     "button": "Switch to Summer.fi",
     "start-tx": "Import your position",
     "go-to-position": "Go to your position",
