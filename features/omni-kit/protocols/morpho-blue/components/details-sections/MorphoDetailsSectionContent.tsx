@@ -15,7 +15,6 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
-import { getMorphoLiquidationPenalty } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
@@ -57,9 +56,6 @@ export const MorphoDetailsSectionContent: FC = () => {
       ? normalizeValue(one.div(castedPosition.liquidationToMarketPrice))
       : castedPosition.liquidationToMarketPrice,
   )
-  const liquidationPenalty = getMorphoLiquidationPenalty({
-    maxLtv: castedPosition.maxRiskRatio.loanToValue,
-  })
 
   const commonContentCardData = {
     changeVariant,
@@ -73,7 +69,7 @@ export const MorphoDetailsSectionContent: FC = () => {
     ratioToCurrentPrice,
     modal: (
       <OmniCardDataLiquidationPriceModal
-        liquidationPenalty={liquidationPenalty}
+        liquidationPenalty={castedPosition.liquidationPenalty}
         liquidationPrice={liquidationPrice}
         priceFormat={priceFormat}
         ratioToCurrentPrice={ratioToCurrentPrice}
