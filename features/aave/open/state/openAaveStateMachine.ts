@@ -52,8 +52,8 @@ import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
 import { getLocalAppConfig } from 'helpers/config'
 import type { AutomationTxData } from 'helpers/context/types'
+import { mapAaveLikeProtocol, mapAaveLikeUrlSlug } from 'helpers/getAaveLikeStrategyUrl'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
 import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -819,21 +819,17 @@ export function createOpenAaveStateMachine(
 
           const contextConnected = context.web3Context as any as ContextConnected | undefined
 
-          const protocolVersion = {
-            [LendingProtocol.AaveV2]: 'v2',
-            [LendingProtocol.AaveV3]: 'v3',
-            [LendingProtocol.SparkV3]: 'v3',
-          }[context.strategyConfig.protocol]
-
-          const protocolName = {
-            [LendingProtocol.AaveV2]: 'aave',
-            [LendingProtocol.AaveV3]: 'aave',
-            [LendingProtocol.SparkV3]: 'spark',
-          }[context.strategyConfig.protocol]
-
           const address = shouldUseDpmProxy
-            ? `/${context.strategyConfig.network}/${protocolName}/${protocolVersion}/${context.userDpmAccount?.vaultId}`
-            : `/${context.strategyConfig.network}/${protocolName}/${protocolVersion}/${contextConnected?.account}`
+            ? `/${context.strategyConfig.network}/${mapAaveLikeUrlSlug(
+                context.strategyConfig.protocol,
+              )}/${mapAaveLikeProtocol(context.strategyConfig.protocol)}/${
+                context.userDpmAccount?.vaultId
+              }`
+            : `/${context.strategyConfig.network}/${mapAaveLikeUrlSlug(
+                context.strategyConfig.protocol,
+              )}/${mapAaveLikeProtocol(context.strategyConfig.protocol)}/${
+                contextConnected?.account
+              }`
 
           return {
             effectiveProxyAddress: proxyAddressToUse,

@@ -38,6 +38,7 @@ import type { Sender, StateFrom } from 'xstate'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
 import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
+import { SidebarMigrateAaveVault } from './migration'
 
 export interface ManageAaveAutomation {
   stopLoss: {
@@ -623,6 +624,7 @@ export function SidebarManageAaveVault({
       )
     case state.matches('frontend.switchToEarn'):
       return <ManageAaveSwitchStateView state={state} send={send} productType={ProductType.Earn} />
+    // case state.
     case state.matches('frontend.txInProgress'):
     case state.matches('frontend.txInProgressEthers'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
@@ -636,6 +638,14 @@ export function SidebarManageAaveVault({
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
+    case state.matches('frontend.migrate'):
+      return state.context.refMigrationMachine !== undefined ? (
+        <SidebarMigrateAaveVault
+          context={{ ...state.context, refMigrationMachine: state.context.refMigrationMachine }}
+        />
+      ) : (
+        <></>
+      )
     default: {
       return <></>
     }

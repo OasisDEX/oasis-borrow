@@ -5,7 +5,6 @@ import { GasEstimationContextProvider } from 'components/context/GasEstimationCo
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
-import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/contexts'
@@ -14,9 +13,11 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { mapAaveLikeProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { useObservable } from 'helpers/observableHook'
+import { safeGetAddress } from 'helpers/safeGetAddress'
 import type { AaveLendingProtocol } from 'lendingProtocols'
-import { checkIfAave, LendingProtocol } from 'lendingProtocols'
+import { checkIfAave } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -65,17 +66,6 @@ function WithAaveStrategy({
     protocol,
     network,
   )
-  // const [strategyConfig, strategyConfigError] = useObservable(
-  //   /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
-  //   strategyConfig$(positionId, network, apiVault?.type || VaultType.Unknown, protocol),
-  // )
-  // const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
-  //   proxiesRelatedWithPosition$(positionId, networkId).pipe(
-  //     map((proxies) => {
-  //       proxies.dpmProxy
-  //     }),
-  //   ),
-  // )
 
   const [info, infoError] = useObservable(manageViewInfo$({ positionId }))
 
@@ -112,13 +102,7 @@ function WithAaveStrategy({
                 token2: _info.strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
-              url={`/aave/${
-                {
-                  [LendingProtocol.AaveV2]: 'v2',
-                  [LendingProtocol.AaveV3]: 'v3',
-                  [LendingProtocol.SparkV3]: 'v3',
-                }[_info.strategyConfig.protocol]
-              }/${positionId}`}
+              url={`/aave/${mapAaveLikeProtocol(_info.strategyConfig.protocol)}/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
@@ -132,17 +116,6 @@ function WithAaveStrategy({
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
-}
-
-function safeGetAddress(address: string | undefined) {
-  if (address) {
-    try {
-      return getAddress(address)
-    } catch (e) {
-      return undefined
-    }
-  }
-  return undefined
 }
 
 function Position({

@@ -40,10 +40,7 @@ export type TriggersAaveEvent =
 export const isOptimizationEnabled = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
-  return (
-    context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY) &&
-    context.dpm !== undefined
-  )
+  return context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY)
 }
 
 export const isAutoSellEnabled = ({

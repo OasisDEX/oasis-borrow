@@ -122,6 +122,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
         <PortfolioHeader address={address} />
         {overviewData && portfolioWalletData ? (
           <PortfolioOverview
+            address={address}
             overviewData={overviewData}
             portfolioWalletData={portfolioWalletData}
             migrationPositions={migrationPositions}

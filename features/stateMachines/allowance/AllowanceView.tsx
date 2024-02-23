@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import BigNumber from 'bignumber.js'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { Radio } from 'components/forms/Radio'
@@ -69,7 +70,14 @@ function AllowanceInfoStateViewContent({
         checked={isMinimum}
       >
         <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
-          {t('token-depositing', { token, amount: formatCryptoBalance(minimumAmount!) })}
+          {t('token-depositing', {
+            token,
+            amount: state.context.customDecimals
+              ? formatCryptoBalance(
+                  minimumAmount!.div(new BigNumber(10).pow(state.context.customDecimals)),
+                )
+              : formatCryptoBalance(minimumAmount!),
+          })}
         </Text>
       </Radio>
       <Radio
