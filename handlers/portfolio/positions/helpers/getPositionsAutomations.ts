@@ -50,22 +50,20 @@ export function getPositionsAutomations({
   triggers,
   defaultList = {},
 }: GetPositionsAutomationsParams): PortfolioPositionAutomations {
-  return triggers
-    .filter(({ executedBlock, removedBlock }) => executedBlock === null && removedBlock === null)
-    .reduce((automations, { triggerType }) => {
-      return {
-        ...automations,
-        ...Object.keys(triggerTypesMap).reduce(
-          (result, key) => ({
-            ...result,
-            ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(
-              Number(triggerType),
-            ) && {
-              [key]: { enabled: true },
-            }),
+  return triggers.reduce((automations, { triggerType }) => {
+    return {
+      ...automations,
+      ...Object.keys(triggerTypesMap).reduce(
+        (result, key) => ({
+          ...result,
+          ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(
+            Number(triggerType),
+          ) && {
+            [key]: { enabled: true },
           }),
-          {},
-        ),
-      }
-    }, defaultList)
+        }),
+        {},
+      ),
+    }
+  }, defaultList)
 }

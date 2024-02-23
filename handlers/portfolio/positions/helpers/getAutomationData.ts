@@ -5,12 +5,10 @@ import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 
 const automationQuery = gql`
   query automationTriggers($proxyAddresses: [String]) {
-    triggers(where: { account_in: $proxyAddresses }) {
+    triggers(where: { account_in: $proxyAddresses, removedBlock: null, executedBlock: null }) {
       id
       account
       commandAddress
-      executedBlock
-      removedBlock
       triggerData
       triggerType
       owner
@@ -23,8 +21,6 @@ type AutomationQueryResponse = {
     id: string
     account: string
     commandAddress: string
-    executedBlock: string
-    removedBlock: string
     triggerData: string
     triggerType: string
     owner: string
@@ -42,8 +38,6 @@ export type AutomationResponse = {
     id: string
     account: string
     commandAddress: string
-    executedBlock: string
-    removedBlock: string
     triggerData: string
     triggerType: string
     owner: string
@@ -52,8 +46,8 @@ export type AutomationResponse = {
 
 const subgraphListDict = {
   [NetworkIds.MAINNET]: 'summer-automation',
-  // [NetworkIds.ARBITRUMMAINNET]: 'summer-automation-arbitrum',
-  // [NetworkIds.OPTIMISMMAINNET]: 'summer-automation-optimism',
+  [NetworkIds.ARBITRUMMAINNET]: 'summer-automation-arbitrum',
+  [NetworkIds.OPTIMISMMAINNET]: 'summer-automation-optimism',
   [NetworkIds.BASEMAINNET]: 'summer-automation-base',
 } as Record<Partial<NetworkIds>, string>
 

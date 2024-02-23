@@ -111,7 +111,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     ],
     netValue: calculations.netValue.toNumber(),
     debuggingData: debug
-      ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations }) }
+      ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
   }
 }
@@ -235,7 +235,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     ],
     netValue: calculations.netValue.toNumber(),
     debuggingData: debug
-      ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations }) }
+      ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
   }
 }
