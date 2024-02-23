@@ -70,8 +70,8 @@ export function loadStrategyFromTokens(
   // Aave uses WETH gateway for ETH (we have ETH strategy specified)
   // so we have to convert that on the fly just to find the strategy
   // this is then converted back to WETH using wethToEthAddress
-  const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
-  const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
+  const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken.toUpperCase()
+  const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken.toUpperCase()
   const strategy = strategies.find((s) => {
     /* Enhances for strategies to be filtered by product type */
     const matchesVaultType =
