@@ -31,6 +31,8 @@ const triggerTypesMap = {
     TriggerType.DmaSparkStopLossToCollateralV2,
     TriggerType.DmaSparkStopLossToDebtV2,
     TriggerType.DmaAaveTrailingStopLossV2,
+    116, // legacy + unused: spark stop loss to debt
+    119, // legacy + unused: aave stop loss to debt
     123, // legacy: aave stop loss to collateral
     124, // legacy: aave stop loss to debt
     125, // legacy: spark stop loss to collateral

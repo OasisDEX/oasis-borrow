@@ -105,6 +105,13 @@ export const commonDataMapper = ({
         defaultType: dpm.positionType as OmniProductBorrowishType,
       })
     : dpm.positionType
+  const emptyAutomationsList = {
+    AAVE: {},
+    Spark: {
+      stopLoss: emptyAutomations.stopLoss,
+    },
+    AAVE_V3: emptyAutomations,
+  }[dpm.protocol]
   return {
     commonData: {
       positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
@@ -131,7 +138,7 @@ export const commonDataMapper = ({
           ? {
               ...getPositionsAutomations({
                 triggers: automations ?? [],
-                defaultList: !['AAVE', 'Spark'].includes(dpm.protocol) ? emptyAutomations : {},
+                defaultList: emptyAutomationsList,
               }),
             }
           : {}),
