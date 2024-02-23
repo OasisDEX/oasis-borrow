@@ -9,7 +9,7 @@ import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWallet
 import { TabBar } from 'components/TabBar'
 import { MigrationsContext } from 'features/migrations/context'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
 import { useAppConfig } from 'helpers/config'
 import { useAccount } from 'helpers/useAccount'
@@ -45,7 +45,7 @@ export async function getServerSideProps(
     console.error(e)
     return {
       redirect: {
-        destination: '/not-found',
+        destination: INTERNAL_LINKS.notFound,
         permanent: false,
       },
     }
