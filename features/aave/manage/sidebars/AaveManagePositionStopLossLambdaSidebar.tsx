@@ -93,6 +93,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     sliderMax,
     sliderPercentageFill,
     liquidationPrice,
+    dynamicStopLossPriceForView,
     ...stopLossParamsRest
   } = getAaveLikeStopLossParams.manage({ state })
   const action = useMemo(() => {
@@ -215,7 +216,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
         lastValue={stopLossLevel}
         maxBoundry={sliderMax}
         minBoundry={sliderMin}
-        rightBoundry={dynamicStopLossPrice}
+        rightBoundry={dynamicStopLossPriceForView}
         leftBoundry={stopLossLevel}
         onChange={(slLevel) => {
           send({
@@ -279,6 +280,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
             sliderMax,
             sliderPercentageFill,
             liquidationPrice,
+            dynamicStopLossPriceForView,
             ...stopLossParamsRest,
           }}
           strategyInfo={state.context.strategyInfo}
@@ -310,6 +312,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
           sliderMax,
           sliderPercentageFill,
           liquidationPrice,
+          dynamicStopLossPriceForView,
           ...stopLossParamsRest,
         }}
         strategyInfo={state.context.strategyInfo}
@@ -331,6 +334,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
           sliderMax,
           sliderPercentageFill,
           liquidationPrice,
+          dynamicStopLossPriceForView,
           ...stopLossParamsRest,
         }}
         strategyInfo={state.context.strategyInfo}

@@ -31,6 +31,8 @@ export const settings: OmniProtocolSettings = {
       'WSTETH',
       'YFI',
       'MKR',
+      'MEVETH',
+      'XETH',
     ],
     [NetworkIds.GOERLI]: [],
     [NetworkIds.BASEMAINNET]: ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH'],

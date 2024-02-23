@@ -91,6 +91,10 @@ export const useLambdaDebouncedTrailingStopLoss = ({
             type: 'TRANSACTION_FAILED',
             error,
           })
+          send({
+            type: 'SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA',
+            trailingStopLossTxDataLambda: undefined,
+          })
         })
         .finally(() => {
           setIsGettingTrailingStopLossTx(false)
