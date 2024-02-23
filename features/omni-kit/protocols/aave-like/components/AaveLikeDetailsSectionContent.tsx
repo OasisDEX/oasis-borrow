@@ -46,16 +46,18 @@ export const AaveLikeDetailsSectionContent: FC = () => {
 
   const castedPosition = position as AaveLikePositionV2
 
-  const liquidationPrice = isShort
-    ? normalizeValue(one.div(castedPosition.liquidationPrice))
-    : castedPosition.liquidationPrice
+  const liquidationPrice = normalizeValue(
+    isShort ? one.div(castedPosition.liquidationPrice) : castedPosition.liquidationPrice,
+  )
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
-    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
-  const ratioToCurrentPrice = one.minus(
-    isShort
-      ? normalizeValue(one.div(castedPosition.liquidationToMarketPrice))
-      : castedPosition.liquidationToMarketPrice,
+    normalizeValue(isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
+  const ratioToCurrentPrice = normalizeValue(
+    one.minus(
+      isShort
+        ? one.div(castedPosition.liquidationToMarketPrice)
+        : castedPosition.liquidationToMarketPrice,
+    ),
   )
   const liquidationPenalty = getMorphoLiquidationPenalty({
     maxLtv: castedPosition.maxRiskRatio.loanToValue,
