@@ -57,6 +57,10 @@ export interface MigrateAaveContext {
   reserveData?: ReserveData
 }
 
+export const allowanceAmount = (position: AaveLikePosition): BigNumber => {
+  return position.collateral.amount.times(1.05).integerValue()
+}
+
 export type MigrateAaveEvent =
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
@@ -280,7 +284,7 @@ export function createMigrateAaveStateMachine(
             return true
           }
 
-          return context.allowanceForProtocolToken.lt(context.currentPosition!.collateral.amount)
+          return context.allowanceForProtocolToken.lt(allowanceAmount(context.currentPosition!))
         },
         canMigrate: (context) => context.strategy !== undefined,
       },
@@ -361,20 +365,22 @@ export function createMigrateAaveStateMachine(
           }
           return undefined
         }),
-        spawnAllowanceMachine: assign((context) => ({
-          refAllowanceStateMachine: spawn(
-            allowanceStateMachine.withContext({
-              token: context.reserveData!.collateral.tokenAddress,
-              spender: context.userDpmAccount?.proxy!,
-              allowanceType: 'unlimited',
-              minimumAmount: context.currentPosition!.collateral.amount,
-              runWithEthers: true,
-              signer: (context.web3Context as ContextConnected)?.transactionProvider,
-              networkId: context.strategyConfig.networkId,
-            }),
-            'allowanceMachine',
-          ),
-        })),
+        spawnAllowanceMachine: assign((context) => {
+          return {
+            refAllowanceStateMachine: spawn(
+              allowanceStateMachine.withContext({
+                token: context.reserveData!.collateral.tokenAddress,
+                spender: context.userDpmAccount?.proxy!,
+                allowanceType: 'unlimited',
+                minimumAmount: allowanceAmount(context.currentPosition!),
+                runWithEthers: true,
+                signer: (context.web3Context as ContextConnected)?.transactionProvider,
+                networkId: context.strategyConfig.networkId,
+              }),
+              'allowanceMachine',
+            ),
+          }
+        }),
         updateAllowance: assign((context, event) => {
           return {
             allowanceForProtocolToken: event.amount,
