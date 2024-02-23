@@ -22,9 +22,7 @@ import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const filterAutomation = (dpm: DpmSubgraphData) => (position: AutomationResponse[number]) =>
-  position.triggers.account.toLowerCase() === dpm.id.toLowerCase() &&
-  !position.triggers.executedBlock &&
-  !position.triggers.removedBlock
+  position.triggers.account.toLowerCase() === dpm.id.toLowerCase()
 
 export const getReserveDataCall = (dpm: DpmSubgraphData, token: string) => {
   switch (dpm.protocol) {
@@ -105,6 +103,13 @@ export const commonDataMapper = ({
         defaultType: dpm.positionType as OmniProductBorrowishType,
       })
     : dpm.positionType
+  const emptyAutomationsList = {
+    AAVE: {},
+    Spark: {
+      stopLoss: emptyAutomations.stopLoss,
+    },
+    AAVE_V3: emptyAutomations,
+  }[dpm.protocol]
   return {
     commonData: {
       positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
@@ -131,7 +136,7 @@ export const commonDataMapper = ({
           ? {
               ...getPositionsAutomations({
                 triggers: automations ?? [],
-                defaultList: !['AAVE', 'Spark'].includes(dpm.protocol) ? emptyAutomations : {},
+                defaultList: emptyAutomationsList,
               }),
             }
           : {}),
