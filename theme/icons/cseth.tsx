@@ -1,7 +1,7 @@
 import React from 'react'
 export const cseth = {
   path: (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <g clip-path="url(#clip0_14480_4437)">
         <path
           d="M28.1875 16C28.1875 22.731 22.731 28.1875 16 28.1875C9.26903 28.1875 3.8125 22.731 3.8125 16C3.8125 9.26903 9.26903 3.8125 16 3.8125C22.731 3.8125 28.1875 9.26903 28.1875 16Z"
@@ -55,6 +55,7 @@ export const cseth = {
           <rect width="26" height="26" fill="white" transform="translate(3 3)" />
         </clipPath>
       </defs>
-    </svg>
+    </>
   ),
+  viewBox: '0 0 32 32',
 }

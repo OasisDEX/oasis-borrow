@@ -1,7 +1,7 @@
 import React from 'react'
 export const meveth = {
   path: (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <g clip-path="url(#clip0_14480_4435)">
         <circle cx="16" cy="16" r="13" fill="black" />
         <path
@@ -16,6 +16,7 @@ export const meveth = {
           <rect width="26" height="26" fill="white" transform="translate(3 3)" />
         </clipPath>
       </defs>
-    </svg>
+    </>
   ),
+  viewBox: '0 0 32 32',
 }

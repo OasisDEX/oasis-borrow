@@ -1,7 +1,7 @@
 import React from 'react'
 export const mpeth = {
   path: (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <circle cx="16" cy="16" r="13" fill="url(#paint0_linear_14480_4433)" />
       <path
         d="M10.7019 14.2981L9 16L16 23L23 16L21.2981 14.2981L16 19.5962L10.7019 14.2981Z"
@@ -25,6 +25,7 @@ export const mpeth = {
           <stop offset="1" stop-color="#8A92B2" />
         </linearGradient>
       </defs>
-    </svg>
+    </>
   ),
+  viewBox: '0 0 32 32',
 }

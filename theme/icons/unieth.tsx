@@ -1,7 +1,7 @@
 import React from 'react'
 export const unieth = {
   path: (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <circle cx="16" cy="16" r="13" fill="url(#paint0_linear_14480_4432)" />
       <path
         d="M15.8677 16.678L20.6838 11.8525L18.9342 10.0975L15.8669 7.06445V16.6772L15.8677 16.678Z"
@@ -46,6 +46,7 @@ export const unieth = {
           <stop offset="1" stop-color="#434B59" />
         </linearGradient>
       </defs>
-    </svg>
+    </>
   ),
+  viewBox: '0 0 32 32',
 }

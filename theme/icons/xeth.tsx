@@ -1,7 +1,7 @@
 import React from 'react'
 export const xeth = {
   path: (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <path
         d="M28.5 16C28.5 22.9036 22.9036 28.5 16 28.5C9.09644 28.5 3.5 22.9036 3.5 16C3.5 9.09644 9.09644 3.5 16 3.5C22.9036 3.5 28.5 9.09644 28.5 16Z"
         stroke="#E5E4E6"
@@ -38,6 +38,7 @@ export const xeth = {
           <stop offset="1" stop-color="#ED4036" />
         </linearGradient>
       </defs>
-    </svg>
+    </>
   ),
+  viewBox: '0 0 32 32',
 }
