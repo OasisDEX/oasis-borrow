@@ -116,7 +116,8 @@ export function AaveManageTabBar({
           ) : isOptimizationAvailable && triggersState ? (
             <OptimizationControl
               triggersState={triggersState}
-              sendTriggerEvent={sendTriggerEvent} />
+              sendTriggerEvent={sendTriggerEvent}
+            />
           ) : (
             <DisabledOptimizationControl minNetValue={minNetValue} />
           ),

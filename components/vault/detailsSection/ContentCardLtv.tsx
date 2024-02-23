@@ -160,8 +160,17 @@ export function ContentCardLtv({
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
 
-  const { stopLossLevel, isStopLossEnabled, isAutomationDataLoaded, isAutomationAvailable, isTrailingStopLoss } =
-    automation ?? { isStopLossEnabled: false, isAutomationDataLoaded: false, isTrailingStopLoss: false }
+  const {
+    stopLossLevel,
+    isStopLossEnabled,
+    isAutomationDataLoaded,
+    isAutomationAvailable,
+    isTrailingStopLoss,
+  } = automation ?? {
+    isStopLossEnabled: false,
+    isAutomationDataLoaded: false,
+    isTrailingStopLoss: false,
+  }
 
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
