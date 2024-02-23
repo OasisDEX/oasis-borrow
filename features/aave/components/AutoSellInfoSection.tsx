@@ -1,10 +1,9 @@
 import type BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
-import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
+import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
-import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -62,12 +61,10 @@ export function AutoSellInfoSection({
     return isLoading ? <InfoSectionLoadingState /> : value
   }
 
-  const transactionCostWithLoader =
-    isLoading || transactionCost.gasEstimationStatus === GasEstimationStatus.calculating ? (
-      <InfoSectionLoadingState />
-    ) : (
-      getEstimatedGasFeeTextOld(transactionCost, false)
-    )
+  const transactionCostWithLoader = useTransactionCostWithLoading({
+    transactionCost,
+    isLoading,
+  })
 
   const undefinedWhenLoading = (value: string) => {
     return isLoading ? undefined : value

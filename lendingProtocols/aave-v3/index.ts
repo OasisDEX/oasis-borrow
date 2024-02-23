@@ -85,6 +85,13 @@ export function getAaveV3Services({
     'getReserveCaps$',
   )
 
+  const getReserveTokenAddresses$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3ReserveTokenAddresses,
+    networkId,
+    'getReserveTokenAddresses$',
+  )
+
   const getEModeCategoryData$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getEModeCategoryData,
@@ -114,7 +121,11 @@ export function getAaveV3Services({
   )({})
 
   const reserveDataWithCaps$ = memoize(
-    curry(getAaveLikeReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    curry(getAaveLikeReserveData)(
+      getAaveLikeReserveData$,
+      getReserveCaps$,
+      getReserveTokenAddresses$,
+    ),
     (args: { token: string }) => args.token,
   )
 

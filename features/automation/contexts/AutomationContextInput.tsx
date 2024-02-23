@@ -1,4 +1,4 @@
-import type { NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import type {
   AutomationCommonData,
   AutomationPositionData,
@@ -14,8 +14,10 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import type { PropsWithChildren } from 'react'
 import React, { useMemo } from 'react'
+import { of } from 'rxjs'
 
 interface GeneralManageControlProps {
   positionData: AutomationPositionData
@@ -42,10 +44,13 @@ export function AutomationContextInput({
   const resolvedAccount =
     contextData?.status === 'connected' && contextData.account ? contextData.account : ''
 
-  const _balanceInfo = useMemo(
-    () => balanceInfo$(positionData.token, resolvedAccount),
-    [positionData.token, resolvedAccount],
-  )
+  const _balanceInfo = useMemo(() => {
+    if (networkId === NetworkIds.MAINNET) {
+      return balanceInfo$(positionData.token, resolvedAccount)
+    }
+    // observable with empty data for non mainnet positions (automation is handled with lambdas there)
+    return of({ collateralBalance: zero, ethBalance: zero, daiBalance: zero })
+  }, [positionData.token, resolvedAccount])
   const [balanceInfoData, balanceInfoError] = useObservable(_balanceInfo)
 
   const _tokenPriceUSD$ = useMemo(

@@ -6,7 +6,7 @@ import { getAaveLikeTrailingStopLossParams } from 'features/aave/open/helpers/ge
 import { StrategyType } from 'features/aave/types'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
 import { formatAmount } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -30,12 +30,12 @@ export const AaveTrailingStopLossManageDetails = ({
     dynamicStopPriceChange,
     estimatedTokenOnSLTrigger,
     estimatedTokenOnSLTriggerChange,
+    currentTrailingDistanceValue,
   } = getAaveLikeTrailingStopLossParams.manage({
     state,
     trailingStopLossLambdaData,
     trailingStopLossToken,
   })
-
   const isShort = strategyConfig.strategyType === StrategyType.Short
   const currentMarketPrice = useMemo(() => {
     if (!strategyInfo) {
@@ -55,13 +55,13 @@ export const AaveTrailingStopLossManageDetails = ({
     ? strategyConfig.tokens.collateral
     : strategyConfig.tokens.debt
   const trailingDistanceDisplayValue = `${formatAmount(
-    trailingStopLossLambdaData.trailingDistance || zero,
+    currentTrailingDistanceValue,
     trailingDistanceToken,
   )} ${trailingSLTokenPair}`
   const trailingDistanceChangeDisplayValue =
     isEditing &&
     trailingDistanceValue &&
-    !trailingDistanceValue.eq(trailingStopLossLambdaData.trailingDistance || one) &&
+    !currentTrailingDistanceValue.eq(trailingDistanceValue) &&
     `${formatAmount(trailingDistanceValue, trailingDistanceToken)} ${trailingSLTokenPair}`
   const dynamicStopLossPriceValue = `${formatAmount(
     trailingStopLossLambdaData.trailingDistance ? dynamicStopPrice : zero,

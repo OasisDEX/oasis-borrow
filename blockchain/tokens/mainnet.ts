@@ -91,6 +91,13 @@ export const tokensMainnet = {
   WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
   YIELDBTC: contractDesc(erc20, mainnet.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, mainnet.common.YIELDETH),
+  CSETH: contractDesc(erc20, mainnet.common.CSETH),
+  DETH: contractDesc(erc20, mainnet.common.DETH),
+  EZETH: contractDesc(erc20, mainnet.common.EZETH),
+  MEVETH: contractDesc(erc20, mainnet.common.MEVETH),
+  MPETH: contractDesc(erc20, mainnet.common.MPETH),
+  UNIETH: contractDesc(erc20, mainnet.common.UNIETH),
+  XETH: contractDesc(erc20, mainnet.common.XETH),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'] as const
