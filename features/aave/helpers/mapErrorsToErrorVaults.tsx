@@ -48,6 +48,10 @@ export function mapErrorsToErrorVaults(
         case TriggersApiErrorCode.StopLossNeverTriggeredWithLowerAutoSellMinSellPrice:
         case TriggersApiErrorCode.StopLossNeverTriggeredWithNoAutoSellMinSellPrice:
           return 'autoSellWillBlockStopLoss'
+        case TriggersApiErrorCode.StopLossTriggeredByAutoBuy:
+          return 'stopLossTriggeredByAutoBuy'
+        case TriggersApiErrorCode.AutoSellNeverTriggeredWithCurrentStopLoss:
+          return 'autoSellNeverTriggeredWithCurrentStopLoss'
         default:
           return undefined
       }

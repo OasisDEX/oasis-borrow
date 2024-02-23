@@ -59,6 +59,8 @@ export type VaultErrorMessage =
   | 'tooLowLtvToSetupAutoBuy'
   | 'tooHighStopLossToSetupAutoSell'
   | 'autoSellWillBlockStopLoss'
+  | 'stopLossTriggeredByAutoBuy'
+  | 'autoSellNeverTriggeredWithCurrentStopLoss'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean

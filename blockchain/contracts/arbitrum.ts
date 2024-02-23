@@ -179,6 +179,12 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'RBN-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RBNETH),
     'AJNA-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_AJNADAI),
     'MKR-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_MKRDAI),
+
+    'MEVETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_MEVETHWETH),
+    'XETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_XETHWETH),
+    'DETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_DETHWETH),
+    'UNIETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_UNIETHWETH),
+    'EZETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_EZETHWETH),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -192,6 +198,8 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     ),
     'APXETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_APXETHETH),
     'SUSDE-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SUSDEDAI),
+    'MPETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_MPETHWETH),
+    'CSETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_CSETHWETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),

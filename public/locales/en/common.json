@@ -174,7 +174,7 @@
       },
       "bullet-points": [
         "Multiple positions with the same wallet",
-        "Enables advanced Summer.fi features such as Automation and Stop Loss",
+        "Enables advanced Summer.fi features such as Automation and Stop-Loss",
         "Better security with allowances set and removed within transactions"
       ]
     }
@@ -493,18 +493,21 @@
     "net-value": "Net value",
     "increase-multiple": "Increase multiple",
     "decrease-multiple": "Decrease multiple",
-    "sl-level": "Stop loss LTV",
+    "sl-level": "Stop-Loss LTV",
     "swaped": "Swapped",
     "automation": {
-      "stop-loss-collateral-added": "Stop loss to collateral added",
-      "stop-loss-collateral-removed": "Stop loss to collateral removed",
-      "stop-loss-collateral-executed": "Stop loss to collateral executed",
-      "stop-loss-debt-added": "Stop loss to debt added",
-      "stop-loss-debt-removed": "Stop loss to debt removed",
-      "stop-loss-debt-executed": "Stop loss to debt executed",
-      "stop-loss-token-added": "Stop loss to {{token}} added",
-      "stop-loss-token-removed": "Stop loss to {{token}} removed",
-      "stop-loss-token-executed": "Stop loss to {{token}} executed",
+      "trailing-stop-loss-added": "Trailing Stop-loss added",
+      "trailing-stop-loss-removed": "Trailing Stop-loss removed",
+      "trailing-stop-loss-executed": "Trailing Stop-loss executed",
+      "stop-loss-collateral-added": "Stop-Loss to collateral added",
+      "stop-loss-collateral-removed": "Stop-Loss to collateral removed",
+      "stop-loss-collateral-executed": "Stop-Loss to collateral executed",
+      "stop-loss-debt-added": "Stop-Loss to debt added",
+      "stop-loss-debt-removed": "Stop-Loss to debt removed",
+      "stop-loss-debt-executed": "Stop-Loss to debt executed",
+      "stop-loss-token-added": "Stop-Loss to {{token}} added",
+      "stop-loss-token-removed": "Stop-Loss to {{token}} removed",
+      "stop-loss-token-executed": "Stop-Loss to {{token}} executed",
       "basic-buy-added": "Auto buy added",
       "basic-buy-removed": "Auto buy removed",
       "basic-buy-executed": "Auto buy executed",
@@ -817,7 +820,8 @@
     "below-current-price": "{{percentage}} below current price",
     "above-current-price": "{{percentage}} above current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
-    "stop-loss-ltv": "Stop Loss LTV: {{percentage}}",
+    "stop-loss-ltv": "Stop-Loss LTV: {{percentage}}",
+    "trailing-stop-loss-ltv": "Trailing Stop-Loss LTV: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
     "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}. This net value doesn't include the cost of the closing fee or the difference that might happen due to slippage or price changes once you close your position. Net value of position if closed will likely be lower.",
@@ -837,11 +841,13 @@
       "first-header": "Current Loan to Value (LTV)",
       "second-header": "Max Loan to value",
       "third-header": "Liquidation Threshold (LT)",
-      "fourth-header": "Stop loss Loan to Value",
+      "trailing-fourth-header": "Trailing Stop-Loss Loan to Value",
+      "fourth-header": "Stop-Loss Loan to Value",
       "first-description-line": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied",
       "second-description-line": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral",
       "third-description-line": "The liquidation threshold is the percentage at which a position is undercollateralised. If your LTV rises above the LT, the position is undercollateralised and could be liquidated.",
-      "fourth-description-line": "The Stop loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the <0>protection tab</0>.",
+      "fourth-description-line": "The Stop-Loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the <0>protection tab</0>.",
+      "trailing-fourth-description-line": "The Trailing Stop-Loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the <0>protection tab</0>.",
       "stop-loss-not-set": "Not set - click to set up stop loss."
     },
     "net-borrow-cost": {
@@ -1244,6 +1250,7 @@
     "protection": "Protection",
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
+    "trailing-stop-loss": "Trailing Stop-Loss",
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
@@ -1418,7 +1425,9 @@
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell.",
-    "auto-sell-will-make-stop-loss-not-trigger": "Your Auto-Sell will make your stop loss not trigger."
+    "auto-sell-will-make-stop-loss-not-trigger": "Your Auto-Sell will make your stop loss not trigger.",
+    "stop-loss-triggered-by-auto-buy": "Your Stop-Loss will be triggered by your Auto-Buy.",
+    "auto-sell-never-triggered-with-current-stop-loss": "Your Auto-Sell will never be triggered with your current Stop-Loss trigger."
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -1453,7 +1462,7 @@
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
-    "stop-loss-triggered-immediately": "Stop loss will be triggered immediately."
+    "stop-loss-triggered-immediately": "Stop-Loss will be triggered immediately."
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -1586,6 +1595,11 @@
       "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
       "content-generic": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either collateral or debt token at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
+    },
+    "setup-trailing-stop-loss": {
+      "header": "Trailing Stop-Loss",
+      "content": "Set-up a Trailing Stop-Loss if you want a stop loss that moves up with the price. Perfect for following bullish trends. Find out more about how it works <1>here.</1>",
+      "button": "Setup Trailing Stop-Loss"
     },
     "get-protection": {
       "header": "Get vault protection",
@@ -1723,12 +1737,18 @@
   "setup": "Setup",
   "protection": {
     "stop-loss": "Stop-Loss",
-    "stop-loss-to": "Stop loss to:",
+    "stop-loss-to": "Stop-Loss to:",
     "stop-loss-protection": "Stop-Loss Protection",
     "confirmation-text": "Confirm your Stop-Loss setup.",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
+    "current-market-price": "Current Market Price",
+    "trailing-stop-loss-price-distance": "Trailing Stop-Loss Price Distance",
+    "trailing-stop-loss-price": "Trailing Stop-Loss Price",
+    "est-token-on-tsl-trigger": "Est. {{trailingStopLossToken}} on Trailing Stop-Loss triggered",
+    "trailing-distance": "Trailing Distance",
+    "set-distance-protection-desc": "Set your {{distance}}. This indicates the maximum price distance that your stop price will be from the market price. When the market price goes up, your stop price will follow it. <1> Read how to think about Trailing Stop-Loss here </1>",
     "set-downside-protection-desc": "Set the {{ratioParam}} trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
     "setting-downside-protection": "Setting Stop-Loss Protection",
@@ -1776,7 +1796,7 @@
     "reopen-position": "Reopen position",
     "stop-loss-triggered": "Stop-Loss triggered",
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
-    "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop Loss event on the right.",
+    "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop-Loss event on the right.",
     "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your {{ratioParam}}.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
@@ -1798,7 +1818,19 @@
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
     "stop-loss-something": "Stop-Loss {{value}}",
     "current-stop-loss-something": "The current Stop-Loss {{value}} is:",
-    "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell"
+    "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell",
+    "regular-stop-loss": "Regular Stop-Loss",
+    "trailing-stop-loss": "Trailing Stop-Loss",
+    "current-stop-loss-overwrite": "Adding {{addingStopLossType}} will overwrite your current {{currentStopLossType}} (in one transaction), please be aware of that.",
+    "current-stop-loss-overwrite-click-here": "<1>Click here to view the details of your {{currentStopLossType}}</1>.",
+    "stop-loss-type-select": {
+      "regular-stop-loss": "Regular Stop-Loss",
+      "regular-stop-loss-description": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either USDC or the Collateral Asset at your desired Price or LTV.",
+      "trailing-stop-loss": "Trailing Stop-Loss",
+      "trailing-stop-loss-description": "Set-up a Trailing Stop-Loss if you want a stop loss that moves up with the price. Perfect for following bullish trends. See the image below for an example.",
+      "sidebar-title": "Select a type of Stop-Loss",
+      "sidebar-description": "Choose between a Regular or Trailing Stop-loss. A Regular Stop-Loss does not automatically update, whilst a Trailing Stop-Loss moves up if the price moves up by your set Trailing Distance."
+    }
   },
   "newsletter": {
     "title": "Stay up to date with Summer.fi",
@@ -2308,6 +2340,9 @@
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
     "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
   },
+  "trailing-stop-loss": {
+    "title": "Trailing Stop-Loss"
+  },
   "automation": {
     "setup": "{{feature}} Setup",
     "trigger-added": "{{feature}} Enabled",
@@ -2340,7 +2375,8 @@
       "is-stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
       "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
     },
-    "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction."
+    "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction.",
+    "trailing-stop-loss-execution-price-increased": "As the price increased, the Trailing Stop-Loss price changed to {{executionPrice}} {{token}} ({{delta}}) from the original {{originalExecutionPrice}} {{token}}"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -3332,6 +3368,22 @@
     "aave": {
       "title": "AAVE is Better on Summer",
       "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
+    },
+    "spark": {
+      "title": "Spark is Better on Summer",
+      "description": "Borrow DAI for the lowest rate, Earn Yield with Savings DAI and access DeFi’s most useful features that make Spark an even more powerful protocol."
+    },
+    "maker": {
+      "title": "Maker is Better on Summer",
+      "description": "Borrow and Earn DAI from the oldest and most trusted protocol in DeFi, with best in class automated position management tools from Summer.fi."
+    },
+    "ethena": {
+      "title": "Get paid to boost your sUSDe yield on Summer",
+      "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
+    },
+    "susde": {
+      "title": "Get paid to boost your sUSDe yield on Summer",
+      "description": "Borrow DAI against your sUSDe with AJNA on summer and multiply your staking yield exposure, all while earning $AJNA rewards."
     }
   }
 }

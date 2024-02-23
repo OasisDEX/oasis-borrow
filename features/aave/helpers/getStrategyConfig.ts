@@ -5,6 +5,7 @@ import { loadStrategyFromTokens } from 'features/aave'
 import { aaveLikeProtocols } from 'features/aave/constants'
 import type { PositionCreated } from 'features/aave/services'
 import {
+  extractLendingProtocolFromPositionCreatedEvent,
   getPositionCreatedEventForProxyAddress,
   mapCreatedPositionEventToPositionCreated,
 } from 'features/aave/services'
@@ -140,8 +141,10 @@ export async function getAaveLikeStrategyConfig(
   const createdPositions = await getPositionCreatedEventForProxyAddress(networkId, dpmProxy.proxy)
 
   const lastCreatedPosition = createdPositions
+    .filter((event) =>
+      aaveLikeProtocols.includes(extractLendingProtocolFromPositionCreatedEvent(event)),
+    )
     .map((event) => mapCreatedPositionEventToPositionCreated(event, networkId))
-    .filter((position) => aaveLikeProtocols.includes(position.protocol))
     .pop()
 
   if (!lastCreatedPosition) {

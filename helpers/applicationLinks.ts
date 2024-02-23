@@ -50,6 +50,7 @@ export const EXTERNAL_LINKS = {
     SETTING_AUTO_BUY: 'https://docs.summer.fi/automation/auto-buy-and-auto-sell/auto-buy',
     SETTING_AUTO_SELL: 'https://docs.summer.fi/automation/auto-buy-and-auto-sell/auto-sell',
     HOW_STOP_LOSS_WORKS: 'https://docs.summer.fi/automation/stop-loss',
+    HOW_TRAILING_STOP_LOSS_WORKS: 'https://docs.summer.fi/automation/trailing-stop-loss',
     WHAT_YOU_SHOULD_KNOW_ABOUT_STETH: 'https://docs.summer.fi/products/earn/aave-v2-steth',
     STETH_AAVE_V3_EMODE: 'https://docs.summer.fi/products/earn/aave-v3-steth',
     EARN_DAI_GUNI_MULTIPLY: 'https://docs.summer.fi/products/earn',

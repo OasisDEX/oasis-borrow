@@ -178,6 +178,7 @@ export function AaveManageTabBar({
                   <DisabledAutomationForMigrationControl />
                 ) : isProtectionAvailable ? (
                   <ProtectionControlWrapper
+                    aaveReserveState={aaveReserveState}
                     triggersState={triggersState}
                     sendTriggerEvent={sendTriggerEvent}
                   />
