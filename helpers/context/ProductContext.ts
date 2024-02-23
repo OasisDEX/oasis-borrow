@@ -54,7 +54,7 @@ import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMulti
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
-import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave/observables'
+import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave-like/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniTokensPrecision } from 'features/omni-kit/types'
