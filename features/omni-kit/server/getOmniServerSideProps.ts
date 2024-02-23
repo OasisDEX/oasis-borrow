@@ -53,6 +53,7 @@ export async function getOmniServerSideProps({
     positionId,
     productType: castedProductType,
     quoteToken: caseSensitiveQuoteToken,
+    protocol,
   }
 
   if (!isProductPageValid(omniProductPage)) {
@@ -69,6 +70,8 @@ export async function getOmniServerSideProps({
       ...(await serverSideTranslations(locale || 'en', ['common'])),
       ...omniProductPage,
       positionId: positionId ?? null,
+      version: query.version ?? null,
+      protocol,
     },
   }
 }

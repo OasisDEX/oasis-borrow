@@ -56,16 +56,18 @@ const filterPositionWhenUrlParamsDefined = ({
         protocol: positionProtocol,
         protocolRaw: positionProtocolRaw,
         proxyAddress,
-      }) =>
-        positionProtocol === protocol &&
-        positionProtocolRaw === protocolRaw &&
-        proxyAddress.toLowerCase() === proxy.toLowerCase() &&
-        [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
-        [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
-        ((product.toLowerCase() === 'earn' &&
-          positionType.toLowerCase() === product.toLowerCase()) ||
-          (['borrow', 'multiply'].includes(product.toLocaleLowerCase()) &&
-            ['borrow', 'multiply'].includes(positionType.toLocaleLowerCase()))),
+      }) => {
+        console.log('positionProtocolRaw', positionProtocolRaw)
+        return positionProtocol === protocol &&
+          positionProtocolRaw === protocolRaw &&
+          proxyAddress.toLowerCase() === proxy.toLowerCase() &&
+          [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
+          [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
+          ((product.toLowerCase() === 'earn' &&
+              positionType.toLowerCase() === product.toLowerCase()) ||
+            (['borrow', 'multiply'].includes(product.toLocaleLowerCase()) &&
+              ['borrow', 'multiply'].includes(positionType.toLocaleLowerCase())))
+      },
     )
 
 export function getDpmPositionDataV2$(
@@ -95,7 +97,23 @@ export function getDpmPositionDataV2$(
             (item) => item.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase(),
           ).length > 1,
       )
+      console.log({
+        dpmProxy,
+        positions,
+      })
       const proxyPosition = filterPositionWhenUrlParamsDefined({
+        collateralToken,
+        positions,
+        product,
+        protocol,
+        protocolRaw,
+        proxy: dpmProxy?.proxy ?? ethers.constants.AddressZero,
+        quoteToken,
+      })
+
+      console.log('proxyPosition', proxyPosition)
+
+      console.log('xxxxxxxx', {
         collateralToken,
         positions,
         product,

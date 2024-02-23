@@ -260,7 +260,7 @@ export function AaveBorrowPositionData({
       />
     ),
   })
-
+  console.log('currentPosition', currentPosition)
   const maxDebtToBorrow = amountFromWei(currentPosition.maxDebtToBorrow)
 
   const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({

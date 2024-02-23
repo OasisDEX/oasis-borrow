@@ -202,6 +202,16 @@ export function useOmniProtocolData({
       : undefined
   }, [identifiedTokensData, collateralToken, quoteToken, isOracless, dpmPositionData])
 
+  console.log({
+    balancesInfoArrayData,
+    dpmPositionData,
+    ethBalanceData,
+    gasPriceData,
+    tokenPriceUSDData,
+    userSettingsData,
+    tokensIconsData,
+  })
+
   return {
     data: {
       balancesInfoArrayData,

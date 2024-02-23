@@ -1,3 +1,4 @@
+import type BigNumber from 'bignumber.js'
 import { getNetworkById } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
@@ -14,6 +15,7 @@ import type {
   OmniProtocolHookProps,
   OmniProtocolSettings,
   OmniSupportedNetworkIds,
+  OmniSupportedProtocols,
 } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -23,7 +25,6 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useAccount } from 'helpers/useAccount'
 import { one, zero } from 'helpers/zero'
-import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -48,11 +49,12 @@ interface OmniProductControllerProps<Auction, History, Position> {
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
-  protocol: LendingProtocol
+  protocol: OmniSupportedProtocols
   protocolHook: (params: OmniProtocolHookProps) => {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
       positionData: Position | undefined
+      protocolPricesData?: BigNumber[] | undefined
     }
     errors: string[]
   }
@@ -62,6 +64,8 @@ interface OmniProductControllerProps<Auction, History, Position> {
     productKey: string
     descriptionKey: string
   }
+  shouldUseProtocolPrices?: boolean
+  version?: string
 }
 
 export const OmniProductController = <Auction, History, Position>({
@@ -76,6 +80,8 @@ export const OmniProductController = <Auction, History, Position>({
   quoteToken,
   settings,
   seoTags,
+  version,
+  shouldUseProtocolPrices,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
 
@@ -111,7 +117,7 @@ export const OmniProductController = <Auction, History, Position>({
   })
 
   const {
-    data: { aggregatedData, positionData },
+    data: { aggregatedData, positionData, protocolPricesData },
     errors: protocolDataErrors,
   } = protocolHook({
     collateralToken,
@@ -120,6 +126,7 @@ export const OmniProductController = <Auction, History, Position>({
     quoteToken,
     tokenPriceUSDData,
     tokensPrecision,
+    protocol,
   })
 
   useEffect(() => {
@@ -143,6 +150,7 @@ export const OmniProductController = <Auction, History, Position>({
                 tokensIconsData,
                 tokensPrecision,
                 userSettingsData,
+                ...(shouldUseProtocolPrices ? [protocolPricesData] : []),
               ]}
               customLoader={
                 <PositionLoadingState
@@ -170,6 +178,7 @@ export const OmniProductController = <Auction, History, Position>({
                 tokensIcons,
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 { slippage },
+                [protocolCollateralPrice, protocolQuotePrice],
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
 
@@ -195,7 +204,11 @@ export const OmniProductController = <Auction, History, Position>({
                       collateralIcon={tokensIcons.collateralToken}
                       collateralPrecision={collateralPrecision}
                       collateralPrice={
-                        isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]
+                        isOracless
+                          ? one
+                          : shouldUseProtocolPrices
+                          ? protocolCollateralPrice
+                          : tokenPriceUSD[dpmPosition.collateralToken]
                       }
                       collateralToken={dpmPosition.collateralToken}
                       {...(positionId && { dpmProxy: dpmPosition.proxy })}
@@ -212,13 +225,20 @@ export const OmniProductController = <Auction, History, Position>({
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
+                      protocolVersion={version}
                       protocolRaw={protocolRaw}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
                       quoteIcon={tokensIcons.quoteToken}
                       quotePrecision={quotePrecision}
-                      quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
+                      quotePrice={
+                        isOracless
+                          ? one
+                          : shouldUseProtocolPrices
+                          ? protocolQuotePrice
+                          : tokenPriceUSD[dpmPosition.quoteToken]
+                      }
                       quoteToken={dpmPosition.quoteToken}
                       settings={settings}
                       slippage={slippage}

@@ -95,6 +95,7 @@ import type { MainContext } from './MainContext.types'
 import type { TxHelpers } from './TxHelpers'
 import type { ProtocolsServices } from './types'
 import curry from 'ramda/src/curry'
+import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave/observables'
 
 export function setupProductContext(
   {
@@ -651,6 +652,22 @@ export function setupProductContext(
       ).join('-')}`,
   )
 
+  const aaveLikePosition$ = memoize(
+    curry(getAaveLikePosition$)(onEveryBlock$),
+    (
+      collateralPrice: BigNumber,
+      quotePrice: BigNumber,
+      dpmPositionData: DpmPositionData,
+      network: NetworkIds,
+      tokensPrecision?: OmniTokensPrecision,
+    ) =>
+      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+        .decimalPlaces(2)
+        .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
+        tokensPrecision ?? {},
+      ).join('-')}`,
+  )
+
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
@@ -682,6 +699,7 @@ export function setupProductContext(
     manageGuniVault$,
     manageMultiplyVault$,
     morphoPosition$,
+    aaveLikePosition$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,

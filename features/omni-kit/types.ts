@@ -22,7 +22,13 @@ const omniSupportedNetworkIds = [
 
 export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
 
-const omniSupportedProtocols = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue] as const
+const omniSupportedProtocols = [
+  LendingProtocol.Ajna,
+  LendingProtocol.MorphoBlue,
+  LendingProtocol.AaveV2,
+  LendingProtocol.AaveV3,
+  LendingProtocol.SparkV3,
+] as const
 
 export type OmniSupportedProtocols = (typeof omniSupportedProtocols)[number]
 
@@ -85,6 +91,7 @@ export interface OmniProtocolHookProps {
   quoteToken?: string
   tokenPriceUSDData?: Tickers
   tokensPrecision?: OmniTokensPrecision
+  protocol: OmniSupportedProtocols
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'
@@ -149,6 +156,8 @@ export interface OmniProductPage {
   positionId?: string
   productType: OmniProductType
   quoteToken: string
+  version?: string
+  protocol: OmniSupportedProtocols
 }
 
 export type OmniValidations = {
