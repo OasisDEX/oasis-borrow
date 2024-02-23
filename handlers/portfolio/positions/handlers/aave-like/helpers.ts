@@ -22,9 +22,7 @@ import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const filterAutomation = (dpm: DpmSubgraphData) => (position: AutomationResponse[number]) =>
-  position.triggers.account.toLowerCase() === dpm.id.toLowerCase() &&
-  !position.triggers.executedBlock &&
-  !position.triggers.removedBlock
+  position.triggers.account.toLowerCase() === dpm.id.toLowerCase()
 
 export const getReserveDataCall = (dpm: DpmSubgraphData, token: string) => {
   switch (dpm.protocol) {
