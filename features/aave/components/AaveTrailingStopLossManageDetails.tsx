@@ -30,18 +30,18 @@ export const AaveTrailingStopLossManageDetails = ({
     dynamicStopPriceChange,
     estimatedTokenOnSLTrigger,
     estimatedTokenOnSLTriggerChange,
+    currentTrailingDistanceValue,
   } = getAaveLikeTrailingStopLossParams.manage({
     state,
     trailingStopLossLambdaData,
     trailingStopLossToken,
   })
-
   const isShort = strategyConfig.strategyType === StrategyType.Short
   const trailingDistanceToken = isShort
     ? strategyConfig.tokens.collateral
     : strategyConfig.tokens.debt
   const trailingDistanceDisplayValue = `${formatAmount(
-    trailingStopLossLambdaData.trailingDistance || zero,
+    currentTrailingDistanceValue,
     trailingDistanceToken,
   )} ${trailingDistanceToken}`
   const trailingDistanceChangeDisplayValue =

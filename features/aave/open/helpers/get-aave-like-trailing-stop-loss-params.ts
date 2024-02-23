@@ -101,12 +101,24 @@ export const getAaveLikeTrailingStopLossParams = {
         () => getTrailingDistanceValue(trailingDistance),
         [getTrailingDistanceValue, trailingDistance],
       )
+
+      const currentTrailingDistanceValue = useMemo(() => {
+        const distance = trailingStopLossLambdaData.trailingDistance ?? zero
+        if (isShort) {
+          const oppositePrice = one.div(priceRatio)
+          const executionPrice = oppositePrice.minus(distance)
+          const executionHumanReadable = one.div(executionPrice)
+          return priceRatio.minus(executionHumanReadable).abs()
+        }
+        return distance
+      }, [trailingStopLossLambdaData, isShort, priceRatio])
+
       const trailingDistanceLambdaValue = useMemo(
         () =>
-          trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance
-            ? getTrailingDistanceValue(trailingStopLossLambdaData.trailingDistance)
-            : zero,
-        [getTrailingDistanceValue, trailingStopLossLambdaData],
+          currentTrailingDistanceValue.isZero()
+            ? zero
+            : getTrailingDistanceValue(currentTrailingDistanceValue),
+        [getTrailingDistanceValue, currentTrailingDistanceValue],
       )
 
       const sliderPercentageFill = getSliderPercentageFill({
@@ -121,13 +133,12 @@ export const getAaveLikeTrailingStopLossParams = {
       )
 
       const dynamicStopPrice = useMemo(() => {
-        const lambdaDistanceValue =
-          (trailingStopLossLambdaData && trailingStopLossLambdaData.trailingDistance) || zero
+        const lambdaDistanceValue = currentTrailingDistanceValue
         if (isShort) {
           return priceRatio.plus(lambdaDistanceValue)
         }
         return priceRatio.minus(lambdaDistanceValue)
-      }, [trailingStopLossLambdaData, isShort, priceRatio])
+      }, [currentTrailingDistanceValue, isShort, priceRatio])
       const dynamicStopPriceChange = useMemo(() => {
         if (isShort) {
           return priceRatio.plus(trailingDistanceValue)
@@ -213,6 +224,7 @@ export const getAaveLikeTrailingStopLossParams = {
         trailingDistance,
         trailingDistanceLambdaValue,
         trailingDistanceValue,
+        currentTrailingDistanceValue,
       }
     },
   ),
