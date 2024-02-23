@@ -124,16 +124,9 @@ export const MorphoDetailsSectionContent: FC = () => {
     afterBuyingPower: simulation?.buyingPower,
   })
 
-  const netValue = castedPosition.collateralAmount
-    .times(collateralPrice)
-    .minus(castedPosition.debtAmount.times(quotePrice))
-  const afterNetValue = simulation?.collateralAmount
-    .times(collateralPrice)
-    .minus(simulation?.debtAmount.times(quotePrice))
-
   const netValueContentCardCommonData = useOmniCardDataNetValue({
-    afterNetValue,
-    netValue,
+    afterNetValue: simulation?.netValue,
+    netValue: position.netValue,
   })
 
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
@@ -159,8 +152,8 @@ export const MorphoDetailsSectionContent: FC = () => {
           productType,
           collateralTokenPrice: collateralPrice,
           debtTokenPrice: quotePrice,
-          netValueInCollateralToken: netValue.div(collateralPrice),
-          netValueInDebtToken: netValue.div(quotePrice),
+          netValueInCollateralToken: position.netValue.div(collateralPrice),
+          netValueInDebtToken: position.netValue.div(quotePrice),
           collateralToken,
           debtToken: quoteToken,
         })
