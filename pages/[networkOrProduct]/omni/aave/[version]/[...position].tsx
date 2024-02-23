@@ -1,4 +1,5 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -7,7 +8,7 @@ import { OmniProductController } from 'features/omni-kit/controllers'
 import { aaveSeoTags } from 'features/omni-kit/protocols/aave/constants'
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import { useAaveLikeData, useAaveTxHandler } from 'features/omni-kit/protocols/aave/hooks'
-import { useAaveMetadata } from 'features/omni-kit/protocols/aave/metadata'
+import { useAaveLikeMetadata } from 'features/omni-kit/protocols/aave/metadata'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import { omniProtocolSettings } from 'features/omni-kit/settings'
 import type { OmniProductPage } from 'features/omni-kit/types'
@@ -15,7 +16,6 @@ import type { AaveLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import React from 'react'
-import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 
 type AavePositionPageProps = OmniProductPage
 
@@ -33,7 +33,7 @@ function AavePositionPage(props: AavePositionPageProps) {
               {...props}
               customState={({ children }) =>
                 children({
-                  useDynamicMetadata: useAaveMetadata,
+                  useDynamicMetadata: useAaveLikeMetadata,
                   useTxHandler: useAaveTxHandler,
                 })
               }

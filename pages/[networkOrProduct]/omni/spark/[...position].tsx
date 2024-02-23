@@ -8,7 +8,7 @@ import { OmniProductController } from 'features/omni-kit/controllers'
 import { aaveSeoTags } from 'features/omni-kit/protocols/aave/constants'
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import { useAaveLikeData, useAaveTxHandler } from 'features/omni-kit/protocols/aave/hooks'
-import { useAaveMetadata } from 'features/omni-kit/protocols/aave/metadata'
+import { useAaveLikeMetadata } from 'features/omni-kit/protocols/aave/metadata'
 import { settings as sparkSettings } from 'features/omni-kit/protocols/spark/settings'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
@@ -32,7 +32,7 @@ function SparkPositionPage(props: SparkPositionPageProps) {
               {...props}
               customState={({ children }) =>
                 children({
-                  useDynamicMetadata: useAaveMetadata,
+                  useDynamicMetadata: useAaveLikeMetadata,
                   useTxHandler: useAaveTxHandler,
                 })
               }

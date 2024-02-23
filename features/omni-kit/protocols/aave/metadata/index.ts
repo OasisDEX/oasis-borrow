@@ -1,1 +1,1 @@
-export * from './useAaveMetadata'
+export * from './useAaveLikeMetadata'

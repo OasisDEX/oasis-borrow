@@ -1,8 +1,13 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import faqBorrow from 'features/content/faqs/aave/borrow/en'
-import faqMultiply from 'features/content/faqs/aave/multiply/en'
+import faqBorrowAave from 'features/content/faqs/aave/borrow/en'
+import faqEarnAaveV2 from 'features/content/faqs/aave/earn/en_v2'
+import faqEarnAaveV3 from 'features/content/faqs/aave/earn/en_v3'
+import faqMultiplyAave from 'features/content/faqs/aave/multiply/en'
+import faqBorrowSpark from 'features/content/faqs/spark/borrow/en'
+import faqEanSpark from 'features/content/faqs/spark/earn/en_v3'
+import faqMultiplySpark from 'features/content/faqs/spark/multiply/en'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -23,11 +28,30 @@ import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/h
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
-import { LendingProtocolLabel } from 'lendingProtocols'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-export const useAaveMetadata: GetOmniMetadata = (productContext) => {
+const aaveLikeFaqMap = {
+  [OmniProductType.Borrow]: {
+    [LendingProtocol.AaveV2]: faqBorrowAave,
+    [LendingProtocol.AaveV3]: faqBorrowAave,
+    [LendingProtocol.SparkV3]: faqBorrowSpark,
+  },
+  [OmniProductType.Multiply]: {
+    [LendingProtocol.AaveV2]: faqMultiplyAave,
+    [LendingProtocol.AaveV3]: faqMultiplyAave,
+    [LendingProtocol.SparkV3]: faqMultiplySpark,
+  },
+  [OmniProductType.Earn]: {
+    [LendingProtocol.AaveV2]: faqEarnAaveV2,
+    [LendingProtocol.AaveV3]: faqEarnAaveV3,
+    [LendingProtocol.SparkV3]: faqEanSpark,
+  },
+}
+
+export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const {
     AaveV3SafetySwitch: aaveSafetySwitchOn,
     AaveV3SuppressValidation: aaveSuppressValidation,
@@ -41,6 +65,7 @@ export const useAaveMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -113,7 +138,7 @@ export const useAaveMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
         },
         elements: {
-          faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
+          faq: aaveLikeFaqMap[productType][protocol as AaveLikeLendingProtocol],
           highlighterOrderInformation: undefined,
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,
