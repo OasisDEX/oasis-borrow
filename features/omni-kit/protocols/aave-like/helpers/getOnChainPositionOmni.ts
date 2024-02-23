@@ -9,8 +9,6 @@ import { getAaveHistoryEvents } from 'features/aave/services'
 import { getReserveDataCall } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import { LendingProtocol } from 'lendingProtocols'
-import { useAaveContext } from 'features/aave'
-import { useObservable } from 'helpers/observableHook'
 
 export async function getOnChainPositionOmni({
   networkId,
@@ -24,7 +22,6 @@ export async function getOnChainPositionOmni({
   collateralPrice: BigNumber
   debtPrice: BigNumber
 }): Promise<AaveLikePositionV2> {
-
   const provider = getRpcProvider(networkId)
 
   const _collateralToken = {

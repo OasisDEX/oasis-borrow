@@ -11,20 +11,21 @@ import faqMultiplySpark from 'features/content/faqs/spark/multiply/en'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
-  getOmniBorrowDebtMax,
   getOmniBorrowishChangeVariant,
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import { getAaveNotifications } from 'features/omni-kit/protocols/aave/helpers'
 import {
   AaveLikeDetailsSectionContent,
   AaveLikeDetailsSectionFooter,
 } from 'features/omni-kit/protocols/aave-like/components'
+import {
+  getAaveLikeNotifications,
+  getAaveLikeSidebarTitle,
+} from 'features/omni-kit/protocols/aave-like/helpers'
 import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
-import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
@@ -64,7 +65,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       productType,
       quoteAddress,
       quoteBalance,
-      quotePrecision,
       protocol,
     },
     steps: { currentStep },
@@ -77,7 +77,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
     protocolLabel: LendingProtocolLabel.aavev3,
   })
 
-  const notifications: DetailsSectionNotificationItem[] = getAaveNotifications({
+  const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
     productType,
     auction: productContext.position.positionAuction as MorphoHistoryEvent,
   })
@@ -117,11 +117,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           afterBuyingPower: simulation?.buyingPower,
           shouldShowDynamicLtv: () => false,
           debtMin: zero,
-          debtMax: getOmniBorrowDebtMax({
-            digits: quotePrecision,
-            position,
-            simulation,
-          }),
+          debtMax: position.debtAvailable(),
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
           afterPositionDebt: resolvedSimulation?.debtAmount,
@@ -130,7 +126,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             balance: quoteBalance,
             position,
           }),
-          sidebarTitle: useMorphoSidebarTitle({
+          sidebarTitle: getAaveLikeSidebarTitle({
             currentStep,
             productType,
           }),

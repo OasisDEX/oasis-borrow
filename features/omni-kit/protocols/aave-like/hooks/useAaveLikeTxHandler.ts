@@ -2,11 +2,11 @@ import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { getRpcProvider } from 'blockchain/networks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
-import { getAaveLikeParameters } from 'features/omni-kit/protocols/aave/helpers'
+import { getAaveLikeParameters } from 'features/omni-kit/protocols/aave-like/helpers'
 import { useAccount } from 'helpers/useAccount'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 
-export function useAaveTxHandler(): () => void {
+export function useAaveLikeTxHandler(): () => void {
   const {
     environment: {
       collateralPrecision,
@@ -20,7 +20,7 @@ export function useAaveTxHandler(): () => void {
       collateralToken,
       quoteToken,
       protocol,
-      protocolVersion
+      protocolVersion,
     },
   } = useOmniGeneralContext()
   const {

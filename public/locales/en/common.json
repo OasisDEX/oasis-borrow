@@ -3120,6 +3120,21 @@
       "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
+  "aave-like": {
+    "position-page": {
+      "common": {
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Aave position",
+            "setup": "Configure your Aave {{productType}} Position",
+            "manage": "Manage your Aave {{productType}} Position",
+            "transaction": "Confirm your Aave {{productType}} Position",
+            "transition": "Switch your Aave {{productType}} Position"
+          }
+        }
+      }
+    }
+  },
   "morpho": {
     "content-card": {
       "ltv": {

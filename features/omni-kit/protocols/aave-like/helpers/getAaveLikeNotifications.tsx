@@ -2,7 +2,7 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import { OmniProductType } from 'features/omni-kit/types'
 
-export function getAaveNotifications({
+export function getAaveLikeNotifications({
   productType,
 }: {
   auction?: AaveHistoryEvent

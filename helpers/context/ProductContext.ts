@@ -54,6 +54,7 @@ import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMulti
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
+import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniTokensPrecision } from 'features/omni-kit/types'
@@ -95,7 +96,6 @@ import type { MainContext } from './MainContext.types'
 import type { TxHelpers } from './TxHelpers'
 import type { ProtocolsServices } from './types'
 import curry from 'ramda/src/curry'
-import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave/observables'
 
 export function setupProductContext(
   {
@@ -659,13 +659,10 @@ export function setupProductContext(
       quotePrice: BigNumber,
       dpmPositionData: DpmPositionData,
       network: NetworkIds,
-      tokensPrecision?: OmniTokensPrecision,
     ) =>
       `${dpmPositionData.vaultId}-${network}-${collateralPrice
         .decimalPlaces(2)
-        .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
-        tokensPrecision ?? {},
-      ).join('-')}`,
+        .toString()}-${quotePrice.decimalPlaces(2).toString()}`,
   )
 
   return {

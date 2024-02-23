@@ -22,7 +22,7 @@ export function AaveLikeContentFooterBorrow() {
       currentPosition: { position, simulation },
     },
     dynamicMetadata: {
-      values: { changeVariant, interestRate },
+      values: { changeVariant },
     },
   } = useOmniProductContext(OmniProductType.Borrow)
 
@@ -35,7 +35,8 @@ export function AaveLikeContentFooterBorrow() {
   }
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: interestRate,
+    borrowRate: position.borrowRate,
+    afterBorrowRate: simulation?.borrowRate,
     modal: (
       <AaveLikeCostToBorrowContentCardModal
         collateralAmount={position.collateralAmount}

@@ -57,7 +57,6 @@ const filterPositionWhenUrlParamsDefined = ({
         protocolRaw: positionProtocolRaw,
         proxyAddress,
       }) => {
-        console.log('positionProtocolRaw', positionProtocolRaw)
         return positionProtocol === protocol &&
           positionProtocolRaw === protocolRaw &&
           proxyAddress.toLowerCase() === proxy.toLowerCase() &&
