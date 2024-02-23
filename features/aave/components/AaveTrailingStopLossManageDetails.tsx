@@ -57,7 +57,7 @@ export const AaveTrailingStopLossManageDetails = ({
   const trailingDistanceDisplayValue = `${formatAmount(
     currentTrailingDistanceValue,
     trailingDistanceToken,
-  )} ${trailingSLTokenPair}`
+  )}`
   const trailingDistanceChangeDisplayValue =
     isEditing &&
     trailingDistanceValue &&
@@ -66,7 +66,7 @@ export const AaveTrailingStopLossManageDetails = ({
   const dynamicStopLossPriceValue = `${formatAmount(
     trailingStopLossLambdaData.trailingDistance ? dynamicStopPrice : zero,
     trailingDistanceToken,
-  )} ${trailingSLTokenPair}`
+  )}`
   const dynamicStopLossPriceChangeValue =
     isEditing &&
     !dynamicStopPrice.eq(dynamicStopPriceChange) &&
@@ -74,7 +74,7 @@ export const AaveTrailingStopLossManageDetails = ({
   const estimatedTokenOnSLTriggerValue = `${formatAmount(
     trailingStopLossLambdaData.trailingDistance ? estimatedTokenOnSLTrigger : zero,
     strategyConfig.tokens[trailingStopLossToken],
-  )} ${strategyConfig.tokens[trailingStopLossToken]}`
+  )}`
   const estimatedTokenOnSLTriggerChangeValue =
     isEditing &&
     !estimatedTokenOnSLTrigger.eq(estimatedTokenOnSLTriggerChange) &&
@@ -92,6 +92,7 @@ export const AaveTrailingStopLossManageDetails = ({
           <OmniContentCard
             title={t('protection.trailing-distance')}
             value={trailingDistanceDisplayValue}
+            unit={trailingSLTokenPair}
             change={
               trailingDistanceChangeDisplayValue ? [trailingDistanceChangeDisplayValue] : undefined
             }
@@ -99,14 +100,13 @@ export const AaveTrailingStopLossManageDetails = ({
           />
           <OmniContentCard
             title={t('protection.current-market-price')}
-            value={`${formatAmount(
-              currentMarketPrice,
-              trailingDistanceToken,
-            )} ${trailingSLTokenPair}`}
+            value={`${formatAmount(currentMarketPrice, trailingDistanceToken)}`}
+            unit={trailingSLTokenPair}
           />
           <OmniContentCard
             title={t('protection.trailing-stop-loss-price')}
             value={dynamicStopLossPriceValue}
+            unit={trailingSLTokenPair}
             change={dynamicStopLossPriceChangeValue ? [dynamicStopLossPriceChangeValue] : undefined}
             changeVariant="positive"
           />
@@ -115,6 +115,7 @@ export const AaveTrailingStopLossManageDetails = ({
               trailingStopLossToken,
             })}
             value={estimatedTokenOnSLTriggerValue}
+            unit={strategyConfig.tokens[trailingStopLossToken]}
             change={
               estimatedTokenOnSLTriggerChangeValue
                 ? [estimatedTokenOnSLTriggerChangeValue]
