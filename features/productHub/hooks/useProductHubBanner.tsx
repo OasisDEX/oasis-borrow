@@ -23,15 +23,18 @@ export const useProductHubBanner = ({
   },
   product,
 }: ProductHubBannerProps): ActionBannerProps | undefined => {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
-    useAppConfig('features')
+  const {
+    AjnaSafetySwitch: ajnaSafetySwitchOn,
+    AjnaPoolFinder: ajnaPoolFinderEnabled,
+    EnableMigrations: migrationsEnabled,
+  } = useAppConfig('features')
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const { biggestPositionLink, migrationsCount } = useMigrationBannerMeta({
     address: walletAddress,
   })
 
-  if (migrationsCount > 0 && biggestPositionLink) {
+  if (migrationsCount > 0 && biggestPositionLink && migrationsEnabled) {
     return {
       title: t('product-hub.banners.migration.title', {
         migrationsCount,
