@@ -7,12 +7,14 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
+import { isAddress } from 'ethers/lib/utils'
 import type {
   EthersTransactionStateMachine,
   TransactionStateMachine,
   TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
+import { Erc20__factory } from 'types/ethers-contracts'
 import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, interpret, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -25,6 +27,8 @@ type RefTransactionMachine =
 
 export interface AllowanceStateMachineContext {
   token: string
+  customDecimals?: number
+  customTokenAddress?: string
   spender: string
   amount?: BigNumber
   minimumAmount: BigNumber
@@ -75,6 +79,7 @@ export type AllowanceStateMachineEvent =
   | { type: 'RETRY' }
   | { type: 'BACK' }
   | { type: 'CONTINUE' }
+  | { type: 'UPDATE_TOKEN'; token: string; customDecimals?: number; customTokenAddress?: string }
   | { type: 'SET_ALLOWANCE'; amount?: BigNumber; allowanceType: AllowanceType }
   | {
       type: 'SET_ALLOWANCE_CONTEXT' | 'RESET_ALLOWANCE_CONTEXT'
@@ -102,8 +107,20 @@ export function createAllowanceStateMachine(
         events: {} as AllowanceStateMachineEvent,
       },
       id: 'allowance',
-      initial: 'idle',
+      initial: 'resolvingToken',
       states: {
+        resolvingToken: {
+          invoke: {
+            src: 'resolveToken',
+            id: 'resolveToken',
+          },
+          on: {
+            UPDATE_TOKEN: {
+              actions: ['updateContext'],
+              target: 'idle',
+            },
+          },
+        },
         idle: {
           on: {
             NEXT_STEP: [
@@ -230,7 +247,7 @@ export function createAllowanceStateMachine(
                 signer: context.signer!,
                 amount: getEffectiveAllowanceAmount(context),
                 spender: context.spender,
-                token: context.token,
+                token: context.customTokenAddress ?? context.token,
               },
             })
 
@@ -251,6 +268,22 @@ export function createAllowanceStateMachine(
           return () => {
             actor.stop()
           }
+        },
+        resolveToken: (context) => async (sendBack) => {
+          if (isAddress(context.token)) {
+            const factory = Erc20__factory.connect(context.token, context.signer!)
+            const [resolvedTokenSymbol, resolvedDecimals] = await Promise.all([
+              factory.symbol(),
+              factory.decimals(),
+            ])
+            return sendBack({
+              type: 'UPDATE_TOKEN',
+              token: resolvedTokenSymbol,
+              customDecimals: resolvedDecimals,
+              customTokenAddress: context.token,
+            })
+          }
+          return sendBack({ type: 'UPDATE_TOKEN', token: context.token })
         },
       },
     },

@@ -13,6 +13,7 @@ import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
+import { EMPTY } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import type { AaveContext } from './aave-context'
@@ -22,6 +23,8 @@ import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
 } from './manage/services'
+import { getMigrateAaveV3PositionStateMachineServices } from './manage/services/aave-v3/getMigrateAaveV3PositionStateMachineServices'
+import { getMigrateAaveStateMachine } from './manage/services/getMigrateAaveStateMachine'
 import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
 import {
   getAaveHistoryEvents,
@@ -29,6 +32,7 @@ import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
+  getMigratePositionParametersMachine,
   getOpenAaveParametersMachine,
   getStrategyInfo$,
 } from './services'
@@ -105,6 +109,7 @@ export function setupAaveV2Context(
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, NetworkIds.MAINNET)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, NetworkIds.MAINNET)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, NetworkIds.MAINNET)
+  const migrateAaveMachine = getMigratePositionParametersMachine(NetworkIds.MAINNET)
 
   const openAaveStateMachineServices = getOpenAaveV2PositionStateMachineServices(
     context$,
@@ -153,6 +158,29 @@ export function setupAaveV2Context(
     stopLossTransactionStateMachine,
   )
 
+  const migrateAaveStateMachineServices = getMigrateAaveV3PositionStateMachineServices(
+    context$,
+    txHelpers$,
+    tokenBalances$,
+    proxyForAccount$,
+    aaveLikeUserAccountData$,
+    userSettings$,
+    tokenPriceUSD$,
+    strategyInfo$,
+    allowanceForAccount$,
+    unconsumedDpmProxyForConnectedAccount$,
+    proxyConsumed$,
+    aaveLikeReserveConfigurationData$,
+    getAaveLikeReserveData$,
+  )
+
+  const aaveMigrateStateMachine = getMigrateAaveStateMachine(
+    migrateAaveStateMachineServices,
+    migrateAaveMachine,
+    dpmAccountStateMachine,
+    allowanceStateMachine,
+  )
+
   const aaveManageStateMachine = getManageAaveStateMachine(
     manageAaveStateMachineServices,
     closeAaveParameters,
@@ -160,6 +188,7 @@ export function setupAaveV2Context(
     allowanceStateMachine,
     operationExecutorTransactionMachine,
     depositBorrowAaveMachine,
+    aaveMigrateStateMachine,
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
@@ -195,5 +224,6 @@ export function setupAaveV2Context(
     dpmAccountStateMachine,
     aaveHistory$,
     manageViewInfo$,
+    manageViewInfoExternal$: () => EMPTY, // We don't support external positions for Aave v2
   }
 }

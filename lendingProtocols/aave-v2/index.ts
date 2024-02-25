@@ -61,6 +61,8 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
               borrow: maxUint256,
               supply: maxUint256,
             },
+            tokenAddress: '',
+            variableDebtAddress: '',
             totalDebt: maxUint256,
             totalSupply: maxUint256,
             availableToBorrow: maxUint256,

@@ -8,6 +8,7 @@ import type {
   OmniProductType,
   OmniSupportedProtocols,
 } from 'features/omni-kit/types'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import type { ParsedUrlQuery } from 'querystring'
 
@@ -34,7 +35,7 @@ export async function getOmniServerSideProps({
     return {
       redirect: {
         permanent: false,
-        destination: '/not-found',
+        destination: INTERNAL_LINKS.notFound,
       },
     }
   }
@@ -60,7 +61,7 @@ export async function getOmniServerSideProps({
     return {
       redirect: {
         permanent: false,
-        destination: '/not-found',
+        destination: INTERNAL_LINKS.notFound,
       },
     }
   }

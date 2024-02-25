@@ -4,6 +4,7 @@ import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, networkSetById } from 'blockchain/networks'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
+import { safeGetAddress } from 'helpers/safeGetAddress'
 import { Erc20__factory } from 'types/ethers-contracts'
 
 import type { BaseCallParameters, BaseTransactionParameters } from './utils'
@@ -52,11 +53,18 @@ export async function tokenAllowance({
   if (token === 'ETH') {
     return Promise.resolve(maxUint256)
   }
+
   const contracts = getNetworkContracts(networkId)
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
 
-  const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
+  const tokenAddress = tokens[token]?.address ?? safeGetAddress(token)
+
+  if (!tokenAddress) {
+    throw new Error(`Token address not found for token: ${token}`)
+  }
+
+  const contract = Erc20__factory.connect(tokenAddress, rpcProvider)
 
   // Reading decimals from chain instead of local config because of oracless mode.
   // amountFromWei uses local config to determine token precision which doesn't have all tokens defined
@@ -91,7 +99,13 @@ export async function createApproveTransaction({
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
 
-  const contract = Erc20__factory.connect(tokens[token].address, signer)
+  const tokenAddress = tokens[token]?.address ?? safeGetAddress(token)
+
+  if (!tokenAddress) {
+    throw new Error(`Token address not found for token: ${token}`)
+  }
+
+  const contract = Erc20__factory.connect(tokenAddress, signer)
 
   // Reading decimals from chain instead of local config because of oracless mode.
   // amountFromWei uses local config to determine token precision which doesn't have all tokens defined

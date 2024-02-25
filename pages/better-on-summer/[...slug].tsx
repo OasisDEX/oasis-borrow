@@ -3,6 +3,7 @@ import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { getMarketingTemplatePageProps } from 'features/marketing-layouts/helpers'
 import type { MarketingTemplateFreeform } from 'features/marketing-layouts/types'
 import { MarketingTemplateView } from 'features/marketing-layouts/views'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -30,7 +31,7 @@ export async function getServerSideProps({
   locale,
   query: { slug: rawSlug },
 }: GetServerSidePropsContext<{ slug: [string] }>) {
-  if (!rawSlug) return { redirect: { permanent: false, destination: '/not-found' } }
+  if (!rawSlug) return { redirect: { permanent: false, destination: INTERNAL_LINKS.notFound } }
   const [slug, preview] = Array.isArray(rawSlug) ? rawSlug : [rawSlug]
 
   try {
@@ -48,6 +49,6 @@ export async function getServerSideProps({
   } catch (e) {
     console.error('Caught error on better-on-summer', e)
 
-    return { redirect: { permanent: false, destination: '/not-found' } }
+    return { redirect: { permanent: false, destination: INTERNAL_LINKS.notFound } }
   }
 }

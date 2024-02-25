@@ -2397,6 +2397,14 @@
   dependencies:
     ethers "^5.6.2"
 
+"@oasisdex/dma-library-migration@npm:@oasisdex/dma-library@0.6.29-rc.migration.1":
+  version "0.6.29-rc.migration.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.29-rc.migration.1.tgz#43b4da32935efe1effdec210ed9968dbc1467320"
+  integrity sha512-cYD47LcEb5b8VJTjEmbzJFQAEVPWUd4rfHOg4DnJXnv+a7cGgaEP0+mGeFdUK6lQjXk3J3tamIAGrigLorl5jQ==
+  dependencies:
+    bignumber.js "9.0.1"
+    ethers "^5.7.2"
+
 "@oasisdex/dma-library@0.6.27":
   version "0.6.27"
   resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.27.tgz#a0399cd190e304d3cb6da921135b7bf11bce044c"

@@ -4,7 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { every5Seconds$ } from 'blockchain/network.constants'
 import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import type { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
+import type { AddressesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import type { PositionId } from 'features/aave/types/position-id'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
@@ -48,7 +48,7 @@ export function createAutomationTriggersData(
   proxiesRelatedWithPosition$: (
     positionId: PositionId,
     networkId: NetworkIds,
-  ) => Observable<ProxiesRelatedWithPosition>,
+  ) => Observable<AddressesRelatedWithPosition>,
   id: BigNumber,
   networkId: NetworkIds,
 ): Observable<TriggersData> {

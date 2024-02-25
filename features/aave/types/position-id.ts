@@ -1,1 +1,1 @@
-export type PositionId = { vaultId?: number; walletAddress?: string }
+export type PositionId = { vaultId?: number; walletAddress?: string, external?: boolean }

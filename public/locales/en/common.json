@@ -3342,6 +3342,50 @@
       }
     }
   },
+  "migrate": {
+    "no-position-banner": {
+      "header": "You have no positions to migrate",
+      "description": "You currently have no positions to migrate to Summer.fi"
+    },
+    "button": "Switch to Summer.fi",
+    "start-tx": "Import your position",
+    "go-to-position": "Go to your position",
+    "retry": "Retry migration",
+    "vault-form": {
+      "title": "Migrate your position into Summer.fi",
+      "success-title": "Your position is now accessible on Summer.fi!"
+    },
+    "vault-banners": {
+      "automation": {
+        "title": "Switch to Summer.fi to enable advanced features.",
+        "description": "Migrate to Summer.fi for benefits like stop loss, one click multiply and automated management."
+      }
+    },
+    "estimated-transaction-cost": "Estimated transaction cost",
+    "welcome-state": {
+      "title-1": "Title",
+      "description-1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lobortis nisi sed odio venenatis.",
+      "title-2": "Title",
+      "description-points-1": "Increase exposure with <strong>One click multiply</strong>",
+      "description-points-2": "Protect your collateral with <strong>Stop Loss</strong>",
+      "description-points-3": "Manage risk with advanced <strong>automation features</strong>",
+      "description-points-4": "Access compatible protocols <strong>all in one interface</strong>",
+      "title-3": "Title",
+      "description-2": "Duis lobortis nisi sed odio venenatis, eget rhoncus erat facilisis."
+    },
+    "start-migrate-state": {
+      "title-1": "Title",
+      "description-points-1": "This will repay your {{asset}} debt with a flashloan and move your aToken from your Wallet to your newly created Smart Wallet.",
+      "description-points-2": "It will then draw the debt equal to the amount that was just repaid to repay the flashloan.",
+      "description-points-3": "And finally, it will be fully accessible through Summer.fi for you to interact with, and enable additional features such as Automation."
+    },
+    "success-state": {
+      "title-1": "Title",
+      "description-points-1": "Double check your stop loss parameters and make sure they are to your liking under the <strong>“<1>protection tab</1>”</strong",
+      "description-points-2": "Manage risk or take advantage of market opportunity with one transaction to increase or decrease exposure under the <strong>“<1>adjust tab</1>”</strong>",
+      "description-points-3": "Using your position solely for increasing exposure? <strong>Switch to multiply for advanced analytics like position PnL</strong>"
+    }
+  },
   "og-tags": {
     "morpho-blue": {
       "title": "Morpho Blue is Better on Summer",

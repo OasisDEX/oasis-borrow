@@ -7,11 +7,11 @@ import type { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipe
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 
-import type { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
+import type { AddressesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from './getStrategyConfig'
 
 describe('getStrategyConfig', () => {
-  const proxiesForPosition$ = jest.fn<Observable<ProxiesRelatedWithPosition>, [PositionId]>()
+  const proxiesForPosition$ = jest.fn<Observable<AddressesRelatedWithPosition>, [PositionId]>()
   const readPositionCreatedEvents$ = jest.fn<Observable<PositionCreated[]>, [string]>()
   const aaveUserConfiguration$ = jest.fn<Observable<AaveUserConfigurationResults>, [string]>()
 

@@ -1,6 +1,6 @@
 import { useInterpret, useSelector } from '@xstate/react'
 import { getToken } from 'blockchain/tokensMetadata'
-import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import type { AddressesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
   autoSellTriggerAaveStateMachine,
@@ -23,7 +23,7 @@ export const shouldUsePriceInput = (strategy: IStrategyConfig): boolean => {
 
 function useSetupTriggersStateContext(
   strategy: IStrategyConfig,
-  proxies?: ProxiesRelatedWithPosition,
+  proxies?: AddressesRelatedWithPosition,
 ) {
   const autoBuyContext = autoBuyTriggerAaveStateMachine.context
   const autobuyStateMachine = useInterpret(
@@ -131,7 +131,7 @@ export function TriggersAaveStateMachineContextProvider({
   strategy,
   proxies,
   children,
-}: React.PropsWithChildren<{ strategy: IStrategyConfig; proxies: ProxiesRelatedWithPosition }>) {
+}: React.PropsWithChildren<{ strategy: IStrategyConfig; proxies: AddressesRelatedWithPosition }>) {
   const context = useSetupTriggersStateContext(strategy, proxies)
 
   return (
