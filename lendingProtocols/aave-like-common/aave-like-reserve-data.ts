@@ -1,6 +1,8 @@
 import type { BigNumber } from 'bignumber.js'
 
 export interface AaveLikeReserveData {
+  tokenAddress: string
+  variableDebtAddress: string
   availableLiquidity: BigNumber
   variableBorrowRate: BigNumber
   liquidityRate: BigNumber

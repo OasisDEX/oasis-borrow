@@ -186,6 +186,10 @@ export type DmaAaveTrailingStopLoss = {
     trailingDistance: string
     closeToCollateral: string
   }
+  dynamicParams: {
+    executionPrice: string
+    originalExecutionPrice: string
+  }
 }
 
 export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell

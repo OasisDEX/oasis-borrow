@@ -16,13 +16,18 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
-import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
+import {
+  getDenominations,
+  mapErrorsToErrorVaults,
+  mapWarningsToWarningVaults,
+} from 'features/aave/helpers'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { TriggersAaveEvent } from 'features/aave/manage/state'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
+import type { IStrategyConfig } from 'features/aave/types'
 import {
   sidebarAutomationFeatureCopyMap,
   sidebarAutomationLinkMap,
@@ -57,6 +62,15 @@ type StopLossSidebarStates =
 
 const refreshDataTime = 10 * 1000
 
+const getFormatters = (strategyConfig: IStrategyConfig) => {
+  const { denomination, denominationToken } = getDenominations(strategyConfig)
+  const firstFormatter = (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))
+  const secondFormatter = (x: BigNumber) =>
+    x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${denomination}`
+
+  return [firstFormatter, secondFormatter]
+}
+
 export function AaveManagePositionStopLossLambdaSidebar({
   state,
   send,
@@ -83,6 +97,38 @@ export function AaveManagePositionStopLossLambdaSidebar({
   const { signer } = useWalletManagement()
   const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<StopLossSidebarStates>('prepare')
+
+  useEffect(() => {
+    if (stopLossLambdaData.stopLossLevel) {
+      send({
+        type: 'SET_STOP_LOSS_LEVEL',
+        stopLossLevel: stopLossLambdaData.stopLossLevel,
+      })
+    } else {
+      send({
+        type: 'SET_STOP_LOSS_LEVEL',
+        stopLossLevel: reserveConfigurationData.liquidationThreshold
+          .minus(aaveOffsets.manage.max)
+          .times(100),
+      })
+    }
+  }, []) // should be empty
+
+  useEffect(() => {
+    if (refreshingTriggerData) {
+      setTimeout(() => {
+        setRefreshingTriggerData(false)
+        onTxFinished()
+        if (stopLossLambdaData.triggerId !== triggerId) {
+          setTriggerId(stopLossLambdaData.triggerId ?? '0')
+          setRefreshingTriggerData(false)
+        } else {
+          setRefreshingTriggerData(true)
+        }
+      }, refreshDataTime)
+    }
+  }, [refreshingTriggerData])
+
   const isRegularStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
   const { strategyConfig } = state.context
@@ -93,6 +139,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     sliderMax,
     sliderPercentageFill,
     liquidationPrice,
+    dynamicStopLossPriceForView,
     ...stopLossParamsRest
   } = getAaveLikeStopLossParams.manage({ state })
   const action = useMemo(() => {
@@ -132,37 +179,6 @@ export function AaveManagePositionStopLossLambdaSidebar({
     return stopLossLambdaData.stopLossLevel ? stopLossDifferentThanLambda : true
   }, [stopLossLambdaData, stopLossLevel, stopLossToken, action])
 
-  useEffect(() => {
-    if (stopLossLambdaData.stopLossLevel) {
-      send({
-        type: 'SET_STOP_LOSS_LEVEL',
-        stopLossLevel: stopLossLambdaData.stopLossLevel,
-      })
-    } else {
-      send({
-        type: 'SET_STOP_LOSS_LEVEL',
-        stopLossLevel: reserveConfigurationData.liquidationThreshold
-          .minus(aaveOffsets.manage.max)
-          .times(100),
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    if (refreshingTriggerData) {
-      setTimeout(() => {
-        setRefreshingTriggerData(false)
-        onTxFinished()
-        if (stopLossLambdaData.triggerId !== triggerId) {
-          setTriggerId(stopLossLambdaData.triggerId ?? '0')
-          setRefreshingTriggerData(false)
-        } else {
-          setRefreshingTriggerData(true)
-        }
-      }, refreshDataTime)
-    }
-  }, [refreshingTriggerData])
-
   const stopLossTranslationParams = {
     feature: t(sidebarAutomationFeatureCopyMap['stopLoss']),
     featureName: t(sidebarAutomationFeatureCopyMap['stopLoss']), // the same param, two different names
@@ -180,6 +196,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     }
     return null
   }
+  const [leftFormatter, rightFormatter] = getFormatters(strategyConfig)
 
   const sidebarPreparingContent: SidebarSectionProps['content'] = (
     <Grid gap={3}>
@@ -209,13 +226,13 @@ export function AaveManagePositionStopLossLambdaSidebar({
       <SliderValuePicker
         disabled={false}
         step={aaveLambdaStopLossConfig.sliderStep}
-        leftBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))}
-        rightBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD'))}
+        leftBoundryFormatter={leftFormatter}
+        rightBoundryFormatter={rightFormatter}
         sliderPercentageFill={sliderPercentageFill}
         lastValue={stopLossLevel}
         maxBoundry={sliderMax}
         minBoundry={sliderMin}
-        rightBoundry={dynamicStopLossPrice}
+        rightBoundry={dynamicStopLossPriceForView}
         leftBoundry={stopLossLevel}
         onChange={(slLevel) => {
           send({
@@ -279,6 +296,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
             sliderMax,
             sliderPercentageFill,
             liquidationPrice,
+            dynamicStopLossPriceForView,
             ...stopLossParamsRest,
           }}
           strategyInfo={state.context.strategyInfo}
@@ -310,6 +328,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
           sliderMax,
           sliderPercentageFill,
           liquidationPrice,
+          dynamicStopLossPriceForView,
           ...stopLossParamsRest,
         }}
         strategyInfo={state.context.strategyInfo}
@@ -331,6 +350,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
           sliderMax,
           sliderPercentageFill,
           liquidationPrice,
+          dynamicStopLossPriceForView,
           ...stopLossParamsRest,
         }}
         strategyInfo={state.context.strategyInfo}

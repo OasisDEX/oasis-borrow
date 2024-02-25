@@ -40,7 +40,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     redirect: {
       permanent: false,
-      destination: '/not-found',
+      destination: INTERNAL_LINKS.notFound,
     },
   }
 }

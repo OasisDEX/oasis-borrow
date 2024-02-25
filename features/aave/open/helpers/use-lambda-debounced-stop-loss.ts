@@ -99,6 +99,10 @@ export const useLambdaDebouncedStopLoss = ({
             type: 'TRANSACTION_FAILED',
             error,
           })
+          send({
+            type: 'SET_STOP_LOSS_TX_DATA_LAMBDA',
+            stopLossTxDataLambda: undefined,
+          })
         })
         .finally(() => {
           setIsGettingStopLossTx(false)

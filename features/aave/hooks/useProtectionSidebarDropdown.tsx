@@ -3,6 +3,7 @@ import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarS
 import {
   hasActiveAutoSell,
   hasActiveStopLoss,
+  hasActiveTrailingStopLoss,
   type TriggersAaveEvent,
   type triggersAaveStateMachine,
 } from 'features/aave/manage/state'
@@ -27,11 +28,22 @@ export function useProtectionSidebarDropdown(
   const isTrailingStopLossEnabledForStrategy = context.strategyConfig.isAutomationFeatureEnabled(
     AutomationFeatures.TRAILING_STOP_LOSS,
   )
+  const hasTrailingStopLoss = hasActiveTrailingStopLoss(state)
+  const hasStopLoss = hasActiveStopLoss(state)
 
   let items: SidebarSectionHeaderSelectItem[] = []
+  const getStopLossView = () => {
+    if (hasTrailingStopLoss) {
+      return 'trailing-stop-loss'
+    }
+    if (isTrailingStopLossEnabledForStrategy) {
+      return 'stop-loss-selector'
+    }
+    return 'stop-loss'
+  }
   if (isStopLossEnabledForStrategy) {
     items.push({
-      label: `${hasActiveStopLoss(state) ? 'Manage' : 'Setup'} ${t('system.stop-loss')}`,
+      label: `${hasStopLoss || hasTrailingStopLoss ? 'Manage' : 'Setup'} ${t('system.stop-loss')}`,
       shortLabel: t('system.stop-loss'),
       iconShrink: 2,
       icon: circle_exchange,
@@ -39,7 +51,7 @@ export function useProtectionSidebarDropdown(
       action: () => {
         sender({
           type: 'CHANGE_VIEW',
-          view: isTrailingStopLossEnabledForStrategy ? 'stop-loss-selector' : 'stop-loss',
+          view: getStopLossView(),
         })
       },
     })

@@ -36,6 +36,8 @@ export interface StopLossDetailsLayoutProps {
   isAutomationDataLoaded: boolean
   isAutomationAvailable: boolean
   detailCards?: StopLossMetadataDetailCards
+  customDynamicStopPriceUnit?: string
+  customDynamicStopPriceUnitToken?: string
 }
 
 export function StopLossDetailsLayout({
@@ -62,6 +64,8 @@ export function StopLossDetailsLayout({
   detailCards,
   isAutomationDataLoaded,
   isAutomationAvailable,
+  customDynamicStopPriceUnit,
+  customDynamicStopPriceUnitToken,
 }: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
 
@@ -115,6 +119,8 @@ export function StopLossDetailsLayout({
                 ratioParamTranslationKey={ratioParamTranslationKey}
                 dynamicStopLossPrice={dynamicStopLossPrice}
                 afterDynamicStopLossPrice={afterDynamicStopLossPrice}
+                customUnit={customDynamicStopPriceUnit}
+                customUnitToken={customDynamicStopPriceUnitToken}
               />
             )}
             {cardsSet.includes(StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER) && (

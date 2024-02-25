@@ -7,6 +7,7 @@ import { AppLayout } from 'components/layouts/AppLayout'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/not-found'
@@ -25,7 +26,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
       redirect: {
         permanent: false,
-        destination: '/not-found',
+        destination: INTERNAL_LINKS.notFound,
       },
     }
   }

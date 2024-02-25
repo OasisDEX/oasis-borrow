@@ -8,7 +8,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
-import type { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
+import type { AddressesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import type { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { getPricesFeed$, xstateReserveDataService } from 'features/aave/services'
 import type {
@@ -43,7 +43,7 @@ export function getManageAaveV3PositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxyAddress$: Observable<string | undefined>,
-  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
+  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<AddressesRelatedWithPosition>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
@@ -159,12 +159,18 @@ export function getManageAaveV3PositionStateMachineServices(
     },
     currentPosition$: (context) => {
       return proxiesRelatedWithPosition$(context.positionId).pipe(
-        map((result) => result.dsProxy || result.dpmProxy?.proxy),
-        filter((address) => !!address),
+        map((result) => {
+          const proxy = result.dsProxy || result.dpmProxy?.proxy
+          if (proxy === undefined && context.positionId.external) {
+            return result.walletAddress
+          }
+          return proxy
+        }),
+        filter((address): address is string => !!address),
         switchMap((proxyAddress) =>
           getOnChainPosition({
             networkId: context.strategyConfig.networkId,
-            proxyAddress: proxyAddress!,
+            proxyAddress: proxyAddress,
             debtToken: context.tokens.debt,
             protocol: context.strategyConfig.protocol,
             collateralToken: context.tokens.collateral,

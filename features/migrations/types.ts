@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 
 export enum ChainId {
@@ -23,6 +24,14 @@ export enum ProtocolId {
 export const LendingProtocolByProtocolId: Record<ProtocolId, LendingProtocol> = {
   [ProtocolId.AAVE3]: LendingProtocol.AaveV3,
   [ProtocolId.SPARK]: LendingProtocol.SparkV3,
+}
+
+export const NetworkIdByChainId: Record<ChainId, NetworkIds> = {
+  [ChainId.MAINNET]: NetworkIds.MAINNET,
+  [ChainId.ARBITRUM]: NetworkIds.ARBITRUMMAINNET,
+  [ChainId.OPTIMISM]: NetworkIds.OPTIMISMMAINNET,
+  [ChainId.BASE]: NetworkIds.BASEMAINNET,
+  [ChainId.SEPOLIA]: NetworkIds.EMPTYNET,
 }
 
 export const isProtocolId = (protocolId: unknown): protocolId is ProtocolId => {

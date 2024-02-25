@@ -2385,10 +2385,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.44":
-  version "0.1.44"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.44.tgz#9b481e4b2aa44738e7648c90cba860c3bfa2501f"
-  integrity sha512-53U6EmJmz+AQmYQopppkLNdpbwbCKiTHi8/68pJQBXsM4kWY1MN0edUMgnK1+VgQyvotFm9niCxayXtAPx0Rzg==
+"@oasisdex/addresses@0.1.47":
+  version "0.1.47"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.47.tgz#ff161ffb95768b8cda21ccea0d7fae790bf71883"
+  integrity sha512-po36JPWODgqGorh6d9EgfMf+psDPko8b2wwLj0P3eYmUskexCvnsblLe3p2K0qjxK/3JiVl3BY3wMUkGD49zjQ==
 
 "@oasisdex/automation@1.6.0-alpha.16":
   version "1.6.0-alpha.16"
@@ -2396,6 +2396,14 @@
   integrity sha512-VTPo+IHCrgJCm35IMRisjVrD6vAeHo+DsFm/epDjrGO6qyPKSjWvux10V53h8TDgpVjio8lUZmEmQfHbzOWY1A==
   dependencies:
     ethers "^5.6.2"
+
+"@oasisdex/dma-library-migration@npm:@oasisdex/dma-library@0.6.29-rc.migration.1":
+  version "0.6.29-rc.migration.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.29-rc.migration.1.tgz#43b4da32935efe1effdec210ed9968dbc1467320"
+  integrity sha512-cYD47LcEb5b8VJTjEmbzJFQAEVPWUd4rfHOg4DnJXnv+a7cGgaEP0+mGeFdUK6lQjXk3J3tamIAGrigLorl5jQ==
+  dependencies:
+    bignumber.js "9.0.1"
+    ethers "^5.7.2"
 
 "@oasisdex/dma-library@0.6.27":
   version "0.6.27"

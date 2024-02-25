@@ -195,3 +195,32 @@ export function getSparkV3ReserveCaps({
     }
   })
 }
+
+export interface SparkV3ReserveTokenAddressesParameters extends BaseParameters {
+  token: string
+}
+
+export interface SparkV3ReserveTokenAddresses {
+  spTokenAddress: string
+  tokenAddress: string
+  variableDebtTokenAddress: string
+  stableDebtTokenAddress: string
+}
+
+export function getSparkV3ReserveTokenAddresses({
+  token,
+  networkId,
+}: SparkV3ReserveTokenAddressesParameters): Promise<SparkV3ReserveTokenAddresses> {
+  const { contract, tokenMappings } = networkMappings[networkId]()
+
+  const address = wethToEthAddress(tokenMappings, token)
+
+  return contract.getReserveTokensAddresses(address).then((result) => {
+    return {
+      spTokenAddress: result.spTokenAddress,
+      tokenAddress: result.spTokenAddress,
+      variableDebtTokenAddress: result.variableDebtTokenAddress,
+      stableDebtTokenAddress: result.stableDebtTokenAddress,
+    }
+  })
+}
