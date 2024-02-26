@@ -3,6 +3,7 @@ import { AppLink } from 'components/Links'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
 import { WithArrow } from 'components/WithArrow'
+import { getMigrationLink } from 'features/migrations/getMigrationLink'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { getLocalAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -16,10 +17,12 @@ import { Flex, Heading } from 'theme-ui'
 import type { PortfolioAssetsResponse, PortfolioOverviewResponse } from './types/domain-types'
 
 export const PortfolioOverview = ({
+  address,
   overviewData,
   portfolioWalletData,
   migrationPositions,
 }: {
+  address: string
   overviewData: PortfolioOverviewResponse
   portfolioWalletData: PortfolioAssetsResponse
   migrationPositions?: PortfolioPosition[]
@@ -32,6 +35,7 @@ export const PortfolioOverview = ({
     migrationPositions == null
       ? 0
       : migrationPositions.reduce((acc, position) => acc + position.netValue, 0)
+  const biggestMigration = migrationPositions && migrationPositions[0]
 
   return (
     <Flex
@@ -96,7 +100,19 @@ export const PortfolioOverview = ({
           }
           subValue={
             getLocalAppConfig('features').EnableMigrations && (
-              <AppLink href={'TODO migration link'} sx={{ mr: 3 }}>
+              <AppLink
+                href={
+                  biggestMigration
+                    ? getMigrationLink({
+                        protocol: biggestMigration.protocol,
+                        network: biggestMigration.network,
+                        address,
+                      })
+                    : ''
+                }
+                target="_self"
+                sx={{ mr: 3 }}
+              >
                 <WithArrow sx={{ color: 'interactive100' }}>{tPortfolio('migrate')}</WithArrow>
               </AppLink>
             )

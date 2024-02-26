@@ -24,12 +24,15 @@ import { filter, switchMap } from 'rxjs/operators'
 
 import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
-import type { ProxiesRelatedWithPosition } from './helpers'
-import { getAaveLikeStrategyConfig, getManageViewInfo } from './helpers'
+import type { AddressesRelatedWithPosition } from './helpers'
+import { getAaveLikeStrategyConfig, getManageViewInfo, getManageViewInfoExternal } from './helpers'
+import { getAssetsForMigration } from './helpers/getAssetsForMigration'
 import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
 } from './manage/services'
+import { getMigrateAaveV3PositionStateMachineServices } from './manage/services/aave-v3/getMigrateAaveV3PositionStateMachineServices'
+import { getMigrateAaveStateMachine } from './manage/services/getMigrateAaveStateMachine'
 import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
 import {
   getAaveHistoryEvents,
@@ -37,6 +40,7 @@ import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
+  getMigratePositionParametersMachine,
   getOpenAaveParametersMachine,
   getStrategyInfo$,
 } from './services'
@@ -83,8 +87,15 @@ export function setupSparkV3Context(
   const userDpms = memoize(getUserDpmProxy, (vaultId, chainId) => `${vaultId}-${chainId}`)
   const proxiesRelatedWithPosition$: (
     positionId: PositionId,
-  ) => Observable<ProxiesRelatedWithPosition> = memoize(
+  ) => Observable<AddressesRelatedWithPosition> = memoize(
     (positionId) => {
+      if (positionId.external) {
+        return of<AddressesRelatedWithPosition>({
+          dsProxy: undefined,
+          dpmProxy: undefined,
+          walletAddress: positionId.walletAddress!,
+        })
+      }
       return of(undefined).pipe(
         switchMap(async () => {
           const dpm = await userDpms(positionId.vaultId!, networkId)
@@ -142,6 +153,7 @@ export function setupSparkV3Context(
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, networkId)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, networkId)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, networkId)
+  const migrateAaveMachine = getMigratePositionParametersMachine(networkId)
 
   const openAaveStateMachineServices = getOpenAaveV3PositionStateMachineServices(
     context$,
@@ -190,6 +202,29 @@ export function setupSparkV3Context(
     stopLossTransactionStateMachine,
   )
 
+  const migrateAaveStateMachineServices = getMigrateAaveV3PositionStateMachineServices(
+    context$,
+    txHelpers$,
+    tokenBalances$,
+    proxyForAccount$,
+    aaveLikeUserAccountData$,
+    userSettings$,
+    tokenPriceUSD$,
+    strategyInfo$,
+    allowanceForAccount$,
+    unconsumedDpmProxyForConnectedAccount$,
+    proxyConsumed$,
+    aaveLikeReserveConfigurationData$,
+    getAaveLikeReserveData$,
+  )
+
+  const aaveMigrateStateMachine = getMigrateAaveStateMachine(
+    migrateAaveStateMachineServices,
+    migrateAaveMachine,
+    dpmAccountStateMachine,
+    allowanceStateMachine,
+  )
+
   const aaveManageStateMachine = getManageAaveStateMachine(
     manageAaveStateMachineServices,
     closeAaveParameters,
@@ -197,6 +232,7 @@ export function setupSparkV3Context(
     allowanceStateMachine,
     operationExecutorTransactionMachine,
     depositBorrowAaveMachine,
+    aaveMigrateStateMachine,
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
@@ -208,6 +244,12 @@ export function setupSparkV3Context(
   )
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
+
+  const migrationAssets = memoize(
+    ({ positionId }: { positionId: PositionId }) =>
+      getAssetsForMigration({ network: networkId, protocol: LendingProtocol.SparkV3, positionId }),
+    (positionId) => JSON.stringify(positionId),
+  )
 
   const strategyUpdateTrigger = new Subject<StrategyUpdateParams>()
   const strategyConfig$: (
@@ -255,6 +297,19 @@ export function setupSparkV3Context(
     (args: { positionId: PositionId }) => JSON.stringify(args),
   )
 
+  const manageViewInfoExternal$ = memoize(
+    curry(getManageViewInfoExternal)({
+      strategyConfig$,
+      proxiesRelatedWithPosition$,
+      getApiVault,
+      chainId: networkId,
+      networkName: network,
+      lendingProtocol: LendingProtocol.SparkV3,
+      getExternalTokens: migrationAssets,
+    }),
+    (args: { positionId: PositionId }) => JSON.stringify(args),
+  )
+
   return {
     ...protocolData,
     aaveStateMachine,
@@ -269,5 +324,6 @@ export function setupSparkV3Context(
     dpmAccountStateMachine,
     aaveHistory$,
     manageViewInfo$,
+    manageViewInfoExternal$,
   }
 }

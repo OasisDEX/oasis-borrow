@@ -46,6 +46,8 @@ export const settings: OmniProtocolSettings = {
       'MKR',
       'ARB',
       'OP',
+      'MEVETH',
+      'XETH',
     ],
     [NetworkIds.GOERLI]: [],
     [NetworkIds.BASEMAINNET]: ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH'],

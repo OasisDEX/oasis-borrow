@@ -3,7 +3,9 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { BaseAaveContext } from 'features/aave/types'
 import React from 'react'
 
-export function ConnectedSidebarSection(props: SidebarSectionProps & { context: BaseAaveContext }) {
+export function ConnectedSidebarSection(
+  props: SidebarSectionProps & { context: Pick<BaseAaveContext, 'strategyConfig'> },
+) {
   const strategy = props.context.strategyConfig
   return (
     <SidebarSection
