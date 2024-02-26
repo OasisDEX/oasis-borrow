@@ -62,11 +62,7 @@ export interface MigrateAaveContext {
  * @param position
  */
 export const allowanceAmount = (position: AaveLikePosition): BigNumber => {
-  return (
-    position.collateral.amount
-      // .times(1.05)
-      .integerValue()
-  )
+  return position.collateral.amount.times(1.01).integerValue()
 }
 
 export type MigrateAaveEvent =
