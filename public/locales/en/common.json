@@ -420,7 +420,7 @@
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
-    "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
+    "payback": "Pay back <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
     "open_multiply_vault": "Opened multiply Vault",
@@ -1145,10 +1145,10 @@
     "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}"
   },
   "set-allowance-for": "Set Allowance for {{token}}",
-  "setup-stop-loss": "Setup Stop-Loss",
+  "setup-stop-loss": "Set up Stop-Loss",
   "setting-allowance-for": "Setting Allowance for {{token}}",
-  "setup-proxy": "Setup Proxy",
-  "setup-wallet": "Setup your wallet",
+  "setup-proxy": "Set up Proxy",
+  "setup-wallet": "Set up your wallet",
   "show-more": "Show more",
   "short": "Short",
   "long": "Long",
@@ -1289,11 +1289,11 @@
         "reduce-debt": "Reduce Debt",
         "withdraw": "Withdraw",
         "borrow": "Borrow",
-        "paybck": "Payback",
+        "paybck": "Pay back",
         "switch-to-borrow": "Switch to Borrow",
         "deposit-collateral": "Deposit",
         "withdraw-collateral": "Withdraw",
-        "payback-debt": "Payback",
+        "payback-debt": "Pay back",
         "borrow-debt": "Borrow"
       },
       "earn": {
@@ -1493,7 +1493,7 @@
     "borrow": "Borrow",
     "deposit": "Deposit",
     "generate": "Generate",
-    "payback": "Payback",
+    "payback": "Pay back",
     "withdraw": "Withdraw"
   },
   "vault-changed": "Vault changed!",
@@ -1594,12 +1594,12 @@
       "header": "Protect against unnecessary losses",
       "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
       "content-generic": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either collateral or debt token at your desired Price or Collateral level. Find out more about how it works",
-      "button": "Setup Stop-Loss"
+      "button": "Set up Stop-Loss"
     },
     "setup-trailing-stop-loss": {
       "header": "Trailing Stop-Loss",
       "content": "Set-up a Trailing Stop-Loss if you want a stop loss that moves up with the price. Perfect for following bullish trends. Find out more about how it works <1>here.</1>",
-      "button": "Setup Trailing Stop-Loss"
+      "button": "Set up Trailing Stop-Loss"
     },
     "get-protection": {
       "header": "Get vault protection",
@@ -1633,7 +1633,7 @@
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
   "open-vault-deployment-confirming": "Vault created. Waiting for confirmations {{openVaultConfirmations}}/{{safeConfirmations}}",
   "set-up-stop-loss-tx": "Set up Stop-Loss transaction",
-  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the {{type}} and another to set up the Stop-Loss.",
+  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to set up the the {{type}} and another to set up the Stop-Loss.",
   "open-vault-two-tx-first-step-title": "Step 1/2: {{type}} being created",
   "open-vault-two-tx-second-step-title": "Step 2/2: Stop-Loss setup transaction",
   "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
@@ -1734,7 +1734,7 @@
       "button": "Borrow against {{token}}"
     }
   },
-  "setup": "Setup",
+  "setup": "Set up",
   "protection": {
     "stop-loss": "Stop-Loss",
     "stop-loss-to": "Stop-Loss to:",
@@ -1761,10 +1761,10 @@
     "downside-protection-complete": "Stop-Loss Protection Enabled",
     "cancel-protection-complete": "Stop-Loss cancellation complete",
     "downside-protection-updated": "Stop-Loss Protection Updated",
-    "downside-protection-complete-desc": "You have successfully setup Stop-Loss Protection on your Vault. Find out more about how Stop-Loss works",
+    "downside-protection-complete-desc": "You have successfully set up Stop-Loss Protection on your Vault. Find out more about how Stop-Loss works",
     "cancel-protection-complete-desc": "Stop-Loss has been cancelled successfully. You can always set up it again to protect your vault. Your position is now again at risk of liquidation once the liquidation price is hit.",
     "banner-header": "Get Vault Protection with Stop-Loss",
-    "banner-content": "Setup a dynamic Stop-Loss based on your Collateralisation Ratio to help protect your Vault from liquidation or the worry of big losses.",
+    "banner-content": "Set up a dynamic Stop-Loss based on your Collateralisation Ratio to help protect your Vault from liquidation or the worry of big losses.",
     "banner-button": "Set up Vault Protection ->",
     "edit-vault-protection": "Edit Vault Protection",
     "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
@@ -2186,9 +2186,9 @@
     "adding-new-triggers-disabled": "Creation of the new Auto-Sell trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Sell triggers",
     "banner": {
-      "button": "Setup Auto-Sell",
+      "button": "Set up Auto-Sell",
       "cm-warning": "Auto-Sell cannot be used if you have Constant Multiple enabled.",
-      "content": "Get peace of mind and setup Auto-Sell to automatically protect your Vault. Sell collateral to repay your debt when you most need it. Find out more about how this works",
+      "content": "Get peace of mind and set up Auto-Sell to automatically protect your Vault. Sell collateral to repay your debt when you most need it. Find out more about how this works",
       "header": "Stop scrambling to manage a position"
     },
     "cancel-form-title": "Cancellation confirmation",
@@ -2220,7 +2220,7 @@
     "set-trigger-description-ltv-without-threshold": "You are creating a recurring sell action to trigger at a LTV of {{executionLTV}}%, decreasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at ${{executionPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min sell price. Learn More ",
     "setting-form-title": "Setting Auto-Sell",
-    "setup-transaction-cost": "Setup transaction cost",
+    "setup-transaction-cost": "Set up transaction cost",
     "sl-too-high": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Sell.",
     "slippage-limit": "Slippage Limit",
     "target-coll-ratio": "Sell Target Ratio",
@@ -2291,9 +2291,9 @@
     "remove-complete-content": "Your Auto-Buy has been successfully cancelled.",
     "banner": {
       "header": "Stop missing buying opportunities",
-      "content": "Setup Auto-Buy to automatically buy additional collateral with your Vaults debt when the price of your collateral is increasing so you never miss a buying opportunity again. Find out more about how this works",
+      "content": "Set up Auto-Buy to automatically buy additional collateral with your Vaults debt when the price of your collateral is increasing so you never miss a buying opportunity again. Find out more about how this works",
       "cm-warning": "Auto-Buy cannot be used if you have Constant Multiple enabled.",
-      "button": "Setup Auto-Buy"
+      "button": "Set up Auto-Buy"
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
@@ -2313,8 +2313,8 @@
     "form-title": "Take Profit Setup",
     "banner": {
       "header": "Automate your exit strategy",
-      "content": "Setup Take Profit to create an exit strategy for your position and take emotion out of the equation. Take Profit automatically closes your position and locks in profits when your collateral hits your target price. Find out more about how this works",
-      "button": "Setup Take Profit"
+      "content": "Set up Take Profit to create an exit strategy for your position and take emotion out of the equation. Take Profit automatically closes your position and locks in profits when your collateral hits your target price. Find out more about how this works",
+      "button": "Set up Take Profit"
     },
     "set-trigger-description": "You are setting up a Take Profit that will close your position and take your profit when the {{token}} Price reaches ${{executionPrice}}. Learn more about how Take Profit works ",
     "trigger-col-price": "Trigger {{token}} Price",
@@ -2334,7 +2334,7 @@
       "total-transaction-cost": "Total transaction cost on trigger",
       "estimated-oasis-fee": "Estimated Summer.fi fee",
       "estimated-gas-fee": "Estimated gas fee",
-      "setup-transaction-cost": "Setup transaction cost"
+      "setup-transaction-cost": "Set up transaction cost"
     },
     "adding-new-triggers-disabled": "Creation of the new Take Profit trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
@@ -2405,7 +2405,7 @@
     "banner": {
       "header": "Set and forget with Constant Multiple",
       "content": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. Find out more about how this works",
-      "button": "Setup Constant Multiple"
+      "button": "Set up Constant Multiple"
     },
     "vault-changes": {
       "general-summary": "General summary",
@@ -2935,7 +2935,7 @@
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
-            "risk-oracless": "This pool is offered with Ajna Permissionless UI, things to know:",
+            "risk-oracless": "This pool is offered with Ajna Permissionless UI",
             "setup": "Configure your Ajna {{productType}} Position",
             "manage": "Manage your Ajna {{productType}} Position",
             "transaction": "Confirm your Ajna {{productType}} Position",
