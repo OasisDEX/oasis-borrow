@@ -43,6 +43,8 @@ export const getAjnaPoolData: (networkId: OmniSupportedNetworkIds) => GetPoolDat
     switch (networkId) {
       case NetworkIds.MAINNET:
       case NetworkIds.BASEMAINNET:
+      case NetworkIds.OPTIMISMMAINNET:
+      case NetworkIds.ARBITRUMMAINNET:
       case NetworkIds.GOERLI: {
         const { response } = await loadSubgraph('Ajna', 'getAjnaPoolData', networkId, {
           poolAddress: poolAddress.toLowerCase(),

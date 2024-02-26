@@ -56,6 +56,8 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
         ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,
         ...getNetworkContracts(NetworkIds.GOERLI).ajnaPoolPairs,
         ...getNetworkContracts(NetworkIds.BASEMAINNET).ajnaPoolPairs,
+        ...getNetworkContracts(NetworkIds.ARBITRUMMAINNET).ajnaPoolPairs,
+        ...getNetworkContracts(NetworkIds.OPTIMISMMAINNET).ajnaPoolPairs,
       })
 
       return (
