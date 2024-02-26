@@ -66,6 +66,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       protocol,
+      isYieldLoop,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -130,11 +131,13 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             currentStep,
             productType,
           }),
-          footerColumns: 2,
+          footerColumns: isYieldLoop ? 3 : 2,
           maxSliderAsMaxLtv: true,
         },
         elements: {
-          faq: aaveLikeFaqMap[productType][protocol as AaveLikeLendingProtocol],
+          faq: aaveLikeFaqMap[isYieldLoop ? OmniProductType.Earn : productType][
+            protocol as AaveLikeLendingProtocol
+          ],
           highlighterOrderInformation: undefined,
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,

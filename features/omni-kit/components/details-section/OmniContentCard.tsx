@@ -1,11 +1,15 @@
-import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import type {
+  ChangeVariantType,
+  ContentCardProps,
+  DetailsSectionContentCardLinkProps,
+} from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { Icon } from 'components/Icon'
 import type { IconProps } from 'components/Icon.types'
 import { StatefulTooltip } from 'components/Tooltip'
 import { useTranslation } from 'next-i18next'
 import React, { type ReactNode } from 'react'
-import type { Theme } from 'theme-ui'
+import type { Theme, ThemeUIStyleObject } from 'theme-ui'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export interface OmniContentCardTranslation {
@@ -22,18 +26,22 @@ export interface OmniContentCardBase {
   title: OmniContentCardValue
   unit?: string
   value?: OmniContentCardValue
+  link?: DetailsSectionContentCardLinkProps
 }
 
 export interface OmniContentCardExtra {
   asFooter?: boolean
   changeVariant?: ChangeVariantType
   customValueColor?: string
+  customBackground?: string
+  customUnitStyle?: ThemeUIStyleObject
   extra?: ReactNode
   icon?: IconProps['icon']
   iconColor?: string
   iconPosition?: 'before' | 'after'
   isLoading?: boolean
   modal?: ReactNode
+  link?: DetailsSectionContentCardLinkProps
   tooltips?: {
     change?: ReactNode
     footnote?: ReactNode
@@ -62,6 +70,8 @@ export function OmniContentCard({
   change,
   changeVariant,
   customValueColor,
+  customBackground,
+  customUnitStyle,
   extra,
   footnote,
   icon,
@@ -79,6 +89,7 @@ export function OmniContentCard({
   customTooltipWidth,
   unit,
   value,
+  link,
 }: OmniContentCardProps) {
   const { t } = useTranslation()
 
@@ -136,6 +147,8 @@ export function OmniContentCard({
       </>
     ),
     customValueColor,
+    customBackground,
+    customUnitStyle,
     valueTooltip: valueTooltip,
     unit,
     change: {
@@ -149,6 +162,7 @@ export function OmniContentCard({
       footnote: footnote.map((item) => getContentCardValue(item, t)),
       footnoteTooltip: footnoteTooltip,
     }),
+    link,
     extra,
     modal,
     asFooter,

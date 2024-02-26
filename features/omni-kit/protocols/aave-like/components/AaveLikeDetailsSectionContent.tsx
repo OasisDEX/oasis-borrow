@@ -1,5 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
+import { useSimulationYields } from 'features/aave/hooks'
+import type { IStrategyConfig } from 'features/aave/types'
 import {
   OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,
@@ -7,16 +9,23 @@ import {
   OmniContentCard,
   useOmniCardDataBuyingPower,
   useOmniCardDataLiquidationPrice,
+  useOmniCardDataLiquidationRatio,
   useOmniCardDataLtv,
+  useOmniCardDataNetApy,
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
+import { OmniCardDataLiquidationRatioModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataLiquidationRatioModal'
+import { OmniCardDataNetApyModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataNetApyModal'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { OmniProductType } from 'features/omni-kit/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one } from 'helpers/zero'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -31,6 +40,10 @@ export const AaveLikeDetailsSectionContent: FC = () => {
       quotePrice,
       quoteToken,
       isOpening,
+      isYieldLoop,
+      protocol,
+      network,
+      collateralPrecision,
     },
   } = useOmniGeneralContext()
   const {
@@ -44,6 +57,17 @@ export const AaveLikeDetailsSectionContent: FC = () => {
   } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
   const castedPosition = position as AaveLikePositionV2
+
+  const simulations = useSimulationYields({
+    amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
+    riskRatio: castedPosition.riskRatio,
+    fields: ['7Days'],
+    strategy: {
+      protocol: protocol as AaveLikeLendingProtocol,
+      network: network.name,
+    } as IStrategyConfig,
+    token: collateralToken,
+  })
 
   const liquidationPrice = normalizeValue(
     isShort ? one.div(castedPosition.liquidationPrice) : castedPosition.liquidationPrice,
@@ -75,6 +99,20 @@ export const AaveLikeDetailsSectionContent: FC = () => {
         liquidationPrice={liquidationPrice}
         priceFormat={priceFormat}
         ratioToCurrentPrice={ratioToCurrentPrice}
+      />
+    ),
+  })
+
+  const liquidationRatioContentCardCommonData = useOmniCardDataLiquidationRatio({
+    afterLiquidationRatio: afterLiquidationPrice,
+    liquidationRatio: liquidationPrice,
+    ratioToCurrentPrice,
+    ratioLink: EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY,
+    modal: (
+      <OmniCardDataLiquidationRatioModal
+        collateralToken={collateralToken}
+        quoteToken={quoteToken}
+        ratioLink={EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY}
       />
     ),
   })
@@ -130,8 +168,18 @@ export const AaveLikeDetailsSectionContent: FC = () => {
     afterNetValue: simulation?.netValue,
     netValue: position.netValue,
   })
+  const netApyContentCardCommonData = useOmniCardDataNetApy({
+    netApy: simulations?.apy?.div(100),
+    modal: (
+      <OmniCardDataNetApyModal
+        collateralToken={collateralToken}
+        quoteToken={quoteToken}
+        protocol={LendingProtocolLabel[protocol]}
+      />
+    ),
+  })
 
-  const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
+  const netValueContentCardAaveData = useAjnaCardDataNetValueLending(
     !isOpening
       ? getOmniNetValuePnlData({
           cumulatives: {
@@ -162,7 +210,17 @@ export const AaveLikeDetailsSectionContent: FC = () => {
       : undefined,
   )
 
-  return (
+  return isYieldLoop ? (
+    <>
+      <OmniContentCard
+        {...commonContentCardData}
+        {...netValueContentCardCommonData}
+        {...netValueContentCardAaveData}
+      />
+      <OmniContentCard {...commonContentCardData} {...netApyContentCardCommonData} />
+      <OmniContentCard {...commonContentCardData} {...liquidationRatioContentCardCommonData} />
+    </>
+  ) : (
     <>
       <OmniContentCard {...commonContentCardData} {...liquidationPriceContentCardCommonData} />
       <OmniContentCard {...commonContentCardData} {...ltvContentCardCommonData} />
@@ -180,7 +238,7 @@ export const AaveLikeDetailsSectionContent: FC = () => {
           <OmniContentCard
             {...commonContentCardData}
             {...netValueContentCardCommonData}
-            {...netValueContentCardAjnaData}
+            {...netValueContentCardAaveData}
           />
           <OmniContentCard {...commonContentCardData} {...buyingPowerContentCardCommonData} />
         </>

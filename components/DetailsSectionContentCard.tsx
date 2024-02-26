@@ -30,7 +30,7 @@ export interface DetailsSectionContentCardChangePillProps {
   withAfter?: boolean
 }
 
-interface DetailsSectionContentCardLinkProps {
+export interface DetailsSectionContentCardLinkProps {
   label: string
   url?: string
   action?: () => void

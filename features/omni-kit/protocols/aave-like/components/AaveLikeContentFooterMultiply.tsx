@@ -4,6 +4,7 @@ import {
   useOmniCardDataBorrowRate,
   useOmniCardDataMultiple,
   useOmniCardDataTokensValue,
+  useOmniCardDataVariableAnnualFee,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { AaveLikeCostToBorrowContentCardModal } from 'features/omni-kit/protocols/aave-like/components/AaveLikeCostToBorrowContentCardModal'
@@ -13,7 +14,7 @@ import React from 'react'
 
 export function AaveLikeContentFooterMultiply() {
   const {
-    environment: { collateralToken, quoteToken, quotePrice, collateralPrice },
+    environment: { collateralToken, quoteToken, quotePrice, collateralPrice, isYieldLoop },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -37,6 +38,10 @@ export function AaveLikeContentFooterMultiply() {
     tokensAmount: position.collateralAmount,
     tokensSymbol: collateralToken,
     translationCardName: 'total-exposure',
+  })
+
+  const variableAnnualFeeContentCardCommonData = useOmniCardDataVariableAnnualFee({
+    variableAnnualFee: castedPosition.debtVariableBorrowRate,
   })
 
   const positionDebtContentCardCommonData = useOmniCardDataTokensValue({
@@ -83,8 +88,15 @@ export function AaveLikeContentFooterMultiply() {
         {...positionDebtContentCardCommonData}
         {...positionDebtContentCardAjnaData}
       />
-      <OmniContentCard {...commonContentCardData} {...multipleContentCardCommonData} />
-      <OmniContentCard {...commonContentCardData} {...borrowRateContentCardCommonData} />
+      {isYieldLoop && (
+        <OmniContentCard {...commonContentCardData} {...variableAnnualFeeContentCardCommonData} />
+      )}
+      {!isYieldLoop && (
+        <>
+          <OmniContentCard {...commonContentCardData} {...multipleContentCardCommonData} />
+          <OmniContentCard {...commonContentCardData} {...borrowRateContentCardCommonData} />
+        </>
+      )}
     </>
   )
 }

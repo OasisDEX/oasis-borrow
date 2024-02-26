@@ -2753,6 +2753,13 @@
         "modal-footnote-below": "This is {{ratioToCurrentPrice}} below current price",
         "modal-footnote-above": "This is {{ratioToCurrentPrice}} above current price"
       },
+      "liquidation-ratio": {
+        "title": "Liquidation Price Ratio",
+        "footnote-below": "below current price",
+        "footnote-above": "above current price",
+        "modal-description": "The liquidation price ratio indicates to what price ratio {{collateralToken}} needs to drop in comparison to {{quoteToken}} in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0>",
+        "modal-footnote-description": "You can adjust your risk by using the adjust risk functionality."
+      },
       "ltv": {
         "title": "Loan to Value",
         "footnote": "Max LTV:"
@@ -2795,6 +2802,13 @@
       },
       "average-apy": {
         "title": "{{days}} days average APY"
+      },
+      "net-apy": {
+        "title": "Net APY",
+        "modal-description": "The annual percentage yield, accounting for fees. Calculated as the yield on the {{collateralToken}} token over the last 7 days, annualised, and subtracting the variable annual fee paid in {{protocol}} for the {{quoteToken}}."
+      },
+      "variable-annual-fee": {
+        "title": "Variable Annual Fee"
       },
       "net-value-modal": {
         "modal-title": "Net Value & Profit and Loss",

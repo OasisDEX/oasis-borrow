@@ -1,4 +1,3 @@
-import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
@@ -59,6 +58,7 @@ interface OmniGeneralContextProviderProps {
   slippage: BigNumber
   steps: OmniSidebarStep[]
   walletNetwork: NetworkConfig
+  isYieldLoop: boolean
 }
 
 export enum OmniSlippageSourceSettings {
@@ -136,6 +136,7 @@ export function OmniGeneralContextProvider({
     settings,
     slippage,
     walletNetwork,
+    isYieldLoop,
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<OmniSidebarStep>(steps[0])
@@ -144,7 +145,6 @@ export function OmniGeneralContextProvider({
   const [gasEstimation, setGasEstimation] = useState<GasEstimationContext>()
 
   const isShort = isShortPosition({ collateralToken })
-  const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
 
   const {
     slippage: resolvedSlippage,

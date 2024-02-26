@@ -1,3 +1,4 @@
+import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkById } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
@@ -133,6 +134,8 @@ export const OmniProductController = <Auction, History, Position>({
     if (dpmPositionData === null) void replace(INTERNAL_LINKS.notFound)
   }, [dpmPositionData])
 
+  const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
+
   return (
     <WithConnection>
       <WithTermsOfService>
@@ -163,6 +166,7 @@ export const OmniProductController = <Auction, History, Position>({
                     quoteIcon: tokensIconsData?.quoteToken,
                     quoteToken: dpmPositionData?.quoteToken,
                     networkName: network.name,
+                    isYieldLoop,
                   })}
                 />
               }
@@ -243,6 +247,7 @@ export const OmniProductController = <Auction, History, Position>({
                       settings={settings}
                       slippage={slippage}
                       steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
+                      isYieldLoop={isYieldLoop}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,
