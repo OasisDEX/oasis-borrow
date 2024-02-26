@@ -249,6 +249,7 @@ function mapPositionToAutoBuyPosition({
       amount: amountFromWei(position.debt.amount, position.debt.precision),
     },
     dpm: dpm.proxy,
+    protocol: strategyConfig.protocol,
     pricesDenomination: strategyConfig.strategyType === StrategyType.Short ? 'debt' : 'collateral',
   }
 }
