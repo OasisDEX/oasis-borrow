@@ -1,6 +1,9 @@
 import { AaveLikePosition, IPosition, IRiskRatio, IStrategy } from "@oasisdex/dma-library";
 import BigNumber from 'bignumber.js'
-import { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
+import {
+  DpmExecuteOperationExecutorActionParameters,
+  DpmExecuteOperationParameters
+} from "blockchain/better-calls/dpm-account";
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context, ContextConnected } from 'blockchain/network.types'
@@ -8,7 +11,7 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
 import { IStrategyConfig } from './strategy-config'
-import { AutomationAddTriggerData, AutomationAddTriggerLambda } from 'features/automation/common/txDefinitions.types'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -17,6 +20,8 @@ import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { TriggerTransaction } from "../../../helpers/triggers";
+import { MigrateAaveContext } from "../manage/state/migrateAaveStateMachine";
 
 export type UserInput = {
   riskRatio?: IRiskRatio
@@ -107,9 +112,11 @@ export interface BaseAaveContext {
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
   stopLossLevel?: BigNumber
+  trailingDistance?: BigNumber
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
-  stopLossTxDataLambda?: AutomationAddTriggerLambda
+  stopLossTxDataLambda?: TriggerTransaction
+  trailingStopLossTxDataLambda?: TriggerTransaction
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData
@@ -145,6 +152,16 @@ export function contextToEthersTransactions(context: BaseAaveContext): DpmExecut
     calls: context.transition!.transaction.calls,
     operationName: context.transition!.transaction.operationName,
     value: token === 'ETH' ? amount : zero,
+    signer: (context.web3Context as ContextConnected).transactionProvider,
+  }
+}
+
+export function migrationContextToEthersTransactions(context: MigrateAaveContext): DpmExecuteOperationParameters {
+
+  return {
+    networkId: context.strategyConfig.networkId,
+    proxyAddress: context.userDpmAccount?.proxy!,
+    tx: context.strategy?.tx!,
     signer: (context.web3Context as ContextConnected).transactionProvider,
   }
 }

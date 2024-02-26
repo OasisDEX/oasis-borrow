@@ -65,7 +65,7 @@ async function getMorphoPositions({
             collateralToken,
             id: marketId,
             latestInterestRates: [{ rate }],
-            liquidataionLTV,
+            liquidationRatio,
             debtToken,
           } = market
 
@@ -114,7 +114,7 @@ async function getMorphoPositions({
             automations: {},
             details: getMorphoPositionDetails({
               collateralPrice,
-              liquidataionLtv: new BigNumber(liquidataionLTV).shiftedBy(NEGATIVE_WAD_PRECISION),
+              liquidationRatio: new BigNumber(liquidationRatio).shiftedBy(NEGATIVE_WAD_PRECISION),
               position,
               primaryToken,
               quotePrice,

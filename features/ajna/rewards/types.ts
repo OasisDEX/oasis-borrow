@@ -8,5 +8,11 @@ export interface AjnaRewards {
   regular: BigNumber
   total: BigNumber
   totalUsd: BigNumber
+  lastDayRewardsUsd: BigNumber
+  ajnaPrice: BigNumber
+  currentPeriodPositionEarned: BigNumber
+  currentPeriodTotalEarned: BigNumber
+  totalClaimableAndTotalCurrentPeriodEarned: BigNumber
+  totalEarnedToDate: BigNumber
   payload: RewardsPayload
 }

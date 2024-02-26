@@ -7,7 +7,7 @@ import type { Context } from 'blockchain/network.types'
 import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
-import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import type { AddressesRelatedWithPosition } from 'features/aave/helpers'
 import type { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { getPricesFeed$, xstateReserveDataService } from 'features/aave/services'
 import type {
@@ -42,7 +42,7 @@ export function getManageAaveV2PositionStateMachineServices(
   proxiesRelatedWithPosition$: (
     positionId: PositionId,
     networkId: NetworkIds,
-  ) => Observable<ProxiesRelatedWithPosition>,
+  ) => Observable<AddressesRelatedWithPosition>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,

@@ -1,6 +1,8 @@
+import { getDenominations } from 'features/aave/helpers'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
+import { StrategyType } from 'features/aave/types'
 import { StopLossDetailCards } from 'features/automation/metadata/types'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
 import {
@@ -18,22 +20,23 @@ export const AaveStopLossManageDetails = ({
   state,
   stopLossLambdaData,
   stopLossToken,
-  debtTokenReserveConfigurationData,
+  reserveConfigurationData,
 }: Pick<ManageAaveStateProps, 'state'> & {
   triggers?: GetTriggersResponse['triggers']
   stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
   stopLossToken: 'debt' | 'collateral'
-  debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
+  reserveConfigurationData: AaveLikeReserveConfigurationData
 }) => {
   const { strategyConfig, currentPosition } = state.context
+  const { denomination, denominationToken } = getDenominations(strategyConfig)
   const {
     stopLossLevel,
-    dynamicStopLossPrice,
     debt,
     positionRatio,
     liquidationPrice,
     liquidationRatio,
     lockedCollateral,
+    dynamicStopLossPriceForView,
   } = getAaveLikeStopLossParams.manage({ state })
   const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const token = strategyConfig.tokens.collateral
@@ -63,13 +66,20 @@ export const AaveStopLossManageDetails = ({
     stopLossLevel: one.div((stopLossLambdaData.stopLossLevel || one).div(100)).times(100),
   })
 
+  const setDynamicStopLossPriceForView =
+    strategyConfig.strategyType === StrategyType.Short
+      ? one.div(setDynamicStopLossPrice)
+      : setDynamicStopLossPrice
+
   const stopLossConfigChanged = useMemo(() => {
     return !!(
-      stopLossLambdaData.stopLossLevel &&
-      (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
-        stopLossLambdaData.stopLossToken !== stopLossToken)
+      (stopLossLambdaData.stopLossLevel &&
+        (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
+          stopLossLambdaData.stopLossToken !== stopLossToken)) ||
+      (!stopLossLambdaData.stopLossLevel && stopLossLevel)
     )
   }, [stopLossLambdaData, stopLossLevel, stopLossToken])
+
   return (
     <StopLossDetailsLayout
       token={token}
@@ -81,14 +91,14 @@ export const AaveStopLossManageDetails = ({
       isStopLossEnabled={isStopLossEnabled}
       liquidationRatio={liquidationRatio}
       liquidationPrice={liquidationPrice}
-      liquidationPenalty={debtTokenReserveConfigurationData.liquidationBonus}
+      liquidationPenalty={reserveConfigurationData.liquidationBonus}
       lockedCollateral={lockedCollateral}
       nextPositionRatio={loanToValue.decimalPlaces(5)}
       collateralDuringLiquidation={getCollateralDuringLiquidation({
         lockedCollateral,
         debt,
         liquidationPrice,
-        liquidationPenalty: debtTokenReserveConfigurationData.liquidationBonus,
+        liquidationPenalty: reserveConfigurationData.liquidationBonus,
       })}
       triggerMaxToken={maxToken}
       afterMaxToken={afterMaxToken}
@@ -118,10 +128,12 @@ export const AaveStopLossManageDetails = ({
           },
         },
       }}
-      dynamicStopLossPrice={setDynamicStopLossPrice}
-      afterDynamicStopLossPrice={dynamicStopLossPrice}
+      dynamicStopLossPrice={setDynamicStopLossPriceForView}
+      afterDynamicStopLossPrice={dynamicStopLossPriceForView}
       isAutomationDataLoaded={true}
       isAutomationAvailable={true}
+      customDynamicStopPriceUnit={denomination}
+      customDynamicStopPriceUnitToken={denominationToken}
     />
   )
 }

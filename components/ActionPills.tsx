@@ -1,18 +1,29 @@
 import React, { useMemo } from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Flex } from 'theme-ui'
 
 interface ActionPillsProps {
-  variant?: 'secondary'
-  active: string
-  items: {
+  readonly variant?: 'secondary'
+  readonly active: string
+  readonly items: {
     id: string
     label: string
     disabled?: boolean
     action: () => void
   }[]
+  readonly wrapperSx?: ThemeUIStyleObject
+  readonly itemSx?: ThemeUIStyleObject
+  readonly itemButtonSx?: ThemeUIStyleObject
 }
 
-export function ActionPills({ active, items, variant }: ActionPillsProps) {
+export function ActionPills({
+  active,
+  items,
+  variant,
+  wrapperSx,
+  itemSx,
+  itemButtonSx,
+}: ActionPillsProps) {
   const secondaryVarientStyles = useMemo(
     () => ({
       py: '8px',
@@ -26,9 +37,12 @@ export function ActionPills({ active, items, variant }: ActionPillsProps) {
   )
 
   return (
-    <Flex as="ul" sx={{ justifyContent: variant === 'secondary' ? 'flex-start' : 'center', p: 0 }}>
-      {items.map((item, k) => (
-        <Box as="li" sx={{ listStyle: 'none', m: 0, p: 0 }} key={k}>
+    <Flex
+      as="ul"
+      sx={{ justifyContent: variant === 'secondary' ? 'flex-start' : 'center', p: 0, ...wrapperSx }}
+    >
+      {items.map((item) => (
+        <Box as="li" sx={{ listStyle: 'none', m: 0, p: 0, ...itemSx }} key={item.id}>
           <Button
             onClick={item.action}
             variant={active === item.id ? 'pillActive' : 'pill'}
@@ -39,6 +53,7 @@ export function ActionPills({ active, items, variant }: ActionPillsProps) {
                 opacity: 0.5,
                 pointerEvents: 'none',
               }),
+              ...itemButtonSx,
             }}
           >
             {item.label}

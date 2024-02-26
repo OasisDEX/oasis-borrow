@@ -1,5 +1,5 @@
 import { useInterpret } from '@xstate/react'
-import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import type { AddressesRelatedWithPosition } from 'features/aave/helpers'
 import type { ManageAaveStateMachine } from 'features/aave/manage/state'
 import type { IStrategyConfig, ManageTokenInput, PositionId } from 'features/aave/types'
 import { ProxyType } from 'features/aave/types'
@@ -76,7 +76,7 @@ export function ManageAaveStateMachineContextProvider({
   machine: ManageAaveStateMachine
   strategy: IStrategyConfig
   positionId: PositionId
-  proxies: ProxiesRelatedWithPosition
+  proxies: AddressesRelatedWithPosition
   updateStrategyConfig?: (vaultType: VaultType) => void
 }>) {
   const proxyType = positionId.vaultId !== undefined ? ProxyType.DpmProxy : ProxyType.DsProxy

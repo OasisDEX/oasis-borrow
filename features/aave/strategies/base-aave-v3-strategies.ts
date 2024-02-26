@@ -187,6 +187,9 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
         if (feature === AutomationFeatures.STOP_LOSS) {
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3ProtectionLambdaBase]
         }
+        if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaBase]
+        }
         return false
       },
     }
@@ -242,6 +245,9 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
         }
         if (feature === AutomationFeatures.STOP_LOSS) {
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3ProtectionLambdaBase]
+        }
+        if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaBase]
         }
         return false
       },

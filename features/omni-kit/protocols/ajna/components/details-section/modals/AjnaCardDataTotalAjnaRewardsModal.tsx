@@ -1,40 +1,40 @@
-import type BigNumber from 'bignumber.js'
-import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
-import { formatCryptoBalance } from 'helpers/formatters/format'
-import { useTranslation } from 'next-i18next'
+import { RewardsModal } from 'components/rewards'
+import type { AjnaRewards } from 'features/ajna/rewards/types'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
-import { Card } from 'theme-ui'
+import { ajna_circle_color } from 'theme/icons'
 
 interface AjnaCardDataTotalAjnaRewardsModalProps {
-  bonus: BigNumber
-  claimable: BigNumber
-  isLoading: boolean
-  total: BigNumber
+  rewards: AjnaRewards
 }
 
 export function AjnaCardDataTotalAjnaRewardsModal({
-  bonus,
-  claimable,
-  total,
+  rewards: {
+    claimable,
+    currentPeriodTotalEarned,
+    totalEarnedToDate,
+    totalClaimableAndTotalCurrentPeriodEarned,
+    currentPeriodPositionEarned,
+    ajnaPrice,
+  },
 }: AjnaCardDataTotalAjnaRewardsModalProps) {
-  const { t } = useTranslation()
-
   return (
-    <DetailsSectionContentSimpleModal
-      title={t('ajna.content-card.total-ajna-rewards.title')}
-      description={t('ajna.content-card.total-ajna-rewards.modal-description')}
-      theme={ajnaExtensionTheme}
-    >
-      <Card variant="vaultDetailsCardModal">
-        {formatCryptoBalance(claimable)} {t('ajna.content-card.total-ajna-rewards.modal-value-1')}
-      </Card>
-      <Card variant="vaultDetailsCardModal">
-        {formatCryptoBalance(total)} {t('ajna.content-card.total-ajna-rewards.modal-value-2')}
-      </Card>
-      <Card variant="vaultDetailsCardModal">
-        {formatCryptoBalance(bonus)} {t('ajna.content-card.total-ajna-rewards.modal-value-3')}
-      </Card>
-    </DetailsSectionContentSimpleModal>
+    <RewardsModal
+      gradient={['#f154db', '#974eea']}
+      modalBannerGradient={['#F0F3FD', '#FCF0FD']}
+      unit="AJNA"
+      tokenIcon={ajna_circle_color}
+      link={INTERNAL_LINKS.ajnaRewards}
+      rewards={{
+        totalClaimableAndTotalCurrentPeriodEarned,
+        totalClaimableAndTotalCurrentPeriodEarnedUsd:
+          totalClaimableAndTotalCurrentPeriodEarned.times(ajnaPrice),
+        claimable: claimable,
+        currentPeriodTotalEarned,
+        currentPeriodPositionEarned,
+        totalEarnedToDate,
+      }}
+      btnAsLink
+    />
   )
 }

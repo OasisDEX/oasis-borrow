@@ -1,5 +1,4 @@
 import { MyPositionsOrb } from 'components/navigation/content/MyPositionsOrb'
-import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
@@ -22,7 +21,6 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
       {isConnected ? (
         <>
           {isViewBelowXl && <MyPositionsOrb />}
-          <NotificationsOrb />
           {<NavigationNetworkSwitcherOrb />}
           {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
         </>

@@ -169,6 +169,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         totalFee
         txHash
         withdrawnUSD
+        interestRate
       }
     }
   `,
@@ -468,7 +469,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
             latestInterestRates {
               rate
             }
-            liquidataionLTV
+            liquidationRatio
             debtToken {
               address
               decimals

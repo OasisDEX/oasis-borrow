@@ -70,8 +70,8 @@ export function loadStrategyFromTokens(
   // Aave uses WETH gateway for ETH (we have ETH strategy specified)
   // so we have to convert that on the fly just to find the strategy
   // this is then converted back to WETH using wethToEthAddress
-  const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
-  const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
+  const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken.toUpperCase()
+  const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken.toUpperCase()
   const strategy = strategies.find((s) => {
     /* Enhances for strategies to be filtered by product type */
     const matchesVaultType =
@@ -132,6 +132,29 @@ export function isSupportedStrategy(
   }
 
   return [false, undefined]
+}
+
+export function getStrategyConfig(
+  network: string | NetworkNames,
+  protocol: string | LendingProtocol,
+  product: string | ProductType,
+  tokens: [string, string],
+): IStrategyConfig | undefined {
+  if (
+    isSupportedNetwork(network) &&
+    isLendingProtocol(protocol) &&
+    isSupportedProductType(product)
+  ) {
+    return strategies.find(
+      (s) =>
+        s.network === network &&
+        s.protocol === protocol &&
+        s.tokens.collateral === tokens[0] &&
+        s.tokens.debt === tokens[1] &&
+        s.type.toLowerCase() === product.toLowerCase(),
+    )
+  }
+  return undefined
 }
 
 export function convertDefaultRiskRatioToActualRiskRatio(

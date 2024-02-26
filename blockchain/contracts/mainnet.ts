@@ -207,9 +207,28 @@ export const mainnetContracts = {
     'STYETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_STYETHDAI),
     'RBN-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RBNETH),
     'AJNA-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_AJNADAI),
+    'MKR-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MKRDAI),
+
+    'MEVETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MEVETHWETH),
+    'XETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_XETHWETH),
+    'DETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_DETHWETH),
+    'UNIETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_UNIETHWETH),
+    'EZETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_EZETHWETH),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
+    'MWSTETHWPUNKS20-WSTETH': contractDesc(
+      ajnaPool,
+      mainnet.ajna.AjnaPoolPairs_MWSTETHWPUNKS20WSTETH,
+    ),
+    'MWSTETHWPUNKS40-WSTETH': contractDesc(
+      ajnaPool,
+      mainnet.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
+    ),
+    'APXETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_APXETHETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDEDAI),
+    'MPETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MPETHWETH),
+    'CSETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CSETHWETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, mainnet.ajna.AjnaRewardsReedemer),

@@ -1,9 +1,10 @@
-import type { ActionCall } from '@oasisdex/dma-library'
+import type { ActionCall, Tx } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import { networkSetById } from 'blockchain/networks'
 import { ethers } from 'ethers'
+import type { OperationExecutor } from 'types/ethers-contracts'
 import { AccountImplementation__factory, OperationExecutor__factory } from 'types/ethers-contracts'
 
 import { isDangerTransactionEnabled } from './is-danger-transaction-enabled'
@@ -11,7 +12,7 @@ import { GasMultiplier } from './utils'
 import { getOverrides } from './utils/get-overrides'
 import type { EstimatedGasResult } from './utils/types'
 
-export interface DpmExecuteOperationExecutorActionParameters {
+export interface DpmExecuteOperationLegacyParameters {
   networkId: NetworkIds
   proxyAddress: string
   signer: ethers.Signer
@@ -19,6 +20,17 @@ export interface DpmExecuteOperationExecutorActionParameters {
   calls: ActionCall[]
   value: BigNumber
 }
+
+export interface DpmExecuteOperationParameters {
+  networkId: NetworkIds
+  signer: ethers.Signer
+  proxyAddress: string
+  tx: Tx
+}
+
+export type DpmExecuteOperationExecutorActionParameters =
+  | DpmExecuteOperationLegacyParameters
+  | DpmExecuteOperationParameters
 
 export async function validateParameters({
   signer,
@@ -69,38 +81,52 @@ export async function validateParameters({
   return { dpm, operationExecutor: operationExecutorContract }
 }
 
-export async function estimateGasOnDpmForOperationExecutorAction({
-  networkId,
-  proxyAddress,
-  signer,
-  calls,
-  operationName,
-  value,
-}: DpmExecuteOperationExecutorActionParameters): Promise<EstimatedGasResult | undefined> {
-  const { dpm, operationExecutor } = await validateParameters({ signer, networkId, proxyAddress })
+function extractTransactionData(
+  params: DpmExecuteOperationExecutorActionParameters,
+  operationExecutor: OperationExecutor,
+): { value: BigNumber; encodedOperationExecutorData: string } {
+  if ('tx' in params) {
+    return {
+      value: new BigNumber(params.tx.value),
+      encodedOperationExecutorData: params.tx.data,
+    }
+  }
+  return {
+    value: params.value,
+    encodedOperationExecutorData: operationExecutor.interface.encodeFunctionData('executeOp', [
+      params.calls,
+      params.operationName,
+    ]),
+  }
+}
 
-  const encodedCallDAta = operationExecutor.interface.encodeFunctionData('executeOp', [
-    calls,
-    operationName,
-  ])
+export async function estimateGasOnDpmForOperationExecutorAction(
+  params: DpmExecuteOperationExecutorActionParameters,
+): Promise<EstimatedGasResult | undefined> {
+  const { dpm, operationExecutor } = await validateParameters({ ...params })
+
+  const { value, encodedOperationExecutorData } = extractTransactionData(params, operationExecutor)
 
   try {
     const transactionData = dpm.interface.encodeFunctionData('execute', [
       operationExecutor.address,
-      encodedCallDAta,
+      encodedOperationExecutorData,
     ])
-
-    const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
-      ...(await getOverrides(signer)),
-      value: ethers.utils.parseEther(value.toString()).toHexString(),
-    })
+    const result = await dpm.estimateGas.execute(
+      operationExecutor.address,
+      encodedOperationExecutorData,
+      {
+        ...(await getOverrides(params.signer)),
+        value: ethers.utils.parseEther(value.toString()).toHexString(),
+      },
+    )
 
     return {
       estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
-      transactionData,
+      transactionData: transactionData,
     }
   } catch (e) {
-    const message = `Error estimating gas. Action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`
+    const message = `Error estimating gas. On proxy: ${params.proxyAddress}. Network: ${params.networkId}`
     console.error(message, e)
     throw new Error(message, {
       cause: e,
@@ -108,44 +134,27 @@ export async function estimateGasOnDpmForOperationExecutorAction({
   }
 }
 
-export async function createExecuteOperationExecutorTransaction({
-  networkId,
-  proxyAddress,
-  signer,
-  calls,
-  operationName,
-  value,
-}: DpmExecuteOperationExecutorActionParameters): Promise<ethers.ContractTransaction> {
-  const { dpm, operationExecutor } = await validateParameters({ signer, networkId, proxyAddress })
+export async function createExecuteOperationExecutorTransaction(
+  params: DpmExecuteOperationExecutorActionParameters,
+): Promise<ethers.ContractTransaction> {
+  const { dpm, operationExecutor } = await validateParameters({ ...params })
 
-  const encodedCallDAta = operationExecutor.interface.encodeFunctionData('executeOp', [
-    calls,
-    operationName,
-  ])
+  const { value, encodedOperationExecutorData } = extractTransactionData(params, operationExecutor)
 
   const dangerTransactionEnabled = isDangerTransactionEnabled()
 
   if (dangerTransactionEnabled.enabled) {
-    console.warn(
-      `Danger transaction enabled. Gas limit: ${dangerTransactionEnabled.gasLimit}. Operation name: ${operationName}`,
-      calls,
-    )
-    return await dpm.execute(operationExecutor.address, encodedCallDAta, {
-      ...(await getOverrides(signer)),
+    console.warn(`Danger transaction enabled. Gas limit: ${dangerTransactionEnabled.gasLimit}`)
+
+    return await dpm.execute(operationExecutor.address, encodedOperationExecutorData, {
+      ...(await getOverrides(params.signer)),
       value: ethers.utils.parseEther(value.toString()).toHexString(),
       gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
     })
   }
-  const gasLimit = await estimateGasOnDpmForOperationExecutorAction({
-    networkId,
-    proxyAddress,
-    signer,
-    operationName,
-    value,
-    calls,
-  })
-  return await dpm.execute(operationExecutor.address, encodedCallDAta, {
-    ...(await getOverrides(signer)),
+  const gasLimit = await estimateGasOnDpmForOperationExecutorAction(params)
+  return await dpm.execute(operationExecutor.address, encodedOperationExecutorData, {
+    ...(await getOverrides(params.signer)),
     value: ethers.utils.parseEther(value.toString()).toHexString(),
     gasLimit: gasLimit?.estimatedGas ?? undefined,
   })
@@ -153,7 +162,7 @@ export async function createExecuteOperationExecutorTransaction({
 
 export interface DpmOperationParams {
   networkId: NetworkIds
-  proxyAddress: string
+  proxyAddress?: string
   signer: ethers.Signer
   value?: BigNumber
   data: string
@@ -168,7 +177,7 @@ export async function estimateGas({
   value,
   to,
 }: DpmOperationParams) {
-  await validateParameters({ signer, networkId, proxyAddress })
+  await validateParameters({ signer, networkId, proxyAddress: proxyAddress ?? to })
 
   try {
     const result = await signer.estimateGas({
@@ -180,7 +189,9 @@ export async function estimateGas({
 
     return new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0)
   } catch (e) {
-    const message = `Error estimating gas. Action: ${data} on proxy: ${proxyAddress}. Network: ${networkId}`
+    const message = `Error estimating gas. Action: ${data} on proxy: ${
+      proxyAddress ?? to
+    }. Network: ${networkId}`
     console.error(message, e)
     throw new Error(message, {
       cause: e,
@@ -196,7 +207,7 @@ export async function executeTransaction({
   value,
   to,
 }: DpmOperationParams) {
-  await validateParameters({ signer, networkId, proxyAddress })
+  await validateParameters({ signer, networkId, proxyAddress: proxyAddress ?? to })
 
   const dangerTransactionEnabled = isDangerTransactionEnabled()
 

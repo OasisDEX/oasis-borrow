@@ -213,3 +213,32 @@ export function getAaveV3ReserveCaps({
     }
   })
 }
+
+export interface AaveV3ReserveTokenAddressesParameters extends BaseParameters {
+  token: string
+}
+
+export interface AaveV3ReserveTokenAddresses {
+  aTokenAddress: string
+  tokenAddress: string
+  variableDebtTokenAddress: string
+  stableDebtTokenAddress: string
+}
+
+export function getAaveV3ReserveTokenAddresses({
+  token,
+  networkId,
+}: AaveV3ReserveTokenAddressesParameters): Promise<AaveV3ReserveTokenAddresses> {
+  const { contract, tokenMappings } = networkMappings[networkId]()
+
+  const address = wethToEthAddress(tokenMappings, token)
+
+  return contract.getReserveTokensAddresses(address).then((result) => {
+    return {
+      aTokenAddress: result.aTokenAddress,
+      tokenAddress: result.aTokenAddress,
+      variableDebtTokenAddress: result.variableDebtTokenAddress,
+      stableDebtTokenAddress: result.stableDebtTokenAddress,
+    }
+  })
+}

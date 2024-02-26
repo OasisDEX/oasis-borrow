@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network.types'
 import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
-import { IRiskRatio } from '@oasisdex/dma-library'
+import { type AaveLikePosition, IRiskRatio } from "@oasisdex/dma-library";
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
 import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
@@ -11,16 +11,19 @@ import {
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from './base-aave-context'
-import { AutomationAddTriggerData, AutomationAddTriggerLambda } from 'features/automation/common/txDefinitions.types'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
 import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
+import { TriggerTransaction } from "../../../helpers/triggers";
 
 type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
+  | { type: 'SET_TRAILING_STOP_LOSS_LEVEL'; trailingDistance: BigNumber }
   | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
   | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
-  | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: AutomationAddTriggerLambda }
+  | { type: 'SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA'; trailingStopLossTxDataLambda: TriggerTransaction | undefined }
+  | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
 
 
@@ -59,6 +62,7 @@ export type BaseAaveEvent =
   | { type: 'DPM_PROXY_RECEIVED'; userDpmAccount: UserDpmAccount }
   | { type: 'SET_BALANCE'; balance: StrategyTokenBalance }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: AaveLikePosition }
   | UpdateCollateralActionType
   | UpdateClosingAction
   | UpdateDebtActionType
