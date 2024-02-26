@@ -181,6 +181,22 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       positionsCount,
       protocolRaw: ajnaSettings.rawName[NetworkIds.BASEMAINNET] as string,
     }),
+    getAjnaPositions({
+      apiVaults,
+      dpmList,
+      networkId: NetworkIds.ARBITRUMMAINNET,
+      prices,
+      positionsCount,
+      protocolRaw: ajnaSettings.rawName[NetworkIds.ARBITRUMMAINNET] as string,
+    }),
+    getAjnaPositions({
+      apiVaults,
+      dpmList,
+      networkId: NetworkIds.OPTIMISMMAINNET,
+      prices,
+      positionsCount,
+      protocolRaw: ajnaSettings.rawName[NetworkIds.OPTIMISMMAINNET] as string,
+    }),
   ]).then((responses) => {
     return {
       address,
