@@ -11,7 +11,8 @@ export function useOptimizationSidebarDropdown(
 ): SidebarSectionHeaderDropdown {
   const { t } = useTranslation()
 
-  const hasAutoBuyEnabled = state.context.currentTriggers.triggers.aaveBasicBuy !== undefined
+  const hasAaveAutoBuyEnabled = state.context.currentTriggers.triggers.aaveBasicBuy !== undefined
+  const hasSparkAutoBuyEnabled = state.context.currentTriggers.triggers.sparkBasicBuy !== undefined
 
   const currentPanel =
     state.context.protectionCurrentView === 'auto-sell'
@@ -22,7 +23,9 @@ export function useOptimizationSidebarDropdown(
     forcePanel: currentPanel,
     items: [
       {
-        label: `${hasAutoBuyEnabled ? 'Manage' : 'Setup'} ${t('system.basic-buy')}`,
+        label: `${hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled ? 'Manage' : 'Setup'} ${t(
+          'system.basic-buy',
+        )}`,
         shortLabel: t('system.basic-buy'),
         iconShrink: 2,
         icon: circle_exchange,

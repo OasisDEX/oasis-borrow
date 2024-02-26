@@ -147,6 +147,45 @@ export type DmaAaveBasicBuy = {
     maxBaseFeeInGwei: string
   }
 }
+export type DmaSparkBasicSell = {
+  triggerTypeName: 'DmaSparkBasicSellV2'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    executionLtv: string
+    targetLtv: string
+    minSellPrice: string
+    deviation: string
+    maxBaseFeeInGwei: string
+  }
+}
+
+export type DmaSparkBasicBuy = {
+  triggerTypeName: 'DmaSparkBasicBuyV2'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    executionLtv: string
+    targetLtv: string
+    maxBuyPrice: string
+    deviation: string
+    maxBaseFeeInGwei: string
+  }
+}
 export type DmaAaveBasicSell = {
   triggerTypeName: 'DmaAaveBasicSellV2'
   triggerType: bigint
@@ -231,6 +270,8 @@ export type GetTriggersResponse = {
     sparkStopLossToDebtDMA?: SparkStopLossToDebtDMA
     aaveBasicBuy?: DmaAaveBasicBuy
     aaveBasicSell?: DmaAaveBasicSell
+    sparkBasicBuy?: DmaSparkBasicBuy
+    sparkBasicSell?: DmaSparkBasicSell
     aaveTrailingStopLossDMA?: DmaAaveTrailingStopLoss
     sparkTrailingStopLossDMA?: DmaSparkTrailingStopLoss
   }
