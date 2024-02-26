@@ -3,6 +3,7 @@ import { useAutomationContext } from 'components/context/AutomationContextProvid
 import { PositionHistory } from 'components/history/PositionHistory'
 import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
+import { DisabledAutomationForMigrationControl } from 'components/vault/DisabledAutomationForMigrationControl'
 import { DisabledOptimizationControl } from 'components/vault/DisabledOptimizationControl'
 import { DisabledProtectionControl } from 'components/vault/DisabledProtectionControl'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
@@ -58,7 +59,7 @@ export function AaveManageTabBar({
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const triggersStateMachine = useTriggersAaveStateMachineContext()
-  const [triggersState] = useActor(triggersStateMachine)
+  const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
 
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   const PositionInfo = strategyConfig.viewComponents.positionInfo
@@ -103,14 +104,20 @@ export function AaveManageTabBar({
   // update banners
   const isProtectionAvailable = netValue.gte(minNetValue) || hasActiveProtectionTrigger
   const isOptimizationAvailable = netValue.gte(minNetValue) || hasActiveOptimizationTrigger
+  const isExternalPosition = state.context.positionId.external
 
   const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [
         {
           value: 'optimization',
           label: t('system.optimization'),
-          content: isOptimizationAvailable ? (
-            <OptimizationControl />
+          content: isExternalPosition ? (
+            <DisabledAutomationForMigrationControl />
+          ) : isOptimizationAvailable && triggersState ? (
+            <OptimizationControl
+              triggersState={triggersState}
+              sendTriggerEvent={sendTriggerEvent}
+            />
           ) : (
             <DisabledOptimizationControl minNetValue={minNetValue} />
           ),
@@ -142,8 +149,10 @@ export function AaveManageTabBar({
                 nextPosition={nextPosition}
                 cumulatives={state.context.cumulatives}
                 dpmProxy={state.context.effectiveProxyAddress}
+                triggersState={triggersState}
+                sendTriggerEvent={sendTriggerEvent}
               />
-              <SidebarManageAaveVault />
+              <SidebarManageAaveVault triggersState={triggersState} />
             </Grid>
           ),
         },
@@ -164,10 +173,16 @@ export function AaveManageTabBar({
                 tag: {
                   include: true,
                   active: hasActiveProtectionTrigger,
-                  isLoading: !isAutomationDataLoaded,
+                  isLoading: isExternalPosition ? false : !isAutomationDataLoaded,
                 },
-                content: isProtectionAvailable ? (
-                  <ProtectionControlWrapper />
+                content: isExternalPosition ? (
+                  <DisabledAutomationForMigrationControl />
+                ) : isProtectionAvailable ? (
+                  <ProtectionControlWrapper
+                    aaveReserveState={aaveReserveState}
+                    triggersState={triggersState}
+                    sendTriggerEvent={sendTriggerEvent}
+                  />
                 ) : (
                   <DisabledProtectionControl minNetValue={minNetValue} />
                 ),

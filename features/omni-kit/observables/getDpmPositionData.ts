@@ -1,6 +1,6 @@
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
-import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import type { AddressesRelatedWithPosition } from 'features/aave/helpers'
 import type { PositionCreated } from 'features/aave/services'
 import { readPositionCreatedEvents$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
@@ -72,7 +72,7 @@ export function getDpmPositionDataV2$(
   proxiesForPosition$: (
     positionId: PositionId,
     networkId: OmniSupportedNetworkIds,
-  ) => Observable<ProxiesRelatedWithPosition>,
+  ) => Observable<AddressesRelatedWithPosition>,
   positionId: PositionId,
   networkId: OmniSupportedNetworkIds,
   collateralToken: string,

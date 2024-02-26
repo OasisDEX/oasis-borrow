@@ -31,6 +31,7 @@ export interface GenericMultiselectProps {
   options: GenericMultiselectOption[]
   onChange: (value: string[]) => void
   sx?: ThemeUIStyleObject
+  fitContents?: boolean
 }
 
 function GenericMultiselectIcon({
@@ -159,6 +160,7 @@ export function GenericMultiselect({
   options,
   onChange,
   sx,
+  fitContents = false,
 }: GenericMultiselectProps) {
   const { t } = useTranslation()
 
@@ -284,7 +286,7 @@ export function GenericMultiselect({
           sx={{
             flexDirection: 'column',
             rowGap: 2,
-            maxHeight: '342px',
+            maxHeight: fitContents ? 'auto' : '342px',
             pl: 0,
             pr:
               scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight

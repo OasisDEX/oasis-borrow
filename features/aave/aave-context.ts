@@ -13,7 +13,7 @@ import type {
 } from 'lendingProtocols/aave-like-common'
 import type { Observable } from 'rxjs'
 
-import type { ProxiesRelatedWithPosition } from './helpers'
+import type { AddressesRelatedWithPosition } from './helpers'
 import type { ManageAaveStateMachine } from './manage/state'
 import type { OpenAaveStateMachine } from './open/state'
 import type { IStrategyConfig, ManageViewInfo, PositionId } from './types'
@@ -44,10 +44,11 @@ export type AaveContext = AaveLikeServices & {
   proxiesRelatedWithPosition$: (
     positionId: PositionId,
     networkId: NetworkIds,
-  ) => Observable<ProxiesRelatedWithPosition>
+  ) => Observable<AddressesRelatedWithPosition>
   chainLinkETHUSDOraclePrice$: Observable<BigNumber>
   earnCollateralsReserveData: Record<string, Observable<AaveLikeReserveConfigurationData>>
   dpmAccountStateMachine: DPMAccountStateMachine
   aaveHistory$: (proxyAddress: string) => Observable<VaultHistoryEvent[]>
   manageViewInfo$: (args: { positionId: PositionId }) => Observable<ManageViewInfo>
+  manageViewInfoExternal$: (args: { positionId: PositionId }) => Observable<ManageViewInfo>
 }

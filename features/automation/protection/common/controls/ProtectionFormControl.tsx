@@ -25,6 +25,9 @@ export function ProtectionFormControl({
     automationTriggersData,
     protocol,
     triggerData: { autoSellTriggerData, stopLossTriggerData },
+    metadata: {
+      stopLossMetadata: { stopLossWriteEnabled },
+    },
   } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -70,7 +73,7 @@ export function ProtectionFormControl({
 
   return (
     <>
-      {isStopLossAvailable && (
+      {stopLossWriteEnabled && isStopLossAvailable && (
         <StopLossFormControl
           isStopLossActive={isStopLossActive}
           txHelpers={txHelpers}

@@ -4,6 +4,7 @@ import type BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave/aave-context-provider'
 import { useSimulationYields } from 'features/aave/hooks'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
+import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import type { IStrategyConfig } from 'features/aave/types'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -14,6 +15,7 @@ import type {
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
 import React from 'react'
+import type { Sender, StateFrom } from 'xstate'
 
 import { PositionInfoComponent } from './PositionInfoComponent'
 
@@ -27,6 +29,8 @@ export type ManageSectionComponentProps = {
   debtTokenReserveData?: AaveLikeReserveData
   cumulatives?: AaveCumulativeData
   currentPosition: IPosition
+  triggersState?: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent?: Sender<TriggersAaveEvent>
 }
 
 export function ManageSectionComponent({

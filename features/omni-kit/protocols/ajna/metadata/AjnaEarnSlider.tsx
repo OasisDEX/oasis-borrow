@@ -20,6 +20,29 @@ import type { FC } from 'react'
 import React, { useEffect, useMemo } from 'react'
 import { Box } from 'theme-ui'
 
+const resolveColorfulRanges = ({
+  htpPercentage,
+  lupPercentage,
+  lowestUtilizedPrice,
+  highestThresholdPrice,
+}: {
+  htpPercentage: number
+  lupPercentage: number
+  lowestUtilizedPrice: BigNumber
+  highestThresholdPrice: BigNumber
+}) => {
+  if (lowestUtilizedPrice.gte(highestThresholdPrice)) {
+    return `linear-gradient(to right,
+        ${omniLendingPriceColors[0]} 0 ${htpPercentage}%,
+        ${omniLendingPriceColors[1]} ${htpPercentage}% ${lupPercentage}%,
+        ${omniLendingPriceColors[2]} ${lupPercentage}% 100%)`
+  }
+
+  return `linear-gradient(to right,
+        ${omniLendingPriceColors[0]} 0 ${lupPercentage}%,
+        ${omniLendingPriceColors[2]} ${lupPercentage}% 100%`
+}
+
 interface AjnaEarnSliderProps {
   isFormFrozen: boolean
   isDisabled?: boolean
@@ -127,10 +150,12 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({
           }
           leftBottomLabel={t('safer')}
           rightBottomLabel={t('riskier')}
-          colorfulRanges={`linear-gradient(to right,
-        ${omniLendingPriceColors[0]} 0 ${htpPercentage}%,
-        ${omniLendingPriceColors[1]} ${htpPercentage}% ${lupPercentage}%,
-        ${omniLendingPriceColors[2]} ${lupPercentage}% 100%)`}
+          colorfulRanges={resolveColorfulRanges({
+            htpPercentage,
+            lupPercentage,
+            lowestUtilizedPrice,
+            highestThresholdPrice,
+          })}
           useRcSlider
         />
       )}

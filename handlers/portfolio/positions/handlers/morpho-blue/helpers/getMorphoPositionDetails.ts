@@ -13,7 +13,7 @@ import { one, zero } from 'helpers/zero'
 
 interface GetMorphoPositionDetailsParam {
   collateralPrice: BigNumber
-  liquidataionLtv: BigNumber
+  liquidationRatio: BigNumber
   position: MorphoBluePosition
   primaryToken: string
   quotePrice: BigNumber
@@ -24,7 +24,7 @@ interface GetMorphoPositionDetailsParam {
 
 export function getMorphoPositionDetails({
   collateralPrice,
-  liquidataionLtv,
+  liquidationRatio,
   position,
   primaryToken,
   quotePrice,
@@ -63,7 +63,7 @@ export function getMorphoPositionDetails({
         {
           type: 'ltv',
           value: formatDecimalAsPercent(riskRatio.loanToValue),
-          subvalue: `Max ${formatDecimalAsPercent(liquidataionLtv)}`,
+          subvalue: `Max ${formatDecimalAsPercent(liquidationRatio)}`,
         },
         {
           type: 'borrowRate',

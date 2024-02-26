@@ -1,5 +1,5 @@
 import type { TxMeta } from '@oasisdex/transactions'
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import type { ApproveTokenTransactionParameters } from 'blockchain/better-calls/erc20'
 import { createApproveTransaction } from 'blockchain/better-calls/erc20'
 import { maxUint256 } from 'blockchain/calls/erc20.constants'
@@ -7,12 +7,15 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
+import { isAddress } from 'ethers/lib/utils'
 import type {
   EthersTransactionStateMachine,
   TransactionStateMachine,
   TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
+import { zero } from 'helpers/zero'
+import { Erc20__factory } from 'types/ethers-contracts'
 import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, interpret, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -25,6 +28,8 @@ type RefTransactionMachine =
 
 export interface AllowanceStateMachineContext {
   token: string
+  customDecimals?: number
+  customTokenAddress?: string
   spender: string
   amount?: BigNumber
   minimumAmount: BigNumber
@@ -38,14 +43,25 @@ export interface AllowanceStateMachineContext {
   result?: unknown
 }
 
+/**
+ * The returned amount should be in human-readable units, for example 10.3 WBTC.
+ * @param context
+ */
 function getEffectiveAllowanceAmount(context: AllowanceStateMachineContext) {
   if (context.allowanceType === 'unlimited') {
     return maxUint256
   }
+
+  let amount = context.amount ?? zero
+
   if (context.allowanceType === 'minimum') {
-    return context.minimumAmount
+    amount = context.minimumAmount
   }
-  return context.amount!
+
+  if (context.customDecimals !== undefined) {
+    return amount.div(new BigNumber(10).pow(context.customDecimals))
+  }
+  return amount
 }
 
 function isAllowanceValid(context: AllowanceStateMachineContext) {
@@ -75,6 +91,7 @@ export type AllowanceStateMachineEvent =
   | { type: 'RETRY' }
   | { type: 'BACK' }
   | { type: 'CONTINUE' }
+  | { type: 'UPDATE_TOKEN'; token: string; customDecimals?: number; customTokenAddress?: string }
   | { type: 'SET_ALLOWANCE'; amount?: BigNumber; allowanceType: AllowanceType }
   | {
       type: 'SET_ALLOWANCE_CONTEXT' | 'RESET_ALLOWANCE_CONTEXT'
@@ -102,8 +119,20 @@ export function createAllowanceStateMachine(
         events: {} as AllowanceStateMachineEvent,
       },
       id: 'allowance',
-      initial: 'idle',
+      initial: 'resolvingToken',
       states: {
+        resolvingToken: {
+          invoke: {
+            src: 'resolveToken',
+            id: 'resolveToken',
+          },
+          on: {
+            UPDATE_TOKEN: {
+              actions: ['updateContext'],
+              target: 'idle',
+            },
+          },
+        },
         idle: {
           on: {
             NEXT_STEP: [
@@ -230,7 +259,7 @@ export function createAllowanceStateMachine(
                 signer: context.signer!,
                 amount: getEffectiveAllowanceAmount(context),
                 spender: context.spender,
-                token: context.token,
+                token: context.customTokenAddress ?? context.token,
               },
             })
 
@@ -251,6 +280,22 @@ export function createAllowanceStateMachine(
           return () => {
             actor.stop()
           }
+        },
+        resolveToken: (context) => async (sendBack) => {
+          if (isAddress(context.token)) {
+            const factory = Erc20__factory.connect(context.token, context.signer!)
+            const [resolvedTokenSymbol, resolvedDecimals] = await Promise.all([
+              factory.symbol(),
+              factory.decimals(),
+            ])
+            return sendBack({
+              type: 'UPDATE_TOKEN',
+              token: resolvedTokenSymbol,
+              customDecimals: resolvedDecimals,
+              customTokenAddress: context.token,
+            })
+          }
+          return sendBack({ type: 'UPDATE_TOKEN', token: context.token })
         },
       },
     },

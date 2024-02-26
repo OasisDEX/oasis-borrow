@@ -195,9 +195,28 @@ export const goerliContracts: MainnetContractsWithOptional = {
     'STYETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_STYETHDAI),
     'RBN-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RBNETH),
     'AJNA-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_AJNADAI),
+    'MKR-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MKRDAI),
+
+    'MEVETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MEVETHWETH),
+    'XETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_XETHWETH),
+    'DETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_DETHWETH),
+    'UNIETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_UNIETHWETH),
+    'EZETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_EZETHWETH),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
+    'MWSTETHWPUNKS20-WSTETH': contractDesc(
+      ajnaPool,
+      goerli.ajna.AjnaPoolPairs_MWSTETHWPUNKS20WSTETH,
+    ),
+    'MWSTETHWPUNKS40-WSTETH': contractDesc(
+      ajnaPool,
+      goerli.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
+    ),
+    'APXETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_APXETHETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SUSDEDAI),
+    'MPETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MPETHWETH),
+    'CSETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CSETHWETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, goerli.ajna.AjnaRewardsReedemer),

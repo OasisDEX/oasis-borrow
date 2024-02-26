@@ -1,4 +1,3 @@
-import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type {
   AdjustAaveParameters,
   CloseAaveParameters,
@@ -57,6 +56,8 @@ import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import type { MachineOptionsFrom } from 'xstate/lib/types'
 
+import type { MigrateAaveStateMachine } from './migrateAaveStateMachine'
+
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
   | ActorRefFrom<TransactionParametersStateMachine<AdjustAaveParameters>>
@@ -65,6 +66,7 @@ type ActorFromTransactionParametersStateMachine =
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: RefTransactionMachine
   refParametersMachine?: ActorFromTransactionParametersStateMachine
+  refMigrationMachine?: ActorRefFrom<MigrateAaveStateMachine>
   positionId: PositionId
   proxyAddress?: string
   ownerAddress?: string
@@ -83,6 +85,7 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
+  | { type: 'MIGRATE' }
   | { type: 'CLOSE_POSITION' }
   | { type: 'MANAGE_COLLATERAL'; manageTokenAction: ManageTokenInput['manageAction'] }
   | { type: 'MANAGE_DEBT'; manageTokenAction: ManageTokenInput['manageAction'] }
@@ -107,7 +110,6 @@ export type ManageAaveEvent =
       ownerAddress: string
       effectiveProxyAddress: string
     }
-  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: AaveLikePosition }
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | {
       type: 'HISTORY_UPDATED'
@@ -125,10 +127,10 @@ export function createManageAaveStateMachine(
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
   depositBorrowAaveMachine: TransactionParametersStateMachine<ManageAaveParameters>,
+  migrateAaveStateMachine: MigrateAaveStateMachine,
 ) {
   return createMachine(
     {
-      /** @xstate-layout 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-QpSppiA-YRGH2n3Jw+4-DJTrTcuI5Ufls7KOIWoySujDHDHhlQqm5DMkOMqq41knjeHUUEf8ZW6ti0w1-xA0K3ilDQi9HcsJSE3cGPRGROsQYTlbGpQ-dhwtuGbB8b-dp9gunGZWAM5Gl20QMbYmOoiIuAMGPOv6L2C8hc9bKpzdCjpBbh2ucCiUDQCKEVHFkWWvUBYgI8HELOhsQ1-YJFmIsf2sQHDbSbGGAMYcTo9C7E55Le73FpYy1l2puWeD5fYIVuQvnLLkeSiVh1URmxzBlL3GrP1l6IU9K4f2IMYhrFa2pmwnXMvZd6-13gRW3B+YbQiUrk2Kszeq9tO+S9XCrGGJGOMnG7mqZcx1z86Wds9cDXVRq+9ZDtT4MVqME3yvTaq62Bjb6USWBiTw2ISmEuYaS5t7b3XLllrUYBzR4bjujd6iDyDYPKuze2rnH5fY0JA18vF25zKNmo4+113bgaLgLmrrXeuHFRNonE5CST-J6M3ibNYPa5gAwhFbEOZ79P3WM5HJ99HOXA1Ed5cJ0jePnafN52AmjsYpM-SCLYO+QowQcjlEbJHKmGdvYKWjlnzABNBLV2EtcPOqP89o4Lhjzgwz8VmAGLwuCS7KZezblL72RySC8cQZgeXCwDaK2RrXp3QdTZJ1dzWTZkQzOiPd1KqUrAbdt1tz80fxGx-jwVorw2zX49T0T9Pl3Iea2mz2OUgYYiRD1sXiPduy8x7j31hPB25BHZGynqYhOytN4h3NnOx4wwEt5IDRpvRe-tf71Hwfv2v5tXuB1ZPuip9neJ83+fejUKITMYiLsr5xKI7p3QuXJfArl9j1j7zWjNfH-G43i7c+0qMw9gawIM5gwcCQj+lUYeL+fepe2+Fe5wVcNcdcDcR+M8YmuuAu8Qbkfk-QskDW4urYdgG+I6AaSKAA7hgNQEQGAMQJpuWk9NFLFDcKICUGUDaLOlECDDYNNuNKmm2NMFDp4DDkHEiD5OtjLs-oOiXuQRoFQfsmAO-oQHQQwZFMwQ8GUKweweUIQMVheOzDhIXoDDJB2g1rhFSg1mJHgqQa5nIQoTQYriziofQSUuoTFJoezmwRwXoegSjAYd6I2MYU2PevzKsIhFEKDCEMeJIaHrLjIXAbABQToHQGwBoJSBoLIvIhQawDvKPLmOBEUBwBQKahnPXtfJKrWMHA2FrOJNweSp6ISpECJLEDNqmrYe4kkSkbQGkRQAogiroGoAin4LkR-A9A8IUcUaUQAuUaSn0I0jUbGEEYiL7J7PYGhE4AtmhA2B0QUl0cQKkRoDwKgLIugKMbvJ-AUUUSUegmUZPnMVUeQrUcsQ0Y2NJBhPGiJGsCHlbjAQkZvjYLAJkOIB9GkZIOIswBAPoE4owHgBoFIk4k-nmjuiXkCQQCCd1GCeIggLCRoNQGQP8I0LOkiJEOGKmn7PKAkLGB2mbqEFMt8XKJyIiLsYCcCaCRoOCcwJcvIrIjYEMWQFUpkcgPAbmmqp+qiWyZiRydibifia6ESX4bxOJCIXfqVMeA2F2A0YKDZsvP6AqMMI4CQVIcieKYkckQcacP4mUhUtUrUnUmQs0q0tAfESiWad0X4sSYFrWMFuJIqgGCsKsZyO7DFl2GSq4DECyWiUQOaXQOBKgPQAigorIiwFUJwCIJSBPAZGmDcHka8MDqfrPqTgNKiAYiNDJMHLGD8UiWKc5okWODGbQHGQmUmSmYEhwCIIfMfLXGfDmR-PmWngAUWfPLyPeGKHeGMByNmtWVhm1iOlGYQA2U2YmcmY7m2SIN-L-L2Rcf2f-uDkOa3HrPZGKC6gXOCFWc6dIa6QCcmXgPQGAMkUMtgBAAAFYKLlIlK77-b76PBA6KkbQPELHU51GprkpAztzxD6yppaz8Isk3l3kPlQBPmvnvl-pV6J6zoAXVFAUvHbRxDDSuBLCEVjBTkXkmm1nXlgC3n3l+JIVvkMFoWj6153HH6YVPFLH1EMZoR9DWAQixgLb1iwWUXwV+IlBIraCoXD7V4YWVGAXPEcUPqBgSiBhdziTYhNiCVUUIWiXMgSX7aDZMUzH3EyVYVyUgXbQuDij+n8KyhVa8gaXCVDLaXiX+KfktQA4H6-k-4zysWLHAUrE-SgKBiFTNgjAzAsnEBGBFDoDiDyJyJwCwA8DEC0CXKwBclZGZF8ndaCmyLCmyJKKJXJWyKwBsA5boBAnUDyl-kuxChcirZRhCgtjUm4UhBITEGdyoQhhQFMqXmmkAkRVRUxUaBxWwAJVJUpWqJVAyCGgrhvCPBpxeWHj+6LaLC8hLFOAyhCHzbjJYwRgiQ9ATTGk1mzmub9XRWxXJkjUFXjXAQPCED0yJzagUCnyBLTGgYsw1Vkn1WUngj8QMYES8G8g7UgxOQ9zhWRVnVDUXWjWFWpU3V3UOx6TgTYBFA0ivWGYbQkm1XxBfWNW-U-Tgg57EGChzAxAuBg0DXnXxXMBw33W6QPRPWo0GjEkfV1UUm40dpRgrDrGoiuxpIgjk0Q3DWw1cC3W03rhI0o1o3+ZAgs3Y1s1Ul42TAggxAA3LxgjNiAzr6HUzmbYRVLktmrlpnM2kms0NUK0rqjB0nEEPaehUrmBg360rmpntlDYLVYIzLX4vg80yjHTyicVBAoiA3NgoToiW7Tko4l563xnLksCuWtSA6enBDekrC+lhYBnC4zKGGOANjYgeCoTJDvjoAaCeLwDNDh2OIT6-5NjBgQjIhTahWwggxdWikzmsqaoQCV0YH7TJ1UoQjoh4IMZrC2DLJIhRhgjiytZt3bKjoQAIpgCd3CoKjihOQNWUZeDWBox1jJLSjQa9xh2kVHVT29LPIDJ+IL28SLBb0r3yhr31jSoq2tiRiOBD1QiT0uLt19IvKHKfjn0UapQGJqXGL91mJAqhAgpQj66jBv3dIf3apn116T7amhBrDrCL62VC4WJNggHrB50Qr+jQPwparIo6rf0ji-3JQXgQjDRBC8gJBeAeB5ReDrG36L6gHN2Jbca27kOfKEociRi11iSQi+yWDIhNgoR+yOB+zPza0R1wFjoBrcP4pMN8N6zByCMX7dAF7hgNY0Y0PnndVkXHW8YabwPMUzwgjYgTKrZYwzI4QRaLxUpERdprDCQsn27faKNTC9rt4+2oicgzKejbRjC2C8KRA+gyhPZxE9XkUjpv4x6eOeBmLcirCnldhQippowJDt5d7ZSIj80yOcNwH2HUG0GuFDKeO919BCytiWJggb3C5d4A0Va9CQhmJF4FOvZFOZbyElPKGqGmOGW-64K64B4SNRCBhuSIhVO9CxBeB4xvhROGObbFOKFOHfYuGaYJPDPUajMmKpSAo-STK3ZQi2LcyRCRkNlpEZHpUUEJP8ihCQj8gEKAwgihGtyuC4RIhiycguDxC04H062omXMaB9EDH0BDGTBmOXzBw9iTlNgfOOBwYDR4WJPhmwYBgXPdFpHHGnF3NMNAyh0yQQogibXzxQa8G6m+QyociRmSlWRYmeNzAyQ9guAnNRAhD1Pzzlkdw4jLAuCraYsWkDNvVYJRBhg2OtNB5sxuCBlpTNj8gciWLmDrC0sHCLnR0tkJN521jnZcX1UyS+yogBwLae68hmL2XUWPkvl0XCvo1jZ4XHh8GB59QYOICTKIa0ZIaAz+wWtaViW2vS2BDbOQi7M+gTMBVjAUuGzrBmJewC2DVC1XVFWMt56fXKnrBoTkqrBUpKXOBrBlQrDxuU0jWMuog2b8PhnLyIiktutBBchLCeTpOIj8QO0avJmePmDgh7Qa28XysJIZ2KVLAJBTbQX2IdPh59VGCEAKLUA0ElsIPH6dsCR8PtpCh9sMZ1ESgxAChYghEF2JBAA */
       //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./manageAaveStateMachine.typegen').Typegen0,
       schema: {
@@ -252,6 +254,9 @@ export function createManageAaveStateMachine(
                 },
                 MANAGE_COLLATERAL: {
                   target: 'manageCollateral',
+                },
+                MIGRATE: {
+                  target: 'migrate',
                 },
               },
             },
@@ -537,6 +542,17 @@ export function createManageAaveStateMachine(
               entry: ['killTransactionMachine'],
               type: 'final',
             },
+            migrate: {
+              entry: ['spawnMigrationMachine'],
+              on: {
+                START_TRANSACTION: {
+                  target: 'txInProgressEthers',
+                },
+              },
+            },
+            // dpmCreate: {
+            //
+            // }
           },
         },
       },
@@ -623,7 +639,13 @@ export function createManageAaveStateMachine(
         SET_STOP_LOSS_LEVEL: {
           actions: 'updateContext',
         },
+        SET_TRAILING_STOP_LOSS_LEVEL: {
+          actions: 'updateContext',
+        },
         SET_STOP_LOSS_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
+        SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA: {
           actions: 'updateContext',
         },
         USE_SLIPPAGE: {
@@ -941,6 +963,10 @@ export function createManageAaveStateMachine(
           (context) => {
             const firstAction = context.strategyConfig.availableActions()[0]
 
+            if (context.positionId.external) {
+              return { type: 'MIGRATE' }
+            }
+
             switch (firstAction) {
               case 'adjust':
                 return { type: 'ADJUST_POSITION' }
@@ -975,6 +1001,19 @@ export function createManageAaveStateMachine(
             proxyAddress: context.proxyAddress,
           }
         }),
+        spawnMigrationMachine: assign((context) => ({
+          refMigrationMachine: spawn(
+            migrateAaveStateMachine.withContext({
+              strategyConfig: context.strategyConfig,
+              positionOwner: context.positionId.walletAddress!,
+              userSettings: context.userSettings,
+              web3Context: context.web3Context,
+              currentStep: 1,
+              totalSteps: 3,
+            }),
+            'migrationMachine',
+          ),
+        })),
       },
     },
   )
@@ -982,7 +1021,14 @@ export function createManageAaveStateMachine(
 
 class ManageAaveStateMachineTypes {
   needsConfiguration() {
-    return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any, {} as any)
+    return createManageAaveStateMachine(
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+    )
   }
 
   withConfig() {

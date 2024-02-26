@@ -159,10 +159,7 @@ export function ProtectionControl({
       customLoader={<VaultContainerSpinner />}
     >
       {() =>
-        vaultHasActiveTrigger ||
-        (!debt.isZero() &&
-          debt.gt(debtFloor) &&
-          (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
+        vaultHasActiveTrigger || (!debt.isZero() && debt.gt(debtFloor)) ? (
           <DefaultVaultLayout
             detailsViewControl={<ProtectionDetailsControl AutoSell={AutoSellDetailsView} />}
             editForm={

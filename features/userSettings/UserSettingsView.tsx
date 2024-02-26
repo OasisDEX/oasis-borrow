@@ -3,7 +3,6 @@ import type { ContextConnected } from 'blockchain/network.types'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
-import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import type { AccountDetails } from 'features/account/AccountData'
@@ -312,13 +311,11 @@ function WalletInfo() {
 
 export function UserSettings({ sx }: { sx?: ThemeUIStyleObject }) {
   const { t } = useTranslation()
-  const { socket } = useNotificationSocket()
   const { disconnect } = useWalletManagement()
 
   const disconnectCallback = useCallback(async () => {
-    socket?.disconnect()
     disconnect()
-  }, [socket, disconnect])
+  }, [disconnect])
 
   return (
     <Box sx={sx}>

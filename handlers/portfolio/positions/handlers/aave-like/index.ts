@@ -40,7 +40,9 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
   apiVaults,
   debug,
 }) => {
-  const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
+  const positionAutomations = allPositionsAutomations
+    .filter(filterAutomation(dpm))
+    .map((automation) => automation.triggers)
   const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     automations: positionAutomations,
     dpm,
@@ -109,9 +111,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     ],
     netValue: calculations.netValue.toNumber(),
     debuggingData: debug
-      ? {
-          ...formatBigNumberDebugData(commonRest),
-        }
+      ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
   }
 }
@@ -125,7 +125,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
   apiVaults,
   debug,
 }) => {
-  const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
+  const positionAutomations = allPositionsAutomations
+    .filter(filterAutomation(dpm))
+    .map((automation) => automation.triggers)
   const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     automations: positionAutomations,
     dpm,
@@ -232,7 +234,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
       },
     ],
     netValue: calculations.netValue.toNumber(),
-    debuggingData: debug ? { ...formatBigNumberDebugData(commonRest) } : undefined,
+    debuggingData: debug
+      ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
+      : undefined,
   }
 }
 

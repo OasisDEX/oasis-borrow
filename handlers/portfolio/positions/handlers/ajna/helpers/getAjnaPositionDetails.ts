@@ -28,7 +28,6 @@ interface GetAjnaPositionDetailsParams {
 export function getAjnaPositionDetails({
   collateralPrice,
   isOracless,
-  isProxyWithManyPositions,
   position,
   primaryToken,
   quotePrice,
@@ -150,10 +149,8 @@ export function getAjnaPositionDetails({
         },
         {
           type: 'pnl',
-          value: isProxyWithManyPositions ? notAvailable : formatDecimalAsPercent(withoutFees),
-          ...(!isProxyWithManyPositions && {
-            accent: withoutFees.gt(zero) ? 'positive' : 'negative',
-          }),
+          value: formatDecimalAsPercent(withoutFees),
+          accent: withoutFees.gt(zero) ? 'positive' : 'negative',
         },
         {
           type: 'liquidationPrice',

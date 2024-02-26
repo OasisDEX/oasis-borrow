@@ -3,10 +3,18 @@ import { AaveOpenPositionStopLoss } from 'features/aave/open/sidebars/components
 import { AaveOpenPositionStopLossLambdaSidebar } from 'features/aave/open/sidebars/components/AaveOpenPositionStopLossLambdaSidebar'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { getLocalAppConfig } from 'helpers/config'
+import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 import type { FeaturesEnum } from 'types/config'
 
-function getLambdaProtectionFlag(networkId: NetworkIds, features: Record<FeaturesEnum, boolean>) {
+function getLambdaProtectionFlag(
+  protocol: LendingProtocol,
+  networkId: NetworkIds,
+  features: Record<FeaturesEnum, boolean>,
+) {
+  if (protocol === LendingProtocol.SparkV3) {
+    return features.SparkProtectionLambdaEthereum
+  }
   const {
     AaveV3ProtectionLambdaArbitrum,
     AaveV3ProtectionLambdaBase,
@@ -30,6 +38,7 @@ function getLambdaProtectionFlag(networkId: NetworkIds, features: Record<Feature
 
 export const SidebarOpenAaveVaultStopLoss = ({ state, send, isLoading }: OpenAaveStateProps) => {
   const lambdaProtectionFlag = getLambdaProtectionFlag(
+    state.context.strategyConfig.protocol,
     state.context.strategyConfig.networkId,
     getLocalAppConfig('features'),
   )

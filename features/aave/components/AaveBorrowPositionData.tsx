@@ -1,25 +1,40 @@
 import type { IPosition } from '@oasisdex/dma-library'
+import { amountFromWei } from '@oasisdex/utils'
 import { getCurrentPositionLibCallData } from 'actions/aave-like/helpers'
 import type BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
+import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
-import {
-  DetailsSectionFooterItem,
-  DetailsSectionFooterItemWrapper,
-} from 'components/DetailsSectionFooterItem'
-import { ContentCardLiquidationPriceV2 } from 'components/vault/detailsSection/ContentCardLiquidationPriceV2'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
+import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCard'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
+import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
+import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
+import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
+import {
+  OmniCardDataAvailableToBorrow,
+  OmniCardDataAvailableToWithdraw,
+  OmniCardDataCollateralDepositedModal,
+  OmniCardDataLiquidationPriceModal,
+  OmniCardDataPositionDebtModal,
+  OmniContentCard,
+  useOmniCardDataBorrowRate,
+  useOmniCardDataLiquidationPrice,
+  useOmniCardDataNetValue,
+  useOmniCardDataTokensValue,
+} from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
-import { formatAmount, formatPrecision } from 'helpers/formatters/format'
+import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type {
@@ -27,11 +42,9 @@ import type {
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
-
-import { CostToBorrowContentCard } from './CostToBorrowContentCard'
-import { NetValueCard } from './NetValueCard'
+import type { Sender, StateFrom } from 'xstate'
 
 type AaveBorrowPositionDataProps = {
   currentPosition: IPosition
@@ -46,6 +59,9 @@ type AaveBorrowPositionDataProps = {
   strategyType: StrategyType
   lendingProtocol: LendingProtocol
   cumulatives?: AaveCumulativeData
+  // triggersState is available _only_ in manage view (this component is used for both open and manage)
+  triggersState?: StateFrom<typeof triggersAaveStateMachine>
+  sendTriggerEvent?: Sender<TriggersAaveEvent>
 }
 
 export function AaveBorrowPositionData({
@@ -61,9 +77,14 @@ export function AaveBorrowPositionData({
   strategyType,
   lendingProtocol,
   cumulatives,
+  triggersState,
 }: AaveBorrowPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
+  const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
+  const trailingStopLossLambdaData = mapTrailingStopLossFromLambda(
+    triggersState?.context.currentTriggers.triggers,
+  )
   const {
     triggerData: {
       stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
@@ -100,16 +121,7 @@ export function AaveBorrowPositionData({
     collateralToken.symbol,
     debtToken.symbol,
   )
-  const netValuePnlModalData = getOmniNetValuePnlData({
-    cumulatives,
-    productType: OmniProductType.Borrow,
-    collateralTokenPrice,
-    debtTokenPrice,
-    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
-    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
-    collateralToken: currentPosition.collateral.symbol,
-    debtToken: currentPosition.debt.symbol,
-  })
+
   const nextNetValue = nextPositionThings
     ? getOmniNetValuePnlData({
         cumulatives,
@@ -120,8 +132,197 @@ export function AaveBorrowPositionData({
         netValueInDebtToken: nextPositionThings.netValueInDebtToken,
         collateralToken: nextPosition.collateral.symbol,
         debtToken: nextPosition.debt.symbol,
-      }).netValue.inToken
+      }).netValue.inUsd
     : undefined
+
+  const positionDebtContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: nextPositionThings?.debt,
+    tokensAmount: currentPositionThings.debt,
+    tokensPrice: debtTokenPrice,
+    tokensSymbol: debtToken.symbol,
+    translationCardName: 'position-debt',
+    modal: (
+      <OmniCardDataPositionDebtModal
+        debtAmount={currentPositionThings.debt}
+        quoteToken={debtToken.symbol}
+      />
+    ),
+  })
+
+  const changeVariant: ChangeVariantType = nextPosition
+    ? nextPosition.category.maxLoanToValue
+        .minus(nextPosition.riskRatio.loanToValue)
+        .gt(LTVWarningThreshold)
+      ? 'positive'
+      : 'negative'
+    : 'positive'
+
+  const commonContentCardData = {
+    changeVariant,
+    isLoading: false,
+  }
+
+  const isShort = strategyType === StrategyType.Short
+  const liquidationPrice = !isShort
+    ? currentPositionThings.liquidationPriceInDebt
+    : currentPositionThings.liquidationPriceInCollateral
+
+  const afterLiquidationPrice = nextPositionThings
+    ? !isShort
+      ? nextPositionThings.liquidationPriceInDebt
+      : nextPositionThings.liquidationPriceInCollateral
+    : undefined
+
+  const priceFormat = isShort
+    ? `${debtToken.symbol}/${collateralToken.symbol}`
+    : `${collateralToken.symbol}/${debtToken.symbol}`
+
+  const belowCurrentPricePercentage = currentPositionThings.liquidationPriceInDebt
+    .times(debtTokenPrice)
+    .minus(collateralTokenPrice)
+    .dividedBy(collateralTokenPrice)
+    .absoluteValue()
+
+  const aboveCurrentPricePercentage = currentPositionThings.liquidationPriceInCollateral
+    .times(collateralTokenPrice)
+    .minus(debtTokenPrice)
+    .dividedBy(debtTokenPrice)
+    .absoluteValue()
+
+  const percentageDiff = isShort
+    ? aboveCurrentPricePercentage.times(-1)
+    : belowCurrentPricePercentage
+
+  const liquidationPriceContentCardCommonData = useOmniCardDataLiquidationPrice({
+    afterLiquidationPrice,
+    liquidationPrice,
+    unit: priceFormat,
+    ratioToCurrentPrice: percentageDiff,
+    modal: (
+      <OmniCardDataLiquidationPriceModal
+        liquidationPenalty={debtTokenReserveConfigurationData.liquidationBonus}
+        liquidationPrice={liquidationPrice}
+        priceFormat={priceFormat}
+        ratioToCurrentPrice={percentageDiff}
+      />
+    ),
+  })
+
+  const collateralDepositedContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: nextPositionThings?.collateral,
+    tokensAmount: currentPositionThings.collateral,
+    tokensPrice: collateralTokenPrice,
+    tokensSymbol: collateralToken.symbol,
+    translationCardName: 'collateral-deposited',
+    modal: (
+      <OmniCardDataCollateralDepositedModal
+        collateralAmount={currentPositionThings.collateral}
+        collateralToken={collateralToken.symbol}
+      />
+    ),
+  })
+
+  const netValueContentCardCommonData = useOmniCardDataNetValue({
+    afterNetValue: nextNetValue,
+    netValue: currentPositionThings.netValue,
+  })
+
+  const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
+    borrowRate: NaNIsZero(currentPositionThings.netBorrowCostPercentage),
+    afterBorrowRate: nextPositionThings?.netBorrowCostPercentage,
+    modal: (
+      <CostToBorrowContentCardModal
+        currentPositionThings={currentPositionThings}
+        debtTokenPrice={debtTokenPrice}
+        position={currentPosition}
+      />
+    ),
+  })
+  const maxCollateralToWithdraw = amountFromWei(
+    currentPosition.maxCollateralToWithdraw,
+    collateralToken.precision,
+  )
+  const resolvedMaxCollateralToWithdraw = maxCollateralToWithdraw.isNaN()
+    ? zero
+    : maxCollateralToWithdraw
+
+  const availableToWithdrawContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: nextPosition
+      ? amountFromWei(nextPosition?.maxCollateralToWithdraw, collateralToken.precision)
+      : undefined,
+    tokensAmount: resolvedMaxCollateralToWithdraw,
+    tokensSymbol: collateralToken.symbol,
+    translationCardName: 'available-to-withdraw',
+    modal: (
+      <OmniCardDataAvailableToWithdraw
+        availableToWithdraw={resolvedMaxCollateralToWithdraw}
+        tokenSymbol={collateralToken.symbol}
+      />
+    ),
+  })
+
+  const maxDebtToBorrow = amountFromWei(currentPosition.maxDebtToBorrow)
+
+  const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: nextPosition ? amountFromWei(nextPosition?.maxDebtToBorrow) : undefined,
+    tokensAmount: maxDebtToBorrow,
+    tokensSymbol: debtToken.symbol,
+    translationCardName: 'available-to-borrow',
+    modal: (
+      <OmniCardDataAvailableToBorrow
+        availableToBorrow={maxDebtToBorrow}
+        quoteToken={debtToken.symbol}
+      />
+    ),
+  })
+
+  const automationData = useMemo(() => {
+    if (trailingStopLossLambdaData.trailingStopLossTriggerName) {
+      const collateral = amountFromWei(
+        currentPosition.collateral.amount || zero,
+        currentPosition.collateral.precision,
+      )
+      const debt = amountFromWei(
+        currentPosition.debt.amount || zero,
+        currentPosition.debt.precision,
+      )
+      const executionPrice = trailingStopLossLambdaData.dynamicParams.executionPrice
+      return {
+        isAutomationAvailable: true,
+        stopLossLevel: debt.div(collateral.times(executionPrice)),
+        isStopLossEnabled: true,
+        isAutomationDataLoaded: true,
+        isTrailingStopLoss: true,
+      }
+    }
+    if (stopLossLambdaData.stopLossTriggerName) {
+      return {
+        isAutomationAvailable: true,
+        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2), // still needs to be divided by 100
+        isStopLossEnabled: true,
+        isAutomationDataLoaded: true,
+      }
+    }
+    return {
+      isAutomationAvailable,
+      stopLossLevel,
+      isStopLossEnabled,
+      isAutomationDataLoaded,
+    }
+  }, [
+    currentPosition.collateral.amount,
+    currentPosition.collateral.precision,
+    currentPosition.debt.amount,
+    currentPosition.debt.precision,
+    isAutomationAvailable,
+    isAutomationDataLoaded,
+    isStopLossEnabled,
+    stopLossLambdaData.stopLossLevel,
+    stopLossLambdaData.stopLossTriggerName,
+    stopLossLevel,
+    trailingStopLossLambdaData.dynamicParams?.executionPrice,
+    trailingStopLossLambdaData.trailingStopLossTriggerName,
+  ])
 
   return (
     <Grid>
@@ -132,75 +333,48 @@ export function AaveBorrowPositionData({
         title={t('system.overview')}
         content={
           <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPriceV2
-              liquidationPriceInDebt={currentPositionThings.liquidationPriceInDebt}
-              afterLiquidationPriceInDebt={nextPositionThings?.liquidationPriceInDebt}
-              liquidationPriceInCollateral={currentPositionThings.liquidationPriceInCollateral}
-              afterLiquidationPriceInCollateral={nextPositionThings?.liquidationPriceInCollateral}
-              collateralPrice={collateralTokenPrice}
-              quotePrice={debtTokenPrice}
-              collateralToken={currentPosition.collateral.symbol}
-              quoteToken={currentPosition.debt.symbol}
-              isShort={strategyType === StrategyType.Short}
-              liquidationPenalty={debtTokenReserveConfigurationData.liquidationBonus}
+            <OmniContentCard
+              {...commonContentCardData}
+              {...liquidationPriceContentCardCommonData}
             />
             <ContentCardLtv
               loanToValue={currentPosition.riskRatio.loanToValue}
               liquidationThreshold={currentPosition.category.liquidationThreshold}
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
-              maxLoanToValue={currentPosition.category.maxLoanToValue}
-              automation={{
-                isAutomationAvailable,
-                isAutomationDataLoaded,
-                isStopLossEnabled,
-                stopLossLevel,
-              }}
+              maxLoanToValue={nextPosition?.category.maxLoanToValue}
+              automation={automationData}
             />
-            <CostToBorrowContentCard
-              position={currentPosition}
-              currentPositionThings={currentPositionThings}
-              nextPositionThings={nextPositionThings}
-              debtTokenPrice={debtTokenPrice}
+            <OmniContentCard
+              {...commonContentCardData}
+              {...collateralDepositedContentCardCommonData}
             />
-            <NetValueCard {...netValuePnlModalData} nextNetValue={nextNetValue} />
+            <OmniContentCard {...commonContentCardData} {...positionDebtContentCardCommonData} />
           </DetailsSectionContentCardWrapper>
         }
         footer={
           <DetailsSectionFooterItemWrapper columns={2}>
-            <DetailsSectionFooterItem
-              sx={{ pr: 3 }}
-              title={t('system.total-exposure', { token: collateralToken.symbol })}
-              value={`${formatAmount(
-                currentPositionThings.totalExposure,
-                collateralToken.symbol,
-              )} ${collateralToken.symbol}`}
-              change={
-                nextPositionThings && {
-                  variant: nextPositionThings.totalExposure.gt(currentPositionThings.totalExposure)
-                    ? 'positive'
-                    : 'negative',
-                  value: `${formatAmount(
-                    nextPositionThings.totalExposure,
-                    collateralToken.symbol,
-                  )} ${collateralToken.symbol} ${t('after')}`,
-                }
+            <OmniContentCard
+              asFooter
+              {...commonContentCardData}
+              {...borrowRateContentCardCommonData}
+              changeVariant={
+                nextPositionThings?.netBorrowCostPercentage.lte(zero) ? 'positive' : 'negative'
               }
             />
-            <DetailsSectionFooterItem
-              sx={{ pr: 3 }}
-              title={t('system.position-debt')}
-              value={`${formatPrecision(currentPositionThings.debt, 4)} ${debtToken.symbol}`}
-              change={
-                nextPositionThings && {
-                  variant: nextPositionThings.debt.gt(currentPositionThings.debt)
-                    ? 'positive'
-                    : 'negative',
-                  value: `${formatPrecision(
-                    nextPositionThings.debt.lt(zero) ? zero : nextPositionThings.debt,
-                    4,
-                  )} ${nextPosition.debt.symbol} ${t('after')}`,
-                }
-              }
+            <OmniContentCard
+              asFooter
+              {...commonContentCardData}
+              {...netValueContentCardCommonData}
+            />
+            <OmniContentCard
+              asFooter
+              {...commonContentCardData}
+              {...availableToWithdrawContentCardCommonData}
+            />
+            <OmniContentCard
+              asFooter
+              {...commonContentCardData}
+              {...availableToBorrowContentCardCommonData}
             />
           </DetailsSectionFooterItemWrapper>
         }
