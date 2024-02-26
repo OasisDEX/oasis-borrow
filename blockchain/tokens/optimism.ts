@@ -11,6 +11,7 @@ const { optimism } = ADDRESSES
 
 export const tokensOptimism = {
   CBETH: contractDesc(erc20, optimism.common.CBETH),
+  OP: contractDesc(erc20, optimism.common.OP),
   DAI: contractDesc(erc20, optimism.common.DAI),
   ETH: contractDesc(erc20, optimism.common.WETH),
   FRAX: contractDesc(erc20, optimism.common.FRAX),
