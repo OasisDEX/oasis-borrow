@@ -40,15 +40,19 @@ function AllowanceInfoStateViewContent({
   send,
 }: Pick<AllowanceViewStateProps, 'state' | 'send'>) {
   const { t } = useTranslation()
-  const { token, minimumAmount, allowanceType, amount } = state.context
+  const { token, minimumAmount, allowanceType, amount, customDecimals } = state.context
 
   const isUnlimited = allowanceType === 'unlimited'
   const isMinimum = allowanceType === 'minimum'
   const isCustom = allowanceType === 'custom'
 
+  const humanReadableMinimumAmount = customDecimals
+    ? minimumAmount.div(new BigNumber(10).pow(customDecimals))
+    : minimumAmount
+
   const allowanceAmountInfo = isUnlimited
     ? t('unlimited-allowance')
-    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
+    : `${formatCryptoBalance(isMinimum ? humanReadableMinimumAmount : amount || zero)} ${token}`
 
   return (
     <Grid gap={3}>
@@ -72,11 +76,7 @@ function AllowanceInfoStateViewContent({
         <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
           {t('token-depositing', {
             token,
-            amount: state.context.customDecimals
-              ? formatCryptoBalance(
-                  minimumAmount!.div(new BigNumber(10).pow(state.context.customDecimals)),
-                )
-              : formatCryptoBalance(minimumAmount!),
+            amount: formatCryptoBalance(humanReadableMinimumAmount),
           })}
         </Text>
       </Radio>
@@ -151,14 +151,18 @@ function AllowanceInfoStateView({
 
 function AllowanceInProgressStateViewContent({ state }: Pick<AllowanceViewStateProps, 'state'>) {
   const { t } = useTranslation()
-  const { token, minimumAmount, allowanceType, amount } = state.context
+  const { token, minimumAmount, allowanceType, amount, customDecimals } = state.context
 
   const isUnlimited = allowanceType === 'unlimited'
   const isMinimum = allowanceType === 'minimum'
 
+  const humanReadableMinimumAmount = customDecimals
+    ? minimumAmount.div(new BigNumber(10).pow(customDecimals))
+    : minimumAmount
+
   const allowanceAmountInfo = isUnlimited
     ? t('unlimited-allowance')
-    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
+    : `${formatCryptoBalance(isMinimum ? humanReadableMinimumAmount : amount || zero)} ${token}`
 
   return (
     <Grid gap={3}>
@@ -200,15 +204,19 @@ function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps)
 function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const [transactionState] = useActor(state.context.refTransactionMachine!)
-  const { token, minimumAmount, allowanceType, amount } = state.context
+  const { token, minimumAmount, allowanceType, amount, customDecimals } = state.context
   const { txHash, etherscanUrl } = transactionState.context
+
+  const humanReadableMinimumAmount = customDecimals
+    ? minimumAmount.div(new BigNumber(10).pow(customDecimals))
+    : minimumAmount
 
   const isUnlimited = allowanceType === 'unlimited'
   const isMinimum = allowanceType === 'minimum'
 
   const allowanceAmountInfo = isUnlimited
     ? t('unlimited-allowance')
-    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
+    : `${formatCryptoBalance(isMinimum ? humanReadableMinimumAmount : amount || zero)} ${token}`
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
@@ -241,14 +249,18 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
 
 function AllowanceRetryStateView({ state, send, backButtonOnFirstStep }: AllowanceViewStateProps) {
   const { t } = useTranslation()
-  const { token, minimumAmount, allowanceType, amount } = state.context
+  const { token, minimumAmount, allowanceType, amount, customDecimals } = state.context
 
   const isUnlimited = allowanceType === 'unlimited'
   const isMinimum = allowanceType === 'minimum'
 
+  const humanReadableMinimumAmount = customDecimals
+    ? minimumAmount.div(new BigNumber(10).pow(customDecimals))
+    : minimumAmount
+
   const allowanceAmountInfo = isUnlimited
     ? t('unlimited-allowance')
-    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
+    : `${formatCryptoBalance(isMinimum ? humanReadableMinimumAmount : amount || zero)} ${token}`
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
