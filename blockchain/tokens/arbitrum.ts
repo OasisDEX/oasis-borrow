@@ -9,6 +9,7 @@ const { arbitrum } = ADDRESSES
 
 export const tokensArbitrum = {
   ETH: contractDesc(erc20, arbitrum.common.WETH),
+  ARB: contractDesc(erc20, arbitrum.common.ARB),
   CBETH: contractDesc(erc20, arbitrum.common.CBETH),
   DAI: contractDesc(erc20, arbitrum.common.DAI),
   FRAX: contractDesc(erc20, arbitrum.common.FRAX),
