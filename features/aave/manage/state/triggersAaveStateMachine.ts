@@ -124,7 +124,6 @@ export const hasActiveProtection = ({
         aaveStopLossToCollateralDMA,
         aaveStopLossToDebtDMA,
         aaveTrailingStopLossDMA,
-        sparkTrailingStopLossDMA,
       )
     case LendingProtocol.SparkV3:
       return isAnyValueDefined(
@@ -132,6 +131,7 @@ export const hasActiveProtection = ({
         sparkStopLossToDebt,
         sparkStopLossToCollateralDMA,
         sparkStopLossToDebtDMA,
+        sparkTrailingStopLossDMA,
       )
     case LendingProtocol.AaveV2:
       return false
@@ -179,9 +179,9 @@ export const hasActiveTrailingStopLoss = ({
   const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
-      return isAnyValueDefined(aaveTrailingStopLossDMA, sparkTrailingStopLossDMA)
+      return isAnyValueDefined(aaveTrailingStopLossDMA)
     case LendingProtocol.SparkV3:
-      return false
+      return isAnyValueDefined(sparkTrailingStopLossDMA)
     case LendingProtocol.AaveV2:
       return false
   }
