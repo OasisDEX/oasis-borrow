@@ -271,6 +271,13 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
       isAutomationFeatureEnabled: (feature) => {
+        if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkTrailingStopLossLambdaEthereum]
+        }
+
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkOptimizationEthereum]
+        }
         return (
           config.strategyType === StrategyType.Long &&
           feature === AutomationFeatures.STOP_LOSS &&
@@ -325,6 +332,13 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
       isAutomationFeatureEnabled: (feature) => {
+        if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkTrailingStopLossLambdaEthereum]
+        }
+
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkOptimizationEthereum]
+        }
         return (
           config.strategyType === StrategyType.Long &&
           feature === AutomationFeatures.STOP_LOSS &&

@@ -36,6 +36,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
+import { nbsp } from 'helpers/nbsp'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type {
@@ -325,12 +326,14 @@ export function AaveMultiplyPositionData({
             title: {
               translationKey: 'automation.trailing-stop-loss-execution-price-increased',
               params: {
-                executionPrice: formatCryptoBalance(executionPrice),
-                originalExecutionPrice: formatCryptoBalance(originalExecutionPrice),
-                delta: `+${formatCryptoBalance(executionPrice.minus(originalExecutionPrice))} ${
-                  currentPosition.debt.symbol
-                }`,
-                token: currentPosition.debt.symbol,
+                executionPriceAndToken: `${formatCryptoBalance(
+                  executionPrice,
+                )}${nbsp}${priceFormat}`,
+                originalExecutionPriceAndToken: `${formatCryptoBalance(
+                  originalExecutionPrice,
+                )}${nbsp}${priceFormat}`,
+                delta: `+${formatCryptoBalance(executionPrice.minus(originalExecutionPrice))}`,
+                token: priceFormat,
               },
             },
             sessionStorageParam: formatCryptoBalance(executionPrice),

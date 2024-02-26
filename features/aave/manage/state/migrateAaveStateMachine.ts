@@ -57,8 +57,12 @@ export interface MigrateAaveContext {
   reserveData?: ReserveData
 }
 
+/**
+ * To transfer all collateral from the position, we need to have a slightly higher allowance for the protocol token. However, the wallets show warnings about the allowance being too high.
+ * @param position
+ */
 export const allowanceAmount = (position: AaveLikePosition): BigNumber => {
-  return position.collateral.amount.times(1.05).integerValue()
+  return position.collateral.amount.times(1.01).integerValue()
 }
 
 export type MigrateAaveEvent =

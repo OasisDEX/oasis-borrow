@@ -60,12 +60,12 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   shouldShowDynamicLtv,
   simulation,
 }) => {
-  const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPrice))
-    : position.liquidationPrice
+  const liquidationPrice = normalizeValue(
+    isShort ? one.div(position.liquidationPrice) : position.liquidationPrice,
+  )
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
-    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
+    normalizeValue(isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
   const ratioToCurrentPrice = one.minus(
     isShort
       ? normalizeValue(one.div(position.liquidationToMarketPrice))

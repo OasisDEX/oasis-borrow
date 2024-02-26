@@ -33,14 +33,14 @@ export function OmniBorrowFormOrder() {
     currentPosition,
   })
 
-  const liquidationPrice = isShort
-    ? normalizeValue(one.div(positionData.liquidationPrice))
-    : positionData.liquidationPrice
+  const liquidationPrice = normalizeValue(
+    isShort ? one.div(positionData.liquidationPrice) : positionData.liquidationPrice,
+  )
   const afterLiquidationPrice =
     simulationData?.liquidationPrice &&
-    (isShort
-      ? normalizeValue(one.div(simulationData.liquidationPrice))
-      : simulationData.liquidationPrice)
+    normalizeValue(
+      isShort ? one.div(simulationData.liquidationPrice) : simulationData.liquidationPrice,
+    )
 
   const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {
