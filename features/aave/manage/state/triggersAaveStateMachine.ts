@@ -81,7 +81,7 @@ export const getCurrentProtectionView = ({
     return 'auto-sell'
   }
 
-  if (triggers.aaveTrailingStopLossDMA) {
+  if (triggers.aaveTrailingStopLossDMA || triggers.sparkTrailingStopLossDMA) {
     return 'trailing-stop-loss'
   }
 
@@ -113,6 +113,7 @@ export const hasActiveProtection = ({
     aaveStopLossToDebt,
     aaveBasicSell,
     aaveTrailingStopLossDMA,
+    sparkTrailingStopLossDMA,
   } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
@@ -123,6 +124,7 @@ export const hasActiveProtection = ({
         aaveStopLossToCollateralDMA,
         aaveStopLossToDebtDMA,
         aaveTrailingStopLossDMA,
+        sparkTrailingStopLossDMA,
       )
     case LendingProtocol.SparkV3:
       return isAnyValueDefined(
@@ -174,10 +176,10 @@ export const hasActiveTrailingStopLoss = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const { aaveTrailingStopLossDMA } = context.currentTriggers.triggers
+  const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
-      return isAnyValueDefined(aaveTrailingStopLossDMA)
+      return isAnyValueDefined(aaveTrailingStopLossDMA, sparkTrailingStopLossDMA)
     case LendingProtocol.SparkV3:
       return false
     case LendingProtocol.AaveV2:

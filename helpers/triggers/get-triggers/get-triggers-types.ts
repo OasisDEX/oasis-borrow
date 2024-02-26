@@ -192,6 +192,31 @@ export type DmaAaveTrailingStopLoss = {
   }
 }
 
+export type DmaSparkTrailingStopLoss = {
+  triggerTypeName: 'DmaSparkTrailingStopLoss'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    collateralOracle: string
+    collateralAddedRoundId: string
+    debtOracle: string
+    debtAddedRoundId: string
+    trailingDistance: string
+    closeToCollateral: string
+  }
+  dynamicParams: {
+    executionPrice: string
+    originalExecutionPrice: string
+  }
+}
+
 export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 
 export type GetTriggersResponse = {
@@ -207,5 +232,6 @@ export type GetTriggersResponse = {
     aaveBasicBuy?: DmaAaveBasicBuy
     aaveBasicSell?: DmaAaveBasicSell
     aaveTrailingStopLossDMA?: DmaAaveTrailingStopLoss
+    sparkTrailingStopLossDMA?: DmaSparkTrailingStopLoss
   }
 }
