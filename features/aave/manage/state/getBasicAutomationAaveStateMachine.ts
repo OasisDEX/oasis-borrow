@@ -20,6 +20,7 @@ import type {
   SetupBasicAutoResponseWithRequiredTransaction,
   SparkStopLossToCollateral,
   SparkStopLossToDebt,
+  SupportedLambdaProtocols,
 } from 'helpers/triggers'
 import {
   getIntFromDecodedParam,
@@ -156,6 +157,7 @@ export type BasicAutomationAaveContext<Trigger extends AaveLikeAutomationTrigger
   gasEstimation: HasGasEstimation
   signer?: ethers.Signer
   networkId: NetworkIds
+  protocol: SupportedLambdaProtocols
   retryCount: number
   action: TriggerAction
   feature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL | AutomationFeatures.STOP_LOSS
@@ -205,11 +207,11 @@ const getDefaults = (
 ):
   | Pick<
       BasicAutomationAaveContext<BasicAutoTrigger>,
-      'maxGasFee' | 'usePrice' | 'executionTriggerLTV' | 'targetTriggerLTV' | 'price'
+      'maxGasFee' | 'usePrice' | 'executionTriggerLTV' | 'targetTriggerLTV' | 'price' | 'protocol'
     >
   | Pick<
       BasicAutomationAaveContext<AaveLikeStopLossTriggers>,
-      'maxCoverage' | 'usePrice' | 'ltv' | 'price'
+      'maxCoverage' | 'usePrice' | 'ltv' | 'price' | 'protocol'
     > => {
   const price = parsePriceFromDecodedParam(
     getPriceFromDecodedParam(context.currentTrigger),
@@ -229,6 +231,7 @@ const getDefaults = (
       targetTriggerLTV:
         getLtvNumberFromDecodedParam(decodedParams?.targetLtv) ?? context.defaults.targetTriggerLTV,
       price: price,
+      protocol: context.protocol,
     }
   }
   if (context.feature === AutomationFeatures.STOP_LOSS) {
@@ -241,6 +244,7 @@ const getDefaults = (
         getLtvNumberFromDecodedParam(decodedParams?.executionLtv) ??
         context.defaults.executionTriggerLTV,
       price: price,
+      protocol: context.protocol,
     }
   }
   throw new Error('Feature not implemented')
@@ -281,6 +285,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
         retryCount: 0,
         action: TriggerAction.Add,
         feature: automationFeature,
+        protocol: LendingProtocol.AaveV3,
       },
       preserveActionOrder: true,
       predictableActionArguments: true,
@@ -562,7 +567,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
                 price: event.params.price?.times(10 ** 8),
                 usePrice: event.params.usePrice,
                 maxBaseFee: new BigNumber(event.params.maxGasFee),
-                protocol: LendingProtocol.AaveV3,
+                protocol: context.protocol,
                 triggerType: triggerType,
                 strategy: {
                   collateralAddress: event.params.position.collateral.token.address,

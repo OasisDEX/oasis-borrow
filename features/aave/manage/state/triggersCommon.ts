@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 
 export type PositionLike = {
   dpm: string
@@ -19,5 +20,6 @@ export type PositionLike = {
     }
     amount: BigNumber
   }
+  protocol: AaveLendingProtocol | SparkLendingProtocol
   pricesDenomination: 'collateral' | 'debt'
 }
