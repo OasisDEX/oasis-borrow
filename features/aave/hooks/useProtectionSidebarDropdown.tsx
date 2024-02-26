@@ -50,7 +50,7 @@ export function useProtectionSidebarDropdown(
       panel: AutomationFeatures.STOP_LOSS,
       action: () => {
         sender({
-          type: 'CHANGE_VIEW',
+          type: 'CHANGE_PROTECTION_VIEW',
           view: getStopLossView(),
         })
       },
@@ -64,7 +64,7 @@ export function useProtectionSidebarDropdown(
       icon: circle_exchange,
       panel: AutomationFeatures.AUTO_SELL,
       action: () => {
-        sender({ type: 'CHANGE_VIEW', view: 'auto-sell' })
+        sender({ type: 'CHANGE_PROTECTION_VIEW', view: 'auto-sell' })
       },
     })
   }

@@ -20,22 +20,37 @@ import type { PositionLike } from './triggersCommon'
 
 const { assign, sendTo } = actions
 
-export type TriggersViews =
-  | 'auto-buy'
+export type ProtectionTriggersViews =
   | 'auto-sell'
   | 'stop-loss-selector'
   | 'stop-loss'
   | 'trailing-stop-loss'
 
+export type OptimizationTriggersViews = 'auto-buy' | 'partial-take-profit' | undefined
+
 export type TriggersAaveEvent =
-  | { type: 'CHANGE_VIEW'; view: TriggersViews }
+  | { type: 'CHANGE_PROTECTION_VIEW'; view: ProtectionTriggersViews }
   | { type: 'SHOW_AUTO_BUY' }
-  | { type: 'SHOW_STOP_LOSS' }
+  | { type: 'SHOW_PARTIAL_TAKE_PROFIT' }
   | { type: 'RESET_PROTECTION' }
   | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
   | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
   | { type: 'SIGNER_UPDATED'; signer?: ethers.Signer }
   | { type: 'TRANSACTION_DONE' }
+
+export type TriggersAaveContext = {
+  readonly strategyConfig: IStrategyConfig
+  readonly dpm?: UserDpmAccount
+  position?: AaveLikePosition
+  optimizationCurrentView?: OptimizationTriggersViews
+  showAutoBuyBanner: boolean
+  showPartialTakeProfitBanner: boolean
+  protectionCurrentView?: ProtectionTriggersViews
+  currentTriggers: GetTriggersResponse
+  signer?: ethers.Signer
+  autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
+  autoSellTrigger: ActorRefFrom<typeof autoSellTriggerAaveStateMachine>
+}
 
 export const isOptimizationEnabled = ({
   context,
@@ -54,8 +69,12 @@ export const isAutoSellEnabled = ({
 
 export const getCurrentOptimizationView = ({
   triggers,
-}: GetTriggersResponse): 'auto-buy' | undefined => {
+}: GetTriggersResponse): OptimizationTriggersViews => {
   if (triggers.aaveBasicBuy) {
+    return 'auto-buy'
+  }
+  // TODO: add this logic, currently just for debugging
+  if (!triggers.aaveBasicBuy) {
     return 'auto-buy'
   }
   return undefined
@@ -200,22 +219,22 @@ export const hasActiveAutoSell = ({
   }
 }
 
-export type TriggersAaveContext = {
-  readonly strategyConfig: IStrategyConfig
-  readonly dpm?: UserDpmAccount
-  position?: AaveLikePosition
-  optimizationCurrentView?: 'auto-buy' | undefined
-  showAutoBuyBanner: boolean
-  protectionCurrentView?:
-    | 'auto-buy'
-    | 'auto-sell'
-    | 'stop-loss-selector'
-    | 'stop-loss'
-    | 'trailing-stop-loss'
-  currentTriggers: GetTriggersResponse
-  signer?: ethers.Signer
-  autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
-  autoSellTrigger: ActorRefFrom<typeof autoSellTriggerAaveStateMachine>
+export const hasActivePartialTakeProfit = ({
+  context,
+}: StateFrom<typeof triggersAaveStateMachine>): boolean => {
+  // TODO: add this logic, currently just for debugging
+  return false
+
+  // const protocol = context.strategyConfig.protocol
+  // const {  } = context.currentTriggers.triggers
+  // switch (protocol) {
+  //   case LendingProtocol.AaveV3:
+  //     return isAnyValueDefined(aaveBasicSell)
+  //   case LendingProtocol.SparkV3:
+  //     return false
+  //   case LendingProtocol.AaveV2:
+  //     return false
+  // }
 }
 
 function mapPositionToAutoBuyPosition({
@@ -278,7 +297,10 @@ export const triggersAaveStateMachine = createMachine(
           SHOW_AUTO_BUY: {
             actions: ['setAutoBuyView'],
           },
-          CHANGE_VIEW: {
+          SHOW_PARTIAL_TAKE_PROFIT: {
+            actions: ['setPartialTakeProfitView'],
+          },
+          CHANGE_PROTECTION_VIEW: {
             actions: ['changeView'],
           },
           RESET_PROTECTION: {
@@ -328,6 +350,12 @@ export const triggersAaveStateMachine = createMachine(
       setAutoBuyView: assign(() => ({
         optimizationCurrentView: 'auto-buy' as const,
         showAutoBuyBanner: false,
+        showPartialTakeProfitBanner: true,
+      })),
+      setPartialTakeProfitView: assign(() => ({
+        optimizationCurrentView: 'partial-take-profit' as const,
+        showAutoBuyBanner: true,
+        showPartialTakeProfitBanner: false,
       })),
       changeView: assign((context, { view }) => ({
         protectionCurrentView: view,
@@ -367,6 +395,10 @@ export const triggersAaveStateMachine = createMachine(
           showAutoBuyBanner:
             context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY) &&
             currentOptimizationView !== 'auto-buy',
+          showPartialTakeProfitBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(
+              AutomationFeatures.PARTIAL_TAKE_PROFIT,
+            ) && currentOptimizationView !== 'partial-take-profit',
         }
       }),
       updateAutoBuyDefaults: sendTo(

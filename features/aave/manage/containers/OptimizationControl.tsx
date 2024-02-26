@@ -1,6 +1,7 @@
 import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { AutoBuyBanner } from 'features/aave/components/banners'
+import { PartialTakeProfitBanner } from 'features/aave/components/banners/partial-take-profit-banner'
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
 import { useOptimizationSidebarDropdown } from 'features/aave/hooks'
@@ -101,8 +102,16 @@ export function OptimizationControl({
             autoBuyDetailsLayoutProps && (
               <BasicAutomationDetailsView {...autoBuyDetailsLayoutProps} />
             )}
+          {triggersState.context.optimizationCurrentView === 'partial-take-profit' && (
+            <Box>Partial take profit details</Box>
+          )}
           {triggersState.context.showAutoBuyBanner && (
             <AutoBuyBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_BUY' })} />
+          )}
+          {triggersState.context.showPartialTakeProfitBanner && (
+            <PartialTakeProfitBanner
+              buttonClicked={() => sendTriggerEvent({ type: 'SHOW_PARTIAL_TAKE_PROFIT' })}
+            />
           )}
         </Grid>
         {triggersState.context.optimizationCurrentView === 'auto-buy' &&
@@ -119,6 +128,9 @@ export function OptimizationControl({
               />
             </Box>
           )}
+        {triggersState.context.optimizationCurrentView === 'partial-take-profit' && (
+          <Box>Partial take profit sidebar</Box>
+        )}
       </Grid>
     </Container>
   )
