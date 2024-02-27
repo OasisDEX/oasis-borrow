@@ -18,22 +18,21 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import {
   AaveLikeDetailsSectionContent,
   AaveLikeDetailsSectionFooter,
   AaveLikeYieldLoopRiskBanner,
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
+  aaveLikeFlowStateFilter,
   getAaveLikeNotifications,
   getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
-import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
-import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
-import { AaveLikeLendingProtocol, isAaveLikeLendingProtocol } from 'lendingProtocols'
-import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
+import { isAaveLikeLendingProtocol, LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -96,7 +95,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
 
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
     productType,
-    auction: productContext.position.positionAuction as MorphoHistoryEvent,
+    auction: productContext.position.positionAuction as AaveHistoryEvent,
   })
 
   switch (productType) {
@@ -119,7 +118,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         },
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
-            morphoFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+            aaveLikeFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
         },
         values: {
           interestRate: position.borrowRate,
