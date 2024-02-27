@@ -105,9 +105,7 @@ export const commonDataMapper = ({
     : dpm.positionType
   const emptyAutomationsList = {
     AAVE: {},
-    Spark: {
-      stopLoss: emptyAutomations.stopLoss,
-    },
+    Spark: emptyAutomations,
     AAVE_V3: emptyAutomations,
   }[dpm.protocol]
   return {
