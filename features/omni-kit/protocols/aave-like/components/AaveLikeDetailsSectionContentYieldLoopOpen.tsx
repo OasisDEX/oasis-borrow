@@ -9,7 +9,6 @@ import {
 } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import type { OmniProductType } from 'features/omni-kit/types'
-import { useHash } from 'helpers/useHash'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -29,7 +28,6 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
   } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
   const { t } = useTranslation()
-  const [, setHash] = useHash<string>()
   const amount = useMemo(
     () => depositAmount || omniYieldLoopDefaultSimulationDeposit,
     [depositAmount],

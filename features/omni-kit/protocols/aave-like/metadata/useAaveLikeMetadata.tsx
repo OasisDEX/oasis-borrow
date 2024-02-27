@@ -29,9 +29,11 @@ import {
   getAaveLikeNotifications,
   getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
+import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { isAaveLikeLendingProtocol, LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
@@ -82,6 +84,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isYieldLoop,
       isOpening,
       quoteToken,
+      network,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -109,6 +112,15 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         | AaveLikePositionV2
         | undefined
       const resolvedSimulation = simulation || cachedSimulation
+
+      const { headlineDetails, isLoading: isHeadlineDetailsLoading } =
+        isYieldLoop && isOpening
+          ? useAaveLikeHeadlineDetails({
+              maxRiskRatio: position.maxRiskRatio,
+              protocol: protocol as AaveLikeLendingProtocol,
+              network: network.name,
+            })
+          : { headlineDetails: [], isLoading: false }
 
       return {
         notifications,
@@ -148,6 +160,8 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           }),
           footerColumns: isYieldLoop ? 3 : 2,
           maxSliderAsMaxLtv: true,
+          headlineDetails,
+          isHeadlineDetailsLoading,
         },
         elements: {
           faq: getAaveLikeFaq({ productType, isYieldLoop, protocol }),

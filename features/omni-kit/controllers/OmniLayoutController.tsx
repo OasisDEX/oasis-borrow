@@ -50,7 +50,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   const {
     dynamicMetadata: {
       elements: { faq },
-      values: { headlineDetails },
+      values: { headlineDetails, isHeadlineDetailsLoading },
     },
   } = useOmniProductContext(productType)
 
@@ -62,6 +62,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         </Box>
       )}
       <VaultHeadline
+        loading={isHeadlineDetailsLoading}
         {...getOmniHeadlineProps({
           collateralIcon,
           collateralToken,

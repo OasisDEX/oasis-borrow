@@ -53,6 +53,7 @@ export interface OmniSupplyMetadataHandlers {
 interface CommonMetadataValues {
   footerColumns: number
   headlineDetails?: HeadlineDetailsProp[]
+  isHeadlineDetailsLoading?: boolean
   interestRate: BigNumber
   isFormEmpty: boolean
   sidebarTitle: string
