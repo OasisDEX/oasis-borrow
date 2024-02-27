@@ -282,9 +282,11 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
           return true
         }
         return (
-          config.strategyType === StrategyType.Long &&
-          feature === AutomationFeatures.STOP_LOSS &&
-          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+          (config.strategyType === StrategyType.Long &&
+            feature === AutomationFeatures.STOP_LOSS &&
+            isSupportedAaveAutomationTokenPair(config.collateral, config.debt)) ||
+          (feature === AutomationFeatures.STOP_LOSS &&
+            getLocalAppConfig('features')[FeaturesEnum.SparkProtectionLambdaEthereum])
         )
       },
     }
@@ -346,9 +348,11 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
           return getLocalAppConfig('features')[FeaturesEnum.SparkOptimizationEthereum]
         }
         return (
-          config.strategyType === StrategyType.Long &&
-          feature === AutomationFeatures.STOP_LOSS &&
-          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+          (config.strategyType === StrategyType.Long &&
+            feature === AutomationFeatures.STOP_LOSS &&
+            isSupportedAaveAutomationTokenPair(config.collateral, config.debt)) ||
+          (feature === AutomationFeatures.STOP_LOSS &&
+            getLocalAppConfig('features')[FeaturesEnum.SparkProtectionLambdaEthereum])
         )
       },
     }
@@ -404,9 +408,11 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
           return true
         }
         return (
-          config.strategyType === StrategyType.Long &&
-          feature === AutomationFeatures.STOP_LOSS &&
-          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+          (config.strategyType === StrategyType.Long &&
+            feature === AutomationFeatures.STOP_LOSS &&
+            isSupportedAaveAutomationTokenPair(config.collateral, config.debt)) ||
+          (feature === AutomationFeatures.STOP_LOSS &&
+            getLocalAppConfig('features')[FeaturesEnum.SparkProtectionLambdaEthereum])
         )
       },
     }

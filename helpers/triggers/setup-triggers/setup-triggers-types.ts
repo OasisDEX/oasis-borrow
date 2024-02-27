@@ -81,7 +81,6 @@ export interface SetupAaveBasicAutomationParams {
   usePrice: boolean
   dpm: string
   strategy: StrategyLike
-  triggerType: number
   networkId: number
   protocol: SupportedLambdaProtocols
   action: TriggerAction
