@@ -1,6 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import { SimulateTitle } from 'components/SimulateTitle'
 import faqBorrowAave from 'features/content/faqs/aave/borrow/en'
 import faqEarnAaveV2 from 'features/content/faqs/aave/earn/en_v2'
 import faqEarnAaveV3 from 'features/content/faqs/aave/earn/en_v3'
@@ -8,6 +9,7 @@ import faqMultiplyAave from 'features/content/faqs/aave/multiply/en'
 import faqBorrowSpark from 'features/content/faqs/spark/borrow/en'
 import faqEanSpark from 'features/content/faqs/spark/earn/en_v3'
 import faqMultiplySpark from 'features/content/faqs/spark/multiply/en'
+import { omniYieldLoopDefaultSimulationDeposit } from 'features/omni-kit/constants'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -19,6 +21,7 @@ import {
 import {
   AaveLikeDetailsSectionContent,
   AaveLikeDetailsSectionFooter,
+  AaveLikeYieldLoopRiskBanner,
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
   getAaveLikeNotifications,
@@ -29,27 +32,31 @@ import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-const aaveLikeFaqMap = {
-  [OmniProductType.Borrow]: {
-    [LendingProtocol.AaveV2]: faqBorrowAave,
-    [LendingProtocol.AaveV3]: faqBorrowAave,
-    [LendingProtocol.SparkV3]: faqBorrowSpark,
-  },
-  [OmniProductType.Multiply]: {
-    [LendingProtocol.AaveV2]: faqMultiplyAave,
-    [LendingProtocol.AaveV3]: faqMultiplyAave,
-    [LendingProtocol.SparkV3]: faqMultiplySpark,
-  },
-  [OmniProductType.Earn]: {
-    [LendingProtocol.AaveV2]: faqEarnAaveV2,
-    [LendingProtocol.AaveV3]: faqEarnAaveV3,
-    [LendingProtocol.SparkV3]: faqEanSpark,
-  },
+const getAaveLikeFaq = ({
+  productType,
+  isYieldLoop,
+}: {
+  productType: OmniProductType.Borrow | OmniProductType.Multiply
+  isYieldLoop: boolean
+}) => {
+  const faqMap = {
+    [OmniProductType.Borrow]: {
+      [LendingProtocol.AaveV2]: faqBorrowAave,
+      [LendingProtocol.AaveV3]: faqBorrowAave,
+      [LendingProtocol.SparkV3]: faqBorrowSpark,
+    },
+    [OmniProductType.Multiply]: {
+      [LendingProtocol.AaveV2]: isYieldLoop ? faqEarnAaveV2 : faqMultiplyAave,
+      [LendingProtocol.AaveV3]: isYieldLoop ? faqEarnAaveV3 : faqMultiplyAave,
+      [LendingProtocol.SparkV3]: isYieldLoop ? faqEanSpark : faqMultiplySpark,
+    },
+  }
+
+  return faqMap[productType]
 }
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
@@ -67,6 +74,8 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       quoteBalance,
       protocol,
       isYieldLoop,
+      isOpening,
+      quoteToken,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -135,12 +144,19 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
         },
         elements: {
-          faq: aaveLikeFaqMap[isYieldLoop ? OmniProductType.Earn : productType][
-            protocol as AaveLikeLendingProtocol
-          ],
+          faq: getAaveLikeFaq({ productType, isYieldLoop }),
           highlighterOrderInformation: undefined,
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,
+          overviewBanner: isYieldLoop && <AaveLikeYieldLoopRiskBanner />,
+          overviewTitle: isYieldLoop && isOpening && (
+            <SimulateTitle
+              token={quoteToken}
+              depositAmount={
+                productContext.form.state.depositAmount || omniYieldLoopDefaultSimulationDeposit
+              }
+            />
+          ),
         },
         featureToggles: {
           safetySwitch: aaveSafetySwitchOn,

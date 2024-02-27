@@ -9,13 +9,13 @@ import { Grid } from 'theme-ui'
 
 export function OmniOverviewController() {
   const {
-    environment: { productType, isOpening },
+    environment: { productType, isOpening, isYieldLoop },
   } = useOmniGeneralContext()
   const { t } = useTranslation()
   const {
     dynamicMetadata: {
       values: { footerColumns },
-      elements: { overviewContent, overviewBanner, overviewFooter },
+      elements: { overviewContent, overviewBanner, overviewFooter, overviewTitle },
       notifications,
     },
   } = useOmniProductContext(productType)
@@ -23,10 +23,10 @@ export function OmniOverviewController() {
   return (
     <Grid gap={2}>
       <DetailsSection
-        title={t('system.overview')}
+        title={overviewTitle || t('system.overview')}
         notifications={notifications}
         content={
-          productType === OmniProductType.Earn && isOpening ? (
+          (productType === OmniProductType.Earn || isYieldLoop) && isOpening ? (
             overviewContent
           ) : (
             <DetailsSectionContentCardWrapper>{overviewContent}</DetailsSectionContentCardWrapper>

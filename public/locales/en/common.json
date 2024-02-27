@@ -2803,6 +2803,15 @@
       "average-apy": {
         "title": "{{days}} days average APY"
       },
+      "apy": {
+        "title": "APY"
+      },
+      "est-break-even": {
+        "title": "Est. break-even"
+      },
+      "est-entry-fees": {
+        "title": "Est. entry fees"
+      },
       "net-apy": {
         "title": "Net APY",
         "modal-description": "The annual percentage yield, accounting for fees. Calculated as the yield on the {{collateralToken}} token over the last 7 days, annualised, and subtracting the variable annual fee paid in {{protocol}} for the {{quoteToken}}."
