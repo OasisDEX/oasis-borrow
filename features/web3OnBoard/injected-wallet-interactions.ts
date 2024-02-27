@@ -8,13 +8,18 @@ type WindowWithInjectedWallet = {
   }
 }
 
-function extractUuidFromUrl(url: string): string | null {
-  if (!url.includes('rpc.tenderly')) {
-    return null
+function extractUuidFromUrl(url: string): [string, string] | null {
+  if (url.includes('rpc.tenderly') && url.includes('fork')) {
+    const parts = url.split('/')
+    return ['fork', parts[parts.length - 1]]
   }
 
-  const parts = url.split('/')
-  return parts[parts.length - 1]
+  if (url.includes('rpc.vnet.tenderly.co')) {
+    const parts = url.split('/')
+    return ['dev-net', parts[parts.length - 1]]
+  }
+
+  return null
 }
 
 export async function addCustomForkToTheWallet(network: NetworkConfig) {
@@ -34,7 +39,9 @@ export async function addCustomForkToTheWallet(network: NetworkConfig) {
   }
 
   const uuid = extractUuidFromUrl(network.rpcUrl)
-  const label = uuid ? `${network.getParentNetwork()?.label} - Tenderly - ${uuid}` : network.label
+  const label = uuid
+    ? `${network.getParentNetwork()?.label} - Tenderly ${uuid[0]} - ${uuid[1]}`
+    : network.label
 
   await ethereum.request({
     method: 'wallet_addEthereumChain',
