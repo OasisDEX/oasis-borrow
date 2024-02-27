@@ -2,7 +2,10 @@ import BigNumber from 'bignumber.js'
 import { trailingStopLossDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/triggers'
 
-type TrailingStopLossTriggers = Pick<GetTriggersResponse['triggers'], 'aaveTrailingStopLossDMA'>
+type TrailingStopLossTriggers = Pick<
+  GetTriggersResponse['triggers'],
+  'aaveTrailingStopLossDMA' | 'sparkTrailingStopLossDMA'
+>
 
 const denominate = (value: string) => new BigNumber(Number(value)).div(trailingStopLossDenomination)
 
