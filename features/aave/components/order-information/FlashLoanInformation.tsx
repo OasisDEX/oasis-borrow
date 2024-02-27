@@ -23,7 +23,7 @@ export function FlashLoanInformation({
   )
   const flashloanToken = transactionParameters.flashloan.token.symbol
 
-  const balancerLiquidity = useBalancerVaultLiquidity({ token: flashloanToken, networkId })
+  const balancerLiquidity = useBalancerVaultLiquidity({ tokenSymbol: flashloanToken, networkId })
 
   const isFloashLoanWithBalancer = networkId !== NetworkIds.MAINNET
 

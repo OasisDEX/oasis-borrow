@@ -3362,6 +3362,10 @@
       "description-points-1": "Double check your stop loss parameters and make sure they are to your liking under the <strong>“<1>protection tab</1>”</strong",
       "description-points-2": "Manage risk or take advantage of market opportunity with one transaction to increase or decrease exposure under the <strong>“<1>adjust tab</1>”</strong>",
       "description-points-3": "Using your position solely for increasing exposure? <strong>Switch to multiply for advanced analytics like position PnL</strong>"
+    },
+    "flashloan-modal": {
+      "heading": "Lack of flashloan liquidity",
+      "description": "Import currently unavailable due to lack of flashloan liquidity. Contact support if you want to import differently."
     }
   },
   "og-tags": {
