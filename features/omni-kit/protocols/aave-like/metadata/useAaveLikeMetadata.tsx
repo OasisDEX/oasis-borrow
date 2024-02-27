@@ -32,6 +32,7 @@ import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
+import { AaveLikeLendingProtocol, isAaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
@@ -39,10 +40,16 @@ import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyAction
 const getAaveLikeFaq = ({
   productType,
   isYieldLoop,
+  protocol,
 }: {
   productType: OmniProductType.Borrow | OmniProductType.Multiply
+  protocol: LendingProtocol
   isYieldLoop: boolean
 }) => {
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
   const faqMap = {
     [OmniProductType.Borrow]: {
       [LendingProtocol.AaveV2]: faqBorrowAave,
@@ -56,7 +63,7 @@ const getAaveLikeFaq = ({
     },
   }
 
-  return faqMap[productType]
+  return faqMap[productType][protocol]
 }
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
@@ -144,7 +151,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
         },
         elements: {
-          faq: getAaveLikeFaq({ productType, isYieldLoop }),
+          faq: getAaveLikeFaq({ productType, isYieldLoop, protocol }),
           highlighterOrderInformation: undefined,
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,
