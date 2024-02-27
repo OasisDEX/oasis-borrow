@@ -1,9 +1,13 @@
 import { useActor } from '@xstate/react'
+import { amountFromWei } from 'blockchain/utils'
+import { LackOfFlashloanLiquidityModal } from 'features/aave/components/LackOfFlashloanLiquidityModal'
 import type { ManageAaveContext } from 'features/aave/manage/state'
 import type { MigrateAaveStateMachine } from 'features/aave/manage/state/migrateAaveStateMachine'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
-import React from 'react'
+import { useBalancerVaultLiquidity } from 'helpers/hooks'
+import { useModalContext } from 'helpers/modalHook'
+import React, { useEffect, useMemo } from 'react'
 import type { ActorRefFrom } from 'xstate'
 
 import { MigrateAaveFailureStateView } from './MigrateAaveFailureStateView'
@@ -18,9 +22,8 @@ export interface SidebarMigrateAaveVaultProps {
   }
 }
 
-export function SidebarMigrateAaveVault({ context }: SidebarMigrateAaveVaultProps) {
+function SidebarMigrationAaveVaultStatesView({ context }: SidebarMigrateAaveVaultProps) {
   const [migrationState, send] = useActor(context.refMigrationMachine)
-
   const isLoading = () => {
     return migrationState.matches('background.loading')
   }
@@ -53,4 +56,38 @@ export function SidebarMigrateAaveVault({ context }: SidebarMigrateAaveVaultProp
     return <MigrateAaveSuccessStateView state={migrationState} send={send} isLoading={isLoading} />
   }
   return <></>
+}
+
+export function SidebarMigrateAaveVault({ context }: SidebarMigrateAaveVaultProps) {
+  const flashloanLiquidity = useBalancerVaultLiquidity({
+    tokenSymbol: context.strategyConfig.tokens.collateral,
+    networkId: context.strategyConfig.networkId,
+  })
+
+  const { openModal } = useModalContext()
+
+  const collateralAmount = context.currentPosition?.collateral.amount
+
+  const shouldShowLiquidityModal = useMemo(() => {
+    if (flashloanLiquidity === null || collateralAmount === undefined) {
+      return false
+    }
+    const collateralToCheck = amountFromWei(
+      collateralAmount,
+      context.strategyConfig.tokens.collateral,
+    )
+    return collateralToCheck.gte(flashloanLiquidity)
+  }, [flashloanLiquidity, collateralAmount, context.strategyConfig.tokens.collateral])
+
+  useEffect(() => {
+    if (shouldShowLiquidityModal) {
+      openModal(LackOfFlashloanLiquidityModal, {})
+    }
+  }, [openModal, shouldShowLiquidityModal])
+
+  return (
+    <>
+      <SidebarMigrationAaveVaultStatesView context={context} />
+    </>
+  )
 }
