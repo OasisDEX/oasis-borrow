@@ -3341,24 +3341,24 @@
     },
     "estimated-transaction-cost": "Estimated transaction cost",
     "welcome-state": {
-      "title-1": "Title",
-      "description-1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lobortis nisi sed odio venenatis.",
-      "title-2": "Title",
+      "title-1": "{{protocol}} is better on Summer",
+      "description-1": "Import your {{protocol}} position into Summer to take advantage of the most advanced DeFi experience.",
+      "title-2": "Why should you import your position?",
       "description-points-1": "Increase exposure with <strong>One click multiply</strong>",
       "description-points-2": "Protect your collateral with <strong>Stop Loss</strong>",
       "description-points-3": "Manage risk with advanced <strong>automation features</strong>",
       "description-points-4": "Access compatible protocols <strong>all in one interface</strong>",
-      "title-3": "Title",
-      "description-2": "Duis lobortis nisi sed odio venenatis, eget rhoncus erat facilisis."
+      "title-3": "Importing is a breeze",
+      "description-2": "To import your position, you will: create a SummerFi account, set allowance and import your position. Afterwards you can set-up automations."
     },
     "start-migrate-state": {
-      "title-1": "Title",
-      "description-points-1": "This will repay your {{asset}} debt with a flashloan and move your aToken from your Wallet to your newly created Smart Wallet.",
+      "title-1": "How does the import work?",
+      "description-points-1": "This will repay your debt with a flashloan and move your aToken from your Wallet to your newly created Smart Wallet. ",
       "description-points-2": "It will then draw the debt equal to the amount that was just repaid to repay the flashloan.",
       "description-points-3": "And finally, it will be fully accessible through Summer.fi for you to interact with, and enable additional features such as Automation."
     },
     "success-state": {
-      "title-1": "Title",
+      "title-1": "Import completed. Summer.fi is ready for your position!",
       "description-points-1": "Double check your stop loss parameters and make sure they are to your liking under the <strong>“<1>protection tab</1>”</strong",
       "description-points-2": "Manage risk or take advantage of market opportunity with one transaction to increase or decrease exposure under the <strong>“<1>adjust tab</1>”</strong>",
       "description-points-3": "Using your position solely for increasing exposure? <strong>Switch to multiply for advanced analytics like position PnL</strong>"
