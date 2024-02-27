@@ -118,6 +118,10 @@ export const getAaveLikeParameters = async ({
   }
 
   const adjustMultiplyPayload = {
+    entryToken: {
+      symbol: collateralToken as AaveLikeTokens,
+      precision: collateralPrecision,
+    },
     position,
     slippage,
     debtToken: {
@@ -136,10 +140,6 @@ export const getAaveLikeParameters = async ({
       const data = {
         commonPayload: {
           ...adjustMultiplyPayload,
-          entryToken: {
-            symbol: collateralToken as AaveLikeTokens,
-            precision: collateralPrecision,
-          },
           amountCollateralToDepositInBaseUnit:
             state.depositAmount?.shiftedBy(collateralPrecision) || zero,
           amountDebtToBorrowInBaseUnit: state.generateAmount?.shiftedBy(quotePrecision) || zero,
@@ -206,10 +206,6 @@ export const getAaveLikeParameters = async ({
       const data = {
         commonPayload: {
           ...adjustMultiplyPayload,
-          entryToken: {
-            symbol: collateralToken as AaveLikeTokens,
-            precision: collateralPrecision,
-          },
           amountCollateralToDepositInBaseUnit:
             state.depositAmount?.shiftedBy(collateralPrecision) || zero,
           amountDebtToBorrowInBaseUnit: state.generateAmount?.shiftedBy(quotePrecision) || zero,
@@ -231,10 +227,6 @@ export const getAaveLikeParameters = async ({
       const data = {
         commonPayload: {
           ...adjustMultiplyPayload,
-          entryToken: {
-            symbol: collateralToken as AaveLikeTokens,
-            precision: collateralPrecision,
-          },
           amountCollateralToWithdrawInBaseUnit:
             state.withdrawAmount?.shiftedBy(collateralPrecision) || zero,
           amountDebtToPaybackInBaseUnit: state.paybackAmount?.shiftedBy(quotePrecision) || zero,
