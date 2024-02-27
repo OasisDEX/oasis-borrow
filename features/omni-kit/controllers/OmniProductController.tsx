@@ -182,7 +182,7 @@ export const OmniProductController = <Auction, History, Position>({
                 tokensIcons,
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 { slippage },
-                [protocolCollateralPrice, protocolQuotePrice],
+                protocolPrices,
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
 
@@ -211,7 +211,7 @@ export const OmniProductController = <Auction, History, Position>({
                         isOracless
                           ? one
                           : shouldUseProtocolPrices
-                          ? protocolCollateralPrice
+                          ? protocolPrices[0]
                           : tokenPriceUSD[dpmPosition.collateralToken]
                       }
                       collateralToken={dpmPosition.collateralToken}
@@ -240,7 +240,7 @@ export const OmniProductController = <Auction, History, Position>({
                         isOracless
                           ? one
                           : shouldUseProtocolPrices
-                          ? protocolQuotePrice
+                          ? protocolPrices[1]
                           : tokenPriceUSD[dpmPosition.quoteToken]
                       }
                       quoteToken={dpmPosition.quoteToken}
