@@ -46,6 +46,12 @@ export const settingsV2: OmniProtocolSettings = {
       manage: omniSidebarManageBorrowishSteps,
     },
   },
+  entryTokens: {
+    [NetworkIds.MAINNET]: { 'STETH-ETH': 'ETH' },
+    [NetworkIds.ARBITRUMMAINNET]: { 'STETH-ETH': 'ETH' },
+    [NetworkIds.OPTIMISMMAINNET]: { 'STETH-ETH': 'ETH' },
+    [NetworkIds.BASEMAINNET]: { 'STETH-ETH': 'ETH' },
+  },
 }
 
 export const settingsV3: OmniProtocolSettings = {
@@ -103,5 +109,11 @@ export const settingsV3: OmniProtocolSettings = {
       setup: omniSidebarSetupSteps,
       manage: omniSidebarManageBorrowishSteps,
     },
+  },
+  entryTokens: {
+    [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
+    [NetworkIds.ARBITRUMMAINNET]: { 'WSTETH-ETH': 'ETH' },
+    [NetworkIds.OPTIMISMMAINNET]: { 'WSTETH-ETH': 'ETH' },
+    [NetworkIds.BASEMAINNET]: { 'WSTETH-ETH': 'ETH' },
   },
 }

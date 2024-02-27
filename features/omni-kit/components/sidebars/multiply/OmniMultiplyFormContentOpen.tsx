@@ -10,13 +10,7 @@ import React from 'react'
 
 export function OmniMultiplyFormContentOpen() {
   const {
-    environment: {
-      collateralBalance,
-      collateralPrice,
-      collateralToken,
-      shouldSwitchNetwork,
-      collateralPrecision,
-    },
+    environment: { shouldSwitchNetwork, entryToken },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -29,12 +23,12 @@ export function OmniMultiplyFormContentOpen() {
     <>
       <OmniFormFieldDeposit
         dispatchAmount={dispatch}
-        maxAmount={collateralBalance}
+        maxAmount={entryToken.balance}
         resetOnClear
-        token={collateralToken}
-        tokenPrice={collateralPrice}
-        tokenPrecision={collateralPrecision}
-        {...(!shouldSwitchNetwork && { maxAmount: collateralBalance })}
+        token={entryToken.symbol}
+        tokenPrice={entryToken.price}
+        tokenPrecision={entryToken.precision}
+        {...(!shouldSwitchNetwork && { maxAmount: entryToken.balance })}
       />
       <OmniAdjustSlider disabled={!depositAmount} />
       {depositAmount && (

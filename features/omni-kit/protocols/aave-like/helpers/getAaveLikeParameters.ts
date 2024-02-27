@@ -31,7 +31,11 @@ import {
   sparkActionOpen,
 } from 'features/omni-kit/protocols/spark/actions/multiply'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import type { OmniFormState, OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type {
+  OmniEntryToken,
+  OmniFormState,
+  OmniSupportedNetworkIds,
+} from 'features/omni-kit/types'
 import { OmniBorrowFormAction, OmniMultiplyFormAction } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
@@ -57,6 +61,7 @@ export const getAaveLikeParameters = async ({
   quoteToken,
   protocol,
   protocolVersion,
+  entryToken,
 }: {
   state: OmniFormState
   rpcProvider: ethers.providers.Provider
@@ -74,6 +79,7 @@ export const getAaveLikeParameters = async ({
   collateralToken: string
   quoteToken: string
   protocolVersion?: string
+  entryToken: OmniEntryToken
 }) => {
   const defaultPromise = Promise.resolve(undefined)
 
@@ -119,8 +125,8 @@ export const getAaveLikeParameters = async ({
 
   const adjustMultiplyPayload = {
     entryToken: {
-      symbol: collateralToken as AaveLikeTokens,
-      precision: collateralPrecision,
+      symbol: entryToken.symbol as AaveLikeTokens,
+      precision: entryToken.precision,
     },
     position,
     slippage,
@@ -159,10 +165,16 @@ export const getAaveLikeParameters = async ({
             (state as OmniMultiplyFormState)?.loanToValue || zero,
             RiskRatio.TYPE.LTV,
           ),
-          depositedByUser: {
-            collateralInWei: state.depositAmount?.shiftedBy(collateralPrecision) || zero,
-            debtInWei: state.generateAmount?.shiftedBy(quotePrecision) || zero,
-          },
+          depositedByUser:
+            entryToken.symbol === quoteToken
+              ? {
+                  collateralInWei: zero,
+                  debtInWei: state.depositAmount?.shiftedBy(entryToken.precision) || zero,
+                }
+              : {
+                  collateralInWei: state.depositAmount?.shiftedBy(entryToken.precision) || zero,
+                  debtInWei: zero,
+                },
         },
         dependencies: multiplyDependencies,
       }

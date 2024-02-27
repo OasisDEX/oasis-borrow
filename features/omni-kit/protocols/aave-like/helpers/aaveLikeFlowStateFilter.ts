@@ -1,6 +1,17 @@
+import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import type { OmniFlowStateFilterParams } from 'features/omni-kit/types'
+import { LendingProtocol } from 'lendingProtocols'
 
-// We don't allow to reuse dpm proxy
-export function aaveLikeFlowStateFilter(_params: OmniFlowStateFilterParams): boolean {
-  return false
+export function aaveLikeFlowStateFilter({
+  event,
+  collateralAddress,
+  quoteAddress,
+}: OmniFlowStateFilterParams): boolean {
+  return (
+    [LendingProtocol.AaveV3, LendingProtocol.SparkV3, LendingProtocol.AaveV2].includes(
+      extractLendingProtocolFromPositionCreatedEvent(event),
+    ) &&
+    collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
+    quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase()
+  )
 }

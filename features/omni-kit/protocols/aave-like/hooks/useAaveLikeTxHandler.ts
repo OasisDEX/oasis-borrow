@@ -21,6 +21,7 @@ export function useAaveLikeTxHandler(): () => void {
       quoteToken,
       protocol,
       protocolVersion,
+      entryToken,
     },
   } = useOmniGeneralContext()
   const {
@@ -53,6 +54,7 @@ export function useAaveLikeTxHandler(): () => void {
         quoteToken,
         protocol: protocol as AaveLikeLendingProtocol,
         protocolVersion,
+        entryToken,
       }),
   })
 }

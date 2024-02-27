@@ -12,6 +12,7 @@ import {
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { useOmniSlippage } from 'features/omni-kit/hooks'
 import type {
+  OmniEntryToken,
   OmniProductType,
   OmniProtocolSettings,
   OmniSidebarEditingStep,
@@ -75,6 +76,7 @@ type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'step
   slippageSource: OmniSlippageSourceSettings
   isYieldLoop: boolean
   isStrategyWithDefaultSlippage: boolean
+  entryToken: OmniEntryToken
 }
 
 interface OmniGeneralContextSteps {
@@ -185,6 +187,35 @@ export function OmniGeneralContextProvider({
     }
   }
 
+  const getEntryToken = () => {
+    const pair = `${collateralToken.toUpperCase()}-${quoteToken.toUpperCase()}`
+    const entryTokenSymbol = settings?.entryTokens?.[networkId]?.[pair]
+
+    if (entryTokenSymbol && isOpening) {
+      const resolvedKey = entryTokenSymbol === collateralToken ? 'collateral' : 'quote'
+
+      return {
+        symbol: entryTokenSymbol,
+        precision: props[`${resolvedKey}Precision`],
+        balance: props[`${resolvedKey}Balance`],
+        price: props[`${resolvedKey}Price`],
+        digits: props[`${resolvedKey}Digits`],
+        address: props[`${resolvedKey}Address`],
+        icon: props[`${resolvedKey}Icon`],
+      }
+    }
+
+    return {
+      symbol: collateralToken,
+      precision: props.collateralPrecision,
+      balance: props.collateralBalance,
+      price: props.collateralPrice,
+      digits: props.collateralDigits,
+      address: props.collateralAddress,
+      icon: props.collateralIcon,
+    }
+  }
+
   const context: OmniGeneralContext = useMemo(() => {
     const isOwner = isOpening || owner === walletAddress
 
@@ -208,6 +239,7 @@ export function OmniGeneralContextProvider({
         slippageSource,
         isYieldLoop,
         isStrategyWithDefaultSlippage,
+        entryToken: getEntryToken(),
       },
       steps: setupStepManager(),
       tx: setupTxManager(),

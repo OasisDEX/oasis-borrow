@@ -263,10 +263,10 @@ export function OmniProductContextProvider({
       ethPrice,
       quoteBalance,
       quotePrecision,
-      collateralToken,
       quoteToken,
       isOpening,
       gasEstimation,
+      entryToken,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -304,8 +304,8 @@ export function OmniProductContextProvider({
       position: {
         simulationCommon: {
           getValidations: getOmniValidations({
-            collateralBalance,
-            collateralToken,
+            collateralBalance: entryToken.balance,
+            collateralToken: entryToken.symbol,
             currentStep,
             ethBalance,
             ethPrice,

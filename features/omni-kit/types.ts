@@ -70,6 +70,7 @@ export interface OmniProtocolSettings {
   supportedMultiplyTokens: NetworkIdsWithValues<string[]>
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
+  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
 }
 
 export type OmniProtocolsSettings = {
@@ -240,3 +241,13 @@ export interface GetOmniValidationResolverParams {
 }
 
 export type OmniNotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
+
+export type OmniEntryToken = {
+  symbol: string
+  precision: number
+  balance: BigNumber
+  price: BigNumber
+  digits: number
+  address: string
+  icon: string
+}

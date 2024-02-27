@@ -55,6 +55,7 @@ export function OmniFormView({
       network,
       networkId,
       quotePrecision,
+      entryToken,
     },
     steps: {
       currentStep,
@@ -100,6 +101,7 @@ export function OmniFormView({
     ...getOmniFlowStateConfig({
       protocol,
       collateralToken,
+      entryToken: entryToken.symbol,
       fee: interestRate,
       isOpening,
       quoteToken,
