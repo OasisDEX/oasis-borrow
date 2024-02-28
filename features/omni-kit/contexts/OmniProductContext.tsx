@@ -65,6 +65,7 @@ interface CommonMetadataElements {
   overviewContent: ReactNode
   overviewFooter: ReactNode
   riskSidebar?: ReactNode
+  sliderRightBoundary?: ReactNode
 }
 
 export type ShouldShowDynamicLtvMetadata = (params: { includeCache: boolean }) => boolean
@@ -82,6 +83,7 @@ export type LendingMetadata = CommonMetadata & {
     paybackMax: BigNumber
     shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
     maxSliderAsMaxLtv?: boolean
+    sliderRightLabel?: string
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode

@@ -1,5 +1,6 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { SimulateTitle } from 'components/SimulateTitle'
 import faqBorrowAave from 'features/content/faqs/aave/borrow/en'
@@ -32,9 +33,12 @@ import {
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { isAaveLikeLendingProtocol, LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
+import { useTranslation } from 'next-i18next'
+import type { FC } from 'react'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -67,7 +71,22 @@ const getAaveLikeFaq = ({
   return faqMap[productType][protocol]
 }
 
+interface StaticRightBoundaryProps {
+  oraclePrice: BigNumber
+  priceFormat: string
+}
+
+const StaticRightBoundary: FC<StaticRightBoundaryProps> = ({ oraclePrice, priceFormat }) => {
+  return (
+    <>
+      {formatCryptoBalance(oraclePrice)} {priceFormat}
+    </>
+  )
+}
+
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
+  const { t } = useTranslation()
+
   const {
     AaveV3SafetySwitch: aaveSafetySwitchOn,
     AaveV3SuppressValidation: aaveSuppressValidation,
@@ -85,6 +104,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isOpening,
       quoteToken,
       network,
+      priceFormat,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -162,6 +182,8 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
+          sliderRightLabel:
+            isYieldLoop && t('open-earn.aave.vault-form.configure-multiple.current-price'),
         },
         elements: {
           faq: getAaveLikeFaq({ productType, isYieldLoop, protocol }),
@@ -176,6 +198,9 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
                 productContext.form.state.depositAmount || omniYieldLoopDefaultSimulationDeposit
               }
             />
+          ),
+          sliderRightBoundary: isYieldLoop && (
+            <StaticRightBoundary priceFormat={priceFormat} oraclePrice={position.oraclePrice} />
           ),
         },
         featureToggles: {

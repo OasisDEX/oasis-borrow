@@ -41,7 +41,8 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
       isSimulationLoading,
     },
     dynamicMetadata: {
-      values: { changeVariant, maxSliderAsMaxLtv },
+      values: { changeVariant, maxSliderAsMaxLtv, sliderRightLabel },
+      elements: { sliderRightBoundary },
     },
   } = useOmniProductContext(productType)
 
@@ -95,20 +96,22 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
           {depositChanged && isSimulationLoading ? (
             <SkeletonLine height="18px" sx={{ my: '5px' }} />
           ) : (
-            <>
-              {formatDecimalAsPercent(ltv)}
-              {!ltv.eq(resolvedValue) && (
-                <>
-                  <Icon icon={arrow_right} size={14} sx={{ mx: 2 }} />
-                  <Text
-                    as="span"
-                    sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
-                  >
-                    {formatDecimalAsPercent(val)}
-                  </Text>
-                </>
-              )}
-            </>
+            sliderRightBoundary || (
+              <>
+                {formatDecimalAsPercent(ltv)}
+                {!ltv.eq(resolvedValue) && (
+                  <>
+                    <Icon icon={arrow_right} size={14} sx={{ mx: 2 }} />
+                    <Text
+                      as="span"
+                      sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
+                    >
+                      {formatDecimalAsPercent(val)}
+                    </Text>
+                  </>
+                )}
+              </>
+            )
           )}
         </Flex>
       )}
@@ -121,7 +124,7 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
       leftBottomLabel={t('slider.adjust-multiply.left-footer')}
       leftLabel={t('slider.adjust-multiply.left-label')}
       rightBottomLabel={t('slider.adjust-multiply.right-footer')}
-      rightLabel={t('system.loan-to-value')}
+      rightLabel={sliderRightLabel || t('system.loan-to-value')}
     />
   )
 }
