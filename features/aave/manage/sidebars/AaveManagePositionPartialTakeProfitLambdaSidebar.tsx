@@ -1,56 +1,22 @@
-import type BigNumber from 'bignumber.js'
-import { executeTransaction } from 'blockchain/better-calls/dpm-account'
+import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
-import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
-import { AppLink } from 'components/Links'
-import { MessageCard } from 'components/MessageCard'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
-import {
-  VaultChangesInformationArrow,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from 'components/vault/VaultChangesInformation'
-import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConnectedSidebarSection } from 'features/aave/components'
-import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
-import {
-  getDenominations,
-  mapErrorsToErrorVaults,
-  mapWarningsToWarningVaults,
-} from 'features/aave/helpers'
-import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
-import type { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
+import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import type { TriggersAaveEvent } from 'features/aave/manage/state'
-import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
-import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
-import type { IStrategyConfig } from 'features/aave/types'
-import {
-  sidebarAutomationFeatureCopyMap,
-  sidebarAutomationLinkMap,
-} from 'features/automation/common/consts'
-import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
-import { useWalletManagement } from 'features/web3OnBoard/useConnection'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { TriggerAction } from 'helpers/triggers'
-import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
+import { StrategyType } from 'features/aave/types'
+import { BigNumberInput } from 'helpers/BigNumberInput'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { handleNumericInput } from 'helpers/input'
+import { one } from 'helpers/zero'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
-import { AddingStopLossAnimation } from 'theme/animations'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
-import type { Sender } from 'xstate'
+import { useTranslation } from 'react-i18next'
+import { createNumberMask } from 'text-mask-addons'
+import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
 
-const aaveLambdaStopLossConfig = {
-  translationRatioParam: 'vault-changes.loan-to-value',
-  sliderStep: 1,
-}
-
-type StopLossSidebarStates =
+type PartialTakeProfitSidebarStates =
   | 'prepare'
   | 'preparedAdd'
   | 'preparedUpdate'
@@ -60,204 +26,244 @@ type StopLossSidebarStates =
   | 'removeInProgress'
   | 'finished'
 
-const refreshDataTime = 10 * 1000
+// const refreshDataTime = 10 * 1000
 
-const getFormatters = (strategyConfig: IStrategyConfig) => {
-  const { denomination, denominationToken } = getDenominations(strategyConfig)
-  const firstFormatter = (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))
-  const secondFormatter = (x: BigNumber) =>
-    x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${denomination}`
+// const getFormatters = (strategyConfig: IStrategyConfig) => {
+//   const { denomination, denominationToken } = getDenominations(strategyConfig)
+//   const firstFormatter = (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))
+//   const secondFormatter = (x: BigNumber) =>
+//     x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${denomination}`
 
-  return [firstFormatter, secondFormatter]
-}
+//   return [firstFormatter, secondFormatter]
+// }
 
-export function AaveManagePositionStopLossLambdaSidebar({
+const takeProfitStartingPercentageOptions = [0.1, 0.2, 0.3, 0.4, 0.5]
+
+export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   state,
   send,
   dropdown,
-  stopLossLambdaData,
-  stopLossToken,
-  trailingStopLossLambdaData,
-  setStopLossToken,
-  reserveConfigurationData,
-  onTxFinished,
-  sendTriggerEvent,
+  partialTakeProfitToken,
+  setPartialTakeProfitToken,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
-  stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
-  trailingStopLossLambdaData: ReturnType<typeof mapTrailingStopLossFromLambda>
-  stopLossToken: 'debt' | 'collateral'
-  setStopLossToken: (token: 'debt' | 'collateral') => void
-  reserveConfigurationData: AaveLikeReserveConfigurationData
-  onTxFinished: () => void
-  sendTriggerEvent: Sender<TriggersAaveEvent>
+  partialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
+  partialTakeProfitToken: 'debt' | 'collateral'
+  setPartialTakeProfitToken: (token: 'debt' | 'collateral') => void
 }) {
   const { t } = useTranslation()
-  const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
-  const { signer } = useWalletManagement()
-  const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
-  const [transactionStep, setTransactionStep] = useState<StopLossSidebarStates>('prepare')
+  // const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
+  // const { signer } = useWalletManagement()
+  // const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
+  const [transactionStep, setTransactionStep] = useState<PartialTakeProfitSidebarStates>('prepare')
+  const { strategyConfig, strategyInfo, trailingStopLossTxDataLambda } = state.context
+
+  const [inputValue, setInputValue] = useState<BigNumber>(new BigNumber(0))
+  const [isFocus, setIsFocus] = useState<boolean>(false)
 
   useEffect(() => {
-    if (stopLossLambdaData.stopLossLevel) {
-      send({
-        type: 'SET_STOP_LOSS_LEVEL',
-        stopLossLevel: stopLossLambdaData.stopLossLevel,
-      })
-    } else {
-      send({
-        type: 'SET_STOP_LOSS_LEVEL',
-        stopLossLevel: reserveConfigurationData.liquidationThreshold
-          .minus(aaveOffsets.manage.max)
-          .times(100),
-      })
-    }
+    // if (stopLossLambdaData.stopLossLevel) {
+    //   send({
+    //     type: 'SET_STOP_LOSS_LEVEL',
+    //     stopLossLevel: stopLossLambdaData.stopLossLevel,
+    //   })
+    // } else {
+    //   send({
+    //     type: 'SET_STOP_LOSS_LEVEL',
+    //     stopLossLevel: reserveConfigurationData.liquidationThreshold
+    //       .minus(aaveOffsets.manage.max)
+    //       .times(100),
+    //   })
+    // }
   }, []) // should be empty
 
-  useEffect(() => {
-    if (refreshingTriggerData) {
-      setTimeout(() => {
-        setRefreshingTriggerData(false)
-        onTxFinished()
-        if (stopLossLambdaData.triggerId !== triggerId) {
-          setTriggerId(stopLossLambdaData.triggerId ?? '0')
-          setRefreshingTriggerData(false)
-        } else {
-          setRefreshingTriggerData(true)
-        }
-      }, refreshDataTime)
-    }
-  }, [refreshingTriggerData])
-
-  const isRegularStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
-  const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
-  const { strategyConfig } = state.context
-  const {
-    stopLossLevel,
-    dynamicStopLossPrice,
-    sliderMin,
-    sliderMax,
-    sliderPercentageFill,
-    liquidationPrice,
-    dynamicStopLossPriceForView,
-    ...stopLossParamsRest
-  } = getAaveLikeStopLossParams.manage({ state })
-  const action = useMemo(() => {
-    const anyStopLoss = isTrailingStopLossEnabled || isRegularStopLossEnabled
-    if (transactionStep === 'preparedRemove') {
-      return TriggerAction.Remove
-    }
-    return anyStopLoss ? TriggerAction.Update : TriggerAction.Add
-  }, [transactionStep, isTrailingStopLossEnabled, isRegularStopLossEnabled])
-
-  const { stopLossTxCancelablePromise, isGettingStopLossTx, errors, warnings } =
-    useLambdaDebouncedStopLoss({
-      state,
-      stopLossLevel,
-      stopLossToken,
-      send,
-      action,
+  // useEffect(() => {
+  // if (refreshingTriggerData) {
+  //   setTimeout(() => {
+  //     setRefreshingTriggerData(false)
+  //     onTxFinished()
+  //     if (stopLossLambdaData.triggerId !== triggerId) {
+  //       setTriggerId(stopLossLambdaData.triggerId ?? '0')
+  //       setRefreshingTriggerData(false)
+  //     } else {
+  //       setRefreshingTriggerData(true)
+  //     }
+  //   }, refreshDataTime)
+  // }
+  // }, [refreshingTriggerData])
+  const partialTakeProfitTokenData = useMemo(
+    () => getToken(strategyConfig.tokens[partialTakeProfitToken]),
+    [partialTakeProfitToken, strategyConfig.tokens],
+  )
+  const priceFormat =
+    strategyConfig.strategyType === StrategyType.Long
+      ? `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
+      : `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
+  const inputMask = useMemo(() => {
+    return createNumberMask({
+      allowDecimal: true,
+      prefix: '',
+      decimalLimit: partialTakeProfitTokenData.digits,
     })
-
-  const preparedState = {
-    [TriggerAction.Add]: 'preparedAdd',
-    [TriggerAction.Update]: 'preparedUpdate',
-    [TriggerAction.Remove]: 'preparedRemove',
-  }[action] as StopLossSidebarStates
-  const inProgressState = {
-    [TriggerAction.Add]: 'addInProgress',
-    [TriggerAction.Update]: 'updateInProgress',
-    [TriggerAction.Remove]: 'removeInProgress',
-  }[action] as StopLossSidebarStates
-
-  const stopLossConfigChanged = useMemo(() => {
-    if (action === TriggerAction.Remove) return true
-    const stopLossDifferentThanLambda =
-      stopLossLambdaData.stopLossLevel &&
-      (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
-        stopLossLambdaData.stopLossToken !== stopLossToken)
-    return stopLossLambdaData.stopLossLevel ? stopLossDifferentThanLambda : true
-  }, [stopLossLambdaData, stopLossLevel, stopLossToken, action])
-
-  const stopLossTranslationParams = {
-    feature: t(sidebarAutomationFeatureCopyMap['stopLoss']),
-    featureName: t(sidebarAutomationFeatureCopyMap['stopLoss']), // the same param, two different names
-  }
-
-  const executeCall = async () => {
-    const { stopLossTxDataLambda, strategyConfig } = state.context
-    if (stopLossTxDataLambda && signer) {
-      return await executeTransaction({
-        data: stopLossTxDataLambda.data,
-        to: stopLossTxDataLambda.to,
-        signer: signer,
-        networkId: strategyConfig.networkId,
-      })
-    }
-    return null
-  }
-  const [leftFormatter, rightFormatter] = getFormatters(strategyConfig)
-
+  }, [partialTakeProfitTokenData.digits])
+  const collateralTokenPrice = strategyInfo?.oracleAssetPrice.collateral || one
+  const debtTokenPrice = strategyInfo?.oracleAssetPrice.debt || one
+  const positionPrice =
+    strategyConfig.strategyType === StrategyType.Long
+      ? collateralTokenPrice.div(debtTokenPrice)
+      : debtTokenPrice.div(collateralTokenPrice)
   const sidebarPreparingContent: SidebarSectionProps['content'] = (
     <Grid gap={3}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        Set up your auto take profit price and trigger LTV. These parameters will determine when you
+        withdraw assets to realize profits.
+      </Text>
       <ActionPills
         items={[
           {
             id: 'debt',
-            label: t('close-to', { token: strategyConfig.tokens.debt }),
-            action: () => setStopLossToken('debt'),
+            label: `Profit in ${strategyConfig.tokens.debt}`,
+            action: () => setPartialTakeProfitToken('debt'),
           },
           {
             id: 'collateral',
-            label: t('close-to', { token: strategyConfig.tokens.collateral }),
-            action: () => setStopLossToken('collateral'),
+            label: `Profit in ${strategyConfig.tokens.collateral}`,
+            action: () => setPartialTakeProfitToken('collateral'),
           },
         ]}
-        active={stopLossToken}
+        active={partialTakeProfitToken}
       />
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('protection.set-downside-protection-desc', {
-          ratioParam: t(aaveLambdaStopLossConfig.translationRatioParam),
-        })}{' '}
-        <AppLink href={EXTERNAL_LINKS.KB.STOP_LOSS} sx={{ fontSize: 2 }}>
-          {t('here')}.
-        </AppLink>
+      <Box
+        sx={{
+          padding: 3,
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          mt: 2,
+          border: '1px solid',
+          borderColor: isFocus ? 'neutral70' : 'neutral20',
+          borderRadius: 'medium',
+          transition: 'border-color 200ms',
+        }}
+      >
+        <Text variant="boldParagraph3" color="neutral80">
+          Set minimum starting take profit price
+        </Text>
+        <Box
+          sx={{
+            position: 'relative',
+            variant: 'text.boldParagraph3',
+            '::after': {
+              position: 'absolute',
+              right: '5px',
+              top: '15px',
+              content: `"${priceFormat}"`,
+              pointerEvents: 'none',
+              opacity: '0.6',
+            },
+          }}
+        >
+          <BigNumberInput
+            type="text"
+            mask={inputMask}
+            onFocus={() => {
+              setIsFocus(true)
+            }}
+            onBlur={() => {
+              setIsFocus(false)
+            }}
+            value={
+              inputValue
+                ? `${formatAmount(inputValue, partialTakeProfitTokenData.symbol)}`
+                : undefined
+            }
+            onChange={handleNumericInput((value) => {
+              setInputValue(value!)
+            })}
+            sx={{
+              fontSize: 5,
+              border: 'none',
+              pl: 0,
+              transition: 'opacity 200ms',
+            }}
+          />
+        </Box>
+        <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
+          Now: {formatCryptoBalance(positionPrice)} {priceFormat}
+        </Text>
+      </Box>
+      <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        {takeProfitStartingPercentageOptions.map((percentage) => (
+          <Button
+            key={percentage.toString()}
+            value={percentage}
+            variant="bean"
+            sx={{
+              color: 'neutral80',
+              transition: 'color 200ms, background-color 200ms',
+              '&:hover': {
+                backgroundColor: 'neutral80',
+                color: 'secondary60',
+              },
+            }}
+          >
+            +{formatPercent(new BigNumber(percentage).times(100))}
+          </Button>
+        ))}
+      </Flex>
+      <Divider />
+      <Text variant="boldParagraph2">
+        Configure Trigger Loan to Value and Loan to Value Withdrawal steps
+      </Text>
+      {/* <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        <Trans
+          i18nKey="protection.set-distance-protection-desc"
+          values={{
+            distance: t('protection.trailing-stop-loss-price-distance'),
+          }}
+          components={{
+            1: (
+              <AppLink href={EXTERNAL_LINKS.KB.HOW_TRAILING_STOP_LOSS_WORKS} sx={{ fontSize: 2 }} />
+            ),
+          }}
+        />
       </Text>
       <SliderValuePicker
         disabled={false}
-        step={aaveLambdaStopLossConfig.sliderStep}
+        step={sliderStep}
         leftBoundryFormatter={leftFormatter}
         rightBoundryFormatter={rightFormatter}
         sliderPercentageFill={sliderPercentageFill}
-        lastValue={stopLossLevel}
-        maxBoundry={sliderMax}
+        lastValue={trailingDistance}
         minBoundry={sliderMin}
-        rightBoundry={dynamicStopLossPriceForView}
-        leftBoundry={stopLossLevel}
-        onChange={(slLevel) => {
+        maxBoundry={sliderMax.minus(sliderStep)}
+        rightBoundry={dynamicStopPriceChange}
+        leftBoundry={trailingDistance}
+        onChange={(trailingDistanceChanged) => {
           send({
-            type: 'SET_STOP_LOSS_LEVEL',
-            stopLossLevel: slLevel,
+            type: 'SET_TRAILING_STOP_LOSS_LEVEL',
+            trailingDistance: trailingDistanceChanged,
           })
-          stopLossTxCancelablePromise?.cancel()
+          trailingStopLossTxCancelablePromise?.cancel()
         }}
         useRcSlider
-        leftLabel={t('protection.stop-loss-something', {
-          value: t(aaveLambdaStopLossConfig.translationRatioParam),
-        })}
+        leftLabel={t('protection.trailing-distance')}
         rightLabel={t('slider.set-stoploss.right-label')}
       />
-      {!!trailingStopLossLambdaData.trailingDistance && (
+      <>
+        <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
+        <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
+      </>
+      {!!stopLossLambdaData.stopLossLevel && (
         <MessageCard
           messages={[
             t('protection.current-stop-loss-overwrite', {
-              addingStopLossType: t('protection.regular-stop-loss'),
-              currentStopLossType: t('protection.trailing-stop-loss'),
+              addingStopLossType: t('protection.trailing-stop-loss'),
+              currentStopLossType: t('protection.regular-stop-loss'),
             }),
             <Trans
               i18nKey="protection.current-stop-loss-overwrite-click-here"
               values={{
-                currentStopLossType: t('protection.trailing-stop-loss'),
+                currentStopLossType: t('protection.regular-stop-loss'),
               }}
               components={{
                 1: (
@@ -271,7 +277,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
                     onClick={() => {
                       sendTriggerEvent({
                         type: 'CHANGE_PROTECTION_VIEW',
-                        view: 'trailing-stop-loss',
+                        view: 'stop-loss',
                       })
                     }}
                   />
@@ -283,26 +289,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
           withBullet={false}
         />
       )}
-      <>
-        <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
-        <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
-      </>
-      {!!state.context.strategyInfo && (
-        <OpenAaveStopLossInformationLambda
-          stopLossParams={{
-            stopLossLevel,
-            dynamicStopLossPrice,
-            sliderMin,
-            sliderMax,
-            sliderPercentageFill,
-            liquidationPrice,
-            dynamicStopLossPriceForView,
-            ...stopLossParamsRest,
-          }}
-          strategyInfo={state.context.strategyInfo}
-          collateralActive={stopLossToken === 'collateral'}
-        />
-      )}
+      {stopLossInformationPanel}
       <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
         {t('protection.not-guaranteed')}
       </Text>
@@ -311,228 +298,140 @@ export function AaveManagePositionStopLossLambdaSidebar({
         <AppLink href={EXTERNAL_LINKS.KB.AUTOMATION} sx={{ fontWeight: 'body' }}>
           {t('protection.learn-more-about-automation')}
         </AppLink>
-      </Text>
+      </Text> */}
     </Grid>
   )
 
   const sidebarPreparedContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
-    <Grid gap={3}>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('automation.confirmation-text', stopLossTranslationParams)}
-      </Text>
-      <OpenAaveStopLossInformationLambda
-        stopLossParams={{
-          stopLossLevel,
-          dynamicStopLossPrice,
-          sliderMin,
-          sliderMax,
-          sliderPercentageFill,
-          liquidationPrice,
-          dynamicStopLossPriceForView,
-          ...stopLossParamsRest,
-        }}
-        strategyInfo={state.context.strategyInfo}
-        collateralActive={stopLossToken === 'collateral'}
-      />
-    </Grid>
+    <Grid gap={3}>sidebarPreparedContent</Grid>
   ) : (
     <></>
   )
 
   const sidebarInProgressContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
-    <Grid gap={3}>
-      <AddingStopLossAnimation />
-      <OpenAaveStopLossInformationLambda
-        stopLossParams={{
-          stopLossLevel,
-          dynamicStopLossPrice,
-          sliderMin,
-          sliderMax,
-          sliderPercentageFill,
-          liquidationPrice,
-          dynamicStopLossPriceForView,
-          ...stopLossParamsRest,
-        }}
-        strategyInfo={state.context.strategyInfo}
-        collateralActive={stopLossToken === 'collateral'}
-      />
-    </Grid>
+    <Grid gap={3}>sidebarInProgressContent</Grid>
   ) : (
     <></>
   )
 
   const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
-    <Grid gap={3}>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('automation.cancel-summary-description', stopLossTranslationParams)}
-      </Text>
-      <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
-        {!liquidationPrice.isZero() && (
-          <VaultChangesInformationItem
-            label={`${t('cancel-stoploss.liquidation')}`}
-            value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
-          />
-        )}
-        <VaultChangesInformationItem
-          label={`${t('cancel-stoploss.stop-loss-coll-ratio')}`}
-          value={
-            <Flex>
-              {formatPercent(stopLossLevel)}
-              <VaultChangesInformationArrow />
-              n/a
-            </Flex>
-          }
-        />
-      </VaultChangesInformationContainer>
-      <MessageCard
-        messages={[
-          <>
-            <strong>{t(`notice`)}</strong>:{' '}
-            {t('protection.cancel-notice', { ratioParam: t('system.loan-to-value') })}
-          </>,
-        ]}
-        type="warning"
-        withBullet={false}
-      />
-    </Grid>
+    <Grid gap={3}>sidebarRemoveTriggerContent</Grid>
   ) : (
     <></>
   )
 
   const sidebarFinishedContent: SidebarSectionProps['content'] = (
-    <Grid gap={3}>
-      <Box>
-        <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-          <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
-        </Flex>
-      </Box>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {action === TriggerAction.Add && (
-          <>
-            {t('automation-creation.add-complete-content', stopLossTranslationParams)}{' '}
-            <AppLink
-              href={`https://docs.summer.fi/products/${sidebarAutomationLinkMap['stopLoss']}`}
-              sx={{ fontSize: 2 }}
-            >
-              {t('here')}.
-            </AppLink>
-          </>
-        )}
-        {action === TriggerAction.Remove &&
-          t('automation-creation.remove-complete-content', stopLossTranslationParams)}
-      </Text>
-      <Box>
-        <VaultChangesWithADelayCard />
-      </Box>
-    </Grid>
+    <Grid gap={3}>sidebarFinishedContent</Grid>
   )
 
-  const executionAction = () => {
-    void executeCall()
-      .then(() => {
-        setTransactionStep('finished')
-        action !== TriggerAction.Remove && setRefreshingTriggerData(true)
-      })
-      .catch((error) => {
-        console.error('error', error)
-        setTransactionStep(preparedState)
-      })
-  }
+  // const executionAction = () => {
+  //   console.log('executionAction not implemented');
+  // void executeCall()
+  //   .then(() => {
+  //     setTransactionStep('finished')
+  //     action !== TriggerAction.Remove && setRefreshingTriggerData(true)
+  //   })
+  //   .catch((error) => {
+  //     console.error('error', error)
+  //     setTransactionStep(preparedState)
+  //   })
+  // }
 
-  const isDisabled = useMemo(() => {
-    if (
-      isGettingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
-    ) {
-      return true
-    }
-    if (transactionStep === 'finished') {
-      return false
-    }
-    return !stopLossConfigChanged
-  }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep])
+  // const isDisabled = useMemo(() => {
+  // if (
+  //   isGettingStopLossTx ||
+  //   ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
+  // ) {
+  //   return true
+  // }
+  // if (transactionStep === 'finished') {
+  //   return false
+  // }
+  // return !stopLossConfigChanged
+  // }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep])
 
-  const primaryButtonAction = () => {
-    if (transactionStep === 'prepare') {
-      setTransactionStep(preparedState)
-    }
-    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
-      setTransactionStep(inProgressState)
-      stopLossTxCancelablePromise?.cancel()
-      executionAction()
-    }
-    if (transactionStep === 'finished') {
-      onTxFinished()
-      setTransactionStep('prepare')
-    }
-  }
+  // const primaryButtonAction = () => {
+  //   if (transactionStep === 'prepare') {
+  //     setTransactionStep(preparedState)
+  //   }
+  //   if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
+  //     setTransactionStep(inProgressState)
+  //     stopLossTxCancelablePromise?.cancel()
+  //     executionAction()
+  //   }
+  //   if (transactionStep === 'finished') {
+  //     onTxFinished()
+  //     setTransactionStep('prepare')
+  //   }
+  // }
 
-  const primaryButtonLabel = () => {
-    const primaryButtonMap = {
-      prepare: {
-        [TriggerAction.Add]: t('automation.add-trigger', stopLossTranslationParams),
-        [TriggerAction.Update]: t('automation.update-trigger', stopLossTranslationParams),
-        [TriggerAction.Remove]: t('automation.cancel-trigger', stopLossTranslationParams),
-      }[action],
-      preparedAdd: t('protection.confirm'),
-      preparedUpdate: t('protection.confirm'),
-      preparedRemove: t('protection.confirm'),
-      addInProgress: t('automation.setting', stopLossTranslationParams),
-      removeInProgress: t('automation.cancelling', stopLossTranslationParams),
-      updateInProgress: t('automation.updating', stopLossTranslationParams),
-      finished: t('open-earn.aave.vault-form.back-to-editing'),
-    } as Record<StopLossSidebarStates, string>
-    return primaryButtonMap[transactionStep]
-  }
+  // const primaryButtonLabel = () => {
+  //   const primaryButtonMap = {
+  //     prepare: {
+  //       [TriggerAction.Add]: t('automation.add-trigger', stopLossTranslationParams),
+  //       [TriggerAction.Update]: t('automation.update-trigger', stopLossTranslationParams),
+  //       [TriggerAction.Remove]: t('automation.cancel-trigger', stopLossTranslationParams),
+  //     }[action],
+  //     preparedAdd: t('protection.confirm'),
+  //     preparedUpdate: t('protection.confirm'),
+  //     preparedRemove: t('protection.confirm'),
+  //     addInProgress: t('automation.setting', stopLossTranslationParams),
+  //     removeInProgress: t('automation.cancelling', stopLossTranslationParams),
+  //     updateInProgress: t('automation.updating', stopLossTranslationParams),
+  //     finished: t('open-earn.aave.vault-form.back-to-editing'),
+  //   } as Record<PartialTakeProfitSidebarStates, string>
+  //   return primaryButtonMap[transactionStep]
+  // }
 
-  const showSecondaryButton =
-    (transactionStep === 'prepare' &&
-      isRegularStopLossEnabled &&
-      action !== TriggerAction.Remove) ||
-    (action === TriggerAction.Remove && transactionStep !== 'finished') ||
-    ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
+  // const showSecondaryButton =
+  //   (transactionStep === 'prepare' &&
+  //     isRegularStopLossEnabled &&
+  //     action !== TriggerAction.Remove) ||
+  //   (action === TriggerAction.Remove && transactionStep !== 'finished') ||
+  //   ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
 
-  const secondaryButtonLabel = () => {
-    if (transactionStep === 'prepare' && isRegularStopLossEnabled) {
-      return t('system.remove-trigger')
-    }
-    if (
-      action === TriggerAction.Remove ||
-      ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
-    ) {
-      return t('go-back')
-    }
-    return ''
-  }
-  const secondaryButtonAction = () => {
-    if (transactionStep === 'prepare' && isRegularStopLossEnabled) {
-      setTransactionStep('preparedRemove')
-    }
-    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
-      setTransactionStep('prepare')
-    }
-  }
+  // const secondaryButtonLabel = () => {
+  //   if (transactionStep === 'prepare' && isRegularStopLossEnabled) {
+  //     return t('system.remove-trigger')
+  //   }
+  //   if (
+  //     action === TriggerAction.Remove ||
+  //     ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
+  //   ) {
+  //     return t('go-back')
+  //   }
+  //   return ''
+  // }
 
-  const getCurrectStep: () => [number, number] = () => {
-    switch (transactionStep) {
-      case 'prepare':
-        return [1, 3]
-      case 'preparedAdd':
-      case 'preparedUpdate':
-      case 'preparedRemove':
-      case 'addInProgress':
-      case 'updateInProgress':
-      case 'removeInProgress':
-        return [2, 3]
-      case 'finished':
-        return [3, 3]
-      default:
-        return [1, 3]
-    }
-  }
+  // const secondaryButtonAction = () => {
+  //   if (transactionStep === 'prepare' && isRegularStopLossEnabled) {
+  //     setTransactionStep('preparedRemove')
+  //   }
+  //   if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
+  //     setTransactionStep('prepare')
+  //   }
+  // }
+
+  // const getCurrectStep: () => [number, number] = () => {
+  //   switch (transactionStep) {
+  //     case 'prepare':
+  //       return [1, 3]
+  //     case 'preparedAdd':
+  //     case 'preparedUpdate':
+  //     case 'preparedRemove':
+  //     case 'addInProgress':
+  //     case 'updateInProgress':
+  //     case 'removeInProgress':
+  //       return [2, 3]
+  //     case 'finished':
+  //       return [3, 3]
+  //     default:
+  //       return [1, 3]
+  //   }
+  // }
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('system.stop-loss'),
+    title: t('system.partial-take-profit'),
     dropdown,
     content: {
       prepare: sidebarPreparingContent,
@@ -545,18 +444,19 @@ export function AaveManagePositionStopLossLambdaSidebar({
       finished: sidebarFinishedContent,
     }[transactionStep],
     primaryButton: {
-      isLoading: isGettingStopLossTx || refreshingTriggerData,
-      disabled: isDisabled,
-      label: primaryButtonLabel(),
-      action: primaryButtonAction,
-      steps: getCurrectStep(),
+      // isLoading: isGettingStopLossTx || refreshingTriggerData,
+      // disabled: isDisabled,
+      // label: primaryButtonLabel(),
+      // action: primaryButtonAction,
+      // steps: getCurrectStep(),
+      label: 'Button label',
     },
-    textButton: showSecondaryButton
-      ? {
-          label: secondaryButtonLabel(),
-          action: secondaryButtonAction,
-        }
-      : undefined,
+    // textButton: showSecondaryButton
+    //   ? {
+    //       label: secondaryButtonLabel(),
+    //       action: secondaryButtonAction,
+    //     }
+    //   : undefined,
   }
 
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />

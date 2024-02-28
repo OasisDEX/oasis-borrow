@@ -1251,6 +1251,7 @@
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
     "trailing-stop-loss": "Trailing Stop-Loss",
+    "partial-take-profit": "Partial Take Profit",
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
