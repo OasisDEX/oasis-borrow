@@ -3112,7 +3112,13 @@
       "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 8 hours interest applies to all deposits.</1> <2><1>Help me pick correctly →</1></2>",
       "price-between-htp-and-lup": "Available Liquidity: Your deposit is earning yield but is not currently utilised by borrowers. <1>A deposit fee of 8 hours interest applies to all deposits</1> <2><1>Help me pick correctly →</1></2>",
       "price-above-lup": "Active liquidity: You are actively lending and will earn a yield whenever there are loans above {{lup}} {{collateralToken}}/{{quoteToken}}. <2><1>Help me pick correctly →</1></2>",
-      "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+      "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>",
+      "yield-loop-safe-from-liquidation": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{rangeToLiquidation}} with respect to {{quoteToken}} for this position to be available for liquidation. Aave's liquidations penalty is at least {{liquidationPenalty}}.",
+      "yield-loop-close-to-liquidation": "At the chosen risk level, if the price of {{collateralToken}} moves over {{rangeToLiquidation}} with respect to {{quoteToken}} this {{productType}} position could be liquidated. Aave's liquidations penalty is at least {{liquidationPenalty}}.",
+      "deposit-amount-exceeds-supply-cap": "You cannot deposit more than {{cap}} {{collateralToken}} due to the maximum supply cap.",
+      "debt-amount-exceeds-borrow-cap": "You cannot borrow more than {{cap}} {{quoteToken}} due to the maximum borrowing cap.",
+      "target-ltv-exceeds-supply-cap": "Your target LTV is too high due to the maximum supply cap. You cannot supply more than {{cap}} {{collateralToken}}.",
+      "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{quoteToken}}."
     },
     "rewards": {
       "title": "Earn more $AJNA on Summer.fi than any other platform",

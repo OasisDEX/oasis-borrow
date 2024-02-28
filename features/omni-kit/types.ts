@@ -217,6 +217,7 @@ export interface GetOmniValidationsParams {
   isOpening: boolean
   position: OmniGenericPosition
   productType: OmniProductType
+  protocol: LendingProtocol
   quoteBalance: BigNumber
   quoteToken: string
   simulationErrors?: SimulationValidations

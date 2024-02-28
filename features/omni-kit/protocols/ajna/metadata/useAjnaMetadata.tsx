@@ -102,6 +102,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrice,
       quoteToken,
       protocolRaw,
+      protocol,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -118,6 +119,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
+    protocol,
     state: productContext.form.state,
   })
 

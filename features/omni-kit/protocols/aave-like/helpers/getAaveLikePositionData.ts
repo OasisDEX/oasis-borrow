@@ -7,7 +7,7 @@ import { getRpcProvider } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { getAaveHistoryEvents } from 'features/aave/services'
 import {
-  getReserveConfigurationDataCall,
+  // getReserveConfigurationDataCall,
   getReserveDataCall,
 } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
@@ -49,7 +49,7 @@ export function getAaveLikePositionData$({
   } as DpmSubgraphData
 
   return combineLatest(
-    from(getReserveConfigurationDataCall(dpm, collateralToken)),
+    // from(getReserveConfigurationDataCall(dpm, collateralToken)),
     from(getReserveDataCall(dpm, collateralToken)),
     from(getReserveDataCall(dpm, debtToken)),
     from(getAaveHistoryEvents(proxyAddress, networkId)),
@@ -59,14 +59,26 @@ export function getAaveLikePositionData$({
         debtToken,
       }),
     ),
+    from(
+      services.getAaveLikeReserveData$({
+        token: collateralToken,
+      }),
+    ),
+    from(
+      services.getAaveLikeReserveData$({
+        token: debtToken,
+      }),
+    ),
   ).pipe(
     switchMap(
       ([
-        _,
+        // _,
         primaryTokenReserveData,
         secondaryTokenReserveData,
         aggregatedData,
         reserveConfigurationData,
+        collateralReserveData,
+        debtReserveData,
       ]) => {
         switch (protocol) {
           case LendingProtocol.AaveV2:
@@ -82,6 +94,10 @@ export function getAaveLikePositionData$({
                 collateralPrice,
                 debtPrice,
                 reserveConfigurationData,
+                reserveData: {
+                  collateral: collateralReserveData,
+                  debt: debtReserveData,
+                },
               },
               { addresses: addressesV2, provider },
             )
@@ -98,6 +114,10 @@ export function getAaveLikePositionData$({
                 collateralPrice,
                 debtPrice,
                 reserveConfigurationData,
+                reserveData: {
+                  collateral: collateralReserveData,
+                  debt: debtReserveData,
+                },
               },
               { addresses: addressesV3, provider },
             )
@@ -114,6 +134,10 @@ export function getAaveLikePositionData$({
                 collateralPrice,
                 debtPrice,
                 reserveConfigurationData,
+                reserveData: {
+                  collateral: collateralReserveData,
+                  debt: debtReserveData,
+                },
               },
               { addresses: addressesSpark, provider },
             )

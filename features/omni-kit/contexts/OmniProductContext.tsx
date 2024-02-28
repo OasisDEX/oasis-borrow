@@ -260,6 +260,7 @@ export function OmniProductContextProvider({
     environment: {
       collateralBalance,
       collateralPrecision,
+      collateralToken,
       ethBalance,
       ethPrice,
       quoteBalance,
@@ -268,6 +269,7 @@ export function OmniProductContextProvider({
       isOpening,
       gasEstimation,
       entryToken,
+      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -306,7 +308,7 @@ export function OmniProductContextProvider({
         simulationCommon: {
           getValidations: getOmniValidations({
             collateralBalance: entryToken.balance,
-            collateralToken: entryToken.symbol,
+            collateralToken,
             currentStep,
             ethBalance,
             ethPrice,
@@ -316,6 +318,7 @@ export function OmniProductContextProvider({
             productType,
             quoteBalance,
             quoteToken,
+            protocol,
             simulationErrors: simulation?.errors as OmniSimulationCommon['errors'],
             simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
             simulationNotices: simulation?.notices as OmniSimulationCommon['notices'],
