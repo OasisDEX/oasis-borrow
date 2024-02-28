@@ -206,6 +206,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
           netValueInDebtToken: position.netValue.div(quotePrice),
           collateralToken,
           debtToken: quoteToken,
+          useDebtTokenAsPnL: isYieldLoop,
         })
       : undefined,
   )

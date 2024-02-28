@@ -1,4 +1,4 @@
-import type { AaveLikePosition, IPosition, Strategy } from '@oasisdex/dma-library'
+import type { AaveLikePosition, IPosition, Strategy } from '@oasisdex/dma-library-migration'
 import type { MigrateAaveLikeParameters } from 'actions/aave-like'
 import type BigNumber from 'bignumber.js'
 import type { Context, ContextConnected } from 'blockchain/network.types'
