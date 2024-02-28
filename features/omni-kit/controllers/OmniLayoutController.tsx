@@ -76,7 +76,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         })}
         details={[
           ...(headlineDetails || []),
-          ...(!isOracless
+          ...(!isOracless && !isYieldLoop && !isOpening
             ? [
                 {
                   label: t('omni-kit.headline.details.current-market-price'),

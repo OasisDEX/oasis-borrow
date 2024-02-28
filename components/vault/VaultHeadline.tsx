@@ -44,7 +44,7 @@ export function VaultHeadline({
         flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'center'],
-        gap: 3,
+        gap: 2,
       }}
       onClick={handleClick}
     >
@@ -93,7 +93,7 @@ export function VaultHeadline({
           }}
         >
           {protocol && (
-            <Flex sx={{ ml: [0, 3] }}>
+            <Flex sx={{ ml: [0, 2] }}>
               <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
             </Flex>
           )}
