@@ -209,7 +209,7 @@ export function OmniFormFieldPayback({
 
   return 'paybackAmount' in state && 'paybackAmountUSD' in state ? (
     <VaultActionInput
-      action="Payback"
+      action="Pay back"
       currencyCode={quoteToken}
       currencyDigits={quoteDigits}
       tokenUsdPrice={quotePrice}
