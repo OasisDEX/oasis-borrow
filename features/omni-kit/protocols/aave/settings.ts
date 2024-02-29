@@ -11,26 +11,7 @@ export const settingsV2: OmniProtocolSettings = {
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],
   supportedMultiplyTokens: {
-    [NetworkIds.MAINNET]: [
-      'ETH',
-      'WSTETH',
-      'WEETH',
-      'OSETH',
-      'SDAI',
-      'DAI',
-      'USDC',
-      'USDT',
-      'WBTC',
-      'GHO',
-      'MKR',
-      'WBTC',
-      'LDO',
-      'LINK',
-      'USDT',
-      'RETH',
-      'LUSD',
-      'RPL',
-    ],
+    [NetworkIds.MAINNET]: ['ETH', 'STETH', 'USDC', 'WBTC'],
   },
   steps: {
     borrow: {
@@ -48,9 +29,6 @@ export const settingsV2: OmniProtocolSettings = {
   },
   entryTokens: {
     [NetworkIds.MAINNET]: { 'STETH-ETH': 'ETH' },
-    [NetworkIds.ARBITRUMMAINNET]: { 'STETH-ETH': 'ETH' },
-    [NetworkIds.OPTIMISMMAINNET]: { 'STETH-ETH': 'ETH' },
-    [NetworkIds.BASEMAINNET]: { 'STETH-ETH': 'ETH' },
   },
 }
 
@@ -77,24 +55,25 @@ export const settingsV3: OmniProtocolSettings = {
   supportedMultiplyTokens: {
     [NetworkIds.MAINNET]: [
       'ETH',
+      'RETH',
       'WSTETH',
-      'WEETH',
-      'OSETH',
-      'SDAI',
-      'DAI',
+      'CBETH',
       'USDC',
-      'USDT',
-      'WBTC',
+      'DAI',
+      'SDAI',
       'GHO',
       'MKR',
       'WBTC',
       'LDO',
-      'LINK',
       'USDT',
-      'RETH',
+      'LINK',
       'LUSD',
       'RPL',
+      'FRAX',
     ],
+    [NetworkIds.ARBITRUMMAINNET]: ['ETH', 'RETH', 'WSTETH', 'USDC', 'DAI', 'WBTC'],
+    [NetworkIds.BASEMAINNET]: ['ETH', 'CBETH', 'USDBC', 'USDC'],
+    [NetworkIds.OPTIMISMMAINNET]: ['ETH', 'WSTETH', 'USDC', 'USDC.E', 'DAI', 'WBTC'],
   },
   steps: {
     borrow: {
@@ -112,8 +91,5 @@ export const settingsV3: OmniProtocolSettings = {
   },
   entryTokens: {
     [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
-    [NetworkIds.ARBITRUMMAINNET]: { 'WSTETH-ETH': 'ETH' },
-    [NetworkIds.OPTIMISMMAINNET]: { 'WSTETH-ETH': 'ETH' },
-    [NetworkIds.BASEMAINNET]: { 'WSTETH-ETH': 'ETH' },
   },
 }
