@@ -1,5 +1,5 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
-import { normalizeValue } from '@oasisdex/dma-library'
+import { isCorrelatedPosition, normalizeValue } from '@oasisdex/dma-library'
 import {
   OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,
@@ -156,6 +156,7 @@ export const MorphoDetailsSectionContent: FC = () => {
           netValueInDebtToken: position.netValue.div(quotePrice),
           collateralToken,
           debtToken: quoteToken,
+          useDebtTokenAsPnL: isCorrelatedPosition(collateralToken, quoteToken),
         })
       : undefined,
   )

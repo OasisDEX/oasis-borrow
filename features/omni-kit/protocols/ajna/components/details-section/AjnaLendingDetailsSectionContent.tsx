@@ -1,5 +1,5 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
-import { normalizeValue } from '@oasisdex/dma-library'
+import { isCorrelatedPosition, normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
   OmniCardDataCollateralDepositedModal,
@@ -182,6 +182,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           netValueInDebtToken: netValue.div(quotePrice),
           collateralToken,
           debtToken: quoteToken,
+          useDebtTokenAsPnL: isCorrelatedPosition(collateralToken, quoteToken),
         })
       : undefined,
   )
