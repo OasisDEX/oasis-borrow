@@ -12,7 +12,6 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import {
   AaveLikeDetailsSectionContent,
   AaveLikeDetailsSectionFooter,
@@ -24,6 +23,7 @@ import {
   getAaveLikeNotifications,
   getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
@@ -153,7 +153,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         },
         elements: {
           faq: getAaveLikeFaq({ productType, isYieldLoop, protocol }),
-          highlighterOrderInformation: undefined,
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,
           overviewBanner: getAaveLikeBanner({ protocol, isYieldLoop, collateralToken, quoteToken }),

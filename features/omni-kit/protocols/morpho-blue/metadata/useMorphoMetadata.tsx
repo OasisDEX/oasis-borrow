@@ -122,7 +122,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
-          highlighterOrderInformation: undefined,
           overviewContent: <MorphoDetailsSectionContent />,
           overviewFooter: <MorphoDetailsSectionFooter />,
         },

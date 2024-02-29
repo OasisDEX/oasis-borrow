@@ -86,7 +86,7 @@ export type LendingMetadata = CommonMetadata & {
     sliderRightLabel?: string
   }
   elements: CommonMetadataElements & {
-    highlighterOrderInformation: ReactNode
+    highlighterOrderInformation?: ReactNode
   }
   theme?: Theme
 }
