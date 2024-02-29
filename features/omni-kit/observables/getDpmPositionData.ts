@@ -25,6 +25,9 @@ export interface DpmPositionData extends UserDpmAccount {
   quoteTokenAddress: string
 }
 
+// Currently aave-like correlated positions are opened as earn dpm product
+// which is not common approach in other protocols (ajna, morpho uses multiply product type)
+// therefore mapping is needed to be able to read info about position
 const mapAaveYieldLoopToMultiply = ({
   collateralToken,
   quoteToken,
