@@ -23,13 +23,13 @@ import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/
 import {
   AaveLikeDetailsSectionContent,
   AaveLikeDetailsSectionFooter,
-  AaveLikeYieldLoopRiskBanner,
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
   aaveLikeFlowStateFilter,
   getAaveLikeNotifications,
   getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
+import { getAaveLikeBanner } from 'features/omni-kit/protocols/aave-like/helpers/getAaveLikeBanner'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
@@ -94,6 +94,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
 
   const {
     environment: {
+      collateralToken,
       collateralAddress,
       isOracless,
       productType,
@@ -190,7 +191,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           highlighterOrderInformation: undefined,
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,
-          overviewBanner: isYieldLoop && <AaveLikeYieldLoopRiskBanner />,
+          overviewBanner: getAaveLikeBanner({ protocol, isYieldLoop, collateralToken, quoteToken }),
           overviewTitle: isYieldLoop && isOpening && (
             <SimulateTitle
               token={quoteToken}
