@@ -99,7 +99,14 @@ async function getAjnaPositions({
             positionsArray.filter((item) => proxyAddress === item.proxyAddress).length > 1
 
           // get Ajna position from dma
-          const commonPayload = { collateralPrice, quotePrice, proxyAddress, poolAddress }
+          const commonPayload = {
+            collateralPrice,
+            quotePrice,
+            proxyAddress,
+            poolAddress,
+            collateralToken: primaryToken,
+            quoteToken: secondaryToken,
+          }
           const commonDependency = {
             poolInfoAddress: ajnaPoolInfo.address,
             provider: getRpcProvider(networkId),
