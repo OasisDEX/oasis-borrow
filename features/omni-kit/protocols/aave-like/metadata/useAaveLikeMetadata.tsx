@@ -1,8 +1,8 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { SimulateTitle } from 'components/SimulateTitle'
+import { OmniStaticBoundary } from 'features/omni-kit/components/sidebars'
 import { omniYieldLoopDefaultSimulationDeposit } from 'features/omni-kit/constants'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
@@ -27,27 +27,12 @@ import {
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
-import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
-
-interface StaticRightBoundaryProps {
-  oraclePrice: BigNumber
-  priceFormat: string
-}
-
-const StaticRightBoundary: FC<StaticRightBoundaryProps> = ({ oraclePrice, priceFormat }) => {
-  return (
-    <>
-      {formatCryptoBalance(oraclePrice)} {priceFormat}
-    </>
-  )
-}
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
@@ -161,13 +146,13 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             />
           ),
           sliderRightBoundary: isYieldLoop && (
-            <StaticRightBoundary priceFormat={priceFormat} oraclePrice={position.oraclePrice} />
+            <OmniStaticBoundary label={priceFormat} value={position.oraclePrice} />
           ),
         },
         featureToggles,
       } as LendingMetadata
     case OmniProductType.Earn:
     default:
-      throw new Error('Aave does not support Earn')
+      throw new Error(`${protocol} does not support Earn`)
   }
 }
