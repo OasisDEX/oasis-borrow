@@ -115,13 +115,11 @@ export async function getSubgraphUrl(subgraph: keyof typeof subgraphsRecord, net
   const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
     1000 * configCacheTime.backend,
   )
-  const subgraphBaseUrl = appConfig.parameters.subgraphs.baseUrl
+  const subgraphBaseUrl = appConfig.parameters.subgraphs.baseShortUrl
   const subgraphName = subgraphsRecord[subgraph][networkId as NetworkIds]
   // special case for Ajna goerli subgraph
   if (subgraph === 'Ajna' && networkId === NetworkIds.GOERLI) {
-    const ajnaSubgraphUrlGoerli = getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2UrlGoerli
-    return ajnaSubgraphUrlGoerli
+    return getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2UrlGoerli
   }
-  const subgraphUrl = `${subgraphBaseUrl}/${subgraphName}`
-  return subgraphUrl
+  return `${subgraphBaseUrl}/${subgraphName}`
 }

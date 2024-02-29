@@ -5,6 +5,7 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { tick } from 'theme/icons'
@@ -24,14 +25,16 @@ export function MigrateWelcomeStateView({ state, send, isLoading }: MigrateAaveS
     },
   })
 
+  const protocol = LendingProtocolLabel[state.context.strategyConfig.protocol]
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('migrate.vault-form.title'),
     content: (
       <Grid gap={3}>
         <Box sx={{ textAlign: 'center', m: 3 }}>
-          <Heading as="h3">{t('migrate.welcome-state.title-1')}</Heading>
+          <Heading as="h3">{t('migrate.welcome-state.title-1', { protocol })}</Heading>
           <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('migrate.welcome-state.description-1')}
+            {t('migrate.welcome-state.description-1', { protocol })}
           </Text>
         </Box>
         <Box sx={{ mb: 3 }}>

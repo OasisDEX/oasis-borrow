@@ -55,7 +55,7 @@ export const isAutoSellEnabled = ({
 export const getCurrentOptimizationView = ({
   triggers,
 }: GetTriggersResponse): 'auto-buy' | undefined => {
-  if (triggers.aaveBasicBuy) {
+  if (triggers.aaveBasicBuy || triggers.sparkBasicBuy) {
     return 'auto-buy'
   }
   return undefined
@@ -77,11 +77,11 @@ export const getCurrentProtectionView = ({
     return 'stop-loss'
   }
 
-  if (triggers.aaveBasicSell) {
+  if (triggers.aaveBasicSell || triggers.sparkBasicSell) {
     return 'auto-sell'
   }
 
-  if (triggers.aaveTrailingStopLossDMA) {
+  if (triggers.aaveTrailingStopLossDMA || triggers.sparkTrailingStopLossDMA) {
     return 'trailing-stop-loss'
   }
 
@@ -95,7 +95,10 @@ export const areTriggersLoading = (state: StateFrom<typeof triggersAaveStateMach
 export const hasActiveOptimization = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
-  return context.currentTriggers.triggers.aaveBasicBuy !== undefined
+  const hasAaveAutoBuyEnabled = context.currentTriggers.triggers.aaveBasicBuy !== undefined
+  const hasSparkAutoBuyEnabled = context.currentTriggers.triggers.sparkBasicBuy !== undefined
+
+  return hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled
 }
 
 export const hasActiveProtection = ({
@@ -112,7 +115,9 @@ export const hasActiveProtection = ({
     sparkStopLossToDebt,
     aaveStopLossToDebt,
     aaveBasicSell,
+    sparkBasicSell,
     aaveTrailingStopLossDMA,
+    sparkTrailingStopLossDMA,
   } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
@@ -126,10 +131,12 @@ export const hasActiveProtection = ({
       )
     case LendingProtocol.SparkV3:
       return isAnyValueDefined(
+        sparkBasicSell,
         sparkStopLossToCollateral,
         sparkStopLossToDebt,
         sparkStopLossToCollateralDMA,
         sparkStopLossToDebtDMA,
+        sparkTrailingStopLossDMA,
       )
     case LendingProtocol.AaveV2:
       return false
@@ -174,12 +181,12 @@ export const hasActiveTrailingStopLoss = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const { aaveTrailingStopLossDMA } = context.currentTriggers.triggers
+  const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
       return isAnyValueDefined(aaveTrailingStopLossDMA)
     case LendingProtocol.SparkV3:
-      return false
+      return isAnyValueDefined(sparkTrailingStopLossDMA)
     case LendingProtocol.AaveV2:
       return false
   }
@@ -189,12 +196,12 @@ export const hasActiveAutoSell = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const { aaveBasicSell } = context.currentTriggers.triggers
+  const { aaveBasicSell, sparkBasicSell } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
       return isAnyValueDefined(aaveBasicSell)
     case LendingProtocol.SparkV3:
-      return false
+      return isAnyValueDefined(sparkBasicSell)
     case LendingProtocol.AaveV2:
       return false
   }
@@ -249,6 +256,7 @@ function mapPositionToAutoBuyPosition({
       amount: amountFromWei(position.debt.amount, position.debt.precision),
     },
     dpm: dpm.proxy,
+    protocol: strategyConfig.protocol,
     pricesDenomination: strategyConfig.strategyType === StrategyType.Short ? 'debt' : 'collateral',
   }
 }
@@ -411,7 +419,7 @@ export const triggersAaveStateMachine = createMachine(
         (_, event) => {
           return {
             type: 'CURRENT_TRIGGER_RECEIVED',
-            currentTrigger: event.data.triggers.aaveBasicBuy,
+            currentTrigger: event.data.triggers.aaveBasicBuy || event.data.triggers.sparkBasicBuy,
           }
         },
       ),
@@ -420,7 +428,7 @@ export const triggersAaveStateMachine = createMachine(
         (_, event) => {
           return {
             type: 'CURRENT_TRIGGER_RECEIVED',
-            currentTrigger: event.data.triggers.aaveBasicSell,
+            currentTrigger: event.data.triggers.aaveBasicSell || event.data.triggers.sparkBasicSell,
           }
         },
       ),

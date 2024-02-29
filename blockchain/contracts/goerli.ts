@@ -196,7 +196,10 @@ export const goerliContracts: MainnetContractsWithOptional = {
     'RBN-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RBNETH),
     'AJNA-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_AJNADAI),
     'MKR-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MKRDAI),
-
+    'ARB-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ARBETH),
+    'ARB-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ARBUSDC),
+    'OP-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_OPETH),
+    'OP-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_OPUSDC),
     'MEVETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MEVETHWETH),
     'XETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_XETHWETH),
     'DETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_DETHWETH),

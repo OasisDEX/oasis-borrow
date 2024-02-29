@@ -10,6 +10,7 @@ import type { IStrategyConfig } from 'features/aave/types'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { env } from 'process'
@@ -30,6 +31,7 @@ function useSetupTriggersStateContext(
     autoBuyTriggerAaveStateMachine.withContext({
       ...autoBuyContext,
       networkId: strategy.networkId,
+      protocol: strategy.protocol as SupportedLambdaProtocols,
       usePriceInput: shouldUsePriceInput(strategy),
     }),
     {
@@ -42,6 +44,7 @@ function useSetupTriggersStateContext(
     autoSellTriggerAaveStateMachine.withContext({
       ...autoSellContext,
       networkId: strategy.networkId,
+      protocol: strategy.protocol as SupportedLambdaProtocols,
       usePriceInput: shouldUsePriceInput(strategy),
     }),
     {
