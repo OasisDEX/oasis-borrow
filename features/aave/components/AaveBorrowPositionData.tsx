@@ -30,7 +30,7 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'

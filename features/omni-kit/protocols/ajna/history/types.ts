@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type {
   PositionHistoryEvent,
   PositionHistoryResponse,

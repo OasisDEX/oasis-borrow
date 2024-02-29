@@ -41,7 +41,7 @@ import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type {
   AaveCumulativeData,
   AaveHistoryEvent,
-} from 'features/omni-kit/protocols/aave/history/types'
+} from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { TransactionStateMachine } from 'features/stateMachines/transaction'
 import type {

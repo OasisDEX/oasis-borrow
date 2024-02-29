@@ -3,13 +3,6 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { SimulateTitle } from 'components/SimulateTitle'
-import faqBorrowAave from 'features/content/faqs/aave/borrow/en'
-import faqEarnAaveV2 from 'features/content/faqs/aave/earn/en_v2'
-import faqEarnAaveV3 from 'features/content/faqs/aave/earn/en_v3'
-import faqMultiplyAave from 'features/content/faqs/aave/multiply/en'
-import faqBorrowSpark from 'features/content/faqs/spark/borrow/en'
-import faqEanSpark from 'features/content/faqs/spark/earn/en_v3'
-import faqMultiplySpark from 'features/content/faqs/spark/multiply/en'
 import { omniYieldLoopDefaultSimulationDeposit } from 'features/omni-kit/constants'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
@@ -19,57 +12,29 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import {
   AaveLikeDetailsSectionContent,
   AaveLikeDetailsSectionFooter,
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
   aaveLikeFlowStateFilter,
+  getAaveLikeBanner,
+  getAaveLikeFaq,
   getAaveLikeNotifications,
   getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
-import { getAaveLikeBanner } from 'features/omni-kit/protocols/aave-like/helpers/getAaveLikeBanner'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
-import { isAaveLikeLendingProtocol, LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
-
-const getAaveLikeFaq = ({
-  productType,
-  isYieldLoop,
-  protocol,
-}: {
-  productType: OmniProductType.Borrow | OmniProductType.Multiply
-  protocol: LendingProtocol
-  isYieldLoop: boolean
-}) => {
-  if (!isAaveLikeLendingProtocol(protocol)) {
-    throw Error('Given protocol is not aave-like')
-  }
-
-  const faqMap = {
-    [OmniProductType.Borrow]: {
-      [LendingProtocol.AaveV2]: faqBorrowAave,
-      [LendingProtocol.AaveV3]: faqBorrowAave,
-      [LendingProtocol.SparkV3]: faqBorrowSpark,
-    },
-    [OmniProductType.Multiply]: {
-      [LendingProtocol.AaveV2]: isYieldLoop ? faqEarnAaveV2 : faqMultiplyAave,
-      [LendingProtocol.AaveV3]: isYieldLoop ? faqEarnAaveV3 : faqMultiplyAave,
-      [LendingProtocol.SparkV3]: isYieldLoop ? faqEanSpark : faqMultiplySpark,
-    },
-  }
-
-  return faqMap[productType][protocol]
-}
 
 interface StaticRightBoundaryProps {
   oraclePrice: BigNumber
