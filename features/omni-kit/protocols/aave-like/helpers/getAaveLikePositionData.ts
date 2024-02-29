@@ -6,10 +6,7 @@ import type BigNumber from 'bignumber.js'
 import { getRpcProvider } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { getAaveHistoryEvents } from 'features/aave/services'
-import {
-  // getReserveConfigurationDataCall,
-  getReserveDataCall,
-} from 'handlers/portfolio/positions/handlers/aave-like/helpers'
+import { getReserveDataCall } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import { LendingProtocol } from 'lendingProtocols'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common'
@@ -44,12 +41,11 @@ export function getAaveLikePositionData$({
   }
 
   const dpm = {
-    protocol: protocol as LendingProtocol,
+    protocol,
     networkId,
   } as DpmSubgraphData
 
   return combineLatest(
-    // from(getReserveConfigurationDataCall(dpm, collateralToken)),
     from(getReserveDataCall(dpm, collateralToken)),
     from(getReserveDataCall(dpm, debtToken)),
     from(getAaveHistoryEvents(proxyAddress, networkId)),
@@ -72,7 +68,6 @@ export function getAaveLikePositionData$({
   ).pipe(
     switchMap(
       ([
-        // _,
         primaryTokenReserveData,
         secondaryTokenReserveData,
         aggregatedData,
