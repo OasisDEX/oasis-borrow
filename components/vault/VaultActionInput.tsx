@@ -18,7 +18,7 @@ export type VaultAction =
   | 'Deposit'
   | 'Enter'
   | 'Generate'
-  | 'Payback'
+  | 'Pay back'
   | 'Sell'
   | 'Withdraw'
   | TranslateStringType
