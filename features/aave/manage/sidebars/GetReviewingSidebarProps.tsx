@@ -132,7 +132,7 @@ export function GetReviewingSidebarProps({
               hasError={false}
             />
             <VaultActionInput
-              action={isDeposit ? 'Borrow' : 'Payback'}
+              action={isDeposit ? 'Borrow' : 'Pay back'}
               currencyCode={debt}
               currencyDigits={getToken(debt).digits}
               maxAmountLabel={isDeposit ? t('max') : t('balance')}
@@ -217,7 +217,7 @@ export function GetReviewingSidebarProps({
               }))}
             />
             <VaultActionInput
-              action={isBorrow ? 'Borrow' : 'Payback'}
+              action={isBorrow ? 'Borrow' : 'Pay back'}
               currencyCode={debt}
               currencyDigits={getToken(debt).digits}
               maxAmountLabel={isPayback ? t('balance') : t('max')}
