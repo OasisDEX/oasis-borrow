@@ -20,13 +20,13 @@ import {
   aaveLikeFlowStateFilter,
   getAaveLikeBanner,
   getAaveLikeFaq,
+  getAaveLikeFeatureToggle,
   getAaveLikeNotifications,
   getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
 import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
-import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
@@ -51,12 +51,6 @@ const StaticRightBoundary: FC<StaticRightBoundaryProps> = ({ oraclePrice, priceF
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
-
-  const {
-    AaveV3SafetySwitch: aaveSafetySwitchOn,
-    AaveV3SuppressValidation: aaveSuppressValidation,
-  } = useAppConfig('features')
-
   const {
     environment: {
       collateralToken,
@@ -76,10 +70,12 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
     tx: { txDetails },
   } = useOmniGeneralContext()
 
+  const featureToggles = getAaveLikeFeatureToggle(protocol)
+
   const validations = productContext.position.simulationCommon.getValidations({
-    safetySwitchOn: aaveSafetySwitchOn,
+    safetySwitchOn: featureToggles.safetySwitch,
     isFormFrozen: false,
-    protocolLabel: LendingProtocolLabel.aavev3,
+    protocolLabel: LendingProtocolLabel[protocol],
   })
 
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
@@ -168,10 +164,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             <StaticRightBoundary priceFormat={priceFormat} oraclePrice={position.oraclePrice} />
           ),
         },
-        featureToggles: {
-          safetySwitch: aaveSafetySwitchOn,
-          suppressValidation: aaveSuppressValidation,
-        },
+        featureToggles,
       } as LendingMetadata
     case OmniProductType.Earn:
     default:
