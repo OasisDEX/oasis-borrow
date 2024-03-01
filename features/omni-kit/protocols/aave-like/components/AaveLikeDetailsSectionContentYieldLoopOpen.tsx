@@ -1,8 +1,8 @@
 import { RiskRatio } from '@oasisdex/dma-library'
-import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
-import { defaultYieldFields, mapSimulation } from 'features/aave/components'
+import { defaultYieldFields } from 'features/aave/components'
 import { useSimulationYields } from 'features/aave/hooks'
 import type { IStrategyConfig } from 'features/aave/types'
+import { OmniOpenYieldLoopSimulation } from 'features/omni-kit/components/details-section'
 import {
   omniYieldLoopDefaultSimulationDeposit,
   omniYieldLoopMaxRiskLtvDefaultOffset,
@@ -10,7 +10,6 @@ import {
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
-import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 
@@ -27,7 +26,6 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
     },
   } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
-  const { t } = useTranslation()
   const amount = useMemo(
     () => depositAmount || omniYieldLoopDefaultSimulationDeposit,
     [depositAmount],
@@ -56,21 +54,5 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
     fees: gasEstimation?.usdValue.div(quotePrice),
   })
 
-  return (
-    <>
-      <DetailsSectionContentTable
-        headers={[
-          t('earn-vault.simulate.header1'),
-          t('earn-vault.simulate.header2'),
-          t('earn-vault.simulate.header3'),
-        ]}
-        rows={[
-          [t('earn-vault.simulate.rowlabel1'), ...mapSimulation(simulations?.previous30Days)],
-          [t('earn-vault.simulate.rowlabel2'), ...mapSimulation(simulations?.previous90Days)],
-          [t('earn-vault.simulate.rowlabel3'), ...mapSimulation(simulations?.previous1Year)],
-        ]}
-        footnote={<>{t('earn-vault.simulate.footnote1')}</>}
-      />
-    </>
-  )
+  return <OmniOpenYieldLoopSimulation simulations={simulations} />
 }

@@ -58,16 +58,18 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
 
   const castedPosition = position as AaveLikePositionV2
 
-  const simulations = useSimulationYields({
-    amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
-    riskRatio: castedPosition.riskRatio,
-    fields: ['7Days'],
-    strategy: {
-      protocol: protocol as AaveLikeLendingProtocol,
-      network: network.name,
-    } as IStrategyConfig,
-    token: collateralToken,
-  })
+  const simulations = isYieldLoop
+    ? useSimulationYields({
+        amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
+        riskRatio: castedPosition.riskRatio,
+        fields: ['7Days'],
+        strategy: {
+          protocol: protocol as AaveLikeLendingProtocol,
+          network: network.name,
+        } as IStrategyConfig,
+        token: collateralToken,
+      })
+    : undefined
 
   const liquidationPrice = normalizeValue(
     isShort ? one.div(castedPosition.liquidationPrice) : castedPosition.liquidationPrice,
