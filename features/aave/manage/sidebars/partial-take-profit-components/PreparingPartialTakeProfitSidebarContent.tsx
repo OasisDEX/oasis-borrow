@@ -56,7 +56,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     setStartingTakeProfitPrice,
     customPriceRatioPercentage,
     setCustomPriceRatioPercentage,
-    takeProfitStartingPercentageOptions,
+    partialTakeProfitConfig,
     setTriggerLtv,
     triggerLtv,
     triggerLtvSliderConfig,
@@ -222,7 +222,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         ].filter(Boolean)}
       />
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        {takeProfitStartingPercentageOptions.map((percentage) => (
+        {partialTakeProfitConfig.takeProfitStartingPercentageOptions.map((percentage) => (
           <Button
             key={percentage.toString()}
             variant="bean"

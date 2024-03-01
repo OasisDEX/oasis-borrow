@@ -9,7 +9,17 @@ import { hundred, one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import { useMemo, useState } from 'react'
 
-type PercentageOptionsType = typeof takeProfitStartingPercentageOptions
+const partialTakeProfitConfig = {
+  takeProfitStartingPercentageOptions: [0, 0.1, 0.2, 0.3, 0.4, 0.5] as const,
+  defaultTriggelLtvOffset: new BigNumber(5),
+  defaultWithdrawalLtv: new BigNumber(5),
+  ltvSliderStep: 0.1,
+  ltvSliderMin: new BigNumber(1), // 1% for both Trigger LTV and Withdrawal LTV
+  realizedProfitRangeItems: 13,
+  realizedProfitRangeVisible: 3,
+}
+
+type PercentageOptionsType = typeof partialTakeProfitConfig.takeProfitStartingPercentageOptions
 type ProfitToTokenType = 'debt' | 'collateral'
 type PTPSliderConfig = {
   sliderPercentageFill: BigNumber
@@ -22,10 +32,6 @@ export type AaveLikePartialTakeProfitParams = Pick<ManageAaveStateProps, 'state'
 }
 
 export type AaveLikePartialTakeProfitParamsResult = {
-  /**
-   * Options for the starting percentage of the take profit (+0 for current)
-   */
-  takeProfitStartingPercentageOptions: PercentageOptionsType
   /**
    * Token data for the partial take profit token (from getToken)
    */
@@ -63,13 +69,8 @@ export type AaveLikePartialTakeProfitParamsResult = {
   withdrawalLtv: BigNumber
   setWithdrawalLtv: (ltv: BigNumber) => void
   withdrawalLtvSliderConfig: PTPSliderConfig
+  partialTakeProfitConfig: typeof partialTakeProfitConfig
 }
-
-const takeProfitStartingPercentageOptions = [0, 0.1, 0.2, 0.3, 0.4, 0.5] as const
-const defaultTriggelLtvOffset = new BigNumber(5)
-const defaultWithdrawalLtv = new BigNumber(5)
-const ltvSliderStep = 0.1
-const ltvSliderMin = new BigNumber(1) // 1% for both Trigger LTV and Withdrawal LTV
 
 const getTriggerLtvSliderConfig = ({
   triggerLtv,
@@ -79,17 +80,17 @@ const getTriggerLtvSliderConfig = ({
   maxMultiple: BigNumber
 }): PTPSliderConfig => {
   const sliderMax = new BigNumber(
-    maxMultiple.div(ltvSliderStep).toFixed(2, BigNumber.ROUND_DOWN),
-  ).times(ltvSliderStep)
+    maxMultiple.div(partialTakeProfitConfig.ltvSliderStep).toFixed(2, BigNumber.ROUND_DOWN),
+  ).times(partialTakeProfitConfig.ltvSliderStep)
   const sliderPercentageFill = getSliderPercentageFill({
-    min: ltvSliderMin,
+    min: partialTakeProfitConfig.ltvSliderMin,
     max: sliderMax,
     value: triggerLtv,
   })
   return {
-    step: ltvSliderStep,
+    step: partialTakeProfitConfig.ltvSliderStep,
     sliderPercentageFill,
-    minBoundry: ltvSliderMin,
+    minBoundry: partialTakeProfitConfig.ltvSliderMin,
     maxBoundry: sliderMax,
   }
 }
@@ -103,17 +104,17 @@ const getWithdrawalLtvSliderConfig = ({
   triggerLtv: BigNumber
 }): PTPSliderConfig => {
   const sliderMax = new BigNumber(
-    maxMultiple.div(ltvSliderStep).toFixed(2, BigNumber.ROUND_DOWN),
-  ).times(ltvSliderStep)
+    maxMultiple.div(partialTakeProfitConfig.ltvSliderStep).toFixed(2, BigNumber.ROUND_DOWN),
+  ).times(partialTakeProfitConfig.ltvSliderStep)
   const sliderPercentageFill = getSliderPercentageFill({
-    min: ltvSliderMin,
+    min: partialTakeProfitConfig.ltvSliderMin,
     max: sliderMax,
     value: withdrawalLtv,
   })
   return {
-    step: ltvSliderStep,
+    step: partialTakeProfitConfig.ltvSliderStep,
     sliderPercentageFill,
-    minBoundry: ltvSliderMin,
+    minBoundry: partialTakeProfitConfig.ltvSliderMin,
     maxBoundry: sliderMax,
   }
 }
@@ -153,12 +154,14 @@ export const getAaveLikePartialTakeProfitParams = {
         new BigNumber(
           currentLtv
             .times(hundred)
-            .minus(defaultTriggelLtvOffset)
-            .div(ltvSliderStep)
+            .minus(partialTakeProfitConfig.defaultTriggelLtvOffset)
+            .div(partialTakeProfitConfig.ltvSliderStep)
             .toFixed(0, BigNumber.ROUND_DOWN),
-        ).times(ltvSliderStep),
+        ).times(partialTakeProfitConfig.ltvSliderStep),
       )
-      const [withdrawalLtv, setWithdrawalLtv] = useState<BigNumber>(defaultWithdrawalLtv)
+      const [withdrawalLtv, setWithdrawalLtv] = useState<BigNumber>(
+        partialTakeProfitConfig.defaultWithdrawalLtv,
+      )
 
       // calcs
       const partialTakeProfitTokenData = useMemo(
@@ -195,7 +198,7 @@ export const getAaveLikePartialTakeProfitParams = {
         triggerLtv,
       })
       return {
-        takeProfitStartingPercentageOptions,
+        partialTakeProfitConfig,
         partialTakeProfitTokenData,
         partialTakeProfitSecondTokenData,
         priceFormat,

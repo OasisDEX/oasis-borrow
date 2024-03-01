@@ -44,14 +44,6 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   // const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<PartialTakeProfitSidebarStates>('prepare')
   const { strategyConfig } = state.context
-  const {
-    priceFormat,
-    positionPriceRatio,
-    priceDenominationToken,
-    partialTakeProfitTokenData,
-    triggerLtv,
-    setTriggerLtv,
-  } = aaveLikePartialTakeProfitParams
 
   useEffect(() => {
     // if (stopLossLambdaData.stopLossLevel) {
