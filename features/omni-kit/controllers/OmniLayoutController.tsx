@@ -13,7 +13,7 @@ import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multip
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -48,11 +48,16 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     },
   } = useOmniGeneralContext()
   const {
+    position: {
+      currentPosition: { position },
+    },
     dynamicMetadata: {
       elements: { faq },
       values: { headlineDetails, isHeadlineDetailsLoading },
     },
   } = useOmniProductContext(productType)
+
+  const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
 
   return (
     <Container variant="vaultPageContainerStatic">
@@ -78,6 +83,14 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           ...(headlineDetails || []),
           ...(!isOracless && !isYieldLoop && !isOpening
             ? [
+                ...(ltv
+                  ? [
+                      {
+                        label: t('omni-kit.headline.details.current-ltv'),
+                        value: formatDecimalAsPercent(ltv),
+                      },
+                    ]
+                  : []),
                 {
                   label: t('omni-kit.headline.details.current-market-price'),
                   value: `${formatCryptoBalance(

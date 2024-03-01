@@ -2738,7 +2738,8 @@
     "headline": {
       "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
       "details": {
-        "current-market-price": "Current Market Price"
+        "current-market-price": "Current Market Price",
+        "current-ltv": "Current LTV"
       }
     },
     "content-card": {
