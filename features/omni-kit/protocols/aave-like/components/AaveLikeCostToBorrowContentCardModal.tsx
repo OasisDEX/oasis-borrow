@@ -1,6 +1,6 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -35,7 +35,7 @@ export const AaveLikeCostToBorrowContentCardModal = ({
     costOfBorrowingDebt.minus(profitFromProvidingCollateral).div(netValue),
   )
 
-  const costToBorrow = debtAmount.times(quotePrice).times(NaNIsZero(debtVariableBorrowRate))
+  const costToBorrow = debtAmount.times(NaNIsZero(debtVariableBorrowRate))
 
   return (
     <Grid gap={2}>
@@ -76,7 +76,7 @@ export const AaveLikeCostToBorrowContentCardModal = ({
         </Text>
       </Text>
       <Card as="p" variant="vaultDetailsCardModal">
-        {`${formatPrecision(costToBorrow, 2)} ${quoteToken}`}
+        {`${formatCryptoBalance(costToBorrow)} ${quoteToken}`}
       </Card>
     </Grid>
   )
