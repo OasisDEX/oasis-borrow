@@ -1,5 +1,4 @@
 import type { IPosition } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import type { calculateViewValuesForPosition } from 'features/aave/services'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -73,12 +72,10 @@ export function CostToBorrowContentCard({
   position,
   currentPositionThings,
   nextPositionThings,
-  debtTokenPrice,
 }: {
   position: IPosition
   currentPositionThings: ReturnType<typeof calculateViewValuesForPosition>
   nextPositionThings?: ReturnType<typeof calculateViewValuesForPosition> | undefined
-  debtTokenPrice: BigNumber
 }) {
   const { t } = useTranslation()
 
