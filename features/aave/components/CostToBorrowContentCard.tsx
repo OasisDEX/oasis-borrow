@@ -2,7 +2,7 @@ import type { IPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import type { calculateViewValuesForPosition } from 'features/aave/services'
-import { formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -12,19 +12,17 @@ import { Card, Grid, Heading, Text } from 'theme-ui'
 export function CostToBorrowContentCardModal({
   position,
   currentPositionThings,
-  debtTokenPrice,
 }: {
   position: IPosition
   currentPositionThings: ReturnType<typeof calculateViewValuesForPosition>
-  debtTokenPrice: BigNumber
 }) {
   const { t } = useTranslation()
 
   const { debt } = position
 
-  const costToBorrow = currentPositionThings.debt
-    .times(debtTokenPrice)
-    .times(NaNIsZero(currentPositionThings.debtVariableBorrowRate))
+  const costToBorrow = currentPositionThings.debt.times(
+    NaNIsZero(currentPositionThings.debtVariableBorrowRate),
+  )
 
   return (
     <Grid gap={2}>
@@ -65,7 +63,7 @@ export function CostToBorrowContentCardModal({
         </Text>
       </Text>
       <Card as="p" variant="vaultDetailsCardModal">
-        {`${formatPrecision(costToBorrow, 2)} ${debt.symbol}`}
+        {`${formatCryptoBalance(costToBorrow)} ${debt.symbol}`}
       </Card>
     </Grid>
   )
@@ -100,7 +98,6 @@ export function CostToBorrowContentCard({
         <CostToBorrowContentCardModal
           currentPositionThings={currentPositionThings}
           position={position}
-          debtTokenPrice={debtTokenPrice}
         />
       }
     />

@@ -166,7 +166,6 @@ export function AaveMultiplyPositionData({
     modal: (
       <CostToBorrowContentCardModal
         currentPositionThings={currentPositionThings}
-        debtTokenPrice={debtTokenPrice}
         position={currentPosition}
       />
     ),
