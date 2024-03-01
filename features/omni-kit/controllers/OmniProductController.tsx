@@ -26,6 +26,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useAccount } from 'helpers/useAccount'
 import { one, zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -192,7 +193,7 @@ export const OmniProductController = <Auction, History, Position>({
                         product: t(seoTags.productKey, {
                           productType: upperFirst(castedProductType),
                         }),
-                        protocol: upperFirst(protocol),
+                        protocol: upperFirst(LendingProtocolLabel[protocol]),
                         token1: dpmPosition.collateralToken,
                         token2: dpmPosition.quoteToken,
                       }}
