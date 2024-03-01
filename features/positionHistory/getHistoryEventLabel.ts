@@ -101,6 +101,10 @@ export const getHistoryEventLabel = ({
     case 'Liquidation':
     case 'Liquidate':
       return t('position-history.liquidation')
+    case 'MigrateSparkEOA':
+      return t('position-history.migrated-from-protocol', { protocol: 'Spark' })
+    case 'MigrateAaveV3EOA':
+      return t('position-history.migrated-from-protocol', { protocol: 'Aave' })
     default:
       return `${t('position-history.event')} ${kind || ''}`
   }
