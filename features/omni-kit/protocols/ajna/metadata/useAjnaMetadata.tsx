@@ -103,6 +103,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quoteToken,
       protocolRaw,
       protocol,
+      isYieldLoop,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -279,6 +280,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quoteToken={quoteToken}
               shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
               simulation={simulation}
+              isYieldLoop={isYieldLoop}
             />
           ),
           overviewFooter: (

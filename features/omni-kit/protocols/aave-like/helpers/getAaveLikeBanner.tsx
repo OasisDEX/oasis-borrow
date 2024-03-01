@@ -9,11 +9,13 @@ export const getAaveLikeBanner = ({
   isYieldLoop,
   collateralToken,
   quoteToken,
+  isOpening,
 }: {
   protocol: LendingProtocol
   isYieldLoop: boolean
   collateralToken: string
   quoteToken: string
+  isOpening: boolean
 }) => {
   if (!isAaveLikeLendingProtocol(protocol)) {
     throw Error('Given protocol is not aave-like')
@@ -23,8 +25,8 @@ export const getAaveLikeBanner = ({
   const isElligibleSparkPosition = checkElligibleSparkPosition(collateralToken, quoteToken)
 
   return {
-    [LendingProtocol.AaveV2]: isYieldLoop && <AaveLikeYieldLoopRiskBanner />,
-    [LendingProtocol.AaveV3]: isYieldLoop && <AaveLikeYieldLoopRiskBanner />,
+    [LendingProtocol.AaveV2]: isYieldLoop && isOpening && <AaveLikeYieldLoopRiskBanner />,
+    [LendingProtocol.AaveV3]: isYieldLoop && isOpening && <AaveLikeYieldLoopRiskBanner />,
     [LendingProtocol.SparkV3]: isSparkPosition && isElligibleSparkPosition && (
       <SparkTokensBannerController />
     ),

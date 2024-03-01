@@ -17,7 +17,10 @@ import {
 import { OmniCardDataLiquidationRatioModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataLiquidationRatioModal'
 import { OmniCardDataNetApyModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataNetApyModal'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import {
+  getOmniNetValuePnlData,
+  mapBorrowCumulativesToOmniCumulatives,
+} from 'features/omni-kit/helpers'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
@@ -185,23 +188,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
   const netValueContentCardAaveData = useAjnaCardDataNetValueLending(
     !isOpening
       ? getOmniNetValuePnlData({
-          cumulatives: {
-            cumulativeDepositUSD: castedPosition.pnl.cumulatives.borrowCumulativeDepositUSD,
-            cumulativeWithdrawUSD: castedPosition.pnl.cumulatives.borrowCumulativeWithdrawUSD,
-            cumulativeFeesUSD: castedPosition.pnl.cumulatives.borrowCumulativeFeesUSD,
-            cumulativeWithdrawInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeWithdrawInCollateralToken,
-            cumulativeDepositInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeDepositInCollateralToken,
-            cumulativeFeesInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
-            cumulativeWithdrawInQuoteToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeWithdrawInQuoteToken,
-            cumulativeDepositInQuoteToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeDepositInQuoteToken,
-            cumulativeFeesInQuoteToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeFeesInQuoteToken,
-          },
+          cumulatives: mapBorrowCumulativesToOmniCumulatives(castedPosition.pnl.cumulatives),
           productType,
           collateralTokenPrice: collateralPrice,
           debtTokenPrice: quotePrice,

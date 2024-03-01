@@ -133,7 +133,13 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           faq: getAaveLikeFaq({ productType, isYieldLoop, protocol }),
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,
-          overviewBanner: getAaveLikeBanner({ protocol, isYieldLoop, collateralToken, quoteToken }),
+          overviewBanner: getAaveLikeBanner({
+            protocol,
+            isYieldLoop,
+            collateralToken,
+            quoteToken,
+            isOpening,
+          }),
           overviewTitle: isYieldLoop && isOpening && (
             <SimulateTitle
               token={quoteToken}
