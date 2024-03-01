@@ -8,7 +8,13 @@ import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { useMemo } from 'react'
 import { EMPTY, from } from 'rxjs'
 
-export function useAaveLikeData({ dpmPositionData, networkId, protocol }: OmniProtocolHookProps) {
+export function useAaveLikeData({
+  dpmPositionData,
+  networkId,
+  protocol,
+  collateralToken,
+  quoteToken,
+}: OmniProtocolHookProps) {
   const { aaveLikePosition$ } = useProductContext()
 
   const networkName = networksById[networkId].name
@@ -62,7 +68,12 @@ export function useAaveLikeData({ dpmPositionData, networkId, protocol }: OmniPr
         auction: aavePositionAggregatedData?.events[0],
       },
       positionData: aavePositionData,
-      protocolPricesData: aaveLikeAssetsPricesData,
+      protocolPricesData: aaveLikeAssetsPricesData
+        ? {
+            [collateralToken]: aaveLikeAssetsPricesData[0],
+            [quoteToken]: aaveLikeAssetsPricesData[1],
+          }
+        : undefined,
     },
     errors: [aavePositionError, aavePositionAggregatedError, aaveLikeAssetsPricesError],
   }

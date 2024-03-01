@@ -68,6 +68,7 @@ export function useAjnaData({
     data: {
       aggregatedData: ajnaPositionAggregatedData,
       positionData: ajnaPositionData,
+      protocolPricesData: tokenPriceUSDData,
     },
     errors: [ajnaPositionAggregatedError, ajnaPositionError],
   }

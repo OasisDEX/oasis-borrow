@@ -85,11 +85,11 @@ export interface OmniTokensPrecision {
 }
 
 export interface OmniProtocolHookProps {
-  collateralToken?: string
+  collateralToken: string
   dpmPositionData?: DpmPositionData
   networkId: OmniSupportedNetworkIds
   product?: OmniProductType
-  quoteToken?: string
+  quoteToken: string
   tokenPriceUSDData?: Tickers
   tokensPrecision?: OmniTokensPrecision
   protocol: OmniSupportedProtocols

@@ -1,6 +1,6 @@
 import { isCorrelatedPosition } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
 import { getNetworkById } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -55,7 +55,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
       positionData: Position | undefined
-      protocolPricesData?: BigNumber[] | undefined
+      protocolPricesData: Tickers | undefined
     }
     errors: string[]
   }
@@ -65,7 +65,6 @@ interface OmniProductControllerProps<Auction, History, Position> {
     productKey: string
     descriptionKey: string
   }
-  shouldUseProtocolPrices?: boolean
   version?: string
 }
 
@@ -82,7 +81,6 @@ export const OmniProductController = <Auction, History, Position>({
   settings,
   seoTags,
   version,
-  shouldUseProtocolPrices,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
 
@@ -153,7 +151,7 @@ export const OmniProductController = <Auction, History, Position>({
                 tokensIconsData,
                 tokensPrecision,
                 userSettingsData,
-                ...(shouldUseProtocolPrices ? [protocolPricesData] : []),
+                protocolPricesData,
               ]}
               customLoader={
                 <PositionLoadingState
@@ -208,11 +206,7 @@ export const OmniProductController = <Auction, History, Position>({
                       collateralIcon={tokensIcons.collateralToken}
                       collateralPrecision={collateralPrecision}
                       collateralPrice={
-                        isOracless
-                          ? one
-                          : shouldUseProtocolPrices
-                          ? protocolPrices[0]
-                          : tokenPriceUSD[dpmPosition.collateralToken]
+                        isOracless ? one : protocolPrices[dpmPosition.collateralToken]
                       }
                       collateralToken={dpmPosition.collateralToken}
                       {...(positionId && { dpmProxy: dpmPosition.proxy })}
@@ -236,13 +230,7 @@ export const OmniProductController = <Auction, History, Position>({
                       quoteDigits={quoteDigits}
                       quoteIcon={tokensIcons.quoteToken}
                       quotePrecision={quotePrecision}
-                      quotePrice={
-                        isOracless
-                          ? one
-                          : shouldUseProtocolPrices
-                          ? protocolPrices[1]
-                          : tokenPriceUSD[dpmPosition.quoteToken]
-                      }
+                      quotePrice={isOracless ? one : protocolPrices[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
                       settings={settings}
                       slippage={slippage}

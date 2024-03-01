@@ -41,7 +41,6 @@ function AavePositionPage(props: AavePositionPageProps) {
               protocolHook={useAaveLikeData}
               seoTags={aaveSeoTags}
               settings={omniProtocolSettings[props.protocol]}
-              shouldUseProtocolPrices
             />
           </DeferedContextProvider>
         </AaveContextProvider>

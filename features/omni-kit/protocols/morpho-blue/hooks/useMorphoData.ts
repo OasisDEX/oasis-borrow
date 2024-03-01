@@ -46,6 +46,7 @@ export function useMorphoData({
     data: {
       aggregatedData: morphoPositionAggregatedData,
       positionData: morphoPositionData,
+      protocolPricesData: tokenPriceUSDData,
     },
     errors: [morphoPositionError, morphoPositionAggregatedError],
   }

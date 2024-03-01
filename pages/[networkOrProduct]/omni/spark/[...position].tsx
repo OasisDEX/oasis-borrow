@@ -40,7 +40,6 @@ function SparkPositionPage(props: SparkPositionPageProps) {
               protocolHook={useAaveLikeData}
               seoTags={aaveSeoTags}
               settings={sparkSettings}
-              shouldUseProtocolPrices
             />
           </DeferedContextProvider>
         </AaveContextProvider>
