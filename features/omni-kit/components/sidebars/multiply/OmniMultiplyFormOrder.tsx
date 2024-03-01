@@ -1,4 +1,3 @@
-import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
@@ -61,6 +60,7 @@ export function OmniMultiplyFormOrder() {
       networkId,
       slippageSource,
       isStrategyWithDefaultSlippage,
+      isYieldLoop,
     },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails, setSlippageSource },
@@ -101,8 +101,7 @@ export function OmniMultiplyFormOrder() {
     (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
 
-  const withOasisFee =
-    (withBuying || withSelling) && !isCorrelatedPosition(collateralToken, quoteToken)
+  const withOasisFee = (withBuying || withSelling) && !isYieldLoop
 
   const quoteAction = withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL'
   // use ~1$ worth amount of collateral or quote token
