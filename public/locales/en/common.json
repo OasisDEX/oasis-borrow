@@ -495,7 +495,6 @@
     "decrease-multiple": "Decrease multiple",
     "sl-level": "Stop-Loss LTV",
     "swaped": "Swapped",
-    "migrated-from-protocol": "Migrated from {{protocol}} into Summer.Fi!",
     "automation": {
       "trailing-stop-loss-added": "Trailing Stop-loss added",
       "trailing-stop-loss-removed": "Trailing Stop-loss removed",
