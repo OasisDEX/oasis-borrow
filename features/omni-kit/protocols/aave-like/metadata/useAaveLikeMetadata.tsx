@@ -92,9 +92,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       return {
         notifications,
         validations,
-        handlers: {
-          customReset: () => null,
-        },
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
             aaveLikeFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),

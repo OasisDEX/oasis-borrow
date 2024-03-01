@@ -76,9 +76,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       return {
         notifications,
         validations,
-        handlers: {
-          customReset: () => null,
-        },
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
             morphoFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),

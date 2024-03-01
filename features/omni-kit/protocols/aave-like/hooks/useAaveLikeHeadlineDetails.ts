@@ -17,7 +17,7 @@ export const useAaveLikeHeadlineDetails = ({
   maxRiskRatio?: IRiskRatio
 }) => {
   const isSparkProtocol = protocol === LendingProtocol.SparkV3
-  const minRiskRatio = new RiskRatio(new BigNumber('1.1'), RiskRatio.TYPE.MULITPLE)
+  const minRiskRatio = new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE)
 
   const minYields = useAaveEarnYields(
     !isSparkProtocol ? minRiskRatio : undefined,
