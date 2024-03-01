@@ -1,32 +1,27 @@
+import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import type { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { FormatPercentWithSmallPercentCharacter } from 'components/FormatPercentWithSmallPercentCharacter'
 import { Icon } from 'components/Icon'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
+import { MessageCard } from 'components/MessageCard'
+import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import type { IStrategyConfig } from 'features/aave/types'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import React, { useMemo, useState } from 'react'
+import { hundred } from 'helpers/zero'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { question_o } from 'theme/icons'
 import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
 
 type PreparingPartialTakeProfitSidebarContentProps = {
   strategyConfig: IStrategyConfig
-  setInputValue: (value: BigNumber) => void
-  inputValue: BigNumber | undefined
-  setPartialTakeProfitToken: (token: 'debt' | 'collateral') => void
-  positionPrice: BigNumber
-  partialTakeProfitToken: string
-  priceFormat: string
-  partialTakeProfitTokenData: ReturnType<typeof getToken>
-  priceDenominationToken: string
+  aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
 }
 
-const takeProfitStartingPercentageOptions = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
 const profitRangeItem = [
   '4,100 ETH/USD',
   <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
@@ -47,16 +42,28 @@ const profitRangeItem = [
 
 export const PreparingPartialTakeProfitSidebarContent = ({
   strategyConfig,
-  setInputValue,
-  inputValue,
-  setPartialTakeProfitToken,
-  positionPrice,
-  partialTakeProfitToken,
-  priceFormat,
-  partialTakeProfitTokenData,
-  priceDenominationToken,
+  aaveLikePartialTakeProfitParams,
 }: PreparingPartialTakeProfitSidebarContentProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false)
+  const {
+    partialTakeProfitTokenData,
+    priceFormat,
+    priceDenominationToken,
+    positionPriceRatio,
+    partialTakeProfitToken,
+    setPartialTakeProfitToken,
+    startingTakeProfitPrice,
+    setStartingTakeProfitPrice,
+    customPriceRatioPercentage,
+    setCustomPriceRatioPercentage,
+    takeProfitStartingPercentageOptions,
+    setTriggerLtv,
+    triggerLtv,
+    triggerLtvSliderConfig,
+    withdrawalLtv,
+    setWithdrawalLtv,
+    withdrawalLtvSliderConfig,
+  } = aaveLikePartialTakeProfitParams
 
   const inputMask = useMemo(() => {
     return createNumberMask({
@@ -65,6 +72,60 @@ export const PreparingPartialTakeProfitSidebarContent = ({
       decimalLimit: partialTakeProfitTokenData.digits,
     })
   }, [partialTakeProfitTokenData.digits])
+
+  const getPriceIncreasedByPercentage = (price: BigNumber, percentage: number) => {
+    return price.plus(price.times(percentage))
+  }
+
+  useEffect(() => {
+    // if the custom percentage is set, calculate the next price and update it
+    if (customPriceRatioPercentage !== undefined) {
+      const probableNextprice = getPriceIncreasedByPercentage(
+        positionPriceRatio,
+        customPriceRatioPercentage,
+      )
+      if (!startingTakeProfitPrice.eq(probableNextprice)) {
+        setStartingTakeProfitPrice(probableNextprice)
+      }
+    }
+  }, [
+    customPriceRatioPercentage,
+    positionPriceRatio,
+    setStartingTakeProfitPrice,
+    startingTakeProfitPrice,
+  ])
+
+  // useEffect(() => {
+  //   if (
+  //     triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry) &&
+  //     !withdrawalLtv.eq(withdrawalLtvSliderConfig.maxBoundry)
+  //   ) {
+  //     setWithdrawalLtv(withdrawalLtvSliderConfig.maxBoundry.minus(triggerLtv))
+  //   }
+  //   // this *is* supposed to be triggered only when withdrawalLtv changes
+  // }, [withdrawalLtv, withdrawalLtvSliderConfig.maxBoundry])
+
+  // useEffect(() => {
+  //   if (
+  //     triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry) &&
+  //     !withdrawalLtv.eq(withdrawalLtvSliderConfig.maxBoundry)
+  //   ) {
+  //     setTriggerLtv(triggerLtvSliderConfig.maxBoundry.minus(withdrawalLtv))
+  //   }
+  //   // this *is* supposed to be triggered only when triggerLtv changes
+  // }, [triggerLtv, withdrawalLtvSliderConfig.maxBoundry])
+
+  const getTriggerLtvMultiple = useCallback((ltv: BigNumber) => {
+    const riskRatio = new RiskRatio(ltv.div(hundred), RiskRatio.TYPE.LTV)
+    return `${riskRatio.multiple.toFixed(2)}x`
+  }, [])
+
+  const ltvTooHigh = useMemo(() => {
+    return triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry)
+  }, [triggerLtv, withdrawalLtv, withdrawalLtvSliderConfig.maxBoundry])
+  const startingTakeProfitPriceTooLow = useMemo(() => {
+    return startingTakeProfitPrice.lt(positionPriceRatio)
+  }, [positionPriceRatio, startingTakeProfitPrice])
 
   return (
     <Grid gap={3}>
@@ -78,7 +139,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             id: 'debt',
             label: `Profit in ${strategyConfig.tokens.debt}`,
             action: () => {
-              setInputValue(new BigNumber(positionPrice))
               setPartialTakeProfitToken('debt')
             },
           },
@@ -86,7 +146,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             id: 'collateral',
             label: `Profit in ${strategyConfig.tokens.collateral}`,
             action: () => {
-              setInputValue(new BigNumber(positionPrice))
               setPartialTakeProfitToken('collateral')
             },
           },
@@ -132,12 +191,15 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               setIsFocus(false)
             }}
             value={
-              inputValue
-                ? `${formatAmount(inputValue, partialTakeProfitTokenData.symbol)}`
+              startingTakeProfitPrice
+                ? `${formatAmount(startingTakeProfitPrice, partialTakeProfitTokenData.symbol)}`
                 : undefined
             }
             onChange={handleNumericInput((value) => {
-              setInputValue(value!)
+              if (value) {
+                setStartingTakeProfitPrice(value)
+                setCustomPriceRatioPercentage(undefined)
+              }
             })}
             sx={{
               fontSize: 5,
@@ -148,9 +210,17 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           />
         </Box>
         <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
-          Now: {formatCryptoBalance(positionPrice)} {priceFormat}
+          Now: {formatCryptoBalance(positionPriceRatio)} {priceFormat}
         </Text>
       </Box>
+      <MessageCard
+        type="error"
+        messages={[
+          startingTakeProfitPriceTooLow
+            ? 'Starting take profit price should be higher or equal the current price.'
+            : '',
+        ].filter(Boolean)}
+      />
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {takeProfitStartingPercentageOptions.map((percentage) => (
           <Button
@@ -163,15 +233,16 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                 backgroundColor: 'neutral80',
                 color: 'secondary60',
               },
+              ...(customPriceRatioPercentage === percentage
+                ? {
+                    backgroundColor: 'neutral80',
+                    color: 'secondary60',
+                  }
+                : {}),
             }}
+            disabled={customPriceRatioPercentage === percentage}
             onClick={() => {
-              percentage === 0
-                ? setInputValue(new BigNumber(positionPrice))
-                : setInputValue(
-                    new BigNumber(inputValue || positionPrice).plus(
-                      (inputValue || positionPrice).times(percentage),
-                    ),
-                  )
+              setCustomPriceRatioPercentage(percentage)
             }}
           >
             {percentage === 0
@@ -187,7 +258,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
       <Box sx={{ mb: 3 }}>
         <SliderValuePicker
           disabled={false}
-          step={0.01}
           leftBoundryFormatter={(x) => {
             if (x.isZero()) {
               return '-'
@@ -200,7 +270,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                 <Text variant="paragraph2">
                   <FormatPercentWithSmallPercentCharacter value={x} />
                   <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
-                    2.9x
+                    {getTriggerLtvMultiple(x)}
                   </Text>
                   <Icon
                     icon={question_o}
@@ -213,16 +283,14 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             )
           }}
           rightBoundryFormatter={() => null}
-          sliderPercentageFill={new BigNumber(50)}
-          lastValue={new BigNumber(30)}
-          minBoundry={new BigNumber(0)}
-          maxBoundry={new BigNumber(60)}
-          leftBoundry={new BigNumber(30)}
+          lastValue={triggerLtv}
+          leftBoundry={triggerLtv}
           rightBoundry={new BigNumber(60)}
           onChange={(x) => {
-            console.log('x', x)
+            setTriggerLtv(x)
           }}
           useRcSlider
+          {...triggerLtvSliderConfig}
         />
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 2 }}>
@@ -245,10 +313,20 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           </Flex>
         </Flex>
       </Box>
-      <Box sx={{ mb: 3 }}>
+      <Box
+        sx={{
+          mb: 3,
+          '.rc-slider-dot': {
+            backgroundColor: 'neutral70',
+            borderColor: 'neutral70',
+          },
+          '.rc-slider-dot.rc-slider-dot-active': {
+            borderColor: 'interactive50',
+          },
+        }}
+      >
         <SliderValuePicker
           disabled={false}
-          step={0.01}
           leftBoundryFormatter={(x) => {
             if (x.isZero()) {
               return '-'
@@ -286,21 +364,31 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                   <Text as="span" variant="paragraph4" sx={{ mr: 1, color: 'neutral80' }}>
                     LTV after execution:
                   </Text>
-                  <FormatPercentWithSmallPercentCharacter value={x} />
+                  <FormatPercentWithSmallPercentCharacter
+                    sx={{
+                      ...{
+                        color: ltvTooHigh ? 'warning100' : undefined,
+                      },
+                    }}
+                    value={x}
+                  />
                 </Text>
               </Flex>
             )
           }}
-          sliderPercentageFill={new BigNumber(50)}
-          lastValue={new BigNumber(30)}
-          minBoundry={new BigNumber(0)}
-          maxBoundry={new BigNumber(60)}
-          leftBoundry={new BigNumber(30)}
-          rightBoundry={new BigNumber(60)}
+          lastValue={withdrawalLtv}
+          leftBoundry={withdrawalLtv}
+          rightBoundry={withdrawalLtv.plus(triggerLtv)}
           onChange={(x) => {
-            console.log('x', x)
+            setWithdrawalLtv(x)
           }}
           useRcSlider
+          {...withdrawalLtvSliderConfig}
+          customSliderProps={{
+            marks: {
+              [withdrawalLtvSliderConfig.maxBoundry.minus(triggerLtv).toNumber()]: ' ',
+            },
+          }}
         />
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 2 }}>
@@ -327,6 +415,14 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           </Flex>
         </Flex>
       </Box>
+      <MessageCard
+        type="error"
+        messages={[
+          ltvTooHigh
+            ? `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`
+            : '',
+        ].filter(Boolean)}
+      />
       <Divider />
       <Box sx={{ mb: 3 }}>
         <Flex sx={{ flexDirection: 'row', alignItems: 'center', mb: 3 }}>

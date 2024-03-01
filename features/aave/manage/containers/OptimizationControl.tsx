@@ -16,8 +16,9 @@ import type {
   TriggersAaveEvent,
   triggersAaveStateMachine,
 } from 'features/aave/manage/state'
+import { getAaveLikePartialTakeProfitParams } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import { zero } from 'helpers/zero'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Container, Grid } from 'theme-ui'
 import type { Sender, StateFrom } from 'xstate'
 
@@ -82,13 +83,16 @@ export function OptimizationControl({
   const shouldLoadTriggers = useSelector(triggersState.context.autoBuyTrigger, (selector) =>
     selector.matches('txDone'),
   )
-  const [partialTakeProfitToken, setPartialTakeProfitToken] = useState<'debt' | 'collateral'>(
-    'debt',
-  )
 
+  // maps the lambda data
   const partialTakeProfitLambdaData = mapPartialTakeProfitFromLambda(
     triggersState.context.currentTriggers.triggers,
   )
+  // calculates the partial take profit params + stores user inputs
+  const aaveLikePartialTakeProfitParams = getAaveLikePartialTakeProfitParams.manage({
+    state,
+    partialTakeProfitLambdaData,
+  })
 
   const autoBuyDetailsLayoutProps = getAutoBuyDetailsLayoutProps(
     autoBuyState.context,
@@ -114,8 +118,7 @@ export function OptimizationControl({
             )}
           {triggersState.context.optimizationCurrentView === 'partial-take-profit' && (
             <AavePartialTakeProfitManageDetails
-              state={state}
-              partialTakeProfitLambdaData={partialTakeProfitLambdaData}
+              aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
             />
           )}
           {triggersState.context.showAutoBuyBanner && (
@@ -144,9 +147,7 @@ export function OptimizationControl({
             state={state}
             send={send}
             dropdown={dropdown}
-            partialTakeProfitLambdaData={partialTakeProfitLambdaData}
-            setPartialTakeProfitToken={setPartialTakeProfitToken}
-            partialTakeProfitToken={partialTakeProfitToken}
+            aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
           />
         )}
       </Grid>

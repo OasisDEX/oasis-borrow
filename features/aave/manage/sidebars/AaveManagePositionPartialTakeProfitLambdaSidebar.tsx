@@ -1,14 +1,10 @@
-import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ConnectedSidebarSection } from 'features/aave/components'
-import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import { PreparingPartialTakeProfitSidebarContent } from 'features/aave/manage/sidebars/partial-take-profit-components/PreparingPartialTakeProfitSidebarContent'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { StrategyType } from 'features/aave/types'
-import { one } from 'helpers/zero'
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid } from 'theme-ui'
 
@@ -37,22 +33,25 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   state,
   send,
   dropdown,
-  partialTakeProfitToken,
-  setPartialTakeProfitToken,
+  aaveLikePartialTakeProfitParams,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
-  partialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
-  partialTakeProfitToken: 'debt' | 'collateral'
-  setPartialTakeProfitToken: (token: 'debt' | 'collateral') => void
+  aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
 }) {
   const { t } = useTranslation()
   // const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
   // const { signer } = useWalletManagement()
   // const [triggerId, setTriggerId] = useState<string>(stopLossLambdaData.triggerId ?? '0')
   const [transactionStep, setTransactionStep] = useState<PartialTakeProfitSidebarStates>('prepare')
-  const { strategyConfig, strategyInfo, trailingStopLossTxDataLambda } = state.context
-
-  const [inputValue, setInputValue] = useState<BigNumber>(new BigNumber(0))
+  const { strategyConfig } = state.context
+  const {
+    priceFormat,
+    positionPriceRatio,
+    priceDenominationToken,
+    partialTakeProfitTokenData,
+    triggerLtv,
+    setTriggerLtv,
+  } = aaveLikePartialTakeProfitParams
 
   useEffect(() => {
     // if (stopLossLambdaData.stopLossLevel) {
@@ -84,37 +83,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   //   }, refreshDataTime)
   // }
   // }, [refreshingTriggerData])
-  const partialTakeProfitTokenData = useMemo(
-    () => getToken(strategyConfig.tokens[partialTakeProfitToken]),
-    [partialTakeProfitToken, strategyConfig.tokens],
-  )
-  const priceFormat =
-    strategyConfig.strategyType === StrategyType.Long
-      ? `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
-      : `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
-  const priceDenominationToken =
-    strategyConfig.strategyType === StrategyType.Long
-      ? strategyConfig.tokens.debt
-      : strategyConfig.tokens.collateral
-
-  const collateralTokenPrice = strategyInfo?.oracleAssetPrice.collateral || one
-  const debtTokenPrice = strategyInfo?.oracleAssetPrice.debt || one
-  const positionPrice =
-    strategyConfig.strategyType === StrategyType.Long
-      ? collateralTokenPrice.div(debtTokenPrice)
-      : debtTokenPrice.div(collateralTokenPrice)
 
   const sidebarPreparingContent: SidebarSectionProps['content'] = (
     <PreparingPartialTakeProfitSidebarContent
-      inputValue={inputValue}
-      setInputValue={setInputValue}
-      priceFormat={priceFormat}
-      priceDenominationToken={priceDenominationToken}
-      positionPrice={positionPrice}
-      partialTakeProfitTokenData={partialTakeProfitTokenData}
       strategyConfig={strategyConfig}
-      setPartialTakeProfitToken={setPartialTakeProfitToken}
-      partialTakeProfitToken={partialTakeProfitToken}
+      aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
     />
   )
 

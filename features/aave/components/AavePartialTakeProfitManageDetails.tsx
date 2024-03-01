@@ -4,21 +4,34 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
-import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
-import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+} from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 export const AavePartialTakeProfitManageDetails = ({
-  state,
-  partialTakeProfitLambdaData,
-}: Pick<ManageAaveStateProps, 'state'> & {
-  partialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
+  aaveLikePartialTakeProfitParams,
+}: {
+  aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
 }) => {
   const { t } = useTranslation()
-  console.log('state', state)
-  console.log('partialTakeProfitLambdaData', partialTakeProfitLambdaData)
+
+  const {
+    partialTakeProfitTokenData,
+    partialTakeProfitSecondTokenData,
+    priceFormat,
+    liquidationPrice,
+    priceDenominationToken,
+    currentLtv,
+    currentMultiple,
+    startingTakeProfitPrice,
+    triggerLtv,
+  } = aaveLikePartialTakeProfitParams
 
   return (
     <DetailsSection
@@ -29,38 +42,47 @@ export const AavePartialTakeProfitManageDetails = ({
           <OmniContentCard
             title={'New Dynamic Trigger Price'}
             value={'-'}
-            unit={'TOKEN/PAIR'}
-            change={['4,100 TOKEN/PAIR after']}
+            unit={priceFormat}
+            change={[`${formatCryptoBalance(startingTakeProfitPrice)} ${priceFormat} after`]}
             changeVariant="positive"
-            footnote={['TriggerLTV: -%']}
+            footnote={[`TriggerLTV: ${triggerLtv}%`]}
           />
           <OmniContentCard
             title={'Est. to receive next trigger'}
             value={'-'}
-            unit={'TOKEN'}
-            change={['100 TOKEN after']}
+            unit={partialTakeProfitTokenData.symbol}
+            change={[`100 ${partialTakeProfitTokenData.symbol} after`]}
             changeVariant="positive"
-            footnote={['Bazillion TOKEN']}
+            footnote={[`Bazillion ${partialTakeProfitSecondTokenData.symbol}`]}
           />
           <OmniContentCard
             title={'Current profit/loss'}
-            value={'343'}
-            unit={'TOKEN'}
-            footnote={['0 second TOKEN']}
+            value={'-'}
+            unit={partialTakeProfitTokenData.symbol}
+            footnote={[`0 ${partialTakeProfitSecondTokenData.symbol}`]}
           />
           <OmniContentCard
             title={'Profit realized to wallet'}
             value={'-'}
-            unit={'TOKEN'}
-            footnote={['0 second TOKEN']}
+            unit={partialTakeProfitTokenData.symbol}
+            footnote={[`0 ${partialTakeProfitSecondTokenData.symbol}`]}
           />
         </DetailsSectionContentCardWrapper>
       }
       footer={
         <DetailsSectionFooterItemWrapper>
-          <DetailsSectionFooterItem title={'Liquidation price'} value={'closer than you think'} />
-          <DetailsSectionFooterItem title={'Current Loan to Value'} value={'42%'} />
-          <DetailsSectionFooterItem title={'Current Multiple'} value={'2.1x'} />
+          <DetailsSectionFooterItem
+            title={'Liquidation price'}
+            value={`${formatAmount(liquidationPrice, priceDenominationToken)} ${priceFormat}`}
+          />
+          <DetailsSectionFooterItem
+            title={'Current Loan to Value'}
+            value={formatDecimalAsPercent(currentLtv)}
+          />
+          <DetailsSectionFooterItem
+            title={'Current Multiple'}
+            value={`${currentMultiple.toFixed(2)}x`}
+          />
         </DetailsSectionFooterItemWrapper>
       }
     />
