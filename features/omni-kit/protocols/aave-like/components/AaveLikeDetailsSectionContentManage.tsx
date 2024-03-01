@@ -1,7 +1,6 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
-import { useSimulationYields } from 'features/aave/hooks'
-import type { IStrategyConfig } from 'features/aave/types'
+import { useAaveEarnYields } from 'features/aave/hooks'
 import {
   OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,
@@ -19,6 +18,7 @@ import { OmniCardDataLiquidationRatioModal } from 'features/omni-kit/components/
 import { OmniCardDataNetApyModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataNetApyModal'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -59,15 +59,16 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
   const castedPosition = position as AaveLikePositionV2
 
   const simulations = isYieldLoop
-    ? useSimulationYields({
+    ? useOmniSimulationYields({
         amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
-        riskRatio: castedPosition.riskRatio,
-        fields: ['7Days'],
-        strategy: {
-          protocol: protocol as AaveLikeLendingProtocol,
-          network: network.name,
-        } as IStrategyConfig,
         token: collateralToken,
+        getYields: () =>
+          useAaveEarnYields(
+            castedPosition.riskRatio,
+            protocol as AaveLikeLendingProtocol,
+            network.name,
+            ['7Days'],
+          ),
       })
     : undefined
 
