@@ -233,7 +233,6 @@ export function AaveBorrowPositionData({
     modal: (
       <CostToBorrowContentCardModal
         currentPositionThings={currentPositionThings}
-        debtTokenPrice={debtTokenPrice}
         position={currentPosition}
       />
     ),
