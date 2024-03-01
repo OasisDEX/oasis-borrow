@@ -1,13 +1,13 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import { defaultYieldFields } from 'features/aave/components'
-import { useSimulationYields } from 'features/aave/hooks'
-import type { IStrategyConfig } from 'features/aave/types'
+import { useAaveEarnYields } from 'features/aave/hooks'
 import { OmniOpenYieldLoopSimulation } from 'features/omni-kit/components/details-section'
 import {
   omniYieldLoopDefaultSimulationDeposit,
   omniYieldLoopMaxRiskLtvDefaultOffset,
 } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'
@@ -15,7 +15,7 @@ import React, { useMemo } from 'react'
 
 export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
   const {
-    environment: { productType, quotePrice, quoteToken, protocol, network, gasEstimation },
+    environment: { productType, quoteToken, protocol, network },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -42,16 +42,16 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
     [defaultRiskRatio, simulation],
   )
 
-  const simulations = useSimulationYields({
+  const simulations = useOmniSimulationYields({
     amount,
-    riskRatio,
-    fields: defaultYieldFields,
     token: quoteToken,
-    strategy: {
-      protocol: protocol as AaveLikeLendingProtocol,
-      network: network.name,
-    } as IStrategyConfig,
-    fees: gasEstimation?.usdValue.div(quotePrice),
+    getYields: () =>
+      useAaveEarnYields(
+        riskRatio,
+        protocol as AaveLikeLendingProtocol,
+        network.name,
+        defaultYieldFields,
+      ),
   })
 
   return <OmniOpenYieldLoopSimulation simulations={simulations} />
