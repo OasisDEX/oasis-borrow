@@ -2397,18 +2397,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library-migration@npm:@oasisdex/dma-library@0.6.29-rc.migration.1":
-  version "0.6.29-rc.migration.1"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.29-rc.migration.1.tgz#43b4da32935efe1effdec210ed9968dbc1467320"
-  integrity sha512-cYD47LcEb5b8VJTjEmbzJFQAEVPWUd4rfHOg4DnJXnv+a7cGgaEP0+mGeFdUK6lQjXk3J3tamIAGrigLorl5jQ==
-  dependencies:
-    bignumber.js "9.0.1"
-    ethers "^5.7.2"
-
-"@oasisdex/dma-library@0.6.29":
-  version "0.6.29"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.29.tgz#3969ab7642e041d6515fbf66568afb4ba88ca378"
-  integrity sha512-kkIWT4zWAw4KqzIo5N3HrXp6SAI4bwllhXHmovcSekdfXaEu32a7CZHoDDA7FNSnKmlQA4wzqoIvOA8dtpEsCw==
+"@oasisdex/dma-library@0.6.30":
+  version "0.6.30"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.30.tgz#40bd0d21e6bb9c157e99c0148dd984d9ab40e337"
+  integrity sha512-fIz555D3QcwZYNbBsMqWAsgXBkTf48ma1j/Vbhin0qLHvS0sCxERs2tlbpd5kyQtMVCmm3HkPOOcoW9LGse6Iw==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
