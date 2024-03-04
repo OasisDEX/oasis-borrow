@@ -1,4 +1,4 @@
-import type { IPosition, Strategy } from '@oasisdex/dma-library-migration'
+import type { IPosition, Strategy } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { DpmExecuteOperationParameters } from 'blockchain/better-calls/dpm-account'
 import { estimateGasOnDpmForOperationExecutorAction } from 'blockchain/better-calls/dpm-account'
