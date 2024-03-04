@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import type {
   AaveLikeCumulativeData,
@@ -17,16 +18,27 @@ const sumStringNumbersArray = (numbersArray: { amount: string }[]): BigNumber =>
 export async function getAaveHistoryEvents(
   _proxyAdrress: string,
   _networkId: NetworkIds,
+  collateralToken: string,
+  quoteToken: string,
 ): Promise<{
   events: AaveLikeHistoryEvent[]
   positionCumulatives?: AaveLikeCumulativeData
 }> {
-  const resposne = await loadSubgraph('Aave', 'getAaveHistory', _networkId, {
+  const tokens = getNetworkContracts(
+    _networkId as
+      | NetworkIds.MAINNET
+      | NetworkIds.OPTIMISMMAINNET
+      | NetworkIds.ARBITRUMMAINNET
+      | NetworkIds.BASEMAINNET,
+  ).tokens
+  const response = await loadSubgraph('Aave', 'getAaveHistory', _networkId, {
     dpmProxyAddress: _proxyAdrress,
+    collateralAddress: tokens[collateralToken.toUpperCase()].address.toLowerCase(),
+    quoteAddress: tokens[quoteToken.toUpperCase()].address.toLowerCase(),
   })
 
-  if (resposne.success) {
-    const { positionEvents, positions } = resposne.response
+  if (response.success) {
+    const { positionEvents, positions } = response.response
     return {
       events: positionEvents
         .map(

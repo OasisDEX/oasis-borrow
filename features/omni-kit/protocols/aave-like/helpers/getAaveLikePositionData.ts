@@ -48,7 +48,7 @@ export function getAaveLikePositionData$({
   return combineLatest(
     from(getReserveDataCall(dpm, collateralToken)),
     from(getReserveDataCall(dpm, debtToken)),
-    from(getAaveHistoryEvents(proxyAddress, networkId)),
+    from(getAaveHistoryEvents(proxyAddress, networkId, collateralToken, debtToken)),
     from(
       services.aaveLikeReserveConfigurationData$({
         collateralToken,

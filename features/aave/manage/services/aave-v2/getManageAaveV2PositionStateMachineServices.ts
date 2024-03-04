@@ -50,6 +50,8 @@ export function getManageAaveV2PositionStateMachineServices(
   getHistoryEvents: (
     proxyAccount: string,
     networkId: NetworkIds,
+    collateralToken: string,
+    debtToken: string,
   ) => Promise<{
     events: AaveLikeHistoryEvent[]
     positionCumulatives?: AaveLikeCumulativeData
@@ -215,6 +217,8 @@ export function getManageAaveV2PositionStateMachineServices(
           const historyData = await getHistoryEvents(
             event.proxyAddress,
             context.strategyConfig.networkId,
+            context.tokens.collateral,
+            context.tokens.debt,
           )
           callback({
             type: 'HISTORY_UPDATED',

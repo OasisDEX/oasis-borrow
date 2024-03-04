@@ -55,7 +55,9 @@ export function useAaveLikeData({
     useMemo(
       () =>
         dpmPositionData && aavePositionData
-          ? from(getAaveHistoryEvents(dpmPositionData.proxy, networkId))
+          ? from(
+              getAaveHistoryEvents(dpmPositionData.proxy, networkId, collateralToken, quoteToken),
+            )
           : EMPTY,
       [dpmPositionData, aavePositionData, networkId],
     ),
