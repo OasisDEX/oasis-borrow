@@ -1,5 +1,6 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import type { NetworkIds } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
@@ -47,8 +48,87 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
 }) => {
   const { t } = useTranslation()
 
-  const automationNames = ['maxCoverage', 'slLevel']
+  enum AutomationName {
+    maxCoverage = 'maxCoverage',
+    slLevel = 'slLevel',
+    executionLtv = 'executionLtv',
+    targetLtv = 'targetLtv',
+    trailingDistance = 'trailingDistance',
+    executionPrice = 'executionPrice',
+    excutionPrice = 'excutionPrice',
+    minSellPrice = 'minSellPrice',
+    maxBuyPrice = 'maxBuyPrice',
+  }
+  const getPositionHistoryRow = (
+    name: string,
+    value: string,
+    historyEvent:
+      | Partial<AjnaHistoryEvent>
+      | Partial<AaveHistoryEvent>
+      | Partial<MorphoHistoryEvent>
+      | Partial<PositionHistoryEvent>,
+  ) => {
+    switch (name) {
+      case AutomationName.minSellPrice:
+        return (
+          <PositionHistoryRow label={t('position-history.min-sell-price')} key={name}>
+            {`${value && formatCryptoBalance(new BigNumber(value).div(100000000))} ${
+              historyEvent.collateralToken
+            }/${historyEvent.debtToken}`}
+          </PositionHistoryRow>
+        )
+      case AutomationName.maxBuyPrice:
+        let limit = '-'
+        if (value !== maxUint256.toString()) {
+          limit = `${value && formatCryptoBalance(new BigNumber(value).div(100000000))} ${
+            historyEvent.collateralToken
+          }/${historyEvent.debtToken}`
+        }
+        return (
+          <PositionHistoryRow label={t('position-history.max-buy-price')} key={name}>
+            {limit}
+          </PositionHistoryRow>
+        )
 
+      case AutomationName.slLevel:
+        return (
+          <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
+            {value && formatPercent(new BigNumber(value).div(100))}
+          </PositionHistoryRow>
+        )
+      case AutomationName.executionLtv:
+        return (
+          <PositionHistoryRow label={t('position-history.execution-ltv')} key={name}>
+            {value && formatPercent(new BigNumber(value).div(100))}
+          </PositionHistoryRow>
+        )
+      case AutomationName.targetLtv:
+        return (
+          <PositionHistoryRow label={t('position-history.target-ltv')} key={name}>
+            {value && formatPercent(new BigNumber(value).div(100))}
+          </PositionHistoryRow>
+        )
+      case AutomationName.trailingDistance:
+        return (
+          <PositionHistoryRow label={t('position-history.trailing-distance')} key={name}>
+            {`${value && formatCryptoBalance(new BigNumber(value).div(100000000))} ${
+              historyEvent.collateralToken
+            }/${historyEvent.debtToken}`}
+          </PositionHistoryRow>
+        )
+      case AutomationName.executionPrice:
+      case AutomationName.excutionPrice:
+        return (
+          <PositionHistoryRow label={t('position-history.execution-price')} key={name}>
+            {`${value && formatCryptoBalance(new BigNumber(value).div(100000000))} ${
+              historyEvent.collateralToken
+            }/${historyEvent.debtToken}`}
+          </PositionHistoryRow>
+        )
+      default:
+        return <></>
+    }
+  }
   if (
     (event.kind?.startsWith('AutomationAdded') || event.kind?.startsWith('AutomationRemoved')) &&
     hasTrigger(event)
@@ -57,16 +137,9 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       <DefinitionList>
         {event.trigger?.decodedDataNames
           ?.map((name, index) => [name, event.trigger?.decodedData[index]] as const)
-          ?.filter(([name]) => automationNames.includes(name))
+          ?.filter(([name]) => Object.values(AutomationName).includes(name as AutomationName))
           ?.map(([name, value]) => {
-            if (name === 'slLevel') {
-              return (
-                <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
-                  {value && formatPercent(new BigNumber(value).div(100))}
-                </PositionHistoryRow>
-              )
-            }
-            return <></>
+            return getPositionHistoryRow(name, value, event)
           })}
       </DefinitionList>
     )
