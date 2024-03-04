@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import type {
-  AaveCumulativeData,
-  AaveHistoryEvent,
+  AaveLikeCumulativeData,
+  AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
@@ -18,8 +18,8 @@ export async function getAaveHistoryEvents(
   _proxyAdrress: string,
   _networkId: NetworkIds,
 ): Promise<{
-  events: AaveHistoryEvent[]
-  positionCumulatives?: AaveCumulativeData
+  events: AaveLikeHistoryEvent[]
+  positionCumulatives?: AaveLikeCumulativeData
 }> {
   const resposne = await loadSubgraph('Aave', 'getAaveHistory', _networkId, {
     dpmProxyAddress: _proxyAdrress,
@@ -30,7 +30,7 @@ export async function getAaveHistoryEvents(
     return {
       events: positionEvents
         .map(
-          (event): AaveHistoryEvent => ({
+          (event): AaveLikeHistoryEvent => ({
             depositAmount: event.depositTransfers[0]
               ? sumStringNumbersArray(event.depositTransfers)
               : zero,

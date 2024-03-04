@@ -4,7 +4,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
-import { type AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
+import { type AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import { hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
@@ -26,7 +26,7 @@ interface PositionHistoryItemDetailsProps {
   collateralToken: string
   event:
     | Partial<AjnaHistoryEvent>
-    | Partial<AaveHistoryEvent>
+    | Partial<AaveLikeHistoryEvent>
     | Partial<MorphoHistoryEvent>
     | Partial<PositionHistoryEvent>
   isOracless?: boolean

@@ -1,11 +1,11 @@
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
+import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { OmniProductType } from 'features/omni-kit/types'
 
 export function getAaveLikeNotifications({
   productType,
 }: {
-  auction?: AaveHistoryEvent
+  auction?: AaveLikeHistoryEvent
   productType: OmniProductType
 }) {
   const notifications: DetailsSectionNotificationItem[] = []

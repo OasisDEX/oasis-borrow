@@ -39,8 +39,8 @@ import {
 import type { PositionId } from 'features/aave/types/position-id'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type {
-  AaveCumulativeData,
-  AaveHistoryEvent,
+  AaveLikeCumulativeData,
+  AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { TransactionStateMachine } from 'features/stateMachines/transaction'
@@ -72,7 +72,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   ownerAddress?: string
   positionCreatedBy: ProxyType
   updateStrategyConfig?: (vaultType: VaultType) => void
-  historyEvents: AaveHistoryEvent[]
+  historyEvents: AaveLikeHistoryEvent[]
 }
 
 function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -113,8 +113,8 @@ export type ManageAaveEvent =
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | {
       type: 'HISTORY_UPDATED'
-      historyEvents: AaveHistoryEvent[]
-      cumulatives?: AaveCumulativeData
+      historyEvents: AaveLikeHistoryEvent[]
+      cumulatives?: AaveLikeCumulativeData
     }
   | BaseAaveEvent
 

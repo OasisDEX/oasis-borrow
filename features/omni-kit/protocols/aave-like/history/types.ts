@@ -1,11 +1,11 @@
 import type BigNumber from 'bignumber.js'
 import type { PositionHistoryEvent, Trigger } from 'features/positionHistory/types'
 
-export interface AaveHistoryEvent extends PositionHistoryEvent {
+export interface AaveLikeHistoryEvent extends PositionHistoryEvent {
   trigger?: Trigger
 }
 
-export type AaveCumulativeData = {
+export type AaveLikeCumulativeData = {
   cumulativeDepositUSD: BigNumber
   cumulativeDepositInQuoteToken: BigNumber
   cumulativeDepositInCollateralToken: BigNumber

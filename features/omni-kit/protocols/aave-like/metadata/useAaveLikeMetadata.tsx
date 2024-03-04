@@ -24,7 +24,7 @@ import {
   getAaveLikeNotifications,
   getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
+import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
@@ -65,7 +65,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
 
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
     productType,
-    auction: productContext.position.positionAuction as AaveHistoryEvent,
+    auction: productContext.position.positionAuction as AaveLikeHistoryEvent,
   })
 
   switch (productType) {

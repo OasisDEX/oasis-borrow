@@ -19,8 +19,8 @@ import type {
 import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import type {
-  AaveCumulativeData,
-  AaveHistoryEvent,
+  AaveLikeCumulativeData,
+  AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
@@ -51,8 +51,8 @@ export function getManageAaveV2PositionStateMachineServices(
     proxyAccount: string,
     networkId: NetworkIds,
   ) => Promise<{
-    events: AaveHistoryEvent[]
-    positionCumulatives?: AaveCumulativeData
+    events: AaveLikeHistoryEvent[]
+    positionCumulatives?: AaveLikeCumulativeData
   }>,
   aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {

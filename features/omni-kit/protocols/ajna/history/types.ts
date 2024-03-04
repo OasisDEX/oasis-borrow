@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
+import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type {
   PositionHistoryEvent,
   PositionHistoryResponse,
@@ -27,8 +27,8 @@ export interface AjnaBorrowerEventsResponse {
 }
 
 export function hasTrigger(
-  event: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<PositionHistoryEvent>,
-): event is Partial<AaveHistoryEvent> & { trigger: Trigger } {
+  event: Partial<AjnaHistoryEvent> | Partial<AaveLikeHistoryEvent> | Partial<PositionHistoryEvent>,
+): event is Partial<AaveLikeHistoryEvent> & { trigger: Trigger } {
   return (
     Object.entries(event).find(([key, value]) => key === 'trigger' && value !== null) !== undefined
   )

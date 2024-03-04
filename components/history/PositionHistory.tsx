@@ -3,7 +3,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
 import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
+import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +14,7 @@ interface PositionHistoryProps {
   collateralToken: string
   historyEvents:
     | Partial<AjnaHistoryEvent>[]
-    | Partial<AaveHistoryEvent>[]
+    | Partial<AaveLikeHistoryEvent>[]
     | Partial<PositionHistoryEvent>[]
   isOracless?: boolean
   isShort?: boolean

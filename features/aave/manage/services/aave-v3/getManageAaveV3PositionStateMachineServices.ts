@@ -20,8 +20,8 @@ import type {
 import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import type {
-  AaveCumulativeData,
-  AaveHistoryEvent,
+  AaveLikeCumulativeData,
+  AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -52,8 +52,8 @@ export function getManageAaveV3PositionStateMachineServices(
     proxyAccount: string,
     networkId: NetworkIds,
   ) => Promise<{
-    events: AaveHistoryEvent[]
-    positionCumulatives?: AaveCumulativeData
+    events: AaveLikeHistoryEvent[]
+    positionCumulatives?: AaveLikeCumulativeData
   }>,
   aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {

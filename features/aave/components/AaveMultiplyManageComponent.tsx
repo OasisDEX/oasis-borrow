@@ -6,7 +6,7 @@ import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss
 import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import type { IStrategyConfig } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
+import type { AaveLikeCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -24,7 +24,7 @@ export type AaveManageComponentProps = {
   tokenPrice?: BigNumber
   debtPrice?: BigNumber
   dpmProxy?: string
-  cumulatives?: AaveCumulativeData
+  cumulatives?: AaveLikeCumulativeData
   triggersState?: StateFrom<typeof triggersAaveStateMachine>
   sendTriggerEvent?: Sender<TriggersAaveEvent>
 }

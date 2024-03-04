@@ -6,7 +6,7 @@ import { AppLayout } from 'components/layouts/AppLayout'
 import { aaveContext, AaveContextProvider } from 'features/aave'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { aaveSeoTags } from 'features/omni-kit/protocols/aave/constants'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
+import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeData, useAaveLikeTxHandler } from 'features/omni-kit/protocols/aave-like/hooks'
 import { useAaveLikeMetadata } from 'features/omni-kit/protocols/aave-like/metadata'
 import { settings as sparkSettings } from 'features/omni-kit/protocols/spark/settings'
@@ -25,8 +25,8 @@ function SparkPositionPage(props: SparkPositionPageProps) {
         <AaveContextProvider>
           <DeferedContextProvider context={aaveContext}>
             <OmniProductController<
-              AaveHistoryEvent | undefined,
-              AaveHistoryEvent[],
+              AaveLikeHistoryEvent | undefined,
+              AaveLikeHistoryEvent[],
               AaveLikePositionV2
             >
               {...props}
