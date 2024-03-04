@@ -70,9 +70,12 @@ export const isAutoSellEnabled = ({
 
 export const getCurrentOptimizationView = ({
   triggers,
-}: GetTriggersResponse): 'auto-buy' | undefined => {
+}: GetTriggersResponse): 'auto-buy' | 'partial-take-profit' | undefined => {
   if (triggers.aaveBasicBuy || triggers.sparkBasicBuy) {
     return 'auto-buy'
+  }
+  if (triggers.aavePartialTakeProfit || triggers.sparkPartialTakeProfit) {
+    return 'partial-take-profit'
   }
   // TODO: add this logic, currently just for debugging
   if (!triggers.aaveBasicBuy) {
@@ -118,7 +121,17 @@ export const hasActiveOptimization = ({
   const hasAaveAutoBuyEnabled = context.currentTriggers.triggers.aaveBasicBuy !== undefined
   const hasSparkAutoBuyEnabled = context.currentTriggers.triggers.sparkBasicBuy !== undefined
 
-  return hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled
+  const hasAavePartialTakeProfitEnabled =
+    context.currentTriggers.triggers.aavePartialTakeProfit !== undefined
+  const hasSparkPartialTakeProfitEnabled =
+    context.currentTriggers.triggers.sparkPartialTakeProfit !== undefined
+
+  return (
+    hasAaveAutoBuyEnabled ||
+    hasSparkAutoBuyEnabled ||
+    hasAavePartialTakeProfitEnabled ||
+    hasSparkPartialTakeProfitEnabled
+  )
 }
 
 export const hasActiveProtection = ({

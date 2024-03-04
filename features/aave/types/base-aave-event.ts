@@ -23,6 +23,7 @@ type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
   | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
   | { type: 'SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA'; trailingStopLossTxDataLambda: TriggerTransaction | undefined }
+  | { type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA'; partialTakeProfitTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
 

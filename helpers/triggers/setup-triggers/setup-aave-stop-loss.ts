@@ -1,3 +1,5 @@
+import { lambdaLtvValueDenomination } from 'features/aave/constants'
+
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
   SetupAaveStopLossParams,
@@ -14,10 +16,7 @@ export const setupAaveLikeStopLoss = async (
   const body = JSON.stringify({
     dpm: params.dpm,
     triggerData: {
-      executionLTV: params.executionLTV
-        .times(10 ** 2)
-        .integerValue()
-        .toString(),
+      executionLTV: params.executionLTV.times(lambdaLtvValueDenomination).integerValue().toString(),
       token: params.executionToken,
     },
     position: {

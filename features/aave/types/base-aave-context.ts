@@ -117,6 +117,7 @@ export interface BaseAaveContext {
   stopLossTxData?: AutomationAddTriggerData
   stopLossTxDataLambda?: TriggerTransaction
   trailingStopLossTxDataLambda?: TriggerTransaction
+  partialTakeProfitTxDataLambda?: TriggerTransaction
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData

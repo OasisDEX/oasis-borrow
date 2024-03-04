@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { trailingStopLossDenomination } from 'features/aave/constants'
+import { lambdaTokenValueDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/triggers'
 
 type TrailingStopLossTriggers = Pick<
@@ -7,7 +7,7 @@ type TrailingStopLossTriggers = Pick<
   'aaveTrailingStopLossDMA' | 'sparkTrailingStopLossDMA'
 >
 
-const denominate = (value: string) => new BigNumber(Number(value)).div(trailingStopLossDenomination)
+const denominate = (value: string) => new BigNumber(Number(value)).div(lambdaTokenValueDenomination)
 
 export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTriggers) => {
   if (!triggers) {

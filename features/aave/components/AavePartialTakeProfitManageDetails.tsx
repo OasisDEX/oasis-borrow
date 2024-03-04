@@ -7,6 +7,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
 import {
@@ -15,14 +16,17 @@ import {
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Divider, Flex, Image, Text } from 'theme-ui'
 
 export const AavePartialTakeProfitManageDetails = ({
   aaveLikePartialTakeProfitParams,
+  aaveLikePartialTakeProfitLambdaData,
 }: {
   aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
+  aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
 }) => {
   const { t } = useTranslation()
   const [chartView, setChartView] = useState<'price' | 'ltv'>('price')
@@ -36,8 +40,9 @@ export const AavePartialTakeProfitManageDetails = ({
     currentLtv,
     currentMultiple,
     startingTakeProfitPrice,
-    triggerLtv,
   } = aaveLikePartialTakeProfitParams
+  const { startingTakeProfitPrice: lambdaStartingTakeProfitPrice, triggerLtv: lambdaTriggerLtv } =
+    aaveLikePartialTakeProfitLambdaData
 
   return (
     <>
@@ -47,12 +52,20 @@ export const AavePartialTakeProfitManageDetails = ({
         content={
           <DetailsSectionContentCardWrapper>
             <OmniContentCard
-              title={'New Dynamic Trigger Price'}
-              value={'-'}
+              title={'Next Dynamic Trigger Price'}
+              value={
+                lambdaStartingTakeProfitPrice
+                  ? formatCryptoBalance(lambdaStartingTakeProfitPrice)
+                  : '-'
+              }
               unit={priceFormat}
-              change={[`${formatCryptoBalance(startingTakeProfitPrice)} ${priceFormat} after`]}
+              change={
+                !startingTakeProfitPrice.eq(lambdaStartingTakeProfitPrice || zero)
+                  ? [`${formatCryptoBalance(startingTakeProfitPrice)} ${priceFormat} after`]
+                  : undefined
+              }
               changeVariant="positive"
-              footnote={[`TriggerLTV: ${triggerLtv}%`]}
+              footnote={[`TriggerLTV: ${lambdaTriggerLtv}%`]}
             />
             <OmniContentCard
               title={'Est. to receive next trigger'}

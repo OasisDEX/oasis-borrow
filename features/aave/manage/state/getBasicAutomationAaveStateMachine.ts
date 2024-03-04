@@ -6,6 +6,7 @@ import { NetworkIds } from 'blockchain/networks'
 import type { TransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import { getTransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import type { ethers } from 'ethers'
+import { lambdaLtvValueDenomination } from 'features/aave/constants'
 import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
@@ -567,8 +568,12 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
             if (isInternalRequestEvent(event) && areInternalRequestParamsValid(event.params)) {
               const request: SetupAaveBasicAutomationParams = {
                 dpm: event.params.position.dpm,
-                executionLTV: new BigNumber(event.params.executionTriggerLTV).times(10 ** 2),
-                targetLTV: new BigNumber(event.params.targetTriggerLTV).times(10 ** 2),
+                executionLTV: new BigNumber(event.params.executionTriggerLTV).times(
+                  lambdaLtvValueDenomination,
+                ),
+                targetLTV: new BigNumber(event.params.targetTriggerLTV).times(
+                  lambdaLtvValueDenomination,
+                ),
                 price: event.params.price?.times(10 ** 8),
                 usePrice: event.params.usePrice,
                 maxBaseFee: new BigNumber(event.params.maxGasFee),

@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+import { lambdaLtvValueDenomination, lambdaTokenValueDenomination } from 'features/aave/constants'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import {
@@ -7,8 +9,8 @@ import {
 import type { IStrategyConfig } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
 import { formatPercent } from 'helpers/formatters/format'
+import { nbsp } from 'helpers/nbsp'
 import type { GetTriggersResponse } from 'helpers/triggers'
-import { zero } from 'helpers/zero'
 
 export const mapPartialTakeProfitFromLambda = (
   strategyConfig: IStrategyConfig,
@@ -18,6 +20,21 @@ export const mapPartialTakeProfitFromLambda = (
     return {}
   }
   const isShort = strategyConfig.strategyType === StrategyType.Short
+
+  const partialTakeProfitTriggersNames = Object.keys(triggers).filter((triggerName) =>
+    triggerName.includes('PartialTakeProfit'),
+  )
+  if (partialTakeProfitTriggersNames.length > 1) {
+    console.warn(
+      'Warning: more than one partial take profit trigger found:',
+      partialTakeProfitTriggersNames,
+    )
+  }
+  const partialTakeProfitTriggerName = partialTakeProfitTriggersNames[0] as
+    | 'sparkPartialTakeProfit'
+    | 'aavePartialTakeProfit'
+  const selectedTrigger = triggers[partialTakeProfitTriggerName]
+
   const hasStopLoss = hasActiveStopLossFromTriggers({ triggers, protocol: strategyConfig.protocol })
   const hasTrailingStopLoss = hasActiveTrailingStopLossFromTriggers({
     triggers,
@@ -29,10 +46,24 @@ export const mapPartialTakeProfitFromLambda = (
     ? `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
     : `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
   return {
+    triggerId: selectedTrigger?.triggerId,
+    triggerLtv: selectedTrigger?.decodedParams.executionLtv
+      ? new BigNumber(Number(selectedTrigger.decodedParams.executionLtv)).div(
+          lambdaLtvValueDenomination,
+        )
+      : undefined,
+    startingTakeProfitPrice: selectedTrigger?.decodedParams.executionPrice
+      ? new BigNumber(Number(selectedTrigger.decodedParams.executionPrice)).div(
+          lambdaTokenValueDenomination,
+        )
+      : undefined,
     hasStopLoss: hasStopLoss || hasTrailingStopLoss,
-    stopLossLevelLabel: hasStopLoss ? `${formatPercent(stopLossData.stopLossLevel || zero)}` : '',
+    stopLossLevelLabel:
+      hasStopLoss && stopLossData.stopLossLevel
+        ? `${formatPercent(stopLossData.stopLossLevel)}`
+        : '',
     trailingStopLossDistanceLabel: hasTrailingStopLoss
-      ? `${trailingStopLossData.trailingDistance} ${stopLossTokenLabel}`
+      ? `${trailingStopLossData.trailingDistance}${nbsp}${stopLossTokenLabel}`
       : '',
   }
 }

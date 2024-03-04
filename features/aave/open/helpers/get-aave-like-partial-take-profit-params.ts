@@ -123,8 +123,8 @@ export const getAaveLikePartialTakeProfitParams = {
   manage: memoize(
     ({
       state,
-    }: // partialTakeProfitLambdaData,
-    AaveLikePartialTakeProfitParams): AaveLikePartialTakeProfitParamsResult => {
+      aaveLikePartialTakeProfitLambdaData,
+    }: AaveLikePartialTakeProfitParams): AaveLikePartialTakeProfitParamsResult => {
       const {
         strategyConfig,
         strategyConfig: { tokens },
@@ -145,8 +145,9 @@ export const getAaveLikePartialTakeProfitParams = {
       // user inputs
       const [partialTakeProfitToken, setPartialTakeProfitToken] =
         useState<ProfitToTokenType>('debt')
-      const [startingTakeProfitPrice, setStartingTakeProfitPrice] =
-        useState<BigNumber>(positionPriceRatio)
+      const [startingTakeProfitPrice, setStartingTakeProfitPrice] = useState<BigNumber>(
+        aaveLikePartialTakeProfitLambdaData.startingTakeProfitPrice || positionPriceRatio,
+      )
       const [customPriceRatioPercentage, setCustomPriceRatioPercentage] = useState<
         PercentageOptionsType[number] | undefined
       >(0)

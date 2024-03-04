@@ -256,6 +256,43 @@ export type DmaSparkTrailingStopLoss = {
   }
 }
 
+export type DmaAavePartialTakeProfit = {
+  triggerTypeName: 'DmaAavePartialTakeProfit'
+  triggerType: bigint
+  triggerId: string
+  decodedParams: {
+    collateralToken: string
+    debtToken: string
+    deviation: string
+    executionLtv: string
+    executionPrice: string
+    maxCoverage: string
+    operationName: string
+    positionAddress: string
+    targetLtv: string
+    triggerType: string
+  }
+}
+
+export type DmaSparkPartialTakeProfit = {
+  triggerTypeName: 'DmaAavePartialTakeProfit'
+  triggerType: bigint
+  triggerId: string
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    executionLtv: string
+    targetLtv: string
+    executionPrice: string
+    deviation: string
+    closeToCollateral: string
+  }
+}
+
 export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 
 export type GetTriggersResponse = {
@@ -274,5 +311,7 @@ export type GetTriggersResponse = {
     sparkBasicSell?: DmaSparkBasicSell
     aaveTrailingStopLossDMA?: DmaAaveTrailingStopLoss
     sparkTrailingStopLossDMA?: DmaSparkTrailingStopLoss
+    aavePartialTakeProfit?: DmaAavePartialTakeProfit
+    sparkPartialTakeProfit?: DmaSparkPartialTakeProfit
   }
 }

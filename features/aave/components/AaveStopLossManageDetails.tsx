@@ -1,3 +1,4 @@
+import { lambdaLtvValueDenomination } from 'features/aave/constants'
 import { getDenominations } from 'features/aave/helpers'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
@@ -85,7 +86,7 @@ export const AaveStopLossManageDetails = ({
       token={token}
       debtToken={debtToken}
       // stopLossLevel is multiplied by 100 in the display component
-      stopLossLevel={stopLossLambdaData.stopLossLevel?.div(10 ** 2) || zero}
+      stopLossLevel={stopLossLambdaData.stopLossLevel?.div(lambdaLtvValueDenomination) || zero}
       afterStopLossLevel={stopLossLevel}
       debt={debt}
       isStopLossEnabled={isStopLossEnabled}
@@ -118,7 +119,7 @@ export const AaveStopLossManageDetails = ({
           stopLossLevelCard: {
             modalDescription: 'manage-multiply-vault.card.stop-loss-ltv-desc',
             belowCurrentPositionRatio: formatPercent(
-              (stopLossLambdaData.stopLossLevel?.div(10 ** 2) || one)
+              (stopLossLambdaData.stopLossLevel?.div(lambdaLtvValueDenomination) || one)
                 .minus(positionRatio)
                 .times(100),
               {

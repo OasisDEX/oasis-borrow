@@ -120,6 +120,7 @@ export function OptimizationControl({
           {triggersState.context.optimizationCurrentView === 'partial-take-profit' && (
             <AavePartialTakeProfitManageDetails
               aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
+              aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
             />
           )}
           {triggersState.context.showAutoBuyBanner && (
@@ -143,15 +144,17 @@ export function OptimizationControl({
               dropdown={dropdown}
             />
           )}
-        {triggersState.context.optimizationCurrentView === 'partial-take-profit' && (
-          <AaveManagePositionPartialTakeProfitLambdaSidebar
-            state={state}
-            send={send}
-            dropdown={dropdown}
-            aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
-            aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
-          />
-        )}
+        {triggersState.context.optimizationCurrentView === 'partial-take-profit' &&
+          state.context.strategyConfig && (
+            <AaveManagePositionPartialTakeProfitLambdaSidebar
+              state={state}
+              send={send}
+              dropdown={dropdown}
+              aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
+              aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
+              onTxFinished={() => sendTriggerEvent({ type: 'TRANSACTION_DONE' })}
+            />
+          )}
       </Grid>
     </Container>
   )

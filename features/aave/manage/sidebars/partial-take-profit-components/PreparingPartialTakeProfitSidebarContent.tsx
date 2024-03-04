@@ -7,12 +7,14 @@ import { Icon } from 'components/Icon'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
+import { lambdaLtvValueDenomination } from 'features/aave/constants'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import type { IStrategyConfig } from 'features/aave/types'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { nbsp } from 'helpers/nbsp'
 import { hundred } from 'helpers/zero'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -67,6 +69,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     withdrawalLtv,
     setWithdrawalLtv,
     withdrawalLtvSliderConfig,
+    currentLtv,
   } = aaveLikePartialTakeProfitParams
 
   const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel } =
@@ -113,9 +116,38 @@ export const PreparingPartialTakeProfitSidebarContent = ({
   const startingTakeProfitPriceTooLow = useMemo(() => {
     return startingTakeProfitPrice.lt(positionPriceRatio)
   }, [positionPriceRatio, startingTakeProfitPrice])
-
   return (
-    <Grid gap={3}>
+    <Grid
+      gap={3}
+      sx={{
+        '.rc-slider-dot': {
+          backgroundColor: 'neutral70',
+          borderColor: 'neutral70',
+        },
+        '.rc-slider-dot.rc-slider-dot-active': {
+          borderColor: 'interactive50',
+        },
+        '.rc-slider-mark-text': {
+          opacity: 0,
+          bottom: '0px',
+          padding: '0px 0px 0px 0px',
+          transition: 'opacity 200ms, padding 200ms',
+          userSelect: 'none',
+          span: {
+            backgroundColor: 'white',
+            borderRadius: 'medium',
+            boxShadow: 'medium',
+            padding: '3px 7px',
+            display: 'inline-block',
+            userSelect: 'none',
+          },
+          '&:hover': {
+            opacity: 1,
+            padding: '0px 0px 20px 0px',
+          },
+        },
+      }}
+    >
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         Set up your auto take profit price and trigger LTV. These parameters will determine when you
         withdraw assets to realize profits.
@@ -255,7 +287,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                   Trigger LTV
                 </Text>
                 <Text variant="paragraph2">
-                  <FormatPercentWithSmallPercentCharacter value={x} />
+                  <FormatPercentWithSmallPercentCharacter
+                    value={x.div(lambdaLtvValueDenomination)}
+                  />
                   <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
                     {getTriggerLtvMultiple(x)}
                   </Text>
@@ -278,6 +312,18 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           }}
           useRcSlider
           {...triggerLtvSliderConfig}
+          customSliderProps={{
+            marks: {
+              [currentLtv.times(lambdaLtvValueDenomination).toNumber()]: (
+                <Text
+                  variant="boldParagraph3"
+                  sx={{ fontSize: '10px', textTransform: 'uppercase' }}
+                >
+                  Current LTV
+                </Text>
+              ),
+            },
+          }}
         />
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 2 }}>
@@ -303,13 +349,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
       <Box
         sx={{
           mb: 3,
-          '.rc-slider-dot': {
-            backgroundColor: 'neutral70',
-            borderColor: 'neutral70',
-          },
-          '.rc-slider-dot.rc-slider-dot-active': {
-            borderColor: 'interactive50',
-          },
         }}
       >
         <SliderValuePicker
@@ -324,7 +363,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                   LTV Withdrawal Step
                 </Text>
                 <Text variant="paragraph2">
-                  <FormatPercentWithSmallPercentCharacter value={x} />
+                  <FormatPercentWithSmallPercentCharacter
+                    value={x.div(lambdaLtvValueDenomination)}
+                  />
                   <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
                     step amount
                   </Text>
@@ -357,7 +398,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                         color: ltvTooHigh ? 'warning100' : undefined,
                       },
                     }}
-                    value={x}
+                    value={x.div(lambdaLtvValueDenomination)}
                   />
                 </Text>
               </Flex>
@@ -373,7 +414,14 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           {...withdrawalLtvSliderConfig}
           customSliderProps={{
             marks: {
-              [withdrawalLtvSliderConfig.maxBoundry.minus(triggerLtv).toNumber()]: ' ',
+              [withdrawalLtvSliderConfig.maxBoundry.minus(triggerLtv).toNumber()]: (
+                <Text
+                  variant="boldParagraph3"
+                  sx={{ fontSize: '10px', textTransform: 'uppercase' }}
+                >
+                  MAX LTV
+                </Text>
+              ),
             },
           }}
         />
@@ -454,9 +502,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           withBullet={false}
           messages={[
             hasStopLoss
-              ? `You already have a stop loss set at ${
-                  stopLossLevelLabel || trailingStopLossDistanceLabel
-                }`
+              ? `You already have a ${
+                  stopLossLevelLabel ? 'Stop-Loss' : 'Trailing Stop-Loss'
+                } trigger set at${nbsp}${stopLossLevelLabel || trailingStopLossDistanceLabel}`
               : '',
           ].filter(Boolean)}
         />

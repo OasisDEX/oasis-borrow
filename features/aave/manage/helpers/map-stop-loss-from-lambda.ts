@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { lambdaLtvValueDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/triggers'
 
 type StopLossTriggers = Pick<
@@ -28,7 +29,9 @@ export const mapStopLossFromLambda = (triggers?: StopLossTriggers) => {
   if (trigger) {
     const stopLossLevel = trigger.decodedParams.executionLtv || trigger.decodedParams.ltv
     return {
-      stopLossLevel: stopLossLevel ? new BigNumber(Number(stopLossLevel)).div(10 ** 2) : undefined,
+      stopLossLevel: stopLossLevel
+        ? new BigNumber(Number(stopLossLevel)).div(lambdaLtvValueDenomination)
+        : undefined,
       stopLossToken: stopLossTriggerName.includes('Debt')
         ? ('debt' as const)
         : ('collateral' as const),

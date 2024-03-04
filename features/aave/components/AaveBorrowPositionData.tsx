@@ -10,6 +10,7 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCard'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
+import { lambdaLtvValueDenomination } from 'features/aave/constants'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
@@ -297,7 +298,7 @@ export function AaveBorrowPositionData({
     if (stopLossLambdaData.stopLossTriggerName) {
       return {
         isAutomationAvailable: true,
-        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2), // still needs to be divided by 100
+        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(lambdaLtvValueDenomination), // still needs to be divided by 100
         isStopLossEnabled: true,
         isAutomationDataLoaded: true,
       }

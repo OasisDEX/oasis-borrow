@@ -57,6 +57,11 @@ export type TriggersApiWarning = {
   path?: string[]
 }
 
+type ResponseCommon = {
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
+}
+
 interface StrategyLike {
   collateralAddress: string
   debtAddress: string
@@ -86,9 +91,7 @@ export interface SetupAaveBasicAutomationParams {
   action: TriggerAction
 }
 
-export type SetupBasicAutoResponse = {
-  errors?: TriggersApiError[]
-  warnings?: TriggersApiWarning[]
+export type SetupBasicAutoResponse = ResponseCommon & {
   encodedTriggerData?: string
   simulation?: {
     collateralAmountAfterExecution: string
@@ -101,9 +104,7 @@ export type SetupBasicAutoResponse = {
   transaction?: TriggerTransaction
 }
 
-export type SetupBasicStopLossResponse = {
-  errors?: TriggersApiError[]
-  warnings?: TriggersApiWarning[]
+export type SetupBasicStopLossResponse = ResponseCommon & {
   encodedTriggerData?: string
   simulation?: {
     collateralAmountAfterExecution: string
@@ -137,7 +138,27 @@ export interface SetupAaveTrailingStopLossParams {
   action: TriggerAction
 }
 
-export type SetupTrailingStopLossResponse = {
+export type SetupTrailingStopLossResponse = ResponseCommon & {
+  encodedTriggerData?: string
+  simulation?: unknown
+  transaction?: TriggerTransaction
+}
+
+export interface SetupAavePartialTakeProfitParams {
+  dpm: string
+  executionToken: string
+  triggerLtv: BigNumber
+  withdrawalLtv: BigNumber
+  startingTakeProfitPrice: BigNumber
+  stopLoss?: BigNumber
+  trailingStopLoss?: BigNumber
+  networkId: number
+  strategy: StrategyLike
+  protocol: SupportedLambdaProtocols
+  action: TriggerAction
+}
+
+export type SetupPartialTakeProfitResponse = {
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
   encodedTriggerData?: string
