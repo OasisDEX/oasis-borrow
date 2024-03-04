@@ -18,14 +18,19 @@ export function useAaveEarnYields(
   const [yields, setYields] = useState<AaveLikeYieldsResponse>()
 
   useEffect(() => {
-    if (!riskRatio) return
-    aaveEarnYieldsQuery(riskRatio, yieldFields)
-      .then((yieldsResponse) => {
-        setYields(yieldsResponse)
-      })
-      .catch((e) => {
-        console.error('unable to get yields', e)
-      })
+    // Timeout added to debounce user input
+    const timout = setTimeout(() => {
+      if (!riskRatio) return
+      aaveEarnYieldsQuery(riskRatio, yieldFields)
+        .then((yieldsResponse) => {
+          setYields(yieldsResponse)
+        })
+        .catch((e) => {
+          console.error('unable to get yields', e)
+        })
+    }, 400)
+
+    return () => clearTimeout(timout)
   }, [aaveEarnYieldsQuery, riskRatio, yieldFields])
 
   return yields
