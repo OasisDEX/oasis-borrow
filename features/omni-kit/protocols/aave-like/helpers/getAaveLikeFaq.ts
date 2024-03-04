@@ -10,12 +10,12 @@ import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 export const getAaveLikeFaq = ({
   productType,
-  isYieldLoop,
+  isYieldLoopWithData,
   protocol,
 }: {
   productType: OmniProductType.Borrow | OmniProductType.Multiply
   protocol: LendingProtocol
-  isYieldLoop: boolean
+  isYieldLoopWithData: boolean
 }) => {
   if (!isAaveLikeLendingProtocol(protocol)) {
     throw Error('Given protocol is not aave-like')
@@ -28,9 +28,9 @@ export const getAaveLikeFaq = ({
       [LendingProtocol.SparkV3]: faqBorrowSpark,
     },
     [OmniProductType.Multiply]: {
-      [LendingProtocol.AaveV2]: isYieldLoop ? faqEarnAaveV2 : faqMultiplyAave,
-      [LendingProtocol.AaveV3]: isYieldLoop ? faqEarnAaveV3 : faqMultiplyAave,
-      [LendingProtocol.SparkV3]: isYieldLoop ? faqEanSpark : faqMultiplySpark,
+      [LendingProtocol.AaveV2]: isYieldLoopWithData ? faqEarnAaveV2 : faqMultiplyAave,
+      [LendingProtocol.AaveV3]: isYieldLoopWithData ? faqEarnAaveV3 : faqMultiplyAave,
+      [LendingProtocol.SparkV3]: isYieldLoopWithData ? faqEanSpark : faqMultiplySpark,
     },
   }
 

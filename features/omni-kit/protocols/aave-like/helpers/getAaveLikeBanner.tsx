@@ -6,13 +6,13 @@ import React from 'react'
 
 export const getAaveLikeBanner = ({
   protocol,
-  isYieldLoop,
+  isYieldLoopWithData,
   collateralToken,
   quoteToken,
   isOpening,
 }: {
   protocol: LendingProtocol
-  isYieldLoop: boolean
+  isYieldLoopWithData: boolean
   collateralToken: string
   quoteToken: string
   isOpening: boolean
@@ -25,8 +25,8 @@ export const getAaveLikeBanner = ({
   const isElligibleSparkPosition = checkElligibleSparkPosition(collateralToken, quoteToken)
 
   return {
-    [LendingProtocol.AaveV2]: isYieldLoop && isOpening && <AaveLikeYieldLoopRiskBanner />,
-    [LendingProtocol.AaveV3]: isYieldLoop && isOpening && <AaveLikeYieldLoopRiskBanner />,
+    [LendingProtocol.AaveV2]: isYieldLoopWithData && isOpening && <AaveLikeYieldLoopRiskBanner />,
+    [LendingProtocol.AaveV3]: isYieldLoopWithData && isOpening && <AaveLikeYieldLoopRiskBanner />,
     [LendingProtocol.SparkV3]: isSparkPosition && isElligibleSparkPosition && (
       <SparkTokensBannerController />
     ),

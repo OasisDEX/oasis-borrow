@@ -45,7 +45,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       protocol,
-      isYieldLoop,
+      isYieldLoopWithData,
       isOpening,
       quoteToken,
       network,
@@ -81,7 +81,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       const resolvedSimulation = simulation || cachedSimulation
 
       const { headlineDetails, isLoading: isHeadlineDetailsLoading } =
-        isYieldLoop && isOpening
+        isYieldLoopWithData && isOpening
           ? useAaveLikeHeadlineDetails({
               maxRiskRatio: position.maxRiskRatio,
               protocol: protocol as AaveLikeLendingProtocol,
@@ -122,25 +122,25 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             currentStep,
             productType,
           }),
-          footerColumns: isYieldLoop ? 3 : 2,
+          footerColumns: isYieldLoopWithData ? 3 : 2,
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
           sliderRightLabel:
-            isYieldLoop && t('open-earn.aave.vault-form.configure-multiple.current-price'),
+            isYieldLoopWithData && t('open-earn.aave.vault-form.configure-multiple.current-price'),
         },
         elements: {
-          faq: getAaveLikeFaq({ productType, isYieldLoop, protocol }),
+          faq: getAaveLikeFaq({ productType, isYieldLoopWithData, protocol }),
           overviewContent: <AaveLikeDetailsSectionContent />,
           overviewFooter: <AaveLikeDetailsSectionFooter />,
           overviewBanner: getAaveLikeBanner({
             protocol,
-            isYieldLoop,
+            isYieldLoopWithData,
             collateralToken,
             quoteToken,
             isOpening,
           }),
-          overviewTitle: isYieldLoop && isOpening && (
+          overviewTitle: isYieldLoopWithData && isOpening && (
             <SimulateTitle
               token={quoteToken}
               depositAmount={
@@ -148,7 +148,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
               }
             />
           ),
-          sliderRightBoundary: isYieldLoop && (
+          sliderRightBoundary: isYieldLoopWithData && (
             <OmniStaticBoundary label={priceFormat} value={position.oraclePrice} />
           ),
         },

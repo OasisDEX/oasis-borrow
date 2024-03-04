@@ -43,6 +43,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
       quotePrice,
       quoteToken,
       isOpening,
+      isYieldLoopWithData,
       isYieldLoop,
       protocol,
       network,
@@ -61,7 +62,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
 
   const castedPosition = position as AaveLikePositionV2
 
-  const simulations = isYieldLoop
+  const simulations = isYieldLoopWithData
     ? useOmniSimulationYields({
         amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
         token: collateralToken,
@@ -201,7 +202,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
       : undefined,
   )
 
-  return isYieldLoop ? (
+  return isYieldLoopWithData ? (
     <>
       <OmniContentCard
         {...commonContentCardData}

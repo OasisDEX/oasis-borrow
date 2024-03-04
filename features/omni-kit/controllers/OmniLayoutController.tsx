@@ -44,7 +44,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       quotePrice,
       quoteToken,
       network,
-      isYieldLoop,
+      isYieldLoopWithData,
     },
   } = useOmniGeneralContext()
   const {
@@ -77,11 +77,11 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           quoteIcon,
           quoteToken,
           networkName: network.name,
-          isYieldLoop,
+          isYieldLoopWithData,
         })}
         details={[
           ...(headlineDetails || []),
-          ...(!isOracless && !isYieldLoop && !isOpening
+          ...(!isOracless && !isYieldLoopWithData && !isOpening
             ? [
                 ...(ltv
                   ? [

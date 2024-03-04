@@ -10,12 +10,12 @@ import React from 'react'
 
 export const AaveLikeDetailsSectionFooter: FC = () => {
   const {
-    environment: { productType, isYieldLoop, isOpening },
+    environment: { productType, isYieldLoopWithData, isOpening },
   } = useOmniGeneralContext()
 
   return productType === OmniProductType.Borrow ? (
     <AaveLikeContentFooterBorrow />
-  ) : isYieldLoop && isOpening ? (
+  ) : isYieldLoopWithData && isOpening ? (
     <AaveLikeContentFooterYieldLoop />
   ) : (
     <AaveLikeContentFooterMultiply />

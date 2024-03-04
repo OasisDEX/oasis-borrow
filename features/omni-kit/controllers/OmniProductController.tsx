@@ -135,6 +135,11 @@ export const OmniProductController = <Auction, History, Position>({
 
   const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
 
+  // Flag to determining whether full yield-loop UI experience is available for given protocol & pair
+  const isYieldLoopWithData = !!settings.yieldLoopPairsWithData?.[networkId]?.includes(
+    `${collateralToken}-${quoteToken}`,
+  )
+
   return (
     <WithConnection>
       <WithTermsOfService>
@@ -165,7 +170,7 @@ export const OmniProductController = <Auction, History, Position>({
                     quoteIcon: tokensIconsData?.quoteToken,
                     quoteToken: dpmPositionData?.quoteToken,
                     networkName: network.name,
-                    isYieldLoop,
+                    isYieldLoopWithData,
                   })}
                 />
               }
@@ -237,6 +242,7 @@ export const OmniProductController = <Auction, History, Position>({
                       slippage={slippage}
                       steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
                       isYieldLoop={isYieldLoop}
+                      isYieldLoopWithData={isYieldLoopWithData}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,

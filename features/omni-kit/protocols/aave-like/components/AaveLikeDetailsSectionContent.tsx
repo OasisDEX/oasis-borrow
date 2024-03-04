@@ -8,10 +8,10 @@ import React from 'react'
 
 export const AaveLikeDetailsSectionContent: FC = () => {
   const {
-    environment: { isOpening, isYieldLoop },
+    environment: { isOpening, isYieldLoopWithData },
   } = useOmniGeneralContext()
 
-  return isYieldLoop && isOpening ? (
+  return isYieldLoopWithData && isOpening ? (
     <AaveLikeDetailsSectionContentYieldLoopOpen />
   ) : (
     <AaveLikeDetailsSectionContentManage />

@@ -2738,6 +2738,7 @@
   "omni-kit": {
     "headline": {
       "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
+      "yield-multiple": "yield multiple",
       "details": {
         "current-market-price": "Current Market Price",
         "current-ltv": "Current LTV"

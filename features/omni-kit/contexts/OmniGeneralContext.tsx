@@ -60,6 +60,7 @@ interface OmniGeneralContextProviderProps {
   steps: OmniSidebarStep[]
   walletNetwork: NetworkConfig
   isYieldLoop: boolean
+  isYieldLoopWithData: boolean
 }
 
 export enum OmniSlippageSourceSettings {

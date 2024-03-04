@@ -14,7 +14,7 @@ import React from 'react'
 
 export function AaveLikeContentFooterMultiply() {
   const {
-    environment: { collateralToken, quoteToken, quotePrice, collateralPrice, isYieldLoop },
+    environment: { collateralToken, quoteToken, quotePrice, collateralPrice, isYieldLoopWithData },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -88,10 +88,10 @@ export function AaveLikeContentFooterMultiply() {
         {...positionDebtContentCardCommonData}
         {...positionDebtContentCardAjnaData}
       />
-      {isYieldLoop && (
+      {isYieldLoopWithData && (
         <OmniContentCard {...commonContentCardData} {...variableAnnualFeeContentCardCommonData} />
       )}
-      {!isYieldLoop && (
+      {!isYieldLoopWithData && (
         <>
           <OmniContentCard {...commonContentCardData} {...multipleContentCardCommonData} />
           <OmniContentCard {...commonContentCardData} {...borrowRateContentCardCommonData} />
