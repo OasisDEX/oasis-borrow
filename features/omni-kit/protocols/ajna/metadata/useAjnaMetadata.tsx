@@ -157,7 +157,14 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const filters = {
     flowStateFilter: (event: CreatePositionEvent) =>
-      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress, protocolRaw }),
+      ajnaFlowStateFilter({
+        collateralAddress,
+        event,
+        productType,
+        quoteAddress,
+        protocolRaw,
+        protocol,
+      }),
   }
 
   switch (productType) {

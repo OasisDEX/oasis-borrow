@@ -94,7 +94,13 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         validations,
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
-            aaveLikeFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+            aaveLikeFlowStateFilter({
+              collateralAddress,
+              event,
+              productType,
+              quoteAddress,
+              protocol,
+            }),
         },
         values: {
           interestRate: position.borrowRate,

@@ -45,6 +45,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteBalance,
       quotePrecision,
       collateralPrecision,
+      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -78,7 +79,13 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         validations,
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
-            morphoFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+            morphoFlowStateFilter({
+              collateralAddress,
+              event,
+              productType,
+              quoteAddress,
+              protocol,
+            }),
         },
         values: {
           interestRate: position.rate,

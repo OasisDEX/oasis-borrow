@@ -200,6 +200,8 @@ export interface OmniFlowStateFilterParams {
   event: CreatePositionEvent
   productType: OmniProductType
   quoteAddress: string
+  protocol: LendingProtocol
+  protocolRaw?: string
 }
 
 export type NetworkIdsWithValues<T> = {
