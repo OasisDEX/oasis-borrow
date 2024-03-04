@@ -5,6 +5,7 @@ import { getAaveHistoryEvents } from 'features/aave/services'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import { useMemo } from 'react'
 import { EMPTY, from } from 'rxjs'
 
@@ -19,9 +20,13 @@ export function useAaveLikeData({
 
   const networkName = networksById[networkId].name
 
-  const { getAaveLikeAssetsPrices$ } = useAaveContext(
+  const { getAaveLikeAssetsPrices$, chainLinkETHUSDOraclePrice$ } = useAaveContext(
     protocol as AaveLikeLendingProtocol,
     networkName,
+  )
+
+  const [chainLinkEthUsdcPriceData, chainLinkEthUsdcPriceError] = useObservable(
+    chainLinkETHUSDOraclePrice$,
   )
 
   const [aaveLikeAssetsPricesData, aaveLikeAssetsPricesError] = useObservable(
@@ -36,18 +41,40 @@ export function useAaveLikeData({
     ),
   )
 
+  const isAaveV2 = protocol === LendingProtocol.AaveV2
+
+  const resolvedCollateralPrice = useMemo(
+    () =>
+      aaveLikeAssetsPricesData && chainLinkEthUsdcPriceData
+        ? isAaveV2
+          ? aaveLikeAssetsPricesData[0].times(chainLinkEthUsdcPriceData)
+          : aaveLikeAssetsPricesData[0]
+        : undefined,
+    [aaveLikeAssetsPricesData, chainLinkEthUsdcPriceData],
+  )
+
+  const resolvedQuotePrice = useMemo(
+    () =>
+      aaveLikeAssetsPricesData && chainLinkEthUsdcPriceData
+        ? isAaveV2
+          ? aaveLikeAssetsPricesData[1].times(chainLinkEthUsdcPriceData)
+          : aaveLikeAssetsPricesData[1]
+        : undefined,
+    [aaveLikeAssetsPricesData, chainLinkEthUsdcPriceData],
+  )
+
   const [aavePositionData, aavePositionError] = useObservable(
     useMemo(
       () =>
-        dpmPositionData && aaveLikeAssetsPricesData
+        dpmPositionData && resolvedCollateralPrice && resolvedQuotePrice
           ? aaveLikePosition$(
-              aaveLikeAssetsPricesData[0],
-              aaveLikeAssetsPricesData[1],
+              resolvedCollateralPrice,
+              resolvedQuotePrice,
               dpmPositionData,
               networkId,
             )
           : EMPTY,
-      [dpmPositionData, aaveLikeAssetsPricesData],
+      [dpmPositionData, resolvedCollateralPrice, resolvedQuotePrice],
     ),
   )
 
@@ -70,13 +97,19 @@ export function useAaveLikeData({
         auction: aavePositionAggregatedData?.events[0],
       },
       positionData: aavePositionData,
-      protocolPricesData: aaveLikeAssetsPricesData
-        ? {
-            [collateralToken]: aaveLikeAssetsPricesData[0],
-            [quoteToken]: aaveLikeAssetsPricesData[1],
-          }
-        : undefined,
+      protocolPricesData:
+        resolvedCollateralPrice && resolvedQuotePrice
+          ? {
+              [collateralToken]: resolvedCollateralPrice,
+              [quoteToken]: resolvedQuotePrice,
+            }
+          : undefined,
     },
-    errors: [aavePositionError, aavePositionAggregatedError, aaveLikeAssetsPricesError],
+    errors: [
+      aavePositionError,
+      aavePositionAggregatedError,
+      aaveLikeAssetsPricesError,
+      chainLinkEthUsdcPriceError,
+    ],
   }
 }
