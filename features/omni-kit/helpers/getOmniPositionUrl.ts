@@ -1,6 +1,7 @@
 import type { NetworkNames } from 'blockchain/networks'
+import { getOmniProtocolUrlMap } from 'features/omni-kit/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetOmniPositionUrlParams {
   collateralAddress?: string
@@ -25,18 +26,13 @@ export function getOmniPositionUrl({
   quoteAddress,
   quoteToken,
 }: GetOmniPositionUrlParams) {
-  const protocolUrlMap = {
-    [LendingProtocol.AaveV2]: 'aave/v2',
-    [LendingProtocol.AaveV3]: 'aave/v3',
-    [LendingProtocol.SparkV3]: 'spark',
-    [LendingProtocol.Ajna]: protocol,
-    [LendingProtocol.MorphoBlue]: protocol,
-    [LendingProtocol.Maker]: protocol,
-  }
-
   const productUrl = isPoolOracless
-    ? `/${networkName}/${protocolUrlMap[protocol]}/${productType}/${collateralAddress}-${quoteAddress}`
-    : `/${networkName}/${protocolUrlMap[protocol]}/${productType}/${collateralToken}-${quoteToken}`
+    ? `/${networkName}/${getOmniProtocolUrlMap(
+        protocol,
+      )}/${productType}/${collateralAddress}-${quoteAddress}`
+    : `/${networkName}/${getOmniProtocolUrlMap(
+        protocol,
+      )}/${productType}/${collateralToken}-${quoteToken}`
 
   return `${productUrl}${positionId ? `/${positionId}` : ''}`
 }
