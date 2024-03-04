@@ -1,5 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
 

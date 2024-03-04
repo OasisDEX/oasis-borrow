@@ -57,6 +57,9 @@ function useSetupTriggersStateContext(
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
       showAutoBuyBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY),
+      showPartialTakeProfitBanner: strategy.isAutomationFeatureEnabled(
+        AutomationFeatures.PARTIAL_TAKE_PROFIT,
+      ),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
       currentTriggers: {

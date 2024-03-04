@@ -298,19 +298,16 @@ export const hasActiveAutoSell = ({
 export const hasActivePartialTakeProfit = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
-  // TODO: add this logic, currently just for debugging
-  return false
-
-  // const protocol = context.strategyConfig.protocol
-  // const {  } = context.currentTriggers.triggers
-  // switch (protocol) {
-  //   case LendingProtocol.AaveV3:
-  //     return isAnyValueDefined(aaveBasicSell)
-  //   case LendingProtocol.SparkV3:
-  //     return false
-  //   case LendingProtocol.AaveV2:
-  //     return false
-  // }
+  const protocol = context.strategyConfig.protocol
+  const { aavePartialTakeProfit, sparkPartialTakeProfit } = context.currentTriggers.triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(aavePartialTakeProfit)
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(sparkPartialTakeProfit)
+    case LendingProtocol.AaveV2:
+      return false
+  }
 }
 
 function mapPositionToAutoBuyPosition({

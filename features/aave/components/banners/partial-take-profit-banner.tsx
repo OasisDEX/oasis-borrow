@@ -1,10 +1,8 @@
 import { Banner } from 'components/Banner'
 import { bannerGradientPresets } from 'components/Banner.constants'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function PartialTakeProfitBanner({ buttonClicked }: { buttonClicked: () => void }) {
-  const { t } = useTranslation()
   // TODO: add translations
   return (
     <Banner

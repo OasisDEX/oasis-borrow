@@ -272,6 +272,8 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
           strategyConfig={strategyConfig}
           aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
           aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
+          errors={errors}
+          warnings={warnings}
         />
       ),
       preparedRemove: sidebarRemoveTriggerContent,

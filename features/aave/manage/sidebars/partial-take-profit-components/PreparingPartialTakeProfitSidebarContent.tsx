@@ -7,7 +7,10 @@ import { Icon } from 'components/Icon'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { lambdaLtvValueDenomination } from 'features/aave/constants'
+import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import type { IStrategyConfig } from 'features/aave/types'
@@ -15,6 +18,7 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { nbsp } from 'helpers/nbsp'
+import type { TriggersApiError, TriggersApiWarning } from 'helpers/triggers'
 import { hundred } from 'helpers/zero'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -25,6 +29,8 @@ type PreparingPartialTakeProfitSidebarContentProps = {
   strategyConfig: IStrategyConfig
   aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
   aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
 }
 
 const profitRangeItem = [
@@ -49,6 +55,8 @@ export const PreparingPartialTakeProfitSidebarContent = ({
   strategyConfig,
   aaveLikePartialTakeProfitParams,
   aaveLikePartialTakeProfitLambdaData,
+  errors,
+  warnings,
 }: PreparingPartialTakeProfitSidebarContentProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const {
@@ -72,8 +80,12 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     currentLtv,
   } = aaveLikePartialTakeProfitParams
 
-  const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel } =
-    aaveLikePartialTakeProfitLambdaData
+  const {
+    hasStopLoss,
+    stopLossLevelLabel,
+    trailingStopLossDistanceLabel,
+    startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
+  } = aaveLikePartialTakeProfitLambdaData
 
   const inputMask = useMemo(() => {
     return createNumberMask({
@@ -114,8 +126,12 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     return triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry)
   }, [triggerLtv, withdrawalLtv, withdrawalLtvSliderConfig.maxBoundry])
   const startingTakeProfitPriceTooLow = useMemo(() => {
+    if (lambdaStartingTakeProfitPrice) {
+      // price can fall after setting a starting take profit price
+      return false
+    }
     return startingTakeProfitPrice.lt(positionPriceRatio)
-  }, [positionPriceRatio, startingTakeProfitPrice])
+  }, [positionPriceRatio, startingTakeProfitPrice, lambdaStartingTakeProfitPrice])
   return (
     <Grid
       gap={3}
@@ -425,6 +441,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             },
           }}
         />
+        <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 2 }}>
             <Icon icon={question_o} size={16} color="interactive100" sx={{ mr: 1 }} />
@@ -450,6 +467,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           </Flex>
         </Flex>
       </Box>
+      <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Partial-Take-Profit" />
       <MessageCard
         withBullet={false}
         type="error"
