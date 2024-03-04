@@ -510,7 +510,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           leftBoundry={new BigNumber(30)}
           rightBoundry={new BigNumber(60)}
           onChange={(x) => {
-            console.log('x', x)
+            console.info('x', x)
           }}
           useRcSlider
         />
