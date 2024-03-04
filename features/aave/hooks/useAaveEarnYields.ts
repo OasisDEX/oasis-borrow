@@ -19,6 +19,7 @@ export function useAaveEarnYields(
 
   useEffect(() => {
     // Timeout added to debounce user input
+    setYields(undefined)
     const timout = setTimeout(() => {
       if (!riskRatio) return
       aaveEarnYieldsQuery(riskRatio, yieldFields)
@@ -26,12 +27,14 @@ export function useAaveEarnYields(
           setYields(yieldsResponse)
         })
         .catch((e) => {
+          setYields(undefined)
+
           console.error('unable to get yields', e)
         })
     }, 400)
 
     return () => clearTimeout(timout)
-  }, [aaveEarnYieldsQuery, riskRatio, yieldFields])
+  }, [riskRatio?.loanToValue.toString()])
 
   return yields
 }

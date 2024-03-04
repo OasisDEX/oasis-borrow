@@ -23,7 +23,7 @@ import React, { useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 export function mapSimulation(simulation?: Simulation): string[] {
-  if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
+  if (!simulation) return ['-', '-']
   return [
     `${formatCryptoBalance(simulation.earningAfterFees)} ${simulation.token}`,
     `${formatCryptoBalance(simulation.netValue)} ${simulation.token}`,

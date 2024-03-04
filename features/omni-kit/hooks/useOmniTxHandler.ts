@@ -72,6 +72,7 @@ export function useOmniTxHandler<CustomState>({
       setIsLoadingSimulation(false)
       setGasEstimation(undefined)
     } else {
+      setGasEstimation(undefined)
       setIsLoadingSimulation(true)
     }
   }, [state, isFormEmpty, slippage, customState])

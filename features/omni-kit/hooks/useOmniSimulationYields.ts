@@ -1,9 +1,10 @@
 import type BigNumber from 'bignumber.js'
 import type { CalculateSimulationResult } from 'features/aave/open/services'
 import { calculateSimulation } from 'features/aave/open/services'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { AaveLikeYieldsResponse } from 'lendingProtocols/aave-like-common'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
 type useSimulationYieldsParams = {
   amount?: BigNumber
@@ -21,23 +22,34 @@ export function useOmniSimulationYields({
   const {
     environment: { gasEstimation, quotePrice },
   } = useOmniGeneralContext()
-  const [simulations, setSimulations] = useState<SimulationYields>()
+  const {
+    form: {
+      state: { depositAmount },
+    },
+    position: { isSimulationLoading },
+  } = useOmniProductContext(OmniProductType.Multiply)
   const yields = getYields()
 
   const fees = gasEstimation?.usdValue.div(quotePrice)
 
-  useEffect(() => {
+  const simulations = useMemo(() => {
     if (yields && amount) {
-      setSimulations({
+      return {
         ...calculateSimulation({
           amount,
           token,
           yields,
-          fees: gasEstimation?.usdValue.div(quotePrice),
+          fees, // here we allow fees to be 0 so initial simulation works
         }),
         yields,
-      })
+      }
     }
+    return undefined
   }, [fees?.toString(), amount?.toString(), token, yields])
+
+  if ((depositAmount && fees?.isZero()) || isSimulationLoading) {
+    return undefined
+  }
+
   return simulations
 }
