@@ -135,7 +135,7 @@ export const OmniProductController = <Auction, History, Position>({
 
   const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
 
-  // Flag to determining whether full yield-loop UI experience is available for given protocol & pair
+  // Flag to determine whether full yield-loop UI experience is available for given protocol & pair
   const isYieldLoopWithData = !!settings.yieldLoopPairsWithData?.[networkId]?.includes(
     `${collateralToken}-${quoteToken}`,
   )
