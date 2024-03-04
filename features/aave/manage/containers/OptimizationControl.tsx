@@ -85,13 +85,14 @@ export function OptimizationControl({
   )
 
   // maps the lambda data
-  const partialTakeProfitLambdaData = mapPartialTakeProfitFromLambda(
+  const aaveLikePartialTakeProfitLambdaData = mapPartialTakeProfitFromLambda(
+    state.context.strategyConfig,
     triggersState.context.currentTriggers.triggers,
   )
   // calculates the partial take profit params + stores user inputs
   const aaveLikePartialTakeProfitParams = getAaveLikePartialTakeProfitParams.manage({
     state,
-    partialTakeProfitLambdaData,
+    aaveLikePartialTakeProfitLambdaData,
   })
 
   const autoBuyDetailsLayoutProps = getAutoBuyDetailsLayoutProps(
@@ -148,6 +149,7 @@ export function OptimizationControl({
             send={send}
             dropdown={dropdown}
             aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
+            aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
           />
         )}
       </Grid>

@@ -6,6 +6,8 @@ import { FormatPercentWithSmallPercentCharacter } from 'components/FormatPercent
 import { Icon } from 'components/Icon'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { MessageCard } from 'components/MessageCard'
+import { SidebarAccordion } from 'components/SidebarAccordion'
+import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import type { IStrategyConfig } from 'features/aave/types'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -20,6 +22,7 @@ import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
 type PreparingPartialTakeProfitSidebarContentProps = {
   strategyConfig: IStrategyConfig
   aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
+  aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
 }
 
 const profitRangeItem = [
@@ -43,6 +46,7 @@ const profitRangeItem = [
 export const PreparingPartialTakeProfitSidebarContent = ({
   strategyConfig,
   aaveLikePartialTakeProfitParams,
+  aaveLikePartialTakeProfitLambdaData,
 }: PreparingPartialTakeProfitSidebarContentProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const {
@@ -64,6 +68,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     setWithdrawalLtv,
     withdrawalLtvSliderConfig,
   } = aaveLikePartialTakeProfitParams
+
+  const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel } =
+    aaveLikePartialTakeProfitLambdaData
 
   const inputMask = useMemo(() => {
     return createNumberMask({
@@ -94,26 +101,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     setStartingTakeProfitPrice,
     startingTakeProfitPrice,
   ])
-
-  // useEffect(() => {
-  //   if (
-  //     triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry) &&
-  //     !withdrawalLtv.eq(withdrawalLtvSliderConfig.maxBoundry)
-  //   ) {
-  //     setWithdrawalLtv(withdrawalLtvSliderConfig.maxBoundry.minus(triggerLtv))
-  //   }
-  //   // this *is* supposed to be triggered only when withdrawalLtv changes
-  // }, [withdrawalLtv, withdrawalLtvSliderConfig.maxBoundry])
-
-  // useEffect(() => {
-  //   if (
-  //     triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry) &&
-  //     !withdrawalLtv.eq(withdrawalLtvSliderConfig.maxBoundry)
-  //   ) {
-  //     setTriggerLtv(triggerLtvSliderConfig.maxBoundry.minus(withdrawalLtv))
-  //   }
-  //   // this *is* supposed to be triggered only when triggerLtv changes
-  // }, [triggerLtv, withdrawalLtvSliderConfig.maxBoundry])
 
   const getTriggerLtvMultiple = useCallback((ltv: BigNumber) => {
     const riskRatio = new RiskRatio(ltv.div(hundred), RiskRatio.TYPE.LTV)
@@ -416,6 +403,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         </Flex>
       </Box>
       <MessageCard
+        withBullet={false}
         type="error"
         messages={[
           ltvTooHigh
@@ -424,16 +412,16 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         ].filter(Boolean)}
       />
       <Divider />
-      <Box sx={{ mb: 3 }}>
-        <Flex sx={{ flexDirection: 'row', alignItems: 'center', mb: 3 }}>
-          <Text variant="boldParagraph2">Configure Stop Loss Loan to Value</Text>
-          <Icon icon={question_o} size={16} color="neutral80" sx={{ ml: 1, mt: '3px' }} />
-        </Flex>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mb: 3 }}>
-          Your previously configured stop loss LTV will remain unchanged, unless edited below.
-        </Text>
+      <SidebarAccordion
+        title="Configure Stop Loss Loan to Value"
+        additionalDescriptionComponent={
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mb: 3 }}>
+            Your previously configured stop loss LTV will remain unchanged, unless edited below.
+          </Text>
+        }
+      >
         <SliderValuePicker
-          disabled={false}
+          disabled={!!hasStopLoss}
           step={0.01}
           leftBoundryFormatter={(x) => {
             if (x.isZero()) {
@@ -460,19 +448,29 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           }}
           useRcSlider
         />
-      </Box>
-      <Box>
-        <InfoSectionTable
-          title="Full realized profit range"
-          headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
-          rows={[...Array.from({ length: 13 }, () => profitRangeItem)]}
-          wrapperSx={{
-            gridGap: 1,
-          }}
-          defaultLimitItems={3}
-          expandItemsButtonLabel="See next 10 price triggers"
+        <MessageCard
+          sx={{ mt: 3 }}
+          type="ok"
+          withBullet={false}
+          messages={[
+            hasStopLoss
+              ? `You already have a stop loss set at ${
+                  stopLossLevelLabel || trailingStopLossDistanceLabel
+                }`
+              : '',
+          ].filter(Boolean)}
         />
-      </Box>
+      </SidebarAccordion>
+      <InfoSectionTable
+        title="Full realized profit range"
+        headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
+        rows={[...Array.from({ length: 13 }, () => profitRangeItem)]}
+        wrapperSx={{
+          gridGap: 1,
+        }}
+        defaultLimitItems={3}
+        expandItemsButtonLabel="See next 10 price triggers"
+      />
     </Grid>
   )
 }

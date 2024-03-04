@@ -2,8 +2,8 @@ import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSec
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import {
   hasActiveAutoSell,
-  hasActiveStopLoss,
-  hasActiveTrailingStopLoss,
+  hasActiveStopLossFromContext,
+  hasActiveTrailingStopLossFromContext,
   type TriggersAaveEvent,
   type triggersAaveStateMachine,
 } from 'features/aave/manage/state'
@@ -28,8 +28,8 @@ export function useProtectionSidebarDropdown(
   const isTrailingStopLossEnabledForStrategy = context.strategyConfig.isAutomationFeatureEnabled(
     AutomationFeatures.TRAILING_STOP_LOSS,
   )
-  const hasTrailingStopLoss = hasActiveTrailingStopLoss(state)
-  const hasStopLoss = hasActiveStopLoss(state)
+  const hasTrailingStopLoss = hasActiveTrailingStopLossFromContext(state)
+  const hasStopLoss = hasActiveStopLossFromContext(state)
 
   let items: SidebarSectionHeaderSelectItem[] = []
   const getStopLossView = () => {

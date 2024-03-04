@@ -8,6 +8,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { ActorRefFrom, StateFrom } from 'xstate'
 import { actions, createMachine } from 'xstate'
@@ -162,7 +163,44 @@ export const hasActiveProtection = ({
   }
 }
 
-export const hasActiveStopLoss = ({
+export const hasActiveStopLossFromTriggers = ({
+  triggers,
+  protocol,
+}: {
+  triggers: GetTriggersResponse['triggers']
+  protocol: AaveLikeLendingProtocol
+}) => {
+  const {
+    aaveStopLossToCollateral,
+    sparkStopLossToCollateral,
+    aaveStopLossToCollateralDMA,
+    aaveStopLossToDebtDMA,
+    sparkStopLossToCollateralDMA,
+    sparkStopLossToDebtDMA,
+    sparkStopLossToDebt,
+    aaveStopLossToDebt,
+  } = triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(
+        aaveStopLossToCollateral,
+        aaveStopLossToDebt,
+        aaveStopLossToCollateralDMA,
+        aaveStopLossToDebtDMA,
+      )
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(
+        sparkStopLossToCollateral,
+        sparkStopLossToDebt,
+        sparkStopLossToCollateralDMA,
+        sparkStopLossToDebtDMA,
+      )
+    case LendingProtocol.AaveV2:
+      return false
+  }
+}
+
+export const hasActiveStopLossFromContext = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
@@ -196,7 +234,25 @@ export const hasActiveStopLoss = ({
   }
 }
 
-export const hasActiveTrailingStopLoss = ({
+export const hasActiveTrailingStopLossFromTriggers = ({
+  triggers,
+  protocol,
+}: {
+  triggers: GetTriggersResponse['triggers']
+  protocol: AaveLikeLendingProtocol
+}) => {
+  const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(aaveTrailingStopLossDMA)
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(sparkTrailingStopLossDMA)
+    case LendingProtocol.AaveV2:
+      return false
+  }
+}
+
+export const hasActiveTrailingStopLossFromContext = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol

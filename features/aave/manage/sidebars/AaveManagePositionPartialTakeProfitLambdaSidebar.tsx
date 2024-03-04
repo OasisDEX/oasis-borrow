@@ -1,6 +1,7 @@
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ConnectedSidebarSection } from 'features/aave/components'
+import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import { PreparingPartialTakeProfitSidebarContent } from 'features/aave/manage/sidebars/partial-take-profit-components/PreparingPartialTakeProfitSidebarContent'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
@@ -34,9 +35,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   send,
   dropdown,
   aaveLikePartialTakeProfitParams,
+  aaveLikePartialTakeProfitLambdaData,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
   aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
+  aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
 }) {
   const { t } = useTranslation()
   // const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
@@ -75,13 +78,6 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   //   }, refreshDataTime)
   // }
   // }, [refreshingTriggerData])
-
-  const sidebarPreparingContent: SidebarSectionProps['content'] = (
-    <PreparingPartialTakeProfitSidebarContent
-      strategyConfig={strategyConfig}
-      aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
-    />
-  )
 
   const sidebarPreparedContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
     <Grid gap={3}>sidebarPreparedContent</Grid>
@@ -215,7 +211,13 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     title: t('system.partial-take-profit'),
     dropdown,
     content: {
-      prepare: sidebarPreparingContent,
+      prepare: (
+        <PreparingPartialTakeProfitSidebarContent
+          strategyConfig={strategyConfig}
+          aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
+          aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
+        />
+      ),
       preparedAdd: sidebarPreparedContent,
       preparedUpdate: sidebarPreparedContent,
       preparedRemove: sidebarRemoveTriggerContent,

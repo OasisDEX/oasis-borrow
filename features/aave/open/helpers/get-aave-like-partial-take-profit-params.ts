@@ -28,7 +28,7 @@ type PTPSliderConfig = {
   step: number
 }
 export type AaveLikePartialTakeProfitParams = Pick<ManageAaveStateProps, 'state'> & {
-  partialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
+  aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
 }
 
 export type AaveLikePartialTakeProfitParamsResult = {
