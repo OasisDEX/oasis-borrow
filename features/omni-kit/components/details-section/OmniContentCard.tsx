@@ -9,7 +9,7 @@ import type { IconProps } from 'components/Icon.types'
 import { StatefulTooltip } from 'components/Tooltip'
 import { useTranslation } from 'next-i18next'
 import React, { type ReactNode } from 'react'
-import type { Theme, ThemeUIStyleObject } from 'theme-ui'
+import type { Theme } from 'theme-ui'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export interface OmniContentCardTranslation {
@@ -33,8 +33,6 @@ export interface OmniContentCardExtra {
   asFooter?: boolean
   changeVariant?: ChangeVariantType
   customValueColor?: string
-  customBackground?: string
-  customUnitStyle?: ThemeUIStyleObject
   extra?: ReactNode
   icon?: IconProps['icon']
   iconColor?: string
@@ -70,8 +68,6 @@ export function OmniContentCard({
   change,
   changeVariant,
   customValueColor,
-  customBackground,
-  customUnitStyle,
   extra,
   footnote,
   icon,
@@ -147,8 +143,6 @@ export function OmniContentCard({
       </>
     ),
     customValueColor,
-    customBackground,
-    customUnitStyle,
     valueTooltip: valueTooltip,
     unit,
     change: {
