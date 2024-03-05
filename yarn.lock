@@ -2390,10 +2390,10 @@
   resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.47.tgz#ff161ffb95768b8cda21ccea0d7fae790bf71883"
   integrity sha512-po36JPWODgqGorh6d9EgfMf+psDPko8b2wwLj0P3eYmUskexCvnsblLe3p2K0qjxK/3JiVl3BY3wMUkGD49zjQ==
 
-"@oasisdex/automation@1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.1.tgz#173dd9aa370f8285599c57a50122335a8480495e"
-  integrity sha512-pmhM2cJ2LrCeugcw/c3vqpsXA9Ygls8oh83IsQHHjdTTw5eUBEHUihtmJHPs10R9EeShIOZzhBPnRMGKpyfvKw==
+"@oasisdex/automation@1.6.4-alpha.2":
+  version "1.6.4-alpha.2"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.4-alpha.2.tgz#126ced26a991483b400d71bd42e6191634231786"
+  integrity sha512-FbOUQAjn4Cr9Q0giCXrxiwiIZ8kh3dJW5uG4oR7VJW+GNA8x1HdJdMcKaTD3uROzMZg1M2UnCaprZY9bfSxXeg==
   dependencies:
     ethers "^5.6.2"
 

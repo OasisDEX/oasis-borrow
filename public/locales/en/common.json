@@ -494,6 +494,13 @@
     "increase-multiple": "Increase multiple",
     "decrease-multiple": "Decrease multiple",
     "sl-level": "Stop-Loss LTV",
+    "max-coverage": "Max coverage",
+    "execution-ltv": "Execution LTV",
+    "target-ltv": "Target LTV",
+    "trailing-distance": "Trailing distance",
+    "execution-price": "Execution price",
+    "min-sell-price": "Minimum sell price",
+    "max-buy-price": "Maximum buy price",
     "swaped": "Swapped",
     "migrated-from-protocol": "Migrated from {{protocol}} into Summer.Fi!",
     "automation": {
@@ -514,7 +521,10 @@
       "basic-buy-executed": "Auto buy executed",
       "basic-sell-added": "Auto sell added",
       "basic-sell-removed": "Auto sell removed",
-      "basic-sell-executed": "Auto sell executed"
+      "basic-sell-executed": "Auto sell executed",
+      "partial-take-profit-added": "Partial take profit added",
+      "partial-take-profit-removed": "Partial take profit removed",
+      "partial-take-profit-executed": "Partial take profit executed"
     }
   },
   "triggers": {
