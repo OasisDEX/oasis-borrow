@@ -1,5 +1,4 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
-import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { SimulateTitle } from 'components/SimulateTitle'
 import { OmniStaticBoundary } from 'features/omni-kit/components/sidebars'
@@ -28,7 +27,6 @@ import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -48,7 +46,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isYieldLoopWithData,
       isOpening,
       quoteToken,
-      network,
       priceFormat,
     },
     steps: { currentStep },
@@ -80,14 +77,9 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         | undefined
       const resolvedSimulation = simulation || cachedSimulation
 
-      const { headlineDetails, isLoading: isHeadlineDetailsLoading } =
-        isYieldLoopWithData && isOpening
-          ? useAaveLikeHeadlineDetails({
-              maxRiskRatio: position.maxRiskRatio,
-              protocol: protocol as AaveLikeLendingProtocol,
-              network: network.name,
-            })
-          : { headlineDetails: [], isLoading: false }
+      const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useAaveLikeHeadlineDetails({
+        maxRiskRatio: position.maxRiskRatio,
+      })
 
       return {
         notifications,
@@ -117,7 +109,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           debtMin: zero,
           debtMax: position.debtAvailable(),
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
-          afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
+          afterAvailableToBorrow: simulation && simulation.debtAvailable(),
           afterPositionDebt: resolvedSimulation?.debtAmount,
           withdrawMax: position.collateralAvailable,
           paybackMax: getOmniBorrowPaybackMax({
