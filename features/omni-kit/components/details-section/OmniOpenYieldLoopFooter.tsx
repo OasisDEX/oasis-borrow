@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import {
   OmniContentCard,
   useOmniCardDataApy,
@@ -8,6 +7,7 @@ import {
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
+import { hundred } from 'helpers/zero'
 import type { AaveLikeYieldsResponse } from 'lendingProtocols/aave-like-common'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
@@ -27,7 +27,7 @@ export const OmniOpenYieldLoopFooter: FC<AaveLikeContentFooterYieldLoopProps> = 
     },
   } = useOmniProductContext(OmniProductType.Multiply)
 
-  const amount = useMemo(() => depositAmount || new BigNumber(100), [depositAmount])
+  const amount = useMemo(() => depositAmount || hundred, [depositAmount])
 
   const simulations = useOmniSimulationYields({
     amount,
