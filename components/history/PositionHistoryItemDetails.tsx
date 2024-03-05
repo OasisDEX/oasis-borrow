@@ -64,7 +64,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
     value: string,
     historyEvent:
       | Partial<AjnaHistoryEvent>
-      | Partial<AaveHistoryEvent>
+      | Partial<AaveLikeHistoryEvent>
       | Partial<MorphoHistoryEvent>
       | Partial<PositionHistoryEvent>,
   ) => {
