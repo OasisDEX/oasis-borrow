@@ -122,6 +122,7 @@ enum AutomationType {
   'BasicBuy' = 'BasicBuy',
   'BasicSell' = 'BasicSell',
   'TrailingStopLoss' = 'TrailingStopLoss',
+  'PartialTakeProfit' = 'PartialTakeProfit',
 }
 function handleAutomationKinds(
   kind: string,
@@ -142,6 +143,8 @@ function handleAutomationKinds(
     return handleBasicSellLabel(automationAction, t)
   } else if (automationType.includes(AutomationType.TrailingStopLoss)) {
     return handleTrailingStopLossLabel(automationAction, t)
+  } else if (automationType.includes(AutomationType.PartialTakeProfit)) {
+    return handlePartialTakeProfitLabel(automationAction, t)
   }
   console.warn('Automation type not found')
   return undefined
@@ -219,6 +222,17 @@ function handleBasicSellLabel(automationAction: string, t: TranslationType) {
     return t('position-history.automation.basic-sell-executed')
   } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.basic-sell-removed')
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
+function handlePartialTakeProfitLabel(automationAction: string, t: TranslationType) {
+  if (automationAction.includes(AutomationAction.Added)) {
+    return t('position-history.automation.partial-take-profit-added')
+  } else if (automationAction.includes(AutomationAction.Executed)) {
+    return t('position-history.automation.partial-take-profit-executed')
+  } else if (automationAction.includes(AutomationAction.Removed)) {
+    return t('position-history.automation.partial-take-profit-removed')
   }
   console.warn('Automation type not found')
   return undefined
