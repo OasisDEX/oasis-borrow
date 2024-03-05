@@ -7,7 +7,7 @@ import { Box, Flex, Text } from 'theme-ui'
 
 interface SidebarAccordionProps {
   openByDefault?: boolean
-  title: string
+  title: ReactNode
   openTitle?: string
   afterTitleComponent?: ReactNode
   additionalDescriptionComponent?: ReactNode

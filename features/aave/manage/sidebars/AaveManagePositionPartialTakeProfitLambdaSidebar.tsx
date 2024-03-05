@@ -75,8 +75,13 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   )
   const [transactionStep, setTransactionStep] = useState<PartialTakeProfitSidebarStates>('prepare')
   const { strategyConfig } = state.context
-  const { triggerLtv, withdrawalLtv, startingTakeProfitPrice, partialTakeProfitToken } =
-    aaveLikePartialTakeProfitParams
+  const {
+    triggerLtv,
+    withdrawalLtv,
+    startingTakeProfitPrice,
+    partialTakeProfitToken,
+    partialTakeProfitProfits,
+  } = aaveLikePartialTakeProfitParams
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
     if (transactionStep === 'preparedRemove') {
@@ -272,8 +277,10 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
           strategyConfig={strategyConfig}
           aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
           aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
+          isGettingPartialTakeProfitTx={isGettingPartialTakeProfitTx}
           errors={errors}
           warnings={warnings}
+          profits={partialTakeProfitProfits}
         />
       ),
       preparedRemove: sidebarRemoveTriggerContent,

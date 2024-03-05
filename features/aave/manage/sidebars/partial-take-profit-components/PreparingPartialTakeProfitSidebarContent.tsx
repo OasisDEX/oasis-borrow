@@ -7,6 +7,7 @@ import { Icon } from 'components/Icon'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
+import { StatefulTooltip } from 'components/Tooltip'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { lambdaLtvValueDenomination } from 'features/aave/constants'
@@ -18,7 +19,11 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { nbsp } from 'helpers/nbsp'
-import type { TriggersApiError, TriggersApiWarning } from 'helpers/triggers'
+import type {
+  ProfitsSimulationMapped,
+  TriggersApiError,
+  TriggersApiWarning,
+} from 'helpers/triggers'
 import { hundred } from 'helpers/zero'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -31,25 +36,9 @@ type PreparingPartialTakeProfitSidebarContentProps = {
   aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
+  profits?: ProfitsSimulationMapped[]
+  isGettingPartialTakeProfitTx: boolean
 }
-
-const profitRangeItem = [
-  '4,100 ETH/USD',
-  <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-    <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
-      531 ETH
-    </Text>
-  </Flex>,
-  <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-    <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
-      531 ETH
-    </Text>
-    <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
-      782,321 USDC
-    </Text>
-  </Flex>,
-  '2,332 ETH/USD',
-]
 
 export const PreparingPartialTakeProfitSidebarContent = ({
   strategyConfig,
@@ -57,6 +46,8 @@ export const PreparingPartialTakeProfitSidebarContent = ({
   aaveLikePartialTakeProfitLambdaData,
   errors,
   warnings,
+  profits,
+  isGettingPartialTakeProfitTx,
 }: PreparingPartialTakeProfitSidebarContentProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const {
@@ -132,6 +123,62 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     }
     return startingTakeProfitPrice.lt(positionPriceRatio)
   }, [positionPriceRatio, startingTakeProfitPrice, lambdaStartingTakeProfitPrice])
+  const parsedProfits = useMemo(() => {
+    return profits
+      ? profits.map((profit) => {
+          const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
+          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
+          const secondaryToSelectedToken =
+            strategyConfig.tokens[partialTakeProfitToken === 'debt' ? 'collateral' : 'debt']
+          const realizedProfitValue = isSelectedTokenDebt
+            ? profit.realizedProfitInDebt
+            : profit.realizedProfitInCollateral
+          const totalProfitValue = isSelectedTokenDebt
+            ? profit.totalProfitInDebt
+            : profit.totalProfitInCollateral
+          const totalProfitSecondValue = isSelectedTokenDebt
+            ? profit.totalProfitInCollateral
+            : profit.totalProfitInDebt
+          return [
+            // Trigger price
+            `${formatAmount(profit.triggerPrice, selectedTokenSymbol)} ${priceFormat}`,
+            // Realized profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  realizedProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+            </Flex>,
+            // Total profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  totalProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
+                {`${formatAmount(
+                  totalProfitSecondValue.balance,
+                  secondaryToSelectedToken,
+                )} ${secondaryToSelectedToken}`}
+              </Text>
+            </Flex>,
+            // Stop loss
+            `${formatAmount(profit.stopLossDynamicPrice, selectedTokenSymbol)} ${priceFormat}`,
+          ]
+        })
+      : []
+  }, [
+    partialTakeProfitToken,
+    partialTakeProfitTokenData.symbol,
+    priceFormat,
+    profits,
+    strategyConfig.tokens,
+  ])
+
   return (
     <Grid
       gap={3}
@@ -201,6 +248,29 @@ export const PreparingPartialTakeProfitSidebarContent = ({
       >
         <Text variant="boldParagraph3" color="neutral80">
           Set minimum starting take profit price
+          <StatefulTooltip
+            tooltip={
+              <Text variant="paragraph4">
+                The first and lowest price in which you will begin to realize profits. The amount of
+                profit you will realize at this price is determined by your Withdrawal Step, it is
+                possible it will be triggered at its own LTV, distinct from your “Trigger LTV”. This
+                minimum starting price is subject to change if you make changes to your position
+                after setting it.
+              </Text>
+            }
+            containerSx={{ display: 'inline' }}
+            inline
+            tooltipSx={{ maxWidth: '350px' }}
+          >
+            <Icon
+              color={'neutral80'}
+              icon={question_o}
+              size="auto"
+              width="14px"
+              height="14px"
+              sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+            />
+          </StatefulTooltip>
         </Text>
         <Box
           sx={{
@@ -301,6 +371,27 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               <Flex sx={{ flexDirection: 'column' }}>
                 <Text variant="paragraph3" sx={{ mb: 2 }}>
                   Trigger LTV
+                  <StatefulTooltip
+                    tooltip={
+                      <Text variant="paragraph4">
+                        The LTV that once reached, it will trigger a realization of collateral or
+                        debt to your wallet. It is recurring and will have dynamic trigger prices
+                        that are relative to it.
+                      </Text>
+                    }
+                    containerSx={{ display: 'inline', zIndex: 10, position: 'relative' }}
+                    inline
+                    tooltipSx={{ width: '350px' }}
+                  >
+                    <Icon
+                      color={'neutral80'}
+                      icon={question_o}
+                      size="auto"
+                      width="14px"
+                      height="14px"
+                      sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+                    />
+                  </StatefulTooltip>
                 </Text>
                 <Text variant="paragraph2">
                   <FormatPercentWithSmallPercentCharacter
@@ -309,12 +400,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                   <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
                     {getTriggerLtvMultiple(x)}
                   </Text>
-                  <Icon
-                    icon={question_o}
-                    size={16}
-                    color="neutral80"
-                    sx={{ position: 'relative', top: 1, ml: 2 }}
-                  />
                 </Text>
               </Flex>
             )
@@ -343,7 +428,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         />
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 2 }}>
-            <Icon icon={question_o} size={16} color="interactive100" sx={{ mr: 1 }} />
             <Text
               variant="paragraph4"
               sx={{ fontWeight: '500', color: 'interactive100', lineHeight: 1.2 }}
@@ -358,7 +442,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             >
               Profit at lower price
             </Text>
-            <Icon icon={question_o} size={16} color="interactive100" sx={{ ml: 1 }} />
           </Flex>
         </Flex>
       </Box>
@@ -377,6 +460,29 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               <Flex sx={{ flexDirection: 'column' }}>
                 <Text variant="paragraph3" sx={{ mb: 2 }}>
                   LTV Withdrawal Step
+                  <StatefulTooltip
+                    tooltip={
+                      <Text variant="paragraph4">
+                        The chosen distance between your Trigger LTV and LTV after execution (The
+                        LTV your position will be at after collateral has been withdrawn). Your
+                        withdrawal step amount is 5% by default, but customizable. The larger the
+                        step the more profit you will realize, the smaller the step the less profit
+                        you realize.
+                      </Text>
+                    }
+                    containerSx={{ display: 'inline', zIndex: 10, position: 'relative' }}
+                    inline
+                    tooltipSx={{ width: '350px' }}
+                  >
+                    <Icon
+                      color={'neutral80'}
+                      icon={question_o}
+                      size="auto"
+                      width="14px"
+                      height="14px"
+                      sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+                    />
+                  </StatefulTooltip>
                 </Text>
                 <Text variant="paragraph2">
                   <FormatPercentWithSmallPercentCharacter
@@ -385,12 +491,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                   <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
                     step amount
                   </Text>
-                  <Icon
-                    icon={question_o}
-                    size={16}
-                    color="neutral80"
-                    sx={{ position: 'relative', top: 1, ml: 2 }}
-                  />
                 </Text>
               </Flex>
             )
@@ -444,7 +544,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 2 }}>
-            <Icon icon={question_o} size={16} color="interactive100" sx={{ mr: 1 }} />
             <Text
               variant="paragraph4"
               sx={{ fontWeight: '500', color: 'interactive100', lineHeight: 1.2 }}
@@ -463,7 +562,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               <br />
               less often
             </Text>
-            <Icon icon={question_o} size={16} color="interactive100" sx={{ ml: 1 }} />
           </Flex>
         </Flex>
       </Box>
@@ -479,7 +577,32 @@ export const PreparingPartialTakeProfitSidebarContent = ({
       />
       <Divider />
       <SidebarAccordion
-        title="Configure Stop Loss Loan to Value"
+        title={
+          <>
+            Configure Stop Loss Loan to Value
+            <StatefulTooltip
+              tooltip={
+                <Text variant="paragraph4">
+                  Your Stop Loss Loan to Value is the specific debt to collateral ratio at which you
+                  have specified you want to be stopped out and have your position closed. If you
+                  have already setup a stop loss LTV, you can keep it the same or change it.
+                </Text>
+              }
+              containerSx={{ display: 'inline' }}
+              inline
+              tooltipSx={{ maxWidth: '350px' }}
+            >
+              <Icon
+                color={'neutral80'}
+                icon={question_o}
+                size="auto"
+                width="14px"
+                height="14px"
+                sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+              />
+            </StatefulTooltip>
+          </>
+        }
         additionalDescriptionComponent={
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mb: 3 }}>
             Your previously configured stop loss LTV will remain unchanged, unless edited below.
@@ -528,14 +651,49 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         />
       </SidebarAccordion>
       <InfoSectionTable
-        title="Full realized profit range"
+        withListPadding={false}
+        title={
+          <>
+            Full realized profit range
+            <StatefulTooltip
+              tooltip={
+                <Text variant="paragraph4">
+                  Your Auto Take Profit automation run continuously. The Realized Profit Range
+                  simulates and forecasts how your Auto Take Profit will perform and impact your
+                  Stop Loss based on different Trigger Prices. You can turn off Auto Take Profit at
+                  any time, if you feel satisfied at specific Trigger Price.
+                </Text>
+              }
+              containerSx={{ display: 'inline' }}
+              inline
+              tooltipSx={{ maxWidth: '350px' }}
+            >
+              <Icon
+                color={'neutral80'}
+                icon={question_o}
+                size="auto"
+                width="14px"
+                height="14px"
+                sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+              />
+            </StatefulTooltip>
+          </>
+        }
         headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
-        rows={[...Array.from({ length: 13 }, () => profitRangeItem)]}
+        rows={parsedProfits}
+        loading={isGettingPartialTakeProfitTx}
         wrapperSx={{
           gridGap: 1,
+          backgroundColor: 'transparent',
         }}
-        defaultLimitItems={3}
-        expandItemsButtonLabel="See next 10 price triggers"
+        defaultLimitItems={partialTakeProfitConfig.realizedProfitRangeVisible}
+        expandItemsButtonLabel={
+          parsedProfits.length
+            ? `See next ${
+                parsedProfits.length - partialTakeProfitConfig.realizedProfitRangeVisible
+              } price triggers`
+            : ''
+        }
       />
     </Grid>
   )

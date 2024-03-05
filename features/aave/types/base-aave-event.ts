@@ -15,7 +15,7 @@ import { AutomationAddTriggerData } from 'features/automation/common/txDefinitio
 import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
 import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
-import { TriggerTransaction } from "../../../helpers/triggers";
+import { ProfitsSimulationMapped, TriggerTransaction } from "../../../helpers/triggers";
 
 type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
@@ -24,6 +24,7 @@ type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
   | { type: 'SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA'; trailingStopLossTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA'; partialTakeProfitTxDataLambda: TriggerTransaction | undefined }
+  | { type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA'; partialTakeProfitProfits: ProfitsSimulationMapped[] | undefined }
   | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
 

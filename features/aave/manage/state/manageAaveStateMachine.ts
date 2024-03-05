@@ -651,6 +651,9 @@ export function createManageAaveStateMachine(
         SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA: {
           actions: 'updateContext',
         },
+        SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA: {
+          actions: 'updateContext',
+        },
         USE_SLIPPAGE: {
           target: ['background.debouncing'],
           actions: 'updateContext',

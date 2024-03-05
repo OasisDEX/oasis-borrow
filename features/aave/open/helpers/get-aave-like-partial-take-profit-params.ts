@@ -5,6 +5,7 @@ import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helper
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { StrategyType } from 'features/aave/types'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import type { ProfitsSimulationMapped } from 'helpers/triggers'
 import { hundred, one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import { useMemo, useState } from 'react'
@@ -15,7 +16,6 @@ const partialTakeProfitConfig = {
   defaultWithdrawalLtv: new BigNumber(5),
   ltvSliderStep: 0.1,
   ltvSliderMin: new BigNumber(1), // 1% for both Trigger LTV and Withdrawal LTV
-  realizedProfitRangeItems: 13,
   realizedProfitRangeVisible: 3,
 }
 
@@ -70,6 +70,7 @@ export type AaveLikePartialTakeProfitParamsResult = {
   setWithdrawalLtv: (ltv: BigNumber) => void
   withdrawalLtvSliderConfig: PTPSliderConfig
   partialTakeProfitConfig: typeof partialTakeProfitConfig
+  partialTakeProfitProfits: ProfitsSimulationMapped[] | undefined
 }
 
 const getTriggerLtvSliderConfig = ({
@@ -152,13 +153,16 @@ export const getAaveLikePartialTakeProfitParams = {
         PercentageOptionsType[number] | undefined
       >(0)
       const [triggerLtv, setTriggerLtv] = useState<BigNumber>(
-        new BigNumber(
-          currentLtv
-            .times(hundred)
-            .minus(partialTakeProfitConfig.defaultTriggelLtvOffset)
-            .div(partialTakeProfitConfig.ltvSliderStep)
-            .toFixed(0, BigNumber.ROUND_DOWN),
-        ).times(partialTakeProfitConfig.ltvSliderStep),
+        BigNumber.max(
+          one,
+          new BigNumber(
+            currentLtv
+              .times(hundred)
+              .minus(partialTakeProfitConfig.defaultTriggelLtvOffset)
+              .div(partialTakeProfitConfig.ltvSliderStep)
+              .toFixed(0, BigNumber.ROUND_DOWN),
+          ).times(partialTakeProfitConfig.ltvSliderStep),
+        ),
       )
       const [withdrawalLtv, setWithdrawalLtv] = useState<BigNumber>(
         partialTakeProfitConfig.defaultWithdrawalLtv,
@@ -222,6 +226,7 @@ export const getAaveLikePartialTakeProfitParams = {
         withdrawalLtv,
         setWithdrawalLtv,
         withdrawalLtvSliderConfig,
+        partialTakeProfitProfits: state.context.partialTakeProfitProfits,
       }
     },
   ),

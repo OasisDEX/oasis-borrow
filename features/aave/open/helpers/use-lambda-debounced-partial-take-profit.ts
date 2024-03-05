@@ -1,11 +1,14 @@
 import { getAddresses } from 'actions/aave-like/get-addresses'
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
+import { lambdaTokenValueDenomination } from 'features/aave/constants'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import type {
+  ProfitsSimulationBalanceRaw,
+  ProfitsSimulationMapped,
   SetupPartialTakeProfitResponse,
   TriggerAction,
   TriggersApiError,
@@ -16,6 +19,33 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 
 import { eth2weth } from '@oasisdex/utils/lib/src/utils'
+
+const mapProfits = (
+  simulation: SetupPartialTakeProfitResponse['simulation'],
+): ProfitsSimulationMapped[] => {
+  const parseProfitValue = (value: ProfitsSimulationBalanceRaw) => {
+    return {
+      balance: new BigNumber(value.balance).div(10 ** value.token.decimals),
+      token: value.token,
+    }
+  }
+  return simulation
+    ? simulation.profits.map((sim) => {
+        return {
+          triggerPrice: new BigNumber(sim.triggerPrice).div(lambdaTokenValueDenomination),
+          realizedProfitInCollateral: parseProfitValue(sim.realizedProfitInCollateral),
+          realizedProfitInDebt: parseProfitValue(sim.realizedProfitInDebt),
+          totalProfitInCollateral: parseProfitValue(sim.totalProfitInCollateral),
+          totalProfitInDebt: parseProfitValue(sim.totalProfitInDebt),
+          stopLossDynamicPrice: new BigNumber(sim.stopLossDynamicPrice).div(
+            lambdaTokenValueDenomination,
+          ),
+          fee: parseProfitValue(sim.fee),
+          totalFee: parseProfitValue(sim.totalFee),
+        }
+      })
+    : []
+}
 
 export const useLambdaDebouncedPartialTakeProfit = ({
   state,
@@ -45,6 +75,13 @@ export const useLambdaDebouncedPartialTakeProfit = ({
   const clearWarningsAndErrors = () => {
     setWarnings([])
     setErrors([])
+  }
+
+  const setProfits = (partialTakeProfitProfits: ProfitsSimulationMapped[] | undefined) => {
+    send({
+      type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA',
+      partialTakeProfitProfits,
+    })
   }
 
   useDebouncedEffect(
@@ -83,6 +120,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
           action,
         }),
       )
+      setProfits(undefined)
 
       setPartialTakeProfitTxCancelablePromise(partialTakeProfitTxDataPromise)
       partialTakeProfitTxDataPromise
@@ -96,6 +134,9 @@ export const useLambdaDebouncedPartialTakeProfit = ({
               },
             })
           }
+          if (res.simulation) {
+            setProfits(mapProfits(res.simulation))
+          }
           res.warnings && setWarnings(res.warnings)
           res.errors && setErrors(res.errors)
         })
@@ -108,6 +149,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
             type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA',
             partialTakeProfitTxDataLambda: undefined,
           })
+          setProfits(undefined)
         })
         .finally(() => {
           setIsGettingPartialTakeProfitTx(false)

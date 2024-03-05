@@ -2,6 +2,7 @@ import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSect
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { Icon } from 'components/Icon'
 import type { IconProps } from 'components/Icon.types'
+import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import { useTranslation } from 'next-i18next'
 import React, { type ReactNode } from 'react'
@@ -33,7 +34,9 @@ export interface OmniContentCardExtra {
   iconColor?: string
   iconPosition?: 'before' | 'after'
   isLoading?: boolean
+  isValueLoading?: boolean
   modal?: ReactNode
+  modalAsTooltip?: boolean
   tooltips?: {
     change?: ReactNode
     footnote?: ReactNode
@@ -69,6 +72,7 @@ export function OmniContentCard({
   iconPosition = 'before',
   isLoading,
   modal,
+  modalAsTooltip,
   title,
   tooltips: {
     change: changeTooltip,
@@ -79,6 +83,7 @@ export function OmniContentCard({
   customTooltipWidth,
   unit,
   value,
+  isValueLoading = false,
 }: OmniContentCardProps) {
   const { t } = useTranslation()
 
@@ -128,16 +133,18 @@ export function OmniContentCard({
 
   const contentCardSettings: ContentCardProps = {
     title: getContentCardValue(title, t),
-    value: (
+    value: !isValueLoading ? (
       <>
         {iconPosition === 'before' && valueIcon}
         {value && getContentCardValue(value, t)}
         {iconPosition === 'after' && valueIcon}
       </>
+    ) : (
+      <Skeleton width="150px" height="38px" sx={{ mt: '5px', borderRadius: 'mediumLarge' }} />
     ),
     customValueColor,
     valueTooltip: valueTooltip,
-    unit,
+    unit: isValueLoading ? '' : unit,
     change: {
       isLoading,
       value: change && change.map((item) => getContentCardValue(item, t)),
@@ -151,6 +158,7 @@ export function OmniContentCard({
     }),
     extra,
     modal,
+    modalAsTooltip,
     asFooter,
   }
 

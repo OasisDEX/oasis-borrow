@@ -1,10 +1,13 @@
+import { AppSpinner } from 'helpers/AppSpinner'
+import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Button, Grid, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 interface InfoSectionTableProps {
-  title?: string
+  title?: ReactNode
   withListPadding?: boolean
+  loading?: boolean
   headers?: string[]
   headersSx?: ThemeUIStyleObject
   rows?: (JSX.Element | string)[][]
@@ -22,6 +25,7 @@ export function InfoSectionTable({
   wrapperSx,
   defaultLimitItems = 'all',
   expandItemsButtonLabel,
+  loading = false,
 }: InfoSectionTableProps) {
   const [limitItems, setLimitItems] =
     useState<InfoSectionTableProps['defaultLimitItems']>(defaultLimitItems)
@@ -29,13 +33,22 @@ export function InfoSectionTable({
     <Grid
       as="ul"
       sx={{
+        position: 'relative',
         p: withListPadding ? 3 : 0,
         backgroundColor: 'neutral30',
         borderRadius: 'medium',
         listStyle: 'none',
+        opacity: loading ? 0.5 : 1,
         ...wrapperSx,
       }}
     >
+      {loading && (
+        <Flex
+          sx={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }}
+        >
+          <AppSpinner size={30} />
+        </Flex>
+      )}
       {title && (
         <Box as="li" sx={{ listStyle: 'none' }}>
           <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold', mb: 2 }}>
@@ -69,10 +82,10 @@ export function InfoSectionTable({
             <Grid
               as="li"
               key={`InfoSectionTable_${title}_${index}`}
-              columns={row.length}
+              columns={row?.length}
               sx={{ listStyle: 'none' }}
             >
-              {row.map((cell, cellIndex) =>
+              {row?.map((cell, cellIndex) =>
                 typeof cell === 'string' ? (
                   <Text
                     key={`InfoSectionTable_${title}_${index}_${cellIndex}`}

@@ -20,7 +20,7 @@ import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
-import { TriggerTransaction } from "../../../helpers/triggers";
+import { ProfitsSimulationMapped, TriggerTransaction } from "../../../helpers/triggers";
 import { MigrateAaveContext } from "../manage/state/migrateAaveStateMachine";
 
 export type UserInput = {
@@ -118,6 +118,7 @@ export interface BaseAaveContext {
   stopLossTxDataLambda?: TriggerTransaction
   trailingStopLossTxDataLambda?: TriggerTransaction
   partialTakeProfitTxDataLambda?: TriggerTransaction
+  partialTakeProfitProfits?: ProfitsSimulationMapped[] | undefined
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData

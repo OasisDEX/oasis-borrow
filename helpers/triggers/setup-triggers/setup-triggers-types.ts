@@ -158,11 +158,51 @@ export interface SetupAavePartialTakeProfitParams {
   action: TriggerAction
 }
 
+interface ProfitsSimulationToken {
+  decimals: number
+  symbol: string
+  address: string
+}
+
+export interface ProfitsSimulationBalanceRaw {
+  balance: string
+  token: ProfitsSimulationToken
+}
+
+interface ProfitsSimulationRaw {
+  triggerPrice: string
+  realizedProfitInCollateral: ProfitsSimulationBalanceRaw
+  realizedProfitInDebt: ProfitsSimulationBalanceRaw
+  totalProfitInCollateral: ProfitsSimulationBalanceRaw
+  totalProfitInDebt: ProfitsSimulationBalanceRaw
+  stopLossDynamicPrice: string
+  fee: ProfitsSimulationBalanceRaw
+  totalFee: ProfitsSimulationBalanceRaw
+}
+
+interface ProfitsSimulationBalanceMapped {
+  balance: BigNumber
+  token: ProfitsSimulationToken
+}
+
+export interface ProfitsSimulationMapped {
+  triggerPrice: BigNumber
+  realizedProfitInCollateral: ProfitsSimulationBalanceMapped
+  realizedProfitInDebt: ProfitsSimulationBalanceMapped
+  totalProfitInCollateral: ProfitsSimulationBalanceMapped
+  totalProfitInDebt: ProfitsSimulationBalanceMapped
+  stopLossDynamicPrice: BigNumber
+  fee: ProfitsSimulationBalanceMapped
+  totalFee: ProfitsSimulationBalanceMapped
+}
+
 export type SetupPartialTakeProfitResponse = {
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
   encodedTriggerData?: string
-  simulation?: unknown
+  simulation?: {
+    profits: ProfitsSimulationRaw[]
+  }
   transaction?: TriggerTransaction
 }
 

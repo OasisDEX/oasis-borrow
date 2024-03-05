@@ -47,6 +47,7 @@ export interface ContentCardProps {
   footnoteTooltip?: ReactNode
   link?: DetailsSectionContentCardLinkProps
   modal?: ReactNode
+  modalAsTooltip?: boolean
   title: string
   unit?: TranslateStringType
   value?: ReactNode
@@ -192,6 +193,7 @@ export function DetailsSectionContentCard({
   footnoteTooltip,
   link,
   modal,
+  modalAsTooltip,
   title,
   unit,
   value,
@@ -200,18 +202,19 @@ export function DetailsSectionContentCard({
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
   const modalHandler = () => {
-    if (modal) openModal(DetailsSectionContentCardModal, { children: <>{modal}</> })
+    if (modal && !modalAsTooltip)
+      openModal(DetailsSectionContentCardModal, { children: <>{modal}</> })
   }
   const hightlightableItemEvents = {
     onMouseEnter: () => setIsHighlighted(true),
     onMouseLeave: () => setIsHighlighted(false),
     onClick: modalHandler,
   }
-  let cardBackgroundColor = modal && isHighlighted ? 'neutral30' : 'neutral10'
+  let cardBackgroundColor = modal && !modalAsTooltip && isHighlighted ? 'neutral30' : 'neutral10'
   if (customBackground) {
     cardBackgroundColor = customBackground
   }
-  const cursorStyle = { cursor: modal ? 'pointer' : 'auto' }
+  const cursorStyle = { cursor: modal && !modalAsTooltip ? 'pointer' : 'auto' }
   const footnoteArray = Array.isArray(footnote) ? footnote : [footnote]
 
   return (
@@ -239,7 +242,7 @@ export function DetailsSectionContentCard({
         {...hightlightableItemEvents}
       >
         {title}
-        {modal && (
+        {modal && !modalAsTooltip && (
           <Icon
             color={isHighlighted ? 'primary100' : 'neutral80'}
             icon={question_o}
@@ -248,6 +251,23 @@ export function DetailsSectionContentCard({
             height="14px"
             sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
           />
+        )}
+        {modal && modalAsTooltip && (
+          <StatefulTooltip
+            tooltip={modal}
+            containerSx={{ display: 'inline' }}
+            inline
+            tooltipSx={{ maxWidth: '350px' }}
+          >
+            <Icon
+              color={isHighlighted ? 'primary100' : 'neutral80'}
+              icon={question_o}
+              size="auto"
+              width="14px"
+              height="14px"
+              sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+            />
+          </StatefulTooltip>
         )}
       </Text>
       <Text
