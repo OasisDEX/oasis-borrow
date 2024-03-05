@@ -61,11 +61,9 @@ interface CommonMetadataValues {
 interface CommonMetadataElements {
   faq: ReactNode
   overviewBanner?: ReactNode
-  overviewTitle?: ReactNode
   overviewContent: ReactNode
   overviewFooter: ReactNode
   riskSidebar?: ReactNode
-  sliderRightBoundary?: ReactNode
 }
 
 export type ShouldShowDynamicLtvMetadata = (params: { includeCache: boolean }) => boolean

@@ -1,8 +1,5 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { SimulateTitle } from 'components/SimulateTitle'
-import { OmniStaticBoundary } from 'features/omni-kit/components/sidebars'
-import { omniYieldLoopDefaultSimulationDeposit } from 'features/omni-kit/constants'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -138,17 +135,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             quoteToken,
             isOpening,
           }),
-          overviewTitle: isYieldLoopWithData && isOpening && (
-            <SimulateTitle
-              token={quoteToken}
-              depositAmount={
-                productContext.form.state.depositAmount || omniYieldLoopDefaultSimulationDeposit
-              }
-            />
-          ),
-          sliderRightBoundary: isYieldLoopWithData && (
-            <OmniStaticBoundary label={priceFormat} value={position.oraclePrice} />
-          ),
         },
         featureToggles,
       } as LendingMetadata

@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { Icon } from 'components/Icon'
 import { SkeletonLine } from 'components/Skeleton'
+import { OmniStaticBoundary } from 'features/omni-kit/components/sidebars/OmniStaticBoundary'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -23,7 +24,14 @@ interface OmniAdjustSliderProps {
 export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, isShort, productType },
+    environment: {
+      collateralToken,
+      quoteToken,
+      isShort,
+      productType,
+      isYieldLoopWithData,
+      priceFormat,
+    },
     steps: { currentStep },
   } = useOmniGeneralContext()
 
@@ -42,7 +50,6 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
     },
     dynamicMetadata: {
       values: { changeVariant, maxSliderAsMaxLtv, sliderRightLabel },
-      elements: { sliderRightBoundary },
     },
   } = useOmniProductContext(productType)
 
@@ -96,7 +103,9 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
           {depositChanged && isSimulationLoading ? (
             <SkeletonLine height="18px" sx={{ my: '5px' }} />
           ) : (
-            sliderRightBoundary || (
+            (isYieldLoopWithData && (
+              <OmniStaticBoundary label={priceFormat} value={position.marketPrice} />
+            )) || (
               <>
                 {formatDecimalAsPercent(ltv)}
                 {!ltv.eq(resolvedValue) && (
