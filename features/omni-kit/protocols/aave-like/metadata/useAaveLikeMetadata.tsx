@@ -121,8 +121,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
-          sliderRightLabel:
-            isYieldLoopWithData && t('open-earn.aave.vault-form.configure-multiple.current-price'),
         },
         elements: {
           faq: getAaveLikeFaq({ productType, isYieldLoopWithData, protocol }),

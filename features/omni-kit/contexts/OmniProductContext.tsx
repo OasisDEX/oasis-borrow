@@ -81,7 +81,6 @@ export type LendingMetadata = CommonMetadata & {
     paybackMax: BigNumber
     shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
     maxSliderAsMaxLtv?: boolean
-    sliderRightLabel?: string
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation?: ReactNode

@@ -49,7 +49,7 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
       isSimulationLoading,
     },
     dynamicMetadata: {
-      values: { changeVariant, maxSliderAsMaxLtv, sliderRightLabel },
+      values: { changeVariant, maxSliderAsMaxLtv },
     },
   } = useOmniProductContext(productType)
 
@@ -133,7 +133,9 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
       leftBottomLabel={t('slider.adjust-multiply.left-footer')}
       leftLabel={t('slider.adjust-multiply.left-label')}
       rightBottomLabel={t('slider.adjust-multiply.right-footer')}
-      rightLabel={sliderRightLabel || t('system.loan-to-value')}
+      rightLabel={
+        (isYieldLoopWithData && t('manage-vault.current-price')) || t('system.loan-to-value')
+      }
     />
   )
 }
