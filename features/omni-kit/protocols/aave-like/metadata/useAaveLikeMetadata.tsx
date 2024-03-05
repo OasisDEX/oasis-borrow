@@ -25,12 +25,10 @@ import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-lik
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
-  const { t } = useTranslation()
   const {
     environment: {
       collateralToken,
@@ -43,7 +41,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isYieldLoopWithData,
       isOpening,
       quoteToken,
-      priceFormat,
     },
     steps: { currentStep },
     tx: { txDetails },
