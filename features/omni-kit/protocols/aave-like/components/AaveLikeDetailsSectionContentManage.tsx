@@ -114,7 +114,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
     afterLiquidationRatio: afterLiquidationPrice,
     liquidationRatio: liquidationPrice,
     ratioToCurrentPrice,
-    ratioLink: EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY,
+    priceFormat,
     modal: (
       <OmniCardDataLiquidationRatioModal
         collateralToken={collateralToken}
