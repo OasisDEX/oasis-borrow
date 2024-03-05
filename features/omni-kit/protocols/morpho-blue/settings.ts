@@ -22,6 +22,8 @@ export const settings: OmniProtocolSettings = {
       'USDC',
       'USDT',
       'WBTC',
+      'EZETH',
+      'PYUSD'
     ],
   },
   steps: {
@@ -55,5 +57,7 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string }> = {
     'ETH-USDT': '0xdbffac82c2dc7e8aa781bd05746530b0068d80929f23ac1628580e27810bc0c5',
     'RETH-ETH': '0x3c83f77bde9541f8d3d82533b19bbc1f97eb2f1098bb991728acbfbede09cc5d',
     'EZETH-ETH': '0x49bb2d114be9041a787432952927f6f144f05ad3e83196a7d062f374ee11d0ee',
+    'WSTETH-PYUSD': '0x124ddf1fa02a94085d1fcc35c46c7e180ddb8a0d3ec1181cf67a75341501c9e6',
+    'WBTC-PYUSD': '0x9337a95dcb09d10abb33fdb955dd27b46e345f5510d54d9403f570f8f37b5983'
   },
 }
