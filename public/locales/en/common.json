@@ -2760,18 +2760,12 @@
         "title": "Liquidation Price",
         "footnote-below": "below current price",
         "footnote-above": "above current price",
-        "modal-description": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+        "modal-description": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt.",
         "modal-footnote-title": "Liquidation Penalty",
         "modal-footnote-description": "The Liquidation Penalty is the % that will be added to the debt as a penalty in case of liquidation.",
-        "modal-footnote-below": "This is {{ratioToCurrentPrice}} below current price",
-        "modal-footnote-above": "This is {{ratioToCurrentPrice}} above current price"
-      },
-      "liquidation-ratio": {
-        "title": "Liquidation Price Ratio",
-        "footnote-below": "below current price",
-        "footnote-above": "above current price",
-        "modal-description": "The liquidation price ratio indicates to what price ratio {{collateralToken}} needs to drop in comparison to {{quoteToken}} in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0>",
-        "modal-footnote-description": "You can adjust your risk by using the adjust risk functionality."
+        "modal-footnote-below": "This is {{ratioToCurrentPrice}} below current price.",
+        "modal-footnote-above": "This is {{ratioToCurrentPrice}} above current price.",
+        "modal-footnote-price-history": "You can find the history of the price here: <0>Price history</0>."
       },
       "ltv": {
         "title": "Loan to Value",

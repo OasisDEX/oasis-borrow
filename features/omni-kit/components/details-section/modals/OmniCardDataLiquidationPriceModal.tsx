@@ -1,9 +1,10 @@
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
+import { AppLink } from 'components/Links'
 import type { OmniContentCardDataWithTheme } from 'features/omni-kit/components/details-section'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading, Text } from 'theme-ui'
 
@@ -12,6 +13,7 @@ interface OmniCardDataLiquidationPriceModalProps extends OmniContentCardDataWith
   liquidationPrice: BigNumber
   priceFormat: string
   ratioToCurrentPrice: BigNumber
+  priceHistory?: string
 }
 
 export function OmniCardDataLiquidationPriceModal({
@@ -20,6 +22,7 @@ export function OmniCardDataLiquidationPriceModal({
   priceFormat,
   ratioToCurrentPrice,
   theme,
+  priceHistory,
 }: OmniCardDataLiquidationPriceModalProps) {
   const { t } = useTranslation()
 
@@ -38,6 +41,16 @@ export function OmniCardDataLiquidationPriceModal({
             }`,
             { ratioToCurrentPrice: formatDecimalAsPercent(ratioToCurrentPrice.abs()) },
           )}
+        </Text>
+      )}
+      {priceHistory && (
+        <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
+          <Trans
+            i18nKey="omni-kit.content-card.liquidation-price.modal-footnote-price-history"
+            components={[
+              <AppLink key="DUNE_ORG_PEG_HISTORY" target="_blank" href={priceHistory} />,
+            ]}
+          />
         </Text>
       )}
       <Heading variant="header5" sx={{ fontWeight: 'semiBold' }}>

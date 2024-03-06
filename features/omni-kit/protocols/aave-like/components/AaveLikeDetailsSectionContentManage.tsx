@@ -8,13 +8,11 @@ import {
   OmniContentCard,
   useOmniCardDataBuyingPower,
   useOmniCardDataLiquidationPrice,
-  useOmniCardDataLiquidationRatio,
   useOmniCardDataLtv,
   useOmniCardDataNetApy,
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
-import { OmniCardDataLiquidationRatioModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataLiquidationRatioModal'
 import { OmniCardDataNetApyModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataNetApyModal'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -106,20 +104,11 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
         liquidationPrice={liquidationPrice}
         priceFormat={priceFormat}
         ratioToCurrentPrice={ratioToCurrentPrice}
-      />
-    ),
-  })
-
-  const liquidationRatioContentCardCommonData = useOmniCardDataLiquidationRatio({
-    afterLiquidationRatio: afterLiquidationPrice,
-    liquidationRatio: liquidationPrice,
-    ratioToCurrentPrice,
-    priceFormat,
-    modal: (
-      <OmniCardDataLiquidationRatioModal
-        collateralToken={collateralToken}
-        quoteToken={quoteToken}
-        ratioLink={EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY}
+        priceHistory={
+          // TODO once yield loop work will be on the plate, we will need to store links per specific pair
+          // probably the best place would be the settings file
+          isYieldLoopWithData ? EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY : undefined
+        }
       />
     ),
   })
@@ -210,7 +199,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
         {...netValueContentCardAaveData}
       />
       <OmniContentCard {...commonContentCardData} {...netApyContentCardCommonData} />
-      <OmniContentCard {...commonContentCardData} {...liquidationRatioContentCardCommonData} />
+      <OmniContentCard {...commonContentCardData} {...liquidationPriceContentCardCommonData} />
     </>
   ) : (
     <>
