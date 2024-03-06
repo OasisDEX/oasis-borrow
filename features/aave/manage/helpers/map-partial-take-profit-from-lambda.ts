@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { lambdaLtvValueDenomination, lambdaTokenValueDenomination } from 'features/aave/constants'
+import { lambdaPercentageDenomination, lambdaPriceDenomination } from 'features/aave/constants'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import {
@@ -49,12 +49,12 @@ export const mapPartialTakeProfitFromLambda = (
     triggerId: selectedTrigger?.triggerId,
     triggerLtv: selectedTrigger?.decodedParams.executionLtv
       ? new BigNumber(Number(selectedTrigger.decodedParams.executionLtv)).div(
-          lambdaLtvValueDenomination,
+          lambdaPercentageDenomination,
         )
       : undefined,
     startingTakeProfitPrice: selectedTrigger?.decodedParams.executionPrice
       ? new BigNumber(Number(selectedTrigger.decodedParams.executionPrice)).div(
-          lambdaTokenValueDenomination,
+          lambdaPriceDenomination,
         )
       : undefined,
     hasStopLoss: hasStopLoss || hasTrailingStopLoss,

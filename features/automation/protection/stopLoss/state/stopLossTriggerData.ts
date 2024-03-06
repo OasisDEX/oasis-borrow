@@ -5,7 +5,7 @@ import type {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { lambdaLtvValueDenomination } from 'features/aave/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { getTriggersByType } from 'features/automation/common/helpers/getTriggersByType'
 import type { TriggerDataType } from 'features/automation/common/TriggerDataType'
@@ -154,7 +154,7 @@ export function prepareStopLossTriggerDataV2(
     _maxCoverage,
     debtTokenAddress, // debtToken
     tokenAddress, // collateralToken
-    stopLossLevel.times(lambdaLtvValueDenomination).toString(), // stop loss level
+    stopLossLevel.times(lambdaPercentageDenomination).toString(), // stop loss level
   ])
 
   return {

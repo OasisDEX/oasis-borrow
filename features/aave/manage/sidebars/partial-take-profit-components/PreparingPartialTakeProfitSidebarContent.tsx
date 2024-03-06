@@ -10,7 +10,7 @@ import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { lambdaLtvValueDenomination } from 'features/aave/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
@@ -395,7 +395,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                 </Text>
                 <Text variant="paragraph2">
                   <FormatPercentWithSmallPercentCharacter
-                    value={x.div(lambdaLtvValueDenomination)}
+                    value={x.div(lambdaPercentageDenomination)}
                   />
                   <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
                     {getTriggerLtvMultiple(x)}
@@ -415,7 +415,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           {...triggerLtvSliderConfig}
           customSliderProps={{
             marks: {
-              [currentLtv.times(lambdaLtvValueDenomination).toNumber()]: (
+              [currentLtv.times(lambdaPercentageDenomination).toNumber()]: (
                 <Text
                   variant="boldParagraph3"
                   sx={{ fontSize: '10px', textTransform: 'uppercase' }}
@@ -486,7 +486,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                 </Text>
                 <Text variant="paragraph2">
                   <FormatPercentWithSmallPercentCharacter
-                    value={x.div(lambdaLtvValueDenomination)}
+                    value={x.div(lambdaPercentageDenomination)}
                   />
                   <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
                     step amount
@@ -514,7 +514,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                         color: ltvTooHigh ? 'warning100' : undefined,
                       },
                     }}
-                    value={x.div(lambdaLtvValueDenomination)}
+                    value={x.div(lambdaPercentageDenomination)}
                   />
                 </Text>
               </Flex>

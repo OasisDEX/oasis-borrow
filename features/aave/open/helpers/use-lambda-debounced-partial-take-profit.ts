@@ -2,7 +2,7 @@ import { getAddresses } from 'actions/aave-like/get-addresses'
 import BigNumber from 'bignumber.js'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
-import { lambdaTokenValueDenomination } from 'features/aave/constants'
+import { lambdaPriceDenomination } from 'features/aave/constants'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
@@ -32,13 +32,13 @@ const mapProfits = (
   return simulation
     ? simulation.profits.map((sim) => {
         return {
-          triggerPrice: new BigNumber(sim.triggerPrice).div(lambdaTokenValueDenomination),
+          triggerPrice: new BigNumber(sim.triggerPrice).div(lambdaPriceDenomination),
           realizedProfitInCollateral: parseProfitValue(sim.realizedProfitInCollateral),
           realizedProfitInDebt: parseProfitValue(sim.realizedProfitInDebt),
           totalProfitInCollateral: parseProfitValue(sim.totalProfitInCollateral),
           totalProfitInDebt: parseProfitValue(sim.totalProfitInDebt),
           stopLossDynamicPrice: new BigNumber(sim.stopLossDynamicPrice).div(
-            lambdaTokenValueDenomination,
+            lambdaPriceDenomination,
           ),
           fee: parseProfitValue(sim.fee),
           totalFee: parseProfitValue(sim.totalFee),

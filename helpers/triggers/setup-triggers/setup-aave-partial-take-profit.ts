@@ -1,4 +1,4 @@
-import { lambdaLtvValueDenomination, lambdaTokenValueDenomination } from 'features/aave/constants'
+import { lambdaPercentageDenomination, lambdaPriceDenomination } from 'features/aave/constants'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
@@ -16,16 +16,16 @@ export const setupAaveLikePartialTakeProfit = async (
     dpm: params.dpm,
     triggerData: {
       withdrawToken: params.executionToken,
-      executionLTV: params.triggerLtv.times(lambdaLtvValueDenomination).integerValue().toString(),
+      executionLTV: params.triggerLtv.times(lambdaPercentageDenomination).integerValue().toString(),
       withdrawStep: params.withdrawalLtv
-        .times(lambdaLtvValueDenomination)
+        .times(lambdaPercentageDenomination)
         .integerValue()
         .toString(),
       executionPrice: params.startingTakeProfitPrice
-        .times(lambdaTokenValueDenomination)
+        .times(lambdaPriceDenomination)
         .integerValue()
         .toString(),
-      stopLoss: params.stopLoss?.times(lambdaTokenValueDenomination).integerValue().toString(),
+      stopLoss: params.stopLoss?.times(lambdaPriceDenomination).integerValue().toString(),
       // trailingStopLoss: params.trailingStopLoss, // possibly in the future
     },
     position: {

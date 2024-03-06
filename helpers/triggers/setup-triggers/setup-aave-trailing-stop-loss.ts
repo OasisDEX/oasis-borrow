@@ -1,4 +1,4 @@
-import { lambdaTokenValueDenomination } from 'features/aave/constants'
+import { lambdaPriceDenomination } from 'features/aave/constants'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
@@ -16,7 +16,7 @@ export const setupAaveLikeTrailingStopLoss = async (
     dpm: params.dpm,
     triggerData: {
       trailingDistance: params.trailingDistance
-        .times(lambdaTokenValueDenomination)
+        .times(lambdaPriceDenomination)
         .integerValue()
         .toString(),
       token: params.executionToken,
