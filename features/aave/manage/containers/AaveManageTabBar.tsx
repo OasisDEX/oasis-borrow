@@ -1,5 +1,4 @@
 import { useActor } from '@xstate/react'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { PositionHistory } from 'components/history/PositionHistory'
 import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
@@ -53,9 +52,6 @@ export function AaveManageTabBar({
 
   const minNetValue = useMinNetValue(strategyConfig)
 
-  const {
-    automationTriggersData: { isAutomationDataLoaded },
-  } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const triggersStateMachine = useTriggersAaveStateMachineContext()
@@ -173,7 +169,7 @@ export function AaveManageTabBar({
                 tag: {
                   include: true,
                   active: hasActiveProtectionTrigger,
-                  isLoading: isExternalPosition ? false : !isAutomationDataLoaded,
+                  isLoading: isExternalPosition ? false : isOptimizationTabLoading,
                 },
                 content: isExternalPosition ? (
                   <DisabledAutomationForMigrationControl />
