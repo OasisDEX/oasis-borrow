@@ -1,6 +1,11 @@
+import type { SupplyPosition } from '@oasisdex/dma-library'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
+import { OmniProductController } from 'features/omni-kit/controllers'
+import { erc4626SeoTags } from 'features/omni-kit/protocols/erc-4626/constants'
+import { useErc4626Data, useErc4626TxHandler } from 'features/omni-kit/protocols/erc-4626/hooks'
+import { useErc4626Metadata } from 'features/omni-kit/protocols/erc-4626/metadata'
 import { erc4626LabelsMap, settings } from 'features/omni-kit/protocols/erc-4626/settings'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
@@ -11,24 +16,21 @@ import React from 'react'
 type Erc4626PositionPageProps = OmniProductPage
 
 function Erc4626PositionPage(props: Erc4626PositionPageProps) {
-  console.log(props)
-
   return (
     <AppLayout>
       <ProductContextHandler>
-        {/* <OmniProductController<MorphoHistoryEvent, MorphoHistoryEvent[], MorphoBluePosition>
+        <OmniProductController<unknown, unknown[], SupplyPosition>
           {...props}
           customState={({ children }) =>
             children({
-              useDynamicMetadata: useMorphoMetadata,
-              useTxHandler: useMorphoTxHandler,
+              useDynamicMetadata: useErc4626Metadata,
+              useTxHandler: useErc4626TxHandler,
             })
           }
-          protocol={LendingProtocol.MorphoBlue}
-          protocolHook={useMorphoData}
-          seoTags={morphoSeoTags}
+          protocolHook={useErc4626Data}
+          seoTags={erc4626SeoTags}
           settings={settings}
-        /> */}
+        />
       </ProductContextHandler>
     </AppLayout>
   )
