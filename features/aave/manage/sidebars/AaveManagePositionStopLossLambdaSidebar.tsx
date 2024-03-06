@@ -270,7 +270,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
                     }}
                     onClick={() => {
                       sendTriggerEvent({
-                        type: 'CHANGE_VIEW',
+                        type: 'CHANGE_PROTECTION_VIEW',
                         view: 'trailing-stop-loss',
                       })
                     }}

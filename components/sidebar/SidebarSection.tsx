@@ -27,6 +27,7 @@ export function SidebarSection({
   status,
   requiredChainHexId,
   requireConnection,
+  disableMaxHeight,
 }: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
@@ -49,7 +50,11 @@ export function SidebarSection({
             setActivePanel(panel)
           }}
         />
-        <SidebarSectionContent content={content} activePanel={activePanel} />
+        <SidebarSectionContent
+          content={content}
+          activePanel={activePanel}
+          disableMaxHeight={disableMaxHeight}
+        />
         <SidebarSectionFooter
           primaryButton={primaryButton}
           secondaryButton={secondaryButton}

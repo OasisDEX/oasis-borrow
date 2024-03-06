@@ -11,12 +11,16 @@ export interface SidebarSectionContentProps {
         panel: string
         content: JSX.Element
       }[]
+  disableMaxHeight?: boolean
 }
 
-export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
+export function SidebarSectionContent({
+  activePanel,
+  content,
+  disableMaxHeight = false,
+}: SidebarSectionContentProps) {
   const { DisableSidebarScroll } = useAppConfig('features')
   const ref = useRef<HTMLDivElement>(null)
-
   return (
     <Box
       ref={ref}
@@ -38,12 +42,12 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
               : 'transparent',
           borderRadius: theme.radii.large,
         },
-        overflowY: 'scroll',
+        overflowY: !disableMaxHeight ? 'scroll' : 'auto',
         overflowX: 'hidden',
         mr: 2,
         p: '24px',
         pr: '10px',
-        ...(!DisableSidebarScroll && { maxHeight: 490 }),
+        ...(!DisableSidebarScroll && !disableMaxHeight && { maxHeight: 490 }),
       }}
     >
       <Box>

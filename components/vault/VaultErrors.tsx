@@ -20,7 +20,7 @@ interface VaultErrorsProps {
   maxGenerateAmount?: BigNumber
   ilkData?: { debtFloor: BigNumber; token: string }
   maxWithdrawAmount?: BigNumber
-  autoType?: 'Auto-Buy' | 'Auto-Sell' | 'Stop-Loss'
+  autoType?: 'Auto-Buy' | 'Auto-Sell' | 'Stop-Loss' | 'Partial-Take-Profit'
   infoBag?: Record<string, string>
 }
 

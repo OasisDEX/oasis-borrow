@@ -1269,6 +1269,8 @@
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
     "trailing-stop-loss": "Trailing Stop-Loss",
+    "partial-take-profit": "Partial Take Profit",
+    "take-profit": "Take Profit",
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
@@ -2360,6 +2362,9 @@
   },
   "trailing-stop-loss": {
     "title": "Trailing Stop-Loss"
+  },
+  "partial-take-profit": {
+    "title": "Partial Take Profit"
   },
   "automation": {
     "setup": "{{feature}} Setup",

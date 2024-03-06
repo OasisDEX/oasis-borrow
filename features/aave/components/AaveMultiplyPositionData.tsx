@@ -10,6 +10,7 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
@@ -290,7 +291,7 @@ export function AaveMultiplyPositionData({
     if (stopLossLambdaData.stopLossTriggerName) {
       return {
         isAutomationAvailable: true,
-        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2), // still needs to be divided by 100
+        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(lambdaPercentageDenomination), // still needs to be divided by 100
         isStopLossEnabled: true,
         isAutomationDataLoaded: true,
       }

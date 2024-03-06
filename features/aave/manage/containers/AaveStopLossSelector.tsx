@@ -90,7 +90,8 @@ export const AaveStopLossSelector = ({
           }
           primaryButton={{
             label: `Add ${stopLossLabelMap[selectedStopLossType]}`,
-            action: () => sendTriggerEvent({ type: 'CHANGE_VIEW', view: selectedStopLossType }),
+            action: () =>
+              sendTriggerEvent({ type: 'CHANGE_PROTECTION_VIEW', view: selectedStopLossType }),
           }}
         />
       </Grid>

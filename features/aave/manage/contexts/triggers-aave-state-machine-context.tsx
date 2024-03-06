@@ -57,6 +57,9 @@ function useSetupTriggersStateContext(
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
       showAutoBuyBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY),
+      showPartialTakeProfitBanner: strategy.isAutomationFeatureEnabled(
+        AutomationFeatures.PARTIAL_TAKE_PROFIT,
+      ),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
       currentTriggers: {
@@ -124,7 +127,7 @@ function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
 
   useEffect(() => {
     if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.AUTO_SELL) {
-      triggerStateMachine.send({ type: 'CHANGE_VIEW', view: 'auto-sell' })
+      triggerStateMachine.send({ type: 'CHANGE_PROTECTION_VIEW', view: 'auto-sell' })
     }
   }, [activeAutomationFeature?.currentProtectionFeature])
   return <>{children}</>

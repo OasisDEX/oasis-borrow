@@ -1,26 +1,32 @@
-import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { lambdaPercentageDenomination, lambdaPriceDenomination } from 'features/aave/constants'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
-  SetupAaveStopLossParams,
-  SetupBasicAutoResponse,
-  SetupBasicStopLossResponse,
+  SetupAavePartialTakeProfitParams,
+  SetupPartialTakeProfitResponse,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikeStopLoss = async (
-  params: SetupAaveStopLossParams,
-): Promise<SetupBasicStopLossResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
+export const setupAaveLikePartialTakeProfit = async (
+  params: SetupAavePartialTakeProfitParams,
+): Promise<SetupPartialTakeProfitResponse> => {
+  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-partial-take-profit' })
 
   const body = JSON.stringify({
     dpm: params.dpm,
     triggerData: {
-      executionLTV: params.executionLTV
+      withdrawToken: params.executionToken,
+      executionLTV: params.triggerLtv.times(lambdaPercentageDenomination).integerValue().toString(),
+      withdrawStep: params.withdrawalLtv
         .times(lambdaPercentageDenomination)
         .integerValue()
         .toString(),
-      token: params.executionToken,
+      executionPrice: params.startingTakeProfitPrice
+        .times(lambdaPriceDenomination)
+        .integerValue()
+        .toString(),
+      stopLoss: params.stopLoss?.times(lambdaPriceDenomination).integerValue().toString(),
+      // trailingStopLoss: params.trailingStopLoss, // possibly in the future
     },
     position: {
       collateral: params.strategy.collateralAddress,
@@ -49,11 +55,11 @@ export const setupAaveLikeStopLoss = async (
   }
 
   if (response.status === 400) {
-    return (await response.json()) as Pick<SetupBasicAutoResponse, 'errors'>
+    return (await response.json()) as Pick<SetupPartialTakeProfitResponse, 'errors'>
   }
 
   if (response.status === 200) {
-    return (await response.json()) as Omit<SetupBasicAutoResponse, 'errors'>
+    return (await response.json()) as Omit<SetupPartialTakeProfitResponse, 'errors'>
   }
 
   const responseBody = await response.text()

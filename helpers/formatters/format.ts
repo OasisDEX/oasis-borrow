@@ -119,16 +119,22 @@ export function formatPrecision(amount: BigNumber, precision: number): string {
 interface FormatPercentOptions {
   precision?: number
   plus?: boolean
+  noPercentSign?: boolean
   roundMode?: BigNumber.RoundingMode
 }
 
 export function formatPercent(
   number: BigNumber,
-  { precision = 0, plus = false, roundMode = undefined }: FormatPercentOptions = {},
+  {
+    precision = 0,
+    plus = false,
+    roundMode = undefined,
+    noPercentSign = false,
+  }: FormatPercentOptions = {},
 ) {
   const sign = plus && number.isGreaterThan(0) ? '+' : ''
 
-  return `${sign}${number.toFixed(precision, roundMode)}%`
+  return `${sign}${number.toFixed(precision, roundMode)}${noPercentSign ? '' : '%'}`
 }
 
 export function formatDecimalAsPercent(
