@@ -183,6 +183,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   }
 
   const isDisabled = useMemo(() => {
+    if (!aaveLikePartialTakeProfitLambdaData.hasStopLoss) {
+      return true
+    }
     if (
       isGettingPartialTakeProfitTx ||
       ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
@@ -193,7 +196,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       return false
     }
     return false
-  }, [isGettingPartialTakeProfitTx, transactionStep])
+  }, [
+    isGettingPartialTakeProfitTx,
+    transactionStep,
+    aaveLikePartialTakeProfitLambdaData.hasStopLoss,
+  ])
 
   const primaryButtonAction = () => {
     if (['prepare', 'preparedRemove'].includes(transactionStep)) {

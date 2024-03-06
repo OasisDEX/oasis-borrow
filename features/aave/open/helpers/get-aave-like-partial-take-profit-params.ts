@@ -203,7 +203,6 @@ export const getAaveLikePartialTakeProfitParams = {
         maxMultiple: maxMultiple.times(hundred),
         triggerLtv,
       })
-      console.log('state.context', state.context)
       return {
         partialTakeProfitConfig,
         partialTakeProfitTokenData,
