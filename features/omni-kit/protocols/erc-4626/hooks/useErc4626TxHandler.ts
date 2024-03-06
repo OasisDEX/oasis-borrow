@@ -5,9 +5,7 @@ import { useAccount } from 'helpers/useAccount'
 
 export function useErc4626TxHandler(): () => void {
   const {
-    environment: {
-      productType,
-    },
+    environment: { productType },
   } = useOmniGeneralContext()
   const {
     form: { state },
