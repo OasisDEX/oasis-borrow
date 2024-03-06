@@ -20,6 +20,7 @@ export interface OmniNetValuePnlData {
   netValueInDebtToken: BigNumber
   collateralToken: string
   debtToken: string
+  useDebtTokenAsPnL?: boolean
 }
 
 export interface OmniNetValuePnlDataReturnType {

@@ -22,15 +22,15 @@ import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Box } from 'theme-ui'
 
-function mapSimulation(simulation?: Simulation): string[] {
-  if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
+export function mapSimulation(simulation?: Simulation): string[] {
+  if (!simulation) return ['-', '-']
   return [
     `${formatCryptoBalance(simulation.earningAfterFees)} ${simulation.token}`,
     `${formatCryptoBalance(simulation.netValue)} ${simulation.token}`,
   ]
 }
 
-const defaultYieldFields: FilterYieldFieldsType[] = ['7Days', '30Days', '90Days', '1Year']
+export const defaultYieldFields: FilterYieldFieldsType[] = ['7Days', '30Days', '90Days', '1Year']
 
 function transitionHasSwap(
   transition?: IMultiplyStrategy | IStrategy,

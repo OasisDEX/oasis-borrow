@@ -24,6 +24,7 @@ export const getOmniValidations =
     productType,
     quoteBalance,
     quoteToken,
+    protocol,
     simulationErrors = [],
     simulationNotices = [],
     simulationSuccesses = [],
@@ -70,18 +71,39 @@ export const getOmniValidations =
       ...customErrors,
       ...commonValidations.localErrors,
       ...lendingValidations.localErrors,
-      ...mapSimulationValidation({ items: simulationErrors, collateralToken, quoteToken, token }),
+      ...mapSimulationValidation({
+        items: simulationErrors,
+        collateralToken,
+        quoteToken,
+        token,
+        productType,
+        protocol,
+      }),
     ]
 
     const warnings = [
       ...customWarnings,
       ...commonValidations.localWarnings,
       ...lendingValidations.localWarnings,
-      ...mapSimulationValidation({ items: simulationWarnings, collateralToken, quoteToken, token }),
+      ...mapSimulationValidation({
+        items: simulationWarnings,
+        collateralToken,
+        quoteToken,
+        token,
+        productType,
+        protocol,
+      }),
     ]
     const notices = [
       ...customNotices,
-      ...mapSimulationValidation({ items: simulationNotices, collateralToken, quoteToken, token }),
+      ...mapSimulationValidation({
+        items: simulationNotices,
+        collateralToken,
+        quoteToken,
+        token,
+        productType,
+        protocol,
+      }),
     ]
     const successes = [
       ...customSuccesses,
@@ -90,6 +112,8 @@ export const getOmniValidations =
         collateralToken,
         quoteToken,
         token,
+        productType,
+        protocol,
       }),
     ]
 

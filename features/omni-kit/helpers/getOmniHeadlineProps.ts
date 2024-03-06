@@ -15,6 +15,7 @@ interface OmniHeadlinePropsParams {
   quoteAddress?: string
   quoteIcon?: string
   quoteToken?: string
+  isYieldLoopWithData?: boolean
 }
 
 export function getOmniHeadlineProps({
@@ -26,12 +27,15 @@ export function getOmniHeadlineProps({
   quoteIcon,
   quoteToken,
   networkName,
+  isYieldLoopWithData,
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
   const title = t('omni-kit.headline.title', {
     collateralToken,
-    productType: upperFirst(productType),
+    productType: isYieldLoopWithData
+      ? t('omni-kit.headline.yield-multiple')
+      : upperFirst(productType),
     quoteToken,
   })
   const id = positionId ? ` #${positionId}` : ''

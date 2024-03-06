@@ -19,7 +19,7 @@ import { EthersTransactionStateMachine, TransactionStateMachine } from 'features
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { AaveLikeCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 import { TriggerTransaction } from "../../../helpers/triggers";
 import { MigrateAaveContext } from "../manage/state/migrateAaveStateMachine";
 
@@ -120,7 +120,7 @@ export interface BaseAaveContext {
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData
-  cumulatives?: AaveCumulativeData
+  cumulatives?: AaveLikeCumulativeData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

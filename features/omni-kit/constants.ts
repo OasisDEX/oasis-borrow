@@ -1,5 +1,5 @@
 import { Network, protocols } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import {
   ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
@@ -92,3 +92,6 @@ export const defaultEarnCumulatives = {
   earnCumulativeQuoteTokenDeposit: zero,
   earnCumulativeQuoteTokenWithdraw: zero,
 }
+
+export const omniYieldLoopDefaultSimulationDeposit = new BigNumber(100)
+export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)

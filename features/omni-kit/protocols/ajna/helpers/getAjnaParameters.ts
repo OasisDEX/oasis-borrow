@@ -106,6 +106,8 @@ export async function getAjnaParameters({
     quoteTokenPrecision: quotePrecision,
     collateralPrice,
     quotePrice,
+    collateralToken,
+    quoteToken,
   }
 
   if (!isFormValid || !walletAddress) {

@@ -1,4 +1,6 @@
+import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import { getNetworkById } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -14,6 +16,7 @@ import type {
   OmniProtocolHookProps,
   OmniProtocolSettings,
   OmniSupportedNetworkIds,
+  OmniSupportedProtocols,
 } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -23,7 +26,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useAccount } from 'helpers/useAccount'
 import { one, zero } from 'helpers/zero'
-import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -48,11 +51,12 @@ interface OmniProductControllerProps<Auction, History, Position> {
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
-  protocol: LendingProtocol
+  protocol: OmniSupportedProtocols
   protocolHook: (params: OmniProtocolHookProps) => {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
       positionData: Position | undefined
+      protocolPricesData: Tickers | undefined
     }
     errors: string[]
   }
@@ -62,6 +66,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
     productKey: string
     descriptionKey: string
   }
+  version?: string
 }
 
 export const OmniProductController = <Auction, History, Position>({
@@ -76,6 +81,7 @@ export const OmniProductController = <Auction, History, Position>({
   quoteToken,
   settings,
   seoTags,
+  version,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
 
@@ -111,7 +117,7 @@ export const OmniProductController = <Auction, History, Position>({
   })
 
   const {
-    data: { aggregatedData, positionData },
+    data: { aggregatedData, positionData, protocolPricesData },
     errors: protocolDataErrors,
   } = protocolHook({
     collateralToken,
@@ -120,11 +126,19 @@ export const OmniProductController = <Auction, History, Position>({
     quoteToken,
     tokenPriceUSDData,
     tokensPrecision,
+    protocol,
   })
 
   useEffect(() => {
     if (dpmPositionData === null) void replace(INTERNAL_LINKS.notFound)
   }, [dpmPositionData])
+
+  const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
+
+  // Flag to determine whether full yield-loop UI experience is available for given protocol & pair
+  const isYieldLoopWithData = !!settings.yieldLoopPairsWithData?.[networkId]?.includes(
+    `${collateralToken}-${quoteToken}`,
+  )
 
   return (
     <WithConnection>
@@ -143,6 +157,7 @@ export const OmniProductController = <Auction, History, Position>({
                 tokensIconsData,
                 tokensPrecision,
                 userSettingsData,
+                protocolPricesData,
               ]}
               customLoader={
                 <PositionLoadingState
@@ -155,6 +170,7 @@ export const OmniProductController = <Auction, History, Position>({
                     quoteIcon: tokensIconsData?.quoteToken,
                     quoteToken: dpmPositionData?.quoteToken,
                     networkName: network.name,
+                    isYieldLoopWithData,
                   })}
                 />
               }
@@ -170,6 +186,7 @@ export const OmniProductController = <Auction, History, Position>({
                 tokensIcons,
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 { slippage },
+                protocolPrices,
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
 
@@ -181,7 +198,7 @@ export const OmniProductController = <Auction, History, Position>({
                         product: t(seoTags.productKey, {
                           productType: upperFirst(castedProductType),
                         }),
-                        protocol: upperFirst(protocol),
+                        protocol: upperFirst(LendingProtocolLabel[protocol]),
                         token1: dpmPosition.collateralToken,
                         token2: dpmPosition.quoteToken,
                       }}
@@ -195,7 +212,7 @@ export const OmniProductController = <Auction, History, Position>({
                       collateralIcon={tokensIcons.collateralToken}
                       collateralPrecision={collateralPrecision}
                       collateralPrice={
-                        isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]
+                        isOracless ? one : protocolPrices[dpmPosition.collateralToken]
                       }
                       collateralToken={dpmPosition.collateralToken}
                       {...(positionId && { dpmProxy: dpmPosition.proxy })}
@@ -212,17 +229,20 @@ export const OmniProductController = <Auction, History, Position>({
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
+                      protocolVersion={version}
                       protocolRaw={protocolRaw}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
                       quoteIcon={tokensIcons.quoteToken}
                       quotePrecision={quotePrecision}
-                      quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
+                      quotePrice={isOracless ? one : protocolPrices[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
                       settings={settings}
                       slippage={slippage}
                       steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
+                      isYieldLoop={isYieldLoop}
+                      isYieldLoopWithData={isYieldLoopWithData}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,
