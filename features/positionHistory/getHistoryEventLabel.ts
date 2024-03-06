@@ -27,14 +27,17 @@ export const getHistoryEventLabel = ({
       return isOpen ? t('position-history.open-position') : t('position-history.deposit')
     case 'AjnaDepositBorrow':
     case 'AAVEDepositBorrow':
+    case 'AAVEV3DepositBorrow':
     case 'MorphoBlueDepositBorrow':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'MorphoBlueOpenPosition':
     case 'MorphoBlueOpenDepositBorrow':
     case 'AjnaOpenMultiplyPosition':
     case 'AAVEOpenDepositBorrow':
+    case 'AAVEV3OpenDepositBorrow':
     case 'SparkOpenDepositBorrow':
     case 'OpenAAVEPosition':
+    case 'OpenAAVEV3Position':
     case 'SparkOpenPosition':
     case 'AjnaSupplyQuoteMintNftAndStake':
       return t('position-history.open-position')
@@ -53,18 +56,21 @@ export const getHistoryEventLabel = ({
     case 'AjnaRepayWithdraw':
     case 'MorphoBluePaybackWithdraw':
     case 'AAVEPaybackWithdraw':
+    case 'AAVEV3PaybackWithdraw':
     case 'SparkPaybackWithdraw':
       return t('position-history.repay-withdraw')
     case 'AjnaAdjustRiskUp':
     case 'SparkAdjustRiskUp':
     case 'MorphoBlueAdjustRiskUp':
     case 'IncreaseAAVEPosition':
+    case 'IncreaseAAVEV3Position':
     case 'AdjustRiskUpAAVEV3Position':
       return t('position-history.increase-multiple')
     case 'AjnaAdjustRiskDown':
     case 'SparkAdjustRiskDown':
     case 'MorphoBlueAdjustRiskDown':
     case 'DecreaseAAVEPosition':
+    case 'DecreaseAAVEV3Position':
     case 'AdjustRiskDownAAVEV3Position':
       return t('position-history.decrease-multiple')
     case 'AjnaCloseToQuotePosition':
@@ -89,6 +95,7 @@ export const getHistoryEventLabel = ({
       return t('position-history.withdraw-and-move-lending-price')
     case 'AjnaSupplyQuoteNft':
     case 'AAVEDeposit':
+    case 'AAVEV3Deposit':
     case 'SparkDeposit':
       return t('position-history.deposit')
     case 'AjnaUnstakeNftAndClaimCollateral':
@@ -96,6 +103,7 @@ export const getHistoryEventLabel = ({
     case 'SparkDepositBorrow':
       return t('position-history.deposit-generate')
     case 'AAVEBorrow':
+    case 'AAVEV3Borrow':
     case 'SparkBorrow':
       return t('position-history.borrow')
     case 'Liquidation':
