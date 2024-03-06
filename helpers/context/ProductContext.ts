@@ -54,6 +54,7 @@ import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMulti
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
+import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave-like/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniTokensPrecision } from 'features/omni-kit/types'
@@ -651,6 +652,19 @@ export function setupProductContext(
       ).join('-')}`,
   )
 
+  const aaveLikePosition$ = memoize(
+    curry(getAaveLikePosition$)(onEveryBlock$),
+    (
+      collateralPrice: BigNumber,
+      quotePrice: BigNumber,
+      dpmPositionData: DpmPositionData,
+      network: NetworkIds,
+    ) =>
+      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+        .decimalPlaces(2)
+        .toString()}-${quotePrice.decimalPlaces(2).toString()}`,
+  )
+
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
@@ -682,6 +696,7 @@ export function setupProductContext(
     manageGuniVault$,
     manageMultiplyVault$,
     morphoPosition$,
+    aaveLikePosition$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,

@@ -122,7 +122,7 @@ export interface BaseAaveContext {
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData
-  cumulatives?: AaveCumulativeData
+  cumulatives?: AaveLikeCumulativeData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

@@ -22,7 +22,13 @@ const omniSupportedNetworkIds = [
 
 export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
 
-const omniSupportedProtocols = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue] as const
+const omniSupportedProtocols = [
+  LendingProtocol.Ajna,
+  LendingProtocol.MorphoBlue,
+  LendingProtocol.AaveV2,
+  LendingProtocol.AaveV3,
+  LendingProtocol.SparkV3,
+] as const
 
 export type OmniSupportedProtocols = (typeof omniSupportedProtocols)[number]
 
@@ -64,6 +70,8 @@ export interface OmniProtocolSettings {
   supportedMultiplyTokens: NetworkIdsWithValues<string[]>
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
+  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
+  yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
 }
 
 export type OmniProtocolsSettings = {
@@ -78,13 +86,14 @@ export interface OmniTokensPrecision {
 }
 
 export interface OmniProtocolHookProps {
-  collateralToken?: string
+  collateralToken: string
   dpmPositionData?: DpmPositionData
   networkId: OmniSupportedNetworkIds
   product?: OmniProductType
-  quoteToken?: string
+  quoteToken: string
   tokenPriceUSDData?: Tickers
   tokensPrecision?: OmniTokensPrecision
+  protocol: OmniSupportedProtocols
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'
@@ -149,6 +158,8 @@ export interface OmniProductPage {
   positionId?: string
   productType: OmniProductType
   quoteToken: string
+  version?: string
+  protocol: OmniSupportedProtocols
 }
 
 export type OmniValidations = {
@@ -189,6 +200,8 @@ export interface OmniFlowStateFilterParams {
   event: CreatePositionEvent
   productType: OmniProductType
   quoteAddress: string
+  protocol: LendingProtocol
+  protocolRaw?: string
 }
 
 export type NetworkIdsWithValues<T> = {
@@ -207,6 +220,7 @@ export interface GetOmniValidationsParams {
   isOpening: boolean
   position: OmniGenericPosition
   productType: OmniProductType
+  protocol: LendingProtocol
   quoteBalance: BigNumber
   quoteToken: string
   simulationErrors?: SimulationValidations
@@ -231,3 +245,13 @@ export interface GetOmniValidationResolverParams {
 }
 
 export type OmniNotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
+
+export type OmniEntryToken = {
+  symbol: string
+  precision: number
+  balance: BigNumber
+  price: BigNumber
+  digits: number
+  address: string
+  icon: string
+}

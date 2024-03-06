@@ -6,7 +6,7 @@ export const updateProductHub = async () => {
   const result = await fetch('http://localhost:3000/api/product-hub', {
     method: 'PATCH',
     body: JSON.stringify({
-      protocols: ['ajna', 'aavev2', 'aavev3', 'maker', 'sparkv3'],
+      protocols: ['ajna', 'aavev2', 'aavev3', 'maker', 'sparkv3', 'morphoblue'],
     }),
     headers: {
       'Content-Type': 'application/json',

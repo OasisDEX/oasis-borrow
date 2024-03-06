@@ -6,7 +6,7 @@ import { useSimulationYields } from 'features/aave/hooks'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
 import type { IStrategyConfig } from 'features/aave/types'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveLikeCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -27,7 +27,7 @@ export type ManageSectionComponentProps = {
   debtPrice?: BigNumber
   collateralTokenReserveData?: AaveLikeReserveData
   debtTokenReserveData?: AaveLikeReserveData
-  cumulatives?: AaveCumulativeData
+  cumulatives?: AaveLikeCumulativeData
   currentPosition: IPosition
   triggersState?: StateFrom<typeof triggersAaveStateMachine>
   sendTriggerEvent?: Sender<TriggersAaveEvent>

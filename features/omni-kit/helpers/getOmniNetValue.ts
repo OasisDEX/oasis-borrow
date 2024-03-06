@@ -9,10 +9,20 @@ export const getOmniNetValue = ({
   netValueInDebtToken,
   collateralToken,
   debtToken,
+  useDebtTokenAsPnL = false,
 }: OmniNetValuePnlData) => {
   switch (productType) {
     case OmniProductType.Multiply:
     case OmniProductType.Borrow: {
+      if (useDebtTokenAsPnL) {
+        return {
+          netValueToken: debtToken,
+          netValueTokenPrice: debtTokenPrice,
+          inToken: netValueInDebtToken,
+          inUsd: netValueInDebtToken.times(debtTokenPrice),
+        } as OmniNetValuePnlDataReturnType['netValue']
+      }
+
       return {
         netValueToken: collateralToken,
         netValueTokenPrice: collateralTokenPrice,

@@ -12,6 +12,7 @@ export const getOmniNetValuePnlData = ({
   netValueInDebtToken,
   collateralToken,
   debtToken,
+  useDebtTokenAsPnL = false,
 }: OmniNetValuePnlData) => {
   const netValue = getOmniNetValue({
     productType,
@@ -21,6 +22,7 @@ export const getOmniNetValuePnlData = ({
     netValueInDebtToken,
     collateralToken,
     debtToken,
+    useDebtTokenAsPnL,
   })
   switch (productType) {
     case OmniProductType.Borrow: {
@@ -33,6 +35,40 @@ export const getOmniNetValuePnlData = ({
         .plus(netValueInCollateralToken)
         .minus(cumulatives.cumulativeDepositInCollateralToken)
         .div(cumulatives.cumulativeDepositInCollateralToken)
+
+      const pnlPercentageDebt = cumulatives?.cumulativeWithdrawInQuoteToken
+        .plus(netValueInDebtToken)
+        .minus(cumulatives.cumulativeDepositInQuoteToken)
+        .div(cumulatives.cumulativeDepositInQuoteToken)
+
+      if (useDebtTokenAsPnL) {
+        return {
+          pnl: {
+            pnlToken: debtToken,
+            percentage: pnlPercentageDebt,
+            inToken: cumulatives?.cumulativeDepositInQuoteToken.times(pnlPercentageDebt ?? zero),
+            inUsd: cumulatives?.cumulativeDepositInQuoteToken
+              .times(pnlPercentageDebt ?? zero)
+              .times(debtTokenPrice),
+          },
+          netValue,
+          pnlCumulatives: {
+            deposit: {
+              inUsd: cumulatives?.cumulativeDepositUSD,
+              inToken: cumulatives?.cumulativeDepositInQuoteToken,
+            },
+            withdraw: {
+              inUsd: cumulatives?.cumulativeWithdrawUSD,
+              inToken: cumulatives?.cumulativeWithdrawInQuoteToken,
+            },
+            fees: {
+              inUsd: cumulatives?.cumulativeFeesUSD,
+              inToken: cumulatives?.cumulativeFeesInQuoteToken,
+            },
+          },
+        } as OmniNetValuePnlDataReturnType
+      }
+
       return {
         pnl: {
           pnlToken: collateralToken,

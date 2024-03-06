@@ -34,6 +34,8 @@ export function getAjnaPosition$(
 
       const commonPayload = {
         collateralPrice,
+        collateralToken,
+        quoteToken,
         quotePrice,
         proxyAddress: proxy,
         poolAddress:

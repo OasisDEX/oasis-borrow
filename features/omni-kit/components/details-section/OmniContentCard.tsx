@@ -1,4 +1,8 @@
-import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import type {
+  ChangeVariantType,
+  ContentCardProps,
+  DetailsSectionContentCardLinkProps,
+} from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { Icon } from 'components/Icon'
 import type { IconProps } from 'components/Icon.types'
@@ -23,6 +27,7 @@ export interface OmniContentCardBase {
   title: OmniContentCardValue
   unit?: string
   value?: OmniContentCardValue
+  link?: DetailsSectionContentCardLinkProps
 }
 
 export interface OmniContentCardExtra {
@@ -37,6 +42,7 @@ export interface OmniContentCardExtra {
   isValueLoading?: boolean
   modal?: ReactNode
   modalAsTooltip?: boolean
+  link?: DetailsSectionContentCardLinkProps
   tooltips?: {
     change?: ReactNode
     footnote?: ReactNode
@@ -84,6 +90,7 @@ export function OmniContentCard({
   unit,
   value,
   isValueLoading = false,
+  link,
 }: OmniContentCardProps) {
   const { t } = useTranslation()
 
@@ -156,6 +163,7 @@ export function OmniContentCard({
       footnote: footnote.map((item) => getContentCardValue(item, t)),
       footnoteTooltip: footnoteTooltip,
     }),
+    link,
     extra,
     modal,
     modalAsTooltip,

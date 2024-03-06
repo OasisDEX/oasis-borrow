@@ -214,7 +214,6 @@ export function useOmniProtocolData({
     },
     errors: [
       balancesInfoArrayError,
-      balancesInfoArrayError,
       dpmPositionError,
       ethBalanceError,
       gasPriceError,
