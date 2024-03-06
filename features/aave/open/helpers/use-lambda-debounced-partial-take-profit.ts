@@ -83,6 +83,16 @@ export const useLambdaDebouncedPartialTakeProfit = ({
       partialTakeProfitProfits,
     })
   }
+  const setFirstProfit = (partialTakeProfitFirstProfit: ProfitsSimulationMapped | undefined) => {
+    console.log({
+      type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
+      partialTakeProfitFirstProfit,
+    })
+    send({
+      type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
+      partialTakeProfitFirstProfit,
+    })
+  }
 
   useDebouncedEffect(
     () => {
@@ -135,7 +145,13 @@ export const useLambdaDebouncedPartialTakeProfit = ({
             })
           }
           if (res.simulation) {
-            setProfits(mapProfits(res.simulation))
+            const profitsMapped = mapProfits(res.simulation)
+            setProfits(profitsMapped)
+            console.log('test 1')
+            if (state.context.partialTakeProfitFirstProfit === undefined) {
+              console.log('test 2', profitsMapped)
+              setFirstProfit(profitsMapped[0])
+            }
           }
           res.warnings && setWarnings(res.warnings)
           res.errors && setErrors(res.errors)

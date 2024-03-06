@@ -112,6 +112,17 @@ export function InfoSectionTable({
           </Button>
         </Box>
       )}
+      {expandItemsButtonLabel && limitItems === 'all' && (
+        <Box as="li" sx={{ listStyle: 'none' }}>
+          <Button
+            variant="textual"
+            sx={{ fontSize: '12px', color: 'interactive100', cursor: 'pointer', width: '100%' }}
+            onClick={() => setLimitItems(defaultLimitItems)}
+          >
+            Collapse
+          </Button>
+        </Box>
+      )}
     </Grid>
   )
 }

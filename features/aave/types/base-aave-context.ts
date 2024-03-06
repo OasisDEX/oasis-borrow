@@ -119,6 +119,7 @@ export interface BaseAaveContext {
   trailingStopLossTxDataLambda?: TriggerTransaction
   partialTakeProfitTxDataLambda?: TriggerTransaction
   partialTakeProfitProfits?: ProfitsSimulationMapped[] | undefined
+  partialTakeProfitFirstProfit?: ProfitsSimulationMapped | undefined
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData

@@ -25,6 +25,7 @@ type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA'; trailingStopLossTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA'; partialTakeProfitTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA'; partialTakeProfitProfits: ProfitsSimulationMapped[] | undefined }
+  | { type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA'; partialTakeProfitFirstProfit: ProfitsSimulationMapped | undefined }
   | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: TriggerTransaction | undefined }
   | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
 

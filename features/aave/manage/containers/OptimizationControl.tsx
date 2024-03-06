@@ -17,6 +17,7 @@ import type {
   triggersAaveStateMachine,
 } from 'features/aave/manage/state'
 import { getAaveLikePartialTakeProfitParams } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
+import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
 import { Container, Grid } from 'theme-ui'
@@ -72,9 +73,13 @@ function getAutoBuyDetailsLayoutProps(
 export function OptimizationControl({
   triggersState,
   sendTriggerEvent,
+  netValuePnlCollateralData,
+  netValuePnlDebtData,
 }: {
   triggersState: StateFrom<typeof triggersAaveStateMachine>
   sendTriggerEvent: Sender<TriggersAaveEvent>
+  netValuePnlCollateralData: OmniNetValuePnlDataReturnType
+  netValuePnlDebtData: OmniNetValuePnlDataReturnType
 }) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
@@ -121,6 +126,9 @@ export function OptimizationControl({
             <AavePartialTakeProfitManageDetails
               aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
               aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
+              netValuePnlCollateralData={netValuePnlCollateralData}
+              netValuePnlDebtData={netValuePnlDebtData}
+              historyEvents={state.context.historyEvents}
             />
           )}
           {triggersState.context.showAutoBuyBanner && (

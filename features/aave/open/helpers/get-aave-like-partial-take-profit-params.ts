@@ -71,6 +71,7 @@ export type AaveLikePartialTakeProfitParamsResult = {
   withdrawalLtvSliderConfig: PTPSliderConfig
   partialTakeProfitConfig: typeof partialTakeProfitConfig
   partialTakeProfitProfits: ProfitsSimulationMapped[] | undefined
+  partialTakeProfitFirstProfit: ProfitsSimulationMapped | undefined
 }
 
 const getTriggerLtvSliderConfig = ({
@@ -202,6 +203,7 @@ export const getAaveLikePartialTakeProfitParams = {
         maxMultiple: maxMultiple.times(hundred),
         triggerLtv,
       })
+      console.log('state.context', state.context)
       return {
         partialTakeProfitConfig,
         partialTakeProfitTokenData,
@@ -227,6 +229,7 @@ export const getAaveLikePartialTakeProfitParams = {
         setWithdrawalLtv,
         withdrawalLtvSliderConfig,
         partialTakeProfitProfits: state.context.partialTakeProfitProfits,
+        partialTakeProfitFirstProfit: state.context.partialTakeProfitFirstProfit,
       }
     },
   ),
