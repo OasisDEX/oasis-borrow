@@ -45,5 +45,5 @@ MorphoPositionPage.seoTags = morphoPageSeoTags
 export default MorphoPositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
-  return getOmniServerSideProps({ locale, protocol: LendingProtocol.MorphoBlue, query })
+  return getOmniServerSideProps({ locale, protocol: LendingProtocol.MorphoBlue, query, settings })
 }
