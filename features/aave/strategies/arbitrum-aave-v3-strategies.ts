@@ -430,7 +430,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaArbitrum]
         }
         if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
-          return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaArbitrum]
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3PartialTakeProfitLambdaArbitrum]
         }
         return false
       },
@@ -492,7 +492,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaArbitrum]
         }
         if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
-          return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaArbitrum]
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3PartialTakeProfitLambdaArbitrum]
         }
         return false
       },
@@ -548,7 +548,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationArbitrum]
         }
         if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
-          return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaArbitrum]
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3PartialTakeProfitLambdaArbitrum]
         }
         return false
       },
