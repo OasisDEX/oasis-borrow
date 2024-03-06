@@ -1,3 +1,4 @@
+import type { AaveLikeReserveConfigurationData } from '@oasisdex/dma-library'
 import { executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { AppLink } from 'components/Links'
@@ -57,10 +58,12 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   aaveLikePartialTakeProfitParams,
   aaveLikePartialTakeProfitLambdaData,
   onTxFinished,
+  aaveReserveState,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
   aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
   aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
+  aaveReserveState: AaveLikeReserveConfigurationData
   onTxFinished: () => void
 }) {
   const { t } = useTranslation()

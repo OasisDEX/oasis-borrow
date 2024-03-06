@@ -52,11 +52,13 @@ export const useLambdaDebouncedPartialTakeProfit = ({
   send,
   triggerLtv,
   withdrawalLtv,
+  stopLossLtv,
   startingTakeProfitPrice,
   partialTakeProfitToken,
   action,
 }: (OpenAaveStateProps | ManageAaveStateProps) & {
   triggerLtv: BigNumber
+  stopLossLtv?: BigNumber
   withdrawalLtv: BigNumber
   startingTakeProfitPrice: BigNumber
   partialTakeProfitToken: string
@@ -84,10 +86,6 @@ export const useLambdaDebouncedPartialTakeProfit = ({
     })
   }
   const setFirstProfit = (partialTakeProfitFirstProfit: ProfitsSimulationMapped | undefined) => {
-    console.log({
-      type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
-      partialTakeProfitFirstProfit,
-    })
     send({
       type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
       partialTakeProfitFirstProfit,
@@ -127,6 +125,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
             collateralAddress,
             debtAddress,
           },
+          stopLoss: stopLossLtv,
           action,
         }),
       )
@@ -147,9 +146,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
           if (res.simulation) {
             const profitsMapped = mapProfits(res.simulation)
             setProfits(profitsMapped)
-            console.log('test 1')
             if (state.context.partialTakeProfitFirstProfit === undefined) {
-              console.log('test 2', profitsMapped)
               setFirstProfit(profitsMapped[0])
             }
           }

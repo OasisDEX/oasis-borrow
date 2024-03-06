@@ -154,6 +154,7 @@ export function AaveManageTabBar({
               sendTriggerEvent={sendTriggerEvent}
               netValuePnlCollateralData={netValuePnlCollateralData}
               netValuePnlDebtData={netValuePnlDebtData}
+              aaveReserveState={aaveReserveState}
             />
           ) : (
             <DisabledOptimizationControl minNetValue={minNetValue} />

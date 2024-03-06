@@ -1,3 +1,4 @@
+import type { AaveLikeReserveConfigurationData } from '@oasisdex/dma-library'
 import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { AavePartialTakeProfitManageDetails } from 'features/aave/components/AavePartialTakeProfitManageDetails'
@@ -75,11 +76,13 @@ export function OptimizationControl({
   sendTriggerEvent,
   netValuePnlCollateralData,
   netValuePnlDebtData,
+  aaveReserveState,
 }: {
   triggersState: StateFrom<typeof triggersAaveStateMachine>
   sendTriggerEvent: Sender<TriggersAaveEvent>
   netValuePnlCollateralData: OmniNetValuePnlDataReturnType
   netValuePnlDebtData: OmniNetValuePnlDataReturnType
+  aaveReserveState: AaveLikeReserveConfigurationData
 }) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
@@ -98,6 +101,7 @@ export function OptimizationControl({
   const aaveLikePartialTakeProfitParams = getAaveLikePartialTakeProfitParams.manage({
     state,
     aaveLikePartialTakeProfitLambdaData,
+    aaveReserveState,
   })
 
   const autoBuyDetailsLayoutProps = getAutoBuyDetailsLayoutProps(

@@ -608,6 +608,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             Your previously configured stop loss LTV will remain unchanged, unless edited below.
           </Text>
         }
+        openByDefault={!hasStopLoss}
       >
         <SliderValuePicker
           disabled={!!hasStopLoss}
