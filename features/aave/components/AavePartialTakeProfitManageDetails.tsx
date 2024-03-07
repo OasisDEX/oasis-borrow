@@ -327,6 +327,7 @@ export const AavePartialTakeProfitManageDetails = ({
                 border: 'lightMuted',
                 borderRadius: 'large',
                 p: 3,
+                mt: 4,
               }}
             >
               <ActionPills
