@@ -19,6 +19,8 @@ import {
 } from 'theme/icons'
 import { FeaturesEnum } from 'types/config'
 
+export const MIN_LIQUIDITY = 10000
+
 export const ALL_ASSETS = 'all assets'
 
 export const productHubLinksMap: { [key in ProductHubProductType]: string } = {

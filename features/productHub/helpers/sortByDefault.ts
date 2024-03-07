@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getActionUrl } from 'features/productHub/helpers'
+import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 
@@ -18,6 +19,10 @@ function sortByProductValue(
       ? -1
       : 1,
   )
+}
+
+function filterOutLowLiquidityProducts({ liquidity }: ProductHubItem) {
+  return liquidity && new BigNumber(liquidity).gte(MIN_LIQUIDITY)
 }
 
 export function sortByDefault(
@@ -61,10 +66,13 @@ export function sortByDefault(
 
   switch (selectedProduct) {
     case ProductHubProductType.Borrow:
-      return [...sortByProductValue('fee', available), ...sortByProductValue('fee', comingSoon)]
+      return [
+        ...sortByProductValue('fee', available.filter(filterOutLowLiquidityProducts)),
+        ...sortByProductValue('fee', comingSoon),
+      ]
     case ProductHubProductType.Multiply:
       return [
-        ...sortByProductValue('maxMultiply', available, -1),
+        ...sortByProductValue('maxMultiply', available.filter(filterOutLowLiquidityProducts), -1),
         ...sortByProductValue('maxMultiply', comingSoon, -1),
       ]
     case ProductHubProductType.Earn:
