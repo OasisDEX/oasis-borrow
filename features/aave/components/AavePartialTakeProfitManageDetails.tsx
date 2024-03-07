@@ -24,7 +24,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Divider, Flex, Image, Text } from 'theme-ui'
+import { Box, Divider, Flex, Heading, Image, Text } from 'theme-ui'
 
 type AavePartialTakeProfitManageDetailsProps = {
   aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
@@ -213,13 +213,15 @@ export const AavePartialTakeProfitManageDetails = ({
               value={nextDynamicTriggerPriceValue}
               unit={priceFormat}
               modal={
-                <Text>
-                  The next price in which you will realize profits to your wallet. It is dynamic
-                  because position changes made prior to it triggering may make the trigger price
-                  increase.
-                </Text>
+                <>
+                  <Heading variant="header4">Next Dynamic Trigger Price</Heading>
+                  <Text as="p" variant="paragraph3">
+                    The next price in which you will realize profits to your wallet. It is dynamic
+                    because position changes made prior to it triggering may make the trigger price
+                    increase.
+                  </Text>
+                </>
               }
-              modalAsTooltip
               isLoading={!partialTakeProfitFirstProfit || !nextTriggerProfit}
               isValueLoading={!partialTakeProfitFirstProfit}
               change={nextDynamicTriggerPriceValueChange}
@@ -235,12 +237,14 @@ export const AavePartialTakeProfitManageDetails = ({
             <OmniContentCard
               title={'Est. to receive next trigger'}
               modal={
-                <Text>
-                  The amount of collateral or debt that will be withdrawn to your wallet upon
-                  trigger.
-                </Text>
+                <>
+                  <Heading variant="header4">Est. to receive next trigger</Heading>
+                  <Text as="p" variant="paragraph3">
+                    The amount of collateral or debt that will be withdrawn to your wallet upon
+                    trigger.
+                  </Text>
+                </>
               }
-              modalAsTooltip
               value={estimatedToReceiveNextTriggerValue}
               isLoading={
                 !partialTakeProfitFirstProfit ||
@@ -272,13 +276,15 @@ export const AavePartialTakeProfitManageDetails = ({
                   : '-'
               }
               modal={
-                <Text>
-                  The profit or loss of your position, denominated in collateral, including realized
-                  profits to wallet. Specifically, P&L = ((Net value + Cumulative withdrawals) -
-                  Cumulative deposits) / Cumulative deposits.
-                </Text>
+                <>
+                  <Heading variant="header4">Current profit/loss</Heading>
+                  <Text as="p" variant="paragraph3">
+                    The profit or loss of your position, denominated in collateral, including
+                    realized profits to wallet. Specifically, P&L = ((Net value + Cumulative
+                    withdrawals) - Cumulative deposits) / Cumulative deposits.
+                  </Text>
+                </>
               }
-              modalAsTooltip
               unit={partialTakeProfitTokenData.symbol}
               footnote={
                 hasLambdaTriggerLtv
@@ -295,12 +301,14 @@ export const AavePartialTakeProfitManageDetails = ({
               title={'Profit realized to wallet'}
               value={hasLambdaTriggerLtv ? realizedProfitValue : '-'}
               modal={
-                <Text>
-                  The cumulative amount of collateral or debt that you have realized as profits to
-                  your wallet.
-                </Text>
+                <>
+                  <Heading variant="header4">Profit realized to wallet</Heading>
+                  <Text as="p" variant="paragraph3">
+                    The cumulative amount of collateral or debt that you have realized as profits to
+                    your wallet.
+                  </Text>
+                </>
               }
-              modalAsTooltip
               unit={partialTakeProfitTokenData.symbol}
               footnote={realizedProfit && hasLambdaTriggerLtv ? [realizedProfitSecondValue] : []}
             />

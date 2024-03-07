@@ -70,8 +70,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     positionPriceRatio,
     newStopLossLtv,
   } = aaveLikePartialTakeProfitParams
-  const { startingTakeProfitPrice: lambdaStartingTakeProfitPrice, currentStopLossLevel } =
-    aaveLikePartialTakeProfitLambdaData
+  const {
+    startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
+    currentStopLossLevel,
+    triggerLtv: lambdaTriggerLtv,
+  } = aaveLikePartialTakeProfitLambdaData
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
     if (transactionStep === 'preparedRemove') {
@@ -313,10 +316,18 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     return primaryButtonMap[transactionStep]
   }
 
-  const showSecondaryButton =
-    (transactionStep === 'prepare' && action !== TriggerAction.Remove) ||
-    (action === TriggerAction.Remove && transactionStep !== 'finished') ||
-    ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
+  const showSecondaryButton = useMemo(() => {
+    if (transactionStep === 'prepare' && action !== TriggerAction.Remove && !!lambdaTriggerLtv) {
+      return true
+    }
+    if (action === TriggerAction.Remove && transactionStep !== 'finished') {
+      return true
+    }
+    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
+      return true
+    }
+    return false
+  }, [action, transactionStep, triggerLtv])
 
   const secondaryButtonLabel = () => {
     if (transactionStep === 'prepare') {
