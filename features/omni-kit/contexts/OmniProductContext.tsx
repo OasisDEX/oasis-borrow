@@ -25,7 +25,16 @@ import type {
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type {
+  GetTriggersResponse,
+  SetupBasicAutoResponse,
+  SetupBasicStopLossResponse,
+  SetupPartialTakeProfitResponse,
+  SetupTrailingStopLossResponse,
+  TriggersApiError,
+  TriggersApiWarning,
+  TriggerTransaction,
+} from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
 import React, { useContext, useMemo, useState } from 'react'
@@ -197,14 +206,32 @@ interface ProductContextPosition<Position, Auction> {
   simulationCommon: OmniSimulationCommon
 }
 
+interface OmniAutomationSimulationData {
+  encodedTriggerData?: string
+  simulation?:
+    | SetupBasicAutoResponse
+    | SetupBasicStopLossResponse
+    | SetupTrailingStopLossResponse
+    | SetupPartialTakeProfitResponse
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
+  transaction?: TriggerTransaction
+}
+
+interface ProductContextAutomation {
+  positionTriggers: GetTriggersResponse
+  automationForm: ReturnType<typeof useOmniAutomationFormReducto>
+  simulationData?: OmniAutomationSimulationData
+  isSimulationLoading?: boolean
+  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
+  setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationData | undefined>>
+}
+
 interface GenericProductContext<Position, Form, Auction, Metadata> {
   form: Form
   position: ProductContextPosition<Position, Auction>
   dynamicMetadata: Metadata
-  automation: {
-    positionTriggers: GetTriggersResponse
-    automationForm: ReturnType<typeof useOmniAutomationFormReducto>
-  }
+  automation: ProductContextAutomation
 }
 
 export type ProductContextWithBorrow = GenericProductContext<
@@ -311,6 +338,10 @@ export function OmniProductContextProvider({
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
   // TODO these could be potentially generalized within single hook
 
+  const [automationSimulationData, setAutomationSimulationData] =
+    useState<OmniAutomationSimulationData>()
+  const [isAutomationSimulationLoading, setAutomationIsLoadingSimulation] = useState(false)
+
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
   if (simulation && 'riskRatio' in simulation.position && 'riskRatio' in position) {
@@ -373,6 +404,10 @@ export function OmniProductContextProvider({
       automation: {
         positionTriggers,
         automationForm,
+        simulationData: automationSimulationData,
+        isSimulationLoading: isAutomationSimulationLoading,
+        setIsLoadingSimulation: setAutomationIsLoadingSimulation,
+        setSimulation: setAutomationSimulationData,
       },
     }
   }, [
