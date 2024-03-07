@@ -74,7 +74,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     quoteToken,
     supportedTokens: settings.supportedMultiplyTokens[networkId],
   })
-  const automations = isMultiplySupported ? settings.availableAutomations?.[networkId] || [] : []
+  const automationFeatures = isMultiplySupported
+    ? settings.availableAutomations?.[networkId] || []
+    : []
 
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
 
@@ -152,7 +154,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           },
           ...(!isOpening
             ? [
-                ...(hasCommonElement(automations, omniProtectionLikeAutomationFeatures)
+                ...(hasCommonElement(automationFeatures, omniProtectionLikeAutomationFeatures)
                   ? [
                       {
                         value: 'protection',
@@ -165,7 +167,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                       },
                     ]
                   : []),
-                ...(hasCommonElement(automations, omniOptimizationLikeAutomationFeatures)
+                ...(hasCommonElement(automationFeatures, omniOptimizationLikeAutomationFeatures)
                   ? [
                       {
                         value: 'optimization',
