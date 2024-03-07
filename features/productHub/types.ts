@@ -15,6 +15,7 @@ export enum ProductHubProductType {
 }
 
 export type ProductHubTokenType = string
+export type ProductHubRewardsType = boolean
 
 export type ProductHubSupportedNetworks =
   | NetworkNames.ethereumMainnet
@@ -26,25 +27,38 @@ export type ProductHubSupportedNetworks =
   | NetworkNames.baseMainnet
   | NetworkNames.baseGoerli
 
+export type ProductHubColumnKey =
+  | '7DayNetApy'
+  | 'action'
+  | 'borrowRate'
+  | 'collateralDebt'
+  | 'depositToken'
+  | 'liquidity'
+  | 'management'
+  | 'maxLtv'
+  | 'maxMultiple'
+  | 'protocolNetwork'
+  | 'strategy'
+
 export interface ProductHubItemBasics {
   label: string
   network: ProductHubSupportedNetworks
   primaryToken: ProductHubTokenType
-  primaryTokenGroup?: ProductHubTokenType
   primaryTokenAddress: ProductHubTokenType
+  primaryTokenGroup?: ProductHubTokenType
   product: ProductHubProductType[]
   protocol: LendingProtocol
   secondaryToken: ProductHubTokenType
-  secondaryTokenGroup?: ProductHubTokenType
   secondaryTokenAddress: ProductHubTokenType
+  secondaryTokenGroup?: ProductHubTokenType
 }
 
 export interface ProductHubItemDetails {
-  weeklyNetApy?: string
   depositToken?: string
   earnStrategy?: EarnStrategies
   earnStrategyDescription?: string
   fee?: string
+  hasRewards?: boolean
   liquidity?: string
   managementType?: ProductHubManagementType
   maxLtv?: string
@@ -52,15 +66,14 @@ export interface ProductHubItemDetails {
   multiplyStrategy?: string
   multiplyStrategyType?: ProductHubMultiplyStrategyType
   reverseTokens?: boolean
-  hasRewards?: boolean
+  weeklyNetApy?: string
 }
 
 export interface ProductHubItemTooltips {
   tooltips?: {
-    [key in keyof Omit<
-      ProductHubItemDetails,
-      'depositToken' | 'multiplyStrategyType'
-    >]?: AssetsTableTooltipProps
+    [key in
+      | keyof Omit<ProductHubItemDetails, 'depositToken' | 'multiplyStrategyType'>
+      | 'asset']?: AssetsTableTooltipProps
   }
 }
 
@@ -95,6 +108,7 @@ export interface ProductHubFiltersCriteria {
   secondaryToken?: ProductHubTokenType[]
   secondaryTokenGroup?: ProductHubTokenType[]
   multiplyStrategyType?: ProductHubMultiplyStrategyType[]
+  hasRewards?: ProductHubRewardsType[]
 }
 
 export interface ProductHubFilters {
@@ -106,6 +120,7 @@ export interface ProductHubQueryString {
   debtToken?: ProductHubTokenType[]
   network?: ProductHubSupportedNetworks[]
   protocol?: LendingProtocol[]
+  rewardsOnly?: ProductHubRewardsType[]
   secondaryToken?: ProductHubTokenType[]
   strategy?: ProductHubMultiplyStrategyType[]
 }

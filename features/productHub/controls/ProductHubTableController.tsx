@@ -8,16 +8,21 @@ import React from 'react'
 
 interface ProductHubTableControllerProps {
   banner?: ActionBannerProps
+  perPage?: number
   rows: AssetsTableRowData[]
 }
 
-export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({ banner, rows }) => {
+export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({
+  banner,
+  perPage,
+  rows,
+}) => {
   const { t } = useTranslation()
 
   return (
     <>
       {rows.length > 0 ? (
-        <AssetsResponsiveTable rows={rows} banner={banner} />
+        <AssetsResponsiveTable banner={banner} perPage={perPage} rows={rows} />
       ) : (
         <AssetsTableNoResults
           header={t('discover.table.no-items')}

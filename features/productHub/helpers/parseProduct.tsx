@@ -1,7 +1,7 @@
 import { negativeToZero } from '@oasisdex/dma-library'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
-import type { AssetsTableRowData } from 'components/assetsTable/types'
+import type { AssetsTableRowItems } from 'components/assetsTable/types'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { parseProductNumbers } from 'features/productHub/helpers'
@@ -35,7 +35,7 @@ export function parseProduct(
   }: Partial<ProductHubItem>,
   product: ProductHubProductType,
   liquidityToken?: string,
-): AssetsTableRowData {
+): AssetsTableRowItems {
   const [fee, liquidity, maxLtv, maxMultiply, weeklyNetApy] = parseProductNumbers([
     feeString,
     liquidityString,
