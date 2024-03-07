@@ -87,6 +87,7 @@ export const AavePartialTakeProfitManageDetails = ({
     partialTakeProfitFirstProfit,
   } = aaveLikePartialTakeProfitParams
   const { triggerLtv: lambdaTriggerLtv } = aaveLikePartialTakeProfitLambdaData
+  const hasLambdaTriggerLtv = !!lambdaTriggerLtv
 
   const realizedProfit = useMemo(() => {
     return reduceHistoryEvents(historyEvents)
@@ -137,20 +138,23 @@ export const AavePartialTakeProfitManageDetails = ({
   ])
 
   const nextDynamicTriggerPriceValue = useMemo(() => {
-    return partialTakeProfitFirstProfit
+    return partialTakeProfitFirstProfit && hasLambdaTriggerLtv
       ? formatCryptoBalance(partialTakeProfitFirstProfit.triggerPrice)
       : '-'
-  }, [partialTakeProfitFirstProfit])
+  }, [partialTakeProfitFirstProfit, hasLambdaTriggerLtv])
   const nextDynamicTriggerPriceValueChange = useMemo(() => {
     if (
-      !partialTakeProfitFirstProfit ||
-      !nextTriggerProfit ||
-      partialTakeProfitFirstProfit.triggerPrice.eq(nextTriggerProfit.triggerPrice)
+      (!partialTakeProfitFirstProfit ||
+        !nextTriggerProfit ||
+        partialTakeProfitFirstProfit.triggerPrice.eq(nextTriggerProfit.triggerPrice)) &&
+      hasLambdaTriggerLtv
     ) {
       return undefined
     }
-    return [`${formatCryptoBalance(nextTriggerProfit.triggerPrice)} ${priceFormat}`]
-  }, [nextTriggerProfit, partialTakeProfitFirstProfit, priceFormat])
+    return nextTriggerProfit
+      ? [`${formatCryptoBalance(nextTriggerProfit.triggerPrice)} ${priceFormat}`]
+      : []
+  }, [hasLambdaTriggerLtv, nextTriggerProfit, partialTakeProfitFirstProfit, priceFormat])
 
   const realizedProfitInSelectedToken = useMemo(() => {
     return partialTakeProfitToken === 'collateral'
@@ -162,11 +166,11 @@ export const AavePartialTakeProfitManageDetails = ({
     partialTakeProfitToken,
   ])
   const estimatedToReceiveNextTriggerValue = useMemo(() => {
-    if (!partialTakeProfitFirstProfit || !realizedProfitInSelectedToken) {
+    if (!partialTakeProfitFirstProfit || !realizedProfitInSelectedToken || !hasLambdaTriggerLtv) {
       return '-'
     }
     return formatCryptoBalance(realizedProfitInSelectedToken.balance)
-  }, [partialTakeProfitFirstProfit, realizedProfitInSelectedToken])
+  }, [partialTakeProfitFirstProfit, realizedProfitInSelectedToken, hasLambdaTriggerLtv])
 
   const estimatedToReceiveNextTriggerValueChange = useMemo(() => {
     if (!partialTakeProfitFirstProfit || !nextTriggerProfit || !realizedProfitInSelectedToken) {
@@ -177,7 +181,10 @@ export const AavePartialTakeProfitManageDetails = ({
         ? nextTriggerProfit.realizedProfitInCollateral
         : nextTriggerProfit.realizedProfitInDebt
 
-    if (realizedProfitChangeInSelectedToken.balance.eq(realizedProfitInSelectedToken.balance)) {
+    if (
+      realizedProfitChangeInSelectedToken.balance.eq(realizedProfitInSelectedToken.balance) &&
+      hasLambdaTriggerLtv
+    ) {
       return undefined
     }
 
@@ -192,12 +199,13 @@ export const AavePartialTakeProfitManageDetails = ({
     partialTakeProfitToken,
     partialTakeProfitTokenData.symbol,
     realizedProfitInSelectedToken,
+    hasLambdaTriggerLtv,
   ])
   return (
     <>
       <DetailsSection
         title={t('system.partial-take-profit')}
-        badge={!!lambdaTriggerLtv}
+        badge={hasLambdaTriggerLtv}
         content={
           <DetailsSectionContentCardWrapper>
             <OmniContentCard
@@ -244,7 +252,7 @@ export const AavePartialTakeProfitManageDetails = ({
               change={estimatedToReceiveNextTriggerValueChange}
               changeVariant="positive"
               footnote={
-                partialTakeProfitFirstProfit
+                partialTakeProfitFirstProfit && hasLambdaTriggerLtv
                   ? [
                       `${formatAmount(
                         partialTakeProfitToken === 'collateral' // yes, this is the other way around
@@ -258,7 +266,11 @@ export const AavePartialTakeProfitManageDetails = ({
             />
             <OmniContentCard
               title={'Current profit/loss'}
-              value={formatAmount(primaryPnlValue, partialTakeProfitTokenData.symbol)}
+              value={
+                hasLambdaTriggerLtv
+                  ? formatAmount(primaryPnlValue, partialTakeProfitTokenData.symbol)
+                  : '-'
+              }
               modal={
                 <Text>
                   The profit or loss of your position, denominated in collateral, including realized
@@ -268,15 +280,20 @@ export const AavePartialTakeProfitManageDetails = ({
               }
               modalAsTooltip
               unit={partialTakeProfitTokenData.symbol}
-              footnote={[
-                `${formatAmount(secondaryPnlValue, partialTakeProfitSecondTokenData.symbol)} ${
-                  partialTakeProfitSecondTokenData.symbol
-                }`,
-              ]}
+              footnote={
+                hasLambdaTriggerLtv
+                  ? [
+                      `${formatAmount(
+                        secondaryPnlValue,
+                        partialTakeProfitSecondTokenData.symbol,
+                      )} ${partialTakeProfitSecondTokenData.symbol}`,
+                    ]
+                  : []
+              }
             />
             <OmniContentCard
               title={'Profit realized to wallet'}
-              value={realizedProfitValue}
+              value={hasLambdaTriggerLtv ? realizedProfitValue : '-'}
               modal={
                 <Text>
                   The cumulative amount of collateral or debt that you have realized as profits to
@@ -285,7 +302,7 @@ export const AavePartialTakeProfitManageDetails = ({
               }
               modalAsTooltip
               unit={partialTakeProfitTokenData.symbol}
-              footnote={realizedProfit ? [realizedProfitSecondValue] : []}
+              footnote={realizedProfit && hasLambdaTriggerLtv ? [realizedProfitSecondValue] : []}
             />
           </DetailsSectionContentCardWrapper>
         }

@@ -1,4 +1,3 @@
-import type { AaveLikeReserveConfigurationData } from '@oasisdex/dma-library'
 import { executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { AppLink } from 'components/Links'
@@ -16,6 +15,7 @@ import {
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
+import { formatAmount } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
@@ -33,24 +33,6 @@ type PartialTakeProfitSidebarStates =
 
 const refreshDataTime = 10 * 1000
 
-const profitRangeItem = [
-  '4,100 ETH/USD',
-  <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-    <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
-      531 ETH
-    </Text>
-  </Flex>,
-  <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-    <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
-      531 ETH
-    </Text>
-    <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
-      782,321 USDC
-    </Text>
-  </Flex>,
-  '2,332 ETH/USD',
-]
-
 export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   state,
   send,
@@ -58,12 +40,10 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   aaveLikePartialTakeProfitParams,
   aaveLikePartialTakeProfitLambdaData,
   onTxFinished,
-  aaveReserveState,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
   aaveLikePartialTakeProfitParams: AaveLikePartialTakeProfitParamsResult
   aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
-  aaveReserveState: AaveLikeReserveConfigurationData
   onTxFinished: () => void
 }) {
   const { t } = useTranslation()
@@ -84,6 +64,8 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     startingTakeProfitPrice,
     partialTakeProfitToken,
     partialTakeProfitProfits,
+    partialTakeProfitTokenData,
+    priceFormat,
   } = aaveLikePartialTakeProfitParams
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
@@ -137,13 +119,69 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     }
   }, [refreshingTriggerData])
 
+  const parsedProfits = useMemo(() => {
+    return partialTakeProfitProfits
+      ? partialTakeProfitProfits.map((profit) => {
+          const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
+          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
+          const secondaryToSelectedToken =
+            strategyConfig.tokens[partialTakeProfitToken === 'debt' ? 'collateral' : 'debt']
+          const realizedProfitValue = isSelectedTokenDebt
+            ? profit.realizedProfitInDebt
+            : profit.realizedProfitInCollateral
+          const totalProfitValue = isSelectedTokenDebt
+            ? profit.totalProfitInDebt
+            : profit.totalProfitInCollateral
+          const totalProfitSecondValue = isSelectedTokenDebt
+            ? profit.totalProfitInCollateral
+            : profit.totalProfitInDebt
+          return [
+            // Trigger price
+            `${formatAmount(profit.triggerPrice, selectedTokenSymbol)} ${priceFormat}`,
+            // Realized profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  realizedProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+            </Flex>,
+            // Total profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  totalProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
+                {`${formatAmount(
+                  totalProfitSecondValue.balance,
+                  secondaryToSelectedToken,
+                )} ${secondaryToSelectedToken}`}
+              </Text>
+            </Flex>,
+            // Stop loss
+            `${formatAmount(profit.stopLossDynamicPrice, selectedTokenSymbol)} ${priceFormat}`,
+          ]
+        })
+      : []
+  }, [
+    partialTakeProfitToken,
+    partialTakeProfitTokenData.symbol,
+    priceFormat,
+    partialTakeProfitProfits,
+    strategyConfig.tokens,
+  ])
+
   const sidebarInProgressContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
     <Grid gap={3}>
       <AddingStopLossAnimation />
       <InfoSectionTable
         title="Full realized profit range"
         headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
-        rows={[...Array.from({ length: 13 }, () => profitRangeItem)]}
+        rows={parsedProfits}
         wrapperSx={{
           gridGap: 1,
         }}
@@ -290,7 +328,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
           isGettingPartialTakeProfitTx={isGettingPartialTakeProfitTx}
           errors={errors}
           warnings={warnings}
-          profits={partialTakeProfitProfits}
+          profits={parsedProfits}
         />
       ),
       preparedRemove: sidebarRemoveTriggerContent,

@@ -19,11 +19,7 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { nbsp } from 'helpers/nbsp'
-import type {
-  ProfitsSimulationMapped,
-  TriggersApiError,
-  TriggersApiWarning,
-} from 'helpers/triggers'
+import type { TriggersApiError, TriggersApiWarning } from 'helpers/triggers'
 import { hundred } from 'helpers/zero'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -36,7 +32,7 @@ type PreparingPartialTakeProfitSidebarContentProps = {
   aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
-  profits?: ProfitsSimulationMapped[]
+  profits?: (string | JSX.Element)[][]
   isGettingPartialTakeProfitTx: boolean
 }
 
@@ -123,61 +119,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     }
     return startingTakeProfitPrice.lt(positionPriceRatio)
   }, [positionPriceRatio, startingTakeProfitPrice, lambdaStartingTakeProfitPrice])
-  const parsedProfits = useMemo(() => {
-    return profits
-      ? profits.map((profit) => {
-          const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
-          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
-          const secondaryToSelectedToken =
-            strategyConfig.tokens[partialTakeProfitToken === 'debt' ? 'collateral' : 'debt']
-          const realizedProfitValue = isSelectedTokenDebt
-            ? profit.realizedProfitInDebt
-            : profit.realizedProfitInCollateral
-          const totalProfitValue = isSelectedTokenDebt
-            ? profit.totalProfitInDebt
-            : profit.totalProfitInCollateral
-          const totalProfitSecondValue = isSelectedTokenDebt
-            ? profit.totalProfitInCollateral
-            : profit.totalProfitInDebt
-          return [
-            // Trigger price
-            `${formatAmount(profit.triggerPrice, selectedTokenSymbol)} ${priceFormat}`,
-            // Realized profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  realizedProfitValue.balance,
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-            </Flex>,
-            // Total profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  totalProfitValue.balance,
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
-                {`${formatAmount(
-                  totalProfitSecondValue.balance,
-                  secondaryToSelectedToken,
-                )} ${secondaryToSelectedToken}`}
-              </Text>
-            </Flex>,
-            // Stop loss
-            `${formatAmount(profit.stopLossDynamicPrice, selectedTokenSymbol)} ${priceFormat}`,
-          ]
-        })
-      : []
-  }, [
-    partialTakeProfitToken,
-    partialTakeProfitTokenData.symbol,
-    priceFormat,
-    profits,
-    strategyConfig.tokens,
-  ])
 
   return (
     <Grid
@@ -681,7 +622,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           </>
         }
         headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
-        rows={parsedProfits}
+        rows={profits}
         loading={isGettingPartialTakeProfitTx}
         wrapperSx={{
           gridGap: 1,
@@ -689,9 +630,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         }}
         defaultLimitItems={partialTakeProfitConfig.realizedProfitRangeVisible}
         expandItemsButtonLabel={
-          parsedProfits.length
+          profits && profits.length
             ? `See next ${
-                parsedProfits.length - partialTakeProfitConfig.realizedProfitRangeVisible
+                profits.length - partialTakeProfitConfig.realizedProfitRangeVisible
               } price triggers`
             : ''
         }
