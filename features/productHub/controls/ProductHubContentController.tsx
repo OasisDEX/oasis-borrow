@@ -7,6 +7,7 @@ import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHu
 import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
 import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
 import type {
+  ProductHubColumnKey,
   ProductHubFilters,
   ProductHubItem,
   ProductHubProductType,
@@ -19,29 +20,35 @@ import type { FC } from 'react'
 import React, { useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
+  hiddenColumns?: ProductHubColumnKey[]
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
+  limitRows?: number
+  networkId?: NetworkIds
+  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
+  onRowClick?: (row: ProductHubItem) => void
+  perPage?: number
   queryString: ProductHubQueryString
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
   selectedToken: string
   tableData: ProductHubItem[]
-  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
-  limitRows?: number
-  chainId?: NetworkIds
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
+  hiddenColumns,
   initialNetwork = [],
   initialProtocol = [],
+  limitRows,
+  networkId,
+  onChange,
+  onRowClick,
+  perPage,
   queryString,
   selectedFilters,
   selectedProduct,
   selectedToken,
   tableData,
-  onChange,
-  limitRows,
-  chainId,
 }) => {
   const {
     AjnaBase: ajnaBaseEnabled,
@@ -51,7 +58,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   } = useAppConfig('features')
 
   const ajnaOraclessPoolPairsKeys = Object.keys(
-    getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaOraclessPoolPairs,
+    getNetworkContracts(NetworkIds.MAINNET, networkId).ajnaOraclessPoolPairs,
   )
 
   const banner = useProductHubBanner({
@@ -94,7 +101,14 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [dataMatchedByFilters, selectedProduct],
   )
   const rows = useMemo(
-    () => parseRows(dataSortedByDefault, selectedProduct, chainId),
+    () =>
+      parseRows({
+        hiddenColumns,
+        networkId,
+        onRowClick,
+        product: selectedProduct,
+        rows: dataSortedByDefault,
+      }),
     [dataSortedByDefault, selectedProduct],
   )
 
@@ -104,15 +118,16 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         data={dataMatchedByNL}
         initialNetwork={initialNetwork}
         initialProtocol={initialProtocol}
+        networkId={networkId}
+        onChange={onChange}
         queryString={queryString}
         selectedFilters={selectedFilters}
         selectedProduct={selectedProduct}
         selectedToken={selectedToken}
-        onChange={onChange}
-        chainId={chainId}
       />
       <ProductHubTableController
         banner={banner}
+        perPage={perPage}
         rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
       />
     </AssetsTableContainer>

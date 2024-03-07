@@ -79,5 +79,10 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     }
   }
 
-  return getOmniServerSideProps({ locale, protocol, query })
+  return getOmniServerSideProps({
+    locale,
+    protocol,
+    query,
+    settings: omniProtocolSettings[protocol],
+  })
 }

@@ -1,4 +1,5 @@
 import { ActionBanner } from 'components/ActionBanner'
+import { AssetsTablePagination } from 'components/assetsTable/AssetsTablePagination'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import { sortRows } from 'components/assetsTable/helpers/sortRows'
 import type {
@@ -12,6 +13,7 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Icon } from 'components/Icon'
 import { StatefulTooltip } from 'components/Tooltip'
 import { getRandomString } from 'helpers/getRandomString'
+import { scrollTo } from 'helpers/scrollTo'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
@@ -45,19 +47,38 @@ export function AssetsTable({
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
+  perPage,
   rows,
   tooltips = [],
 }: AssetsTableProps) {
+  const [page, setPage] = useState<number>(1)
   const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
-  const rowKeys = Object.keys(rows[0])
-  const bannerRows = Math.min(rows.length - 1, 9)
+  const rowKeys = Object.keys(rows[0].items)
+  const totalPages = useMemo(
+    () => (perPage ? Math.ceil(rows.length / perPage) : 1),
+    [rows, perPage],
+  )
+  const container = useRef<HTMLDivElement>(null)
 
   const sortedRows = useMemo(
     () => (sortingSettings ? sortRows({ rows, sortingSettings }) : rows),
     [sortingSettings, rows],
   )
 
+  const paginatedRows = useMemo(
+    () => (perPage ? sortedRows.slice((page - 1) * perPage, page * perPage) : sortedRows),
+    [page, perPage, sortedRows],
+  )
+
+  const bannerRows = Math.min(paginatedRows.length - 1, 9)
+
+  useEffect(() => setPage(1), [rows])
+  useEffect(() => {
+    if ((container.current?.getBoundingClientRect().top ?? 0) < 0) scrollTo('assets-table')()
+  }, [page])
+
   function onSortHandler(label: string) {
+    setPage(1)
     if (sortingSettings?.direction === undefined || sortingSettings?.key !== label)
       setSortingSettings({ direction: 'desc', key: label })
     else if (sortingSettings?.direction === 'desc')
@@ -67,6 +88,8 @@ export function AssetsTable({
 
   return (
     <Box
+      id="assets-table"
+      ref={container}
       sx={{
         position: 'relative',
         px: ['24px', null, null, 4],
@@ -97,7 +120,9 @@ export function AssetsTable({
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
                 headerTranslationProps={headerTranslationProps}
-                isSortable={(rows[0][label] as AssetsTableSortableCell).sortable !== undefined}
+                isSortable={
+                  (rows[0].items[label] as AssetsTableSortableCell).sortable !== undefined
+                }
                 isSticky={isSticky}
                 label={label}
                 last={i + 1 === rowKeys.length}
@@ -116,12 +141,12 @@ export function AssetsTable({
             transition: '200ms opacity',
           }}
         >
-          {sortedRows.map((row, i) => (
+          {paginatedRows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
               <AssetsTableDataRow key={getRandomString()} row={row} rowKeys={rowKeys} />
               {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
-                  <td colSpan={Object.keys(row).length}>
+                  <td colSpan={Object.keys(row.items).length}>
                     <ActionBanner {...banner} />
                   </td>
                 </tr>
@@ -130,6 +155,14 @@ export function AssetsTable({
           ))}
         </Box>
       </Box>
+      {perPage && totalPages > 1 && (
+        <AssetsTablePagination
+          onNextPage={() => setPage(Math.min(totalPages, page + 1))}
+          onPrevPage={() => setPage(Math.max(1, page - 1))}
+          page={page}
+          totalPages={totalPages}
+        />
+      )}
     </Box>
   )
 }
@@ -258,7 +291,7 @@ export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
         position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
-        ...(hasUndisabledButton && {
+        ...((row.onClick || hasUndisabledButton) && {
           cursor: 'pointer',
           '&:hover': {
             boxShadow: 'buttonMenu',
@@ -269,13 +302,18 @@ export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
         }),
       }}
       {...{
-        ...(hasUndisabledButton && {
-          role: 'link',
-          onClick: () => {
-            if (ref.current && ref.current.querySelector('.table-action-button'))
-              (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
-          },
-        }),
+        ...(row.onClick
+          ? {
+              role: 'button',
+              onClick: row.onClick,
+            }
+          : hasUndisabledButton && {
+              role: 'link',
+              onClick: () => {
+                if (ref.current && ref.current.querySelector('.table-action-button'))
+                  (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
+              },
+            }),
       }}
     >
       {rowKeys.map((label, i) => (
@@ -298,7 +336,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
         },
       }}
     >
-      {(row[label] as AssetsTableSortableCell).value || row[label]}
+      {(row.items[label] as AssetsTableSortableCell).value || row.items[label]}
     </Box>
   )
 }

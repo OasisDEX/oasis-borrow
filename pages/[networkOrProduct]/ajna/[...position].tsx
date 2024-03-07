@@ -68,5 +68,6 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     locale,
     protocol: LendingProtocol.Ajna,
     query,
+    settings,
   })
 }

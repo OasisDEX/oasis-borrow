@@ -50,28 +50,30 @@ export function parseRows(
     })
 
     return {
-      collateralQuote: (
-        <AssetsTableDataCellAsset asset={label} icons={[collateralIcon, quoteIcon]} />
-      ),
-      ...parseProduct(
-        {
-          earnStrategy,
-          earnStrategyDescription,
-          fee,
-          label,
-          liquidity,
-          managementType,
-          maxLtv,
-          tooltips,
-          weeklyNetApy,
-        },
-        product,
-        quoteToken,
-      ),
-      protocolNetwork: (
-        <ProtocolLabel network={getNetworkById(networkId).name} protocol={LendingProtocol.Ajna} />
-      ),
-      action: <AssetsTableDataCellAction cta={upperFirst(product)} link={url} />,
+      items: {
+        collateralQuote: (
+          <AssetsTableDataCellAsset asset={label} icons={[collateralIcon, quoteIcon]} />
+        ),
+        ...parseProduct(
+          {
+            earnStrategy,
+            earnStrategyDescription,
+            fee,
+            label,
+            liquidity,
+            managementType,
+            maxLtv,
+            tooltips,
+            weeklyNetApy,
+          },
+          product,
+          quoteToken,
+        ),
+        protocolNetwork: (
+          <ProtocolLabel network={getNetworkById(networkId).name} protocol={LendingProtocol.Ajna} />
+        ),
+        action: <AssetsTableDataCellAction cta={upperFirst(product)} link={url} />,
+      },
     }
   })
 }

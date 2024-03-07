@@ -20,8 +20,13 @@ export interface AssetsTableSortableCell {
 }
 
 export type AssetsTableCell = AssetsTableCellContent | AssetsTableSortableCell
-export interface AssetsTableRowData {
+
+export interface AssetsTableRowItems {
   [key: string]: AssetsTableCell
+}
+export interface AssetsTableRowData {
+  items: AssetsTableRowItems
+  onClick?: () => void
 }
 
 export interface AssetsTableProps {
@@ -29,6 +34,7 @@ export interface AssetsTableProps {
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isLoading?: boolean
   isSticky?: boolean
+  perPage?: number
   rows: AssetsTableRowData[]
   tooltips?: string[]
 }

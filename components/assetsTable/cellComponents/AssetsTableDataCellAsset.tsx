@@ -3,9 +3,10 @@ import { allDefined } from 'helpers/allDefined'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Flex, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 interface AssetsTableDataCellAssetProps {
+  addon?: ReactNode
   asset: string
   icons?: string[]
   positionId?: string
@@ -15,6 +16,7 @@ interface AssetsTableDataCellAssetProps {
 }
 
 export function AssetsTableDataCellAsset({
+  addon,
   asset,
   icons = [],
   positionId,
@@ -28,7 +30,7 @@ export function AssetsTableDataCellAsset({
     <Flex sx={{ alignItems: 'center' }}>
       {icons.length > 0 && allDefined(...icons) && <TokensGroup tokens={icons} />}
       <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
-        <Text as="span" variant="boldParagraph1">
+        <Box variant="text.boldParagraph1">
           {prefix && (
             <Text as="span" sx={{ fontWeight: 'regular' }}>
               {prefix}{' '}
@@ -41,7 +43,8 @@ export function AssetsTableDataCellAsset({
               {suffix}
             </Text>
           )}
-        </Text>
+          {addon}
+        </Box>
         {(positionId || description) && (
           <Text
             as="span"

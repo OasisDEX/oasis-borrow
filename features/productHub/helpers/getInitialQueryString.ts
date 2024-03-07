@@ -18,5 +18,8 @@ export function getInitialQueryString(
     ...(searchParams.has('strategy') && {
       strategy: searchParams.get('strategy')?.split(',') as ProductHubQueryString['strategy'],
     }),
+    ...(searchParams.has('rewardsOnly') && {
+      rewardsOnly: [true],
+    }),
   }
 }

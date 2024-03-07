@@ -1134,7 +1134,7 @@
     },
     "aave": {
       "title": "Summer.fi × Aave",
-      "description": "Borrow Assets and Multiply Exposure with DeFi’s leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
+      "description": "Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
     },
     "morpho": {
       "title": "Summer.fi × Morpho Blue",
@@ -1160,7 +1160,11 @@
     },
     "title-single-token": "{{token}} - {{product}}",
     "title-product-w-tokens": "{{token1}}/{{token2}} - {{protocol}} - {{product}}",
-    "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}"
+    "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}",
+    "erc-4626": {
+      "title": "ERC-4626 on Summer.fi",
+      "description": ""
+    }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
   "setup-stop-loss": "Set up Stop-Loss",

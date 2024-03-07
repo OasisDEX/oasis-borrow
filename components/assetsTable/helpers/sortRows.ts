@@ -11,8 +11,8 @@ interface SortRowsProps {
 
 export function sortRows({ rows, sortingSettings }: SortRowsProps): AssetsTableRowData[] {
   return [...rows].sort((a, b) => {
-    const sortableA = (a[sortingSettings.key] as AssetsTableSortableCell).sortable
-    const sortableB = (b[sortingSettings.key] as AssetsTableSortableCell).sortable
+    const sortableA = (a.items[sortingSettings.key] as AssetsTableSortableCell).sortable
+    const sortableB = (b.items[sortingSettings.key] as AssetsTableSortableCell).sortable
 
     if (sortableA === sortableB) return 0
     else if (sortingSettings.direction === 'asc') return sortableA > sortableB ? 1 : -1
