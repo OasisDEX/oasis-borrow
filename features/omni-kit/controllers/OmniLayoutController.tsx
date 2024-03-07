@@ -53,7 +53,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     },
     dynamicMetadata: {
       elements: { faq },
-      values: { headlineDetails, isHeadlineDetailsLoading },
+      values: { headline, headlineDetails, isHeadlineDetailsLoading },
     },
   } = useOmniProductContext(productType)
 
@@ -71,13 +71,14 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         {...getOmniHeadlineProps({
           collateralIcon,
           collateralToken,
+          headline,
+          isYieldLoopWithData,
+          networkName: network.name,
           positionId,
           productType,
           protocol,
           quoteIcon,
           quoteToken,
-          networkName: network.name,
-          isYieldLoopWithData,
         })}
         details={[
           ...(headlineDetails || []),

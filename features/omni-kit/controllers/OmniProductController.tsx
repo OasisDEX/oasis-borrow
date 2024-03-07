@@ -48,6 +48,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
   isOracless?: boolean
+  label?: string
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
@@ -73,6 +74,7 @@ export const OmniProductController = <Auction, History, Position>({
   collateralToken,
   customState = ({ children }) => <>{children}</>,
   isOracless = false,
+  label,
   networkId,
   positionId,
   productType,
@@ -164,6 +166,7 @@ export const OmniProductController = <Auction, History, Position>({
                   {...getOmniHeadlineProps({
                     collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
+                    headline: label,
                     positionId,
                     productType: dpmPositionData?.product as OmniProductType,
                     protocol,
@@ -222,6 +225,7 @@ export const OmniProductController = <Auction, History, Position>({
                       isOpening={isOpening}
                       isOracless={!!isOracless}
                       isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
+                      label={label}
                       network={network}
                       networkId={networkId}
                       owner={dpmPosition.user}

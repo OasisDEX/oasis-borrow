@@ -25,6 +25,7 @@ interface OmniServerSidePropsWithoutTokens {
 
 type OmniServerSideProps = (OmniServerSidePropsWithTokens | OmniServerSidePropsWithoutTokens) & {
   isProductPageValid?: (params: OmniProductPage) => boolean
+  label?: string
   locale?: string
   protocol: OmniSupportedProtocols
   query: ParsedUrlQuery
@@ -34,6 +35,7 @@ type OmniServerSideProps = (OmniServerSidePropsWithTokens | OmniServerSidePropsW
 export async function getOmniServerSideProps({
   collateralToken,
   isProductPageValid = () => true,
+  label,
   locale,
   protocol,
   query,
@@ -68,6 +70,7 @@ export async function getOmniServerSideProps({
 
   const omniProductPage = {
     collateralToken: caseSensitiveCollateralToken,
+    label,
     networkId,
     positionId,
     productType: castedProductType,

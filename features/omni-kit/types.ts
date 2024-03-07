@@ -154,12 +154,13 @@ export type OmniFormAction = OmniBorrowFormAction | OmniEarnFormAction | OmniMul
 export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 export interface OmniProductPage {
   collateralToken: string
+  label?: string
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
+  protocol: OmniSupportedProtocols
   quoteToken: string
   version?: string
-  protocol: OmniSupportedProtocols
 }
 
 export type OmniValidations = {

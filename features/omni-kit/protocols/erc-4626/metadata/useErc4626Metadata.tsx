@@ -11,7 +11,7 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
   const suppressValidation = false
 
   const {
-    environment: { productType, isOpening },
+    environment: { label, productType, isOpening },
   } = useOmniGeneralContext()
 
   // TODO: replace with real validation
@@ -44,6 +44,7 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
           isFormEmpty: false,
           sidebarTitle: 'Sidebar',
           footerColumns: isOpening ? 2 : 3,
+          headline: label,
           headlineDetails: [],
           extraDropdownItems: [],
           earnWithdrawMax: zero,
@@ -53,6 +54,7 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
           faq: <>FAQ placeholder</>,
           overviewContent: <>Overview content placeholder</>,
           overviewFooter: <>Overview footer placeholder</>,
+          overviewBanner: <>Banner</>,
           earnFormOrder: <>Form order placeholder</>,
           earnFormOrderAsElement: () => <>Form order placeholder</>,
         },

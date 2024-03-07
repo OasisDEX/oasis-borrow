@@ -56,6 +56,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
 
   return getOmniServerSideProps({
     collateralToken: erc4626LabelsMap[label].token,
+    label: erc4626LabelsMap[label].name,
     locale,
     protocol: erc4626LabelsMap[label].protocol,
     query,
