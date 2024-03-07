@@ -95,7 +95,7 @@ export function useAaveLikeData({
     useMemo(
       () =>
         dpmPositionData ? from(getTriggersRequest({ dpm: dpmPositionData, networkId })) : EMPTY,
-      [dpmPositionData, aavePositionData, networkId],
+      [dpmPositionData, networkId],
     ),
   )
 
