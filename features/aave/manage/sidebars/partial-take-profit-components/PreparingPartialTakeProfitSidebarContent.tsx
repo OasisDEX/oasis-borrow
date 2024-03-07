@@ -34,6 +34,7 @@ type PreparingPartialTakeProfitSidebarContentProps = {
   warnings?: TriggersApiWarning[]
   profits?: (string | JSX.Element)[][]
   isGettingPartialTakeProfitTx: boolean
+  frontendErrors: string[]
 }
 
 export const PreparingPartialTakeProfitSidebarContent = ({
@@ -44,6 +45,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
   warnings,
   profits,
   isGettingPartialTakeProfitTx,
+  frontendErrors,
 }: PreparingPartialTakeProfitSidebarContentProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const {
@@ -67,12 +69,8 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     currentLtv,
   } = aaveLikePartialTakeProfitParams
 
-  const {
-    hasStopLoss,
-    stopLossLevelLabel,
-    trailingStopLossDistanceLabel,
-    startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
-  } = aaveLikePartialTakeProfitLambdaData
+  const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel } =
+    aaveLikePartialTakeProfitLambdaData
 
   const inputMask = useMemo(() => {
     return createNumberMask({
@@ -108,17 +106,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     const riskRatio = new RiskRatio(ltv.div(hundred), RiskRatio.TYPE.LTV)
     return `${riskRatio.multiple.toFixed(2)}x`
   }, [])
-
-  const ltvTooHigh = useMemo(() => {
-    return triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry)
-  }, [triggerLtv, withdrawalLtv, withdrawalLtvSliderConfig.maxBoundry])
-  const startingTakeProfitPriceTooLow = useMemo(() => {
-    if (lambdaStartingTakeProfitPrice) {
-      // price can fall after setting a starting take profit price
-      return false
-    }
-    return startingTakeProfitPrice.lt(positionPriceRatio)
-  }, [positionPriceRatio, startingTakeProfitPrice, lambdaStartingTakeProfitPrice])
 
   return (
     <Grid
@@ -259,14 +246,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           Now: {formatCryptoBalance(positionPriceRatio)} {priceFormat}
         </Text>
       </Box>
-      <MessageCard
-        type="error"
-        messages={[
-          startingTakeProfitPriceTooLow
-            ? 'Starting take profit price should be higher or equal the current price.'
-            : '',
-        ].filter(Boolean)}
-      />
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {partialTakeProfitConfig.takeProfitStartingPercentageOptions.map((percentage) => (
           <Button
@@ -450,11 +429,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                     LTV after execution:
                   </Text>
                   <FormatPercentWithSmallPercentCharacter
-                    sx={{
-                      ...{
-                        color: ltvTooHigh ? 'warning100' : undefined,
-                      },
-                    }}
                     value={x.div(lambdaPercentageDenomination)}
                   />
                 </Text>
@@ -507,15 +481,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         </Flex>
       </Box>
       <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Partial-Take-Profit" />
-      <MessageCard
-        withBullet={false}
-        type="error"
-        messages={[
-          ltvTooHigh
-            ? `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`
-            : '',
-        ].filter(Boolean)}
-      />
+      <MessageCard type="error" messages={frontendErrors} withBullet={frontendErrors.length > 1} />
       <Divider />
       <SidebarAccordion
         title={

@@ -66,7 +66,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     partialTakeProfitProfits,
     partialTakeProfitTokenData,
     priceFormat,
+    withdrawalLtvSliderConfig,
+    positionPriceRatio,
   } = aaveLikePartialTakeProfitParams
+  const { startingTakeProfitPrice: lambdaStartingTakeProfitPrice } =
+    aaveLikePartialTakeProfitLambdaData
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
     if (transactionStep === 'preparedRemove') {
@@ -211,6 +215,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     }
     return null
   }
+
   const executionAction = () => {
     void executeCall()
       .then(() => {
@@ -223,8 +228,28 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       })
   }
 
+  const frontendErrors = useMemo(() => {
+    const ltvTooHigh = triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry)
+    const startingTakeProfitPriceTooLow = !lambdaStartingTakeProfitPrice
+      ? startingTakeProfitPrice.lt(positionPriceRatio)
+      : false
+    return [
+      ltvTooHigh &&
+        `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`,
+      startingTakeProfitPriceTooLow &&
+        'Starting take profit price should be higher or equal the current price.',
+    ].filter(Boolean) as string[]
+  }, [
+    lambdaStartingTakeProfitPrice,
+    positionPriceRatio,
+    startingTakeProfitPrice,
+    triggerLtv,
+    withdrawalLtv,
+    withdrawalLtvSliderConfig.maxBoundry,
+  ])
+
   const isDisabled = useMemo(() => {
-    if (!aaveLikePartialTakeProfitLambdaData.hasStopLoss) {
+    if (frontendErrors.length) {
       return true
     }
     if (
@@ -237,11 +262,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       return false
     }
     return false
-  }, [
-    isGettingPartialTakeProfitTx,
-    transactionStep,
-    aaveLikePartialTakeProfitLambdaData.hasStopLoss,
-  ])
+  }, [frontendErrors.length, isGettingPartialTakeProfitTx, transactionStep])
 
   const primaryButtonAction = () => {
     if (['prepare', 'preparedRemove'].includes(transactionStep)) {
@@ -327,6 +348,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
           aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
           isGettingPartialTakeProfitTx={isGettingPartialTakeProfitTx}
           errors={errors}
+          frontendErrors={frontendErrors}
           warnings={warnings}
           profits={parsedProfits}
         />
