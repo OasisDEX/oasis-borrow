@@ -1,6 +1,7 @@
 import { Skeleton } from 'components/Skeleton'
 import type { ReactNode } from 'react'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Grid, Text } from 'theme-ui'
 
@@ -27,6 +28,7 @@ export function InfoSectionTable({
   expandItemsButtonLabel,
   loading = false,
 }: InfoSectionTableProps) {
+  const { t } = useTranslation()
   const [limitItems, setLimitItems] =
     useState<InfoSectionTableProps['defaultLimitItems']>(defaultLimitItems)
   const defaultLoadingItems = typeof defaultLimitItems === 'number' ? defaultLimitItems : 3
@@ -80,6 +82,13 @@ export function InfoSectionTable({
             ))}
           </Grid>
         ))}
+      {!loading && rows && (rows.length === 0 || !rows) && (
+        <Grid as="li" columns={1} sx={{ listStyle: 'none', textAlign: 'center', mt: 4 }}>
+          <Text variant="paragraph3" color="neutral80">
+            {t('system.no-data-to-display')}
+          </Text>
+        </Grid>
+      )}
       {rows &&
         rows
           .filter((_, itemIndex) => {

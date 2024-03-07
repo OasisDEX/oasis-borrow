@@ -271,7 +271,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   ])
 
   const isDisabled = useMemo(() => {
-    if (frontendErrors.length) {
+    if (frontendErrors.length || errors.length) {
       return true
     }
     if (
@@ -284,7 +284,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       return false
     }
     return false
-  }, [frontendErrors.length, isGettingPartialTakeProfitTx, transactionStep])
+  }, [errors.length, frontendErrors.length, isGettingPartialTakeProfitTx, transactionStep])
 
   const primaryButtonAction = () => {
     if (['prepare', 'preparedRemove'].includes(transactionStep)) {
@@ -327,7 +327,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       return true
     }
     return false
-  }, [action, transactionStep, triggerLtv])
+  }, [action, lambdaTriggerLtv, transactionStep])
 
   const secondaryButtonLabel = () => {
     if (transactionStep === 'prepare') {
