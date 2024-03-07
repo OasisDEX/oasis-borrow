@@ -94,9 +94,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         })}
         details={[
           ...(headlineDetails || []),
-          ...(!isOracless && !isYieldLoopWithData && !isOpening
+          ...(!isOracless && !isYieldLoopWithData
             ? [
-                ...(ltv
+                ...(ltv && !isOpening
                   ? [
                       {
                         label: t('omni-kit.headline.details.current-ltv'),
