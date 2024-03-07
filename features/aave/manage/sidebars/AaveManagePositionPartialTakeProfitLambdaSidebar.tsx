@@ -168,18 +168,20 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   }, [refreshingTriggerData])
 
   const resetXStateData = () => {
-    send({
-      type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA',
-      partialTakeProfitTxDataLambda: undefined,
-    })
-    send({
-      type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
-      partialTakeProfitFirstProfit: undefined,
-    })
-    send({
-      type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA',
-      partialTakeProfitProfits: undefined,
-    })
+    if (action === TriggerAction.Remove) {
+      send({
+        type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA',
+        partialTakeProfitTxDataLambda: undefined,
+      })
+      send({
+        type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
+        partialTakeProfitFirstProfit: undefined,
+      })
+      send({
+        type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA',
+        partialTakeProfitProfits: undefined,
+      })
+    }
   }
 
   const executeCall = async () => {
@@ -198,7 +200,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     void executeCall()
       .then(() => {
         if (action === TriggerAction.Remove) {
-          setTransactionStep('finished')
+          setTimeout(() => {
+            setTransactionStep('finished')
+          }, refreshDataTime)
         } else {
           setRefreshingTriggerData(true)
           setTransactionStep('finished')
@@ -246,6 +250,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     }
     if (
       isGettingPartialTakeProfitTx ||
+      refreshingTriggerData ||
       ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
     ) {
       return true
@@ -254,7 +259,13 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       return false
     }
     return false
-  }, [errors.length, frontendErrors.length, isGettingPartialTakeProfitTx, transactionStep])
+  }, [
+    errors.length,
+    frontendErrors.length,
+    isGettingPartialTakeProfitTx,
+    refreshingTriggerData,
+    transactionStep,
+  ])
 
   const primaryButtonAction = () => {
     if (['prepare', 'preparedRemove'].includes(transactionStep)) {
@@ -569,7 +580,10 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       ),
     }[transactionStep],
     primaryButton: {
-      isLoading: isGettingPartialTakeProfitTx || refreshingTriggerData,
+      isLoading:
+        isGettingPartialTakeProfitTx ||
+        refreshingTriggerData ||
+        transactionStep === 'removeInProgress',
       disabled: isDisabled,
       label: primaryButtonLabel(),
       action: primaryButtonAction,

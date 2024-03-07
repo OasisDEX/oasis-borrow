@@ -165,7 +165,10 @@ export const useLambdaDebouncedPartialTakeProfit = ({
           if (res.simulation) {
             const profitsMapped = mapProfits(res.simulation)
             setProfits(profitsMapped)
-            if (state.context.partialTakeProfitFirstProfit === undefined) {
+            if (
+              state.context.partialTakeProfitFirstProfit === undefined ||
+              transactionStep === 'finished'
+            ) {
               setFirstProfit(profitsMapped[0])
             }
           }
