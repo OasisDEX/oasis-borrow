@@ -386,13 +386,13 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           footerColumns: isOpening ? 2 : 3,
           headlineDetails: [
             {
-              label: t('ajna.position-page.earn.common.headline.current-apy'),
+              label: t('omni-kit.headline.details.current-apy'),
               value: earnPosition.pool.lendApr
                 ? formatDecimalAsPercent(earnPosition.pool.lendApr)
                 : notAvailable,
             },
             {
-              label: t('ajna.position-page.earn.common.headline.7-days-avg-apy'),
+              label: t('omni-kit.headline.details.7-days-avg-apy'),
               value: earnPosition.poolApy.per7d
                 ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
                 : notAvailable,

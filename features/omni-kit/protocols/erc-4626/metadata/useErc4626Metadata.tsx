@@ -3,9 +3,13 @@ import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { sparks } from 'theme/icons'
 
 export const useErc4626Metadata: GetOmniMetadata = () => {
+  const { t } = useTranslation()
+
   // TODO: get from feature flags
   const safetySwitch = false
   const suppressValidation = false
@@ -45,7 +49,23 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
           sidebarTitle: 'Sidebar',
           footerColumns: isOpening ? 2 : 3,
           headline: label,
-          headlineDetails: [],
+          // TODO replace with real values
+          headlineDetails: [
+            {
+              label: t('omni-kit.headline.details.current-apy'),
+              value: '0%',
+              labelTooltip: 'asd',
+              labelIcon: sparks,
+            },
+            {
+              label: t('omni-kit.headline.details.30-days-avg-apy'),
+              value: '0%',
+            },
+            {
+              label: t('omni-kit.headline.details.tvl'),
+              value: '$0.00',
+            },
+          ],
           extraDropdownItems: [],
           earnWithdrawMax: zero,
           earnAfterWithdrawMax: zero,

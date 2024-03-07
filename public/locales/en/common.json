@@ -2760,8 +2760,12 @@
       "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
       "yield-multiple": "yield multiple",
       "details": {
+        "30-days-avg-apy": "30 days average APY",
+        "7-days-avg-apy": "7 days average APY",
+        "current-apy": "Current APY",
+        "current-ltv": "Current LTV",
         "current-market-price": "Current Market Price",
-        "current-ltv": "Current LTV"
+        "tvl": "Total Value Locked"
       }
     },
     "content-card": {
