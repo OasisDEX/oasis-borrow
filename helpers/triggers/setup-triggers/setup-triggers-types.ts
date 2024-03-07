@@ -150,7 +150,13 @@ export interface SetupAavePartialTakeProfitParams {
   triggerLtv: BigNumber
   withdrawalLtv: BigNumber
   startingTakeProfitPrice: BigNumber
-  stopLoss?: BigNumber
+  stopLoss?: {
+    triggerData: {
+      executionLTV: BigNumber
+      token: string
+    }
+    action: TriggerAction.Add | TriggerAction.Update
+  }
   trailingStopLoss?: BigNumber
   networkId: number
   strategy: StrategyLike

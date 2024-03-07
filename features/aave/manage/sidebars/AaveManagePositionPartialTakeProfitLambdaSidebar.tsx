@@ -68,8 +68,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     priceFormat,
     withdrawalLtvSliderConfig,
     positionPriceRatio,
+    newStopLossLtv,
   } = aaveLikePartialTakeProfitParams
-  const { startingTakeProfitPrice: lambdaStartingTakeProfitPrice } =
+  const { startingTakeProfitPrice: lambdaStartingTakeProfitPrice, currentStopLossLevel } =
     aaveLikePartialTakeProfitLambdaData
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
@@ -92,6 +93,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       startingTakeProfitPrice,
       partialTakeProfitToken,
       action,
+      newStopLossLtv:
+        (currentStopLossLevel && !newStopLossLtv.eq(currentStopLossLevel)) || !currentStopLossLevel
+          ? newStopLossLtv
+          : undefined,
+      newStopLossAction: currentStopLossLevel ? TriggerAction.Update : TriggerAction.Add,
     })
 
   useEffect(() => {
@@ -107,6 +113,19 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     // but only after its been loaded from the lambda (and its there)
     // should be empty
   }, [])
+
+  useEffect(() => {
+    if (
+      aaveLikePartialTakeProfitLambdaData.currentStopLossLevel &&
+      !aaveLikePartialTakeProfitLambdaData.currentStopLossLevel.eq(newStopLossLtv)
+    ) {
+      aaveLikePartialTakeProfitParams.setNewStopLossLtv(
+        aaveLikePartialTakeProfitLambdaData.currentStopLossLevel,
+      )
+    }
+    // this handles only when the stop loss in lambda is loaded
+    // user can update SL level with the slider
+  }, [aaveLikePartialTakeProfitLambdaData.currentStopLossLevel])
 
   useEffect(() => {
     if (refreshingTriggerData) {

@@ -67,9 +67,13 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     setWithdrawalLtv,
     withdrawalLtvSliderConfig,
     currentLtv,
+    newStopLossLtv,
+    setNewStopLossLtv,
+    newStopLossSliderConfig,
+    dynamicStopLossPriceForView,
   } = aaveLikePartialTakeProfitParams
 
-  const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel } =
+  const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel, currentStopLossLevel } =
     aaveLikePartialTakeProfitLambdaData
 
   const inputMask = useMemo(() => {
@@ -327,7 +331,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           rightBoundryFormatter={() => null}
           lastValue={triggerLtv}
           leftBoundry={triggerLtv}
-          rightBoundry={new BigNumber(60)}
           onChange={(x) => {
             setTriggerLtv(x)
           }}
@@ -486,13 +489,13 @@ export const PreparingPartialTakeProfitSidebarContent = ({
       <SidebarAccordion
         title={
           <>
-            Configure Stop Loss Loan to Value
+            Configure Stop-Loss Loan to Value
             <StatefulTooltip
               tooltip={
                 <Text variant="paragraph4">
-                  Your Stop Loss Loan to Value is the specific debt to collateral ratio at which you
+                  Your Stop-Loss Loan to Value is the specific debt to collateral ratio at which you
                   have specified you want to be stopped out and have your position closed. If you
-                  have already setup a stop loss LTV, you can keep it the same or change it.
+                  have already setup a stop-Loss LTV, you can keep it the same or change it.
                 </Text>
               }
               containerSx={{ display: 'inline' }}
@@ -512,19 +515,26 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         }
         additionalDescriptionComponent={
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mb: 3 }}>
-            Your previously configured stop loss LTV will remain unchanged, unless edited below.
+            Your previously configured stop-Loss LTV will remain unchanged, unless edited below.
           </Text>
         }
         openByDefault={!hasStopLoss}
       >
         <SliderValuePicker
-          disabled={!!hasStopLoss}
-          step={0.01}
+          disabled={!!hasStopLoss && !!trailingStopLossDistanceLabel}
           leftBoundryFormatter={(x) => {
             if (x.isZero()) {
               return '-'
             }
-            return formatPercent(x)
+            return (
+              <Flex sx={{ flexDirection: 'column' }}>
+                <Text variant="paragraph2">
+                  <FormatPercentWithSmallPercentCharacter
+                    value={x.div(lambdaPercentageDenomination)}
+                  />
+                </Text>
+              </Flex>
+            )
           }}
           rightBoundryFormatter={(x) => {
             if (x.isZero()) {
@@ -534,26 +544,47 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           }}
           leftLabel={'Trigger LTV'}
           rightLabel={'Dynamic stop price'}
-          sliderPercentageFill={new BigNumber(50)}
-          lastValue={new BigNumber(30)}
-          minBoundry={new BigNumber(0)}
-          maxBoundry={new BigNumber(60)}
-          leftBoundry={new BigNumber(30)}
-          rightBoundry={new BigNumber(60)}
-          onChange={(x) => {
-            console.info('x', x)
-          }}
+          lastValue={newStopLossLtv}
+          leftBoundry={newStopLossLtv}
+          rightBoundry={dynamicStopLossPriceForView}
+          {...newStopLossSliderConfig}
+          onChange={setNewStopLossLtv}
           useRcSlider
+          customSliderProps={
+            currentStopLossLevel
+              ? {
+                  marks: {
+                    [currentStopLossLevel.toNumber()]: (
+                      <Text
+                        variant="boldParagraph3"
+                        sx={{ fontSize: '10px', textTransform: 'uppercase' }}
+                      >
+                        Current Stop-Loss
+                      </Text>
+                    ),
+                  },
+                }
+              : {}
+          }
         />
         <MessageCard
           sx={{ mt: 3 }}
           type="ok"
           withBullet={false}
           messages={[
-            hasStopLoss
-              ? `You already have a ${
-                  stopLossLevelLabel ? 'Stop-Loss' : 'Trailing Stop-Loss'
-                } trigger set at${nbsp}${stopLossLevelLabel || trailingStopLossDistanceLabel}`
+            !hasStopLoss
+              ? `The Stop-Loss you configure will close your position to the same asset you have chosen to take profit in: ${partialTakeProfitToken}.`
+              : '',
+            hasStopLoss && stopLossLevelLabel
+              ? `You already have a Stop-Loss trigger set at${nbsp}${stopLossLevelLabel}. You can update the Stop-Loss LTV above and it all be handled within your Partial Take Profit transaction.`
+              : '',
+            hasStopLoss && trailingStopLossDistanceLabel
+              ? `You already have a Trailing Stop-Loss trigger set at${nbsp}${trailingStopLossDistanceLabel}.`
+              : '',
+            hasStopLoss && currentStopLossLevel && !currentStopLossLevel.eq(newStopLossLtv)
+              ? `Your stop-Loss will be updated to a new value: ${formatPercent(newStopLossLtv, {
+                  precision: 2,
+                })}. Use the dot on the slider if you want to reset it.`
               : '',
           ].filter(Boolean)}
         />
@@ -568,7 +599,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                 <Text variant="paragraph4">
                   Your Auto Take Profit automation run continuously. The Realized Profit Range
                   simulates and forecasts how your Auto Take Profit will perform and impact your
-                  Stop Loss based on different Trigger Prices. You can turn off Auto Take Profit at
+                  Stop-Loss based on different Trigger Prices. You can turn off Auto Take Profit at
                   any time, if you feel satisfied at specific Trigger Price.
                 </Text>
               }
@@ -587,7 +618,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             </StatefulTooltip>
           </>
         }
-        headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
+        headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop-Loss']}
         rows={profits}
         loading={isGettingPartialTakeProfitTx}
         wrapperSx={{
@@ -596,9 +627,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         }}
         defaultLimitItems={partialTakeProfitConfig.realizedProfitRangeVisible}
         expandItemsButtonLabel={
-          profits && profits.length
+          (profits && profits.length) || isGettingPartialTakeProfitTx
             ? `See next ${
-                profits.length - partialTakeProfitConfig.realizedProfitRangeVisible
+                (profits?.length || 0) - partialTakeProfitConfig.realizedProfitRangeVisible
               } price triggers`
             : ''
         }

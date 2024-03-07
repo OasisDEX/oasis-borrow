@@ -1,8 +1,8 @@
-import { AppSpinner } from 'helpers/AppSpinner'
+import { Skeleton } from 'components/Skeleton'
 import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Grid, Text } from 'theme-ui'
 
 interface InfoSectionTableProps {
   title?: ReactNode
@@ -29,6 +29,7 @@ export function InfoSectionTable({
 }: InfoSectionTableProps) {
   const [limitItems, setLimitItems] =
     useState<InfoSectionTableProps['defaultLimitItems']>(defaultLimitItems)
+  const defaultLoadingItems = typeof defaultLimitItems === 'number' ? defaultLimitItems : 3
   return (
     <Grid
       as="ul"
@@ -42,13 +43,6 @@ export function InfoSectionTable({
         ...wrapperSx,
       }}
     >
-      {loading && (
-        <Flex
-          sx={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }}
-        >
-          <AppSpinner size={30} />
-        </Flex>
-      )}
       {title && (
         <Box as="li" sx={{ listStyle: 'none' }}>
           <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold', mb: 2 }}>
@@ -69,6 +63,23 @@ export function InfoSectionTable({
           ))}
         </Grid>
       )}
+      {loading &&
+        (!rows || rows.length === 0) &&
+        new Array(defaultLoadingItems).fill(0).map((_, index) => (
+          <Grid
+            as="li"
+            key={`InfoSectionTable_${title}_${index}`}
+            columns={headers?.length}
+            sx={{ listStyle: 'none' }}
+          >
+            {headers?.map((_, cellIndex) => (
+              <Skeleton
+                key={`InfoSectionTable_${title}_${index}_${cellIndex}`}
+                sx={{ width: '80%', height: '35px' }}
+              />
+            ))}
+          </Grid>
+        ))}
       {rows &&
         rows
           .filter((_, itemIndex) => {
@@ -101,7 +112,7 @@ export function InfoSectionTable({
               )}
             </Grid>
           ))}
-      {expandItemsButtonLabel && limitItems !== 'all' && (
+      {expandItemsButtonLabel && !loading && limitItems !== 'all' && (
         <Box as="li" sx={{ listStyle: 'none' }}>
           <Button
             variant="textual"
@@ -112,7 +123,7 @@ export function InfoSectionTable({
           </Button>
         </Box>
       )}
-      {expandItemsButtonLabel && limitItems === 'all' && (
+      {expandItemsButtonLabel && !loading && limitItems === 'all' && (
         <Box as="li" sx={{ listStyle: 'none' }}>
           <Button
             variant="textual"
@@ -121,6 +132,11 @@ export function InfoSectionTable({
           >
             Collapse
           </Button>
+        </Box>
+      )}
+      {expandItemsButtonLabel && loading && (
+        <Box as="li" sx={{ listStyle: 'none', mt: 3 }}>
+          <Skeleton color="interactive" sx={{ width: '50%', height: '15px', margin: '0 auto' }} />
         </Box>
       )}
     </Grid>
