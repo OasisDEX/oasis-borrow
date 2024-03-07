@@ -18,7 +18,7 @@ export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTrigger
   )
   if (trailingStopLossTriggersNames.length > 1) {
     console.warn(
-      'Warning: more than one trailing stop loss trigger found:',
+      'Warning: more than one trailing Stop-Loss trigger found:',
       trailingStopLossTriggersNames,
     )
   }

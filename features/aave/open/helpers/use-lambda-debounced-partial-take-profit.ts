@@ -57,6 +57,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
   startingTakeProfitPrice,
   partialTakeProfitToken,
   action,
+  transactionStep,
 }: (OpenAaveStateProps | ManageAaveStateProps) & {
   triggerLtv: BigNumber
   newStopLossLtv?: BigNumber
@@ -65,6 +66,13 @@ export const useLambdaDebouncedPartialTakeProfit = ({
   partialTakeProfitToken: string
   action: TriggerAction
   newStopLossAction: TriggerAction.Add | TriggerAction.Update
+  transactionStep:
+    | 'prepare'
+    | 'preparedRemove'
+    | 'addInProgress'
+    | 'updateInProgress'
+    | 'removeInProgress'
+    | 'finished'
 }) => {
   const [isGettingPartialTakeProfitTx, setIsGettingPartialTakeProfitTx] = useState(false)
   const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
@@ -99,6 +107,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
       const { context } = state
       const dpmAccount = context.effectiveProxyAddress
       if (
+        !['prepare', 'preparedRemove'].includes(transactionStep) ||
         !dpmAccount ||
         !collateralAddress ||
         !debtAddress ||

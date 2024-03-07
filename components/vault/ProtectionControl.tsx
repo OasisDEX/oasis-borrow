@@ -113,11 +113,11 @@ function getZeroDebtProtectionBannerProps({
     return {
       useTranslationKeys: false,
       showLink: false,
-      header: 'Stop loss protection is not yet available for these positions.',
+      header: 'Stop-Loss protection is not yet available for these positions.',
       description: (
         <>
-          Currently, the Summer.Fi Stop loss is not yet available for this position. Let the team
-          know if you would like to set-up a Stop loss for this position on{' '}
+          Currently, the Summer.Fi Stop-Loss is not yet available for this position. Let the team
+          know if you would like to set-up a Stop-Loss for this position on{' '}
           <AppLink href="mailto:support@summer.fi">support@summer.fi</AppLink> or our{' '}
           <AppLink href={EXTERNAL_LINKS.DISCORD}>Discord</AppLink>.
         </>

@@ -1,28 +1,34 @@
 import { executeTransaction } from 'blockchain/better-calls/dpm-account'
-import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
+import { DimmedList } from 'components/DImmedList'
+import { InfoSection } from 'components/infoSection/InfoSection'
 import { AppLink } from 'components/Links'
+import { MessageCard } from 'components/MessageCard'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { useGasEstimation } from 'features/aave/hooks/useGasEstimation'
+import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import { PreparingPartialTakeProfitSidebarContent } from 'features/aave/manage/sidebars/partial-take-profit-components/PreparingPartialTakeProfitSidebarContent'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import { useLambdaDebouncedPartialTakeProfit } from 'features/aave/open/helpers/use-lambda-debounced-partial-take-profit'
+import { StopLossTxCompleteBanner } from 'features/aave/open/sidebars/components/StopLossTxCompleteBanner'
 import {
   sidebarAutomationFeatureCopyMap,
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount } from 'helpers/formatters/format'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 type PartialTakeProfitSidebarStates =
   | 'prepare'
@@ -53,12 +59,18 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     featureName: t(sidebarAutomationFeatureCopyMap['partialTakeProfit']), // the same param, two different names
   }
   const [refreshingTriggerData, setRefreshingTriggerData] = useState(false)
+  const { strategyConfig, strategyInfo, partialTakeProfitTxDataLambda } = state.context
   const { signer } = useWalletManagement()
+  const gasEstimation = useGasEstimation({
+    transaction: partialTakeProfitTxDataLambda,
+    networkId: strategyConfig.networkId,
+    signer,
+  })
+  const TransactionCost = useTransactionCostWithLoading({ transactionCost: gasEstimation })
   const [triggerId, setTriggerId] = useState<string>(
     aaveLikePartialTakeProfitLambdaData.triggerId ?? '0',
   )
   const [transactionStep, setTransactionStep] = useState<PartialTakeProfitSidebarStates>('prepare')
-  const { strategyConfig } = state.context
   const {
     triggerLtv,
     withdrawalLtv,
@@ -104,6 +116,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
           ? newStopLossLtv
           : undefined,
       newStopLossAction: currentStopLossLevel ? TriggerAction.Update : TriggerAction.Add,
+      transactionStep,
     })
 
   useEffect(() => {
@@ -139,101 +152,22 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
 
   useEffect(() => {
     if (refreshingTriggerData) {
-      setTimeout(() => {
-        setRefreshingTriggerData(false)
-        onTxFinished()
-        if (aaveLikePartialTakeProfitLambdaData.triggerId !== triggerId) {
-          setTriggerId(aaveLikePartialTakeProfitLambdaData.triggerId ?? '0')
-          setRefreshingTriggerData(false)
-        } else {
-          setRefreshingTriggerData(true)
-        }
-      }, refreshDataTime)
+      const checkTriggerData = () => {
+        setTimeout(() => {
+          onTxFinished()
+          if (aaveLikePartialTakeProfitLambdaData.triggerId !== triggerId) {
+            setTriggerId(aaveLikePartialTakeProfitLambdaData.triggerId ?? '0')
+            setRefreshingTriggerData(false)
+          } else {
+            checkTriggerData()
+          }
+        }, refreshDataTime)
+      }
+      checkTriggerData()
     }
   }, [refreshingTriggerData])
 
-  const parsedProfits = useMemo(() => {
-    return partialTakeProfitProfits
-      ? partialTakeProfitProfits.map((profit) => {
-          const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
-          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
-          const secondaryToSelectedToken =
-            strategyConfig.tokens[partialTakeProfitToken === 'debt' ? 'collateral' : 'debt']
-          const realizedProfitValue = isSelectedTokenDebt
-            ? profit.realizedProfitInDebt
-            : profit.realizedProfitInCollateral
-          const totalProfitValue = isSelectedTokenDebt
-            ? profit.totalProfitInDebt
-            : profit.totalProfitInCollateral
-          const totalProfitSecondValue = isSelectedTokenDebt
-            ? profit.totalProfitInCollateral
-            : profit.totalProfitInDebt
-          return [
-            // Trigger price
-            `${formatAmount(profit.triggerPrice, selectedTokenSymbol)} ${priceFormat}`,
-            // Realized profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  realizedProfitValue.balance,
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-            </Flex>,
-            // Total profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  totalProfitValue.balance,
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
-                {`${formatAmount(
-                  totalProfitSecondValue.balance,
-                  secondaryToSelectedToken,
-                )} ${secondaryToSelectedToken}`}
-              </Text>
-            </Flex>,
-            // Stop loss
-            `${formatAmount(profit.stopLossDynamicPrice, selectedTokenSymbol)} ${priceFormat}`,
-          ]
-        })
-      : []
-  }, [
-    partialTakeProfitToken,
-    partialTakeProfitTokenData.symbol,
-    priceFormat,
-    partialTakeProfitProfits,
-    strategyConfig.tokens,
-  ])
-
-  const sidebarInProgressContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
-    <Grid gap={3}>
-      <AddingStopLossAnimation />
-      <InfoSectionTable
-        title="Full realized profit range"
-        headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
-        rows={parsedProfits}
-        wrapperSx={{
-          gridGap: 1,
-        }}
-        defaultLimitItems={3}
-        expandItemsButtonLabel="See next 10 price triggers"
-      />
-    </Grid>
-  ) : (
-    <></>
-  )
-
-  const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
-    <Grid gap={3}>sidebarRemoveTriggerContent</Grid>
-  ) : (
-    <></>
-  )
-
   const executeCall = async () => {
-    const { partialTakeProfitTxDataLambda } = state.context
     if (partialTakeProfitTxDataLambda && signer) {
       return await executeTransaction({
         data: partialTakeProfitTxDataLambda.data,
@@ -248,8 +182,12 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   const executionAction = () => {
     void executeCall()
       .then(() => {
-        setTransactionStep('finished')
-        action !== TriggerAction.Remove && setRefreshingTriggerData(true)
+        if (action === TriggerAction.Remove) {
+          setTransactionStep('finished')
+        } else {
+          setRefreshingTriggerData(true)
+          setTransactionStep('finished')
+        }
       })
       .catch((error) => {
         console.error('error', error)
@@ -282,6 +220,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     positionPriceRatio,
     startingTakeProfitPrice,
     triggerLtv,
+    triggerLtvSliderConfig.step,
     withdrawalLtv,
     withdrawalLtvSliderConfig.maxBoundry,
   ])
@@ -339,7 +278,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     if (action === TriggerAction.Remove && transactionStep !== 'finished') {
       return true
     }
-    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
+    if (transactionStep === 'preparedRemove') {
       return true
     }
     return false
@@ -349,10 +288,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     if (transactionStep === 'prepare') {
       return t('system.remove-trigger')
     }
-    if (
-      action === TriggerAction.Remove ||
-      ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
-    ) {
+    if (action === TriggerAction.Remove || transactionStep === 'preparedRemove') {
       return t('go-back')
     }
     return ''
@@ -362,7 +298,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     if (transactionStep === 'prepare') {
       setTransactionStep('preparedRemove')
     }
-    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
+    if (transactionStep === 'preparedRemove') {
       setTransactionStep('prepare')
     }
   }
@@ -382,6 +318,195 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
         return [1, 3]
     }
   }
+
+  const parsedProfits = useMemo(() => {
+    return partialTakeProfitProfits
+      ? partialTakeProfitProfits.map((profit) => {
+          const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
+          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
+          const secondaryToSelectedToken =
+            strategyConfig.tokens[partialTakeProfitToken === 'debt' ? 'collateral' : 'debt']
+          const realizedProfitValue = isSelectedTokenDebt
+            ? profit.realizedProfitInDebt
+            : profit.realizedProfitInCollateral
+          const totalProfitValue = isSelectedTokenDebt
+            ? profit.totalProfitInDebt
+            : profit.totalProfitInCollateral
+          const totalProfitSecondValue = isSelectedTokenDebt
+            ? profit.totalProfitInCollateral
+            : profit.totalProfitInDebt
+          return [
+            // Trigger price
+            `${formatAmount(profit.triggerPrice, selectedTokenSymbol)} ${priceFormat}`,
+            // Realized profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  realizedProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+            </Flex>,
+            // Total profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  totalProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
+                {`${formatAmount(
+                  totalProfitSecondValue.balance,
+                  secondaryToSelectedToken,
+                )} ${secondaryToSelectedToken}`}
+              </Text>
+            </Flex>,
+            // Stop loss
+            `${formatAmount(profit.stopLossDynamicPrice, selectedTokenSymbol)} ${priceFormat}`,
+          ]
+        })
+      : []
+  }, [
+    partialTakeProfitToken,
+    partialTakeProfitTokenData.symbol,
+    priceFormat,
+    partialTakeProfitProfits,
+    strategyConfig.tokens,
+  ])
+
+  const parsedSummaryProfits = useMemo(() => {
+    if (partialTakeProfitProfits && partialTakeProfitProfits[0]) {
+      const profit = partialTakeProfitProfits[0]
+      const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
+      const selectedTokenSymbol = partialTakeProfitTokenData.symbol
+      const realizedProfitValue = isSelectedTokenDebt
+        ? profit.realizedProfitInDebt
+        : profit.realizedProfitInCollateral
+      return {
+        nextTriggerPrice: `${formatAmount(
+          profit.triggerPrice,
+          selectedTokenSymbol,
+        )} ${priceFormat}`,
+        nextRealizedProfit: `${formatAmount(
+          realizedProfitValue.balance,
+          selectedTokenSymbol,
+        )} ${selectedTokenSymbol}`,
+        nextStopLossTriggerPrice: `${formatAmount(
+          profit.stopLossDynamicPrice,
+          selectedTokenSymbol,
+        )} ${priceFormat}`,
+      }
+    }
+    return {}
+  }, [
+    partialTakeProfitToken,
+    partialTakeProfitTokenData.symbol,
+    priceFormat,
+    partialTakeProfitProfits,
+  ])
+
+  const sidebarInProgressContent: SidebarSectionProps['content'] = strategyInfo ? (
+    <Grid gap={3}>
+      <AddingStopLossAnimation />
+      <DimmedList>
+        {action !== TriggerAction.Remove && (
+          <>
+            <VaultChangesInformationItem
+              label="Next trigger price"
+              value={
+                parsedSummaryProfits.nextTriggerPrice ? (
+                  <Text>{parsedSummaryProfits.nextTriggerPrice}</Text>
+                ) : (
+                  <AppSpinner />
+                )
+              }
+            />
+            <VaultChangesInformationItem
+              label="Next realized profit"
+              value={
+                parsedSummaryProfits.nextRealizedProfit ? (
+                  <Text>{parsedSummaryProfits.nextRealizedProfit}</Text>
+                ) : (
+                  <AppSpinner />
+                )
+              }
+            />
+            <VaultChangesInformationItem
+              label="Next Stop-Loss trigger price"
+              value={
+                parsedSummaryProfits.nextStopLossTriggerPrice ? (
+                  <Text>{parsedSummaryProfits.nextStopLossTriggerPrice}</Text>
+                ) : (
+                  <AppSpinner />
+                )
+              }
+            />
+          </>
+        )}
+        <VaultChangesInformationItem
+          label={`${t('protection.estimated-fees-on-trigger', {
+            token: strategyConfig.tokens.collateral,
+          })}`}
+          value={TransactionCost}
+        />
+      </DimmedList>
+    </Grid>
+  ) : (
+    <></>
+  )
+
+  const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = strategyInfo ? (
+    <Grid gap={3}>
+      <InfoSection
+        title={t('constant-multiple.vault-changes.general-summary')}
+        items={[
+          {
+            label: 'Next Stop-Loss trigger price',
+            value: parsedSummaryProfits.nextTriggerPrice ? (
+              <Text>{parsedSummaryProfits.nextTriggerPrice}</Text>
+            ) : (
+              <AppSpinner />
+            ),
+            change: 'n/a',
+          },
+          {
+            label: 'Next realized profit',
+            value: parsedSummaryProfits.nextRealizedProfit ? (
+              <Text>{parsedSummaryProfits.nextRealizedProfit}</Text>
+            ) : (
+              <AppSpinner />
+            ),
+            change: 'n/a',
+          },
+          {
+            label: 'Next Stop-Loss trigger price',
+            value: parsedSummaryProfits.nextStopLossTriggerPrice ? (
+              <Text>{parsedSummaryProfits.nextStopLossTriggerPrice}</Text>
+            ) : (
+              <AppSpinner />
+            ),
+            change: 'n/a',
+          },
+          {
+            label: t('auto-sell.estimated-transaction-cost'),
+            value: TransactionCost,
+          },
+        ]}
+      />
+      <MessageCard
+        messages={[
+          <>
+            <strong>{t(`notice`)}</strong>: {t('protection.take-profit-cancel-notice')}
+          </>,
+        ]}
+        type="warning"
+        withBullet={false}
+      />
+    </Grid>
+  ) : (
+    <></>
+  )
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('system.partial-take-profit'),
@@ -405,11 +530,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       removeInProgress: sidebarRemoveTriggerContent,
       finished: (
         <Grid gap={3}>
-          <Box>
-            <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-              <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
-            </Flex>
-          </Box>
+          <StopLossTxCompleteBanner />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {action === TriggerAction.Add && (
               <>

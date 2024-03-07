@@ -22,7 +22,7 @@ export const mapStopLossFromLambda = (triggers?: StopLossTriggers) => {
     triggerName.includes('StopLoss'),
   )
   if (stopLossTriggersNames.length > 1) {
-    console.warn('Warning: more than one stop loss trigger found:', stopLossTriggersNames)
+    console.warn('Warning: more than one Stop-Loss trigger found:', stopLossTriggersNames)
   }
   const stopLossTriggerName = stopLossTriggersNames[0] as keyof StopLossTriggers
   const trigger = triggers[stopLossTriggerName]
