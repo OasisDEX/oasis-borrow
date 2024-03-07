@@ -127,43 +127,40 @@ export type OmniMetadataParams =
 
 export type GetOmniMetadata = (_: OmniMetadataParams) => LendingMetadata | SupplyMetadata
 
-interface ProductContextProviderPropsWithBorrow {
-  formDefaults: Partial<OmniBorrowFormState>
-  formReducto: typeof useOmniBorrowFormReducto
+interface WithAutomation {
   automationFormReducto: typeof useOmniAutomationFormReducto
   automationFormDefaults: Partial<OmniAutomationFormState>
+  positionTriggers: GetTriggersResponse
+}
+
+interface ProductContextProviderPropsWithBorrow extends WithAutomation {
+  formDefaults: Partial<OmniBorrowFormState>
+  formReducto: typeof useOmniBorrowFormReducto
   getDynamicMetadata: GetOmniMetadata
   position: LendingPosition
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
   productType: OmniProductType.Borrow
-  positionTriggers: GetTriggersResponse
 }
 
-interface ProductContextProviderPropsWithEarn {
+interface ProductContextProviderPropsWithEarn extends WithAutomation {
   formDefaults: Partial<OmniEarnFormState>
   formReducto: typeof useOmniEarnFormReducto
-  automationFormReducto: typeof useOmniAutomationFormReducto
-  automationFormDefaults: Partial<OmniAutomationFormState>
   getDynamicMetadata: GetOmniMetadata
   position: SupplyPosition
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
   productType: OmniProductType.Earn
-  positionTriggers: GetTriggersResponse
 }
 
-interface ProductContextProviderPropsWithMultiply {
+interface ProductContextProviderPropsWithMultiply extends WithAutomation {
   formDefaults: Partial<OmniMultiplyFormState>
   formReducto: typeof useOmniMultiplyFormReducto
-  automationFormReducto: typeof useOmniAutomationFormReducto
-  automationFormDefaults: Partial<OmniAutomationFormState>
   getDynamicMetadata: GetOmniMetadata
   position: LendingPosition
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
   productType: OmniProductType.Multiply
-  positionTriggers: GetTriggersResponse
 }
 
 type ProductDetailsContextProviderProps =
