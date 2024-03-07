@@ -196,12 +196,16 @@ export const OmniProductController = <Auction, History, Position>({
                 return (
                   <>
                     <PageSEOTags
-                      title="seo.title-product-w-tokens"
+                      title={
+                        dpmPosition.collateralToken !== dpmPosition.quoteToken
+                          ? 'seo.title-product-w-tokens'
+                          : 'seo.title-product-wo-tokens'
+                      }
                       titleParams={{
                         product: t(seoTags.productKey, {
                           productType: upperFirst(castedProductType),
                         }),
-                        protocol: upperFirst(LendingProtocolLabel[protocol]),
+                        protocol: label ?? upperFirst(LendingProtocolLabel[protocol]),
                         token1: dpmPosition.collateralToken,
                         token2: dpmPosition.quoteToken,
                       }}

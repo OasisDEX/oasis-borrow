@@ -1160,6 +1160,7 @@
     },
     "title-single-token": "{{token}} - {{product}}",
     "title-product-w-tokens": "{{token1}}/{{token2}} - {{protocol}} - {{product}}",
+    "title-product-wo-tokens": "{{protocol}} - {{product}}",
     "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}",
     "erc-4626": {
       "title": "ERC-4626 on Summer.fi",
