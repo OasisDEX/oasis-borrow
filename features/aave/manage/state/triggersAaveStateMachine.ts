@@ -77,10 +77,6 @@ export const getCurrentOptimizationView = ({
   if (triggers.aavePartialTakeProfit || triggers.sparkPartialTakeProfit) {
     return 'partial-take-profit'
   }
-  // TODO: add this logic, currently just for debugging
-  if (!triggers.aaveBasicBuy) {
-    return 'auto-buy'
-  }
   return undefined
 }
 

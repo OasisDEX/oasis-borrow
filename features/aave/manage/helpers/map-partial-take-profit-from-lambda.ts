@@ -60,6 +60,12 @@ export const mapPartialTakeProfitFromLambda = (
           lambdaPriceDenomination,
         )
       : undefined,
+    withdrawalLtv:
+      selectedTrigger?.decodedParams.targetLtv && selectedTrigger?.decodedParams.executionLtv
+        ? new BigNumber(Number(selectedTrigger.decodedParams.targetLtv))
+            .minus(new BigNumber(Number(selectedTrigger?.decodedParams.executionLtv)))
+            .div(lambdaPercentageDenomination)
+        : undefined,
     partialTakeProfitToken:
       selectedTrigger?.decodedParams.withdrawToDebt === 'true'
         ? ('debt' as const)
