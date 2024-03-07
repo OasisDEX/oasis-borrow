@@ -50,6 +50,8 @@ const triggerTypesMap = {
     TriggerType.AutoTakeProfitToDai,
     TriggerType.MakerAutoTakeProfitToCollateralV2,
     TriggerType.MakerAutoTakeProfitToDaiV2,
+    TriggerType.DmaAavePartialTakeProfitV2,
+    TriggerType.DmaSparkPartialTakeProfitV2,
   ],
 }
 
