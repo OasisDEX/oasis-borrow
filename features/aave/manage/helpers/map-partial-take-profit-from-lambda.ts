@@ -60,6 +60,10 @@ export const mapPartialTakeProfitFromLambda = (
           lambdaPriceDenomination,
         )
       : undefined,
+    partialTakeProfitToken:
+      selectedTrigger?.decodedParams.withdrawToDebt === 'true'
+        ? ('debt' as const)
+        : ('collateral' as const),
     hasStopLoss: hasStopLoss || hasTrailingStopLoss,
     currentStopLossLevel,
     stopLossLevelLabel:

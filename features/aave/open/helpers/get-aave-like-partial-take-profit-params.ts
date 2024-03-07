@@ -169,8 +169,9 @@ export const getAaveLikePartialTakeProfitParams = {
 
       const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
       // user inputs
-      const [partialTakeProfitToken, setPartialTakeProfitToken] =
-        useState<ProfitToTokenType>('debt')
+      const [partialTakeProfitToken, setPartialTakeProfitToken] = useState<ProfitToTokenType>(
+        aaveLikePartialTakeProfitLambdaData.partialTakeProfitToken || 'debt',
+      )
       const [startingTakeProfitPrice, setStartingTakeProfitPrice] = useState<BigNumber>(
         aaveLikePartialTakeProfitLambdaData.startingTakeProfitPrice || positionPriceRatio,
       )
