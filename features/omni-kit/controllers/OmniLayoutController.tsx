@@ -10,7 +10,9 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import {
   OmniFaqController,
   OmniHistoryController,
+  OmniOptimizationController,
   OmniOverviewController,
+  OmniProtectionController,
 } from 'features/omni-kit/controllers'
 import { OmniBorrowFormController } from 'features/omni-kit/controllers/borrow'
 import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
@@ -153,7 +155,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           active: hasActiveProtection(positionTriggers, protocol),
                         },
                         label: t('system.protection'),
-                        content: <Grid variant="vaultContainer">Hello protection</Grid>,
+                        content: <OmniProtectionController />,
                       },
                     ]
                   : []),
@@ -166,7 +168,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           active: hasActiveOptimization(positionTriggers),
                         },
                         label: t('system.optimization'),
-                        content: <Grid variant="vaultContainer">Hello optimization</Grid>,
+                        content: <OmniOptimizationController />,
                       },
                     ]
                   : []),
