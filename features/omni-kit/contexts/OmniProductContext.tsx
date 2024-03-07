@@ -326,6 +326,7 @@ export function OmniProductContextProvider({
   const form = formReducto(formDefaults)
   const automationForm = automationFormReducto(automationFormDefaults)
   const { state } = form
+  const { state: automationState } = automationForm
 
   const [positionIdFromDpmProxyData] = useObservable(
     useMemo(() => positionIdFromDpmProxy$(state.dpmAddress), [state.dpmAddress]),
@@ -426,6 +427,10 @@ export function OmniProductContextProvider({
     walletAddress,
     positionHistory,
     cachedSwap,
+    positionTriggers,
+    automationState,
+    automationSimulationData,
+    isAutomationSimulationLoading,
   ])
 
   switch (productType) {
