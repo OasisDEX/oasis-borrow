@@ -331,9 +331,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           rightBoundryFormatter={() => null}
           lastValue={triggerLtv}
           leftBoundry={triggerLtv}
-          onChange={(x) => {
-            setTriggerLtv(x)
-          }}
+          onChange={setTriggerLtv}
           useRcSlider
           {...triggerLtvSliderConfig}
           customSliderProps={{

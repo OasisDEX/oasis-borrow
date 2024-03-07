@@ -110,6 +110,10 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
         aaveLikePartialTakeProfitParams.setStartingTakeProfitPrice(
           aaveLikePartialTakeProfitLambdaData.startingTakeProfitPrice,
         )
+      aaveLikePartialTakeProfitLambdaData.withdrawalLtv &&
+        aaveLikePartialTakeProfitParams.setWithdrawalLtv(
+          aaveLikePartialTakeProfitLambdaData.withdrawalLtv,
+        )
       aaveLikePartialTakeProfitParams.setCustomPriceRatioPercentage(undefined)
     }
     // updates the trigger ltv and withdrawal ltv, removes the custom price ratio percentage
