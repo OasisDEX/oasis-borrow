@@ -1,7 +1,16 @@
 import { NetworkIds } from 'blockchain/networks'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
 import type { OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
+
+const availableAaveAutomations = [
+  AutomationFeatures.STOP_LOSS,
+  AutomationFeatures.TRAILING_STOP_LOSS,
+  AutomationFeatures.AUTO_SELL,
+  AutomationFeatures.AUTO_BUY,
+  AutomationFeatures.PARTIAL_TAKE_PROFIT,
+]
 
 export const settingsV2: OmniProtocolSettings = {
   rawName: {
@@ -97,5 +106,11 @@ export const settingsV3: OmniProtocolSettings = {
   },
   yieldLoopPairsWithData: {
     [NetworkIds.MAINNET]: ['WSTETH-ETH'],
+  },
+  availableAutomations: {
+    [NetworkIds.MAINNET]: availableAaveAutomations,
+    [NetworkIds.ARBITRUMMAINNET]: availableAaveAutomations,
+    [NetworkIds.BASEMAINNET]: availableAaveAutomations,
+    [NetworkIds.OPTIMISMMAINNET]: availableAaveAutomations,
   },
 }

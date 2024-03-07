@@ -1,6 +1,11 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
+import {
+  omniOptimizationLikeAutomationFeatures,
+  omniProtectionLikeAutomationFeatures,
+} from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   OmniFaqController,
@@ -14,6 +19,7 @@ import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { hasCommonElement } from 'helpers/hasCommonElement'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -44,7 +50,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       quotePrice,
       quoteToken,
       network,
+      networkId,
       isYieldLoopWithData,
+      settings,
     },
   } = useOmniGeneralContext()
   const {
@@ -55,7 +63,10 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       elements: { faq },
       values: { headlineDetails, isHeadlineDetailsLoading },
     },
+    automation: { positionTriggers },
   } = useOmniProductContext(productType)
+
+  const automations = settings.availableAutomations?.[networkId] || []
 
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
 
@@ -133,6 +144,32 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           },
           ...(!isOpening
             ? [
+                ...(hasCommonElement(automations, omniProtectionLikeAutomationFeatures)
+                  ? [
+                      {
+                        value: 'protection',
+                        tag: {
+                          include: true,
+                          active: hasActiveProtection(positionTriggers, protocol),
+                        },
+                        label: t('system.protection'),
+                        content: <Grid variant="vaultContainer">Hello protection</Grid>,
+                      },
+                    ]
+                  : []),
+                ...(hasCommonElement(automations, omniOptimizationLikeAutomationFeatures)
+                  ? [
+                      {
+                        value: 'optimization',
+                        tag: {
+                          include: true,
+                          active: hasActiveOptimization(positionTriggers),
+                        },
+                        label: t('system.optimization'),
+                        content: <Grid variant="vaultContainer">Hello optimization</Grid>,
+                      },
+                    ]
+                  : []),
                 {
                   value: 'history',
                   label: t('system.history'),

@@ -7,6 +7,10 @@ import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
+import type {
+  OmniAutomationFormState,
+  useOmniAutomationFormReducto,
+} from 'features/omni-kit/state/automation'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
 import type {
@@ -21,6 +25,7 @@ import type {
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
+import type { GetTriggersResponse } from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
 import React, { useContext, useMemo, useState } from 'react'
@@ -116,31 +121,40 @@ export type GetOmniMetadata = (_: OmniMetadataParams) => LendingMetadata | Suppl
 interface ProductContextProviderPropsWithBorrow {
   formDefaults: Partial<OmniBorrowFormState>
   formReducto: typeof useOmniBorrowFormReducto
+  automationFormReducto: typeof useOmniAutomationFormReducto
+  automationFormDefaults: Partial<OmniAutomationFormState>
   getDynamicMetadata: GetOmniMetadata
   position: LendingPosition
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
   productType: OmniProductType.Borrow
+  positionTriggers: GetTriggersResponse
 }
 
 interface ProductContextProviderPropsWithEarn {
   formDefaults: Partial<OmniEarnFormState>
   formReducto: typeof useOmniEarnFormReducto
+  automationFormReducto: typeof useOmniAutomationFormReducto
+  automationFormDefaults: Partial<OmniAutomationFormState>
   getDynamicMetadata: GetOmniMetadata
   position: SupplyPosition
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
   productType: OmniProductType.Earn
+  positionTriggers: GetTriggersResponse
 }
 
 interface ProductContextProviderPropsWithMultiply {
   formDefaults: Partial<OmniMultiplyFormState>
   formReducto: typeof useOmniMultiplyFormReducto
+  automationFormReducto: typeof useOmniAutomationFormReducto
+  automationFormDefaults: Partial<OmniAutomationFormState>
   getDynamicMetadata: GetOmniMetadata
   position: LendingPosition
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
   productType: OmniProductType.Multiply
+  positionTriggers: GetTriggersResponse
 }
 
 type ProductDetailsContextProviderProps =
@@ -187,6 +201,10 @@ interface GenericProductContext<Position, Form, Auction, Metadata> {
   form: Form
   position: ProductContextPosition<Position, Auction>
   dynamicMetadata: Metadata
+  automation: {
+    positionTriggers: GetTriggersResponse
+    automationForm: ReturnType<typeof useOmniAutomationFormReducto>
+  }
 }
 
 export type ProductContextWithBorrow = GenericProductContext<
@@ -247,10 +265,13 @@ export function OmniProductContextProvider({
   children,
   formDefaults,
   formReducto,
+  automationFormReducto,
+  automationFormDefaults,
   productType,
   position,
   positionAuction,
   positionHistory,
+  positionTriggers,
 }: PropsWithChildren<ProductDetailsContextProviderProps>) {
   const { walletAddress } = useAccount()
   const { positionIdFromDpmProxy$ } = useProductContext()
@@ -276,6 +297,7 @@ export function OmniProductContextProvider({
   // @ts-ignore
   // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
   const form = formReducto(formDefaults)
+  const automationForm = automationFormReducto(automationFormDefaults)
   const { state } = form
 
   const [positionIdFromDpmProxyData] = useObservable(
@@ -347,6 +369,10 @@ export function OmniProductContextProvider({
           cached: cachedSwap,
         },
         history: positionHistory,
+      },
+      automation: {
+        positionTriggers,
+        automationForm,
       },
     }
   }, [

@@ -1,6 +1,7 @@
 import { Network, protocols } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
+import { AutomationFeatures } from 'features/automation/common/types'
 import {
   ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
   BASE_DEFAULT_LIQUIDITY_PROVIDERS,
@@ -95,3 +96,23 @@ export const defaultEarnCumulatives = {
 
 export const omniYieldLoopDefaultSimulationDeposit = new BigNumber(100)
 export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)
+
+// Default response to avoid unnecessary API calls if automation is not available on given protocol
+export const omniPositionTriggersDataDefault = {
+  triggers: {},
+  triggersGroup: {},
+  triggersCount: 0,
+}
+
+export const omniProtectionLikeAutomationFeatures = [
+  AutomationFeatures.STOP_LOSS,
+  AutomationFeatures.AUTO_SELL,
+  AutomationFeatures.TRAILING_STOP_LOSS,
+]
+
+export const omniOptimizationLikeAutomationFeatures = [
+  AutomationFeatures.AUTO_BUY,
+  AutomationFeatures.AUTO_TAKE_PROFIT,
+  AutomationFeatures.CONSTANT_MULTIPLE,
+  AutomationFeatures.PARTIAL_TAKE_PROFIT,
+]

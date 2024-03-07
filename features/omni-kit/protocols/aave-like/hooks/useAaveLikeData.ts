@@ -4,6 +4,7 @@ import { useAaveContext } from 'features/aave'
 import { getAaveHistoryEvents } from 'features/aave/services'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
+import { getTriggersRequest } from 'helpers/triggers'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import { useMemo } from 'react'
@@ -90,6 +91,14 @@ export function useAaveLikeData({
     ),
   )
 
+  const [positionTriggersData, positionTriggersError] = useObservable(
+    useMemo(
+      () =>
+        dpmPositionData ? from(getTriggersRequest({ dpm: dpmPositionData, networkId })) : EMPTY,
+      [dpmPositionData, aavePositionData, networkId],
+    ),
+  )
+
   return {
     data: {
       aggregatedData: {
@@ -104,12 +113,14 @@ export function useAaveLikeData({
               [quoteToken]: resolvedQuotePrice,
             }
           : undefined,
+      positionTriggersData,
     },
     errors: [
       aavePositionError,
       aavePositionAggregatedError,
       aaveLikeAssetsPricesError,
       chainLinkEthUsdcPriceError,
+      positionTriggersError,
     ],
   }
 }

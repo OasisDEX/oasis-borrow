@@ -3,6 +3,7 @@ import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { AutomationFeatures } from 'features/automation/common/types'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
@@ -72,6 +73,7 @@ export interface OmniProtocolSettings {
   supportedProducts: OmniProductType[]
   entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
   yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
+  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
 }
 
 export type OmniProtocolsSettings = {
