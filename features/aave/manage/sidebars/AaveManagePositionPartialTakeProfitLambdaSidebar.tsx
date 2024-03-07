@@ -167,6 +167,21 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     }
   }, [refreshingTriggerData])
 
+  const resetXStateData = () => {
+    send({
+      type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA',
+      partialTakeProfitTxDataLambda: undefined,
+    })
+    send({
+      type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
+      partialTakeProfitFirstProfit: undefined,
+    })
+    send({
+      type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA',
+      partialTakeProfitProfits: undefined,
+    })
+  }
+
   const executeCall = async () => {
     if (partialTakeProfitTxDataLambda && signer) {
       return await executeTransaction({
@@ -249,6 +264,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     }
     if (transactionStep === 'finished') {
       onTxFinished()
+      resetXStateData()
       setTransactionStep('prepare')
     }
   }
