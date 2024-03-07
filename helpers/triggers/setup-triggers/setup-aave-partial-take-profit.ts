@@ -25,7 +25,18 @@ export const setupAaveLikePartialTakeProfit = async (
         .times(lambdaPriceDenomination)
         .integerValue()
         .toString(),
-      stopLoss: params.stopLoss?.times(lambdaPriceDenomination).integerValue().toString(),
+      stopLoss: params.stopLoss
+        ? {
+            triggerData: {
+              executionLTV: params.stopLoss.triggerData.executionLTV
+                .times(lambdaPercentageDenomination)
+                .integerValue()
+                .toString(),
+              token: params.stopLoss.triggerData.token,
+            },
+            action: params.stopLoss.action,
+          }
+        : undefined,
       // trailingStopLoss: params.trailingStopLoss, // possibly in the future
     },
     position: {

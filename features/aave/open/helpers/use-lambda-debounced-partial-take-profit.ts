@@ -52,15 +52,19 @@ export const useLambdaDebouncedPartialTakeProfit = ({
   send,
   triggerLtv,
   withdrawalLtv,
+  newStopLossLtv,
+  newStopLossAction,
   startingTakeProfitPrice,
   partialTakeProfitToken,
   action,
 }: (OpenAaveStateProps | ManageAaveStateProps) & {
   triggerLtv: BigNumber
+  newStopLossLtv?: BigNumber
   withdrawalLtv: BigNumber
   startingTakeProfitPrice: BigNumber
   partialTakeProfitToken: string
   action: TriggerAction
+  newStopLossAction: TriggerAction.Add | TriggerAction.Update
 }) => {
   const [isGettingPartialTakeProfitTx, setIsGettingPartialTakeProfitTx] = useState(false)
   const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
@@ -81,6 +85,12 @@ export const useLambdaDebouncedPartialTakeProfit = ({
     send({
       type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA',
       partialTakeProfitProfits,
+    })
+  }
+  const setFirstProfit = (partialTakeProfitFirstProfit: ProfitsSimulationMapped | undefined) => {
+    send({
+      type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
+      partialTakeProfitFirstProfit,
     })
   }
 
@@ -117,6 +127,15 @@ export const useLambdaDebouncedPartialTakeProfit = ({
             collateralAddress,
             debtAddress,
           },
+          stopLoss: newStopLossLtv
+            ? {
+                triggerData: {
+                  executionLTV: newStopLossLtv,
+                  token: partialTakeProfitToken === 'debt' ? debtAddress : collateralAddress,
+                },
+                action: newStopLossAction,
+              }
+            : undefined,
           action,
         }),
       )
@@ -135,7 +154,11 @@ export const useLambdaDebouncedPartialTakeProfit = ({
             })
           }
           if (res.simulation) {
-            setProfits(mapProfits(res.simulation))
+            const profitsMapped = mapProfits(res.simulation)
+            setProfits(profitsMapped)
+            if (state.context.partialTakeProfitFirstProfit === undefined) {
+              setFirstProfit(profitsMapped[0])
+            }
           }
           res.warnings && setWarnings(res.warnings)
           res.errors && setErrors(res.errors)
@@ -155,7 +178,15 @@ export const useLambdaDebouncedPartialTakeProfit = ({
           setIsGettingPartialTakeProfitTx(false)
         })
     },
-    [triggerLtv, withdrawalLtv, startingTakeProfitPrice, partialTakeProfitToken, action],
+    [
+      triggerLtv,
+      withdrawalLtv,
+      newStopLossLtv,
+      newStopLossAction,
+      startingTakeProfitPrice,
+      partialTakeProfitToken,
+      action,
+    ],
     500,
   )
   return {

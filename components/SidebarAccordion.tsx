@@ -45,19 +45,7 @@ export function SidebarAccordion({
       </Flex>
       {additionalDescriptionComponent}
 
-      {isOpen && (
-        <Box
-          sx={{
-            border: '1px solid',
-            borderColor: 'secondary60',
-            borderTop: 'none',
-            borderBottomLeftRadius: 'mediumLarge',
-            borderBottomRightRadius: 'mediumLarge',
-          }}
-        >
-          {children}
-        </Box>
-      )}
+      {isOpen && <Box>{children}</Box>}
     </Box>
   )
 }

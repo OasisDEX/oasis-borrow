@@ -15,6 +15,7 @@ import {
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
+import { formatAmount } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
@@ -31,24 +32,6 @@ type PartialTakeProfitSidebarStates =
   | 'finished'
 
 const refreshDataTime = 10 * 1000
-
-const profitRangeItem = [
-  '4,100 ETH/USD',
-  <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-    <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
-      531 ETH
-    </Text>
-  </Flex>,
-  <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-    <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
-      531 ETH
-    </Text>
-    <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
-      782,321 USDC
-    </Text>
-  </Flex>,
-  '2,332 ETH/USD',
-]
 
 export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   state,
@@ -81,7 +64,14 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     startingTakeProfitPrice,
     partialTakeProfitToken,
     partialTakeProfitProfits,
+    partialTakeProfitTokenData,
+    priceFormat,
+    withdrawalLtvSliderConfig,
+    positionPriceRatio,
+    newStopLossLtv,
   } = aaveLikePartialTakeProfitParams
+  const { startingTakeProfitPrice: lambdaStartingTakeProfitPrice, currentStopLossLevel } =
+    aaveLikePartialTakeProfitLambdaData
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
     if (transactionStep === 'preparedRemove') {
@@ -103,6 +93,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       startingTakeProfitPrice,
       partialTakeProfitToken,
       action,
+      newStopLossLtv:
+        (currentStopLossLevel && !newStopLossLtv.eq(currentStopLossLevel)) || !currentStopLossLevel
+          ? newStopLossLtv
+          : undefined,
+      newStopLossAction: currentStopLossLevel ? TriggerAction.Update : TriggerAction.Add,
     })
 
   useEffect(() => {
@@ -120,6 +115,19 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   }, [])
 
   useEffect(() => {
+    if (
+      aaveLikePartialTakeProfitLambdaData.currentStopLossLevel &&
+      !aaveLikePartialTakeProfitLambdaData.currentStopLossLevel.eq(newStopLossLtv)
+    ) {
+      aaveLikePartialTakeProfitParams.setNewStopLossLtv(
+        aaveLikePartialTakeProfitLambdaData.currentStopLossLevel,
+      )
+    }
+    // this handles only when the stop loss in lambda is loaded
+    // user can update SL level with the slider
+  }, [aaveLikePartialTakeProfitLambdaData.currentStopLossLevel])
+
+  useEffect(() => {
     if (refreshingTriggerData) {
       setTimeout(() => {
         setRefreshingTriggerData(false)
@@ -134,13 +142,69 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     }
   }, [refreshingTriggerData])
 
+  const parsedProfits = useMemo(() => {
+    return partialTakeProfitProfits
+      ? partialTakeProfitProfits.map((profit) => {
+          const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
+          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
+          const secondaryToSelectedToken =
+            strategyConfig.tokens[partialTakeProfitToken === 'debt' ? 'collateral' : 'debt']
+          const realizedProfitValue = isSelectedTokenDebt
+            ? profit.realizedProfitInDebt
+            : profit.realizedProfitInCollateral
+          const totalProfitValue = isSelectedTokenDebt
+            ? profit.totalProfitInDebt
+            : profit.totalProfitInCollateral
+          const totalProfitSecondValue = isSelectedTokenDebt
+            ? profit.totalProfitInCollateral
+            : profit.totalProfitInDebt
+          return [
+            // Trigger price
+            `${formatAmount(profit.triggerPrice, selectedTokenSymbol)} ${priceFormat}`,
+            // Realized profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  realizedProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+            </Flex>,
+            // Total profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  totalProfitValue.balance,
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
+                {`${formatAmount(
+                  totalProfitSecondValue.balance,
+                  secondaryToSelectedToken,
+                )} ${secondaryToSelectedToken}`}
+              </Text>
+            </Flex>,
+            // Stop loss
+            `${formatAmount(profit.stopLossDynamicPrice, selectedTokenSymbol)} ${priceFormat}`,
+          ]
+        })
+      : []
+  }, [
+    partialTakeProfitToken,
+    partialTakeProfitTokenData.symbol,
+    priceFormat,
+    partialTakeProfitProfits,
+    strategyConfig.tokens,
+  ])
+
   const sidebarInProgressContent: SidebarSectionProps['content'] = state.context.strategyInfo ? (
     <Grid gap={3}>
       <AddingStopLossAnimation />
       <InfoSectionTable
         title="Full realized profit range"
         headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
-        rows={[...Array.from({ length: 13 }, () => profitRangeItem)]}
+        rows={parsedProfits}
         wrapperSx={{
           gridGap: 1,
         }}
@@ -170,6 +234,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     }
     return null
   }
+
   const executionAction = () => {
     void executeCall()
       .then(() => {
@@ -182,7 +247,30 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       })
   }
 
+  const frontendErrors = useMemo(() => {
+    const ltvTooHigh = triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry)
+    const startingTakeProfitPriceTooLow = !lambdaStartingTakeProfitPrice
+      ? startingTakeProfitPrice.lt(positionPriceRatio)
+      : false
+    return [
+      ltvTooHigh &&
+        `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`,
+      startingTakeProfitPriceTooLow &&
+        'Starting take profit price should be higher or equal the current price.',
+    ].filter(Boolean) as string[]
+  }, [
+    lambdaStartingTakeProfitPrice,
+    positionPriceRatio,
+    startingTakeProfitPrice,
+    triggerLtv,
+    withdrawalLtv,
+    withdrawalLtvSliderConfig.maxBoundry,
+  ])
+
   const isDisabled = useMemo(() => {
+    if (frontendErrors.length) {
+      return true
+    }
     if (
       isGettingPartialTakeProfitTx ||
       ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
@@ -193,7 +281,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       return false
     }
     return false
-  }, [isGettingPartialTakeProfitTx, transactionStep])
+  }, [frontendErrors.length, isGettingPartialTakeProfitTx, transactionStep])
 
   const primaryButtonAction = () => {
     if (['prepare', 'preparedRemove'].includes(transactionStep)) {
@@ -279,8 +367,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
           aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
           isGettingPartialTakeProfitTx={isGettingPartialTakeProfitTx}
           errors={errors}
+          frontendErrors={frontendErrors}
           warnings={warnings}
-          profits={partialTakeProfitProfits}
+          profits={parsedProfits}
         />
       ),
       preparedRemove: sidebarRemoveTriggerContent,
