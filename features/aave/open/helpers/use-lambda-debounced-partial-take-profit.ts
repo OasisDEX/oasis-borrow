@@ -114,7 +114,6 @@ export const useLambdaDebouncedPartialTakeProfit = ({
         setIsGettingPartialTakeProfitTx(true)
         clearWarningsAndErrors()
       }
-      console.log('newStopLossLtv', newStopLossLtv)
       const partialTakeProfitTxDataPromise = cancelable(
         setupAaveLikePartialTakeProfit({
           dpm: dpmAccount,
