@@ -54,7 +54,7 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
             {
               label: t('omni-kit.headline.details.current-apy'),
               value: '0%',
-              labelTooltip: 'asd',
+              labelTooltip: 'Tooltip placeholder',
               labelIcon: sparks,
             },
             {
