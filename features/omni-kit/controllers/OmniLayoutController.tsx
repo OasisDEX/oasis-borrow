@@ -18,6 +18,7 @@ import { OmniBorrowFormController } from 'features/omni-kit/controllers/borrow'
 import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
+import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -68,7 +69,12 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     automation: { positionTriggers },
   } = useOmniProductContext(productType)
 
-  const automations = settings.availableAutomations?.[networkId] || []
+  const isMultiplySupported = isPoolSupportingMultiply({
+    collateralToken,
+    quoteToken,
+    supportedTokens: settings.supportedMultiplyTokens[networkId],
+  })
+  const automations = isMultiplySupported ? settings.availableAutomations?.[networkId] || [] : []
 
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
 
