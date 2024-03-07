@@ -1352,7 +1352,8 @@
     "net-borrow-cost": "Cost to Borrow",
     "position-debt": "Position Debt",
     "current-token-price": "Current {{token}} Price",
-    "next-token-price": "Next {{token}} Price"
+    "next-token-price": "Next {{token}} Price",
+    "no-data-to-display": "No data to display"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",

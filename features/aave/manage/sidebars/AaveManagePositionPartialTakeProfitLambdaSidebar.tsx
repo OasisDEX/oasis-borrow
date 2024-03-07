@@ -70,8 +70,11 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     positionPriceRatio,
     newStopLossLtv,
   } = aaveLikePartialTakeProfitParams
-  const { startingTakeProfitPrice: lambdaStartingTakeProfitPrice, currentStopLossLevel } =
-    aaveLikePartialTakeProfitLambdaData
+  const {
+    startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
+    currentStopLossLevel,
+    triggerLtv: lambdaTriggerLtv,
+  } = aaveLikePartialTakeProfitLambdaData
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
     if (transactionStep === 'preparedRemove') {
@@ -268,7 +271,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   ])
 
   const isDisabled = useMemo(() => {
-    if (frontendErrors.length) {
+    if (frontendErrors.length || errors.length) {
       return true
     }
     if (
@@ -281,7 +284,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       return false
     }
     return false
-  }, [frontendErrors.length, isGettingPartialTakeProfitTx, transactionStep])
+  }, [errors.length, frontendErrors.length, isGettingPartialTakeProfitTx, transactionStep])
 
   const primaryButtonAction = () => {
     if (['prepare', 'preparedRemove'].includes(transactionStep)) {
@@ -313,10 +316,18 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     return primaryButtonMap[transactionStep]
   }
 
-  const showSecondaryButton =
-    (transactionStep === 'prepare' && action !== TriggerAction.Remove) ||
-    (action === TriggerAction.Remove && transactionStep !== 'finished') ||
-    ['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)
+  const showSecondaryButton = useMemo(() => {
+    if (transactionStep === 'prepare' && action !== TriggerAction.Remove && !!lambdaTriggerLtv) {
+      return true
+    }
+    if (action === TriggerAction.Remove && transactionStep !== 'finished') {
+      return true
+    }
+    if (['preparedAdd', 'preparedUpdate', 'preparedRemove'].includes(transactionStep)) {
+      return true
+    }
+    return false
+  }, [action, lambdaTriggerLtv, transactionStep])
 
   const secondaryButtonLabel = () => {
     if (transactionStep === 'prepare') {
