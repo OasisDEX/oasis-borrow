@@ -139,12 +139,18 @@ export function formatPercent(
 
 export function formatDecimalAsPercent(
   number: BigNumber,
-  { precision = 2, plus = false, roundMode = BigNumber.ROUND_DOWN }: FormatPercentOptions = {},
+  {
+    precision = 2,
+    plus = false,
+    roundMode = BigNumber.ROUND_DOWN,
+    noPercentSign = false,
+  }: FormatPercentOptions = {},
 ) {
   return formatPercent(number.times(100), {
     precision,
     plus,
     roundMode,
+    noPercentSign,
   })
 }
 
