@@ -5,6 +5,7 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ConnectedSidebarSection } from 'features/aave/components'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import { PreparingPartialTakeProfitSidebarContent } from 'features/aave/manage/sidebars/partial-take-profit-components/PreparingPartialTakeProfitSidebarContent'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
@@ -67,8 +68,10 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     partialTakeProfitTokenData,
     priceFormat,
     withdrawalLtvSliderConfig,
+    triggerLtvSliderConfig,
     positionPriceRatio,
     newStopLossLtv,
+    currentLtv,
   } = aaveLikePartialTakeProfitParams
   const {
     startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
@@ -255,17 +258,26 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   }
 
   const frontendErrors = useMemo(() => {
-    const ltvTooHigh = triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry)
+    const currentLtvValue = currentLtv.times(lambdaPercentageDenomination)
+    const triggerLtvTooHigh = triggerLtv.gt(currentLtvValue.plus(triggerLtvSliderConfig.step))
+    const cumulativeLtvTooHight = triggerLtv
+      .plus(withdrawalLtv)
+      .gt(withdrawalLtvSliderConfig.maxBoundry)
     const startingTakeProfitPriceTooLow = !lambdaStartingTakeProfitPrice
       ? startingTakeProfitPrice.lt(positionPriceRatio)
       : false
     return [
-      ltvTooHigh &&
+      triggerLtvTooHigh &&
+        `Trigger LTV should not be higher than current position LTV (${currentLtvValue.toFixed(
+          2,
+        )}%)`,
+      cumulativeLtvTooHight &&
         `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`,
       startingTakeProfitPriceTooLow &&
         'Starting take profit price should be higher or equal the current price.',
     ].filter(Boolean) as string[]
   }, [
+    currentLtv,
     lambdaStartingTakeProfitPrice,
     positionPriceRatio,
     startingTakeProfitPrice,

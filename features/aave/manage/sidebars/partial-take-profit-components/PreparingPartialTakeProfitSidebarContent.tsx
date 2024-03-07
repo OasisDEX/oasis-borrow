@@ -336,7 +336,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           {...triggerLtvSliderConfig}
           customSliderProps={{
             marks: {
-              [currentLtv.times(lambdaPercentageDenomination).toNumber()]: (
+              [currentLtv.times(lambdaPercentageDenomination).toFixed()]: (
                 <Text
                   variant="boldParagraph3"
                   sx={{ fontSize: '10px', textTransform: 'uppercase' }}

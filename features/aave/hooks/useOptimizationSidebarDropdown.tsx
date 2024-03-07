@@ -21,23 +21,11 @@ export function useOptimizationSidebarDropdown(
     state.context.currentTriggers.triggers.sparkPartialTakeProfit !== undefined
 
   const currentPanel = useMemo(() => {
-    if (hasAavePartialTakeProfitEnabled || hasSparkPartialTakeProfitEnabled) {
-      return AutomationFeatures.PARTIAL_TAKE_PROFIT
-    }
-    if (hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled) {
-      return AutomationFeatures.AUTO_BUY
-    }
     return {
       'auto-buy': AutomationFeatures.AUTO_BUY,
       'partial-take-profit': AutomationFeatures.PARTIAL_TAKE_PROFIT,
     }[state.context.optimizationCurrentView || 'partial-take-profit']
-  }, [
-    hasAaveAutoBuyEnabled,
-    hasAavePartialTakeProfitEnabled,
-    hasSparkAutoBuyEnabled,
-    hasSparkPartialTakeProfitEnabled,
-    state.context.optimizationCurrentView,
-  ])
+  }, [state.context.optimizationCurrentView])
 
   return {
     forcePanel: currentPanel,
