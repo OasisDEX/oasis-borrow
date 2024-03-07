@@ -483,8 +483,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           </Flex>
         </Flex>
       </Box>
-      <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Partial-Take-Profit" />
       <MessageCard type="error" messages={frontendErrors} withBullet={frontendErrors.length > 1} />
+      <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Partial-Take-Profit" />
+      <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       <Divider />
       <SidebarAccordion
         title={

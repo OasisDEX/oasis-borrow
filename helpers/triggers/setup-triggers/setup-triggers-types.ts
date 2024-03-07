@@ -27,6 +27,14 @@ export enum TriggersApiErrorCode {
   StopLossNeverTriggeredWithNoAutoSellMinSellPrice = 'stop-loss-never-triggered-with-no-auto-sell-min-sell-price',
   StopLossNeverTriggeredWithLowerAutoSellMinSellPrice = 'stop-loss-never-triggered-with-lower-auto-sell-min-sell-price',
   AutoSellNeverTriggeredWithCurrentStopLoss = 'auto-sell-never-triggered-with-current-stop-loss',
+  // Error: Your Partial Take Profit trigger LTV is higher than the target LTV of your Auto-Sell. Reduce your Partial Take Profit trigger, or update your Auto-Sell.
+  PartialTakeProfitTriggerHigherThanAutoSellTarget = 'partial-take-profit-trigger-higher-than-auto-sell-target',
+  // Error: Your Partial Take Profit target LTV is higher than the trigger LTV of your Auto-Sell. Reduce your Partial Take Profit target, or update your Auto-Sell.
+  PartialTakeProfitTargetHigherThanAutoSellTrigger = 'partial-take-profit-target-higher-than-auto-sell-trigger',
+  // Error: Your Partial Take Profit target LTV is higher than your Stop-Loss. Reduce your Partial Take Profit target, or update your Stop-Loss.
+  PartialTakeProfitTargetHigherThanStopLoss = 'partial-take-profit-target-higher-than-stop-loss',
+  // Error: Your Partial Take Profit min price is lower than the max price of your Auto-Buy. Increase your Partial Take Profit min price, or update your Auto-Buy
+  PartialTakeProfitMinPriceLowerThanAutoBuyMaxPrice = 'partial-take-profit-min-price-lower-than-auto-buy-max-price',
 }
 
 export enum TriggersApiWarningCode {
@@ -43,6 +51,8 @@ export enum TriggersApiWarningCode {
   AutoSellWithNoMinPriceThreshold = 'auto-sell-with-no-min-price-threshold',
   StopLossTriggeredImmediately = 'stop-loss-triggered-immediately',
   StopLossMakesAutoSellNotTrigger = 'stop-loss-makes-auto-sell-not-trigger',
+  // Error: Your Partial Take Profit target LTV is higher than your Stop-Loss. Reduce your Partial Take Profit target, or update your Stop-Loss.
+  PartialTakeProfitTargetHigherThanStopLoss = 'partial-take-profit-target-higher-than-stop-loss',
 }
 
 export type TriggersApiError = {

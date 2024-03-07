@@ -153,6 +153,8 @@ export function VaultWarnings({
             components={[ConstantMultipleKBLink]}
           />
         )
+      case 'partialTakeProfitTargetHigherThanStopLoss':
+        return translate('partial-take-profit-target-higher-than-stop-loss')
       default:
         throw new UnreachableCaseError(message)
     }
