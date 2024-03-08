@@ -1,5 +1,6 @@
 import 'rc-slider/assets/index.css'
 
+import type { SliderProps } from 'rc-slider'
 import Slider from 'rc-slider'
 import type { FC } from 'react'
 import React from 'react'
@@ -16,7 +17,7 @@ type RcSliderProps = {
   onChange: (e: number | number[]) => void
 }
 
-export const RcSlider: FC<RcSliderProps> = ({
+export const RcSlider: FC<RcSliderProps & SliderProps> = ({
   background,
   disabled,
   step,
@@ -24,6 +25,7 @@ export const RcSlider: FC<RcSliderProps> = ({
   max,
   value,
   onChange,
+  ...rest
 }) => {
   return (
     <Flex
@@ -67,6 +69,7 @@ export const RcSlider: FC<RcSliderProps> = ({
         style={{
           width: '95%',
         }}
+        {...rest}
       />
     </Flex>
   )

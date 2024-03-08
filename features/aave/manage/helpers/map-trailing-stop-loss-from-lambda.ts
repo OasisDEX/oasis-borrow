@@ -1,10 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { trailingStopLossDenomination } from 'features/aave/constants'
+import { lambdaPriceDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/triggers'
 
-type TrailingStopLossTriggers = Pick<GetTriggersResponse['triggers'], 'aaveTrailingStopLossDMA'>
+type TrailingStopLossTriggers = Pick<
+  GetTriggersResponse['triggers'],
+  'aaveTrailingStopLossDMA' | 'sparkTrailingStopLossDMA'
+>
 
-const denominate = (value: string) => new BigNumber(Number(value)).div(trailingStopLossDenomination)
+const denominate = (value: string) => new BigNumber(Number(value)).div(lambdaPriceDenomination)
 
 export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTriggers) => {
   if (!triggers) {
@@ -15,7 +18,7 @@ export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTrigger
   )
   if (trailingStopLossTriggersNames.length > 1) {
     console.warn(
-      'Warning: more than one trailing stop loss trigger found:',
+      'Warning: more than one trailing Stop-Loss trigger found:',
       trailingStopLossTriggersNames,
     )
   }

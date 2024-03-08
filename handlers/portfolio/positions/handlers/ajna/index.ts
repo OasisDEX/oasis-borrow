@@ -99,7 +99,14 @@ async function getAjnaPositions({
             positionsArray.filter((item) => proxyAddress === item.proxyAddress).length > 1
 
           // get Ajna position from dma
-          const commonPayload = { collateralPrice, quotePrice, proxyAddress, poolAddress }
+          const commonPayload = {
+            collateralPrice,
+            quotePrice,
+            proxyAddress,
+            poolAddress,
+            collateralToken: primaryToken,
+            quoteToken: secondaryToken,
+          }
           const commonDependency = {
             poolInfoAddress: ajnaPoolInfo.address,
             provider: getRpcProvider(networkId),
@@ -180,6 +187,22 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       prices,
       positionsCount,
       protocolRaw: ajnaSettings.rawName[NetworkIds.BASEMAINNET] as string,
+    }),
+    getAjnaPositions({
+      apiVaults,
+      dpmList,
+      networkId: NetworkIds.ARBITRUMMAINNET,
+      prices,
+      positionsCount,
+      protocolRaw: ajnaSettings.rawName[NetworkIds.ARBITRUMMAINNET] as string,
+    }),
+    getAjnaPositions({
+      apiVaults,
+      dpmList,
+      networkId: NetworkIds.OPTIMISMMAINNET,
+      prices,
+      positionsCount,
+      protocolRaw: ajnaSettings.rawName[NetworkIds.OPTIMISMMAINNET] as string,
     }),
   ]).then((responses) => {
     return {

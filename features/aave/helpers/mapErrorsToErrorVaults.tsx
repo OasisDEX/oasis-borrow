@@ -52,6 +52,14 @@ export function mapErrorsToErrorVaults(
           return 'stopLossTriggeredByAutoBuy'
         case TriggersApiErrorCode.AutoSellNeverTriggeredWithCurrentStopLoss:
           return 'autoSellNeverTriggeredWithCurrentStopLoss'
+        case TriggersApiErrorCode.PartialTakeProfitTriggerHigherThanAutoSellTarget:
+          return 'partialTakeProfitTriggerHigherThanAutoSellTarget'
+        case TriggersApiErrorCode.PartialTakeProfitTargetHigherThanAutoSellTrigger:
+          return 'partialTakeProfitTargetHigherThanAutoSellTrigger'
+        case TriggersApiErrorCode.PartialTakeProfitTargetHigherThanStopLoss:
+          return 'partialTakeProfitTargetHigherThanStopLoss'
+        case TriggersApiErrorCode.PartialTakeProfitMinPriceLowerThanAutoBuyMaxPrice:
+          return 'partialTakeProfitMinPriceLowerThanAutoBuyMaxPrice'
         default:
           return undefined
       }

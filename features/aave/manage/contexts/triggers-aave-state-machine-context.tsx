@@ -10,6 +10,8 @@ import type { IStrategyConfig } from 'features/aave/types'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
+import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { env } from 'process'
@@ -30,6 +32,7 @@ function useSetupTriggersStateContext(
     autoBuyTriggerAaveStateMachine.withContext({
       ...autoBuyContext,
       networkId: strategy.networkId,
+      protocol: strategy.protocol as SupportedLambdaProtocols,
       usePriceInput: shouldUsePriceInput(strategy),
     }),
     {
@@ -42,6 +45,7 @@ function useSetupTriggersStateContext(
     autoSellTriggerAaveStateMachine.withContext({
       ...autoSellContext,
       networkId: strategy.networkId,
+      protocol: strategy.protocol as SupportedLambdaProtocols,
       usePriceInput: shouldUsePriceInput(strategy),
     }),
     {
@@ -54,11 +58,12 @@ function useSetupTriggersStateContext(
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
       showAutoBuyBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY),
+      showPartialTakeProfitBanner: strategy.isAutomationFeatureEnabled(
+        AutomationFeatures.PARTIAL_TAKE_PROFIT,
+      ),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
-      currentTriggers: {
-        triggers: {},
-      },
+      currentTriggers: omniPositionTriggersDataDefault,
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()
@@ -121,7 +126,7 @@ function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
 
   useEffect(() => {
     if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.AUTO_SELL) {
-      triggerStateMachine.send({ type: 'CHANGE_VIEW', view: 'auto-sell' })
+      triggerStateMachine.send({ type: 'CHANGE_PROTECTION_VIEW', view: 'auto-sell' })
     }
   }, [activeAutomationFeature?.currentProtectionFeature])
   return <>{children}</>

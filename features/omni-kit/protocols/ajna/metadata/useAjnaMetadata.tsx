@@ -102,6 +102,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrice,
       quoteToken,
       protocolRaw,
+      protocol,
+      isYieldLoop,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -118,6 +120,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
+    protocol,
     state: productContext.form.state,
   })
 
@@ -154,7 +157,14 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const filters = {
     flowStateFilter: (event: CreatePositionEvent) =>
-      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress, protocolRaw }),
+      ajnaFlowStateFilter({
+        collateralAddress,
+        event,
+        productType,
+        quoteAddress,
+        protocolRaw,
+        protocol,
+      }),
   }
 
   switch (productType) {
@@ -277,6 +287,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quoteToken={quoteToken}
               shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
               simulation={simulation}
+              isYieldLoop={isYieldLoop}
             />
           ),
           overviewFooter: (

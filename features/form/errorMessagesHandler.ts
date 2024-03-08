@@ -61,6 +61,11 @@ export type VaultErrorMessage =
   | 'autoSellWillBlockStopLoss'
   | 'stopLossTriggeredByAutoBuy'
   | 'autoSellNeverTriggeredWithCurrentStopLoss'
+  | 'partialTakeProfitTriggerHigherThanAutoSellTarget'
+  | 'partialTakeProfitTargetHigherThanAutoSellTrigger'
+  | 'partialTakeProfitTargetHigherThanStopLoss'
+  | 'partialTakeProfitMinPriceLowerThanAutoBuyMaxPrice'
+  | 'unmapped'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -111,6 +116,10 @@ interface ErrorMessagesHandler {
   maxBuyPriceWillPreventBuyTrigger?: boolean
   autoTakeProfitTriggeredImmediately?: boolean
   takeProfitWillTriggerImmediatelyAfterVaultReopen?: boolean
+  partialTakeProfitTriggerHigherThanAutoSellTarget?: boolean
+  partialTakeProfitTargetHigherThanAutoSellTrigger?: boolean
+  partialTakeProfitTargetHigherThanStopLoss?: boolean
+  partialTakeProfitMinPriceLowerThanAutoBuyMaxPrice?: boolean
 }
 
 export function errorMessagesHandler({
@@ -162,6 +171,10 @@ export function errorMessagesHandler({
   maxBuyPriceWillPreventBuyTrigger,
   autoTakeProfitTriggeredImmediately,
   takeProfitWillTriggerImmediatelyAfterVaultReopen,
+  partialTakeProfitTriggerHigherThanAutoSellTarget,
+  partialTakeProfitTargetHigherThanAutoSellTrigger,
+  partialTakeProfitTargetHigherThanStopLoss,
+  partialTakeProfitMinPriceLowerThanAutoBuyMaxPrice,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -354,6 +367,18 @@ export function errorMessagesHandler({
 
   if (takeProfitWillTriggerImmediatelyAfterVaultReopen) {
     errorMessages.push('takeProfitWillTriggerImmediatelyAfterVaultReopen')
+  }
+  if (partialTakeProfitTriggerHigherThanAutoSellTarget) {
+    errorMessages.push('partialTakeProfitTriggerHigherThanAutoSellTarget')
+  }
+  if (partialTakeProfitTargetHigherThanAutoSellTrigger) {
+    errorMessages.push('partialTakeProfitTargetHigherThanAutoSellTrigger')
+  }
+  if (partialTakeProfitTargetHigherThanStopLoss) {
+    errorMessages.push('partialTakeProfitTargetHigherThanStopLoss')
+  }
+  if (partialTakeProfitMinPriceLowerThanAutoBuyMaxPrice) {
+    errorMessages.push('partialTakeProfitMinPriceLowerThanAutoBuyMaxPrice')
   }
 
   return errorMessages

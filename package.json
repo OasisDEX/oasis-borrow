@@ -1,13 +1,13 @@
 {
   "name": "oasis-borrow",
-  "version": "12.11.3",
+  "version": "12.13.0",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.12"
   },
   "packageManager": "yarn@1.22.21",
   "scripts": {
-    "start": "yarn get-config-types && next dev & node ./scripts/notification-dummy",
+    "start": "yarn get-config-types && NODE_OPTIONS=--max-old-space-size=8192 next dev & node ./scripts/notification-dummy",
     "get-config-types": "node scripts/get-config-types.js",
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",
@@ -44,9 +44,8 @@
     "@lifi/widget": "2.4.6",
     "@metamask/eth-sig-util": "^5.0.2",
     "@oasisdex/addresses": "0.1.47",
-    "@oasisdex/automation": "1.6.0-alpha.16",
-    "@oasisdex/dma-library": "0.6.27",
-    "@oasisdex/dma-library-migration": "npm:@oasisdex/dma-library@0.6.29-rc.migration.1",
+    "@oasisdex/automation": "1.6.4-alpha.2",
+    "@oasisdex/dma-library": "0.6.32",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",

@@ -378,7 +378,7 @@ export function FieldGenerateDai({
 }
 
 export function FieldPaybackDai({
-  action = 'Payback',
+  action = 'Pay back',
   maxPaybackAmount,
   paybackAmount,
   updatePayback,

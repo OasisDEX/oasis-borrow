@@ -11,7 +11,10 @@ import {
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import {
+  getOmniNetValuePnlData,
+  mapBorrowCumulativesToOmniCumulatives,
+} from 'features/omni-kit/helpers'
 import {
   AjnaCardDataLtvModal,
   useAjnaCardDataBuyingPower,
@@ -41,6 +44,7 @@ interface AjnaDetailsSectionContentProps {
   quotePrice: BigNumber
   quoteToken: string
   shouldShowDynamicLtv: boolean
+  isYieldLoop: boolean
   simulation?: AjnaPosition
 }
 
@@ -59,13 +63,14 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   quoteToken,
   shouldShowDynamicLtv,
   simulation,
+  isYieldLoop,
 }) => {
-  const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPrice))
-    : position.liquidationPrice
+  const liquidationPrice = normalizeValue(
+    isShort ? one.div(position.liquidationPrice) : position.liquidationPrice,
+  )
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
-    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
+    normalizeValue(isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
   const ratioToCurrentPrice = one.minus(
     isShort
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
@@ -159,22 +164,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
     !isOpening
       ? getOmniNetValuePnlData({
-          cumulatives: {
-            cumulativeDepositUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD,
-            cumulativeWithdrawUSD: position.pnl.cumulatives.borrowCumulativeWithdrawUSD,
-            cumulativeFeesUSD: position.pnl.cumulatives.borrowCumulativeFeesUSD,
-            cumulativeWithdrawInCollateralToken:
-              position.pnl.cumulatives.borrowCumulativeWithdrawInCollateralToken,
-            cumulativeDepositInCollateralToken:
-              position.pnl.cumulatives.borrowCumulativeDepositInCollateralToken,
-            cumulativeFeesInCollateralToken:
-              position.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
-            cumulativeWithdrawInQuoteToken:
-              position.pnl.cumulatives.borrowCumulativeWithdrawInQuoteToken,
-            cumulativeDepositInQuoteToken:
-              position.pnl.cumulatives.borrowCumulativeDepositInQuoteToken,
-            cumulativeFeesInQuoteToken: position.pnl.cumulatives.borrowCumulativeFeesInQuoteToken,
-          },
+          cumulatives: mapBorrowCumulativesToOmniCumulatives(position.pnl.cumulatives),
           productType,
           collateralTokenPrice: collateralPrice,
           debtTokenPrice: quotePrice,
@@ -182,6 +172,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           netValueInDebtToken: netValue.div(quotePrice),
           collateralToken,
           debtToken: quoteToken,
+          useDebtTokenAsPnL: isYieldLoop,
         })
       : undefined,
   )

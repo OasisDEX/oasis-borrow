@@ -12,10 +12,12 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import {
+  getOmniNetValuePnlData,
+  mapBorrowCumulativesToOmniCumulatives,
+} from 'features/omni-kit/helpers'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
-import { getMorphoLiquidationPenalty } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
@@ -32,6 +34,7 @@ export const MorphoDetailsSectionContent: FC = () => {
       quotePrice,
       quoteToken,
       isOpening,
+      isYieldLoop,
     },
   } = useOmniGeneralContext()
   const {
@@ -57,9 +60,6 @@ export const MorphoDetailsSectionContent: FC = () => {
       ? normalizeValue(one.div(castedPosition.liquidationToMarketPrice))
       : castedPosition.liquidationToMarketPrice,
   )
-  const liquidationPenalty = getMorphoLiquidationPenalty({
-    maxLtv: castedPosition.maxRiskRatio.loanToValue,
-  })
 
   const commonContentCardData = {
     changeVariant,
@@ -73,7 +73,7 @@ export const MorphoDetailsSectionContent: FC = () => {
     ratioToCurrentPrice,
     modal: (
       <OmniCardDataLiquidationPriceModal
-        liquidationPenalty={liquidationPenalty}
+        liquidationPenalty={castedPosition.liquidationPenalty}
         liquidationPrice={liquidationPrice}
         priceFormat={priceFormat}
         ratioToCurrentPrice={ratioToCurrentPrice}
@@ -128,45 +128,23 @@ export const MorphoDetailsSectionContent: FC = () => {
     afterBuyingPower: simulation?.buyingPower,
   })
 
-  const netValue = castedPosition.collateralAmount
-    .times(collateralPrice)
-    .minus(castedPosition.debtAmount.times(quotePrice))
-  const afterNetValue = simulation?.collateralAmount
-    .times(collateralPrice)
-    .minus(simulation?.debtAmount.times(quotePrice))
-
   const netValueContentCardCommonData = useOmniCardDataNetValue({
-    afterNetValue,
-    netValue,
+    afterNetValue: simulation?.netValue,
+    netValue: position.netValue,
   })
 
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
     !isOpening
       ? getOmniNetValuePnlData({
-          cumulatives: {
-            cumulativeDepositUSD: castedPosition.pnl.cumulatives.borrowCumulativeDepositUSD,
-            cumulativeWithdrawUSD: castedPosition.pnl.cumulatives.borrowCumulativeWithdrawUSD,
-            cumulativeFeesUSD: castedPosition.pnl.cumulatives.borrowCumulativeFeesUSD,
-            cumulativeWithdrawInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeWithdrawInCollateralToken,
-            cumulativeDepositInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeDepositInCollateralToken,
-            cumulativeFeesInCollateralToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
-            cumulativeWithdrawInQuoteToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeWithdrawInQuoteToken,
-            cumulativeDepositInQuoteToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeDepositInQuoteToken,
-            cumulativeFeesInQuoteToken:
-              castedPosition.pnl.cumulatives.borrowCumulativeFeesInQuoteToken,
-          },
+          cumulatives: mapBorrowCumulativesToOmniCumulatives(castedPosition.pnl.cumulatives),
           productType,
           collateralTokenPrice: collateralPrice,
           debtTokenPrice: quotePrice,
-          netValueInCollateralToken: netValue.div(collateralPrice),
-          netValueInDebtToken: netValue.div(quotePrice),
+          netValueInCollateralToken: position.netValue.div(collateralPrice),
+          netValueInDebtToken: position.netValue.div(quotePrice),
           collateralToken,
           debtToken: quoteToken,
+          useDebtTokenAsPnL: isYieldLoop,
         })
       : undefined,
   )

@@ -34,7 +34,12 @@ import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 
 async function getAjnaPoolData(
-  networkId: NetworkIds.MAINNET | NetworkIds.GOERLI | NetworkIds.BASEMAINNET,
+  networkId:
+    | NetworkIds.MAINNET
+    | NetworkIds.GOERLI
+    | NetworkIds.BASEMAINNET
+    | NetworkIds.ARBITRUMMAINNET
+    | NetworkIds.OPTIMISMMAINNET,
   tickers: Tickers,
 ): Promise<ProductHubHandlerResponseData> {
   const poolContracts = {
@@ -239,6 +244,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     getAjnaPoolData(NetworkIds.MAINNET, tickers),
     getAjnaPoolData(NetworkIds.GOERLI, tickers),
     getAjnaPoolData(NetworkIds.BASEMAINNET, tickers),
+    getAjnaPoolData(NetworkIds.ARBITRUMMAINNET, tickers),
+    getAjnaPoolData(NetworkIds.OPTIMISMMAINNET, tickers),
   ]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {

@@ -45,6 +45,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteBalance,
       quotePrecision,
       collateralPrecision,
+      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -76,12 +77,15 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       return {
         notifications,
         validations,
-        handlers: {
-          customReset: () => null,
-        },
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
-            morphoFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+            morphoFlowStateFilter({
+              collateralAddress,
+              event,
+              productType,
+              quoteAddress,
+              protocol,
+            }),
         },
         values: {
           interestRate: position.rate,
@@ -122,7 +126,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
-          highlighterOrderInformation: undefined,
           overviewContent: <MorphoDetailsSectionContent />,
           overviewFooter: <MorphoDetailsSectionFooter />,
         },

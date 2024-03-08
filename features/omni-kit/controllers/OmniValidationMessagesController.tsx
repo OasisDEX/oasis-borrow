@@ -29,6 +29,7 @@ export const OmniValidationMessagesController: FC<OmniValidationMessagesControll
             token,
             quoteToken,
             collateralToken,
+            productType,
             ...message.message.params,
           })}
         {message.message.component}

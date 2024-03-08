@@ -1,19 +1,28 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
+import {
+  omniOptimizationLikeAutomationFeatures,
+  omniProtectionLikeAutomationFeatures,
+} from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   OmniFaqController,
   OmniHistoryController,
+  OmniOptimizationController,
   OmniOverviewController,
+  OmniProtectionController,
 } from 'features/omni-kit/controllers'
 import { OmniBorrowFormController } from 'features/omni-kit/controllers/borrow'
 import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
+import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { hasCommonElement } from 'helpers/hasCommonElement'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -44,14 +53,32 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       quotePrice,
       quoteToken,
       network,
+      networkId,
+      isYieldLoopWithData,
+      isYieldLoop,
+      settings,
     },
   } = useOmniGeneralContext()
   const {
+    position: {
+      currentPosition: { position },
+    },
     dynamicMetadata: {
       elements: { faq },
-      values: { headlineDetails },
+      values: { headlineDetails, isHeadlineDetailsLoading },
     },
+    automation: { positionTriggers },
   } = useOmniProductContext(productType)
+
+  const isMultiplySupported = isPoolSupportingMultiply({
+    collateralToken,
+    quoteToken,
+    supportedTokens: settings.supportedMultiplyTokens[networkId],
+  })
+  const automationFeatures =
+    isMultiplySupported && !isYieldLoop ? settings.availableAutomations?.[networkId] || [] : []
+
+  const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
 
   return (
     <Container variant="vaultPageContainerStatic">
@@ -61,6 +88,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         </Box>
       )}
       <VaultHeadline
+        loading={isHeadlineDetailsLoading}
         {...getOmniHeadlineProps({
           collateralIcon,
           collateralToken,
@@ -70,11 +98,20 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           quoteIcon,
           quoteToken,
           networkName: network.name,
+          isYieldLoopWithData,
         })}
         details={[
           ...(headlineDetails || []),
-          ...(!isOracless
+          ...(!isOracless && !isYieldLoopWithData
             ? [
+                ...(ltv && !isOpening
+                  ? [
+                      {
+                        label: t('omni-kit.headline.details.current-ltv'),
+                        value: formatDecimalAsPercent(ltv),
+                      },
+                    ]
+                  : []),
                 {
                   label: t('omni-kit.headline.details.current-market-price'),
                   value: `${formatCryptoBalance(
@@ -117,6 +154,32 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           },
           ...(!isOpening
             ? [
+                ...(hasCommonElement(automationFeatures, omniProtectionLikeAutomationFeatures)
+                  ? [
+                      {
+                        value: 'protection',
+                        tag: {
+                          include: true,
+                          active: hasActiveProtection(positionTriggers, protocol),
+                        },
+                        label: t('system.protection'),
+                        content: <OmniProtectionController />,
+                      },
+                    ]
+                  : []),
+                ...(hasCommonElement(automationFeatures, omniOptimizationLikeAutomationFeatures)
+                  ? [
+                      {
+                        value: 'optimization',
+                        tag: {
+                          include: true,
+                          active: hasActiveOptimization(positionTriggers, protocol),
+                        },
+                        label: t('system.optimization'),
+                        content: <OmniOptimizationController />,
+                      },
+                    ]
+                  : []),
                 {
                   value: 'history',
                   label: t('system.history'),

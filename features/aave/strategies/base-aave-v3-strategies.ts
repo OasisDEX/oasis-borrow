@@ -190,6 +190,9 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
         if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaBase]
         }
+        if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3PartialTakeProfitLambdaBase]
+        }
         return false
       },
     }
@@ -249,6 +252,9 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
         if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3TrailingStopLossLambdaBase]
         }
+        if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3PartialTakeProfitLambdaBase]
+        }
         return false
       },
     }
@@ -301,6 +307,9 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
         if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
           return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationBase]
+        }
+        if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3PartialTakeProfitLambdaBase]
         }
         return false
       },

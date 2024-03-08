@@ -7,6 +7,10 @@ import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
+import type {
+  OmniAutomationFormState,
+  useOmniAutomationFormReducto,
+} from 'features/omni-kit/state/automation'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
 import type {
@@ -21,6 +25,16 @@ import type {
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
+import type {
+  GetTriggersResponse,
+  SetupBasicAutoResponse,
+  SetupBasicStopLossResponse,
+  SetupPartialTakeProfitResponse,
+  SetupTrailingStopLossResponse,
+  TriggersApiError,
+  TriggersApiWarning,
+  TriggerTransaction,
+} from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
 import React, { useContext, useMemo, useState } from 'react'
@@ -53,6 +67,7 @@ export interface OmniSupplyMetadataHandlers {
 interface CommonMetadataValues {
   footerColumns: number
   headlineDetails?: HeadlineDetailsProp[]
+  isHeadlineDetailsLoading?: boolean
   interestRate: BigNumber
   isFormEmpty: boolean
   sidebarTitle: string
@@ -82,7 +97,7 @@ export type LendingMetadata = CommonMetadata & {
     maxSliderAsMaxLtv?: boolean
   }
   elements: CommonMetadataElements & {
-    highlighterOrderInformation: ReactNode
+    highlighterOrderInformation?: ReactNode
   }
   theme?: Theme
 }
@@ -112,7 +127,13 @@ export type OmniMetadataParams =
 
 export type GetOmniMetadata = (_: OmniMetadataParams) => LendingMetadata | SupplyMetadata
 
-interface ProductContextProviderPropsWithBorrow {
+interface WithAutomation {
+  automationFormReducto: typeof useOmniAutomationFormReducto
+  automationFormDefaults: Partial<OmniAutomationFormState>
+  positionTriggers: GetTriggersResponse
+}
+
+interface ProductContextProviderPropsWithBorrow extends WithAutomation {
   formDefaults: Partial<OmniBorrowFormState>
   formReducto: typeof useOmniBorrowFormReducto
   getDynamicMetadata: GetOmniMetadata
@@ -122,7 +143,7 @@ interface ProductContextProviderPropsWithBorrow {
   productType: OmniProductType.Borrow
 }
 
-interface ProductContextProviderPropsWithEarn {
+interface ProductContextProviderPropsWithEarn extends WithAutomation {
   formDefaults: Partial<OmniEarnFormState>
   formReducto: typeof useOmniEarnFormReducto
   getDynamicMetadata: GetOmniMetadata
@@ -132,7 +153,7 @@ interface ProductContextProviderPropsWithEarn {
   productType: OmniProductType.Earn
 }
 
-interface ProductContextProviderPropsWithMultiply {
+interface ProductContextProviderPropsWithMultiply extends WithAutomation {
   formDefaults: Partial<OmniMultiplyFormState>
   formReducto: typeof useOmniMultiplyFormReducto
   getDynamicMetadata: GetOmniMetadata
@@ -182,10 +203,32 @@ interface ProductContextPosition<Position, Auction> {
   simulationCommon: OmniSimulationCommon
 }
 
+interface OmniAutomationSimulationData {
+  encodedTriggerData?: string
+  simulation?:
+    | SetupBasicAutoResponse
+    | SetupBasicStopLossResponse
+    | SetupTrailingStopLossResponse
+    | SetupPartialTakeProfitResponse
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
+  transaction?: TriggerTransaction
+}
+
+interface ProductContextAutomation {
+  positionTriggers: GetTriggersResponse
+  automationForm: ReturnType<typeof useOmniAutomationFormReducto>
+  simulationData?: OmniAutomationSimulationData
+  isSimulationLoading?: boolean
+  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
+  setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationData | undefined>>
+}
+
 interface GenericProductContext<Position, Form, Auction, Metadata> {
   form: Form
   position: ProductContextPosition<Position, Auction>
   dynamicMetadata: Metadata
+  automation: ProductContextAutomation
 }
 
 export type ProductContextWithBorrow = GenericProductContext<
@@ -246,10 +289,13 @@ export function OmniProductContextProvider({
   children,
   formDefaults,
   formReducto,
+  automationFormReducto,
+  automationFormDefaults,
   productType,
   position,
   positionAuction,
   positionHistory,
+  positionTriggers,
 }: PropsWithChildren<ProductDetailsContextProviderProps>) {
   const { walletAddress } = useAccount()
   const { positionIdFromDpmProxy$ } = useProductContext()
@@ -258,14 +304,16 @@ export function OmniProductContextProvider({
     environment: {
       collateralBalance,
       collateralPrecision,
+      collateralToken,
       ethBalance,
       ethPrice,
       quoteBalance,
       quotePrecision,
-      collateralToken,
       quoteToken,
       isOpening,
       gasEstimation,
+      entryToken,
+      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -273,7 +321,9 @@ export function OmniProductContextProvider({
   // @ts-ignore
   // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
   const form = formReducto(formDefaults)
+  const automationForm = automationFormReducto(automationFormDefaults)
   const { state } = form
+  const { state: automationState } = automationForm
 
   const [positionIdFromDpmProxyData] = useObservable(
     useMemo(() => positionIdFromDpmProxy$(state.dpmAddress), [state.dpmAddress]),
@@ -285,6 +335,10 @@ export function OmniProductContextProvider({
   const [simulation, setSimulation] = useState<OmniSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
   // TODO these could be potentially generalized within single hook
+
+  const [automationSimulationData, setAutomationSimulationData] =
+    useState<OmniAutomationSimulationData>()
+  const [isAutomationSimulationLoading, setAutomationIsLoadingSimulation] = useState(false)
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
@@ -303,7 +357,7 @@ export function OmniProductContextProvider({
       position: {
         simulationCommon: {
           getValidations: getOmniValidations({
-            collateralBalance,
+            collateralBalance: entryToken.balance,
             collateralToken,
             currentStep,
             ethBalance,
@@ -314,6 +368,7 @@ export function OmniProductContextProvider({
             productType,
             quoteBalance,
             quoteToken,
+            protocol,
             simulationErrors: simulation?.errors as OmniSimulationCommon['errors'],
             simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
             simulationNotices: simulation?.notices as OmniSimulationCommon['notices'],
@@ -344,6 +399,14 @@ export function OmniProductContextProvider({
         },
         history: positionHistory,
       },
+      automation: {
+        positionTriggers,
+        automationForm,
+        simulationData: automationSimulationData,
+        isSimulationLoading: isAutomationSimulationLoading,
+        setIsLoadingSimulation: setAutomationIsLoadingSimulation,
+        setSimulation: setAutomationSimulationData,
+      },
     }
   }, [
     cachedPosition,
@@ -361,6 +424,10 @@ export function OmniProductContextProvider({
     walletAddress,
     positionHistory,
     cachedSwap,
+    positionTriggers,
+    automationState,
+    automationSimulationData,
+    isAutomationSimulationLoading,
   ])
 
   switch (productType) {

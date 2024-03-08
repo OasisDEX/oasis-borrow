@@ -1,3 +1,5 @@
+import type { PositionType } from '@oasisdex/dma-library'
+import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
 import type { AddressesRelatedWithPosition } from 'features/aave/helpers'
@@ -7,7 +9,7 @@ import type { PositionId } from 'features/aave/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
-import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, of } from 'rxjs'
@@ -21,6 +23,31 @@ export interface DpmPositionData extends UserDpmAccount {
   protocol: string
   quoteToken: string
   quoteTokenAddress: string
+}
+
+// Currently aave-like correlated positions are opened as earn dpm product
+// which is not common approach in other protocols (ajna, morpho uses multiply product type)
+// therefore mapping is needed to be able to read info about position
+const mapAaveYieldLoopToMultiply = ({
+  collateralToken,
+  quoteToken,
+  protocol,
+  positionType,
+}: {
+  collateralToken: string
+  quoteToken: string
+  protocol: LendingProtocol
+  positionType: PositionType
+}) => {
+  if (
+    positionType === 'Earn' &&
+    isCorrelatedPosition(collateralToken, quoteToken) &&
+    [LendingProtocol.SparkV3, LendingProtocol.AaveV3, LendingProtocol.AaveV2].includes(protocol)
+  ) {
+    return 'Multiply'
+  }
+
+  return positionType
 }
 
 const filterPositionWhenUrlParamsDefined = ({
@@ -45,6 +72,12 @@ const filterPositionWhenUrlParamsDefined = ({
       ...position,
       collateralTokenSymbol: getTokenDisplayName(collateralTokenSymbol),
       debtTokenSymbol: getTokenDisplayName(debtTokenSymbol),
+      positionType: mapAaveYieldLoopToMultiply({
+        collateralToken,
+        quoteToken,
+        protocol,
+        positionType: position.positionType,
+      }),
     }))
     ?.find(
       ({
@@ -56,16 +89,19 @@ const filterPositionWhenUrlParamsDefined = ({
         protocol: positionProtocol,
         protocolRaw: positionProtocolRaw,
         proxyAddress,
-      }) =>
-        positionProtocol === protocol &&
-        positionProtocolRaw === protocolRaw &&
-        proxyAddress.toLowerCase() === proxy.toLowerCase() &&
-        [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
-        [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
-        ((product.toLowerCase() === 'earn' &&
-          positionType.toLowerCase() === product.toLowerCase()) ||
-          (['borrow', 'multiply'].includes(product.toLocaleLowerCase()) &&
-            ['borrow', 'multiply'].includes(positionType.toLocaleLowerCase()))),
+      }) => {
+        return (
+          positionProtocol === protocol &&
+          positionProtocolRaw === protocolRaw &&
+          proxyAddress.toLowerCase() === proxy.toLowerCase() &&
+          [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
+          [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
+          ((product.toLowerCase() === 'earn' &&
+            positionType.toLowerCase() === product.toLowerCase()) ||
+            (['borrow', 'multiply'].includes(product.toLocaleLowerCase()) &&
+              ['borrow', 'multiply'].includes(positionType.toLocaleLowerCase())))
+        )
+      },
     )
 
 export function getDpmPositionDataV2$(
@@ -95,6 +131,7 @@ export function getDpmPositionDataV2$(
             (item) => item.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase(),
           ).length > 1,
       )
+
       const proxyPosition = filterPositionWhenUrlParamsDefined({
         collateralToken,
         positions,

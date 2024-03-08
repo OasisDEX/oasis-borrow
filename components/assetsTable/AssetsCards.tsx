@@ -64,7 +64,7 @@ export function AssetsCards({
 
 export function AssetCard({ headerTranslationProps, row }: AssetCardProps) {
   const { t } = useTranslation()
-  const rowKeys = Object.keys(row)
+  const rowKeys = Object.keys(row.items)
 
   return (
     <Box
@@ -111,7 +111,7 @@ export function AssetCard({ headerTranslationProps, row }: AssetCardProps) {
                 {t(`discover.table.header.${kebabCase(label)}`, headerTranslationProps)}
               </Box>
             )}
-            {(row[label] as AssetsTableSortableCell).value || row[label]}
+            {(row.items[label] as AssetsTableSortableCell).value || row.items[label]}
           </Box>
         ))}
       </Grid>

@@ -11,6 +11,7 @@ import type {
 } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
+import type { LendingProtocol } from 'lendingProtocols'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 
@@ -20,12 +21,14 @@ export function getAjnaValidation({
   position,
   positionAuction,
   productType,
+  protocol,
   state,
 }: {
   safetySwitchOn: boolean
   isOpening: boolean
   position: OmniGenericPosition
   productType: OmniProductType
+  protocol: LendingProtocol
   state: OmniFormState
   positionAuction: AjnaPositionAuction
 }): OmniPartialValidations {
@@ -54,7 +57,7 @@ export function getAjnaValidation({
     if (borrowishAuction.isBeingLiquidated) {
       localWarnings.push({
         message: {
-          component: <OmniValidationWithLink name="is-being-liquidated" />,
+          component: <OmniValidationWithLink name="is-being-liquidated" protocol={protocol} />,
         },
       })
     }

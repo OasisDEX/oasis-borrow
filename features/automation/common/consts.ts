@@ -41,6 +41,7 @@ export const sidebarAutomationFlowSuffix = {
   [AutomationFeatures.CONSTANT_MULTIPLE]: 'ConstantMultiple',
   [AutomationFeatures.AUTO_TAKE_PROFIT]: 'AutoTakeProfit',
   [AutomationFeatures.TRAILING_STOP_LOSS]: 'n/a',
+  [AutomationFeatures.PARTIAL_TAKE_PROFIT]: 'n/a',
 }
 
 export const sidebarAutomationFeatureCopyMap = {
@@ -50,6 +51,7 @@ export const sidebarAutomationFeatureCopyMap = {
   [AutomationFeatures.CONSTANT_MULTIPLE]: 'constant-multiple.title',
   [AutomationFeatures.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
   [AutomationFeatures.TRAILING_STOP_LOSS]: 'n/a',
+  [AutomationFeatures.PARTIAL_TAKE_PROFIT]: 'partial-take-profit.title',
 }
 
 export const sidebarAutomationLinkMap = {
@@ -59,6 +61,7 @@ export const sidebarAutomationLinkMap = {
   [AutomationFeatures.CONSTANT_MULTIPLE]: 'what-is-constant-multiple',
   [AutomationFeatures.AUTO_TAKE_PROFIT]: 'what-is-take-profit',
   [AutomationFeatures.TRAILING_STOP_LOSS]: 'n/a',
+  [AutomationFeatures.PARTIAL_TAKE_PROFIT]: 'what-is-take-profit',
 }
 
 export const autoKindToCopyMap = {
@@ -67,6 +70,7 @@ export const autoKindToCopyMap = {
   [AutomationKinds.AUTO_SELL]: 'auto-sell.title',
   [AutomationKinds.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
   [AutomationFeatures.TRAILING_STOP_LOSS]: 'n/a',
+  [AutomationFeatures.PARTIAL_TAKE_PROFIT]: 'n/a',
 }
 
 export enum CloseVaultToEnum {

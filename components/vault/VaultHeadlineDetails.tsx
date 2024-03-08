@@ -35,8 +35,8 @@ export function VaultHeadlineDetails({
         position: 'relative',
         fontSize: 3,
         mt: [2, 0],
-        ml: [0, 3],
-        pl: [0, 3],
+        ml: [0, '12px'],
+        pl: [0, '12px'],
         '::before': {
           content: ['none', '""'],
           position: 'absolute',

@@ -27,14 +27,17 @@ export const getHistoryEventLabel = ({
       return isOpen ? t('position-history.open-position') : t('position-history.deposit')
     case 'AjnaDepositBorrow':
     case 'AAVEDepositBorrow':
+    case 'AAVEV3DepositBorrow':
     case 'MorphoBlueDepositBorrow':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'MorphoBlueOpenPosition':
     case 'MorphoBlueOpenDepositBorrow':
     case 'AjnaOpenMultiplyPosition':
     case 'AAVEOpenDepositBorrow':
+    case 'AAVEV3OpenDepositBorrow':
     case 'SparkOpenDepositBorrow':
     case 'OpenAAVEPosition':
+    case 'OpenAAVEV3Position':
     case 'SparkOpenPosition':
     case 'AjnaSupplyQuoteMintNftAndStake':
       return t('position-history.open-position')
@@ -53,18 +56,21 @@ export const getHistoryEventLabel = ({
     case 'AjnaRepayWithdraw':
     case 'MorphoBluePaybackWithdraw':
     case 'AAVEPaybackWithdraw':
+    case 'AAVEV3PaybackWithdraw':
     case 'SparkPaybackWithdraw':
       return t('position-history.repay-withdraw')
     case 'AjnaAdjustRiskUp':
     case 'SparkAdjustRiskUp':
     case 'MorphoBlueAdjustRiskUp':
     case 'IncreaseAAVEPosition':
+    case 'IncreaseAAVEV3Position':
     case 'AdjustRiskUpAAVEV3Position':
       return t('position-history.increase-multiple')
     case 'AjnaAdjustRiskDown':
     case 'SparkAdjustRiskDown':
     case 'MorphoBlueAdjustRiskDown':
     case 'DecreaseAAVEPosition':
+    case 'DecreaseAAVEV3Position':
     case 'AdjustRiskDownAAVEV3Position':
       return t('position-history.decrease-multiple')
     case 'AjnaCloseToQuotePosition':
@@ -89,6 +95,7 @@ export const getHistoryEventLabel = ({
       return t('position-history.withdraw-and-move-lending-price')
     case 'AjnaSupplyQuoteNft':
     case 'AAVEDeposit':
+    case 'AAVEV3Deposit':
     case 'SparkDeposit':
       return t('position-history.deposit')
     case 'AjnaUnstakeNftAndClaimCollateral':
@@ -96,11 +103,16 @@ export const getHistoryEventLabel = ({
     case 'SparkDepositBorrow':
       return t('position-history.deposit-generate')
     case 'AAVEBorrow':
+    case 'AAVEV3Borrow':
     case 'SparkBorrow':
       return t('position-history.borrow')
     case 'Liquidation':
     case 'Liquidate':
       return t('position-history.liquidation')
+    case 'MigrateSparkEOA':
+      return t('position-history.migrated-from-protocol', { protocol: 'Spark' })
+    case 'MigrateAaveV3EOA':
+      return t('position-history.migrated-from-protocol', { protocol: 'Aave' })
     default:
       return `${t('position-history.event')} ${kind || ''}`
   }
@@ -118,6 +130,7 @@ enum AutomationType {
   'BasicBuy' = 'BasicBuy',
   'BasicSell' = 'BasicSell',
   'TrailingStopLoss' = 'TrailingStopLoss',
+  'PartialTakeProfit' = 'PartialTakeProfit',
 }
 function handleAutomationKinds(
   kind: string,
@@ -138,6 +151,8 @@ function handleAutomationKinds(
     return handleBasicSellLabel(automationAction, t)
   } else if (automationType.includes(AutomationType.TrailingStopLoss)) {
     return handleTrailingStopLossLabel(automationAction, t)
+  } else if (automationType.includes(AutomationType.PartialTakeProfit)) {
+    return handlePartialTakeProfitLabel(automationAction, t)
   }
   console.warn('Automation type not found')
   return undefined
@@ -215,6 +230,17 @@ function handleBasicSellLabel(automationAction: string, t: TranslationType) {
     return t('position-history.automation.basic-sell-executed')
   } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.basic-sell-removed')
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
+function handlePartialTakeProfitLabel(automationAction: string, t: TranslationType) {
+  if (automationAction.includes(AutomationAction.Added)) {
+    return t('position-history.automation.partial-take-profit-added')
+  } else if (automationAction.includes(AutomationAction.Executed)) {
+    return t('position-history.automation.partial-take-profit-executed')
+  } else if (automationAction.includes(AutomationAction.Removed)) {
+    return t('position-history.automation.partial-take-profit-removed')
   }
   console.warn('Automation type not found')
   return undefined

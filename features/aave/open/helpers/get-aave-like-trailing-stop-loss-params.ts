@@ -150,16 +150,16 @@ export const getAaveLikeTrailingStopLossParams = {
       const dynamicStopPrice = useMemo(() => {
         const lambdaDistanceValue = currentTrailingDistanceValue
         if (isShort) {
-          return priceRatio.plus(lambdaDistanceValue)
+          return priceRatio.times(collateralTokenPrice).plus(lambdaDistanceValue)
         }
-        return priceRatio.minus(lambdaDistanceValue)
-      }, [currentTrailingDistanceValue, isShort, priceRatio])
+        return priceRatio.times(debtTokenPrice).minus(lambdaDistanceValue)
+      }, [collateralTokenPrice, currentTrailingDistanceValue, debtTokenPrice, isShort, priceRatio])
       const dynamicStopPriceChange = useMemo(() => {
         if (isShort) {
-          return priceRatio.plus(trailingDistanceValue)
+          return priceRatio.times(collateralTokenPrice).plus(trailingDistanceValue)
         }
-        return priceRatio.minus(trailingDistanceValue)
-      }, [priceRatio, trailingDistanceValue, isShort])
+        return priceRatio.times(debtTokenPrice).minus(trailingDistanceValue)
+      }, [isShort, priceRatio, trailingDistanceValue, debtTokenPrice, collateralTokenPrice])
 
       const collateralDuringLiquidation = useMemo(
         () =>

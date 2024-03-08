@@ -5,25 +5,26 @@ import type { NetworkIds } from 'blockchain/networks'
 import { useEffect, useState } from 'react'
 
 type BalancerLiquidityProps = {
-  token: string
+  tokenSymbol: string
   networkId: NetworkIds
 }
-export const useBalancerVaultLiquidity = ({ token, networkId }: BalancerLiquidityProps) => {
+export const useBalancerVaultLiquidity = ({ tokenSymbol, networkId }: BalancerLiquidityProps) => {
   const [liquidity, setLiquidity] = useState<BigNumber | null>(null)
   const contracts = getNetworkContracts(networkId)
   ensureContractsExist(networkId, contracts, ['balancerVault'])
 
+  const tokenToCheck = tokenSymbol === 'ETH' ? 'WETH' : tokenSymbol.toUpperCase()
   const { balancerVault } = contracts
 
   useEffect(() => {
-    tokenBalance({ token, account: balancerVault.address, networkId })
+    tokenBalance({ token: tokenToCheck, account: balancerVault.address, networkId })
       .then((result) => {
         setLiquidity(result)
       })
       .catch((error) => {
         console.error(error)
       })
-  })
+  }, [tokenToCheck, balancerVault.address, networkId])
 
   return liquidity
 }

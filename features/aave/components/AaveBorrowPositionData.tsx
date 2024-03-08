@@ -10,6 +10,7 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCard'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
@@ -30,7 +31,7 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveLikeCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
@@ -58,7 +59,7 @@ type AaveBorrowPositionDataProps = {
   isAutomationAvailable?: boolean
   strategyType: StrategyType
   lendingProtocol: LendingProtocol
-  cumulatives?: AaveCumulativeData
+  cumulatives?: AaveLikeCumulativeData
   // triggersState is available _only_ in manage view (this component is used for both open and manage)
   triggersState?: StateFrom<typeof triggersAaveStateMachine>
   sendTriggerEvent?: Sender<TriggersAaveEvent>
@@ -233,7 +234,6 @@ export function AaveBorrowPositionData({
     modal: (
       <CostToBorrowContentCardModal
         currentPositionThings={currentPositionThings}
-        debtTokenPrice={debtTokenPrice}
         position={currentPosition}
       />
     ),
@@ -298,7 +298,7 @@ export function AaveBorrowPositionData({
     if (stopLossLambdaData.stopLossTriggerName) {
       return {
         isAutomationAvailable: true,
-        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2), // still needs to be divided by 100
+        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(lambdaPercentageDenomination), // still needs to be divided by 100
         isStopLossEnabled: true,
         isAutomationDataLoaded: true,
       }

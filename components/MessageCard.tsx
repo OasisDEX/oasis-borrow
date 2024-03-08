@@ -1,5 +1,6 @@
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Card, Flex, Grid, Text } from 'theme-ui'
 
 interface NoticeCardProps {
@@ -7,6 +8,7 @@ interface NoticeCardProps {
   type: 'error' | 'warning' | 'ok' | 'notice'
   withBullet?: boolean
   handleClick?: () => void
+  sx?: ThemeUIStyleObject
 }
 
 const cardStyles = {
@@ -28,7 +30,13 @@ const cardStyles = {
   },
 } as const
 
-export function MessageCard({ messages, type, withBullet = true, handleClick }: NoticeCardProps) {
+export function MessageCard({
+  messages,
+  type,
+  withBullet = true,
+  handleClick,
+  sx,
+}: NoticeCardProps) {
   const cardStyle = cardStyles[type]
 
   if (!messages.length) return null
@@ -39,6 +47,7 @@ export function MessageCard({ messages, type, withBullet = true, handleClick }: 
       sx={{
         border: 'none',
         cursor: handleClick ? 'pointer' : 'auto',
+        ...sx,
       }}
     >
       <Grid>

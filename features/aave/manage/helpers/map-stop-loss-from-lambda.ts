@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/triggers'
 
 type StopLossTriggers = Pick<
@@ -21,14 +22,16 @@ export const mapStopLossFromLambda = (triggers?: StopLossTriggers) => {
     triggerName.includes('StopLoss'),
   )
   if (stopLossTriggersNames.length > 1) {
-    console.warn('Warning: more than one stop loss trigger found:', stopLossTriggersNames)
+    console.warn('Warning: more than one Stop-Loss trigger found:', stopLossTriggersNames)
   }
   const stopLossTriggerName = stopLossTriggersNames[0] as keyof StopLossTriggers
   const trigger = triggers[stopLossTriggerName]
   if (trigger) {
     const stopLossLevel = trigger.decodedParams.executionLtv || trigger.decodedParams.ltv
     return {
-      stopLossLevel: stopLossLevel ? new BigNumber(Number(stopLossLevel)).div(10 ** 2) : undefined,
+      stopLossLevel: stopLossLevel
+        ? new BigNumber(Number(stopLossLevel)).div(lambdaPercentageDenomination)
+        : undefined,
       stopLossToken: stopLossTriggerName.includes('Debt')
         ? ('debt' as const)
         : ('collateral' as const),

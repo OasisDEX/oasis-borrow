@@ -1,5 +1,6 @@
 import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
 import type { NetworkIds } from 'blockchain/networks'
@@ -27,11 +28,17 @@ export const filterAutomation = (dpm: DpmSubgraphData) => (position: AutomationR
 export const getReserveDataCall = (dpm: DpmSubgraphData, token: string) => {
   switch (dpm.protocol) {
     case 'AAVE_V3':
+    case 'aavev3':
       return getAaveV3ReserveData({
         networkId: dpm.networkId as AaveV3SupportedNetwork,
         token,
       })
+    case 'aavev2':
+      return getAaveV2ReserveData({
+        token,
+      })
     case 'Spark':
+    case 'sparkv3':
       return getSparkV3ReserveData({
         networkId: dpm.networkId as SparkV3SupportedNetwork,
         token,
@@ -44,11 +51,15 @@ export const getReserveDataCall = (dpm: DpmSubgraphData, token: string) => {
 export const getReserveConfigurationDataCall = (dpm: DpmSubgraphData, token: string) => {
   switch (dpm.protocol) {
     case 'AAVE_V3':
+    case 'aavev3':
       return getAaveV3ReserveConfigurationData({
         networkId: dpm.networkId as AaveV3SupportedNetwork,
         token,
       })
+    case 'aavev2':
+      return getAaveV2ReserveConfigurationData({ token })
     case 'Spark':
+    case 'sparkv3':
       return getSparkV3ReserveConfigurationData({
         networkId: dpm.networkId as SparkV3SupportedNetwork,
         token,
@@ -105,9 +116,7 @@ export const commonDataMapper = ({
     : dpm.positionType
   const emptyAutomationsList = {
     AAVE: {},
-    Spark: {
-      stopLoss: emptyAutomations.stopLoss,
-    },
+    Spark: emptyAutomations,
     AAVE_V3: emptyAutomations,
   }[dpm.protocol]
   return {

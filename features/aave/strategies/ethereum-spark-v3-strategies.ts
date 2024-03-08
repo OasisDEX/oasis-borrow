@@ -271,10 +271,22 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
       isAutomationFeatureEnabled: (feature) => {
+        if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkTrailingStopLossLambdaEthereum]
+        }
+
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkOptimizationEthereum]
+        }
+        if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkPartialTakeProfitLambdaEthereum]
+        }
         return (
-          config.strategyType === StrategyType.Long &&
-          feature === AutomationFeatures.STOP_LOSS &&
-          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+          (config.strategyType === StrategyType.Long &&
+            feature === AutomationFeatures.STOP_LOSS &&
+            isSupportedAaveAutomationTokenPair(config.collateral, config.debt)) ||
+          (feature === AutomationFeatures.STOP_LOSS &&
+            getLocalAppConfig('features')[FeaturesEnum.SparkProtectionLambdaEthereum])
         )
       },
     }
@@ -325,10 +337,22 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
       isAutomationFeatureEnabled: (feature) => {
+        if (feature === AutomationFeatures.TRAILING_STOP_LOSS) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkTrailingStopLossLambdaEthereum]
+        }
+        if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkPartialTakeProfitLambdaEthereum]
+        }
+
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkOptimizationEthereum]
+        }
         return (
-          config.strategyType === StrategyType.Long &&
-          feature === AutomationFeatures.STOP_LOSS &&
-          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+          (config.strategyType === StrategyType.Long &&
+            feature === AutomationFeatures.STOP_LOSS &&
+            isSupportedAaveAutomationTokenPair(config.collateral, config.debt)) ||
+          (feature === AutomationFeatures.STOP_LOSS &&
+            getLocalAppConfig('features')[FeaturesEnum.SparkProtectionLambdaEthereum])
         )
       },
     }
@@ -380,10 +404,15 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
       isAutomationFeatureEnabled: (feature) => {
+        if (feature === AutomationFeatures.PARTIAL_TAKE_PROFIT) {
+          return getLocalAppConfig('features')[FeaturesEnum.SparkPartialTakeProfitLambdaEthereum]
+        }
         return (
-          config.strategyType === StrategyType.Long &&
-          feature === AutomationFeatures.STOP_LOSS &&
-          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+          (config.strategyType === StrategyType.Long &&
+            feature === AutomationFeatures.STOP_LOSS &&
+            isSupportedAaveAutomationTokenPair(config.collateral, config.debt)) ||
+          (feature === AutomationFeatures.STOP_LOSS &&
+            getLocalAppConfig('features')[FeaturesEnum.SparkProtectionLambdaEthereum])
         )
       },
     }

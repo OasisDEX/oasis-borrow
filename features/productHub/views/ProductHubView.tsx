@@ -1,9 +1,8 @@
 import { getNetworkById, NetworkNames } from 'blockchain/networks'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubLoadingState } from 'features/productHub/components/ProductHubLoadingState'
+import { ProductHubViewAll } from 'features/productHub/components/ProductHubViewAll'
 import {
   ProductHubNaturalLanguageSelectorController,
   ProductHubPromoCardsController,
@@ -17,7 +16,9 @@ import {
 import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRouter'
 import { ALL_ASSETS } from 'features/productHub/meta'
 import type {
+  ProductHubColumnKey,
   ProductHubFilters,
+  ProductHubItem,
   ProductHubProductType,
   ProductHubQueryString,
   ProductHubSupportedNetworks,
@@ -28,41 +29,49 @@ import type { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useSearchParams } from 'next/navigation'
-import { useTranslation } from 'next-i18next'
 import type { FC, ReactNode } from 'react'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 interface ProductHubViewProps {
+  dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
+  headerGradient?: [string, string, ...string[]]
+  hiddenColumns?: ProductHubColumnKey[]
+  hiddenNLS?: boolean
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
   intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
-  headerGradient?: [string, string, ...string[]]
+  limitRows?: number
+  onRowClick?: (row: ProductHubItem) => void
+  perPage?: number
   product: ProductHubProductType
+  promoCardsCollection: PromoCardsCollection
   promoCardsHeading?: ReactNode
   promoCardsPosition?: 'top' | 'bottom' | 'none'
-  promoCardsCollection: PromoCardsCollection
   token?: string
   url?: string
-  limitRows?: number
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
+  dataParser = (_table) => _table,
+  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
+  hiddenColumns,
+  hiddenNLS = false,
   initialNetwork,
   initialProtocol,
-  promoCardsHeading,
-  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
+  intro,
+  limitRows,
+  onRowClick,
+  perPage,
   product,
   promoCardsCollection,
+  promoCardsHeading,
   promoCardsPosition = 'top',
-  intro,
   token,
   url,
-  limitRows,
 }) => {
-  const { t } = useTranslation()
-
   const { productHub: data } = usePreloadAppDataContext()
+  const table = dataParser(data.table)
   const searchParams = useSearchParams()
 
   const { connecting, wallet } = useWalletManagement()
@@ -100,7 +109,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
     }
   }, [resolvedInitialNetwork])
 
-  useProductHubRouter({
+  const { query } = useProductHubRouter({
     queryString,
     selectedProduct,
     selectedToken,
@@ -113,101 +122,90 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         id="product-hub"
         sx={{
           position: 'relative',
-          my: [3, null, '48px'],
+          mt: [3, null, '48px'],
           scrollMarginTop: '48px',
-          textAlign: 'center',
           zIndex: 3,
         }}
       >
-        <ProductHubNaturalLanguageSelectorController
-          gradient={headerGradient}
-          product={product}
-          token={token}
-          onChange={(_selectedProduct, _selectedToken) => {
-            setSelectedProduct(_selectedProduct)
-            setSelectedToken(_selectedToken)
-            setSelectedFilters(
-              getInitialFilters({
-                initialQueryString,
-                initialNetwork: resolvedInitialNetwork,
-                initialProtocol,
-                selectedProduct: _selectedProduct,
-                token,
-              }),
-            )
-            setQueryString(getStrippedQueryString({ queryString }))
-          }}
-        />
-        {intro ? (
-          intro(selectedProduct, selectedToken)
-        ) : (
-          <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
-        )}
-      </Box>
-      <WithLoadingIndicator
-        value={connecting ? [undefined] : [connecting]}
-        customLoader={<ProductHubLoadingState />}
-      >
-        {() => (
-          <>
-            {promoCardsPosition === 'top' && (
-              <ProductHubPromoCardsController
-                heading={promoCardsHeading}
-                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
-                selectedProduct={selectedProduct}
-                selectedToken={selectedToken}
-              />
-            )}
-            <ProductHubContentController
-              initialNetwork={resolvedInitialNetwork}
-              initialProtocol={initialProtocol}
-              queryString={queryString}
-              selectedFilters={selectedFilters}
-              selectedProduct={selectedProduct}
-              selectedToken={selectedToken}
-              tableData={data.table}
-              onChange={(_selectedFilters, _queryString) => {
-                setSelectedFilters(_selectedFilters)
-                setQueryString(_queryString)
+        {!hiddenNLS && (
+          <Box sx={{ mb: [3, null, '48px'], textAlign: 'center' }}>
+            <ProductHubNaturalLanguageSelectorController
+              gradient={headerGradient}
+              product={product}
+              token={token}
+              onChange={(_selectedProduct, _selectedToken) => {
+                setSelectedProduct(_selectedProduct)
+                setSelectedToken(_selectedToken)
+                setSelectedFilters(
+                  getInitialFilters({
+                    initialQueryString,
+                    initialNetwork: resolvedInitialNetwork,
+                    initialProtocol,
+                    selectedProduct: _selectedProduct,
+                    token,
+                  }),
+                )
+                setQueryString(getStrippedQueryString({ queryString }))
               }}
-              chainId={wallet?.chainId}
-              limitRows={limitRows}
             />
-            {limitRows && limitRows > 0 && (
-              <Flex
-                sx={{
-                  justifyContent: 'center',
-                  py: 4,
-                  borderBottom: '1px solid',
-                  borderBottomColor: 'neutral20',
-                }}
-              >
-                <AppLink
-                  href={
-                    selectedToken === ALL_ASSETS
-                      ? `/${selectedProduct}`
-                      : `/${selectedProduct}/${selectedToken}`
-                  }
-                >
-                  <WithArrow
-                    sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}
-                  >
-                    {t('view-all')}
-                  </WithArrow>
-                </AppLink>
-              </Flex>
+            {intro ? (
+              intro(selectedProduct, selectedToken)
+            ) : (
+              <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
             )}
-            {promoCardsPosition === 'bottom' && (
-              <ProductHubPromoCardsController
-                heading={promoCardsHeading}
-                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
+          </Box>
+        )}
+        <WithLoadingIndicator
+          value={connecting ? [undefined] : [connecting]}
+          customLoader={<ProductHubLoadingState />}
+        >
+          {() => (
+            <>
+              {promoCardsPosition === 'top' && (
+                <ProductHubPromoCardsController
+                  heading={promoCardsHeading}
+                  promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)}
+                  selectedProduct={selectedProduct}
+                  selectedToken={selectedToken}
+                />
+              )}
+              <ProductHubContentController
+                hiddenColumns={hiddenColumns}
+                initialNetwork={resolvedInitialNetwork}
+                initialProtocol={initialProtocol}
+                limitRows={limitRows}
+                networkId={wallet?.chainId}
+                perPage={perPage}
+                queryString={queryString}
+                selectedFilters={selectedFilters}
                 selectedProduct={selectedProduct}
                 selectedToken={selectedToken}
+                tableData={table}
+                onChange={(_selectedFilters, _queryString) => {
+                  setSelectedFilters(_selectedFilters)
+                  setQueryString(_queryString)
+                }}
+                onRowClick={onRowClick}
               />
-            )}
-          </>
-        )}
-      </WithLoadingIndicator>
+              {limitRows && limitRows > 0 && (
+                <ProductHubViewAll
+                  query={query}
+                  selectedProduct={selectedProduct}
+                  selectedToken={selectedToken}
+                />
+              )}
+              {promoCardsPosition === 'bottom' && (
+                <ProductHubPromoCardsController
+                  heading={promoCardsHeading}
+                  promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)}
+                  selectedProduct={selectedProduct}
+                  selectedToken={selectedToken}
+                />
+              )}
+            </>
+          )}
+        </WithLoadingIndicator>
+      </Box>
     </Fragment>
   )
 }

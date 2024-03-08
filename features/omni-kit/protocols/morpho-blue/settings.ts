@@ -18,10 +18,11 @@ export const settings: OmniProtocolSettings = {
       'OSETH',
       'RETH',
       'SDAI',
-      'SDAI',
+      'DAI',
       'USDC',
       'USDT',
       'WBTC',
+      'EZETH',
     ],
   },
   steps: {
@@ -54,5 +55,6 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string }> = {
     'WSTETH-USDT': '0xe7e9694b754c4d4f7e21faf7223f6fa71abaeb10296a4c43a54a7977149687d2',
     'ETH-USDT': '0xdbffac82c2dc7e8aa781bd05746530b0068d80929f23ac1628580e27810bc0c5',
     'RETH-ETH': '0x3c83f77bde9541f8d3d82533b19bbc1f97eb2f1098bb991728acbfbede09cc5d',
+    'EZETH-ETH': '0x49bb2d114be9041a787432952927f6f144f05ad3e83196a7d062f374ee11d0ee',
   },
 }

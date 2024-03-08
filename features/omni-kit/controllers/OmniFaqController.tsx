@@ -6,12 +6,11 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid } from 'theme-ui'
 
-interface AjnaFaqControllerProps {
+interface OmniFaqControllerProps {
   content: ContentType
 }
 
-// TODO IMO content should be imported or taken from metadata
-export const OmniFaqController: FC<AjnaFaqControllerProps> = ({ content }) => {
+export const OmniFaqController: FC<OmniFaqControllerProps> = ({ content }) => {
   const { t } = useTranslation()
 
   return (

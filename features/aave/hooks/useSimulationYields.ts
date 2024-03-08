@@ -45,6 +45,6 @@ export function useSimulationYields({
         yields,
       })
     }
-  }, [fees, amount, token, yields])
+  }, [fees?.toString(), amount?.toString(), token, yields])
   return simulations
 }

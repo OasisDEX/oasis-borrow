@@ -1,4 +1,4 @@
-import { RiskRatio } from '@oasisdex/dma-library'
+import { isCorrelatedPosition, RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -188,6 +188,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     netValueInDebtToken: calculations.netValueInDebtToken,
     collateralToken: commonData.primaryToken,
     debtToken: commonData.secondaryToken,
+    useDebtTokenAsPnL: isCorrelatedPosition(commonData.primaryToken, commonData.secondaryToken),
   })
 
   return {
@@ -303,6 +304,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     netValueInDebtToken: calculations.netValueInDebtToken,
     collateralToken: commonData.primaryToken,
     debtToken: commonData.secondaryToken,
+    useDebtTokenAsPnL: isCorrelatedPosition(commonData.primaryToken, commonData.secondaryToken),
   })
 
   return {

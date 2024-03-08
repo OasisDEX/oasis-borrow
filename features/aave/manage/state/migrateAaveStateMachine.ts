@@ -154,6 +154,12 @@ export function createMigrateAaveStateMachine(
             NEXT_STEP: {
               target: '.loading',
             },
+            ALLOWANCE_SUCCESS: {
+              target: '.loading',
+            },
+            DPM_ACCOUNT_CREATED: {
+              target: '.loading',
+            },
           },
         },
         frontend: {

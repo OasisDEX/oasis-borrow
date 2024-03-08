@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { Icon } from 'components/Icon'
 import { SkeletonLine } from 'components/Skeleton'
+import { OmniStaticBoundary } from 'features/omni-kit/components/sidebars/OmniStaticBoundary'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -23,7 +24,14 @@ interface OmniAdjustSliderProps {
 export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, isShort, productType },
+    environment: {
+      collateralToken,
+      quoteToken,
+      isShort,
+      productType,
+      isYieldLoopWithData,
+      priceFormat,
+    },
     steps: { currentStep },
   } = useOmniGeneralContext()
 
@@ -95,20 +103,24 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
           {depositChanged && isSimulationLoading ? (
             <SkeletonLine height="18px" sx={{ my: '5px' }} />
           ) : (
-            <>
-              {formatDecimalAsPercent(ltv)}
-              {!ltv.eq(resolvedValue) && (
-                <>
-                  <Icon icon={arrow_right} size={14} sx={{ mx: 2 }} />
-                  <Text
-                    as="span"
-                    sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
-                  >
-                    {formatDecimalAsPercent(val)}
-                  </Text>
-                </>
-              )}
-            </>
+            (isYieldLoopWithData && (
+              <OmniStaticBoundary label={priceFormat} value={position.marketPrice} />
+            )) || (
+              <>
+                {formatDecimalAsPercent(ltv)}
+                {!ltv.eq(resolvedValue) && (
+                  <>
+                    <Icon icon={arrow_right} size={14} sx={{ mx: 2 }} />
+                    <Text
+                      as="span"
+                      sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
+                    >
+                      {formatDecimalAsPercent(val)}
+                    </Text>
+                  </>
+                )}
+              </>
+            )
           )}
         </Flex>
       )}
@@ -121,7 +133,9 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
       leftBottomLabel={t('slider.adjust-multiply.left-footer')}
       leftLabel={t('slider.adjust-multiply.left-label')}
       rightBottomLabel={t('slider.adjust-multiply.right-footer')}
-      rightLabel={t('system.loan-to-value')}
+      rightLabel={
+        (isYieldLoopWithData && t('manage-vault.current-price')) || t('system.loan-to-value')
+      }
     />
   )
 }

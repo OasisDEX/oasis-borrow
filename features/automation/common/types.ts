@@ -15,6 +15,7 @@ export enum AutomationFeatures {
   STOP_LOSS = 'stopLoss',
   TRAILING_STOP_LOSS = 'trailingStopLoss',
   AUTO_TAKE_PROFIT = 'autoTakeProfit',
+  PARTIAL_TAKE_PROFIT = 'partialTakeProfit',
 }
 
 export enum AutomationKinds {

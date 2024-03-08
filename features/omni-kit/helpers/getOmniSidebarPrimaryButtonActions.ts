@@ -1,4 +1,5 @@
 import type { NetworkConfig } from 'blockchain/networks'
+import { getOmniProtocolUrlMap } from 'features/omni-kit/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -65,8 +66,11 @@ export function getOmniSidebarPrimaryButtonActions({
     case isTxSuccess && isOpening:
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
       const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
+
       return {
-        url: `/${network.name}/${protocol}/${productType}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
+        url: `/${network.name}/${getOmniProtocolUrlMap(
+          protocol,
+        )}/${productType}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
       }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }

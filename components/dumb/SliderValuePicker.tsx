@@ -2,6 +2,7 @@ import { Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { RcSlider } from 'components/RcSlider'
 import type { TranslateStringType } from 'helpers/translateStringType'
+import type { SliderProps } from 'rc-slider'
 import type { ReactNode } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
@@ -29,6 +30,7 @@ export interface SliderValuePickerProps {
   direction?: 'rtl' | 'ltr'
   colorfulRanges?: string
   useRcSlider?: boolean
+  customSliderProps?: SliderProps
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -90,6 +92,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       )}
       {props.useRcSlider ? (
         <RcSlider
+          {...props.customSliderProps}
           disabled={props.disabled}
           step={props.step}
           min={props.minBoundry.toNumber()}

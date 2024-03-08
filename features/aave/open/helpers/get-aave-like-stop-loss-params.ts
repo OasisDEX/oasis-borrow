@@ -76,9 +76,9 @@ export const getAaveLikeStopLossParams = {
     const positionRatio = state.context.currentPosition?.riskRatio.loanToValue || zero
     const liquidationRatio = state.context?.currentPosition?.category.liquidationThreshold || zero
     const sliderMin = new BigNumber(
-      positionRatio.plus(aaveOffsets.open.min).times(100).toFixed(0, BigNumber.ROUND_UP),
+      positionRatio.plus(aaveOffsets.manage.min).times(100).toFixed(0, BigNumber.ROUND_UP),
     )
-    const sliderMax = liquidationRatio.minus(aaveOffsets.open.max).times(100)
+    const sliderMax = liquidationRatio.minus(aaveOffsets.manage.max).times(100)
     const debt = amountFromWei(
       state.context.currentPosition?.debt.amount || zero,
       state.context.currentPosition?.debt.precision,

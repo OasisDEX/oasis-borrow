@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import type {
-  AaveCumulativeData,
-  AaveHistoryEvent,
-} from 'features/omni-kit/protocols/aave/history/types'
+  AaveLikeCumulativeData,
+  AaveLikeHistoryEvent,
+} from 'features/omni-kit/protocols/aave-like/history/types'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
 
@@ -17,20 +19,25 @@ const sumStringNumbersArray = (numbersArray: { amount: string }[]): BigNumber =>
 export async function getAaveHistoryEvents(
   _proxyAdrress: string,
   _networkId: NetworkIds,
+  collateralToken: string,
+  quoteToken: string,
 ): Promise<{
-  events: AaveHistoryEvent[]
-  positionCumulatives?: AaveCumulativeData
+  events: AaveLikeHistoryEvent[]
+  positionCumulatives?: AaveLikeCumulativeData
 }> {
-  const resposne = await loadSubgraph('Aave', 'getAaveHistory', _networkId, {
+  const tokens = getNetworkContracts(_networkId as OmniSupportedNetworkIds).tokens
+  const response = await loadSubgraph('Aave', 'getAaveHistory', _networkId, {
     dpmProxyAddress: _proxyAdrress,
+    collateralAddress: tokens[collateralToken.toUpperCase()].address.toLowerCase(),
+    quoteAddress: tokens[quoteToken.toUpperCase()].address.toLowerCase(),
   })
 
-  if (resposne.success) {
-    const { positionEvents, positions } = resposne.response
+  if (response.success) {
+    const { positionEvents, positions } = response.response
     return {
       events: positionEvents
         .map(
-          (event): AaveHistoryEvent => ({
+          (event): AaveLikeHistoryEvent => ({
             depositAmount: event.depositTransfers[0]
               ? sumStringNumbersArray(event.depositTransfers)
               : zero,

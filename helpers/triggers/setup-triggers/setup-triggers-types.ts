@@ -27,6 +27,14 @@ export enum TriggersApiErrorCode {
   StopLossNeverTriggeredWithNoAutoSellMinSellPrice = 'stop-loss-never-triggered-with-no-auto-sell-min-sell-price',
   StopLossNeverTriggeredWithLowerAutoSellMinSellPrice = 'stop-loss-never-triggered-with-lower-auto-sell-min-sell-price',
   AutoSellNeverTriggeredWithCurrentStopLoss = 'auto-sell-never-triggered-with-current-stop-loss',
+  // Error: Your Partial Take Profit trigger LTV is higher than the target LTV of your Auto-Sell. Reduce your Partial Take Profit trigger, or update your Auto-Sell.
+  PartialTakeProfitTriggerHigherThanAutoSellTarget = 'partial-take-profit-trigger-higher-than-auto-sell-target',
+  // Error: Your Partial Take Profit target LTV is higher than the trigger LTV of your Auto-Sell. Reduce your Partial Take Profit target, or update your Auto-Sell.
+  PartialTakeProfitTargetHigherThanAutoSellTrigger = 'partial-take-profit-target-higher-than-auto-sell-trigger',
+  // Error: Your Partial Take Profit target LTV is higher than your Stop-Loss. Reduce your Partial Take Profit target, or update your Stop-Loss.
+  PartialTakeProfitTargetHigherThanStopLoss = 'partial-take-profit-target-higher-than-stop-loss',
+  // Error: Your Partial Take Profit min price is lower than the max price of your Auto-Buy. Increase your Partial Take Profit min price, or update your Auto-Buy
+  PartialTakeProfitMinPriceLowerThanAutoBuyMaxPrice = 'partial-take-profit-min-price-lower-than-auto-buy-max-price',
 }
 
 export enum TriggersApiWarningCode {
@@ -43,6 +51,8 @@ export enum TriggersApiWarningCode {
   AutoSellWithNoMinPriceThreshold = 'auto-sell-with-no-min-price-threshold',
   StopLossTriggeredImmediately = 'stop-loss-triggered-immediately',
   StopLossMakesAutoSellNotTrigger = 'stop-loss-makes-auto-sell-not-trigger',
+  // Error: Your Partial Take Profit target LTV is higher than your Stop-Loss. Reduce your Partial Take Profit target, or update your Stop-Loss.
+  PartialTakeProfitTargetHigherThanStopLoss = 'partial-take-profit-target-higher-than-stop-loss',
 }
 
 export type TriggersApiError = {
@@ -55,6 +65,11 @@ export type TriggersApiWarning = {
   code: TriggersApiWarningCode
   message: string
   path?: string[]
+}
+
+type ResponseCommon = {
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
 }
 
 interface StrategyLike {
@@ -81,15 +96,12 @@ export interface SetupAaveBasicAutomationParams {
   usePrice: boolean
   dpm: string
   strategy: StrategyLike
-  triggerType: number
   networkId: number
   protocol: SupportedLambdaProtocols
   action: TriggerAction
 }
 
-export type SetupBasicAutoResponse = {
-  errors?: TriggersApiError[]
-  warnings?: TriggersApiWarning[]
+export type SetupBasicAutoResponse = ResponseCommon & {
   encodedTriggerData?: string
   simulation?: {
     collateralAmountAfterExecution: string
@@ -102,9 +114,7 @@ export type SetupBasicAutoResponse = {
   transaction?: TriggerTransaction
 }
 
-export type SetupBasicStopLossResponse = {
-  errors?: TriggersApiError[]
-  warnings?: TriggersApiWarning[]
+export type SetupBasicStopLossResponse = ResponseCommon & {
   encodedTriggerData?: string
   simulation?: {
     collateralAmountAfterExecution: string
@@ -138,11 +148,77 @@ export interface SetupAaveTrailingStopLossParams {
   action: TriggerAction
 }
 
-export type SetupTrailingStopLossResponse = {
+export type SetupTrailingStopLossResponse = ResponseCommon & {
+  encodedTriggerData?: string
+  simulation?: unknown
+  transaction?: TriggerTransaction
+}
+
+export interface SetupAavePartialTakeProfitParams {
+  dpm: string
+  executionToken: string
+  triggerLtv: BigNumber
+  withdrawalLtv: BigNumber
+  startingTakeProfitPrice: BigNumber
+  stopLoss?: {
+    triggerData: {
+      executionLTV: BigNumber
+      token: string
+    }
+    action: TriggerAction.Add | TriggerAction.Update
+  }
+  trailingStopLoss?: BigNumber
+  networkId: number
+  strategy: StrategyLike
+  protocol: SupportedLambdaProtocols
+  action: TriggerAction
+}
+
+interface ProfitsSimulationToken {
+  decimals: number
+  symbol: string
+  address: string
+}
+
+export interface ProfitsSimulationBalanceRaw {
+  balance: string
+  token: ProfitsSimulationToken
+}
+
+interface ProfitsSimulationRaw {
+  triggerPrice: string
+  realizedProfitInCollateral: ProfitsSimulationBalanceRaw
+  realizedProfitInDebt: ProfitsSimulationBalanceRaw
+  totalProfitInCollateral: ProfitsSimulationBalanceRaw
+  totalProfitInDebt: ProfitsSimulationBalanceRaw
+  stopLossDynamicPrice: string
+  fee: ProfitsSimulationBalanceRaw
+  totalFee: ProfitsSimulationBalanceRaw
+}
+
+interface ProfitsSimulationBalanceMapped {
+  balance: BigNumber
+  token: ProfitsSimulationToken
+}
+
+export interface ProfitsSimulationMapped {
+  triggerPrice: BigNumber
+  realizedProfitInCollateral: ProfitsSimulationBalanceMapped
+  realizedProfitInDebt: ProfitsSimulationBalanceMapped
+  totalProfitInCollateral: ProfitsSimulationBalanceMapped
+  totalProfitInDebt: ProfitsSimulationBalanceMapped
+  stopLossDynamicPrice: BigNumber
+  fee: ProfitsSimulationBalanceMapped
+  totalFee: ProfitsSimulationBalanceMapped
+}
+
+export type SetupPartialTakeProfitResponse = {
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
   encodedTriggerData?: string
-  simulation?: unknown
+  simulation?: {
+    profits: ProfitsSimulationRaw[]
+  }
   transaction?: TriggerTransaction
 }
 

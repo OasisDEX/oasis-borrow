@@ -74,10 +74,10 @@ export const dpmListSupportedNetworks = [
   NetworkIds.BASEMAINNET,
 ]
 const subgraphListDict = {
-  [NetworkIds.MAINNET]: 'oasis/dpm',
-  [NetworkIds.ARBITRUMMAINNET]: 'oasis/dpm-arbitrum',
-  [NetworkIds.OPTIMISMMAINNET]: 'oasis/dpm-optimism',
-  [NetworkIds.BASEMAINNET]: 'oasis/dpm-base',
+  [NetworkIds.MAINNET]: 'summer-dpm',
+  [NetworkIds.ARBITRUMMAINNET]: 'summer-dpm-arbitrum',
+  [NetworkIds.OPTIMISMMAINNET]: 'summer-dpm-optimism',
+  [NetworkIds.BASEMAINNET]: 'summer-dpm-base',
 } as Record<DpmSupportedNetworks, string>
 
 export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
@@ -85,7 +85,7 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     1000 * configCacheTime.backend,
   )
   const dpmCallList = dpmListSupportedNetworks.map((networkId) => {
-    const subgraphUrl = `${appConfig.parameters.subgraphs.baseUrl}/${
+    const subgraphUrl = `${appConfig.parameters.subgraphs.baseShortUrl}/${
       subgraphListDict[networkId as DpmSupportedNetworks]
     }`
     const params = { walletAddress: address.toLowerCase() }
