@@ -100,7 +100,17 @@ export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)
 // Default response to avoid unnecessary API calls if automation is not available on given protocol
 export const omniPositionTriggersDataDefault = {
   triggers: {},
-  triggersGroup: {},
+  flags: {
+    isAaveStopLossEnabled: false,
+    isSparkStopLossEnabled: false,
+    isAaveBasicBuyEnabled: false,
+    isAaveBasicSellEnabled: false,
+    isSparkBasicBuyEnabled: false,
+    isSparkBasicSellEnabled: false,
+    isAavePartialTakeProfitEnabled: false,
+    isSparkPartialTakeProfitEnabled: false,
+  },
+  triggerGroup: {},
   triggersCount: 0,
 }
 
