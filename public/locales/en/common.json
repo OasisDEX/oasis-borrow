@@ -1352,7 +1352,8 @@
     "net-borrow-cost": "Cost to Borrow",
     "position-debt": "Position Debt",
     "current-token-price": "Current {{token}} Price",
-    "next-token-price": "Next {{token}} Price"
+    "next-token-price": "Next {{token}} Price",
+    "no-data-to-display": "No data to display"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -1451,7 +1452,11 @@
     "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell.",
     "auto-sell-will-make-stop-loss-not-trigger": "Your Auto-Sell will make your stop loss not trigger.",
     "stop-loss-triggered-by-auto-buy": "Your Stop-Loss will be triggered by your Auto-Buy.",
-    "auto-sell-never-triggered-with-current-stop-loss": "Your Auto-Sell will never be triggered with your current Stop-Loss trigger."
+    "auto-sell-never-triggered-with-current-stop-loss": "Your Auto-Sell will never be triggered with your current Stop-Loss trigger.",
+    "partial-take-profit-trigger-higher-than-auto-sell-target": "Your Partial Take Profit trigger LTV is higher than the target LTV of your Auto-Sell. Reduce your Partial Take Profit trigger, or update your Auto-Sell.",
+    "partial-take-profit-target-higher-than-auto-sell-trigger": "Your Partial Take Profit target LTV is higher than the trigger LTV of your Auto-Sell. Reduce your Partial Take Profit target, or update your Auto-Sell.",
+    "partial-take-profit-target-higher-than-stop-loss": "Your Partial Take Profit target LTV is higher than your Stop-Loss. Reduce your Partial Take Profit target, or update your Stop-Loss.",
+    "partial-take-profit-min-price-lower-than-auto-buy-max-price": "Your Partial Take Profit min price is lower than the max price of your Auto-Buy. Increase your Partial Take Profit min price, or update your Auto-Buy"
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -1486,7 +1491,8 @@
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
-    "stop-loss-triggered-immediately": "Stop-Loss will be triggered immediately."
+    "stop-loss-triggered-immediately": "Stop-Loss will be triggered immediately.",
+    "partial-take-profit-target-higher-than-stop-loss": "Your Partial Take Profit target LTV is higher than your Stop-Loss. Reduce your Partial Take Profit target, or update your Stop-Loss."
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -1822,6 +1828,7 @@
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
     "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop-Loss event on the right.",
     "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your {{ratioParam}}.",
+    "take-profit-cancel-notice": "This needs copy! Something sad about cancelling take profit :(",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "This fee represents the expected Gas Cost based on the current price of ETH and an assumed Gas Price of 50 GWEI.",

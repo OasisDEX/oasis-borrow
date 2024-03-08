@@ -19,11 +19,7 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { nbsp } from 'helpers/nbsp'
-import type {
-  ProfitsSimulationMapped,
-  TriggersApiError,
-  TriggersApiWarning,
-} from 'helpers/triggers'
+import type { TriggersApiError, TriggersApiWarning } from 'helpers/triggers'
 import { hundred } from 'helpers/zero'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -36,8 +32,9 @@ type PreparingPartialTakeProfitSidebarContentProps = {
   aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
-  profits?: ProfitsSimulationMapped[]
+  profits?: (string | JSX.Element)[][]
   isGettingPartialTakeProfitTx: boolean
+  frontendErrors: string[]
 }
 
 export const PreparingPartialTakeProfitSidebarContent = ({
@@ -48,6 +45,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
   warnings,
   profits,
   isGettingPartialTakeProfitTx,
+  frontendErrors,
 }: PreparingPartialTakeProfitSidebarContentProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const {
@@ -69,14 +67,14 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     setWithdrawalLtv,
     withdrawalLtvSliderConfig,
     currentLtv,
+    newStopLossLtv,
+    setNewStopLossLtv,
+    newStopLossSliderConfig,
+    dynamicStopLossPriceForView,
   } = aaveLikePartialTakeProfitParams
 
-  const {
-    hasStopLoss,
-    stopLossLevelLabel,
-    trailingStopLossDistanceLabel,
-    startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
-  } = aaveLikePartialTakeProfitLambdaData
+  const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel, currentStopLossLevel } =
+    aaveLikePartialTakeProfitLambdaData
 
   const inputMask = useMemo(() => {
     return createNumberMask({
@@ -112,72 +110,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
     const riskRatio = new RiskRatio(ltv.div(hundred), RiskRatio.TYPE.LTV)
     return `${riskRatio.multiple.toFixed(2)}x`
   }, [])
-
-  const ltvTooHigh = useMemo(() => {
-    return triggerLtv.plus(withdrawalLtv).gt(withdrawalLtvSliderConfig.maxBoundry)
-  }, [triggerLtv, withdrawalLtv, withdrawalLtvSliderConfig.maxBoundry])
-  const startingTakeProfitPriceTooLow = useMemo(() => {
-    if (lambdaStartingTakeProfitPrice) {
-      // price can fall after setting a starting take profit price
-      return false
-    }
-    return startingTakeProfitPrice.lt(positionPriceRatio)
-  }, [positionPriceRatio, startingTakeProfitPrice, lambdaStartingTakeProfitPrice])
-  const parsedProfits = useMemo(() => {
-    return profits
-      ? profits.map((profit) => {
-          const isSelectedTokenDebt = partialTakeProfitToken === 'debt'
-          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
-          const secondaryToSelectedToken =
-            strategyConfig.tokens[partialTakeProfitToken === 'debt' ? 'collateral' : 'debt']
-          const realizedProfitValue = isSelectedTokenDebt
-            ? profit.realizedProfitInDebt
-            : profit.realizedProfitInCollateral
-          const totalProfitValue = isSelectedTokenDebt
-            ? profit.totalProfitInDebt
-            : profit.totalProfitInCollateral
-          const totalProfitSecondValue = isSelectedTokenDebt
-            ? profit.totalProfitInCollateral
-            : profit.totalProfitInDebt
-          return [
-            // Trigger price
-            `${formatAmount(profit.triggerPrice, selectedTokenSymbol)} ${priceFormat}`,
-            // Realized profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  realizedProfitValue.balance,
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-            </Flex>,
-            // Total profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  totalProfitValue.balance,
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
-                {`${formatAmount(
-                  totalProfitSecondValue.balance,
-                  secondaryToSelectedToken,
-                )} ${secondaryToSelectedToken}`}
-              </Text>
-            </Flex>,
-            // Stop loss
-            `${formatAmount(profit.stopLossDynamicPrice, selectedTokenSymbol)} ${priceFormat}`,
-          ]
-        })
-      : []
-  }, [
-    partialTakeProfitToken,
-    partialTakeProfitTokenData.symbol,
-    priceFormat,
-    profits,
-    strategyConfig.tokens,
-  ])
 
   return (
     <Grid
@@ -318,14 +250,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           Now: {formatCryptoBalance(positionPriceRatio)} {priceFormat}
         </Text>
       </Box>
-      <MessageCard
-        type="error"
-        messages={[
-          startingTakeProfitPriceTooLow
-            ? 'Starting take profit price should be higher or equal the current price.'
-            : '',
-        ].filter(Boolean)}
-      />
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {partialTakeProfitConfig.takeProfitStartingPercentageOptions.map((percentage) => (
           <Button
@@ -407,15 +331,12 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           rightBoundryFormatter={() => null}
           lastValue={triggerLtv}
           leftBoundry={triggerLtv}
-          rightBoundry={new BigNumber(60)}
-          onChange={(x) => {
-            setTriggerLtv(x)
-          }}
+          onChange={setTriggerLtv}
           useRcSlider
           {...triggerLtvSliderConfig}
           customSliderProps={{
             marks: {
-              [currentLtv.times(lambdaPercentageDenomination).toNumber()]: (
+              [currentLtv.times(lambdaPercentageDenomination).toFixed()]: (
                 <Text
                   variant="boldParagraph3"
                   sx={{ fontSize: '10px', textTransform: 'uppercase' }}
@@ -509,11 +430,6 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                     LTV after execution:
                   </Text>
                   <FormatPercentWithSmallPercentCharacter
-                    sx={{
-                      ...{
-                        color: ltvTooHigh ? 'warning100' : undefined,
-                      },
-                    }}
                     value={x.div(lambdaPercentageDenomination)}
                   />
                 </Text>
@@ -565,27 +481,20 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           </Flex>
         </Flex>
       </Box>
+      <MessageCard type="error" messages={frontendErrors} withBullet={frontendErrors.length > 1} />
       <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Partial-Take-Profit" />
-      <MessageCard
-        withBullet={false}
-        type="error"
-        messages={[
-          ltvTooHigh
-            ? `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`
-            : '',
-        ].filter(Boolean)}
-      />
+      <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       <Divider />
       <SidebarAccordion
         title={
           <>
-            Configure Stop Loss Loan to Value
+            Configure Stop-Loss Loan to Value
             <StatefulTooltip
               tooltip={
                 <Text variant="paragraph4">
-                  Your Stop Loss Loan to Value is the specific debt to collateral ratio at which you
+                  Your Stop-Loss Loan to Value is the specific debt to collateral ratio at which you
                   have specified you want to be stopped out and have your position closed. If you
-                  have already setup a stop loss LTV, you can keep it the same or change it.
+                  have already setup a stop-Loss LTV, you can keep it the same or change it.
                 </Text>
               }
               containerSx={{ display: 'inline' }}
@@ -605,18 +514,26 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         }
         additionalDescriptionComponent={
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mb: 3 }}>
-            Your previously configured stop loss LTV will remain unchanged, unless edited below.
+            Your previously configured stop-Loss LTV will remain unchanged, unless edited below.
           </Text>
         }
+        openByDefault={!hasStopLoss}
       >
         <SliderValuePicker
-          disabled={!!hasStopLoss}
-          step={0.01}
+          disabled={!!hasStopLoss && !!trailingStopLossDistanceLabel}
           leftBoundryFormatter={(x) => {
             if (x.isZero()) {
               return '-'
             }
-            return formatPercent(x)
+            return (
+              <Flex sx={{ flexDirection: 'column' }}>
+                <Text variant="paragraph2">
+                  <FormatPercentWithSmallPercentCharacter
+                    value={x.div(lambdaPercentageDenomination)}
+                  />
+                </Text>
+              </Flex>
+            )
           }}
           rightBoundryFormatter={(x) => {
             if (x.isZero()) {
@@ -626,26 +543,47 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           }}
           leftLabel={'Trigger LTV'}
           rightLabel={'Dynamic stop price'}
-          sliderPercentageFill={new BigNumber(50)}
-          lastValue={new BigNumber(30)}
-          minBoundry={new BigNumber(0)}
-          maxBoundry={new BigNumber(60)}
-          leftBoundry={new BigNumber(30)}
-          rightBoundry={new BigNumber(60)}
-          onChange={(x) => {
-            console.info('x', x)
-          }}
+          lastValue={newStopLossLtv}
+          leftBoundry={newStopLossLtv}
+          rightBoundry={dynamicStopLossPriceForView}
+          {...newStopLossSliderConfig}
+          onChange={setNewStopLossLtv}
           useRcSlider
+          customSliderProps={
+            currentStopLossLevel
+              ? {
+                  marks: {
+                    [currentStopLossLevel.toNumber()]: (
+                      <Text
+                        variant="boldParagraph3"
+                        sx={{ fontSize: '10px', textTransform: 'uppercase' }}
+                      >
+                        Current Stop-Loss
+                      </Text>
+                    ),
+                  },
+                }
+              : {}
+          }
         />
         <MessageCard
           sx={{ mt: 3 }}
           type="ok"
           withBullet={false}
           messages={[
-            hasStopLoss
-              ? `You already have a ${
-                  stopLossLevelLabel ? 'Stop-Loss' : 'Trailing Stop-Loss'
-                } trigger set at${nbsp}${stopLossLevelLabel || trailingStopLossDistanceLabel}`
+            !hasStopLoss
+              ? `The Stop-Loss you configure will close your position to the same asset you have chosen to take profit in: ${partialTakeProfitToken}.`
+              : '',
+            hasStopLoss && stopLossLevelLabel
+              ? `You already have a Stop-Loss trigger set at${nbsp}${stopLossLevelLabel}. You can update the Stop-Loss LTV above and it all be handled within your Partial Take Profit transaction.`
+              : '',
+            hasStopLoss && trailingStopLossDistanceLabel
+              ? `You already have a Trailing Stop-Loss trigger set at${nbsp}${trailingStopLossDistanceLabel}.`
+              : '',
+            hasStopLoss && currentStopLossLevel && !currentStopLossLevel.eq(newStopLossLtv)
+              ? `Your stop-Loss will be updated to a new value: ${formatPercent(newStopLossLtv, {
+                  precision: 2,
+                })}. Use the dot on the slider if you want to reset it.`
               : '',
           ].filter(Boolean)}
         />
@@ -660,7 +598,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
                 <Text variant="paragraph4">
                   Your Auto Take Profit automation run continuously. The Realized Profit Range
                   simulates and forecasts how your Auto Take Profit will perform and impact your
-                  Stop Loss based on different Trigger Prices. You can turn off Auto Take Profit at
+                  Stop-Loss based on different Trigger Prices. You can turn off Auto Take Profit at
                   any time, if you feel satisfied at specific Trigger Price.
                 </Text>
               }
@@ -679,8 +617,8 @@ export const PreparingPartialTakeProfitSidebarContent = ({
             </StatefulTooltip>
           </>
         }
-        headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop Loss']}
-        rows={parsedProfits}
+        headers={['Trigger Price', 'Realized profit', 'Total profit', 'Stop-Loss']}
+        rows={profits}
         loading={isGettingPartialTakeProfitTx}
         wrapperSx={{
           gridGap: 1,
@@ -688,9 +626,9 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         }}
         defaultLimitItems={partialTakeProfitConfig.realizedProfitRangeVisible}
         expandItemsButtonLabel={
-          parsedProfits.length
+          (profits && profits.length) || isGettingPartialTakeProfitTx
             ? `See next ${
-                parsedProfits.length - partialTakeProfitConfig.realizedProfitRangeVisible
+                (profits?.length || 0) - partialTakeProfitConfig.realizedProfitRangeVisible
               } price triggers`
             : ''
         }

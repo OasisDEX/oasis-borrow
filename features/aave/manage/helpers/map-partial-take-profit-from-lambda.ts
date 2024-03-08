@@ -11,6 +11,7 @@ import { StrategyType } from 'features/aave/types'
 import { formatPercent } from 'helpers/formatters/format'
 import { nbsp } from 'helpers/nbsp'
 import type { GetTriggersResponse } from 'helpers/triggers'
+import { useMemo } from 'react'
 
 export const mapPartialTakeProfitFromLambda = (
   strategyConfig: IStrategyConfig,
@@ -40,7 +41,9 @@ export const mapPartialTakeProfitFromLambda = (
     triggers,
     protocol: strategyConfig.protocol,
   })
-  const stopLossData = mapStopLossFromLambda(triggers)
+  const currentStopLossLevel = useMemo(() => {
+    return mapStopLossFromLambda(triggers).stopLossLevel
+  }, [triggers])
   const trailingStopLossData = mapTrailingStopLossFromLambda(triggers)
   const stopLossTokenLabel = isShort
     ? `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
@@ -57,11 +60,20 @@ export const mapPartialTakeProfitFromLambda = (
           lambdaPriceDenomination,
         )
       : undefined,
+    withdrawalLtv:
+      selectedTrigger?.decodedParams.targetLtv && selectedTrigger?.decodedParams.executionLtv
+        ? new BigNumber(Number(selectedTrigger.decodedParams.targetLtv))
+            .minus(new BigNumber(Number(selectedTrigger?.decodedParams.executionLtv)))
+            .div(lambdaPercentageDenomination)
+        : undefined,
+    partialTakeProfitToken:
+      selectedTrigger?.decodedParams.withdrawToDebt === 'true'
+        ? ('debt' as const)
+        : ('collateral' as const),
     hasStopLoss: hasStopLoss || hasTrailingStopLoss,
+    currentStopLossLevel,
     stopLossLevelLabel:
-      hasStopLoss && stopLossData.stopLossLevel
-        ? `${formatPercent(stopLossData.stopLossLevel)}`
-        : '',
+      hasStopLoss && currentStopLossLevel ? `${formatPercent(currentStopLossLevel)}` : '',
     trailingStopLossDistanceLabel: hasTrailingStopLoss
       ? `${trailingStopLossData.trailingDistance}${nbsp}${stopLossTokenLabel}`
       : '',

@@ -527,6 +527,9 @@ export function createOpenAaveStateMachine(
         SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA: {
           actions: 'updateContext',
         },
+        SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA: {
+          actions: 'updateContext',
+        },
         SET_STOP_LOSS_SKIPPED: {
           actions: 'updateContext',
         },

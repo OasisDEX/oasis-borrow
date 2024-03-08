@@ -32,6 +32,7 @@ export type VaultWarningMessage =
   | 'constantMultipleBuyTriggerGreaterThanAutoTakeProfit'
   | 'existingTakeProfitTriggerAfterVaultReopen'
   | 'stopLossTriggeredImmediately'
+  | 'partialTakeProfitTargetHigherThanStopLoss'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -63,6 +64,7 @@ interface WarningMessagesHandler {
   autoBuyTriggerGreaterThanAutoTakeProfit?: boolean
   constantMultipleBuyTriggerGreaterThanAutoTakeProfit?: boolean
   existingTakeProfitTriggerAfterVaultReopen?: boolean
+  partialTakeProfitTargetHigherThanStopLoss?: boolean
 }
 
 export function warningMessagesHandler({
@@ -93,6 +95,7 @@ export function warningMessagesHandler({
   autoBuyTriggerGreaterThanAutoTakeProfit,
   constantMultipleBuyTriggerGreaterThanAutoTakeProfit,
   existingTakeProfitTriggerAfterVaultReopen,
+  partialTakeProfitTargetHigherThanStopLoss,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -201,6 +204,9 @@ export function warningMessagesHandler({
 
   if (existingTakeProfitTriggerAfterVaultReopen) {
     warningMessages.push('existingTakeProfitTriggerAfterVaultReopen')
+  }
+  if (partialTakeProfitTargetHigherThanStopLoss) {
+    warningMessages.push('partialTakeProfitTargetHigherThanStopLoss')
   }
 
   return warningMessages

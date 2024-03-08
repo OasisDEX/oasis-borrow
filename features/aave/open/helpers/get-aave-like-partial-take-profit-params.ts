@@ -1,10 +1,15 @@
+import type { AaveLikeReserveConfigurationData } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { StrategyType } from 'features/aave/types'
-import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
+import {
+  getDynamicStopLossPrice,
+  getSliderPercentageFill,
+} from 'features/automation/protection/stopLoss/helpers'
 import type { ProfitsSimulationMapped } from 'helpers/triggers'
 import { hundred, one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
@@ -29,6 +34,7 @@ type PTPSliderConfig = {
 }
 export type AaveLikePartialTakeProfitParams = Pick<ManageAaveStateProps, 'state'> & {
   aaveLikePartialTakeProfitLambdaData: ReturnType<typeof mapPartialTakeProfitFromLambda>
+  aaveReserveState: AaveLikeReserveConfigurationData
 }
 
 export type AaveLikePartialTakeProfitParamsResult = {
@@ -71,6 +77,11 @@ export type AaveLikePartialTakeProfitParamsResult = {
   withdrawalLtvSliderConfig: PTPSliderConfig
   partialTakeProfitConfig: typeof partialTakeProfitConfig
   partialTakeProfitProfits: ProfitsSimulationMapped[] | undefined
+  partialTakeProfitFirstProfit: ProfitsSimulationMapped | undefined
+  dynamicStopLossPriceForView: BigNumber
+  newStopLossLtv: BigNumber
+  setNewStopLossLtv: (ltv: BigNumber) => void
+  newStopLossSliderConfig: PTPSliderConfig
 }
 
 const getTriggerLtvSliderConfig = ({
@@ -125,6 +136,7 @@ export const getAaveLikePartialTakeProfitParams = {
     ({
       state,
       aaveLikePartialTakeProfitLambdaData,
+      aaveReserveState,
     }: AaveLikePartialTakeProfitParams): AaveLikePartialTakeProfitParamsResult => {
       const {
         strategyConfig,
@@ -140,12 +152,26 @@ export const getAaveLikePartialTakeProfitParams = {
       const positionPriceRatio = isLong
         ? collateralTokenPrice.div(debtTokenPrice)
         : debtTokenPrice.div(collateralTokenPrice)
+      const positionRiskRatio = state.context.currentPosition?.riskRatio.loanToValue || zero
       const currentLtv = currentPosition?.riskRatio.loanToValue || zero
       const currentMultiple = currentPosition?.riskRatio.multiple || zero
       const maxMultiple = currentPosition?.category.maxLoanToValue || zero
+      const liquidationRatio = state.context?.currentPosition?.category.liquidationThreshold || zero
+      const debt = amountFromWei(
+        currentPosition?.debt.amount || zero,
+        currentPosition?.debt.precision,
+      )
+
+      const lockedCollateral = amountFromWei(
+        currentPosition?.collateral.amount || zero,
+        currentPosition?.collateral.precision,
+      )
+
+      const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
       // user inputs
-      const [partialTakeProfitToken, setPartialTakeProfitToken] =
-        useState<ProfitToTokenType>('debt')
+      const [partialTakeProfitToken, setPartialTakeProfitToken] = useState<ProfitToTokenType>(
+        aaveLikePartialTakeProfitLambdaData.partialTakeProfitToken || 'debt',
+      )
       const [startingTakeProfitPrice, setStartingTakeProfitPrice] = useState<BigNumber>(
         aaveLikePartialTakeProfitLambdaData.startingTakeProfitPrice || positionPriceRatio,
       )
@@ -167,6 +193,36 @@ export const getAaveLikePartialTakeProfitParams = {
       const [withdrawalLtv, setWithdrawalLtv] = useState<BigNumber>(
         partialTakeProfitConfig.defaultWithdrawalLtv,
       )
+      const [newStopLossLtv, setNewStopLossLtv] = useState<BigNumber>(
+        aaveReserveState.liquidationThreshold.minus(aaveOffsets.manage.max).times(100),
+      )
+      const dynamicStopLossPrice = getDynamicStopLossPrice({
+        liquidationPrice,
+        liquidationRatio: one.div(liquidationRatio),
+        stopLossLevel: one.div(newStopLossLtv.div(100)).times(100),
+      })
+      const dynamicStopLossPriceForView =
+        state.context.strategyConfig.strategyType === StrategyType.Short
+          ? one.div(dynamicStopLossPrice)
+          : dynamicStopLossPrice
+
+      const newStopLossSliderConfig = useMemo(() => {
+        const sliderMin = new BigNumber(
+          positionRiskRatio.plus(aaveOffsets.manage.min).times(100).toFixed(0, BigNumber.ROUND_UP),
+        )
+        const sliderMax = liquidationRatio.minus(aaveOffsets.manage.max).times(100)
+        const sliderPercentageFill = getSliderPercentageFill({
+          min: sliderMin,
+          max: sliderMax,
+          value: newStopLossLtv,
+        })
+        return {
+          sliderPercentageFill,
+          minBoundry: sliderMin,
+          maxBoundry: sliderMax,
+          step: 0.1,
+        }
+      }, [liquidationRatio, positionRiskRatio, newStopLossLtv])
 
       // calcs
       const partialTakeProfitTokenData = useMemo(
@@ -181,18 +237,6 @@ export const getAaveLikePartialTakeProfitParams = {
         ? `${tokens.collateral}/${tokens.debt}`
         : `${tokens.debt}/${tokens.collateral}`
       const priceDenominationToken = isLong ? tokens.debt : tokens.collateral
-      const liquidationRatio = state.context?.currentPosition?.category.liquidationThreshold || zero
-      const debt = amountFromWei(
-        currentPosition?.debt.amount || zero,
-        currentPosition?.debt.precision,
-      )
-
-      const lockedCollateral = amountFromWei(
-        currentPosition?.collateral.amount || zero,
-        currentPosition?.collateral.precision,
-      )
-
-      const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
       const triggerLtvSliderConfig = getTriggerLtvSliderConfig({
         triggerLtv,
         maxMultiple: maxMultiple.times(hundred),
@@ -227,6 +271,11 @@ export const getAaveLikePartialTakeProfitParams = {
         setWithdrawalLtv,
         withdrawalLtvSliderConfig,
         partialTakeProfitProfits: state.context.partialTakeProfitProfits,
+        partialTakeProfitFirstProfit: state.context.partialTakeProfitFirstProfit,
+        newStopLossLtv,
+        setNewStopLossLtv,
+        newStopLossSliderConfig,
+        dynamicStopLossPriceForView,
       }
     },
   ),

@@ -271,6 +271,7 @@ export type DmaAavePartialTakeProfit = {
     positionAddress: string
     targetLtv: string
     triggerType: string
+    withdrawToDebt: 'true' | 'false'
   }
 }
 
@@ -290,6 +291,7 @@ export type DmaSparkPartialTakeProfit = {
     executionPrice: string
     deviation: string
     closeToCollateral: string
+    withdrawToDebt: 'true' | 'false'
   }
 }
 
