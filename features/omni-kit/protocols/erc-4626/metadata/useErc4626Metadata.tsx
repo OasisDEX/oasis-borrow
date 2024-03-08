@@ -1,10 +1,11 @@
-import { DetailsSection } from 'components/DetailsSection'
+import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   Erc4626DetailsSectionContent,
   Erc4626DetailsSectionFooter,
+  Erc4626VaultAllocation,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
@@ -20,7 +21,7 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
   const suppressValidation = false
 
   const {
-    environment: { label, productType, isOpening },
+    environment: { label, productType, isOpening, quoteToken, quotePrice },
   } = useOmniGeneralContext()
 
   // TODO: replace with real validation
@@ -81,7 +82,22 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
           overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: (
             <>
-              <DetailsSection content={<>asd asda</>} title="Title" accordion />
+              <Erc4626VaultAllocation
+                supplyTokenPrice={quotePrice}
+                supplyTokenSymbol={quoteToken}
+                tokens={[
+                  {
+                    supply: new BigNumber(13493403),
+                    tokenSymbol: 'WSTETH',
+                    maxLtv: new BigNumber(0.886),
+                  },
+                  {
+                    supply: new BigNumber(3443490),
+                    tokenSymbol: 'WBTC',
+                    maxLtv: new BigNumber(0.862),
+                  },
+                ]}
+              />
             </>
           ),
           overviewWithSimulation: true,

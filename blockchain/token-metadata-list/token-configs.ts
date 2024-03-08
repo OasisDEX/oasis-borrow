@@ -271,7 +271,7 @@ export const tokenConfigs: TokenConfig[] = [
     precision: 18,
     digits: 5,
     digitsInstant: 2,
-    name: 'WSTETH',
+    name: 'Wrapped Staked ETH',
     icon: wsteth_circle_color,
     iconCircle: wsteth_circle_color,
     oracleTicker: 'wsteth',
