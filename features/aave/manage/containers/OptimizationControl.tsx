@@ -118,6 +118,16 @@ export function OptimizationControl({
 
   const dropdown = useOptimizationSidebarDropdown(triggersState, sendTriggerEvent)
 
+  const {
+    isAaveBasicBuyEnabled,
+    isSparkBasicBuyEnabled,
+    isAavePartialTakeProfitEnabled,
+    isSparkPartialTakeProfitEnabled,
+  } = triggersState.context.currentTriggers.flags
+
+  const autoBuyEnabled = isAaveBasicBuyEnabled || isSparkBasicBuyEnabled
+  const partialTakeProfitEnabled = isAavePartialTakeProfitEnabled || isSparkPartialTakeProfitEnabled
+
   return (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
       <Grid variant="vaultContainer">
@@ -135,10 +145,26 @@ export function OptimizationControl({
               historyEvents={state.context.historyEvents}
             />
           )}
-          {triggersState.context.showAutoBuyBanner && (
+          {triggersState.context.optimizationCurrentView !== 'auto-buy' &&
+            autoBuyEnabled &&
+            autoBuyDetailsLayoutProps && (
+              <BasicAutomationDetailsView {...autoBuyDetailsLayoutProps} />
+            )}
+          {triggersState.context.optimizationCurrentView !== 'partial-take-profit' &&
+            partialTakeProfitEnabled && (
+              <AavePartialTakeProfitManageDetails
+                aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
+                aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
+                netValuePnlCollateralData={netValuePnlCollateralData}
+                netValuePnlDebtData={netValuePnlDebtData}
+                historyEvents={state.context.historyEvents}
+                simpleView
+              />
+            )}
+          {triggersState.context.showAutoBuyBanner && !autoBuyEnabled && (
             <AutoBuyBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_BUY' })} />
           )}
-          {triggersState.context.showPartialTakeProfitBanner && (
+          {triggersState.context.showPartialTakeProfitBanner && !partialTakeProfitEnabled && (
             <PartialTakeProfitBanner
               buttonClicked={() => sendTriggerEvent({ type: 'SHOW_PARTIAL_TAKE_PROFIT' })}
             />

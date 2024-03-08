@@ -35,6 +35,7 @@ type AavePartialTakeProfitManageDetailsProps = {
     | Partial<AjnaHistoryEvent>[]
     | Partial<AaveLikeHistoryEvent>[]
     | Partial<PositionHistoryEvent>[]
+  simpleView?: boolean
 }
 
 const reduceHistoryEvents = (events: AavePartialTakeProfitManageDetailsProps['historyEvents']) => {
@@ -69,6 +70,7 @@ export const AavePartialTakeProfitManageDetails = ({
   netValuePnlCollateralData,
   netValuePnlDebtData,
   historyEvents,
+  simpleView,
 }: AavePartialTakeProfitManageDetailsProps) => {
   const { t } = useTranslation()
   const [chartView, setChartView] = useState<'price' | 'ltv'>('price')
@@ -334,59 +336,61 @@ export const AavePartialTakeProfitManageDetails = ({
                 value={`${currentMultiple.toFixed(2)}x`}
               />
             </DetailsSectionFooterItemWrapper>
-            <Box
-              sx={{
-                border: 'lightMuted',
-                borderRadius: 'large',
-                p: 3,
-                mt: 4,
-              }}
-            >
-              <ActionPills
-                active={chartView}
-                variant="secondary"
-                items={[
-                  {
-                    id: 'price',
-                    action: () => setChartView('price'),
-                    label: 'Price',
-                  },
-                  {
-                    id: 'ltv',
-                    action: () => setChartView('ltv'),
-                    label: 'LTV',
-                  },
-                ]}
-                wrapperSx={{
-                  mt: 2,
+            {!simpleView && (
+              <Box
+                sx={{
+                  border: 'lightMuted',
+                  borderRadius: 'large',
+                  p: 3,
+                  mt: 4,
                 }}
-              />
-              <Box sx={{ mt: 4, textAlign: 'center' }}>
-                {chartView === 'price' ? (
-                  <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-price.svg')} />
-                ) : (
-                  <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-ltv.svg')} />
-                )}
+              >
+                <ActionPills
+                  active={chartView}
+                  variant="secondary"
+                  items={[
+                    {
+                      id: 'price',
+                      action: () => setChartView('price'),
+                      label: 'Price',
+                    },
+                    {
+                      id: 'ltv',
+                      action: () => setChartView('ltv'),
+                      label: 'LTV',
+                    },
+                  ]}
+                  wrapperSx={{
+                    mt: 2,
+                  }}
+                />
+                <Box sx={{ mt: 4, textAlign: 'center' }}>
+                  {chartView === 'price' ? (
+                    <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-price.svg')} />
+                  ) : (
+                    <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-ltv.svg')} />
+                  )}
+                </Box>
+                <Divider sx={{ my: 3 }} />
+                <Box>
+                  <Text variant="boldParagraph3">Need help setting up auto take profit? </Text>
+                  <br />
+                  <Text variant="paragraph3">
+                    However you learn, we’ve got you covered. Watch a video tutorial or read a in
+                    depth how to article. Both walk you through setting up your Auto Take Profit
+                    automation like a pro.
+                  </Text>
+                  <Flex sx={{ flexDirection: 'row', mt: 3 }}>
+                    <AppLink href="/#" sx={{ mr: 5 }}>
+                      <WithArrow sx={{ color: 'interactive100' }}>Watch tutorial</WithArrow>
+                    </AppLink>
+                    <AppLink href="/#" sx={{ mr: 5 }}>
+                      <WithArrow sx={{ color: 'interactive100' }}>Read article</WithArrow>
+                    </AppLink>
+                  </Flex>
+                </Box>
               </Box>
-              <Divider sx={{ my: 3 }} />
-              <Box>
-                <Text variant="boldParagraph3">Need help setting up auto take profit? </Text>
-                <br />
-                <Text variant="paragraph3">
-                  However you learn, we’ve got you covered. Watch a video tutorial or read a in
-                  depth how to article. Both walk you through setting up your Auto Take Profit
-                  automation like a pro.
-                </Text>
-                <Flex sx={{ flexDirection: 'row', mt: 3 }}>
-                  <AppLink href="/#" sx={{ mr: 5 }}>
-                    <WithArrow sx={{ color: 'interactive100' }}>Watch tutorial</WithArrow>
-                  </AppLink>
-                  <AppLink href="/#" sx={{ mr: 5 }}>
-                    <WithArrow sx={{ color: 'interactive100' }}>Read article</WithArrow>
-                  </AppLink>
-                </Flex>
-              </Box>
-            </Box>
+            )}
           </>
         }
       />
