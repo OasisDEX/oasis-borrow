@@ -13,7 +13,7 @@ import {
   getOmniSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
-import { useOmniProductTypeTransition } from 'features/omni-kit/hooks'
+import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useModalContext } from 'helpers/modalHook'
@@ -94,6 +94,8 @@ export function OmniFormView({
   const { walletAddress } = useAccount()
   const { openModal } = useModalContext()
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
+
+  const genericSidebarTitle = useOmniSidebarTitle()
 
   const flowState = useFlowState({
     networkId,
@@ -238,7 +240,7 @@ export function OmniFormView({
   })
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: sidebarTitle,
+    title: sidebarTitle ?? genericSidebarTitle,
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {

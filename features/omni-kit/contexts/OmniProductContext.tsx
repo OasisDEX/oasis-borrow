@@ -70,7 +70,7 @@ interface CommonMetadataValues {
   isHeadlineDetailsLoading?: boolean
   interestRate: BigNumber
   isFormEmpty: boolean
-  sidebarTitle: string
+  sidebarTitle?: string
 }
 interface CommonMetadataElements {
   faq: ReactNode

@@ -2866,6 +2866,13 @@
       }
     },
     "form": {
+      "title": {
+        "risk": "Things to know before opening new {{protocol}} position",
+        "setup": "Configure your {{protocol}} {{productType}} Position",
+        "manage": "Manage your {{protocol}} {{productType}} Position",
+        "transaction": "Confirm your {{protocol}} {{productType}} Position",
+        "transition": "Switch your {{protocol}} {{productType}} Position"
+      },
       "transaction": {
         "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} {{protocol}} {{productType}} Position.",
         "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} {{protocol}} Position",
@@ -2987,14 +2994,9 @@
         },
         "form": {
           "title": {
-            "risk": "Things to know before opening an Ajna position",
             "risk-oracless": "This pool is offered with Ajna Permissionless UI",
-            "setup": "Configure your Ajna {{productType}} Position",
-            "manage": "Manage your Ajna {{productType}} Position",
-            "transaction": "Confirm your Ajna {{productType}} Position",
-            "transition": "Switch your Ajna {{productType}} Position",
-            "position-frozen": "Position Frozen",
-            "claim-collateral": "Claim collateral"
+            "position-frozen": "Position frozen",
+            "claim-collateral": "Claim Collateral"
           },
           "risk": {
             "intro": "Ajna is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
@@ -3172,21 +3174,6 @@
       "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
-  "aave-like": {
-    "position-page": {
-      "common": {
-        "form": {
-          "title": {
-            "risk": "Things to know before opening an Aave position",
-            "setup": "Configure your Aave {{productType}} Position",
-            "manage": "Manage your Aave {{productType}} Position",
-            "transaction": "Confirm your Aave {{productType}} Position",
-            "transition": "Switch your Aave {{productType}} Position"
-          }
-        }
-      }
-    }
-  },
   "morpho": {
     "content-card": {
       "ltv": {
@@ -3202,15 +3189,6 @@
     },
     "position-page": {
       "common": {
-        "form": {
-          "title": {
-            "risk": "Things to know before opening an Morpho position",
-            "setup": "Configure your Morpho {{productType}} Position",
-            "manage": "Manage your Morpho {{productType}} Position",
-            "transaction": "Confirm your Morpho {{productType}} Position",
-            "transition": "Switch your Morpho {{productType}} Position"
-          }
-        },
         "notifications": {
           "got-liquidated": {
             "title": "This position got liquidated",

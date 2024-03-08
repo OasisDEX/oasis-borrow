@@ -18,7 +18,6 @@ import {
   getAaveLikeFaq,
   getAaveLikeFeatureToggle,
   getAaveLikeNotifications,
-  getAaveLikeSidebarTitle,
 } from 'features/omni-kit/protocols/aave-like/helpers'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
@@ -109,10 +108,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
             position,
-          }),
-          sidebarTitle: getAaveLikeSidebarTitle({
-            currentStep,
-            productType,
           }),
           footerColumns: isYieldLoopWithData ? 3 : 2,
           maxSliderAsMaxLtv: true,

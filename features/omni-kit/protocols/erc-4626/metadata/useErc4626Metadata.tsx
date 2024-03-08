@@ -42,7 +42,6 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
         values: {
           interestRate: zero,
           isFormEmpty: false,
-          sidebarTitle: 'Sidebar',
           footerColumns: isOpening ? 2 : 3,
           headlineDetails: [],
           extraDropdownItems: [],
