@@ -485,11 +485,14 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
 
   const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = strategyInfo ? (
     <Grid gap={3}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('automation.cancel-summary-description', { feature: t('partial-take-profit') })}
+      </Text>
       <InfoSection
-        title={t('constant-multiple.vault-changes.general-summary')}
+        title="Cancel Auto Take Profit order summary"
         items={[
           {
-            label: 'Next Stop-Loss trigger price',
+            label: 'Next Dynamic Trigger Price',
             value: parsedSummaryProfits.nextTriggerPrice ? (
               <Text>{parsedSummaryProfits.nextTriggerPrice}</Text>
             ) : (

@@ -1828,7 +1828,7 @@
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
     "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop-Loss event on the right.",
     "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your {{ratioParam}}.",
-    "take-profit-cancel-notice": "This needs copy! Something sad about cancelling take profit :(",
+    "take-profit-cancel-notice": "With this action you will no longer realize profits automatically. Your Stop Loss will remain active.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "This fee represents the expected Gas Cost based on the current price of ETH and an assumed Gas Price of 50 GWEI.",
