@@ -2861,6 +2861,9 @@
         "modal-value-4": "From this position in current period",
         "modal-value-5": "Total rewards earned to date",
         "modal-link": "See all token rewards"
+      },
+      "curator": {
+        "title": "Curator"
       }
     },
     "form": {

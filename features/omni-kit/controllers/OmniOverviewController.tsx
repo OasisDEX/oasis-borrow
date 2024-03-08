@@ -2,7 +2,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { SimulateTitle } from 'components/SimulateTitle'
-import { omniYieldLoopDefaultSimulationDeposit } from 'features/omni-kit/constants'
+import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
@@ -17,7 +17,7 @@ export function OmniOverviewController() {
   const {
     dynamicMetadata: {
       values: { footerColumns },
-      elements: { overviewContent, overviewBanner, overviewFooter },
+      elements: { overviewBanner, overviewContent, overviewFooter, overviewWithSimulation },
       notifications,
     },
     form: {
@@ -29,10 +29,10 @@ export function OmniOverviewController() {
     <Grid gap={2}>
       <DetailsSection
         title={
-          (isYieldLoopWithData && isOpening && (
+          (overviewWithSimulation && isOpening && (
             <SimulateTitle
               token={quoteToken}
-              depositAmount={depositAmount || omniYieldLoopDefaultSimulationDeposit}
+              depositAmount={depositAmount ?? omniDefaultOverviewSimulationDeposit}
             />
           )) ||
           t('system.overview')

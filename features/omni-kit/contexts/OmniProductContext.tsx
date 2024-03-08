@@ -64,6 +64,7 @@ interface CommonMetadataElements {
   overviewBanner?: ReactNode
   overviewContent: ReactNode
   overviewFooter: ReactNode
+  overviewWithSimulation?: boolean
   riskSidebar?: ReactNode
 }
 

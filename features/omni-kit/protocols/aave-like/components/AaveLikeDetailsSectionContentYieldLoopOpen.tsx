@@ -3,7 +3,7 @@ import { defaultYieldFields } from 'features/aave/components'
 import { useAaveEarnYields } from 'features/aave/hooks'
 import { OmniOpenYieldLoopSimulation } from 'features/omni-kit/components/details-section'
 import {
-  omniYieldLoopDefaultSimulationDeposit,
+  omniDefaultOverviewSimulationDeposit,
   omniYieldLoopMaxRiskLtvDefaultOffset,
 } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -27,7 +27,7 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
   } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
   const amount = useMemo(
-    () => depositAmount || omniYieldLoopDefaultSimulationDeposit,
+    () => depositAmount || omniDefaultOverviewSimulationDeposit,
     [depositAmount],
   )
 

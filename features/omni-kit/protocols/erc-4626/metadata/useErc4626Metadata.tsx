@@ -1,6 +1,10 @@
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import {
+  Erc4626DetailsSectionContent,
+  Erc4626DetailsSectionFooter,
+} from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -72,9 +76,10 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
         },
         elements: {
           faq: <>FAQ placeholder</>,
-          overviewContent: <>Overview content placeholder</>,
-          overviewFooter: <>Overview footer placeholder</>,
+          overviewContent: <Erc4626DetailsSectionContent />,
+          overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: <>Banner</>,
+          overviewWithSimulation: true,
           earnFormOrder: <>Form order placeholder</>,
           earnFormOrderAsElement: () => <>Form order placeholder</>,
         },
