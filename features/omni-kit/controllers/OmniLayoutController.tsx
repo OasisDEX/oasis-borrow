@@ -173,7 +173,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         value: 'optimization',
                         tag: {
                           include: true,
-                          active: hasActiveOptimization(positionTriggers),
+                          active: hasActiveOptimization(positionTriggers, protocol),
                         },
                         label: t('system.optimization'),
                         content: <OmniOptimizationController />,
