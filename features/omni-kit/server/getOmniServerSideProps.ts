@@ -70,7 +70,6 @@ export async function getOmniServerSideProps({
 
   const omniProductPage = {
     collateralToken: caseSensitiveCollateralToken,
-    label,
     networkId,
     positionId,
     productType: castedProductType,
@@ -91,6 +90,7 @@ export async function getOmniServerSideProps({
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
       ...omniProductPage,
+      label: label ?? null,
       positionId: positionId ?? null,
       version: query.version ?? null,
       protocol,

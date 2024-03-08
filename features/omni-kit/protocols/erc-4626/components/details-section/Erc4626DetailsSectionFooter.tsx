@@ -19,6 +19,7 @@ export const Erc4626DetailsSectionFooter: FC = () => {
     environment: { isOpening, label },
   } = useOmniGeneralContext()
 
+  // it is safe to assume that in erc-4626 context label is always availabe string
   const { id, curator } = erc4626VaultsByName[label as string]
 
   const curatorContentCardCuratorData = useOmniCardDataLink({

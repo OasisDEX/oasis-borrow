@@ -2876,6 +2876,19 @@
         "title": "Vault Fee"
       }
     },
+    "position-page": {
+      "earn": {
+        "open": {
+          "duration": "Duration",
+          "estimated-earnings": "Estimated earnings",
+          "net-value": "Net value",
+          "earnings-per-1d": "Projected earnings per day",
+          "earnings-per-30d": "Projected earnings per 30d",
+          "earnings-per-365d": "Projected earnings for 1 year",
+          "disclaimer": "*Past performance is not indicative of future results."
+        }
+      }
+    },
     "form": {
       "transaction": {
         "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} {{protocol}} {{productType}} Position.",
@@ -3086,17 +3099,6 @@
             "input-lending-price": "Input {{quoteToken}} Lending Price",
             "or-enter-specific-lending-price": "Or enter specific {{priceFormat}} Lending Price",
             "lending-price": "Lending Price"
-          }
-        },
-        "open": {
-          "simulation": {
-            "duration": "Duration",
-            "estimated-earnings": "Estimated earnings",
-            "net-value": "Net value",
-            "earnings-per-day": "Projected earnings per day",
-            "earnings-per-30d": "Projected earnings per 30d",
-            "earnings-per-1y": "Projected earnings for 1 year",
-            "disclaimer": "*Past performance is not indicative of future results."
           }
         },
         "manage": {

@@ -113,12 +113,18 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                       },
                     ]
                   : []),
-                {
-                  label: t('omni-kit.headline.details.current-market-price'),
-                  value: `${formatCryptoBalance(
-                    isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
-                  )} ${priceFormat}`,
-                },
+                ...(collateralToken !== quoteToken
+                  ? [
+                      {
+                        label: t('omni-kit.headline.details.current-market-price'),
+                        value: `${formatCryptoBalance(
+                          isShort
+                            ? quotePrice.div(collateralPrice)
+                            : collateralPrice.div(quotePrice),
+                        )} ${priceFormat}`,
+                      },
+                    ]
+                  : []),
               ]
             : []),
         ]}

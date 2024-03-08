@@ -42,6 +42,7 @@ import {
   matic_circle_color,
   meveth,
   mkr_circle_color,
+  morpho_circle_color,
   mpeth,
   op,
   op_circle,
@@ -799,6 +800,15 @@ export const tokenConfigs: TokenConfig[] = [
     coinGeckoTicker: 'ajna-protocol',
     coinbaseTicker: '',
     rootToken: 'AJNA',
+    tags: [],
+  },
+  {
+    symbol: 'MORPHO',
+    precision: 18,
+    digits: 5,
+    name: 'Morpho Blue',
+    icon: morpho_circle_color,
+    iconCircle: morpho_circle_color,
     tags: [],
   },
   {
