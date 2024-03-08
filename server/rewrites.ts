@@ -1,18 +1,18 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-const rewriteRules = () => [
+const rewriteRules = (functionsApiUrl: string) => [
   {
     source: '/api/triggers/:path*',
-    destination: `${process.env.FUNCTIONS_API_URL}/api/triggers/:path*`,
+    destination: `${functionsApiUrl}/api/triggers/:path*`,
   },
   {
     source: '/api/triggers',
-    destination: `${process.env.FUNCTIONS_API_URL}/api/triggers`,
+    destination: `${functionsApiUrl}/api/triggers`,
   },
   {
     source: '/api/migrations',
-    destination: `${process.env.FUNCTIONS_API_URL}/api/migrations`,
+    destination: `${functionsApiUrl}/api/migrations`,
   },
   // ... other rules
 ]
@@ -46,7 +46,10 @@ export function handleRewrite(request: NextRequest): NextResponse | null {
   if (!request.nextUrl.pathname.startsWith('/api')) {
     return null
   }
-  const rules = rewriteRules()
+  const functionApiUrlCookie = request.cookies.get('functionApiUrl')
+
+  const functionApiUrl = functionApiUrlCookie?.value ?? process.env.FUNCTIONS_API_URL ?? ''
+  const rules = rewriteRules(functionApiUrl)
   for (const rule of rules) {
     const { regex, names } = parsePattern(rule.source)
     const matches = regex.exec(request.nextUrl.pathname)
