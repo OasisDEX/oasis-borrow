@@ -1,4 +1,4 @@
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -143,10 +143,14 @@ export const AavePartialTakeProfitManageDetails = ({
       : '-'
   }, [partialTakeProfitFirstProfit, hasLambdaTriggerLtv])
   const nextDynamicTriggerPriceValueChange = useMemo(() => {
+    const priceChangeOffset = new BigNumber(0.001)
     if (
       (!partialTakeProfitFirstProfit ||
         !nextTriggerProfit ||
-        partialTakeProfitFirstProfit.triggerPrice.eq(nextTriggerProfit.triggerPrice)) &&
+        partialTakeProfitFirstProfit.triggerPrice
+          .minus(nextTriggerProfit.triggerPrice)
+          .abs()
+          .lt(priceChangeOffset)) &&
       hasLambdaTriggerLtv
     ) {
       return undefined
