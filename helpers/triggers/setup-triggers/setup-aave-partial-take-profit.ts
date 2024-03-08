@@ -1,4 +1,4 @@
-import { lambdaPercentageDenomination, lambdaPriceDenomination } from 'features/aave/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
@@ -21,10 +21,7 @@ export const setupAaveLikePartialTakeProfit = async (
         .times(lambdaPercentageDenomination)
         .integerValue()
         .toString(),
-      executionPrice: params.startingTakeProfitPrice
-        .times(lambdaPriceDenomination)
-        .integerValue()
-        .toString(),
+      executionPrice: params.startingTakeProfitPrice.integerValue().toString(),
       stopLoss: params.stopLoss
         ? {
             triggerData: {

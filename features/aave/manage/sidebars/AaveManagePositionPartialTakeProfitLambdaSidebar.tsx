@@ -17,6 +17,7 @@ import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/Sidebar
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import { useLambdaDebouncedPartialTakeProfit } from 'features/aave/open/helpers/use-lambda-debounced-partial-take-profit'
 import { StopLossTxCompleteBanner } from 'features/aave/open/sidebars/components/StopLossTxCompleteBanner'
+import { StrategyType } from 'features/aave/types'
 import {
   sidebarAutomationFeatureCopyMap,
   sidebarAutomationLinkMap,
@@ -90,7 +91,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
     currentStopLossLevel,
     triggerLtv: lambdaTriggerLtv,
+    currentTrailingDistance,
   } = aaveLikePartialTakeProfitLambdaData
+  const isShort = strategyConfig.strategyType === StrategyType.Short
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
     if (transactionStep === 'preparedRemove') {
@@ -113,7 +116,8 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       partialTakeProfitToken,
       action,
       newStopLossLtv:
-        (currentStopLossLevel && !newStopLossLtv.eq(currentStopLossLevel)) || !currentStopLossLevel
+        (currentStopLossLevel && !newStopLossLtv.eq(currentStopLossLevel)) ||
+        !currentTrailingDistance
           ? newStopLossLtv
           : undefined,
       newStopLossAction: currentStopLossLevel ? TriggerAction.Update : TriggerAction.Add,
@@ -217,6 +221,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     const startingTakeProfitPriceTooLow = !lambdaStartingTakeProfitPrice
       ? startingTakeProfitPrice.lt(positionPriceRatio)
       : false
+    const startingTakeProfitPriceTooHigh = !lambdaStartingTakeProfitPrice
+      ? startingTakeProfitPrice.gt(positionPriceRatio)
+      : false
     return [
       triggerLtvTooHigh &&
         `Trigger LTV should not be higher than current position LTV (${currentLtvValue.toFixed(
@@ -224,11 +231,16 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
         )}%)`,
       cumulativeLtvTooHight &&
         `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`,
-      startingTakeProfitPriceTooLow &&
+      !isShort &&
+        startingTakeProfitPriceTooLow &&
         'Starting take profit price should be higher or equal the current price.',
+      isShort &&
+        startingTakeProfitPriceTooHigh &&
+        'Starting take profit price should be lower or equal the current price.',
     ].filter(Boolean) as string[]
   }, [
     currentLtv,
+    isShort,
     lambdaStartingTakeProfitPrice,
     positionPriceRatio,
     startingTakeProfitPrice,

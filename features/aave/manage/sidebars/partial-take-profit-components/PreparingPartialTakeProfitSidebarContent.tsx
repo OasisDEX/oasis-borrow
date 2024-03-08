@@ -14,7 +14,7 @@ import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
-import type { IStrategyConfig } from 'features/aave/types'
+import { type IStrategyConfig, StrategyType } from 'features/aave/types'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -75,6 +75,8 @@ export const PreparingPartialTakeProfitSidebarContent = ({
 
   const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel, currentStopLossLevel } =
     aaveLikePartialTakeProfitLambdaData
+
+  const isShort = strategyConfig.strategyType === StrategyType.Short
 
   const inputMask = useMemo(() => {
     return createNumberMask({
@@ -251,7 +253,10 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         </Text>
       </Box>
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        {partialTakeProfitConfig.takeProfitStartingPercentageOptions.map((percentage) => (
+        {(isShort
+          ? partialTakeProfitConfig.takeProfitStartingPercentageOptionsShort
+          : partialTakeProfitConfig.takeProfitStartingPercentageOptionsLong
+        ).map((percentage) => (
           <Button
             key={percentage.toString()}
             variant="bean"
@@ -276,7 +281,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           >
             {percentage === 0
               ? 'current'
-              : `+${formatPercent(new BigNumber(percentage).times(100))}`}
+              : `${isShort ? '' : '+'}${formatPercent(new BigNumber(percentage).times(100))}`}
           </Button>
         ))}
       </Flex>
@@ -578,7 +583,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               ? `You already have a Stop-Loss trigger set at${nbsp}${stopLossLevelLabel}. You can update the Stop-Loss LTV above and it all be handled within your Partial Take Profit transaction.`
               : '',
             hasStopLoss && trailingStopLossDistanceLabel
-              ? `You already have a Trailing Stop-Loss trigger set at${nbsp}${trailingStopLossDistanceLabel}.`
+              ? `You already have a Trailing Stop-Loss trigger set at${nbsp}${trailingStopLossDistanceLabel} distance.`
               : '',
             hasStopLoss && currentStopLossLevel && !currentStopLossLevel.eq(newStopLossLtv)
               ? `Your stop-Loss will be updated to a new value: ${formatPercent(newStopLossLtv, {

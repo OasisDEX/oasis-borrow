@@ -48,30 +48,42 @@ export const mapPartialTakeProfitFromLambda = (
   const stopLossTokenLabel = isShort
     ? `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
     : `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
+
+  const triggerLtv = selectedTrigger?.decodedParams.executionLtv
+    ? new BigNumber(Number(selectedTrigger.decodedParams.executionLtv)).div(
+        lambdaPercentageDenomination,
+      )
+    : undefined
+  const startingTakeProfitPriceLong = selectedTrigger?.decodedParams.executionPrice
+    ? new BigNumber(Number(selectedTrigger.decodedParams.executionPrice)).div(
+        lambdaPriceDenomination,
+      )
+    : undefined
+  const startingTakeProfitPriceShort = selectedTrigger?.decodedParams.executionPrice
+    ? new BigNumber(lambdaPriceDenomination).div(
+        new BigNumber(Number(selectedTrigger.decodedParams.executionPrice)),
+      )
+    : undefined
+  const withdrawalLtv =
+    selectedTrigger?.decodedParams.targetLtv && selectedTrigger?.decodedParams.executionLtv
+      ? new BigNumber(Number(selectedTrigger.decodedParams.targetLtv))
+          .minus(new BigNumber(Number(selectedTrigger?.decodedParams.executionLtv)))
+          .div(lambdaPercentageDenomination)
+      : undefined
+  const partialTakeProfitToken =
+    selectedTrigger?.decodedParams.withdrawToDebt === 'true'
+      ? ('debt' as const)
+      : ('collateral' as const)
+
   return {
     triggerId: selectedTrigger?.triggerId,
-    triggerLtv: selectedTrigger?.decodedParams.executionLtv
-      ? new BigNumber(Number(selectedTrigger.decodedParams.executionLtv)).div(
-          lambdaPercentageDenomination,
-        )
-      : undefined,
-    startingTakeProfitPrice: selectedTrigger?.decodedParams.executionPrice
-      ? new BigNumber(Number(selectedTrigger.decodedParams.executionPrice)).div(
-          lambdaPriceDenomination,
-        )
-      : undefined,
-    withdrawalLtv:
-      selectedTrigger?.decodedParams.targetLtv && selectedTrigger?.decodedParams.executionLtv
-        ? new BigNumber(Number(selectedTrigger.decodedParams.targetLtv))
-            .minus(new BigNumber(Number(selectedTrigger?.decodedParams.executionLtv)))
-            .div(lambdaPercentageDenomination)
-        : undefined,
-    partialTakeProfitToken:
-      selectedTrigger?.decodedParams.withdrawToDebt === 'true'
-        ? ('debt' as const)
-        : ('collateral' as const),
+    triggerLtv,
+    startingTakeProfitPrice: isShort ? startingTakeProfitPriceShort : startingTakeProfitPriceLong,
+    withdrawalLtv,
+    partialTakeProfitToken,
     hasStopLoss: hasStopLoss || hasTrailingStopLoss,
     currentStopLossLevel,
+    currentTrailingDistance: trailingStopLossData.trailingDistance,
     stopLossLevelLabel:
       hasStopLoss && currentStopLossLevel ? `${formatPercent(currentStopLossLevel)}` : '',
     trailingStopLossDistanceLabel: hasTrailingStopLoss
