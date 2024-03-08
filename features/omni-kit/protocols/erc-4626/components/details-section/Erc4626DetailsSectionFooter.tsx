@@ -16,7 +16,7 @@ export const Erc4626DetailsSectionFooter: FC = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { isOpening, label },
+    environment: { label },
   } = useOmniGeneralContext()
 
   // it is safe to assume that in erc-4626 context label is always availabe string
@@ -39,14 +39,8 @@ export const Erc4626DetailsSectionFooter: FC = () => {
 
   return (
     <>
-      {isOpening ? (
-        <>
-          <OmniContentCard asFooter {...curatorContentCardCuratorData} />
-          <OmniContentCard asFooter {...curatorContentCardVaultFeeData} />
-        </>
-      ) : (
-        <>Manage overview footer</>
-      )}
+      <OmniContentCard asFooter {...curatorContentCardCuratorData} />
+      <OmniContentCard asFooter {...curatorContentCardVaultFeeData} />
     </>
   )
 }
