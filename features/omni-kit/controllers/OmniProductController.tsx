@@ -10,6 +10,7 @@ import { OmniLayoutController } from 'features/omni-kit/controllers'
 import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
+import { useOmniAutomationFormReducto } from 'features/omni-kit/state/automation'
 import type {
   OmniFormDefaults,
   OmniProductType,
@@ -24,6 +25,7 @@ import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAs
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import type { GetTriggersResponse } from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
@@ -57,6 +59,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
       aggregatedData: { auction: Auction; history: History } | undefined
       positionData: Position | undefined
       protocolPricesData: Tickers | undefined
+      positionTriggersData: GetTriggersResponse | undefined
     }
     errors: string[]
   }
@@ -117,7 +120,7 @@ export const OmniProductController = <Auction, History, Position>({
   })
 
   const {
-    data: { aggregatedData, positionData, protocolPricesData },
+    data: { aggregatedData, positionData, protocolPricesData, positionTriggersData },
     errors: protocolDataErrors,
   } = protocolHook({
     collateralToken,
@@ -158,6 +161,7 @@ export const OmniProductController = <Auction, History, Position>({
                 tokensPrecision,
                 userSettingsData,
                 protocolPricesData,
+                positionTriggersData,
               ]}
               customLoader={
                 <PositionLoadingState
@@ -187,6 +191,7 @@ export const OmniProductController = <Auction, History, Position>({
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 { slippage },
                 protocolPrices,
+                positionTriggers,
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
 
@@ -262,6 +267,9 @@ export const OmniProductController = <Auction, History, Position>({
                             getDynamicMetadata: useDynamicMetadata,
                             positionAuction: _aggregatedData.auction,
                             positionHistory: _aggregatedData.history as PositionHistoryEvent[],
+                            positionTriggers: positionTriggers,
+                            automationFormReducto: useOmniAutomationFormReducto,
+                            automationFormDefaults: {}, // to be determined
                           }
                           const omniProductContextProviderData = getOmniProductContextProviderData({
                             formDefaults,
