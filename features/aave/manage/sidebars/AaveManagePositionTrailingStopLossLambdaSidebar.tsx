@@ -462,7 +462,8 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   const isDisabled = useMemo(() => {
     if (
       isGettingTrailingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
+      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
+      errors.length
     ) {
       return true
     }
@@ -472,12 +473,13 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     if (trailingStopLossTxDataLambda === undefined) {
       return true
     }
-    return !trailingStopLossConfigChanged
+    return !trailingStopLossConfigChanged && !errors.length
   }, [
     isGettingTrailingStopLossTx,
     trailingStopLossConfigChanged,
     transactionStep,
     trailingStopLossTxDataLambda,
+    errors.length,
   ])
 
   const primaryButtonAction = () => {
