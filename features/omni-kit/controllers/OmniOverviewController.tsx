@@ -26,7 +26,7 @@ export function OmniOverviewController() {
   } = useOmniProductContext(productType)
 
   return (
-    <Grid gap={2}>
+    <Grid sx={{ rowGap: 3 }}>
       <DetailsSection
         title={
           (overviewWithSimulation && isOpening && (

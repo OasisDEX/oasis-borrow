@@ -1,3 +1,4 @@
+import { DetailsSection } from 'components/DetailsSection'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
@@ -78,7 +79,11 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
           faq: <>FAQ placeholder</>,
           overviewContent: <Erc4626DetailsSectionContent />,
           overviewFooter: <Erc4626DetailsSectionFooter />,
-          overviewBanner: <>Banner</>,
+          overviewBanner: (
+            <>
+              <DetailsSection content={<>asd asda</>} title="Title" accordion />
+            </>
+          ),
           overviewWithSimulation: true,
           earnFormOrder: <>Form order placeholder</>,
           earnFormOrderAsElement: () => <>Form order placeholder</>,
