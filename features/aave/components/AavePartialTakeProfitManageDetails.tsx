@@ -108,10 +108,10 @@ export const AavePartialTakeProfitManageDetails = ({
   const nextTriggerProfit = partialTakeProfitProfits ? partialTakeProfitProfits[0] : undefined
   const primaryPnlValue = useMemo(() => {
     if (netValuePnlCollateralData.pnl?.pnlToken === partialTakeProfitTokenData.symbol) {
-      return netValuePnlCollateralData.pnl.inToken
+      return netValuePnlCollateralData.pnl.inToken || zero
     }
     if (netValuePnlDebtData.pnl?.pnlToken === partialTakeProfitTokenData.symbol) {
-      return netValuePnlDebtData.pnl.inToken
+      return netValuePnlDebtData.pnl.inToken || zero
     }
     return zero
   }, [
@@ -123,10 +123,10 @@ export const AavePartialTakeProfitManageDetails = ({
   ])
   const secondaryPnlValue = useMemo(() => {
     if (netValuePnlCollateralData.pnl?.pnlToken === partialTakeProfitSecondTokenData.symbol) {
-      return netValuePnlCollateralData.pnl.inToken
+      return netValuePnlCollateralData.pnl.inToken || zero
     }
     if (netValuePnlDebtData.pnl?.pnlToken === partialTakeProfitSecondTokenData.symbol) {
-      return netValuePnlDebtData.pnl.inToken
+      return netValuePnlDebtData.pnl.inToken || zero
     }
     return zero
   }, [
