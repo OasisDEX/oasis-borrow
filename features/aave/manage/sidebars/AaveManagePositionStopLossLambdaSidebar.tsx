@@ -48,7 +48,7 @@ import type { Sender } from 'xstate'
 
 const aaveLambdaStopLossConfig = {
   translationRatioParam: 'vault-changes.loan-to-value',
-  sliderStep: 1,
+  sliderStep: 0.1,
 }
 
 type StopLossSidebarStates =
@@ -65,7 +65,7 @@ const refreshDataTime = 10 * 1000
 
 const getFormatters = (strategyConfig: IStrategyConfig) => {
   const { denomination, denominationToken } = getDenominations(strategyConfig)
-  const firstFormatter = (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))
+  const firstFormatter = (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x, { precision: 2 }))
   const secondFormatter = (x: BigNumber) =>
     x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${denomination}`
 
