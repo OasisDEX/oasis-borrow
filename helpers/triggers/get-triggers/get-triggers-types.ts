@@ -271,6 +271,7 @@ export type DmaAavePartialTakeProfit = {
     positionAddress: string
     targetLtv: string
     triggerType: string
+    withdrawToDebt: 'true' | 'false'
   }
 }
 
@@ -290,11 +291,21 @@ export type DmaSparkPartialTakeProfit = {
     executionPrice: string
     deviation: string
     closeToCollateral: string
+    withdrawToDebt: 'true' | 'false'
   }
 }
 
 export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 
+// This interface is available also in monorepo, at some point we should probably import it from there
+type Trigger = {
+  triggerId: string
+  triggerData: string
+  triggerType: bigint
+  decodedParams: unknown
+  dynamicParams?: unknown
+}
+// This interface is available also in monorepo, at some point we should probably import it from there
 export type GetTriggersResponse = {
   triggers: {
     aaveStopLossToCollateral?: AaveStopLossToCollateral
@@ -314,4 +325,26 @@ export type GetTriggersResponse = {
     aavePartialTakeProfit?: DmaAavePartialTakeProfit
     sparkPartialTakeProfit?: DmaSparkPartialTakeProfit
   }
+  flags: {
+    isAaveStopLossEnabled: boolean
+    isSparkStopLossEnabled: boolean
+    isAaveBasicBuyEnabled: boolean
+    isAaveBasicSellEnabled: boolean
+    isSparkBasicBuyEnabled: boolean
+    isSparkBasicSellEnabled: boolean
+    isAavePartialTakeProfitEnabled: boolean
+    isSparkPartialTakeProfitEnabled: boolean
+  }
+  triggerGroup: {
+    aaveStopLoss?: Trigger
+    sparkStopLoss?: Trigger
+    aaveBasicBuy?: Trigger
+    aaveBasicSell?: Trigger
+    sparkBasicBuy?: Trigger
+    sparkBasicSell?: Trigger
+    aavePartialTakeProfit?: Trigger
+    sparkPartialTakeProfit?: Trigger
+  }
+  triggersCount: number
+  additionalData?: Record<string, unknown>
 }

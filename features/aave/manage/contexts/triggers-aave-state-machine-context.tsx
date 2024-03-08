@@ -10,6 +10,7 @@ import type { IStrategyConfig } from 'features/aave/types'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -62,9 +63,7 @@ function useSetupTriggersStateContext(
       ),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
-      currentTriggers: {
-        triggers: {},
-      },
+      currentTriggers: omniPositionTriggersDataDefault,
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()

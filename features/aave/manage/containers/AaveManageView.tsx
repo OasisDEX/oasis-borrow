@@ -25,10 +25,12 @@ function AaveManageContainer({
   strategyConfig,
   aaveReserveState,
   aaveReserveDataDebtToken,
+  aaveReserveDataCollateralToken,
   address,
 }: {
   aaveReserveState: AaveLikeReserveConfigurationData
   aaveReserveDataDebtToken: AaveLikeReserveData
+  aaveReserveDataCollateralToken: AaveLikeReserveData
   strategyConfig: IStrategyConfig
   address: string
 }) {
@@ -62,6 +64,7 @@ function AaveManageContainer({
           strategyConfig={strategyConfig}
           aaveReserveState={aaveReserveState}
           aaveReserveDataDebtToken={aaveReserveDataDebtToken}
+          aaveReserveDataCollateralToken={aaveReserveDataCollateralToken}
         />
         <Survey for="earn" />
       </Container>
@@ -80,6 +83,9 @@ export function AaveManagePositionView({
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
     getAaveLikeReserveData$({ token: strategyConfig.tokens.debt }),
   )
+  const [aaveReserveDataCollateral, aaveReserveDataCollateralError] = useObservable(
+    getAaveLikeReserveData$({ token: strategyConfig.tokens.collateral }),
+  )
   const [aaveReserveState, aaveReserveStateError] = useObservable(
     aaveLikeReserveConfigurationData$({
       collateralToken: strategyConfig.tokens.collateral,
@@ -87,17 +93,20 @@ export function AaveManagePositionView({
     }),
   )
   return (
-    <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>
+    <WithErrorHandler
+      error={[aaveReserveStateError, aaveReserveDataDebtError, aaveReserveDataCollateralError]}
+    >
       <WithLoadingIndicator
-        value={[aaveReserveState, aaveReserveDataDebt]}
+        value={[aaveReserveState, aaveReserveDataDebt, aaveReserveDataCollateral]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([_aaveReserveState, _aaveReserveDataDebt]) => {
+        {([_aaveReserveState, _aaveReserveDataDebt, _aaveReserveDataCollateral]) => {
           return (
             <AaveManageContainer
               strategyConfig={strategyConfig}
               aaveReserveState={_aaveReserveState}
               aaveReserveDataDebtToken={_aaveReserveDataDebt}
+              aaveReserveDataCollateralToken={_aaveReserveDataCollateral}
               address={address}
             />
           )

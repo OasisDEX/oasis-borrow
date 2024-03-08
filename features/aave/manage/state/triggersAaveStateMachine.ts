@@ -5,6 +5,7 @@ import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
@@ -76,10 +77,6 @@ export const getCurrentOptimizationView = ({
   }
   if (triggers.aavePartialTakeProfit || triggers.sparkPartialTakeProfit) {
     return 'partial-take-profit'
-  }
-  // TODO: add this logic, currently just for debugging
-  if (!triggers.aaveBasicBuy) {
-    return 'auto-buy'
   }
   return undefined
 }
@@ -556,9 +553,7 @@ export const triggersAaveStateMachine = createMachine(
       getTriggers: async (context): Promise<GetTriggersResponse> => {
         const { dpm, strategyConfig } = context
         if (!dpm) {
-          return {
-            triggers: {},
-          }
+          return omniPositionTriggersDataDefault
         }
         return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
       },

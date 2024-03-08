@@ -442,7 +442,8 @@ export function AaveManagePositionStopLossLambdaSidebar({
   const isDisabled = useMemo(() => {
     if (
       isGettingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
+      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
+      errors.length
     ) {
       return true
     }
@@ -450,7 +451,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
       return false
     }
     return !stopLossConfigChanged
-  }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep])
+  }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep, errors.length])
 
   const primaryButtonAction = () => {
     if (transactionStep === 'prepare') {

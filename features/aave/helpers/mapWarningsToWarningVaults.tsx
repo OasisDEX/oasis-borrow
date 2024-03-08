@@ -31,6 +31,8 @@ export function mapWarningsToWarningVaults(
           return 'settingAutoSellTriggerWithNoThreshold'
         case TriggersApiWarningCode.StopLossTriggeredImmediately:
           return 'stopLossTriggeredImmediately'
+        case TriggersApiWarningCode.PartialTakeProfitTargetHigherThanStopLoss:
+          return 'partialTakeProfitTargetHigherThanStopLoss'
         default:
           return undefined
       }

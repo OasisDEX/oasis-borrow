@@ -41,7 +41,6 @@ export interface OmniContentCardExtra {
   isLoading?: boolean
   isValueLoading?: boolean
   modal?: ReactNode
-  modalAsTooltip?: boolean
   link?: DetailsSectionContentCardLinkProps
   tooltips?: {
     change?: ReactNode
@@ -78,7 +77,6 @@ export function OmniContentCard({
   iconPosition = 'before',
   isLoading,
   modal,
-  modalAsTooltip,
   title,
   tooltips: {
     change: changeTooltip,
@@ -166,7 +164,6 @@ export function OmniContentCard({
     link,
     extra,
     modal,
-    modalAsTooltip,
     asFooter,
   }
 
