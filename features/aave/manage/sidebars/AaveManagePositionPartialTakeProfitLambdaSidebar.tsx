@@ -29,6 +29,7 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Text } from 'theme-ui'
+import { useInterval } from 'usehooks-ts'
 
 type PartialTakeProfitSidebarStates =
   | 'prepare'
@@ -150,32 +151,25 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     // user can update SL level with the slider
   }, [aaveLikePartialTakeProfitLambdaData.currentStopLossLevel])
 
+  useInterval(onTxFinished, refreshingTriggerData ? refreshDataTime : null)
+
   useEffect(() => {
-    if (refreshingTriggerData) {
-      const checkTriggerData = () => {
-        setTimeout(() => {
-          onTxFinished()
-          if (aaveLikePartialTakeProfitLambdaData.triggerId !== triggerId) {
-            setTriggerId(aaveLikePartialTakeProfitLambdaData.triggerId ?? '0')
-            setRefreshingTriggerData(false)
-          } else {
-            checkTriggerData()
-          }
-        }, refreshDataTime)
-      }
-      checkTriggerData()
+    if (aaveLikePartialTakeProfitLambdaData.triggerId !== triggerId) {
+      setTriggerId(aaveLikePartialTakeProfitLambdaData.triggerId ?? '0')
+      setRefreshingTriggerData(false)
+      partialTakeProfitProfits &&
+        send({
+          type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
+          partialTakeProfitFirstProfit: partialTakeProfitProfits[0],
+        })
     }
-  }, [refreshingTriggerData])
+  }, [aaveLikePartialTakeProfitLambdaData.triggerId, triggerId, partialTakeProfitProfits, send])
 
   const resetXStateData = () => {
     if (action === TriggerAction.Remove) {
       send({
         type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA',
         partialTakeProfitTxDataLambda: undefined,
-      })
-      send({
-        type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
-        partialTakeProfitFirstProfit: undefined,
       })
       send({
         type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA',
