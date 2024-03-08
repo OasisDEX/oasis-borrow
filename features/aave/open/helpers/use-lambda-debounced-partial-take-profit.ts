@@ -5,6 +5,8 @@ import { cancelable } from 'cancelable-promise'
 import { lambdaPriceDenomination } from 'features/aave/constants'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
+import type { IStrategyConfig } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import type {
   ProfitsSimulationBalanceRaw,
@@ -22,6 +24,7 @@ import { eth2weth } from '@oasisdex/utils/lib/src/utils'
 
 const mapProfits = (
   simulation: SetupPartialTakeProfitResponse['simulation'],
+  strategyConfig: IStrategyConfig,
 ): ProfitsSimulationMapped[] => {
   const parseProfitValue = (value: ProfitsSimulationBalanceRaw) => {
     return {
@@ -31,15 +34,20 @@ const mapProfits = (
   }
   return simulation
     ? simulation.profits.map((sim) => {
+        const isShort = strategyConfig.strategyType === StrategyType.Short
+        const triggerPrice = isShort
+          ? new BigNumber(lambdaPriceDenomination).div(new BigNumber(sim.triggerPrice))
+          : new BigNumber(sim.triggerPrice).div(lambdaPriceDenomination)
+        const stopLossDynamicPrice = isShort
+          ? new BigNumber(lambdaPriceDenomination).div(new BigNumber(sim.stopLossDynamicPrice))
+          : new BigNumber(sim.stopLossDynamicPrice).div(lambdaPriceDenomination)
         return {
-          triggerPrice: new BigNumber(sim.triggerPrice).div(lambdaPriceDenomination),
+          triggerPrice,
           realizedProfitInCollateral: parseProfitValue(sim.realizedProfitInCollateral),
           realizedProfitInDebt: parseProfitValue(sim.realizedProfitInDebt),
           totalProfitInCollateral: parseProfitValue(sim.totalProfitInCollateral),
           totalProfitInDebt: parseProfitValue(sim.totalProfitInDebt),
-          stopLossDynamicPrice: new BigNumber(sim.stopLossDynamicPrice).div(
-            lambdaPriceDenomination,
-          ),
+          stopLossDynamicPrice,
           fee: parseProfitValue(sim.fee),
           totalFee: parseProfitValue(sim.totalFee),
         }
@@ -123,6 +131,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
         setIsGettingPartialTakeProfitTx(true)
         clearWarningsAndErrors()
       }
+      const isShort = strategyConfig.strategyType === StrategyType.Short
       const partialTakeProfitTxDataPromise = cancelable(
         setupAaveLikePartialTakeProfit({
           dpm: dpmAccount,
@@ -131,7 +140,9 @@ export const useLambdaDebouncedPartialTakeProfit = ({
           protocol: strategyConfig.protocol as SupportedLambdaProtocols,
           triggerLtv,
           withdrawalLtv,
-          startingTakeProfitPrice,
+          startingTakeProfitPrice: isShort
+            ? new BigNumber(lambdaPriceDenomination).div(startingTakeProfitPrice)
+            : startingTakeProfitPrice.times(lambdaPriceDenomination),
           strategy: {
             collateralAddress,
             debtAddress,
@@ -163,7 +174,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
             })
           }
           if (res.simulation) {
-            const profitsMapped = mapProfits(res.simulation)
+            const profitsMapped = mapProfits(res.simulation, strategyConfig)
             setProfits(profitsMapped)
             if (
               state.context.partialTakeProfitFirstProfit === undefined ||

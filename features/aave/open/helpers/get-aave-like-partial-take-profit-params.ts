@@ -16,7 +16,8 @@ import { memoize } from 'lodash'
 import { useMemo, useState } from 'react'
 
 const partialTakeProfitConfig = {
-  takeProfitStartingPercentageOptions: [0, 0.1, 0.2, 0.3, 0.4, 0.5] as const,
+  takeProfitStartingPercentageOptionsLong: [0, 0.1, 0.2, 0.3, 0.4, 0.5] as const,
+  takeProfitStartingPercentageOptionsShort: [0, -0.1, -0.2, -0.3, -0.4, -0.5] as const,
   defaultTriggelLtvOffset: new BigNumber(5),
   defaultWithdrawalLtv: new BigNumber(5),
   ltvSliderStep: 0.1,
@@ -24,7 +25,9 @@ const partialTakeProfitConfig = {
   realizedProfitRangeVisible: 3,
 }
 
-type PercentageOptionsType = typeof partialTakeProfitConfig.takeProfitStartingPercentageOptions
+type PercentageOptionsType =
+  | typeof partialTakeProfitConfig.takeProfitStartingPercentageOptionsLong
+  | typeof partialTakeProfitConfig.takeProfitStartingPercentageOptionsShort
 type ProfitToTokenType = 'debt' | 'collateral'
 type PTPSliderConfig = {
   sliderPercentageFill: BigNumber
