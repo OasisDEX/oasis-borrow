@@ -40,8 +40,6 @@ export const hasActiveProtection = (
         sparkStopLossToDebtDMA,
         sparkTrailingStopLossDMA,
       )
-    case LendingProtocol.AaveV2:
-      return false
     default:
       return false
   }
