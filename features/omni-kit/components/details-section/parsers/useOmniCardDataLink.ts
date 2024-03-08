@@ -1,6 +1,6 @@
 import type { OmniContentCardBase } from 'features/omni-kit/components/details-section'
 
-interface useOmniCardDataLinkParams {
+interface OmniCardDataLinkParams {
   label: string
   translationCardName: string
   url: string
@@ -9,10 +9,14 @@ interface useOmniCardDataLinkParams {
 export function useOmniCardDataLink({
   label,
   translationCardName,
-  // url,
-}: useOmniCardDataLinkParams): OmniContentCardBase {
-  // TODO add full card link when `modalAsTooltip` is removed by @Marcin 
+  url,
+}: OmniCardDataLinkParams): OmniContentCardBase {
   return {
+    link: {
+      fullCard: true,
+      label,
+      url,
+    },
     title: { key: `omni-kit.content-card.${translationCardName}.title` },
     value: label,
   }
