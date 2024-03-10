@@ -3173,6 +3173,9 @@
     }
   },
   "aave-like": {
+    "product-hub-tooltips": {
+      "double-etherfi-points": "This position earns 2x Ether.fi points via Summer.fi"
+    },
     "position-page": {
       "common": {
         "form": {
