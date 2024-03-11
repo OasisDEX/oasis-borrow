@@ -2390,25 +2390,17 @@
   resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.47.tgz#ff161ffb95768b8cda21ccea0d7fae790bf71883"
   integrity sha512-po36JPWODgqGorh6d9EgfMf+psDPko8b2wwLj0P3eYmUskexCvnsblLe3p2K0qjxK/3JiVl3BY3wMUkGD49zjQ==
 
-"@oasisdex/automation@1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.1.tgz#173dd9aa370f8285599c57a50122335a8480495e"
-  integrity sha512-pmhM2cJ2LrCeugcw/c3vqpsXA9Ygls8oh83IsQHHjdTTw5eUBEHUihtmJHPs10R9EeShIOZzhBPnRMGKpyfvKw==
+"@oasisdex/automation@1.6.4-alpha.2":
+  version "1.6.4-alpha.2"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.4-alpha.2.tgz#126ced26a991483b400d71bd42e6191634231786"
+  integrity sha512-FbOUQAjn4Cr9Q0giCXrxiwiIZ8kh3dJW5uG4oR7VJW+GNA8x1HdJdMcKaTD3uROzMZg1M2UnCaprZY9bfSxXeg==
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library-migration@npm:@oasisdex/dma-library@0.6.29-rc.migration.1":
-  version "0.6.29-rc.migration.1"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.29-rc.migration.1.tgz#43b4da32935efe1effdec210ed9968dbc1467320"
-  integrity sha512-cYD47LcEb5b8VJTjEmbzJFQAEVPWUd4rfHOg4DnJXnv+a7cGgaEP0+mGeFdUK6lQjXk3J3tamIAGrigLorl5jQ==
-  dependencies:
-    bignumber.js "9.0.1"
-    ethers "^5.7.2"
-
-"@oasisdex/dma-library@0.6.28":
-  version "0.6.28"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.28.tgz#04b2bafd207e033eb5b8960eeb8d2c877d6caa4c"
-  integrity sha512-5m7NB/wmklQUqjFL4vPYgT3N+o54qhbFfva/zEOF0ndEc6J3x3zc2K/Fkc03J8Et0NkjHV+4o4hPvYWKbGnQBw==
+"@oasisdex/dma-library@0.6.32":
+  version "0.6.32"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.32.tgz#d5fdcff9d10354bba242c0356872505187eb8465"
+  integrity sha512-LS7F6nkAZvFEFe29KpABMtG7De4a1DM27CUo58bMfpWp7HgkdLRCV+g5stXgJP618P55YgH9frqkydk2y0ljHw==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"

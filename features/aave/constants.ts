@@ -10,4 +10,5 @@ export const aaveLikeProtocols = [
   LendingProtocol.SparkV3,
 ]
 
-export const trailingStopLossDenomination = 10 ** 8
+export const lambdaPriceDenomination = 10 ** 8
+export const lambdaPercentageDenomination = 10 ** 2

@@ -18,9 +18,9 @@ import { AaveManagePositionTrailingStopLossLambdaSidebar } from 'features/aave/m
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
 import type {
   AutoSellTriggerAaveContext,
+  ProtectionTriggersViews,
   TriggersAaveEvent,
   triggersAaveStateMachine,
-  TriggersViews,
 } from 'features/aave/manage/state'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { zero } from 'helpers/zero'
@@ -118,7 +118,8 @@ export function ProtectionControlWrapper({
 
   const dropdown = useProtectionSidebarDropdown(triggersState, sendTriggerEvent)
   const protectionControlUI = getProtectionControlUIstate(triggersState)
-  const goToView = (view: TriggersViews) => () => sendTriggerEvent({ type: 'CHANGE_VIEW', view })
+  const goToView = (view: ProtectionTriggersViews) => () =>
+    sendTriggerEvent({ type: 'CHANGE_PROTECTION_VIEW', view })
   if (triggersState.context.protectionCurrentView === 'stop-loss-selector') {
     return <AaveStopLossSelector sendTriggerEvent={sendTriggerEvent} />
   }

@@ -1,8 +1,8 @@
 import type { triggersAaveStateMachine } from 'features/aave/manage/state'
 import {
   hasActiveAutoSell,
-  hasActiveStopLoss,
-  hasActiveTrailingStopLoss,
+  hasActiveStopLossFromContext,
+  hasActiveTrailingStopLossFromContext,
   isAutoSellEnabled,
 } from 'features/aave/manage/state'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -18,8 +18,8 @@ export const getProtectionControlUIstate = (
   // sidebar (active when viewing/editing)
   // banners
   const showAutoSell = isAutoSellEnabled(triggersState)
-  const hasStopLoss = hasActiveStopLoss(triggersState)
-  const hasTrailingStopLoss = hasActiveTrailingStopLoss(triggersState)
+  const hasStopLoss = hasActiveStopLossFromContext(triggersState)
+  const hasTrailingStopLoss = hasActiveTrailingStopLossFromContext(triggersState)
   const hasAutoSell = hasActiveAutoSell(triggersState)
   const banners = {
     bannerStopLoss:

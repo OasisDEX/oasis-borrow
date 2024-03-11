@@ -18,7 +18,7 @@ import type { ManageAaveStateMachine } from './manage/state'
 import type { OpenAaveStateMachine } from './open/state'
 import type { IStrategyConfig, ManageViewInfo, PositionId } from './types'
 
-type AaveTotalValueLocked = {
+export type AaveTotalValueLocked = {
   totalValueLocked: BigNumber
 }
 

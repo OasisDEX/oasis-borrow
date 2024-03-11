@@ -69,6 +69,7 @@ function AavePositionHeader({
   minimumRiskRatio: IRiskRatio
 }) {
   const { t } = useTranslation()
+
   const isSparkProtocol = strategy.protocol === LendingProtocol.SparkV3
 
   const minYields = useAaveEarnYields(

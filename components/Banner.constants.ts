@@ -6,5 +6,6 @@ export const bannerGradientPresets: BannerGradientPresetsArray = {
   constantMultiply: ['#ffdde7', '#ffe7f5'],
   stopLoss: ['#ffeaea', '#fff5ea'],
   trailingStopLoss: ['#ffeaea', '#fff5ea'],
+  partialTakeProfit: ['#ffeaea', '#fff5ea'],
   autoTakeProfit: ['#ffe6f5', '#fff2f6'],
 }

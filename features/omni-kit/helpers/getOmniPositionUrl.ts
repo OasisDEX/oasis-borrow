@@ -1,4 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
+import { getOmniProtocolUrlMap } from 'features/omni-kit/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -26,8 +27,12 @@ export function getOmniPositionUrl({
   quoteToken,
 }: GetOmniPositionUrlParams) {
   const productUrl = isPoolOracless
-    ? `/${networkName}/${protocol}/${productType}/${collateralAddress}-${quoteAddress}`
-    : `/${networkName}/${protocol}/${productType}/${collateralToken}-${quoteToken}`
+    ? `/${networkName}/${getOmniProtocolUrlMap(
+        protocol,
+      )}/${productType}/${collateralAddress}-${quoteAddress}`
+    : `/${networkName}/${getOmniProtocolUrlMap(
+        protocol,
+      )}/${productType}/${collateralToken}-${quoteToken}`
 
   return `${productUrl}${positionId ? `/${positionId}` : ''}`
 }

@@ -20,9 +20,9 @@ import type {
 import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import type {
-  AaveCumulativeData,
-  AaveHistoryEvent,
-} from 'features/omni-kit/protocols/aave/history/types'
+  AaveLikeCumulativeData,
+  AaveLikeHistoryEvent,
+} from 'features/omni-kit/protocols/aave-like/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
@@ -51,9 +51,11 @@ export function getManageAaveV3PositionStateMachineServices(
   getHistoryEvents: (
     proxyAccount: string,
     networkId: NetworkIds,
+    collateralAddress: string,
+    debtAddress: string,
   ) => Promise<{
-    events: AaveHistoryEvent[]
-    positionCumulatives?: AaveCumulativeData
+    events: AaveLikeHistoryEvent[]
+    positionCumulatives?: AaveLikeCumulativeData
   }>,
   aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {
@@ -259,6 +261,8 @@ export function getManageAaveV3PositionStateMachineServices(
           const historyData = await getHistoryEvents(
             event.proxyAddress,
             context.strategyConfig.networkId,
+            context.tokens.collateral,
+            context.tokens.debt,
           )
           callback({
             type: 'HISTORY_UPDATED',

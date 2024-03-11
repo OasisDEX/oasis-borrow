@@ -1,4 +1,3 @@
-import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
@@ -10,9 +9,10 @@ import {
   isOmniExternalStep,
   isOmniStepWithTransaction,
 } from 'features/omni-kit/contexts'
-import { isShortPosition } from 'features/omni-kit/helpers'
+import { getOmniEntryToken, isShortPosition } from 'features/omni-kit/helpers'
 import { useOmniSlippage } from 'features/omni-kit/hooks'
 import type {
+  OmniEntryToken,
   OmniProductType,
   OmniProtocolSettings,
   OmniSidebarEditingStep,
@@ -40,6 +40,9 @@ interface OmniGeneralContextProviderProps {
   isOpening: boolean
   isOracless: boolean
   isProxyWithManyPositions: boolean
+  isYieldLoop: boolean
+  isYieldLoopWithData: boolean
+  label?: string
   network: NetworkConfig
   networkId: OmniSupportedNetworkIds
   owner: string
@@ -47,6 +50,7 @@ interface OmniGeneralContextProviderProps {
   productType: OmniProductType
   protocol: LendingProtocol
   protocolRaw: string
+  protocolVersion?: string
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number
@@ -74,6 +78,7 @@ type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'step
   slippageSource: OmniSlippageSourceSettings
   isYieldLoop: boolean
   isStrategyWithDefaultSlippage: boolean
+  entryToken: OmniEntryToken
 }
 
 interface OmniGeneralContextSteps {
@@ -127,6 +132,7 @@ export function OmniGeneralContextProvider({
     collateralToken,
     isOpening,
     isProxyWithManyPositions,
+    isYieldLoop,
     network,
     networkId,
     owner,
@@ -143,7 +149,6 @@ export function OmniGeneralContextProvider({
   const [gasEstimation, setGasEstimation] = useState<GasEstimationContext>()
 
   const isShort = isShortPosition({ collateralToken })
-  const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
 
   const {
     slippage: resolvedSlippage,
@@ -207,6 +212,7 @@ export function OmniGeneralContextProvider({
         slippageSource,
         isYieldLoop,
         isStrategyWithDefaultSlippage,
+        entryToken: getOmniEntryToken(props),
       },
       steps: setupStepManager(),
       tx: setupTxManager(),

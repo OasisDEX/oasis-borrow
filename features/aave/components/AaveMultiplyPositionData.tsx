@@ -10,6 +10,7 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
@@ -30,7 +31,7 @@ import {
 } from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { useAaveCardDataNetValueLending } from 'features/omni-kit/protocols/aave/components/details-sections/parsers/useAaveCardDataNetValueLending'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveLikeCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
@@ -62,7 +63,7 @@ type AaveMultiplyPositionDataProps = {
   aaveHistory: VaultHistoryEvent[]
   isAutomationAvailable?: boolean
   strategyType: StrategyType
-  cumulatives?: AaveCumulativeData
+  cumulatives?: AaveLikeCumulativeData
   lendingProtocol: LendingProtocol
   productType: ProductType
   // triggersState is available _only_ in manage view (this component is used for both open and manage)
@@ -166,7 +167,6 @@ export function AaveMultiplyPositionData({
     modal: (
       <CostToBorrowContentCardModal
         currentPositionThings={currentPositionThings}
-        debtTokenPrice={debtTokenPrice}
         position={currentPosition}
       />
     ),
@@ -291,7 +291,7 @@ export function AaveMultiplyPositionData({
     if (stopLossLambdaData.stopLossTriggerName) {
       return {
         isAutomationAvailable: true,
-        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(10 ** 2), // still needs to be divided by 100
+        stopLossLevel: stopLossLambdaData.stopLossLevel?.div(lambdaPercentageDenomination), // still needs to be divided by 100
         isStopLossEnabled: true,
         isAutomationDataLoaded: true,
       }

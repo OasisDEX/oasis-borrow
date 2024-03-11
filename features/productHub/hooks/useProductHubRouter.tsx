@@ -38,8 +38,12 @@ export const useProductHubRouter = ({
     [queryString],
   )
 
-  useEffect(() => {
-    void replace({ pathname, query }, undefined, { shallow: true })
-    // else void replace({ query }, undefined, { shallow: true })
-  }, [pathname, query, url])
+  useEffect(
+    () => void replace({ pathname, query }, undefined, { shallow: true }),
+    [pathname, query, url],
+  )
+
+  return {
+    query,
+  }
 }

@@ -1,11 +1,13 @@
 import { AppLink } from 'components/Links'
 import type { OmniValidationItem } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import type { LendingProtocol } from 'lendingProtocols'
 import { Trans } from 'next-i18next'
 import React, { type FC } from 'react'
 
 interface OmniValidationWithLinkProps {
   name: string
+  protocol: LendingProtocol
   values?: { [key: string]: string }
 }
 
@@ -17,6 +19,8 @@ interface MapSimulationValidationParams {
   collateralToken: string
   quoteToken: string
   token: string
+  productType: string
+  protocol: LendingProtocol
 }
 
 export const mapSimulationValidation = ({
@@ -24,13 +28,16 @@ export const mapSimulationValidation = ({
   collateralToken,
   quoteToken,
   token,
+  productType,
+  protocol,
 }: MapSimulationValidationParams): OmniValidationItem[] =>
   items.map((item) => ({
     message: {
       component: (
         <OmniValidationWithLink
           name={item.name}
-          values={{ ...item.data, collateralToken, quoteToken, token }}
+          values={{ ...item.data, collateralToken, quoteToken, token, productType }}
+          protocol={protocol}
         />
       ),
     },

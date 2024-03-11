@@ -375,8 +375,18 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   getAaveHistory: gql`
-    query AavePositionHistory($dpmProxyAddress: String) {
-      positions(where: { account: $dpmProxyAddress }) {
+    query AavePositionHistory(
+      $dpmProxyAddress: String
+      $collateralAddress: String
+      $quoteAddress: String
+    ) {
+      positions(
+        where: {
+          account: $dpmProxyAddress
+          collateralAddress: $collateralAddress
+          debtAddress: $quoteAddress
+        }
+      ) {
         id
         cumulativeDepositUSD
         cumulativeDepositInQuoteToken
@@ -388,7 +398,13 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         cumulativeFeesInQuoteToken
         cumulativeFeesInCollateralToken
       }
-      positionEvents(where: { account: $dpmProxyAddress }) {
+      positionEvents(
+        where: {
+          account: $dpmProxyAddress
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
         depositTransfers {
           amount
           token

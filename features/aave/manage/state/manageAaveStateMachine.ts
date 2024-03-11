@@ -39,9 +39,9 @@ import {
 import type { PositionId } from 'features/aave/types/position-id'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type {
-  AaveCumulativeData,
-  AaveHistoryEvent,
-} from 'features/omni-kit/protocols/aave/history/types'
+  AaveLikeCumulativeData,
+  AaveLikeHistoryEvent,
+} from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { TransactionStateMachine } from 'features/stateMachines/transaction'
 import type {
@@ -72,7 +72,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   ownerAddress?: string
   positionCreatedBy: ProxyType
   updateStrategyConfig?: (vaultType: VaultType) => void
-  historyEvents: AaveHistoryEvent[]
+  historyEvents: AaveLikeHistoryEvent[]
 }
 
 function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -113,8 +113,8 @@ export type ManageAaveEvent =
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | {
       type: 'HISTORY_UPDATED'
-      historyEvents: AaveHistoryEvent[]
-      cumulatives?: AaveCumulativeData
+      historyEvents: AaveLikeHistoryEvent[]
+      cumulatives?: AaveLikeCumulativeData
     }
   | BaseAaveEvent
 
@@ -646,6 +646,15 @@ export function createManageAaveStateMachine(
           actions: 'updateContext',
         },
         SET_TRAILING_STOP_LOSS_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
+        SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
+        SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA: {
+          actions: 'updateContext',
+        },
+        SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA: {
           actions: 'updateContext',
         },
         USE_SLIPPAGE: {

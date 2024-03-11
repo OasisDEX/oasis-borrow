@@ -5,9 +5,11 @@ import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { ActorRefFrom, StateFrom } from 'xstate'
 import { actions, createMachine } from 'xstate'
@@ -20,22 +22,37 @@ import type { PositionLike } from './triggersCommon'
 
 const { assign, sendTo } = actions
 
-export type TriggersViews =
-  | 'auto-buy'
+export type ProtectionTriggersViews =
   | 'auto-sell'
   | 'stop-loss-selector'
   | 'stop-loss'
   | 'trailing-stop-loss'
 
+export type OptimizationTriggersViews = 'auto-buy' | 'partial-take-profit' | undefined
+
 export type TriggersAaveEvent =
-  | { type: 'CHANGE_VIEW'; view: TriggersViews }
+  | { type: 'CHANGE_PROTECTION_VIEW'; view: ProtectionTriggersViews }
   | { type: 'SHOW_AUTO_BUY' }
-  | { type: 'SHOW_STOP_LOSS' }
+  | { type: 'SHOW_PARTIAL_TAKE_PROFIT' }
   | { type: 'RESET_PROTECTION' }
   | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
   | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
   | { type: 'SIGNER_UPDATED'; signer?: ethers.Signer }
   | { type: 'TRANSACTION_DONE' }
+
+export type TriggersAaveContext = {
+  readonly strategyConfig: IStrategyConfig
+  readonly dpm?: UserDpmAccount
+  position?: AaveLikePosition
+  optimizationCurrentView?: OptimizationTriggersViews
+  showAutoBuyBanner: boolean
+  showPartialTakeProfitBanner: boolean
+  protectionCurrentView?: ProtectionTriggersViews
+  currentTriggers: GetTriggersResponse
+  signer?: ethers.Signer
+  autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
+  autoSellTrigger: ActorRefFrom<typeof autoSellTriggerAaveStateMachine>
+}
 
 export const isOptimizationEnabled = ({
   context,
@@ -54,9 +71,12 @@ export const isAutoSellEnabled = ({
 
 export const getCurrentOptimizationView = ({
   triggers,
-}: GetTriggersResponse): 'auto-buy' | undefined => {
+}: GetTriggersResponse): 'auto-buy' | 'partial-take-profit' | undefined => {
   if (triggers.aaveBasicBuy || triggers.sparkBasicBuy) {
     return 'auto-buy'
+  }
+  if (triggers.aavePartialTakeProfit || triggers.sparkPartialTakeProfit) {
+    return 'partial-take-profit'
   }
   return undefined
 }
@@ -98,7 +118,17 @@ export const hasActiveOptimization = ({
   const hasAaveAutoBuyEnabled = context.currentTriggers.triggers.aaveBasicBuy !== undefined
   const hasSparkAutoBuyEnabled = context.currentTriggers.triggers.sparkBasicBuy !== undefined
 
-  return hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled
+  const hasAavePartialTakeProfitEnabled =
+    context.currentTriggers.triggers.aavePartialTakeProfit !== undefined
+  const hasSparkPartialTakeProfitEnabled =
+    context.currentTriggers.triggers.sparkPartialTakeProfit !== undefined
+
+  return (
+    hasAaveAutoBuyEnabled ||
+    hasSparkAutoBuyEnabled ||
+    hasAavePartialTakeProfitEnabled ||
+    hasSparkPartialTakeProfitEnabled
+  )
 }
 
 export const hasActiveProtection = ({
@@ -143,7 +173,44 @@ export const hasActiveProtection = ({
   }
 }
 
-export const hasActiveStopLoss = ({
+export const hasActiveStopLossFromTriggers = ({
+  triggers,
+  protocol,
+}: {
+  triggers: GetTriggersResponse['triggers']
+  protocol: AaveLikeLendingProtocol
+}) => {
+  const {
+    aaveStopLossToCollateral,
+    sparkStopLossToCollateral,
+    aaveStopLossToCollateralDMA,
+    aaveStopLossToDebtDMA,
+    sparkStopLossToCollateralDMA,
+    sparkStopLossToDebtDMA,
+    sparkStopLossToDebt,
+    aaveStopLossToDebt,
+  } = triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(
+        aaveStopLossToCollateral,
+        aaveStopLossToDebt,
+        aaveStopLossToCollateralDMA,
+        aaveStopLossToDebtDMA,
+      )
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(
+        sparkStopLossToCollateral,
+        sparkStopLossToDebt,
+        sparkStopLossToCollateralDMA,
+        sparkStopLossToDebtDMA,
+      )
+    case LendingProtocol.AaveV2:
+      return false
+  }
+}
+
+export const hasActiveStopLossFromContext = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
@@ -177,7 +244,25 @@ export const hasActiveStopLoss = ({
   }
 }
 
-export const hasActiveTrailingStopLoss = ({
+export const hasActiveTrailingStopLossFromTriggers = ({
+  triggers,
+  protocol,
+}: {
+  triggers: GetTriggersResponse['triggers']
+  protocol: AaveLikeLendingProtocol
+}) => {
+  const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(aaveTrailingStopLossDMA)
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(sparkTrailingStopLossDMA)
+    case LendingProtocol.AaveV2:
+      return false
+  }
+}
+
+export const hasActiveTrailingStopLossFromContext = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
@@ -207,22 +292,19 @@ export const hasActiveAutoSell = ({
   }
 }
 
-export type TriggersAaveContext = {
-  readonly strategyConfig: IStrategyConfig
-  readonly dpm?: UserDpmAccount
-  position?: AaveLikePosition
-  optimizationCurrentView?: 'auto-buy' | undefined
-  showAutoBuyBanner: boolean
-  protectionCurrentView?:
-    | 'auto-buy'
-    | 'auto-sell'
-    | 'stop-loss-selector'
-    | 'stop-loss'
-    | 'trailing-stop-loss'
-  currentTriggers: GetTriggersResponse
-  signer?: ethers.Signer
-  autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
-  autoSellTrigger: ActorRefFrom<typeof autoSellTriggerAaveStateMachine>
+export const hasActivePartialTakeProfit = ({
+  context,
+}: StateFrom<typeof triggersAaveStateMachine>): boolean => {
+  const protocol = context.strategyConfig.protocol
+  const { aavePartialTakeProfit, sparkPartialTakeProfit } = context.currentTriggers.triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(aavePartialTakeProfit)
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(sparkPartialTakeProfit)
+    case LendingProtocol.AaveV2:
+      return false
+  }
 }
 
 function mapPositionToAutoBuyPosition({
@@ -285,7 +367,10 @@ export const triggersAaveStateMachine = createMachine(
           SHOW_AUTO_BUY: {
             actions: ['setAutoBuyView'],
           },
-          CHANGE_VIEW: {
+          SHOW_PARTIAL_TAKE_PROFIT: {
+            actions: ['setPartialTakeProfitView'],
+          },
+          CHANGE_PROTECTION_VIEW: {
             actions: ['changeView'],
           },
           RESET_PROTECTION: {
@@ -335,6 +420,12 @@ export const triggersAaveStateMachine = createMachine(
       setAutoBuyView: assign(() => ({
         optimizationCurrentView: 'auto-buy' as const,
         showAutoBuyBanner: false,
+        showPartialTakeProfitBanner: true,
+      })),
+      setPartialTakeProfitView: assign(() => ({
+        optimizationCurrentView: 'partial-take-profit' as const,
+        showAutoBuyBanner: true,
+        showPartialTakeProfitBanner: false,
       })),
       changeView: assign((context, { view }) => ({
         protectionCurrentView: view,
@@ -374,6 +465,10 @@ export const triggersAaveStateMachine = createMachine(
           showAutoBuyBanner:
             context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY) &&
             currentOptimizationView !== 'auto-buy',
+          showPartialTakeProfitBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(
+              AutomationFeatures.PARTIAL_TAKE_PROFIT,
+            ) && currentOptimizationView !== 'partial-take-profit',
         }
       }),
       updateAutoBuyDefaults: sendTo(
@@ -458,9 +553,7 @@ export const triggersAaveStateMachine = createMachine(
       getTriggers: async (context): Promise<GetTriggersResponse> => {
         const { dpm, strategyConfig } = context
         if (!dpm) {
-          return {
-            triggers: {},
-          }
+          return omniPositionTriggersDataDefault
         }
         return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
       },

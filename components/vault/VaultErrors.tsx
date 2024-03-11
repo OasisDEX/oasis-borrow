@@ -20,7 +20,7 @@ interface VaultErrorsProps {
   maxGenerateAmount?: BigNumber
   ilkData?: { debtFloor: BigNumber; token: string }
   maxWithdrawAmount?: BigNumber
-  autoType?: 'Auto-Buy' | 'Auto-Sell' | 'Stop-Loss'
+  autoType?: 'Auto-Buy' | 'Auto-Sell' | 'Stop-Loss' | 'Partial-Take-Profit'
   infoBag?: Record<string, string>
 }
 
@@ -210,6 +210,16 @@ export function VaultErrors({
         return translate('stop-loss-triggered-by-auto-buy')
       case 'autoSellNeverTriggeredWithCurrentStopLoss':
         return translate('auto-sell-never-triggered-with-current-stop-loss')
+      case 'partialTakeProfitTriggerHigherThanAutoSellTarget':
+        return translate('partial-take-profit-trigger-higher-than-auto-sell-target')
+      case 'partialTakeProfitTargetHigherThanAutoSellTrigger':
+        return translate('partial-take-profit-target-higher-than-auto-sell-trigger')
+      case 'partialTakeProfitTargetHigherThanStopLoss':
+        return translate('partial-take-profit-target-higher-than-stop-loss')
+      case 'partialTakeProfitMinPriceLowerThanAutoBuyMaxPrice':
+        return translate('partial-take-profit-min-price-lower-than-auto-buy-max-price')
+      case 'unmapped':
+        return 'Unmapped error'
 
       default:
         throw new UnreachableCaseError(message)

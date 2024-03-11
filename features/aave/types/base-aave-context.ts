@@ -19,9 +19,9 @@ import { EthersTransactionStateMachine, TransactionStateMachine } from 'features
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
-import { TriggerTransaction } from "../../../helpers/triggers";
+import { ProfitsSimulationMapped, TriggerTransaction } from "../../../helpers/triggers";
 import { MigrateAaveContext } from "../manage/state/migrateAaveStateMachine";
+import { AaveLikeCumulativeData } from "features/omni-kit/protocols/aave-like/history/types";
 
 export type UserInput = {
   riskRatio?: IRiskRatio
@@ -117,10 +117,13 @@ export interface BaseAaveContext {
   stopLossTxData?: AutomationAddTriggerData
   stopLossTxDataLambda?: TriggerTransaction
   trailingStopLossTxDataLambda?: TriggerTransaction
+  partialTakeProfitTxDataLambda?: TriggerTransaction
+  partialTakeProfitProfits?: ProfitsSimulationMapped[] | undefined
+  partialTakeProfitFirstProfit?: ProfitsSimulationMapped | undefined
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData
-  cumulatives?: AaveCumulativeData
+  cumulatives?: AaveLikeCumulativeData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

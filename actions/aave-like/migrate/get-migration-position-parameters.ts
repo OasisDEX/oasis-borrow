@@ -1,4 +1,4 @@
-import { strategies } from '@oasisdex/dma-library-migration'
+import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'

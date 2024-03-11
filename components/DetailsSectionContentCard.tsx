@@ -30,10 +30,11 @@ export interface DetailsSectionContentCardChangePillProps {
   withAfter?: boolean
 }
 
-interface DetailsSectionContentCardLinkProps {
+export interface DetailsSectionContentCardLinkProps {
+  action?: () => void
+  fullCard?: boolean
   label: string
   url?: string
-  action?: () => void
 }
 
 export interface ContentCardProps {
@@ -142,6 +143,7 @@ export function DetailsSectionContentCardChangePill({
     </>
   )
 }
+
 function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionContentCardLinkProps) {
   return (
     <>
@@ -162,6 +164,7 @@ function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionCon
     </>
   )
 }
+
 function DetailsSectionContentCardModal({
   close,
   children,
@@ -199,42 +202,33 @@ export function DetailsSectionContentCard({
 }: ContentCardProps) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
+
   const modalHandler = () => {
     if (modal) openModal(DetailsSectionContentCardModal, { children: <>{modal}</> })
   }
+
+  const isHightlightable = modal || link?.fullCard
   const hightlightableItemEvents = {
     onMouseEnter: () => setIsHighlighted(true),
     onMouseLeave: () => setIsHighlighted(false),
     onClick: modalHandler,
   }
-  let cardBackgroundColor = modal && isHighlighted ? 'neutral30' : 'neutral10'
-  if (customBackground) {
-    cardBackgroundColor = customBackground
-  }
-  const cursorStyle = { cursor: modal ? 'pointer' : 'auto' }
+
+  let cardBackgroundColor = isHightlightable && isHighlighted ? 'neutral30' : 'neutral10'
+  if (customBackground) cardBackgroundColor = customBackground
+
+  const cursorStyle = { cursor: isHightlightable ? 'pointer' : 'auto' }
   const footnoteArray = Array.isArray(footnote) ? footnote : [footnote]
 
-  return (
-    <Flex
-      as="li"
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        my: asFooter ? 1 : 0,
-        p: '12px',
-        borderRadius: 'medium',
-        backgroundColor: cardBackgroundColor,
-        transition: 'background-color 200ms',
-        wordWrap: 'break-word',
-      }}
-    >
+  const content = (
+    <>
       <Text
         as="h3"
         variant="paragraph4"
         color="neutral80"
         sx={{
           ...cursorStyle,
-          mb: asFooter ? 1 : 0,
+          pb: asFooter ? 1 : 0,
         }}
         {...hightlightableItemEvents}
       >
@@ -262,6 +256,10 @@ export function DetailsSectionContentCard({
           ...(customValueColor && {
             color: customValueColor,
           }),
+          ...(link?.fullCard && {
+            textDecoration: 'underline',
+            textUnderlineOffset: '3px',
+          }),
         }}
         {...hightlightableItemEvents}
       >
@@ -280,6 +278,7 @@ export function DetailsSectionContentCard({
               {unit}
             </Text>
           ))}
+        {link?.fullCard && link?.url?.startsWith('http') && ' ↗'}
       </Text>
       {(change?.value || change?.isLoading) && (
         <Box sx={{ maxWidth: '100%', pt: 2, ...cursorStyle }} {...hightlightableItemEvents}>
@@ -311,7 +310,27 @@ export function DetailsSectionContentCard({
           )}
         </Text>
       )}
-      {link?.label && (link?.url || link?.action) && <DetailsSectionContentCardLink {...link} />}
+      {link?.label && (link?.url || link?.action) && !link?.fullCard && (
+        <DetailsSectionContentCardLink {...link} />
+      )}
+    </>
+  )
+
+  return (
+    <Flex
+      as="li"
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        my: asFooter ? 1 : 0,
+        p: '12px',
+        borderRadius: 'medium',
+        backgroundColor: cardBackgroundColor,
+        transition: 'background-color 200ms',
+        wordWrap: 'break-word',
+      }}
+    >
+      {link?.fullCard && link?.url ? <AppLink href={link.url}>{content}</AppLink> : content}
     </Flex>
   )
 }

@@ -1,4 +1,5 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
+import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { getMorphoPositionAggregatedData$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
@@ -46,6 +47,8 @@ export function useMorphoData({
     data: {
       aggregatedData: morphoPositionAggregatedData,
       positionData: morphoPositionData,
+      protocolPricesData: tokenPriceUSDData,
+      positionTriggersData: omniPositionTriggersDataDefault,
     },
     errors: [morphoPositionError, morphoPositionAggregatedError],
   }

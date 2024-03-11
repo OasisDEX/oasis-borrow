@@ -1,12 +1,14 @@
-import { Tooltip, useTooltip } from 'components/Tooltip'
-import { isTouchDevice } from 'helpers/isTouchDevice'
-import type { TranslateStringType } from 'helpers/translateStringType'
-import React from 'react'
-import { Box, Text } from 'theme-ui'
+import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
+import { StatefulTooltip } from 'components/Tooltip'
+import React, { type ReactNode } from 'react'
+import { tooltip } from 'theme/icons'
+import { Flex, Text } from 'theme-ui'
 
 export type HeadlineDetailsProp = {
   label: string
-  labelTooltip?: TranslateStringType
+  labelIcon?: IconProps['icon']
+  labelTooltip?: ReactNode
   value: string | number
   sub?: string | string[]
   subColor?: string | string[]
@@ -14,29 +16,21 @@ export type HeadlineDetailsProp = {
 
 export function VaultHeadlineDetails({
   label,
-  value,
+  labelIcon,
+  labelTooltip,
   sub,
   subColor,
-  labelTooltip,
+  value,
 }: HeadlineDetailsProp) {
-  const { tooltipOpen, setTooltipOpen } = useTooltip()
   return (
-    <Box
-      onMouseEnter={!isTouchDevice ? () => setTooltipOpen(true) : undefined}
-      onMouseLeave={!isTouchDevice ? () => setTooltipOpen(false) : undefined}
-      onClick={
-        isTouchDevice
-          ? () => {
-              setTooltipOpen(!tooltipOpen)
-            }
-          : undefined
-      }
+    <Flex
       sx={{
         position: 'relative',
+        alignItems: 'center',
         fontSize: 3,
         mt: [2, 0],
-        ml: [0, 3],
-        pl: [0, 3],
+        ml: [0, '12px'],
+        pl: [0, '12px'],
         '::before': {
           content: ['none', '""'],
           position: 'absolute',
@@ -57,6 +51,23 @@ export function VaultHeadlineDetails({
         },
       }}
     >
+      {labelTooltip && (
+        <StatefulTooltip
+          tooltip={labelTooltip}
+          containerSx={{ mr: 2 }}
+          tooltipSx={{
+            top: '24px',
+            fontSize: 1,
+            border: 'none',
+            borderRadius: 'medium',
+            boxShadow: 'buttonMenu',
+            fontWeight: 'regular',
+            lineHeight: 'body',
+          }}
+        >
+          <Icon size={14} icon={tooltip} />
+        </StatefulTooltip>
+      )}
       <Text as="span" sx={{ color: 'neutral80' }}>
         {label}
       </Text>
@@ -79,13 +90,7 @@ export function VaultHeadlineDetails({
             {arrSub}
           </Text>
         ))}
-      {labelTooltip && tooltipOpen && (
-        <Tooltip sx={{ width: ['auto'] }}>
-          <Box p={1} sx={{ fontWeight: 'semiBold', fontSize: 1, whiteSpace: 'pre' }}>
-            {labelTooltip}
-          </Box>
-        </Tooltip>
-      )}
-    </Box>
+      {labelIcon && <Icon icon={labelIcon} size={16} color="interactive100" sx={{ ml: 1 }} />}
+    </Flex>
   )
 }

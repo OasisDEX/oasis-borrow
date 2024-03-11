@@ -1,5 +1,4 @@
 import { useActor } from '@xstate/react'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { PositionHistory } from 'components/history/PositionHistory'
 import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
@@ -21,11 +20,15 @@ import {
   hasActiveProtection,
   isOptimizationEnabled,
 } from 'features/aave/manage/state'
+import { calculateViewValuesForPosition } from 'features/aave/services'
 import { calculateUsdNetValueBasedOnState } from 'features/aave/services/calculate-usd-net-value'
+import { ProductType } from 'features/aave/types'
 import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { isShortPosition } from 'features/omni-kit/helpers'
+import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
+import { one } from 'helpers/zero'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
@@ -40,6 +43,7 @@ import { ProtectionControlWrapper } from './ProtectionControlWrapper'
 interface AaveManageTabBarProps {
   aaveReserveState: AaveLikeReserveConfigurationData
   aaveReserveDataDebtToken: AaveLikeReserveData
+  aaveReserveDataCollateralToken: AaveLikeReserveData
   strategyConfig: IStrategyConfig
 }
 
@@ -47,15 +51,13 @@ export function AaveManageTabBar({
   strategyConfig,
   aaveReserveState,
   aaveReserveDataDebtToken,
+  aaveReserveDataCollateralToken,
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
   const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = useAppConfig('features')
 
   const minNetValue = useMinNetValue(strategyConfig)
 
-  const {
-    automationTriggersData: { isAutomationDataLoaded },
-  } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const triggersStateMachine = useTriggersAaveStateMachineContext()
@@ -106,6 +108,39 @@ export function AaveManageTabBar({
   const isOptimizationAvailable = netValue.gte(minNetValue) || hasActiveOptimizationTrigger
   const isExternalPosition = state.context.positionId.external
 
+  const productType = {
+    [ProductType.Borrow]: OmniProductType.Borrow,
+    [ProductType.Earn]: OmniProductType.Earn,
+    [ProductType.Multiply]: OmniProductType.Multiply,
+  }[state.context.strategyConfig.type]
+  const currentPosition = state.context.currentPosition!
+  const collateralTokenPrice = state.context.balance?.collateral.price || one
+  const debtTokenPrice = state.context.balance?.debt.price || one
+  const currentPositionThings = calculateViewValuesForPosition(
+    currentPosition,
+    collateralTokenPrice,
+    debtTokenPrice,
+    aaveReserveDataCollateralToken.liquidityRate,
+    aaveReserveDataDebtToken.variableBorrowRate,
+  )
+  const pnlConfig = {
+    cumulatives: state.context.cumulatives,
+    productType,
+    collateralTokenPrice,
+    debtTokenPrice,
+    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
+    collateralToken: currentPosition.collateral.symbol,
+    debtToken: currentPosition.debt.symbol,
+  }
+  const [netValuePnlCollateralData, netValuePnlDebtData] = [
+    getOmniNetValuePnlData(pnlConfig),
+    getOmniNetValuePnlData({
+      ...pnlConfig,
+      useDebtTokenAsPnL: true,
+    }),
+  ]
+
   const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [
         {
@@ -117,6 +152,9 @@ export function AaveManageTabBar({
             <OptimizationControl
               triggersState={triggersState}
               sendTriggerEvent={sendTriggerEvent}
+              netValuePnlCollateralData={netValuePnlCollateralData}
+              netValuePnlDebtData={netValuePnlDebtData}
+              aaveReserveState={aaveReserveState}
             />
           ) : (
             <DisabledOptimizationControl minNetValue={minNetValue} />
@@ -173,7 +211,7 @@ export function AaveManageTabBar({
                 tag: {
                   include: true,
                   active: hasActiveProtectionTrigger,
-                  isLoading: isExternalPosition ? false : !isAutomationDataLoaded,
+                  isLoading: isExternalPosition ? false : isOptimizationTabLoading,
                 },
                 content: isExternalPosition ? (
                   <DisabledAutomationForMigrationControl />

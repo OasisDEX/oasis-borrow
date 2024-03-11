@@ -3,6 +3,7 @@ import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { AutomationFeatures } from 'features/automation/common/types'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
@@ -22,7 +23,13 @@ const omniSupportedNetworkIds = [
 
 export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
 
-const omniSupportedProtocols = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue] as const
+const omniSupportedProtocols = [
+  LendingProtocol.Ajna,
+  LendingProtocol.MorphoBlue,
+  LendingProtocol.AaveV2,
+  LendingProtocol.AaveV3,
+  LendingProtocol.SparkV3,
+] as const
 
 export type OmniSupportedProtocols = (typeof omniSupportedProtocols)[number]
 
@@ -64,6 +71,9 @@ export interface OmniProtocolSettings {
   supportedMultiplyTokens: NetworkIdsWithValues<string[]>
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
+  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
+  yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
+  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
 }
 
 export type OmniProtocolsSettings = {
@@ -78,13 +88,14 @@ export interface OmniTokensPrecision {
 }
 
 export interface OmniProtocolHookProps {
-  collateralToken?: string
+  collateralToken: string
   dpmPositionData?: DpmPositionData
   networkId: OmniSupportedNetworkIds
   product?: OmniProductType
-  quoteToken?: string
+  quoteToken: string
   tokenPriceUSDData?: Tickers
   tokensPrecision?: OmniTokensPrecision
+  protocol: OmniSupportedProtocols
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'
@@ -145,10 +156,13 @@ export type OmniFormAction = OmniBorrowFormAction | OmniEarnFormAction | OmniMul
 export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 export interface OmniProductPage {
   collateralToken: string
+  label?: string
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
+  protocol: OmniSupportedProtocols
   quoteToken: string
+  version?: string
 }
 
 export type OmniValidations = {
@@ -189,6 +203,8 @@ export interface OmniFlowStateFilterParams {
   event: CreatePositionEvent
   productType: OmniProductType
   quoteAddress: string
+  protocol: LendingProtocol
+  protocolRaw?: string
 }
 
 export type NetworkIdsWithValues<T> = {
@@ -207,6 +223,7 @@ export interface GetOmniValidationsParams {
   isOpening: boolean
   position: OmniGenericPosition
   productType: OmniProductType
+  protocol: LendingProtocol
   quoteBalance: BigNumber
   quoteToken: string
   simulationErrors?: SimulationValidations
@@ -231,3 +248,13 @@ export interface GetOmniValidationResolverParams {
 }
 
 export type OmniNotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
+
+export type OmniEntryToken = {
+  symbol: string
+  precision: number
+  balance: BigNumber
+  price: BigNumber
+  digits: number
+  address: string
+  icon: string
+}

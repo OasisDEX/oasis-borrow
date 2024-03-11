@@ -46,6 +46,7 @@ export function getInitialFilters({
         initialQueryString.strategy && { multiplyStrategyType: initialQueryString.strategy }),
       ...(initialQueryString.network && { network: initialQueryString.network }),
       ...(initialQueryString.protocol && { protocol: initialQueryString.protocol }),
+      ...(initialQueryString.rewardsOnly && { hasRewards: [true] }),
     },
   }
 }

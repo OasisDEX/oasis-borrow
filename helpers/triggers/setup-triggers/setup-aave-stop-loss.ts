@@ -1,3 +1,5 @@
+import { lambdaPercentageDenomination } from 'features/aave/constants'
+
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
   SetupAaveStopLossParams,
@@ -15,7 +17,7 @@ export const setupAaveLikeStopLoss = async (
     dpm: params.dpm,
     triggerData: {
       executionLTV: params.executionLTV
-        .times(10 ** 2)
+        .times(lambdaPercentageDenomination)
         .integerValue()
         .toString(),
       token: params.executionToken,

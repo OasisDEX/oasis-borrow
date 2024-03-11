@@ -102,6 +102,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrice,
       quoteToken,
       protocolRaw,
+      protocol,
+      isYieldLoop,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -118,6 +120,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
+    protocol,
     state: productContext.form.state,
   })
 
@@ -154,7 +157,14 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const filters = {
     flowStateFilter: (event: CreatePositionEvent) =>
-      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress, protocolRaw }),
+      ajnaFlowStateFilter({
+        collateralAddress,
+        event,
+        productType,
+        quoteAddress,
+        protocolRaw,
+        protocol,
+      }),
   }
 
   switch (productType) {
@@ -277,6 +287,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quoteToken={quoteToken}
               shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
               simulation={simulation}
+              isYieldLoop={isYieldLoop}
             />
           ),
           overviewFooter: (
@@ -375,13 +386,13 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           footerColumns: isOpening ? 2 : 3,
           headlineDetails: [
             {
-              label: t('ajna.position-page.earn.common.headline.current-apy'),
+              label: t('omni-kit.headline.details.current-apy'),
               value: earnPosition.pool.lendApr
                 ? formatDecimalAsPercent(earnPosition.pool.lendApr)
                 : notAvailable,
             },
             {
-              label: t('ajna.position-page.earn.common.headline.7-days-avg-apy'),
+              label: t('omni-kit.headline.details.7-days-avg-apy'),
               value: earnPosition.poolApy.per7d
                 ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
                 : notAvailable,

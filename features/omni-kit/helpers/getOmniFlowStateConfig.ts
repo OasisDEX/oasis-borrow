@@ -14,6 +14,7 @@ import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetOmniFlowStateConfigParams {
   collateralToken: string
+  entryToken: string
   fee: BigNumber
   isOpening: boolean
   quoteToken: string
@@ -24,6 +25,7 @@ interface GetOmniFlowStateConfigParams {
 
 export function getOmniFlowStateConfig({
   collateralToken,
+  entryToken,
   fee,
   isOpening,
   quoteToken,
@@ -77,7 +79,7 @@ export function getOmniFlowStateConfig({
 
       return {
         amount: state.depositAmount,
-        token: collateralToken,
+        token: entryToken,
       }
     case OmniBorrowFormAction.PaybackBorrow:
     case OmniMultiplyFormAction.PaybackMultiply:
