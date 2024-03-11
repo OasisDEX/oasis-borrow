@@ -14,6 +14,7 @@ import {
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
   aaveLikeFlowStateFilter,
+  getAaveLikeAutomationMetadataValues,
   getAaveLikeBanner,
   getAaveLikeFaq,
   getAaveLikeFeatureToggle,
@@ -118,6 +119,10 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
+          automation: getAaveLikeAutomationMetadataValues({
+            positionTriggers: productContext.automation.positionTriggers,
+            simulationResponse: productContext.automation.simulationData?.simulationResponse,
+          }),
         },
         elements: {
           faq: getAaveLikeFaq({ productType, isYieldLoopWithData, protocol }),

@@ -7,6 +7,14 @@ import type { ReductoActions } from 'helpers/useReducto'
 export interface OmniAutomationFormState {
   targetLtv?: BigNumber
   triggerLtv?: BigNumber
+  extraTriggerLtv?: BigNumber
+  trailingDistance?: BigNumber
+  minSellPrice?: BigNumber
+  maxBuyPrice?: BigNumber
+  maxGasFee?: BigNumber
+  ltvStep?: BigNumber
+  percentageOffset?: BigNumber
+  useThreshold?: BigNumber
   resolveTo?: OmniCloseTo
   uiDropdown?: AutomationFeatures
 }
@@ -19,6 +27,11 @@ export interface AutomationFormActionsUpdateTargetLtv {
 export interface AutomationFormActionsUpdateTriggerLtv {
   type: 'update-trigger-ltv'
   triggerLtv?: BigNumber
+}
+
+export interface AutomationFormActionsUpdateExtraTriggerLtv {
+  type: 'update-extra-trigger-ltv'
+  extraTriggerLtv?: BigNumber
 }
 
 export interface AutomationFormActionsUpdateTrailingDistance {
@@ -51,15 +64,22 @@ export interface AutomationFormActionsUpdatePercentageOffset {
   percentageOffset?: BigNumber
 }
 
+export interface AutomationFormActionsUpdateUseThreshold {
+  type: 'update-use-threshold'
+  useThreshold?: BigNumber
+}
+
 export type OmniAutomationFormActions = ReductoActions<
   OmniAutomationFormState,
   | AutomationFormActionsUpdateTargetLtv
   | AutomationFormActionsUpdateTriggerLtv
+  | AutomationFormActionsUpdateExtraTriggerLtv
   | AutomationFormActionsUpdateTrailingDistance
   | AutomationFormActionsUpdateMinSellPrice
   | AutomationFormActionsUpdateMaxBuyPrice
   | AutomationFormActionsUpdateMaxGasFee
   | AutomationFormActionsUpdateLtvStep
   | AutomationFormActionsUpdatePercentageOffset
+  | AutomationFormActionsUpdateUseThreshold
   | FormActionsReset
 >

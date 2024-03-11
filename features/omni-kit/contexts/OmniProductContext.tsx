@@ -26,6 +26,14 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import type {
+  AaveStopLossToCollateral,
+  AaveStopLossToCollateralDMA,
+  AaveStopLossToDebt,
+  AaveStopLossToDebtDMA,
+  DmaAaveBasicBuy,
+  DmaAaveBasicSell,
+  DmaAavePartialTakeProfit,
+  DmaAaveTrailingStopLoss,
   GetTriggersResponse,
   SetupBasicAutoResponse,
   SetupBasicStopLossResponse,
@@ -71,6 +79,27 @@ interface CommonMetadataValues {
   interestRate: BigNumber
   isFormEmpty: boolean
   sidebarTitle: string
+  automation?: {
+    flags: {
+      isStopLossEnabled: boolean
+      isTrailingStopLossEnabled: boolean
+      isAutoSellEnabled: boolean
+      isAutoBuyEnabled: boolean
+      isPartialTakeProfitEnabled: boolean
+    }
+    triggers: {
+      stopLoss?:
+        | AaveStopLossToCollateral
+        | AaveStopLossToCollateralDMA
+        | AaveStopLossToDebt
+        | AaveStopLossToDebtDMA
+      trailingStopLoss?: DmaAaveTrailingStopLoss
+      autoSell?: DmaAaveBasicSell
+      autoBuy?: DmaAaveBasicBuy
+      partialTakeProfit?: DmaAavePartialTakeProfit
+    }
+    simulation: any
+  }
 }
 interface CommonMetadataElements {
   faq: ReactNode
@@ -203,13 +232,14 @@ interface ProductContextPosition<Position, Auction> {
   simulationCommon: OmniSimulationCommon
 }
 
+export type OmniAutomationSimulationResponse =
+  | SetupBasicAutoResponse
+  | SetupBasicStopLossResponse
+  | SetupTrailingStopLossResponse
+  | SetupPartialTakeProfitResponse
+
 interface OmniAutomationSimulationData {
-  encodedTriggerData?: string
-  simulation?:
-    | SetupBasicAutoResponse
-    | SetupBasicStopLossResponse
-    | SetupTrailingStopLossResponse
-    | SetupPartialTakeProfitResponse
+  simulationResponse?: OmniAutomationSimulationResponse
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
   transaction?: TriggerTransaction
