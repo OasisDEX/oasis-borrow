@@ -24,8 +24,8 @@ export const Erc4626DetailsSectionContentEstimatedEarnings: FC<
         {formatUsdValue(estimatedEarnings)}{' '}
         {rewards && <Icon icon={sparks} size={16} color="interactive100" />}
       </Flex>
-      {rewards?.map(({ amount, token }) => (
-        <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end', columnGap: 1 }}>
+      {rewards?.map(({ amount, token }, i) => (
+        <Flex key={i} sx={{ alignItems: 'center', justifyContent: 'flex-end', columnGap: 1 }}>
           <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
             +{formatCryptoBalance(amount)} {token}
           </Text>
