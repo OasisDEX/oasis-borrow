@@ -85,6 +85,7 @@ export const EXTERNAL_LINKS = {
     DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
     LEARN: 'https://blog.summer.fi/tag/learn',
+    HOW_TO_SET_UP_AUTO_TAKE_PROFIT: 'https://blog.summer.fi/how-to-set-up-auto-take-profit',
   },
   DOCS: {
     AJNA: {
@@ -131,4 +132,5 @@ export const EXTERNAL_LINKS = {
   LIDO_FI_STETH_LIQUIDITY:
     'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards',
   AAVE_SDAI_YIELD_DUNE: 'https://dune.com/Lucianken/aave-v3-sdai-yield-multiple',
+  HOW_TO_SET_UP_AUTO_TAKE_PROFIT_VIDEO: 'https://blog.summer.fi/how-to-set-up-auto-take-profit',
 }
