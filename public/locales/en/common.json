@@ -3222,6 +3222,7 @@
     },
     "position-page": {
       "common": {
+        "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
         "vault-allocation-breakdown": "Vault allocation breakdown"
       }
     }

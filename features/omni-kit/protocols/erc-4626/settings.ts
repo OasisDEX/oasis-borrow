@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
 import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
@@ -47,3 +48,10 @@ const erc4626Vaults: Erc4626Config[] = [
 
 export const erc4626VaultsById = keyBy(erc4626Vaults, 'id')
 export const erc4626VaultsByName = keyBy(erc4626Vaults, 'name')
+
+export const erc4626EstimatedMarketCaps = [
+  new BigNumber(500000000),
+  new BigNumber(750000000),
+  new BigNumber(1000000000),
+  new BigNumber(2000000000),
+]

@@ -80,11 +80,12 @@ export function OmniFormView({
     form: { dispatch, state },
     position: { isSimulationLoading, resolvedId },
     dynamicMetadata: {
-      values: { interestRate, sidebarTitle },
-      validations: { isFormValid, isFormFrozen, hasErrors },
-      filters: { flowStateFilter },
+      elements: { sidebarContent },
       featureToggles: { suppressValidation, safetySwitch },
+      filters: { flowStateFilter },
       theme,
+      validations: { isFormValid, isFormFrozen, hasErrors },
+      values: { interestRate, sidebarTitle },
     },
   } = useOmniProductContext(productType)
 
@@ -242,7 +243,12 @@ export function OmniFormView({
   const sidebarSectionProps: SidebarSectionProps = {
     title: sidebarTitle ?? genericSidebarTitle,
     dropdown,
-    content: <Grid gap={3}>{children}</Grid>,
+    content: (
+      <Grid gap={3}>
+        {sidebarContent}
+        {children}
+      </Grid>
+    ),
     primaryButton: {
       label: t(primaryButtonLabel, { token: flowState.token }),
       disabled: suppressValidation ? false : isPrimaryButtonDisabled,

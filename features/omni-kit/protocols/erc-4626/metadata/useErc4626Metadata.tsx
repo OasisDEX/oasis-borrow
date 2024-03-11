@@ -7,6 +7,7 @@ import {
   Erc4626DetailsSectionFooter,
   Erc4626VaultAllocation,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
+import { Erc4626EstimatedMarketCap } from 'features/omni-kit/protocols/erc-4626/components/sidebar'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -100,6 +101,8 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
             </>
           ),
           overviewWithSimulation: true,
+          // TODO: show only when rewards are available in vault
+          sidebarContent: <Erc4626EstimatedMarketCap token="MORPHO" />,
           earnFormOrder: <>Form order placeholder</>,
           earnFormOrderAsElement: () => <>Form order placeholder</>,
         },
