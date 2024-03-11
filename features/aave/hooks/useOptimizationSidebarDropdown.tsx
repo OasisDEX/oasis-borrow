@@ -31,7 +31,7 @@ export function useOptimizationSidebarDropdown(
     forcePanel: currentPanel,
     items: [
       {
-        label: `${hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled ? 'Manage' : 'Setup'} ${t(
+        label: `${hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled ? 'Manage' : 'Set up'} ${t(
           'system.basic-buy',
         )}`,
         shortLabel: t('system.basic-buy'),
@@ -44,7 +44,7 @@ export function useOptimizationSidebarDropdown(
       },
       {
         label: `${
-          hasAavePartialTakeProfitEnabled || hasSparkPartialTakeProfitEnabled ? 'Manage' : 'Setup'
+          hasAavePartialTakeProfitEnabled || hasSparkPartialTakeProfitEnabled ? 'Manage' : 'Set up'
         } ${t('system.take-profit')}`,
         shortLabel: t('system.take-profit'),
         iconShrink: 2,
