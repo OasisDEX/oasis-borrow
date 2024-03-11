@@ -1,4 +1,4 @@
-import type { SupplyPosition } from '@oasisdex/dma-library'
+import type { Erc4626Position } from '@oasisdex/dma-library'
 import type { OmniCustomStateParams } from 'features/omni-kit/controllers'
 import { Erc4626CustomStateContextProvider } from 'features/omni-kit/protocols/erc-4626/contexts'
 import { useErc4626TxHandler } from 'features/omni-kit/protocols/erc-4626/hooks'
@@ -8,7 +8,7 @@ import type { FC } from 'react'
 import React from 'react'
 
 // TODO: replace types with same as in oasis-borrow/pages/[networkOrProduct]/erc-4626/[...position].tsx:34
-type Erc4626CustomStateProviderProps = OmniCustomStateParams<unknown, unknown[], SupplyPosition>
+type Erc4626CustomStateProviderProps = OmniCustomStateParams<unknown, unknown[], Erc4626Position>
 
 export const Erc4626CustomStateProvider: FC<Erc4626CustomStateProviderProps> = ({ children }) => {
   return (

@@ -56,6 +56,7 @@ import type { DpmPositionData } from 'features/omni-kit/observables'
 import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
 import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave-like/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
+import { getErc4626Position$ } from 'features/omni-kit/protocols/erc-4626/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniTokensPrecision } from 'features/omni-kit/types'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
@@ -652,6 +653,19 @@ export function setupProductContext(
       ).join('-')}`,
   )
 
+  const erc4626Position$ = memoize(
+    curry(getErc4626Position$)(onEveryBlock$),
+    (
+      quotePrice: BigNumber,
+      vaultAddress: string,
+      dpmPositionData: DpmPositionData,
+      network: NetworkIds,
+    ) =>
+      `${dpmPositionData.vaultId}-${network}-${vaultAddress}-${quotePrice
+        .decimalPlaces(2)
+        .toString()}`,
+  )
+
   const aaveLikePosition$ = memoize(
     curry(getAaveLikePosition$)(onEveryBlock$),
     (
@@ -668,6 +682,7 @@ export function setupProductContext(
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
+    aaveLikePosition$,
     // aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
     aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
     addGasEstimation$,
@@ -688,6 +703,7 @@ export function setupProductContext(
     dpmPositionDataV2$,
     dsr$,
     dsrDeposit$,
+    erc4626Position$,
     exchangeQuote$,
     gasEstimation$,
     generalManageVault$,
@@ -696,7 +712,6 @@ export function setupProductContext(
     manageGuniVault$,
     manageMultiplyVault$,
     morphoPosition$,
-    aaveLikePosition$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,

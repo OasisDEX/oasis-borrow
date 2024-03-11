@@ -1,12 +1,12 @@
-import type { SummerStrategy, SupplyPosition } from '@oasisdex/dma-library'
+import type { Erc4626Position, SummerStrategy } from '@oasisdex/dma-library'
 import { ethers } from 'ethers'
 
 const mockResponse = {
   simulation: {
     errors: [],
     notices: [],
-    position: {} as SupplyPosition,
-    targetPosition: {} as SupplyPosition,
+    position: {} as Erc4626Position ,
+    targetPosition: {} as Erc4626Position ,
     successes: [],
     swaps: [],
     warnings: [],
@@ -18,19 +18,19 @@ const mockResponse = {
   },
 }
 
-export const erc4626ActionOpenEarn = (): Promise<SummerStrategy<SupplyPosition>> => {
+export const erc4626ActionOpenEarn = (): Promise<SummerStrategy<Erc4626Position >> => {
   return new Promise((resolve) => {
     resolve(mockResponse)
   })
 }
 
-export const erc4626ActionDepositEarn = (): Promise<SummerStrategy<SupplyPosition>> => {
+export const erc4626ActionDepositEarn = (): Promise<SummerStrategy<Erc4626Position >> => {
   return new Promise((resolve) => {
     resolve(mockResponse)
   })
 }
 
-export const erc4626ActionWithdrawEarn = (): Promise<SummerStrategy<SupplyPosition>> => {
+export const erc4626ActionWithdrawEarn = (): Promise<SummerStrategy<Erc4626Position >> => {
   return new Promise((resolve) => {
     resolve(mockResponse)
   })
