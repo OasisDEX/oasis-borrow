@@ -582,7 +582,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               ? `The Stop-Loss you configure will close your position to the same asset you have chosen to take profit in: ${partialTakeProfitToken}.`
               : '',
             hasStopLoss && stopLossLevelLabel
-              ? `You already have a Stop-Loss trigger set at${nbsp}${stopLossLevelLabel}. You can update the Stop-Loss LTV above and it all be handled within your Partial Take Profit transaction.`
+              ? `You already have a Stop-Loss trigger set at${nbsp}${stopLossLevelLabel}. You can update the Stop-Loss LTV above and it all be handled within your Auto Take Profit transaction.`
               : '',
             hasStopLoss && trailingStopLossDistanceLabel
               ? `You already have a Trailing Stop-Loss trigger set at${nbsp}${trailingStopLossDistanceLabel} distance.`
