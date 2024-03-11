@@ -35,6 +35,7 @@ import {
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
@@ -441,10 +442,12 @@ export function AaveManagePositionStopLossLambdaSidebar({
   }
 
   const isDisabled = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     if (
-      isGettingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
-      errors.length
+      (isGettingStopLossTx ||
+        ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
+        errors.length) &&
+      !validationDisabled
     ) {
       return true
     }
