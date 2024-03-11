@@ -7,6 +7,10 @@ import {
   Erc4626DetailsSectionFooter,
   Erc4626VaultAllocation,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
+import {
+  Erc4626EstimatedMarketCap,
+  Erc4626FormOrder,
+} from 'features/omni-kit/protocols/erc-4626/components/sidebar'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -52,7 +56,6 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
         values: {
           interestRate: zero,
           isFormEmpty: false,
-          sidebarTitle: 'Sidebar',
           footerColumns: isOpening ? 2 : 3,
           headline: label,
           // TODO replace with real values
@@ -101,8 +104,10 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
             </>
           ),
           overviewWithSimulation: true,
-          earnFormOrder: <>Form order placeholder</>,
-          earnFormOrderAsElement: () => <>Form order placeholder</>,
+          // TODO: show only when rewards are available in vault
+          sidebarContent: <Erc4626EstimatedMarketCap token="MORPHO" />,
+          earnFormOrder: <Erc4626FormOrder />,
+          earnFormOrderAsElement: Erc4626FormOrder,
         },
         featureToggles: {
           safetySwitch,
