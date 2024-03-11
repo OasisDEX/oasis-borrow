@@ -130,7 +130,9 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
     }
   }
   if (
-    (event.kind?.startsWith('AutomationAdded') || event.kind?.startsWith('AutomationRemoved')) &&
+    (event.kind?.startsWith('AutomationAdded') ||
+      event.kind?.startsWith('AutomationRemoved') ||
+      event.kind?.startsWith('AutomationUpdated')) &&
     hasTrigger(event)
   ) {
     return (
