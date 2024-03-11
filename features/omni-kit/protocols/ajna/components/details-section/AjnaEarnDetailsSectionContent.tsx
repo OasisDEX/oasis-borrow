@@ -47,15 +47,15 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
   const rowsInput = [
     {
       apy: simulation?.apy.per1d,
-      translation: t('ajna.position-page.earn.open.simulation.earnings-per-day'),
+      translation: t('omni-kit.position-page.earn.open.earnings-per-1d'),
     },
     {
       apy: simulation?.apy.per30d,
-      translation: t('ajna.position-page.earn.open.simulation.earnings-per-30d'),
+      translation: t('omni-kit.position-page.earn.open.earnings-per-30d'),
     },
     {
       apy: simulation?.apy.per365d,
-      translation: t('ajna.position-page.earn.open.simulation.earnings-per-1y'),
+      translation: t('omni-kit.position-page.earn.open.earnings-per-365d'),
     },
   ]
 
@@ -105,12 +105,12 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
       {isOpening && (
         <DetailsSectionContentTable
           headers={[
-            t('ajna.position-page.earn.open.simulation.duration'),
-            t('ajna.position-page.earn.open.simulation.estimated-earnings'),
-            t('ajna.position-page.earn.open.simulation.net-value'),
+            t('omni-kit.position-page.earn.open.duration'),
+            t('omni-kit.position-page.earn.open.estimated-earnings'),
+            t('omni-kit.position-page.earn.open.net-value'),
           ]}
           rows={getAjnaSimulationRows({ rowsInput, quoteToken, depositAmount })}
-          footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
+          footnote={<>{t('omni-kit.position-page.earn.open.disclaimer')}</>}
         />
       )}
       {!isOpening && (

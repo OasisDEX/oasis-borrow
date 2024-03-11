@@ -94,7 +94,8 @@ export const defaultEarnCumulatives = {
   earnCumulativeQuoteTokenWithdraw: zero,
 }
 
-export const omniYieldLoopDefaultSimulationDeposit = new BigNumber(100)
+export const omniDefaultOverviewSimulationDeposit = new BigNumber(100)
+
 export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)
 
 // Default response to avoid unnecessary API calls if automation is not available on given protocol
