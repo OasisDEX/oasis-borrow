@@ -15,6 +15,7 @@ import React from 'react'
 
 interface OmniAutoBSOverviewDetailsSectionProps {
   type: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
+  active?: boolean
 }
 
 const isAutoBSSimulationResponse = (
@@ -29,6 +30,7 @@ const isAutoBSSimulationResponse = (
 
 export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSectionProps> = ({
   type,
+  active,
 }) => {
   const { t } = useTranslation()
   const {
@@ -68,6 +70,7 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
 
   return (
     <DetailsSection
+      sx={active ? { order: -1 } : undefined}
       title={resolvedTitle}
       badge={resolvedFlag}
       content={

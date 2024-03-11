@@ -2,6 +2,7 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import { DetailsSectionNotification } from 'components/DetailsSectionNotification'
 import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Flex, Heading } from 'theme-ui'
 
 import type { ButtonWithAction, ButtonWithActions } from './ExpandableButton'
@@ -19,6 +20,7 @@ interface DetailsSectionProps {
   loose?: boolean
   notifications?: DetailsSectionNotificationItem[]
   title?: ReactNode
+  sx?: ThemeUIStyleObject
 }
 
 export function DetailsSection({
@@ -30,11 +32,12 @@ export function DetailsSection({
   loose,
   notifications,
   title,
+  sx,
 }: DetailsSectionProps) {
   const [openedNotifications, setOpenedNotifications] = useState<number>(notifications?.length || 0)
 
   return (
-    <Box>
+    <Box sx={sx}>
       {notifications && (
         <DetailsSectionNotification
           notifications={notifications}
