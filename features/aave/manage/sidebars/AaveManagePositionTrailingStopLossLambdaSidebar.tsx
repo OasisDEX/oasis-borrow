@@ -216,6 +216,12 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     }
     return null
   }
+  const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    return [
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
+    ].filter(Boolean) as string[]
+  }, [])
 
   const stopLossInformationPanel = (
     <DimmedList>
@@ -305,6 +311,11 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         rightLabel={t('slider.set-stoploss.right-label')}
       />
       <>
+        <MessageCard
+          type="error"
+          messages={frontendErrors}
+          withBullet={frontendErrors.length > 1}
+        />
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       </>
