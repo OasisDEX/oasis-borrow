@@ -23,7 +23,7 @@ export function useOptimizationSidebarDropdown(
     forcePanel: currentPanel,
     items: [
       {
-        label: `${hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled ? 'Manage' : 'Setup'} ${t(
+        label: `${hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled ? 'Manage' : 'Set up'} ${t(
           'system.basic-buy',
         )}`,
         shortLabel: t('system.basic-buy'),

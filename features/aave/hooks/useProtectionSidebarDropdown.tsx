@@ -43,7 +43,7 @@ export function useProtectionSidebarDropdown(
   }
   if (isStopLossEnabledForStrategy) {
     items.push({
-      label: `${hasStopLoss || hasTrailingStopLoss ? 'Manage' : 'Setup'} ${t('system.stop-loss')}`,
+      label: `${hasStopLoss || hasTrailingStopLoss ? 'Manage' : 'Set up'} ${t('system.stop-loss')}`,
       shortLabel: t('system.stop-loss'),
       iconShrink: 2,
       icon: circle_exchange,
@@ -58,7 +58,7 @@ export function useProtectionSidebarDropdown(
   }
   if (isAutoSellEnabledForStrategy) {
     items.push({
-      label: `${hasActiveAutoSell(state) ? 'Manage' : 'Setup'} ${t('system.basic-sell')}`,
+      label: `${hasActiveAutoSell(state) ? 'Manage' : 'Set up'} ${t('system.basic-sell')}`,
       shortLabel: t('system.basic-sell'),
       iconShrink: 2,
       icon: circle_exchange,

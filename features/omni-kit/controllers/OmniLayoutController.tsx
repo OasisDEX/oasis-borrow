@@ -94,7 +94,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         sections={[
           {
             value: isOpening ? 'setup' : 'overview',
-            label: t(isOpening ? 'setup' : 'system.overview'),
+            label: t(isOpening ? 'set up' : 'system.overview'),
             content: (
               <Grid variant="vaultContainer">
                 <OmniOverviewController />
