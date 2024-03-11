@@ -46,6 +46,7 @@ export const getHistoryEventLabel = ({
     case 'AjnaWithdrawQuoteNft':
     case 'AjnaUnstakeNftAndWithdrawQuote':
     case 'MorphoBlueWithdraw':
+    case 'AAVEV3Withdraw':
       return t('position-history.withdraw')
     case 'AjnaBorrow':
     case 'MorphoBlueBorrow':
