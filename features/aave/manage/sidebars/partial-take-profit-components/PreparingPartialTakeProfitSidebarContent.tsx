@@ -181,15 +181,17 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         }}
       >
         <Text variant="boldParagraph3" color="neutral80">
-          Set minimum starting take profit price
+          {isShort
+            ? 'Set maximum starting take profit price'
+            : 'Set minimum starting take profit price'}
           <StatefulTooltip
             tooltip={
               <Text variant="paragraph4">
-                The first and lowest price in which you will begin to realize profits. The amount of
-                profit you will realize at this price is determined by your Withdrawal Step, it is
-                possible it will be triggered at its own LTV, distinct from your “Trigger LTV”. This
-                minimum starting price is subject to change if you make changes to your position
-                after setting it.
+                The first and {isShort ? 'highest' : 'lowest'} price in which you will begin to
+                realize profits. The amount of profit you will realize at this price is determined
+                by your Withdrawal Step, it is possible it will be triggered at its own LTV,
+                distinct from your “Trigger LTV”. This {isShort ? 'maximum' : 'minimum'} starting
+                price is subject to change if you make changes to your position after setting it.
               </Text>
             }
             containerSx={{ display: 'inline' }}
