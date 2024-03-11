@@ -233,9 +233,11 @@
         "collateral-locked": "Collateral locked",
         "collateral-quote": "Collateral/Quote",
         "collateral-value": "Collateral value",
+        "collateral": "Collateral",
         "current-multiple": "Current multiple",
         "debt": "Debt",
         "deposit-token": "Deposit token",
+        "distribution": "Distribution",
         "earnings-to-date": "Earnings to date",
         "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
@@ -263,6 +265,7 @@
         "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
         "vault-debt": "Vault debt",
+        "vault-supply": "Vault Supply",
         "with-50-tokens": "With 50.00 {{token}}"
       },
       "tooltip": {
@@ -1160,6 +1163,7 @@
     },
     "title-single-token": "{{token}} - {{product}}",
     "title-product-w-tokens": "{{token1}}/{{token2}} - {{protocol}} - {{product}}",
+    "title-product-wo-tokens": "{{protocol}} - {{product}}",
     "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}",
     "erc-4626": {
       "title": "ERC-4626 on Summer.fi",
@@ -2766,8 +2770,12 @@
       "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
       "yield-multiple": "yield multiple",
       "details": {
+        "30-days-avg-apy": "30 days average APY",
+        "7-days-avg-apy": "7 days average APY",
+        "current-apy": "Current APY",
+        "current-ltv": "Current LTV",
         "current-market-price": "Current Market Price",
-        "current-ltv": "Current LTV"
+        "tvl": "Total Value Locked"
       }
     },
     "content-card": {
@@ -2863,6 +2871,25 @@
         "modal-value-4": "From this position in current period",
         "modal-value-5": "Total rewards earned to date",
         "modal-link": "See all token rewards"
+      },
+      "curator": {
+        "title": "Curator"
+      },
+      "vault-fee": {
+        "title": "Vault Fee"
+      }
+    },
+    "position-page": {
+      "earn": {
+        "open": {
+          "duration": "Duration",
+          "estimated-earnings": "Estimated earnings",
+          "net-value": "Net value",
+          "earnings-per-1d": "Projected earnings per day",
+          "earnings-per-30d": "Projected earnings per 30d",
+          "earnings-per-365d": "Projected earnings for 1 year",
+          "disclaimer": "*Past performance is not indicative of future results."
+        }
       }
     },
     "form": {
@@ -3079,17 +3106,6 @@
             "lending-price": "Lending Price"
           }
         },
-        "open": {
-          "simulation": {
-            "duration": "Duration",
-            "estimated-earnings": "Estimated earnings",
-            "net-value": "Net value",
-            "earnings-per-day": "Projected earnings per day",
-            "earnings-per-30d": "Projected earnings per 30d",
-            "earnings-per-1y": "Projected earnings for 1 year",
-            "disclaimer": "*Past performance is not indicative of future results."
-          }
-        },
         "manage": {
           "notifications": {
             "earning-no-apy": {
@@ -3195,6 +3211,18 @@
             "message": "The liquidation process is over you can now reclaim any collateral left."
           }
         }
+      }
+    }
+  },
+  "erc-4626": {
+    "content-card": {
+      "vault-fee-steakhouse-USDC": {
+        "modal-description": "MetaMorpho Vaults have a fee charged by the curator of the Vault for performing the risk management and selection of Blue Markets."
+      }
+    },
+    "position-page": {
+      "common": {
+        "vault-allocation-breakdown": "Vault allocation breakdown"
       }
     }
   },

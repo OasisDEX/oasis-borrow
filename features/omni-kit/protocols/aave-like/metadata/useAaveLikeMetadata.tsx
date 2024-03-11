@@ -125,6 +125,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             quoteToken,
             isOpening,
           }),
+          overviewWithSimulation: true,
         },
         featureToggles,
       } as LendingMetadata

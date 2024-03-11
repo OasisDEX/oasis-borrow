@@ -65,7 +65,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     },
     dynamicMetadata: {
       elements: { faq },
-      values: { headlineDetails, isHeadlineDetailsLoading },
+      values: { headline, headlineDetails, isHeadlineDetailsLoading },
     },
     automation: { positionTriggers },
   } = useOmniProductContext(productType)
@@ -92,13 +92,14 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         {...getOmniHeadlineProps({
           collateralIcon,
           collateralToken,
+          headline,
+          isYieldLoopWithData,
+          networkName: network.name,
           positionId,
           productType,
           protocol,
           quoteIcon,
           quoteToken,
-          networkName: network.name,
-          isYieldLoopWithData,
         })}
         details={[
           ...(headlineDetails || []),
@@ -112,12 +113,18 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                       },
                     ]
                   : []),
-                {
-                  label: t('omni-kit.headline.details.current-market-price'),
-                  value: `${formatCryptoBalance(
-                    isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
-                  )} ${priceFormat}`,
-                },
+                ...(collateralToken !== quoteToken
+                  ? [
+                      {
+                        label: t('omni-kit.headline.details.current-market-price'),
+                        value: `${formatCryptoBalance(
+                          isShort
+                            ? quotePrice.div(collateralPrice)
+                            : collateralPrice.div(quotePrice),
+                        )} ${priceFormat}`,
+                      },
+                    ]
+                  : []),
               ]
             : []),
         ]}
