@@ -44,7 +44,7 @@ export function useOptimizationSidebarDropdown(
       },
       {
         label: `${
-          hasAavePartialTakeProfitEnabled || hasSparkPartialTakeProfitEnabled ? 'Manage' : 'Setup'
+          hasAavePartialTakeProfitEnabled || hasSparkPartialTakeProfitEnabled ? 'Manage' : 'Set up'
         } ${t('system.take-profit')}`,
         shortLabel: t('system.take-profit'),
         iconShrink: 2,
