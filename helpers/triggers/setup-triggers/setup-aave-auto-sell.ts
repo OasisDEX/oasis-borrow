@@ -1,3 +1,5 @@
+import { getLocalAppConfig } from 'helpers/config'
+
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type { SetupAaveBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
@@ -6,6 +8,7 @@ export const setupAaveAutoSell = async (
   params: SetupAaveBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
   const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
+  const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
     dpm: params.dpm,
@@ -28,6 +31,11 @@ export const setupAaveAutoSell = async (
   try {
     response = await fetch(url, {
       method: 'POST',
+      headers: shouldSkipValidation
+        ? {
+            'x-summer-skip-validation': '1',
+          }
+        : undefined,
       body: body,
     })
   } catch (error) {

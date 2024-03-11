@@ -1,36 +1,33 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import type { OmniSidebarStep } from 'features/omni-kit/types'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniSidebarTitle } from 'features/omni-kit/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
-import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 
-export const getAjnaSidebarTitle = ({
-  currentStep,
+export const useAjnaSidebarTitle = ({
   isFormFrozen,
-  isOracless,
   position,
-  productType,
 }: {
-  currentStep: OmniSidebarStep
   isFormFrozen: boolean
-  isOracless: boolean
   position: AjnaPosition | AjnaEarnPosition
-  productType: OmniProductType
 }) => {
   const { t } = useTranslation()
 
-  const defaultTitle =
-    currentStep === 'risk' && isOracless
-      ? t('ajna.position-page.common.form.title.risk-oracless')
-      : t(`ajna.position-page.common.form.title.${currentStep}`, {
-          productType: upperFirst(productType),
-        })
+  const {
+    environment: { isOracless, productType },
+    steps: { currentStep },
+  } = useOmniGeneralContext()
+
+  const genericSidebarTitle = useOmniSidebarTitle()
+
+  if (currentStep === 'risk' && isOracless)
+    return t('ajna.position-page.common.form.title.risk-oracless')
 
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
-      return defaultTitle
+      return genericSidebarTitle
     case OmniProductType.Earn: {
       const earnPosition = position as AjnaEarnPosition
 
@@ -42,9 +39,7 @@ export const getAjnaSidebarTitle = ({
         return t('ajna.position-page.common.form.title.claim-collateral')
       }
 
-      return defaultTitle
+      return genericSidebarTitle
     }
-    default:
-      return defaultTitle
   }
 }

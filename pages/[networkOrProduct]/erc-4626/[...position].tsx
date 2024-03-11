@@ -4,9 +4,9 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { erc4626SeoTags } from 'features/omni-kit/protocols/erc-4626/constants'
-import { useErc4626Data, useErc4626TxHandler } from 'features/omni-kit/protocols/erc-4626/hooks'
-import { useErc4626Metadata } from 'features/omni-kit/protocols/erc-4626/metadata'
-import { erc4626LabelsMap, settings } from 'features/omni-kit/protocols/erc-4626/settings'
+import { useErc4626Data } from 'features/omni-kit/protocols/erc-4626/hooks'
+import { erc4626VaultsById, settings } from 'features/omni-kit/protocols/erc-4626/settings'
+import { Erc4626CustomStateProvider } from 'features/omni-kit/protocols/erc-4626/state'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -21,12 +21,7 @@ function Erc4626PositionPage(props: Erc4626PositionPageProps) {
       <ProductContextHandler>
         <OmniProductController<unknown, unknown[], SupplyPosition>
           {...props}
-          customState={({ children }) =>
-            children({
-              useDynamicMetadata: useErc4626Metadata,
-              useTxHandler: useErc4626TxHandler,
-            })
-          }
+          customState={Erc4626CustomStateProvider}
           protocolHook={useErc4626Data}
           seoTags={erc4626SeoTags}
           settings={settings}
@@ -45,7 +40,7 @@ export default Erc4626PositionPage
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const [, label] = query.position as string[]
 
-  if (!Object.keys(erc4626LabelsMap).includes(label)) {
+  if (!Object.keys(erc4626VaultsById).includes(label)) {
     return {
       redirect: {
         permanent: false,
@@ -54,12 +49,15 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     }
   }
 
+  const { name, protocol, token } = erc4626VaultsById[label]
+
   return getOmniServerSideProps({
-    collateralToken: erc4626LabelsMap[label].token,
+    collateralToken: token,
+    label: name,
     locale,
-    protocol: erc4626LabelsMap[label].protocol,
+    protocol,
     query,
-    quoteToken: erc4626LabelsMap[label].token,
+    quoteToken: token,
     settings,
   })
 }

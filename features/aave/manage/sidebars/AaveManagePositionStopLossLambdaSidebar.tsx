@@ -35,6 +35,7 @@ import {
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
@@ -193,6 +194,13 @@ export function AaveManagePositionStopLossLambdaSidebar({
   }
   const [leftFormatter, rightFormatter] = getFormatters(strategyConfig)
 
+  const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    return [
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
+    ].filter(Boolean) as string[]
+  }, [])
+
   const sidebarPreparingContent: SidebarSectionProps['content'] = (
     <Grid gap={3}>
       <ActionPills
@@ -279,6 +287,11 @@ export function AaveManagePositionStopLossLambdaSidebar({
         />
       )}
       <>
+        <MessageCard
+          type="error"
+          messages={frontendErrors}
+          withBullet={frontendErrors.length > 1}
+        />
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       </>
@@ -441,10 +454,12 @@ export function AaveManagePositionStopLossLambdaSidebar({
   }
 
   const isDisabled = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     if (
-      isGettingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
-      errors.length
+      (isGettingStopLossTx ||
+        ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
+        errors.length) &&
+      !validationDisabled
     ) {
       return true
     }

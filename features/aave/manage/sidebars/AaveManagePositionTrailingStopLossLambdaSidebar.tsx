@@ -37,6 +37,7 @@ import {
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
@@ -215,6 +216,12 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     }
     return null
   }
+  const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    return [
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
+    ].filter(Boolean) as string[]
+  }, [])
 
   const stopLossInformationPanel = (
     <DimmedList>
@@ -304,6 +311,11 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         rightLabel={t('slider.set-stoploss.right-label')}
       />
       <>
+        <MessageCard
+          type="error"
+          messages={frontendErrors}
+          withBullet={frontendErrors.length > 1}
+        />
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       </>
@@ -461,10 +473,12 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   }
 
   const isDisabled = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     if (
-      isGettingTrailingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
-      errors.length
+      (isGettingTrailingStopLossTx ||
+        ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
+        errors.length) &&
+      !validationDisabled
     ) {
       return true
     }

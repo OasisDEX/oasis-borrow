@@ -1,16 +1,18 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Flex } from 'theme-ui'
 
+export interface ActionPillsItem {
+  id: string
+  label: string
+  disabled?: boolean
+  action: () => void
+}
+
 interface ActionPillsProps {
-  readonly variant?: 'secondary'
+  readonly variant?: 'primary' | 'secondary' | 'tertiary'
   readonly active: string
-  readonly items: {
-    id: string
-    label: string
-    disabled?: boolean
-    action: () => void
-  }[]
+  readonly items: ActionPillsItem[]
   readonly wrapperSx?: ThemeUIStyleObject
   readonly itemSx?: ThemeUIStyleObject
   readonly itemButtonSx?: ThemeUIStyleObject
@@ -19,27 +21,20 @@ interface ActionPillsProps {
 export function ActionPills({
   active,
   items,
-  variant,
+  variant = 'primary',
   wrapperSx,
   itemSx,
   itemButtonSx,
 }: ActionPillsProps) {
-  const secondaryVarientStyles = useMemo(
-    () => ({
-      py: '8px',
-      px: '16px',
-      fontSize: 1,
-      ':first-child': {
-        ml: 0,
-      },
-    }),
-    [variant],
-  )
-
   return (
     <Flex
       as="ul"
-      sx={{ justifyContent: variant === 'secondary' ? 'flex-start' : 'center', p: 0, ...wrapperSx }}
+      sx={{
+        justifyContent: variant !== 'primary' ? 'flex-start' : 'center',
+        columnGap: 2,
+        p: 0,
+        ...wrapperSx,
+      }}
     >
       {items.map((item) => (
         <Box as="li" sx={{ listStyle: 'none', m: 0, p: 0, ...itemSx }} key={item.id}>
@@ -47,8 +42,23 @@ export function ActionPills({
             onClick={item.action}
             variant={active === item.id ? 'pillActive' : 'pill'}
             sx={{
-              mx: 1,
-              ...(variant === 'secondary' && secondaryVarientStyles),
+              ...(variant !== 'primary' && {
+                px: 3,
+                py: 2,
+                fontSize: 1,
+              }),
+              ...(variant === 'tertiary' && {
+                bg: 'neutral20',
+                '&:hover': {
+                  bg: 'neutral60',
+                },
+                ...(active === item.id && {
+                  '&, &:hover': {
+                    bg: 'neutral80',
+                    color: 'neutral10',
+                  },
+                }),
+              }),
               ...(item.disabled && {
                 opacity: 0.5,
                 pointerEvents: 'none',

@@ -35,12 +35,12 @@ import {
   getAjnaBorrowWithdrawMax,
   getAjnaEarnWithdrawMax,
   getAjnaNotifications,
-  getAjnaSidebarTitle,
   getAjnaValidation,
   getOriginationFee,
   isPoolWithRewards,
   resolveIfCachedPosition,
 } from 'features/omni-kit/protocols/ajna/helpers'
+import { useAjnaSidebarTitle } from 'features/omni-kit/protocols/ajna/hooks'
 import {
   AjnaEarnFormOrder,
   AjnaEarnSlider,
@@ -167,6 +167,11 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       }),
   }
 
+  const sidebarTitle = useAjnaSidebarTitle({
+    position: productContext.position.currentPosition.position as AjnaPosition,
+    isFormFrozen: validations.isFormFrozen,
+  })
+
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
@@ -251,13 +256,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             balance: quoteBalance,
             position,
           }),
-          sidebarTitle: getAjnaSidebarTitle({
-            currentStep,
-            isFormFrozen: validations.isFormFrozen,
-            productType,
-            position,
-            isOracless,
-          }),
+          sidebarTitle,
           footerColumns: 2,
         },
         elements: {
@@ -376,23 +375,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             state: (productContext as ProductContextWithEarn).form.state,
             txStatus: txDetails?.txStatus,
           }),
-          sidebarTitle: getAjnaSidebarTitle({
-            currentStep,
-            isFormFrozen: validations.isFormFrozen,
-            productType,
-            position: earnPosition,
-            isOracless,
-          }),
+          sidebarTitle,
           footerColumns: isOpening ? 2 : 3,
           headlineDetails: [
             {
-              label: t('ajna.position-page.earn.common.headline.current-apy'),
+              label: t('omni-kit.headline.details.current-apy'),
               value: earnPosition.pool.lendApr
                 ? formatDecimalAsPercent(earnPosition.pool.lendApr)
                 : notAvailable,
             },
             {
-              label: t('ajna.position-page.earn.common.headline.7-days-avg-apy'),
+              label: t('omni-kit.headline.details.7-days-avg-apy'),
               value: earnPosition.poolApy.per7d
                 ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
                 : notAvailable,

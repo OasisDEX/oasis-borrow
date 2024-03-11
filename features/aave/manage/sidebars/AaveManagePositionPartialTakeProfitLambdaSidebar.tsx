@@ -24,6 +24,7 @@ import {
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
 import { TriggerAction } from 'helpers/triggers'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
@@ -213,6 +214,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   }
 
   const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     const currentLtvValue = currentLtv.times(lambdaPercentageDenomination)
     const triggerLtvTooHigh = triggerLtv.gt(currentLtvValue.plus(triggerLtvSliderConfig.step))
     const cumulativeLtvTooHight = triggerLtv
@@ -237,6 +239,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       isShort &&
         startingTakeProfitPriceTooHigh &&
         'Starting take profit price should be lower or equal the current price.',
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
     ].filter(Boolean) as string[]
   }, [
     currentLtv,
@@ -251,7 +254,8 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   ])
 
   const isDisabled = useMemo(() => {
-    if (frontendErrors.length || errors.length) {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    if ((frontendErrors.length || errors.length) && !validationDisabled) {
       return true
     }
     if (

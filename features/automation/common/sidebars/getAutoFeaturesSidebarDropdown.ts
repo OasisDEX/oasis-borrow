@@ -26,7 +26,7 @@ function getAutoFeaturesSidebarDropdownItem({
   const { t } = useTranslation()
 
   return {
-    label: `${t(isFeatureEnabled ? 'manage' : 'setup')} ${t(translationKey)}`,
+    label: `${t(isFeatureEnabled ? 'manage' : 'set up')} ${t(translationKey)}`,
     shortLabel: t(translationKey),
     iconShrink: 2,
     icon: circle_exchange,

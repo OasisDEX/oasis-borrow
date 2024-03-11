@@ -15,6 +15,7 @@ import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -381,10 +382,16 @@ export const AavePartialTakeProfitManageDetails = ({
                     automation like a pro.
                   </Text>
                   <Flex sx={{ flexDirection: 'row', mt: 3 }}>
-                    <AppLink href="/#" sx={{ mr: 5 }}>
+                    <AppLink
+                      href={EXTERNAL_LINKS.HOW_TO_SET_UP_AUTO_TAKE_PROFIT_VIDEO}
+                      sx={{ mr: 5 }}
+                    >
                       <WithArrow sx={{ color: 'interactive100' }}>Watch tutorial</WithArrow>
                     </AppLink>
-                    <AppLink href="/#" sx={{ mr: 5 }}>
+                    <AppLink
+                      href={EXTERNAL_LINKS.BLOG.HOW_TO_SET_UP_AUTO_TAKE_PROFIT}
+                      sx={{ mr: 5 }}
+                    >
                       <WithArrow sx={{ color: 'interactive100' }}>Read article</WithArrow>
                     </AppLink>
                   </Flex>

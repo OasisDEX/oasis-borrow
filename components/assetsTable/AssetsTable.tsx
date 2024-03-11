@@ -27,9 +27,10 @@ interface AssetsTableHeaderCellProps {
   isSticky: boolean
   label: string
   last: boolean
+  onSort?: (label: string) => void
+  paddless?: boolean
   sortingSettings?: AssetsTableSortingSettings
   tooltip: boolean
-  onSort?: (label: string) => void
 }
 
 interface AssetsTableDataRowProps {
@@ -47,6 +48,7 @@ export function AssetsTable({
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
+  paddless,
   perPage,
   rows,
   tooltips = [],
@@ -92,16 +94,18 @@ export function AssetsTable({
       ref={container}
       sx={{
         position: 'relative',
-        px: ['24px', null, null, 4],
-        pb: '24px',
-        mt: '-8px',
+        ...(!paddless && {
+          px: ['24px', null, null, 4],
+          pb: '24px',
+          mt: '-8px',
+        }),
       }}
     >
       <Box
         as="table"
         sx={{
           width: '100%',
-          borderSpacing: '0 8px',
+          borderSpacing: paddless ? '0' : '0 8px',
         }}
       >
         <Box
@@ -126,6 +130,7 @@ export function AssetsTable({
                 isSticky={isSticky}
                 label={label}
                 last={i + 1 === rowKeys.length}
+                paddless={paddless}
                 sortingSettings={sortingSettings}
                 tooltip={tooltips.includes(label)}
                 onSort={onSortHandler}
@@ -174,9 +179,10 @@ export function AssetsTableHeaderCell({
   isSticky,
   label,
   last,
+  onSort,
+  paddless,
   sortingSettings,
   tooltip,
-  onSort,
 }: AssetsTableHeaderCellProps) {
   const { t } = useTranslation()
   const isActive = isSortable && label === sortingSettings?.key
@@ -187,7 +193,7 @@ export function AssetsTableHeaderCell({
       sx={{
         position: 'relative',
         px: '12px',
-        pt: '28px',
+        pt: paddless ? 0 : '28px',
         pb: isSticky ? '48px' : '20px',
         fontSize: 1,
         fontWeight: 'semiBold',
@@ -331,6 +337,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
         p: '14px 12px',
         textAlign: 'right',
         whiteSpace: 'nowrap',
+        verticalAlign: 'top',
         '&:first-of-type': {
           textAlign: 'left',
         },

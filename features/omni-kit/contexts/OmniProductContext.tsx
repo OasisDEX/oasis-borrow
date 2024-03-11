@@ -66,17 +66,20 @@ export interface OmniSupplyMetadataHandlers {
 
 interface CommonMetadataValues {
   footerColumns: number
+  headline?: string
   headlineDetails?: HeadlineDetailsProp[]
   isHeadlineDetailsLoading?: boolean
   interestRate: BigNumber
   isFormEmpty: boolean
-  sidebarTitle: string
+  sidebarTitle?: string
 }
 interface CommonMetadataElements {
   faq: ReactNode
   overviewBanner?: ReactNode
   overviewContent: ReactNode
   overviewFooter: ReactNode
+  overviewWithSimulation?: boolean
+  sidebarContent?: ReactNode
   riskSidebar?: ReactNode
 }
 
