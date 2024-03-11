@@ -24,6 +24,7 @@ import {
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
 import { TriggerAction } from 'helpers/triggers'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
@@ -251,7 +252,8 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   ])
 
   const isDisabled = useMemo(() => {
-    if (frontendErrors.length || errors.length) {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    if ((frontendErrors.length || errors.length) && !validationDisabled) {
       return true
     }
     if (
