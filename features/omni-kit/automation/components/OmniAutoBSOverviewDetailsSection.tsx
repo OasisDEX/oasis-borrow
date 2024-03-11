@@ -38,17 +38,18 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
     dynamicMetadata: {
       values: { automation },
     },
-    automation: { simulationData },
+    automation: {
+      simulationData,
+      automationForm: { state },
+    },
   } = useOmniProductContext(productType)
 
   if (!isAutoBSSimulationResponse(simulationData?.simulationResponse)) {
     throw new Error('Wrong auto BS simulation response type')
   }
 
-  const autoBSSimulationResponse = simulationData?.simulationResponse
-
-  const executionLtv = autoBSSimulationResponse?.simulation?.executionLTV
-  const targetLtv = autoBSSimulationResponse?.simulation?.targetLTV
+  const afterTriggerLtv = state?.triggerLtv
+  const afterTargetLtv = state?.targetLtv
 
   const resolvedTitle = {
     [AutomationFeatures.AUTO_SELL]: t('auto-sell.title'),
@@ -75,10 +76,9 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
             automationFeature={AutomationFeatures.AUTO_SELL}
             collateralToken={collateralToken}
             currentExecutionLTV={
-              resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.executionLtv)
+              resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.executionLtv).div(100)
             }
-            // afterTxExecutionLTV={afterTxTrigger?.executionLTV}
-            afterTxExecutionLTV={executionLtv ? new BigNumber(executionLtv) : undefined}
+            afterTxExecutionLTV={afterTriggerLtv}
             // nextPrice={nextPrice?.price}
             denomination={priceFormat}
           />
@@ -86,10 +86,9 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
             automationFeature={AutomationFeatures.AUTO_SELL}
             collateralToken={collateralToken}
             currentTargetLTV={
-              resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.targetLtv)
+              resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.targetLtv).div(100)
             }
-            afterTxTargetLTV={targetLtv ? new BigNumber(targetLtv) : undefined}
-            // afterTxTargetLTV={afterTxTrigger?.targetLTV}
+            afterTxTargetLTV={afterTargetLtv}
             // thresholdPrice={thresholdPrice}
             // denomination={nextPrice?.denomination || getDenomination(position)}
             denomination={priceFormat}
