@@ -5,6 +5,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
+import { filterAndGroupByTxHash } from 'features/positionHistory/filterAndGroupByTxHash'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -37,12 +38,15 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
   const contracts = getNetworkContracts(networkId)
   ensureEtherscanExist(networkId, contracts)
   const { etherscan } = contracts
+
+  const filteredEvents = filterAndGroupByTxHash(historyEvents)
+
   return (
     <DetailsSection
       title={t('position-history.header')}
       content={
         <DefinitionList>
-          {historyEvents.map((item) => (
+          {filteredEvents.map((item) => (
             <PositionHistoryItem
               collateralToken={collateralToken}
               etherscanConfig={etherscan}

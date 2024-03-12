@@ -461,6 +461,7 @@
     "close-position": "Close Position",
     "deposit": "Deposit",
     "withdraw": "Withdraw",
+    "withdraw-to-debt": "Withdraw to debt",
     "generate": "Generate",
     "borrow": "Borrow",
     "repay": "Repay",
