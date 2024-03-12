@@ -1,5 +1,7 @@
+import type { Erc4626Position } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import faq from 'features/content/faqs/erc4626/earn/en'
 import type {
   GetOmniMetadata,
   ProductContextWithEarn,
@@ -20,6 +22,7 @@ import { erc4626FlowStateFilter } from 'features/omni-kit/protocols/erc-4626/hel
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { sparks } from 'theme/icons'
@@ -49,16 +52,11 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   // it is safe to assume that in erc-4626 context label is always availabe string
   const { address: vaultAddress } = erc4626VaultsByName[label as string]
 
-  // TODO: replace with real validation
-  const validations = {
-    errors: [],
-    hasErrors: false,
+  const validations = productContext.position.simulationCommon.getValidations({
+    safetySwitchOn: safetySwitch,
     isFormFrozen: false,
-    isFormValid: true,
-    notices: [],
-    successes: [],
-    warnings: [],
-  }
+    protocolLabel: LendingProtocolLabel.morphoblue,
+  })
 
   // TODO: replace with real notifications
   const notifications: DetailsSectionNotificationItem[] = []
@@ -66,6 +64,11 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   switch (productType) {
     case OmniProductType.Earn:
       const castedProductContext = productContext as ProductContextWithEarn
+
+      const position = productContext.position.currentPosition.position as Erc4626Position
+      const simulation = productContext.position.currentPosition.simulation as
+        | Erc4626Position
+        | undefined
 
       return {
         notifications,
@@ -83,7 +86,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             }),
         },
         values: {
-          interestRate: zero,
+          interestRate: position.fee?.amount.div(100) ?? zero,
           isFormEmpty: getOmniIsEarnFormEmpty({
             currentStep,
             state: castedProductContext.form.state,
@@ -109,11 +112,11 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             },
           ],
           extraDropdownItems: [],
-          earnWithdrawMax: zero,
-          earnAfterWithdrawMax: zero,
+          earnWithdrawMax: position.maxWithdrawal,
+          earnAfterWithdrawMax: simulation?.maxWithdrawal ?? zero,
         },
         elements: {
-          faq: <>FAQ placeholder</>,
+          faq,
           overviewContent: <Erc4626DetailsSectionContent />,
           overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: (
