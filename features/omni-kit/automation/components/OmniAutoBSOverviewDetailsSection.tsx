@@ -90,9 +90,7 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
 
   const debtToCollateralRatio =
     currentExecutionLTV &&
-    castedPosition.debtAmount.div(
-      castedPosition.collateralAmount.times(currentExecutionLTV.div(100)),
-    )
+    castedPosition.debtAmount.div(castedPosition.collateralAmount.times(currentExecutionLTV))
 
   const nextPrice = debtToCollateralRatio
     ? isShort
