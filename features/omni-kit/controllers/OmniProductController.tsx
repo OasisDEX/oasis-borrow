@@ -50,6 +50,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
   isOracless?: boolean
+  label?: string
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
@@ -76,6 +77,7 @@ export const OmniProductController = <Auction, History, Position>({
   collateralToken,
   customState = ({ children }) => <>{children}</>,
   isOracless = false,
+  label,
   networkId,
   positionId,
   productType,
@@ -168,6 +170,7 @@ export const OmniProductController = <Auction, History, Position>({
                   {...getOmniHeadlineProps({
                     collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
+                    headline: label,
                     positionId,
                     productType: dpmPositionData?.product as OmniProductType,
                     protocol,
@@ -198,12 +201,16 @@ export const OmniProductController = <Auction, History, Position>({
                 return (
                   <>
                     <PageSEOTags
-                      title="seo.title-product-w-tokens"
+                      title={
+                        dpmPosition.collateralToken !== dpmPosition.quoteToken
+                          ? 'seo.title-product-w-tokens'
+                          : 'seo.title-product-wo-tokens'
+                      }
                       titleParams={{
                         product: t(seoTags.productKey, {
                           productType: upperFirst(castedProductType),
                         }),
-                        protocol: upperFirst(LendingProtocolLabel[protocol]),
+                        protocol: label ?? upperFirst(LendingProtocolLabel[protocol]),
                         token1: dpmPosition.collateralToken,
                         token2: dpmPosition.quoteToken,
                       }}
@@ -227,6 +234,7 @@ export const OmniProductController = <Auction, History, Position>({
                       isOpening={isOpening}
                       isOracless={!!isOracless}
                       isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
+                      label={label}
                       network={network}
                       networkId={networkId}
                       owner={dpmPosition.user}

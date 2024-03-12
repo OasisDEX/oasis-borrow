@@ -46,6 +46,7 @@ export const getHistoryEventLabel = ({
     case 'AjnaWithdrawQuoteNft':
     case 'AjnaUnstakeNftAndWithdrawQuote':
     case 'MorphoBlueWithdraw':
+    case 'AAVEV3Withdraw':
       return t('position-history.withdraw')
     case 'AjnaBorrow':
     case 'MorphoBlueBorrow':
@@ -122,6 +123,7 @@ enum AutomationAction {
   'Added' = 'Added',
   'Executed' = 'Executed',
   'Removed' = 'Removed',
+  'Updated' = 'Updated',
 }
 
 enum AutomationType {
@@ -175,6 +177,10 @@ function handleStopLossToDebtLabel(
     return quoteToken
       ? t('position-history.automation.stop-loss-token-removed', { token: quoteToken })
       : t('position-history.automation.stop-loss-debt-removed')
+  } else if (automationAction.includes(AutomationAction.Updated)) {
+    return quoteToken
+      ? t('position-history.automation.stop-loss-token-updated', { token: quoteToken })
+      : t('position-history.automation.stop-loss-debt-updated')
   }
   console.warn('Automation type not found')
   return undefined
@@ -196,6 +202,10 @@ function handleStopLosstoCollateralLabel(
     return collateralToken
       ? t('position-history.automation.stop-loss-token-removed', { token: collateralToken })
       : t('position-history.automation.stop-loss-collateral-removed')
+  } else if (automationAction.includes(AutomationAction.Updated)) {
+    return collateralToken
+      ? t('position-history.automation.stop-loss-token-updated', { token: collateralToken })
+      : t('position-history.automation.stop-loss-collateral-updated')
   }
   console.warn('Automation type not found')
   return undefined
@@ -207,6 +217,8 @@ function handleTrailingStopLossLabel(automationAction: string, t: TranslationTyp
     return t('position-history.automation.trailing-stop-loss-executed')
   } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.trailing-stop-loss-removed')
+  } else if (automationAction.includes(AutomationAction.Updated)) {
+    return t('position-history.automation.trailing-stop-loss-updated')
   }
   console.warn('Automation type not found')
   return undefined
@@ -219,6 +231,8 @@ function handleBasicBuyLabel(automationAction: string, t: TranslationType) {
     return t('position-history.automation.basic-buy-executed')
   } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.basic-buy-removed')
+  } else if (automationAction.includes(AutomationAction.Updated)) {
+    return t('position-history.automation.basic-buy-updated')
   }
   console.warn('Automation type not found')
   return undefined
@@ -230,6 +244,8 @@ function handleBasicSellLabel(automationAction: string, t: TranslationType) {
     return t('position-history.automation.basic-sell-executed')
   } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.basic-sell-removed')
+  } else if (automationAction.includes(AutomationAction.Updated)) {
+    return t('position-history.automation.basic-sell-updated')
   }
   console.warn('Automation type not found')
   return undefined
@@ -241,6 +257,8 @@ function handlePartialTakeProfitLabel(automationAction: string, t: TranslationTy
     return t('position-history.automation.partial-take-profit-executed')
   } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.partial-take-profit-removed')
+  } else if (automationAction.includes(AutomationAction.Updated)) {
+    return t('position-history.automation.partial-take-profit-updated')
   }
   console.warn('Automation type not found')
   return undefined

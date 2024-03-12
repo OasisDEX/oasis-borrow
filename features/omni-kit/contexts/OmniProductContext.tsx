@@ -74,11 +74,12 @@ export interface OmniSupplyMetadataHandlers {
 
 interface CommonMetadataValues {
   footerColumns: number
+  headline?: string
   headlineDetails?: HeadlineDetailsProp[]
   isHeadlineDetailsLoading?: boolean
   interestRate: BigNumber
   isFormEmpty: boolean
-  sidebarTitle: string
+  sidebarTitle?: string
   automation?: {
     flags: {
       isStopLossEnabled: boolean
@@ -106,6 +107,8 @@ interface CommonMetadataElements {
   overviewBanner?: ReactNode
   overviewContent: ReactNode
   overviewFooter: ReactNode
+  overviewWithSimulation?: boolean
+  sidebarContent?: ReactNode
   riskSidebar?: ReactNode
 }
 

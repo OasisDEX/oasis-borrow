@@ -14,7 +14,7 @@ import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import type { mapPartialTakeProfitFromLambda } from 'features/aave/manage/helpers/map-partial-take-profit-from-lambda'
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
-import type { IStrategyConfig } from 'features/aave/types'
+import { type IStrategyConfig, StrategyType } from 'features/aave/types'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -75,6 +75,8 @@ export const PreparingPartialTakeProfitSidebarContent = ({
 
   const { hasStopLoss, stopLossLevelLabel, trailingStopLossDistanceLabel, currentStopLossLevel } =
     aaveLikePartialTakeProfitLambdaData
+
+  const isShort = strategyConfig.strategyType === StrategyType.Short
 
   const inputMask = useMemo(() => {
     return createNumberMask({
@@ -179,15 +181,17 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         }}
       >
         <Text variant="boldParagraph3" color="neutral80">
-          Set minimum starting take profit price
+          {isShort
+            ? 'Set maximum starting take profit price'
+            : 'Set minimum starting take profit price'}
           <StatefulTooltip
             tooltip={
               <Text variant="paragraph4">
-                The first and lowest price in which you will begin to realize profits. The amount of
-                profit you will realize at this price is determined by your Withdrawal Step, it is
-                possible it will be triggered at its own LTV, distinct from your “Trigger LTV”. This
-                minimum starting price is subject to change if you make changes to your position
-                after setting it.
+                The first and {isShort ? 'highest' : 'lowest'} price in which you will begin to
+                realize profits. The amount of profit you will realize at this price is determined
+                by your Withdrawal Step, it is possible it will be triggered at its own LTV,
+                distinct from your “Trigger LTV”. This {isShort ? 'maximum' : 'minimum'} starting
+                price is subject to change if you make changes to your position after setting it.
               </Text>
             }
             containerSx={{ display: 'inline' }}
@@ -251,7 +255,10 @@ export const PreparingPartialTakeProfitSidebarContent = ({
         </Text>
       </Box>
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        {partialTakeProfitConfig.takeProfitStartingPercentageOptions.map((percentage) => (
+        {(isShort
+          ? partialTakeProfitConfig.takeProfitStartingPercentageOptionsShort
+          : partialTakeProfitConfig.takeProfitStartingPercentageOptionsLong
+        ).map((percentage) => (
           <Button
             key={percentage.toString()}
             variant="bean"
@@ -276,7 +283,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
           >
             {percentage === 0
               ? 'current'
-              : `+${formatPercent(new BigNumber(percentage).times(100))}`}
+              : `${isShort ? '' : '+'}${formatPercent(new BigNumber(percentage).times(100))}`}
           </Button>
         ))}
       </Flex>
@@ -575,10 +582,10 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               ? `The Stop-Loss you configure will close your position to the same asset you have chosen to take profit in: ${partialTakeProfitToken}.`
               : '',
             hasStopLoss && stopLossLevelLabel
-              ? `You already have a Stop-Loss trigger set at${nbsp}${stopLossLevelLabel}. You can update the Stop-Loss LTV above and it all be handled within your Partial Take Profit transaction.`
+              ? `You already have a Stop-Loss trigger set at${nbsp}${stopLossLevelLabel}. You can update the Stop-Loss LTV above and it all be handled within your Auto Take Profit transaction.`
               : '',
             hasStopLoss && trailingStopLossDistanceLabel
-              ? `You already have a Trailing Stop-Loss trigger set at${nbsp}${trailingStopLossDistanceLabel}.`
+              ? `You already have a Trailing Stop-Loss trigger set at${nbsp}${trailingStopLossDistanceLabel} distance.`
               : '',
             hasStopLoss && currentStopLossLevel && !currentStopLossLevel.eq(newStopLossLtv)
               ? `Your stop-Loss will be updated to a new value: ${formatPercent(newStopLossLtv, {

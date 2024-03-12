@@ -17,18 +17,21 @@ import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/Sidebar
 import type { AaveLikePartialTakeProfitParamsResult } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import { useLambdaDebouncedPartialTakeProfit } from 'features/aave/open/helpers/use-lambda-debounced-partial-take-profit'
 import { StopLossTxCompleteBanner } from 'features/aave/open/sidebars/components/StopLossTxCompleteBanner'
+import { StrategyType } from 'features/aave/types'
 import {
   sidebarAutomationFeatureCopyMap,
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
 import { TriggerAction } from 'helpers/triggers'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Text } from 'theme-ui'
+import { useInterval } from 'usehooks-ts'
 
 type PartialTakeProfitSidebarStates =
   | 'prepare'
@@ -89,7 +92,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     startingTakeProfitPrice: lambdaStartingTakeProfitPrice,
     currentStopLossLevel,
     triggerLtv: lambdaTriggerLtv,
+    currentTrailingDistance,
   } = aaveLikePartialTakeProfitLambdaData
+  const isShort = strategyConfig.strategyType === StrategyType.Short
   const action = useMemo(() => {
     const anyPartialTakeProfit = aaveLikePartialTakeProfitLambdaData.triggerLtv
     if (transactionStep === 'preparedRemove') {
@@ -112,7 +117,8 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       partialTakeProfitToken,
       action,
       newStopLossLtv:
-        (currentStopLossLevel && !newStopLossLtv.eq(currentStopLossLevel)) || !currentStopLossLevel
+        (currentStopLossLevel && !newStopLossLtv.eq(currentStopLossLevel)) ||
+        !currentTrailingDistance
           ? newStopLossLtv
           : undefined,
       newStopLossAction: currentStopLossLevel ? TriggerAction.Update : TriggerAction.Add,
@@ -150,32 +156,25 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     // user can update SL level with the slider
   }, [aaveLikePartialTakeProfitLambdaData.currentStopLossLevel])
 
+  useInterval(onTxFinished, refreshingTriggerData ? refreshDataTime : null)
+
   useEffect(() => {
-    if (refreshingTriggerData) {
-      const checkTriggerData = () => {
-        setTimeout(() => {
-          onTxFinished()
-          if (aaveLikePartialTakeProfitLambdaData.triggerId !== triggerId) {
-            setTriggerId(aaveLikePartialTakeProfitLambdaData.triggerId ?? '0')
-            setRefreshingTriggerData(false)
-          } else {
-            checkTriggerData()
-          }
-        }, refreshDataTime)
-      }
-      checkTriggerData()
+    if (aaveLikePartialTakeProfitLambdaData.triggerId !== triggerId) {
+      setTriggerId(aaveLikePartialTakeProfitLambdaData.triggerId ?? '0')
+      setRefreshingTriggerData(false)
+      partialTakeProfitProfits &&
+        send({
+          type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
+          partialTakeProfitFirstProfit: partialTakeProfitProfits[0],
+        })
     }
-  }, [refreshingTriggerData])
+  }, [aaveLikePartialTakeProfitLambdaData.triggerId, triggerId, partialTakeProfitProfits, send])
 
   const resetXStateData = () => {
     if (action === TriggerAction.Remove) {
       send({
         type: 'SET_PARTIAL_TAKE_PROFIT_TX_DATA_LAMBDA',
         partialTakeProfitTxDataLambda: undefined,
-      })
-      send({
-        type: 'SET_PARTIAL_TAKE_PROFIT_FIRST_PROFIT_LAMBDA',
-        partialTakeProfitFirstProfit: undefined,
       })
       send({
         type: 'SET_PARTIAL_TAKE_PROFIT_PROFITS_LAMBDA',
@@ -215,6 +214,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   }
 
   const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     const currentLtvValue = currentLtv.times(lambdaPercentageDenomination)
     const triggerLtvTooHigh = triggerLtv.gt(currentLtvValue.plus(triggerLtvSliderConfig.step))
     const cumulativeLtvTooHight = triggerLtv
@@ -223,6 +223,9 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
     const startingTakeProfitPriceTooLow = !lambdaStartingTakeProfitPrice
       ? startingTakeProfitPrice.lt(positionPriceRatio)
       : false
+    const startingTakeProfitPriceTooHigh = !lambdaStartingTakeProfitPrice
+      ? startingTakeProfitPrice.gt(positionPriceRatio)
+      : false
     return [
       triggerLtvTooHigh &&
         `Trigger LTV should not be higher than current position LTV (${currentLtvValue.toFixed(
@@ -230,11 +233,17 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
         )}%)`,
       cumulativeLtvTooHight &&
         `Trigger LTV and Withdrawal LTV sum should be less than maximum LTV (${withdrawalLtvSliderConfig.maxBoundry}%)`,
-      startingTakeProfitPriceTooLow &&
+      !isShort &&
+        startingTakeProfitPriceTooLow &&
         'Starting take profit price should be higher or equal the current price.',
+      isShort &&
+        startingTakeProfitPriceTooHigh &&
+        'Starting take profit price should be lower or equal the current price.',
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
     ].filter(Boolean) as string[]
   }, [
     currentLtv,
+    isShort,
     lambdaStartingTakeProfitPrice,
     positionPriceRatio,
     startingTakeProfitPrice,
@@ -245,7 +254,8 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   ])
 
   const isDisabled = useMemo(() => {
-    if (frontendErrors.length || errors.length) {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    if ((frontendErrors.length || errors.length) && !validationDisabled) {
       return true
     }
     if (
@@ -485,11 +495,14 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
 
   const sidebarRemoveTriggerContent: SidebarSectionProps['content'] = strategyInfo ? (
     <Grid gap={3}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('automation.cancel-summary-description', { feature: t('partial-take-profit') })}
+      </Text>
       <InfoSection
-        title={t('constant-multiple.vault-changes.general-summary')}
+        title="Cancel Auto Take Profit order summary"
         items={[
           {
-            label: 'Next Stop-Loss trigger price',
+            label: 'Next Dynamic Trigger Price',
             value: parsedSummaryProfits.nextTriggerPrice ? (
               <Text>{parsedSummaryProfits.nextTriggerPrice}</Text>
             ) : (

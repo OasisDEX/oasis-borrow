@@ -1,4 +1,4 @@
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -15,6 +15,7 @@ import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -35,6 +36,7 @@ type AavePartialTakeProfitManageDetailsProps = {
     | Partial<AjnaHistoryEvent>[]
     | Partial<AaveLikeHistoryEvent>[]
     | Partial<PositionHistoryEvent>[]
+  simpleView?: boolean
 }
 
 const reduceHistoryEvents = (events: AavePartialTakeProfitManageDetailsProps['historyEvents']) => {
@@ -69,6 +71,7 @@ export const AavePartialTakeProfitManageDetails = ({
   netValuePnlCollateralData,
   netValuePnlDebtData,
   historyEvents,
+  simpleView,
 }: AavePartialTakeProfitManageDetailsProps) => {
   const { t } = useTranslation()
   const [chartView, setChartView] = useState<'price' | 'ltv'>('price')
@@ -108,10 +111,10 @@ export const AavePartialTakeProfitManageDetails = ({
   const nextTriggerProfit = partialTakeProfitProfits ? partialTakeProfitProfits[0] : undefined
   const primaryPnlValue = useMemo(() => {
     if (netValuePnlCollateralData.pnl?.pnlToken === partialTakeProfitTokenData.symbol) {
-      return netValuePnlCollateralData.pnl.inToken
+      return netValuePnlCollateralData.pnl.inToken || zero
     }
     if (netValuePnlDebtData.pnl?.pnlToken === partialTakeProfitTokenData.symbol) {
-      return netValuePnlDebtData.pnl.inToken
+      return netValuePnlDebtData.pnl.inToken || zero
     }
     return zero
   }, [
@@ -123,10 +126,10 @@ export const AavePartialTakeProfitManageDetails = ({
   ])
   const secondaryPnlValue = useMemo(() => {
     if (netValuePnlCollateralData.pnl?.pnlToken === partialTakeProfitSecondTokenData.symbol) {
-      return netValuePnlCollateralData.pnl.inToken
+      return netValuePnlCollateralData.pnl.inToken || zero
     }
     if (netValuePnlDebtData.pnl?.pnlToken === partialTakeProfitSecondTokenData.symbol) {
-      return netValuePnlDebtData.pnl.inToken
+      return netValuePnlDebtData.pnl.inToken || zero
     }
     return zero
   }, [
@@ -143,10 +146,14 @@ export const AavePartialTakeProfitManageDetails = ({
       : '-'
   }, [partialTakeProfitFirstProfit, hasLambdaTriggerLtv])
   const nextDynamicTriggerPriceValueChange = useMemo(() => {
+    const priceChangeOffset = new BigNumber(0.001)
     if (
       (!partialTakeProfitFirstProfit ||
         !nextTriggerProfit ||
-        partialTakeProfitFirstProfit.triggerPrice.eq(nextTriggerProfit.triggerPrice)) &&
+        partialTakeProfitFirstProfit.triggerPrice
+          .minus(nextTriggerProfit.triggerPrice)
+          .abs()
+          .lt(priceChangeOffset)) &&
       hasLambdaTriggerLtv
     ) {
       return undefined
@@ -330,59 +337,67 @@ export const AavePartialTakeProfitManageDetails = ({
                 value={`${currentMultiple.toFixed(2)}x`}
               />
             </DetailsSectionFooterItemWrapper>
-            <Box
-              sx={{
-                border: 'lightMuted',
-                borderRadius: 'large',
-                p: 3,
-                mt: 4,
-              }}
-            >
-              <ActionPills
-                active={chartView}
-                variant="secondary"
-                items={[
-                  {
-                    id: 'price',
-                    action: () => setChartView('price'),
-                    label: 'Price',
-                  },
-                  {
-                    id: 'ltv',
-                    action: () => setChartView('ltv'),
-                    label: 'LTV',
-                  },
-                ]}
-                wrapperSx={{
-                  mt: 2,
+            {!simpleView && (
+              <Box
+                sx={{
+                  border: 'lightMuted',
+                  borderRadius: 'large',
+                  p: 3,
+                  mt: 4,
                 }}
-              />
-              <Box sx={{ mt: 4, textAlign: 'center' }}>
-                {chartView === 'price' ? (
-                  <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-price.svg')} />
-                ) : (
-                  <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-ltv.svg')} />
-                )}
+              >
+                <ActionPills
+                  active={chartView}
+                  variant="secondary"
+                  items={[
+                    {
+                      id: 'price',
+                      action: () => setChartView('price'),
+                      label: 'Price',
+                    },
+                    {
+                      id: 'ltv',
+                      action: () => setChartView('ltv'),
+                      label: 'LTV',
+                    },
+                  ]}
+                  wrapperSx={{
+                    mt: 2,
+                  }}
+                />
+                <Box sx={{ mt: 4, textAlign: 'center' }}>
+                  {chartView === 'price' ? (
+                    <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-price.svg')} />
+                  ) : (
+                    <Image src={staticFilesRuntimeUrl('/static/img/take-profit-chart-ltv.svg')} />
+                  )}
+                </Box>
+                <Divider sx={{ my: 3 }} />
+                <Box>
+                  <Text variant="boldParagraph3">Need help setting up auto take profit? </Text>
+                  <br />
+                  <Text variant="paragraph3">
+                    However you learn, we’ve got you covered. Watch a video tutorial or read a in
+                    depth how to article. Both walk you through setting up your Auto Take Profit
+                    automation like a pro.
+                  </Text>
+                  <Flex sx={{ flexDirection: 'row', mt: 3 }}>
+                    <AppLink
+                      href={EXTERNAL_LINKS.HOW_TO_SET_UP_AUTO_TAKE_PROFIT_VIDEO}
+                      sx={{ mr: 5 }}
+                    >
+                      <WithArrow sx={{ color: 'interactive100' }}>Watch tutorial</WithArrow>
+                    </AppLink>
+                    <AppLink
+                      href={EXTERNAL_LINKS.BLOG.HOW_TO_SET_UP_AUTO_TAKE_PROFIT}
+                      sx={{ mr: 5 }}
+                    >
+                      <WithArrow sx={{ color: 'interactive100' }}>Read article</WithArrow>
+                    </AppLink>
+                  </Flex>
+                </Box>
               </Box>
-              <Divider sx={{ my: 3 }} />
-              <Box>
-                <Text variant="boldParagraph3">Need help setting up auto take profit? </Text>
-                <br />
-                <Text variant="paragraph3">
-                  However you learn, we’ve got you covered. Watch a video tutorial or read a in
-                  depth how to article. Both walk you through setting up your Auto Take Profit
-                  automation like a pro.
-                </Text>
-                <Flex sx={{ flexDirection: 'row', mt: 3 }}>
-                  <AppLink href="/#" sx={{ mr: 5 }}>
-                    <WithArrow sx={{ color: 'interactive100' }}>Watch tutorial</WithArrow>
-                  </AppLink>
-                  <AppLink href="/#" sx={{ mr: 5 }}>
-                    <WithArrow sx={{ color: 'interactive100' }}>Read article</WithArrow>
-                  </AppLink>
-                </Flex>
-              </Box>
-            </Box>
+            )}
           </>
         }
       />

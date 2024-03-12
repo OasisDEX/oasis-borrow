@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import React, { type ReactNode, useMemo, useState } from 'react'
 import ReactSelect from 'react-select'
 import { theme } from 'theme'
-import { Box, Card, Flex, Grid, Text } from 'theme-ui'
+import { Box, Card, Flex, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 import { ChevronUpDown } from './ChevronUpDown'
@@ -9,7 +9,7 @@ import type { SelectComponents } from 'react-select/src/components'
 
 interface ContentTableProps {
   headers: string[]
-  rows: string[][]
+  rows: ReactNode[][]
   footnote?: string | JSX.Element
 }
 
@@ -32,13 +32,9 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
   const assetsSelectComponents = useMemo(() => reactSelectCustomComponents<TableHeaderOption>(), [])
 
   return (
-    <Grid
-      sx={{
-        gridTemplateColumns: ['1fr 1fr', '2fr 1fr 1fr'],
-      }}
-    >
+    <>
       {isMobileView && (
-        <>
+        <Flex sx={{ justifyContent: 'space-between' }}>
           <Text
             as="p"
             color="neutral80"
@@ -56,40 +52,80 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
             }}
             components={assetsSelectComponents}
           />
-        </>
+        </Flex>
       )}
-      {!isMobileView &&
-        headers.map((header, index) => (
-          <Text
-            key={`${header}-${index}`}
-            as="p"
-            color="neutral80"
-            sx={{ fontWeight: 'semiBold', textAlign: index === 0 ? 'left' : 'right' }}
-            variant="paragraph4"
-          >
-            {header}
-          </Text>
-        ))}
-      {(isMobileView ? visibleMobileRow : rows).map((row) =>
-        row.map((rowItem, index) => (
-          <Text
-            key={`${rowItem}-${index}`}
-            as="p"
-            variant="paragraph3"
-            sx={{ fontWeight: 'semiBold', textAlign: index === 0 ? 'left' : 'right' }}
-          >
-            {rowItem}
-          </Text>
-        )),
-      )}
-      {footnote && (
-        <Box sx={{ gridColumn: '1/-1' }}>
-          <Text variant="paragraph4" color="neutral80" sx={{ fontWeight: 'semiBold' }}>
-            {footnote}
-          </Text>
+      <Box as="table" sx={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse' }}>
+        {!isMobileView && (
+          <Box as="thead">
+            <Box as="tr">
+              {headers.map((header, index) => (
+                <Box
+                  key={`${header}-${index}`}
+                  as="th"
+                  variant="text.paragraph4"
+                  sx={{
+                    color: 'neutral80',
+                    px: 3,
+                    pb: 3,
+                    textAlign: 'right',
+                    '&:first-of-type': {
+                      width: '50%',
+                      pl: 0,
+                      textAlign: 'left',
+                    },
+                    '&:last-of-type': {
+                      pr: 0,
+                    },
+                  }}
+                >
+                  {header}
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        )}
+        <Box as="tbody">
+          {(isMobileView ? visibleMobileRow : rows).map((row, i) => (
+            <Box as="tr" key={i}>
+              {row.map((rowItem, j) => (
+                <Box
+                  as="td"
+                  key={`${i}-${j}`}
+                  variant="text.boldParagraph3"
+                  sx={{
+                    px: 3,
+                    verticalAlign: 'top',
+                    textAlign: 'right',
+                    ...(i > 0 && {
+                      pt: '12px',
+                      borderTop: '1px solid',
+                      borderTopColor: 'neutral20',
+                    }),
+                    ...(i + 1 < rows.length && {
+                      pb: '12px',
+                    }),
+                    '&:first-of-type': {
+                      pl: 0,
+                      textAlign: 'left',
+                    },
+                    '&:last-of-type': {
+                      pr: 0,
+                    },
+                  }}
+                >
+                  {rowItem}
+                </Box>
+              ))}
+            </Box>
+          ))}
         </Box>
+      </Box>
+      {footnote && (
+        <Text as="p" variant="paragraph4" color="neutral80" sx={{ mt: 3 }}>
+          {footnote}
+        </Text>
       )}
-    </Grid>
+    </>
   )
 }
 

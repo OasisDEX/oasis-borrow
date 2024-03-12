@@ -22,7 +22,7 @@ export function PartialTakeProfitBanner({ buttonClicked }: { buttonClicked: () =
         action: () => {
           buttonClicked()
         },
-        text: 'Setup Auto Take Profit',
+        text: 'Set up Auto Take Profit',
       }}
     />
   )

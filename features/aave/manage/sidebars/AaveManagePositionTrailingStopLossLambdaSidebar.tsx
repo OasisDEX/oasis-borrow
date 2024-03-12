@@ -37,6 +37,7 @@ import {
 } from 'features/automation/common/consts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
@@ -45,6 +46,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { useInterval } from 'usehooks-ts'
 import type { Sender } from 'xstate'
 
 type TrailingStopLossSidebarStates =
@@ -187,20 +189,14 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     }
   }, []) // should remain empty
 
+  useInterval(onTxFinished, refreshingTriggerData ? refreshDataTime : null)
+
   useEffect(() => {
-    if (refreshingTriggerData) {
-      setTimeout(() => {
-        setRefreshingTriggerData(false)
-        onTxFinished()
-        if (stopLossLambdaData.triggerId !== triggerId) {
-          setTriggerId(stopLossLambdaData.triggerId ?? '0')
-          setRefreshingTriggerData(false)
-        } else {
-          setRefreshingTriggerData(true)
-        }
-      }, refreshDataTime)
+    if (stopLossLambdaData.triggerId !== triggerId) {
+      setTriggerId(stopLossLambdaData.triggerId ?? '0')
+      setRefreshingTriggerData(false)
     }
-  }, [refreshingTriggerData])
+  }, [stopLossLambdaData.triggerId, triggerId])
 
   const stopLossTranslationParams = {
     feature: t(sidebarAutomationFeatureCopyMap['stopLoss']),
@@ -220,6 +216,12 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     }
     return null
   }
+  const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    return [
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
+    ].filter(Boolean) as string[]
+  }, [])
 
   const stopLossInformationPanel = (
     <DimmedList>
@@ -309,6 +311,11 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
         rightLabel={t('slider.set-stoploss.right-label')}
       />
       <>
+        <MessageCard
+          type="error"
+          messages={frontendErrors}
+          withBullet={frontendErrors.length > 1}
+        />
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       </>
@@ -450,8 +457,14 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   const executionAction = () => {
     void executeCall()
       .then(() => {
-        setTransactionStep('finished')
-        action !== TriggerAction.Remove && setRefreshingTriggerData(true)
+        if (action === TriggerAction.Remove) {
+          setTimeout(() => {
+            setTransactionStep('finished')
+          }, refreshDataTime)
+        } else {
+          setRefreshingTriggerData(true)
+          setTransactionStep('finished')
+        }
       })
       .catch((error) => {
         console.error('error', error)
@@ -460,9 +473,12 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
   }
 
   const isDisabled = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     if (
-      isGettingTrailingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
+      (isGettingTrailingStopLossTx ||
+        ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
+        errors.length) &&
+      !validationDisabled
     ) {
       return true
     }
@@ -472,12 +488,13 @@ export function AaveManagePositionTrailingStopLossLambdaSidebar({
     if (trailingStopLossTxDataLambda === undefined) {
       return true
     }
-    return !trailingStopLossConfigChanged
+    return !trailingStopLossConfigChanged && !errors.length
   }, [
     isGettingTrailingStopLossTx,
     trailingStopLossConfigChanged,
     transactionStep,
     trailingStopLossTxDataLambda,
+    errors.length,
   ])
 
   const primaryButtonAction = () => {

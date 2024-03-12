@@ -40,14 +40,17 @@ interface OmniGeneralContextProviderProps {
   isOpening: boolean
   isOracless: boolean
   isProxyWithManyPositions: boolean
+  isYieldLoop: boolean
+  isYieldLoopWithData: boolean
+  label?: string
   network: NetworkConfig
   networkId: OmniSupportedNetworkIds
   owner: string
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
-  protocolVersion?: string
   protocolRaw: string
+  protocolVersion?: string
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number
@@ -59,8 +62,6 @@ interface OmniGeneralContextProviderProps {
   slippage: BigNumber
   steps: OmniSidebarStep[]
   walletNetwork: NetworkConfig
-  isYieldLoop: boolean
-  isYieldLoopWithData: boolean
 }
 
 export enum OmniSlippageSourceSettings {
@@ -131,6 +132,7 @@ export function OmniGeneralContextProvider({
     collateralToken,
     isOpening,
     isProxyWithManyPositions,
+    isYieldLoop,
     network,
     networkId,
     owner,
@@ -139,7 +141,6 @@ export function OmniGeneralContextProvider({
     settings,
     slippage,
     walletNetwork,
-    isYieldLoop,
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<OmniSidebarStep>(steps[0])

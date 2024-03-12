@@ -22,7 +22,6 @@ import {
   morphoFlowStateFilter,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
-import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
@@ -116,10 +115,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
             position,
-          }),
-          sidebarTitle: useMorphoSidebarTitle({
-            currentStep,
-            productType,
           }),
           footerColumns: 2,
           maxSliderAsMaxLtv: true,

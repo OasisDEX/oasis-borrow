@@ -35,6 +35,7 @@ import {
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
@@ -43,11 +44,12 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { useInterval } from 'usehooks-ts'
 import type { Sender } from 'xstate'
 
 const aaveLambdaStopLossConfig = {
   translationRatioParam: 'vault-changes.loan-to-value',
-  sliderStep: 1,
+  sliderStep: 0.1,
 }
 
 type StopLossSidebarStates =
@@ -64,7 +66,7 @@ const refreshDataTime = 10 * 1000
 
 const getFormatters = (strategyConfig: IStrategyConfig) => {
   const { denomination, denominationToken } = getDenominations(strategyConfig)
-  const firstFormatter = (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))
+  const firstFormatter = (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x, { precision: 2 }))
   const secondFormatter = (x: BigNumber) =>
     x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${denomination}`
 
@@ -114,20 +116,14 @@ export function AaveManagePositionStopLossLambdaSidebar({
     }
   }, []) // should be empty
 
+  useInterval(onTxFinished, refreshingTriggerData ? refreshDataTime : null)
+
   useEffect(() => {
-    if (refreshingTriggerData) {
-      setTimeout(() => {
-        setRefreshingTriggerData(false)
-        onTxFinished()
-        if (stopLossLambdaData.triggerId !== triggerId) {
-          setTriggerId(stopLossLambdaData.triggerId ?? '0')
-          setRefreshingTriggerData(false)
-        } else {
-          setRefreshingTriggerData(true)
-        }
-      }, refreshDataTime)
+    if (stopLossLambdaData.triggerId !== triggerId) {
+      setTriggerId(stopLossLambdaData.triggerId ?? '0')
+      setRefreshingTriggerData(false)
     }
-  }, [refreshingTriggerData])
+  }, [stopLossLambdaData.triggerId, triggerId])
 
   const isRegularStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const isTrailingStopLossEnabled = trailingStopLossLambdaData.trailingDistance !== undefined
@@ -197,6 +193,13 @@ export function AaveManagePositionStopLossLambdaSidebar({
     return null
   }
   const [leftFormatter, rightFormatter] = getFormatters(strategyConfig)
+
+  const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    return [
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
+    ].filter(Boolean) as string[]
+  }, [])
 
   const sidebarPreparingContent: SidebarSectionProps['content'] = (
     <Grid gap={3}>
@@ -284,6 +287,11 @@ export function AaveManagePositionStopLossLambdaSidebar({
         />
       )}
       <>
+        <MessageCard
+          type="error"
+          messages={frontendErrors}
+          withBullet={frontendErrors.length > 1}
+        />
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       </>
@@ -430,8 +438,14 @@ export function AaveManagePositionStopLossLambdaSidebar({
   const executionAction = () => {
     void executeCall()
       .then(() => {
-        setTransactionStep('finished')
-        action !== TriggerAction.Remove && setRefreshingTriggerData(true)
+        if (action === TriggerAction.Remove) {
+          setTimeout(() => {
+            setTransactionStep('finished')
+          }, refreshDataTime)
+        } else {
+          setRefreshingTriggerData(true)
+          setTransactionStep('finished')
+        }
       })
       .catch((error) => {
         console.error('error', error)
@@ -440,9 +454,12 @@ export function AaveManagePositionStopLossLambdaSidebar({
   }
 
   const isDisabled = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     if (
-      isGettingStopLossTx ||
-      ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep)
+      (isGettingStopLossTx ||
+        ['addInProgress', 'updateInProgress', 'removeInProgress'].includes(transactionStep) ||
+        errors.length) &&
+      !validationDisabled
     ) {
       return true
     }
@@ -450,7 +467,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
       return false
     }
     return !stopLossConfigChanged
-  }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep])
+  }, [isGettingStopLossTx, stopLossConfigChanged, transactionStep, errors.length])
 
   const primaryButtonAction = () => {
     if (transactionStep === 'prepare') {
