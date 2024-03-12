@@ -127,6 +127,7 @@ export const OmniProductController = <Auction, History, Position>({
   } = protocolHook({
     collateralToken,
     dpmPositionData,
+    label,
     networkId,
     quoteToken,
     tokenPriceUSDData,

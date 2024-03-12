@@ -1,5 +1,6 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
+import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import { useMemo } from 'react'
@@ -7,10 +8,14 @@ import { EMPTY } from 'rxjs'
 
 export function useErc4626Data({
   dpmPositionData,
+  label,
   networkId,
   tokenPriceUSDData,
 }: OmniProtocolHookProps) {
   const { erc4626Position$ } = useProductContext()
+
+  // it is safe to assume that in erc-4626 context label is always availabe string
+  const { address } = erc4626VaultsByName[label as string]
 
   const [erc4626PositionData, erc4626PositionError] = useObservable(
     useMemo(
@@ -18,7 +23,7 @@ export function useErc4626Data({
         dpmPositionData && tokenPriceUSDData
           ? erc4626Position$(
               tokenPriceUSDData[dpmPositionData.quoteToken],
-              '0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB',
+              address,
               dpmPositionData,
               networkId,
             )

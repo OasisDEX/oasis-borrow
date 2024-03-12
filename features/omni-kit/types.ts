@@ -90,12 +90,13 @@ export interface OmniTokensPrecision {
 export interface OmniProtocolHookProps {
   collateralToken: string
   dpmPositionData?: DpmPositionData
+  label?: string
   networkId: OmniSupportedNetworkIds
   product?: OmniProductType
+  protocol: OmniSupportedProtocols
   quoteToken: string
   tokenPriceUSDData?: Tickers
   tokensPrecision?: OmniTokensPrecision
-  protocol: OmniSupportedProtocols
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'
