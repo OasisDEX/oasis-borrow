@@ -28,7 +28,7 @@ export function useOmniCardDataAutoBSTriggerTargetLtv({
         ? 'auto-sell.target-ltv-after-selling'
         : 'auto-buy.target-ltv-after-buying',
     ),
-    value: currentTargetLTV && formatDecimalAsPercent(currentTargetLTV),
+    value: currentTargetLTV ? formatDecimalAsPercent(currentTargetLTV) : '-',
     ...(afterTxTargetLTV && {
       change: [formatDecimalAsPercent(afterTxTargetLTV), t('system.cards.common.after')],
     }),

@@ -1,5 +1,8 @@
-import { AutoSellBanner, StopLossBanner } from 'features/aave/components/banners'
-import { TrailingStopLossBanner } from 'features/aave/components/banners/trailing-stop-loss-banner'
+import {
+  AutoSellBanner,
+  StopLossBanner,
+  TrailingStopLossBanner,
+} from 'features/aave/components/banners'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   OmniAutoBSOverviewDetailsSection,

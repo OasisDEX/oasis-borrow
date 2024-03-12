@@ -3,6 +3,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import { getTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
+import { resolveActiveOrder } from 'features/omni-kit/automation/helpers'
 import {
   OmniCardDataDynamicStopLossPriceModal,
   OmniCardDataEstTokenOnTriggerModal,
@@ -14,13 +15,16 @@ import {
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
+import type { FC } from 'react'
 import React from 'react'
 
-export const OmniTrailingStopLossOverviewDetailsSection = ({
-  active = false,
-}: {
+interface OmniTrailingStopLossOverviewDetailsSectionProps {
   active?: boolean
-}) => {
+}
+
+export const OmniTrailingStopLossOverviewDetailsSection: FC<
+  OmniTrailingStopLossOverviewDetailsSectionProps
+> = ({ active = false }) => {
   const { t } = useTranslation()
   const {
     environment: {
@@ -145,7 +149,7 @@ export const OmniTrailingStopLossOverviewDetailsSection = ({
 
   return (
     <DetailsSection
-      sx={active ? { order: -1 } : undefined}
+      sx={resolveActiveOrder(active)}
       title={t('system.trailing-stop-loss')}
       badge={!!automation?.flags.isTrailingStopLossEnabled}
       content={

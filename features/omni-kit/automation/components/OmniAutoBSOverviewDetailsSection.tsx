@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { resolveActiveOrder } from 'features/omni-kit/automation/helpers'
 import {
   OmniContentCard,
   useOmniCardDataAutoBSTriggerExecutionLtv,
@@ -120,7 +121,7 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
 
   return (
     <DetailsSection
-      sx={active ? { order: -1 } : undefined}
+      sx={resolveActiveOrder(active)}
       title={resolvedTitle}
       badge={resolvedFlag}
       content={

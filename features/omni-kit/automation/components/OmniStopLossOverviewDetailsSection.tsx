@@ -7,6 +7,7 @@ import {
   getDynamicStopLossPrice,
   getMaxToken,
 } from 'features/automation/protection/stopLoss/helpers'
+import { resolveActiveOrder } from 'features/omni-kit/automation/helpers'
 import type { OmniCardLtvAutomationData } from 'features/omni-kit/components/details-section'
 import {
   OmniCardDataDynamicStopLossPriceModal,
@@ -22,9 +23,16 @@ import {
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
+import type { FC } from 'react'
 import React from 'react'
 
-export const OmniStopLossOverviewDetailsSection = ({ active = false }: { active?: boolean }) => {
+interface OmniStopLossOverviewDetailsSectionProps {
+  active?: boolean
+}
+
+export const OmniStopLossOverviewDetailsSection: FC<OmniStopLossOverviewDetailsSectionProps> = ({
+  active = false,
+}) => {
   const { t } = useTranslation()
   const {
     environment: { productType, collateralToken, quoteToken, isShort, priceFormat },
@@ -165,7 +173,7 @@ export const OmniStopLossOverviewDetailsSection = ({ active = false }: { active?
 
   return (
     <DetailsSection
-      sx={active ? { order: -1 } : undefined}
+      sx={resolveActiveOrder(active)}
       title={t('system.stop-loss')}
       badge={isStopLossEnabled}
       content={

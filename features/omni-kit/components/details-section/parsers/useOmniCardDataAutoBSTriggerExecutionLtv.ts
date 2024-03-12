@@ -30,7 +30,7 @@ export function useOmniCardDataAutoBSTriggerExecutionLtv({
 
   return {
     title: t(titleKey, { token: collateralToken }),
-    value: currentExecutionLTV && formatDecimalAsPercent(currentExecutionLTV),
+    value: currentExecutionLTV ? formatDecimalAsPercent(currentExecutionLTV) : '-',
     ...(afterTxExecutionLTV && {
       change: [formatDecimalAsPercent(afterTxExecutionLTV), t('system.cards.common.after')],
     }),
