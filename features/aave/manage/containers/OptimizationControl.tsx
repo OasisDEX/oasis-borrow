@@ -18,6 +18,7 @@ import type {
   triggersAaveStateMachine,
 } from 'features/aave/manage/state'
 import { getAaveLikePartialTakeProfitParams } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
+import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
@@ -128,30 +129,41 @@ export function OptimizationControl({
   const autoBuyEnabled = isAaveBasicBuyEnabled || isSparkBasicBuyEnabled
   const partialTakeProfitEnabled = isAavePartialTakeProfitEnabled || isSparkPartialTakeProfitEnabled
 
+  const isAutoBuyFeatureEnabled = state.context.strategyConfig.isAutomationFeatureEnabled(
+    AutomationFeatures.AUTO_BUY,
+  )
+  const isPartialTakeProfitFeatureEnabled = state.context.strategyConfig.isAutomationFeatureEnabled(
+    AutomationFeatures.PARTIAL_TAKE_PROFIT,
+  )
+
   return (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
       <Grid variant="vaultContainer">
         <Grid gap={3} mb={[0, 5]}>
           {triggersState.context.optimizationCurrentView === 'auto-buy' &&
-            autoBuyDetailsLayoutProps && (
+            autoBuyDetailsLayoutProps &&
+            isAutoBuyFeatureEnabled && (
               <BasicAutomationDetailsView {...autoBuyDetailsLayoutProps} />
             )}
-          {triggersState.context.optimizationCurrentView === 'partial-take-profit' && (
-            <AavePartialTakeProfitManageDetails
-              aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
-              aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
-              netValuePnlCollateralData={netValuePnlCollateralData}
-              netValuePnlDebtData={netValuePnlDebtData}
-              historyEvents={state.context.historyEvents}
-            />
-          )}
+          {triggersState.context.optimizationCurrentView === 'partial-take-profit' &&
+            isPartialTakeProfitFeatureEnabled && (
+              <AavePartialTakeProfitManageDetails
+                aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
+                aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
+                netValuePnlCollateralData={netValuePnlCollateralData}
+                netValuePnlDebtData={netValuePnlDebtData}
+                historyEvents={state.context.historyEvents}
+              />
+            )}
           {triggersState.context.optimizationCurrentView !== 'auto-buy' &&
             autoBuyEnabled &&
-            autoBuyDetailsLayoutProps && (
+            autoBuyDetailsLayoutProps &&
+            isAutoBuyFeatureEnabled && (
               <BasicAutomationDetailsView {...autoBuyDetailsLayoutProps} />
             )}
           {triggersState.context.optimizationCurrentView !== 'partial-take-profit' &&
-            partialTakeProfitEnabled && (
+            partialTakeProfitEnabled &&
+            isPartialTakeProfitFeatureEnabled && (
               <AavePartialTakeProfitManageDetails
                 aaveLikePartialTakeProfitParams={aaveLikePartialTakeProfitParams}
                 aaveLikePartialTakeProfitLambdaData={aaveLikePartialTakeProfitLambdaData}
@@ -161,17 +173,22 @@ export function OptimizationControl({
                 simpleView
               />
             )}
-          {triggersState.context.showAutoBuyBanner && !autoBuyEnabled && (
-            <AutoBuyBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_BUY' })} />
-          )}
-          {triggersState.context.showPartialTakeProfitBanner && !partialTakeProfitEnabled && (
-            <PartialTakeProfitBanner
-              buttonClicked={() => sendTriggerEvent({ type: 'SHOW_PARTIAL_TAKE_PROFIT' })}
-            />
-          )}
+          {triggersState.context.showAutoBuyBanner &&
+            !autoBuyEnabled &&
+            isAutoBuyFeatureEnabled && (
+              <AutoBuyBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_BUY' })} />
+            )}
+          {triggersState.context.showPartialTakeProfitBanner &&
+            !partialTakeProfitEnabled &&
+            isPartialTakeProfitFeatureEnabled && (
+              <PartialTakeProfitBanner
+                buttonClicked={() => sendTriggerEvent({ type: 'SHOW_PARTIAL_TAKE_PROFIT' })}
+              />
+            )}
         </Grid>
         {triggersState.context.optimizationCurrentView === 'auto-buy' &&
-          autoBuyState.context.position && (
+          autoBuyState.context.position &&
+          isAutoBuyFeatureEnabled && (
             <AutoBuySidebarAaveVault
               strategy={state.context.strategyConfig}
               state={{ ...autoBuyState.context, position: autoBuyState.context.position }}
@@ -183,7 +200,8 @@ export function OptimizationControl({
             />
           )}
         {triggersState.context.optimizationCurrentView === 'partial-take-profit' &&
-          state.context.strategyConfig && (
+          state.context.strategyConfig &&
+          isPartialTakeProfitFeatureEnabled && (
             <AaveManagePositionPartialTakeProfitLambdaSidebar
               state={state}
               send={send}
