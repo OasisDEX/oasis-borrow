@@ -35,6 +35,7 @@ export const settings: OmniProtocolSettings = {
 
 const erc4626Vaults: Erc4626Config[] = [
   {
+    address: '0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB',
     curator: {
       label: 'Steakhouse',
       url: 'https://www.steakhouse.financial/',

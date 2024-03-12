@@ -16,6 +16,8 @@ import {
   Erc4626EstimatedMarketCap,
   Erc4626FormOrder,
 } from 'features/omni-kit/protocols/erc-4626/components/sidebar'
+import { erc4626FlowStateFilter } from 'features/omni-kit/protocols/erc-4626/helpers'
+import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -30,10 +32,22 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   const suppressValidation = false
 
   const {
-    environment: { label, productType, isOpening, quoteToken, quotePrice },
+    environment: {
+      collateralAddress,
+      isOpening,
+      label,
+      productType,
+      protocol,
+      quoteAddress,
+      quotePrice,
+      quoteToken,
+    },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+
+  // it is safe to assume that in erc-4626 context label is always availabe string
+  const { address: vaultAddress } = erc4626VaultsByName[label as string]
 
   // TODO: replace with real validation
   const validations = {
@@ -56,11 +70,17 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
       return {
         notifications,
         validations,
-        handlers: {
-          txSuccessEarnHandler: () => {},
-        },
+        handlers: {},
         filters: {
-          flowStateFilter: () => true,
+          flowStateFilter: (event) =>
+            erc4626FlowStateFilter({
+              collateralAddress,
+              event,
+              productType,
+              quoteAddress,
+              protocol,
+              protocolRaw: `erc4626-${vaultAddress}`,
+            }),
         },
         values: {
           interestRate: zero,

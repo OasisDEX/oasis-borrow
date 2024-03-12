@@ -1,6 +1,7 @@
 import type { OmniSupportedProtocols } from 'features/omni-kit/types'
 
 export interface Erc4626Config {
+  address: string,
   curator: {
     label: string
     url: string
