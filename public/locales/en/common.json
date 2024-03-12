@@ -2386,7 +2386,13 @@
     "title": "Trailing Stop-Loss"
   },
   "partial-take-profit": {
-    "title": "Auto Take Profit"
+    "title": "Auto Take Profit",
+    "overview": {
+      "footer": {
+        "title": "Need help setting up auto take profit?",
+        "description": "However you learn, we’ve got you covered. Watch a video tutorial or read a in depth how to article. Both walk you through setting up your Auto Take Profit automation like a pro."
+      }
+    }
   },
   "automation": {
     "setup": "{{feature}} Setup",
@@ -2810,6 +2816,14 @@
         "modal-trailing-sl-title": "Trailing Stop-Loss Loan to Value",
         "modal-sl-description": "The Stop-Loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the protection tab.",
         "modal-trailing-sl-description": "The Trailing Stop-Loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the protection tab."
+      },
+      "current-pnl": {
+        "title": "Current profit/loss",
+        "modal-description": "The profit or loss of your position, denominated in collateral, including realized profits to wallet. Specifically, P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits."
+      },
+      "realized-profit": {
+        "title": "Profit realized to wallet",
+        "modal-description": "The cumulative amount of collateral or debt that you have realized as profits to your wallet."
       },
       "collateral-deposited": {
         "title": "Collateral Deposited",
