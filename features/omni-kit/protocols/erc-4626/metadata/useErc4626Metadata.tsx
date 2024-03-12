@@ -1,7 +1,12 @@
 import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
+import type {
+  GetOmniMetadata,
+  ProductContextWithEarn,
+  SupplyMetadata,
+} from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { getOmniIsEarnFormEmpty } from 'features/omni-kit/helpers'
 import {
   Erc4626DetailsSectionContent,
   Erc4626DetailsSectionFooter,
@@ -17,7 +22,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { sparks } from 'theme/icons'
 
-export const useErc4626Metadata: GetOmniMetadata = () => {
+export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
 
   // TODO: get from feature flags
@@ -26,6 +31,8 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
 
   const {
     environment: { label, productType, isOpening, quoteToken, quotePrice },
+    steps: { currentStep },
+    tx: { txDetails },
   } = useOmniGeneralContext()
 
   // TODO: replace with real validation
@@ -44,6 +51,8 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
 
   switch (productType) {
     case OmniProductType.Earn:
+      const castedProductContext = productContext as ProductContextWithEarn
+
       return {
         notifications,
         validations,
@@ -51,11 +60,15 @@ export const useErc4626Metadata: GetOmniMetadata = () => {
           txSuccessEarnHandler: () => {},
         },
         filters: {
-          flowStateFilter: () => false,
+          flowStateFilter: () => true,
         },
         values: {
           interestRate: zero,
-          isFormEmpty: false,
+          isFormEmpty: getOmniIsEarnFormEmpty({
+            currentStep,
+            state: castedProductContext.form.state,
+            txStatus: txDetails?.txStatus,
+          }),
           footerColumns: isOpening ? 2 : 3,
           headline: label,
           // TODO replace with real values
