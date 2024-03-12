@@ -3486,6 +3486,10 @@
     "susde": {
       "title": "Get paid to boost your sUSDe yield on Summer",
       "description": "Borrow DAI against your sUSDe with AJNA on summer and multiply your staking yield exposure, all while earning $AJNA rewards."
+    },
+    "auto-take-profit": {
+      "title": "Automate your exit strategy.",
+      "description": "Realize profits at specific prices, over time, automatically. Auto Take Profit automation allows you to exit your vault positions at your own pace."
     }
   }
 }
