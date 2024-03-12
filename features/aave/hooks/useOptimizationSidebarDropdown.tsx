@@ -27,33 +27,48 @@ export function useOptimizationSidebarDropdown(
     }[state.context.optimizationCurrentView || 'partial-take-profit']
   }, [state.context.optimizationCurrentView])
 
+  const isAutoBuyFeatureEnabled = state.context.strategyConfig.isAutomationFeatureEnabled(
+    AutomationFeatures.AUTO_BUY,
+  )
+  const isPartialTakeProfitFeatureEnabled = state.context.strategyConfig.isAutomationFeatureEnabled(
+    AutomationFeatures.PARTIAL_TAKE_PROFIT,
+  )
+
+  const itemsList = [
+    isAutoBuyFeatureEnabled
+      ? {
+          label: `${hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled ? 'Manage' : 'Set up'} ${t(
+            'system.basic-buy',
+          )}`,
+          shortLabel: t('system.basic-buy'),
+          iconShrink: 2,
+          icon: circle_exchange,
+          panel: AutomationFeatures.AUTO_BUY,
+          action: () => {
+            sender({ type: 'SHOW_AUTO_BUY' })
+          },
+        }
+      : false,
+    isPartialTakeProfitFeatureEnabled
+      ? {
+          label: `${
+            hasAavePartialTakeProfitEnabled || hasSparkPartialTakeProfitEnabled
+              ? 'Manage'
+              : 'Set up'
+          } ${t('system.take-profit')}`,
+          shortLabel: t('system.take-profit'),
+          iconShrink: 2,
+          icon: circle_exchange,
+          panel: AutomationFeatures.PARTIAL_TAKE_PROFIT,
+          action: () => {
+            sender({ type: 'SHOW_PARTIAL_TAKE_PROFIT' })
+          },
+        }
+      : false,
+  ].filter(Boolean) as SidebarSectionHeaderDropdown['items']
+
   return {
     forcePanel: currentPanel,
-    items: [
-      {
-        label: `${hasAaveAutoBuyEnabled || hasSparkAutoBuyEnabled ? 'Manage' : 'Set up'} ${t(
-          'system.basic-buy',
-        )}`,
-        shortLabel: t('system.basic-buy'),
-        iconShrink: 2,
-        icon: circle_exchange,
-        panel: AutomationFeatures.AUTO_BUY,
-        action: () => {
-          sender({ type: 'SHOW_AUTO_BUY' })
-        },
-      },
-      {
-        label: `${
-          hasAavePartialTakeProfitEnabled || hasSparkPartialTakeProfitEnabled ? 'Manage' : 'Set up'
-        } ${t('system.take-profit')}`,
-        shortLabel: t('system.take-profit'),
-        iconShrink: 2,
-        icon: circle_exchange,
-        panel: AutomationFeatures.PARTIAL_TAKE_PROFIT,
-        action: () => {
-          sender({ type: 'SHOW_PARTIAL_TAKE_PROFIT' })
-        },
-      },
-    ],
+    items: itemsList,
   }
 }

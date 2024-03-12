@@ -47,21 +47,33 @@ const reduceHistoryEvents = (events: AavePartialTakeProfitManageDetailsProps['hi
       .filter(({ kind }) => kind?.includes('AutomationExecuted'))
       .reduce(
         (acc, event) => {
-          return {
-            debtRealized: (acc.debtRealized || zero).plus(event.debtDelta?.abs() || zero),
-            collateralRealized: (acc.collateralRealized || zero).plus(
-              event.collateralDelta?.abs() || zero,
-            ),
+          if (!event.withdrawTransfers?.length) {
+            return acc
           }
+          const newTransfersRealized = { ...acc }
+          event.withdrawTransfers?.forEach((transfer) => {
+            if (!transfer.amount.isZero()) {
+              const isCollateralTokenTransfer = transfer.token === event.collateralAddress
+              const isDebtTokenTransfer = transfer.token === event.debtAddress
+              if (isCollateralTokenTransfer) {
+                newTransfersRealized.collateralToken = newTransfersRealized.collateralToken.plus(
+                  new BigNumber(transfer.amount),
+                )
+              }
+              if (isDebtTokenTransfer) {
+                newTransfersRealized.debtToken = newTransfersRealized.debtToken.plus(
+                  new BigNumber(transfer.amount),
+                )
+              }
+            }
+          })
+          return newTransfersRealized
         },
         {
-          debtRealized: zero,
-          collateralRealized: zero,
-        },
-      ) as {
-      debtRealized: BigNumber
-      collateralRealized: BigNumber
-    }
+          collateralToken: zero,
+          debtToken: zero,
+        } as const,
+      ) as Record<'debtToken' | 'collateralToken', BigNumber>
   )
 }
 
@@ -97,15 +109,13 @@ export const AavePartialTakeProfitManageDetails = ({
   }, [historyEvents])
 
   const realizedProfitValue = formatAmount(
-    partialTakeProfitToken === 'debt'
-      ? realizedProfit.debtRealized
-      : realizedProfit.collateralRealized,
+    partialTakeProfitToken === 'debt' ? realizedProfit.debtToken : realizedProfit.collateralToken,
     partialTakeProfitTokenData.symbol,
   )
   const realizedProfitSecondValue = `${formatAmount(
     partialTakeProfitToken === 'collateral'
-      ? realizedProfit.debtRealized
-      : realizedProfit.collateralRealized,
+      ? realizedProfit.debtToken
+      : realizedProfit.collateralToken,
     partialTakeProfitSecondTokenData.symbol,
   )} ${partialTakeProfitSecondTokenData.symbol}`
   const nextTriggerProfit = partialTakeProfitProfits ? partialTakeProfitProfits[0] : undefined

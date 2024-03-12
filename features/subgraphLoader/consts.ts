@@ -117,6 +117,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         }
         withdrawTransfers {
           amount
+          amountUSD
+          token
         }
         blockNumber
         collateralAddress

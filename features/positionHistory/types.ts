@@ -78,6 +78,8 @@ export interface AavePositionHistoryResponse {
   }[]
   withdrawTransfers: {
     amount: string
+    amountUSD: string
+    token: string
   }[]
   blockNumber: string
   collateralAddress: string
@@ -180,4 +182,9 @@ export type PositionHistoryEvent = {
   totalFee: BigNumber
   txHash: string
   withdrawnUSD: BigNumber
+  withdrawTransfers?: {
+    amount: BigNumber
+    amountUSD: BigNumber
+    token: string
+  }[]
 }
