@@ -48,6 +48,8 @@ export const getHistoryEventLabel = ({
     case 'MorphoBlueWithdraw':
     case 'AAVEV3Withdraw':
       return t('position-history.withdraw')
+    case 'AAVEV3WithdrawToDebt':
+      return t('position-history.withdraw-to-debt')
     case 'AjnaBorrow':
     case 'MorphoBlueBorrow':
       return t('position-history.generate')
