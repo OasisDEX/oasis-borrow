@@ -1,0 +1,123 @@
+import { AutomationFeatures } from 'features/automation/common/types'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniAutomationFormView } from 'features/omni-kit/views'
+import { useHash } from 'helpers/useHash'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { circle_slider } from 'theme/icons'
+
+export function OmniAutomationFormController({ txHandler }: { txHandler: () => () => void }) {
+  const { t } = useTranslation()
+  const {
+    environment: { isOpening, productType },
+    steps: { currentStep },
+  } = useOmniGeneralContext()
+  const {
+    automation: { automationForm },
+  } = useOmniProductContext(productType)
+  const [hash] = useHash<string>()
+
+  const resolvedHash = hash.replace('#', '') as 'optimization' | 'protection'
+
+  const isProtection = resolvedHash === 'protection'
+  const isOptimization = resolvedHash === 'optimization'
+
+  const itemsMap = {
+    optimization: [
+      {
+        label: t('system.partial-take-profit'),
+        panel: AutomationFeatures.PARTIAL_TAKE_PROFIT,
+        shortLabel: t('system.partial-take-profit'),
+        icon: circle_slider,
+        iconShrink: 2,
+        action: () => {
+          automationForm.dispatch({ type: 'reset' })
+          automationForm.updateState(
+            'uiDropdownOptimization',
+            AutomationFeatures.PARTIAL_TAKE_PROFIT,
+          )
+        },
+      },
+      {
+        label: t('auto-buy.title'),
+        panel: AutomationFeatures.AUTO_BUY,
+        shortLabel: t('auto-buy.title'),
+        icon: circle_slider,
+        iconShrink: 2,
+        action: () => {
+          automationForm.dispatch({ type: 'reset' })
+          automationForm.updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
+        },
+      },
+    ],
+    protection: [
+      {
+        label: t('system.trailing-stop-loss'),
+        panel: AutomationFeatures.TRAILING_STOP_LOSS,
+        shortLabel: t('system.trailing-stop-loss'),
+        icon: circle_slider,
+        iconShrink: 2,
+        action: () => {
+          automationForm.dispatch({ type: 'reset' })
+          automationForm.updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
+        },
+      },
+      {
+        label: t('system.stop-loss'),
+        panel: AutomationFeatures.STOP_LOSS,
+        shortLabel: t('system.stop-loss'),
+        icon: circle_slider,
+        iconShrink: 2,
+        action: () => {
+          automationForm.dispatch({ type: 'reset' })
+          automationForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+        },
+      },
+      {
+        label: t('auto-sell.title'),
+        panel: AutomationFeatures.AUTO_SELL,
+        shortLabel: t('auto-sell.title'),
+        icon: circle_slider,
+        iconShrink: 2,
+        action: () => {
+          automationForm.dispatch({ type: 'reset' })
+          automationForm.updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
+        },
+      },
+    ],
+  }
+
+  return (
+    <OmniAutomationFormView
+      {...(!isOpening && {
+        dropdown: {
+          // forcePanel: automationForm.state.uiDropdown,
+          disabled: currentStep !== OmniSidebarStep.Manage,
+          items: itemsMap[resolvedHash] || [],
+        },
+      })}
+      txHandler={txHandler}
+      txSuccessAction={() => {
+        // if (uiDropdown === OmniMultiplyPanel.Close) {
+        //   updateState('uiDropdown', OmniMultiplyPanel.Adjust)
+        //   updateState('action', OmniMultiplyFormAction.AdjustMultiply)
+        // }
+      }}
+    >
+      {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
+        isProtection && <>Auto Sell Form</>}
+      {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
+        isProtection && <>Stop-Loss Form</>}
+      {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
+        isProtection && <>Trailing Stop-Loss Form</>}
+      {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
+        isOptimization && <>Auto Buy Form</>}
+      {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
+        isOptimization && <>Partial Take Profit Form</>}
+      {/*{currentStep === OmniSidebarStep.Transaction && (*/}
+      {/*  <OmniFormContentTransaction orderInformation={OmniMultiplyFormOrder} />*/}
+      {/*)}*/}
+    </OmniAutomationFormView>
+  )
+}

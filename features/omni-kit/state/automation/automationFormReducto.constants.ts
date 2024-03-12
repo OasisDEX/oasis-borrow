@@ -10,7 +10,8 @@ export const omniAutomationFormReset = {
   maxGasFee: undefined,
   ltvStep: undefined,
   percentageOffset: undefined,
-  uiDropdown: undefined,
+  uiDropdownProtection: undefined,
+  uiDropdownOptimization: undefined,
   resolveTo: undefined,
   useThreshold: undefined,
 }

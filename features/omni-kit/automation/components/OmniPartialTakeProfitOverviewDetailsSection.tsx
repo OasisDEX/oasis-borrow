@@ -55,7 +55,7 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
 
   const castedPosition = position as AaveLikePositionV2
 
-  const simpleView = state.uiDropdown !== AutomationFeatures.PARTIAL_TAKE_PROFIT
+  const simpleView = state.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
 
   const isPartialTakeProfitEnabled = !!automation?.flags.isPartialTakeProfitEnabled
 

@@ -33,9 +33,10 @@ export const OmniProtectionOverviewController: FC = () => {
   const isTrailingStopLossEnabled = !!automation?.flags.isTrailingStopLossEnabled
   const isAutoSellEnabled = !!automation?.flags.isAutoSellEnabled
 
-  const stopLossDetailsActive = state.uiDropdown === AutomationFeatures.STOP_LOSS
-  const trailingStopLossDetailsActive = state.uiDropdown === AutomationFeatures.TRAILING_STOP_LOSS
-  const autoSellDetailsActive = state.uiDropdown === AutomationFeatures.AUTO_SELL
+  const stopLossDetailsActive = state.uiDropdownProtection === AutomationFeatures.STOP_LOSS
+  const trailingStopLossDetailsActive =
+    state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS
+  const autoSellDetailsActive = state.uiDropdownProtection === AutomationFeatures.AUTO_SELL
 
   return (
     <Grid gap={2}>
@@ -54,24 +55,26 @@ export const OmniProtectionOverviewController: FC = () => {
       )}
       {/*{ BANNERS }*/}
       {availableAutomations?.includes(AutomationFeatures.AUTO_SELL) &&
-        state.uiDropdown !== AutomationFeatures.AUTO_SELL &&
+        state.uiDropdownProtection !== AutomationFeatures.AUTO_SELL &&
         !isAutoSellEnabled && (
           <AutoSellBanner
-            buttonClicked={() => updateState('uiDropdown', AutomationFeatures.AUTO_SELL)}
+            buttonClicked={() => updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)}
           />
         )}
       {availableAutomations?.includes(AutomationFeatures.STOP_LOSS) &&
-        state.uiDropdown !== AutomationFeatures.STOP_LOSS &&
+        state.uiDropdownProtection !== AutomationFeatures.STOP_LOSS &&
         !isStopLossEnabled && (
           <StopLossBanner
-            buttonClicked={() => updateState('uiDropdown', AutomationFeatures.STOP_LOSS)}
+            buttonClicked={() => updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)}
           />
         )}
       {availableAutomations?.includes(AutomationFeatures.TRAILING_STOP_LOSS) &&
-        state.uiDropdown !== AutomationFeatures.TRAILING_STOP_LOSS &&
+        state.uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS &&
         !isTrailingStopLossEnabled && (
           <TrailingStopLossBanner
-            buttonClicked={() => updateState('uiDropdown', AutomationFeatures.TRAILING_STOP_LOSS)}
+            buttonClicked={() =>
+              updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
+            }
           />
         )}
       {/*{state.uiDropdown === AutomationFeatures.STOP_LOSS &&*/}

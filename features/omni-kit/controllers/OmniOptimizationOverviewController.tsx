@@ -27,17 +27,18 @@ export const OmniOptimizationOverviewController: FC = () => {
   const isPartialTakeProfitEnabled = !!automation?.flags.isPartialTakeProfitEnabled
   const isAutoBuyEnabled = !!automation?.flags.isAutoBuyEnabled
 
-  const partialTakeProfitDetailsActive = state.uiDropdown === AutomationFeatures.PARTIAL_TAKE_PROFIT
-  const autoBuyDetailsActive = state.uiDropdown === AutomationFeatures.AUTO_BUY
+  const partialTakeProfitDetailsActive =
+    state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT
+  const autoBuyDetailsActive = state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY
 
   return (
     <Grid gap={2}>
       {/*{ DETAILS SECTIONS }*/}
-      {(state.uiDropdown === AutomationFeatures.PARTIAL_TAKE_PROFIT ||
+      {(state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT ||
         isPartialTakeProfitEnabled) && (
         <OmniPartialTakeProfitOverviewDetailsSection active={partialTakeProfitDetailsActive} />
       )}
-      {(state.uiDropdown === AutomationFeatures.AUTO_BUY || isAutoBuyEnabled) && (
+      {(state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY || isAutoBuyEnabled) && (
         <OmniAutoBSOverviewDetailsSection
           type={AutomationFeatures.AUTO_BUY}
           active={autoBuyDetailsActive}
@@ -45,17 +46,19 @@ export const OmniOptimizationOverviewController: FC = () => {
       )}
       {/*{ BANNERS }*/}
       {availableAutomations?.includes(AutomationFeatures.PARTIAL_TAKE_PROFIT) &&
-        state.uiDropdown !== AutomationFeatures.PARTIAL_TAKE_PROFIT &&
+        state.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT &&
         !isPartialTakeProfitEnabled && (
           <PartialTakeProfitBanner
-            buttonClicked={() => updateState('uiDropdown', AutomationFeatures.PARTIAL_TAKE_PROFIT)}
+            buttonClicked={() =>
+              updateState('uiDropdownOptimization', AutomationFeatures.PARTIAL_TAKE_PROFIT)
+            }
           />
         )}
       {availableAutomations?.includes(AutomationFeatures.AUTO_BUY) &&
-        state.uiDropdown !== AutomationFeatures.AUTO_BUY &&
+        state.uiDropdownOptimization !== AutomationFeatures.AUTO_BUY &&
         !isAutoBuyEnabled && (
           <AutoBuyBanner
-            buttonClicked={() => updateState('uiDropdown', AutomationFeatures.AUTO_BUY)}
+            buttonClicked={() => updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)}
           />
         )}
     </Grid>

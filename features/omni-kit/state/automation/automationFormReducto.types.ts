@@ -16,7 +16,8 @@ export interface OmniAutomationFormState {
   percentageOffset?: BigNumber
   useThreshold?: BigNumber
   resolveTo?: OmniCloseTo
-  uiDropdown?: AutomationFeatures
+  uiDropdownProtection?: AutomationFeatures
+  uiDropdownOptimization?: AutomationFeatures
 }
 
 export interface AutomationFormActionsUpdateTargetLtv {

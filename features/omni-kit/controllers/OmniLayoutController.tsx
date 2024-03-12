@@ -1,6 +1,7 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { OmniAutomationFormController } from 'features/omni-kit/automation/controllers/'
 import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
 import {
   omniOptimizationLikeAutomationFeatures,
@@ -173,6 +174,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniProtectionOverviewController />
+                            <OmniAutomationFormController txHandler={() => () => null} />
                           </Grid>
                         ),
                       },
@@ -190,6 +192,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniOptimizationOverviewController />
+                            <OmniAutomationFormController txHandler={() => () => null} />
                           </Grid>
                         ),
                       },
