@@ -1,4 +1,4 @@
-import { find,groupBy, map } from "lodash"
+import { find, groupBy, map } from 'lodash'
 
 /**
  * Filters and groups events by transaction hash.
@@ -8,10 +8,10 @@ import { find,groupBy, map } from "lodash"
  *          or the first event with 'Automation' in its kind if such event exists in the group.
  */
 export function filterAndGroupByTxHash(events: any[]): any[] {
-    const groups = groupBy(events, 'txHash')
-  
-    return map(
-      groups,
-      (group) => find(group, (event) => event.kind.includes('Automation')) || group[0],
-    )
-  }
+  const groups = groupBy(events, 'txHash')
+
+  return map(
+    groups,
+    (group) => find(group, (event) => event.kind.includes('Automation')) || group[0],
+  )
+}
