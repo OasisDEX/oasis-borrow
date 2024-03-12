@@ -3,6 +3,7 @@ import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
   OmniCardDataCollateralDepositedModal,
+  OmniCardDataLtvModal,
   OmniCardDataPositionDebtModal,
   OmniContentCard,
   useOmniCardDataBuyingPower,
@@ -16,7 +17,6 @@ import {
   mapBorrowCumulativesToOmniCumulatives,
 } from 'features/omni-kit/helpers'
 import {
-  AjnaCardDataLtvModal,
   useAjnaCardDataBuyingPower,
   useAjnaCardDataNetValueLending,
   useAjnaCardDataThresholdPrice,
@@ -109,8 +109,12 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     ltv: position.riskRatio.loanToValue,
     ...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue }),
     modal: (
-      <AjnaCardDataLtvModal
+      <OmniCardDataLtvModal
         ltv={position.riskRatio.loanToValue}
+        customCopies={{
+          title: 'ajna.content-card.ltv.footnote',
+          description: 'ajna.content-card.ltv.modal-footnote-description',
+        }}
         {...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue })}
       />
     ),

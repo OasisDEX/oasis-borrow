@@ -1,3 +1,5 @@
 export * from './auto-buy-banner'
 export * from './auto-sell-banner'
 export * from './stop-loss-banner'
+export * from './partial-take-profit-banner'
+export * from './trailing-stop-loss-banner'

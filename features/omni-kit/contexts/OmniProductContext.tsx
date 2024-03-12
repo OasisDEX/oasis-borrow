@@ -26,11 +26,16 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import type {
+  AutoBuyTriggers,
+  AutoSellTriggers,
   GetTriggersResponse,
+  PartialTakeProfitTriggers,
   SetupBasicAutoResponse,
   SetupBasicStopLossResponse,
   SetupPartialTakeProfitResponse,
   SetupTrailingStopLossResponse,
+  StopLossTriggers,
+  TrailingStopLossTriggers,
   TriggersApiError,
   TriggersApiWarning,
   TriggerTransaction,
@@ -64,6 +69,24 @@ export interface OmniSupplyMetadataHandlers {
   customReset?: () => void
 }
 
+interface AutomationMetadataValues {
+  flags: {
+    isStopLossEnabled: boolean
+    isTrailingStopLossEnabled: boolean
+    isAutoSellEnabled: boolean
+    isAutoBuyEnabled: boolean
+    isPartialTakeProfitEnabled: boolean
+  }
+  triggers: {
+    stopLoss?: StopLossTriggers
+    trailingStopLoss?: TrailingStopLossTriggers
+    autoSell?: AutoSellTriggers
+    autoBuy?: AutoBuyTriggers
+    partialTakeProfit?: PartialTakeProfitTriggers
+  }
+  simulation: AutomationMetadataValuesSimulation
+}
+
 interface CommonMetadataValues {
   footerColumns: number
   headline?: string
@@ -72,6 +95,7 @@ interface CommonMetadataValues {
   interestRate: BigNumber
   isFormEmpty: boolean
   sidebarTitle?: string
+  automation?: AutomationMetadataValues
 }
 interface CommonMetadataElements {
   faq: ReactNode
@@ -206,13 +230,16 @@ interface ProductContextPosition<Position, Auction> {
   simulationCommon: OmniSimulationCommon
 }
 
+export type OmniAutomationSimulationResponse =
+  | SetupBasicAutoResponse
+  | SetupBasicStopLossResponse
+  | SetupTrailingStopLossResponse
+  | SetupPartialTakeProfitResponse
+
+type AutomationMetadataValuesSimulation = OmniAutomationSimulationResponse['simulation']
+
 interface OmniAutomationSimulationData {
-  encodedTriggerData?: string
-  simulation?:
-    | SetupBasicAutoResponse
-    | SetupBasicStopLossResponse
-    | SetupTrailingStopLossResponse
-    | SetupPartialTakeProfitResponse
+  simulationResponse?: OmniAutomationSimulationResponse
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
   transaction?: TriggerTransaction
