@@ -16,7 +16,11 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export const OmniTrailingStopLossOverviewDetailsSection = () => {
+export const OmniTrailingStopLossOverviewDetailsSection = ({
+  active = false,
+}: {
+  active?: boolean
+}) => {
   const { t } = useTranslation()
   const {
     environment: {
@@ -141,6 +145,7 @@ export const OmniTrailingStopLossOverviewDetailsSection = () => {
 
   return (
     <DetailsSection
+      sx={active ? { order: -1 } : undefined}
       title={t('system.trailing-stop-loss')}
       badge={!!automation?.flags.isTrailingStopLossEnabled}
       content={

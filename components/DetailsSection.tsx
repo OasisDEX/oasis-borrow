@@ -4,6 +4,7 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useToggle } from 'helpers/useToggle'
 import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Flex, Heading } from 'theme-ui'
 
 import { VaultTabTag } from './vault/VaultTabTag'
@@ -18,6 +19,7 @@ interface DetailsSectionProps {
   loose?: boolean
   notifications?: DetailsSectionNotificationItem[]
   title?: ReactNode
+  sx?: ThemeUIStyleObject
 }
 
 export function DetailsSection({
@@ -30,12 +32,13 @@ export function DetailsSection({
   loose,
   notifications,
   title,
+  sx,
 }: DetailsSectionProps) {
   const [openedNotifications, setOpenedNotifications] = useState<number>(notifications?.length || 0)
   const [isOpen, toggleIsOpen] = useToggle(accordionOpenByDefault)
 
   return (
-    <Box>
+    <Box sx={sx}>
       {notifications && (
         <DetailsSectionNotification
           notifications={notifications}

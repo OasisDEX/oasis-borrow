@@ -30,16 +30,24 @@ export const OmniProtectionOverviewController: FC = () => {
   const isTrailingStopLossEnabled = !!automation?.flags.isTrailingStopLossEnabled
   const isAutoSellEnabled = !!automation?.flags.isAutoSellEnabled
 
+  const stopLossDetailsActive = state.uiDropdown === AutomationFeatures.STOP_LOSS
+  const trailingStopLossDetailsActive = state.uiDropdown === AutomationFeatures.TRAILING_STOP_LOSS
+  const autoSellDetailsActive = state.uiDropdown === AutomationFeatures.AUTO_SELL
+
   return (
     <Grid gap={2}>
       {/*{ DETAILS SECTIONS }*/}
-      {(state.uiDropdown === AutomationFeatures.STOP_LOSS || isStopLossEnabled) && (
-        <OmniStopLossOverviewDetailsSection />
+      {(stopLossDetailsActive || isStopLossEnabled) && (
+        <OmniStopLossOverviewDetailsSection active={stopLossDetailsActive} />
       )}
-      {(state.uiDropdown === AutomationFeatures.TRAILING_STOP_LOSS ||
-        isTrailingStopLossEnabled) && <OmniTrailingStopLossOverviewDetailsSection />}
-      {(state.uiDropdown === AutomationFeatures.AUTO_SELL || isAutoSellEnabled) && (
-        <OmniAutoBSOverviewDetailsSection type={AutomationFeatures.AUTO_SELL} />
+      {(trailingStopLossDetailsActive || isTrailingStopLossEnabled) && (
+        <OmniTrailingStopLossOverviewDetailsSection active={trailingStopLossDetailsActive} />
+      )}
+      {(autoSellDetailsActive || isAutoSellEnabled) && (
+        <OmniAutoBSOverviewDetailsSection
+          active={autoSellDetailsActive}
+          type={AutomationFeatures.AUTO_SELL}
+        />
       )}
       {/*{ BANNERS }*/}
       {availableAutomations?.includes(AutomationFeatures.AUTO_SELL) &&

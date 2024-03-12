@@ -24,7 +24,7 @@ import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export const OmniStopLossOverviewDetailsSection = () => {
+export const OmniStopLossOverviewDetailsSection = ({ active = false }: { active?: boolean }) => {
   const { t } = useTranslation()
   const {
     environment: { productType, collateralToken, quoteToken, isShort, priceFormat },
@@ -165,6 +165,7 @@ export const OmniStopLossOverviewDetailsSection = () => {
 
   return (
     <DetailsSection
+      sx={active ? { order: -1 } : undefined}
       title={t('system.stop-loss')}
       badge={isStopLossEnabled}
       content={
