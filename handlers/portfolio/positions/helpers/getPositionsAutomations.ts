@@ -59,20 +59,36 @@ export function getPositionsAutomations({
   triggers,
   defaultList = {},
 }: GetPositionsAutomationsParams): PortfolioPositionAutomations {
-  return triggers.reduce((automations, { triggerType }) => {
-    return {
-      ...automations,
-      ...Object.keys(triggerTypesMap).reduce(
-        (result, key) => ({
-          ...result,
-          ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(
-            Number(triggerType),
-          ) && {
-            [key]: { enabled: true },
+  return triggers
+    .filter((trigger) => {
+      // we've been filtering all executedBlock and removedBlock
+      // Auto Buy/Sell and Take profit are recurring triggers
+      // so it doesnt matter if they are executed or not
+      // as long as they are not removed theyre enabled
+      // so in this case im just filtering out executed stop loss like triggers
+      if (
+        !!trigger.executedBlock &&
+        triggerTypesMap.stopLoss.includes(Number(trigger.triggerType))
+      ) {
+        return false
+      }
+      return trigger
+    })
+    .filter(Boolean)
+    .reduce((automations, { triggerType }) => {
+      return {
+        ...automations,
+        ...Object.keys(triggerTypesMap).reduce(
+          (result, key) => ({
+            ...result,
+            ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(
+              Number(triggerType),
+            ) && {
+              [key]: { enabled: true },
+            }),
           }),
-        }),
-        {},
-      ),
-    }
-  }, defaultList)
+          {},
+        ),
+      }
+    }, defaultList)
 }
