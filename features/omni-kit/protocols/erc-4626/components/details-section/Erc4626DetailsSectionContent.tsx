@@ -1,6 +1,12 @@
+import type { Erc4626Position } from '@oasisdex/dma-library'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import {
+  OmniContentCard,
+  useOmniCardDataTokensValue,
+} from 'features/omni-kit/components/details-section'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { Erc4626DetailsSectionContentEstimatedEarnings } from 'features/omni-kit/protocols/erc-4626/components/details-section'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -13,6 +19,24 @@ export const Erc4626DetailsSectionContent: FC = () => {
   const {
     environment: { isOpening, quoteToken },
   } = useOmniGeneralContext()
+  const {
+    position: { currentPosition },
+  } = useOmniProductContext(OmniProductType.Earn)
+
+  const position = currentPosition.position as Erc4626Position
+
+  const netValueContentCardCommonData = useOmniCardDataTokensValue({
+    tokensAmount: position.netValue,
+    tokensSymbol: quoteToken,
+    translationCardName: 'net-value',
+  })
+
+  const earningsToDateContentCardCommonData = useOmniCardDataTokensValue({
+    tokensAmount: position.totalEarnings.withoutFees,
+    tokensSymbol: quoteToken,
+    translationCardName: 'earnings-to-date',
+    footnote: t('erc-4626.content-card.earnings-to-date.footnote'),
+  })
 
   return (
     <>
@@ -52,7 +76,10 @@ export const Erc4626DetailsSectionContent: FC = () => {
           footnote={<>{t('omni-kit.position-page.earn.open.disclaimer')}</>}
         />
       ) : (
-        <>Manage overview section</>
+        <>
+          <OmniContentCard {...netValueContentCardCommonData} />
+          <OmniContentCard {...earningsToDateContentCardCommonData} />
+        </>
       )}
     </>
   )
