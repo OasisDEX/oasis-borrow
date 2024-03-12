@@ -1,7 +1,9 @@
+import type { Erc4626Position } from '@oasisdex/dma-library'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
 import {
   OmniContentCard,
   useOmniCardDataLink,
+  useOmniCardDataTokensValue,
   useOmniCardDataVaultFee,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -16,22 +18,27 @@ export const Erc4626DetailsSectionFooter: FC = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { label },
+    environment: { isOpening, label, quoteToken },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
       values: { interestRate },
     },
+    position: { currentPosition },
   } = useOmniProductContext(OmniProductType.Earn)
+
+  const position = currentPosition.position as Erc4626Position
+  const simulation = currentPosition.simulation as Erc4626Position | undefined
 
   // it is safe to assume that in erc-4626 context label is always availabe string
   const { id, curator } = erc4626VaultsByName[label as string]
 
-  const curatorContentCardCuratorData = useOmniCardDataLink({
+  const curatorContentCardCommonData = useOmniCardDataLink({
     translationCardName: 'curator',
     ...curator,
   })
-  const curatorContentCardVaultFeeData = useOmniCardDataVaultFee({
+
+  const vaultFeeContentCardCommonData = useOmniCardDataVaultFee({
     fee: interestRate,
     modal: (
       <DetailsSectionContentSimpleModal
@@ -42,10 +49,18 @@ export const Erc4626DetailsSectionFooter: FC = () => {
     ),
   })
 
+  const availableToWithdrawContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: simulation?.maxWithdrawal,
+    tokensAmount: position.maxWithdrawal,
+    tokensSymbol: quoteToken,
+    translationCardName: 'available-to-withdraw',
+  })
+
   return (
     <>
-      <OmniContentCard asFooter {...curatorContentCardCuratorData} />
-      <OmniContentCard asFooter {...curatorContentCardVaultFeeData} />
+      <OmniContentCard asFooter {...curatorContentCardCommonData} />
+      <OmniContentCard asFooter {...vaultFeeContentCardCommonData} />
+      {!isOpening && <OmniContentCard asFooter {...availableToWithdrawContentCardCommonData} />}
     </>
   )
 }
