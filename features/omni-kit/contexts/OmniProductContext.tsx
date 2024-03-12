@@ -26,19 +26,16 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import type {
-  AaveStopLossToCollateral,
-  AaveStopLossToCollateralDMA,
-  AaveStopLossToDebt,
-  AaveStopLossToDebtDMA,
-  DmaAaveBasicBuy,
-  DmaAaveBasicSell,
-  DmaAavePartialTakeProfit,
-  DmaAaveTrailingStopLoss,
+  AutoBuyTriggers,
+  AutoSellTriggers,
   GetTriggersResponse,
+  PartialTakeProfitTriggers,
   SetupBasicAutoResponse,
   SetupBasicStopLossResponse,
   SetupPartialTakeProfitResponse,
   SetupTrailingStopLossResponse,
+  StopLossTriggers,
+  TrailingStopLossTriggers,
   TriggersApiError,
   TriggersApiWarning,
   TriggerTransaction,
@@ -72,6 +69,24 @@ export interface OmniSupplyMetadataHandlers {
   customReset?: () => void
 }
 
+interface AutomationMetadataValues {
+  flags: {
+    isStopLossEnabled: boolean
+    isTrailingStopLossEnabled: boolean
+    isAutoSellEnabled: boolean
+    isAutoBuyEnabled: boolean
+    isPartialTakeProfitEnabled: boolean
+  }
+  triggers: {
+    stopLoss?: StopLossTriggers
+    trailingStopLoss?: TrailingStopLossTriggers
+    autoSell?: AutoSellTriggers
+    autoBuy?: AutoBuyTriggers
+    partialTakeProfit?: PartialTakeProfitTriggers
+  }
+  simulation: AutomationMetadataValuesSimulation
+}
+
 interface CommonMetadataValues {
   footerColumns: number
   headline?: string
@@ -80,27 +95,7 @@ interface CommonMetadataValues {
   interestRate: BigNumber
   isFormEmpty: boolean
   sidebarTitle?: string
-  automation?: {
-    flags: {
-      isStopLossEnabled: boolean
-      isTrailingStopLossEnabled: boolean
-      isAutoSellEnabled: boolean
-      isAutoBuyEnabled: boolean
-      isPartialTakeProfitEnabled: boolean
-    }
-    triggers: {
-      stopLoss?:
-        | AaveStopLossToCollateral
-        | AaveStopLossToCollateralDMA
-        | AaveStopLossToDebt
-        | AaveStopLossToDebtDMA
-      trailingStopLoss?: DmaAaveTrailingStopLoss
-      autoSell?: DmaAaveBasicSell
-      autoBuy?: DmaAaveBasicBuy
-      partialTakeProfit?: DmaAavePartialTakeProfit
-    }
-    simulation: any
-  }
+  automation?: AutomationMetadataValues
 }
 interface CommonMetadataElements {
   faq: ReactNode
@@ -240,6 +235,8 @@ export type OmniAutomationSimulationResponse =
   | SetupBasicStopLossResponse
   | SetupTrailingStopLossResponse
   | SetupPartialTakeProfitResponse
+
+type AutomationMetadataValuesSimulation = OmniAutomationSimulationResponse['simulation']
 
 interface OmniAutomationSimulationData {
   simulationResponse?: OmniAutomationSimulationResponse
