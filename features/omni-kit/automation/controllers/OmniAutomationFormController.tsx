@@ -1,4 +1,5 @@
 import { AutomationFeatures } from 'features/automation/common/types'
+import { OmniStopLossSideBar } from 'features/omni-kit/automation/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
@@ -108,7 +109,7 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
       {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
         isProtection && <>Auto Sell Form</>}
       {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
-        isProtection && <>Stop-Loss Form</>}
+        isProtection && <OmniStopLossSideBar />}
       {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
         isProtection && <>Trailing Stop-Loss Form</>}
       {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&

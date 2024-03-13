@@ -1,4 +1,5 @@
 export * from './OmniStopLossOverviewDetailsSection'
+export * from './OmniStopLossSideBar'
 export * from './OmniTrailingStopLossOverviewDetailsSection'
 export * from './OmniAutoBSOverviewDetailsSection'
 export * from './OmniPartialTakeProfitOverviewDetailsSection'
