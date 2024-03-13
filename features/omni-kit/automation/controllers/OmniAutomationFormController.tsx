@@ -109,16 +109,20 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
         // }
       }}
     >
-      {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
-        isProtection && <>Auto Sell Form</>}
-      {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
-        isProtection && <>Stop-Loss Form</>}
-      {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
-        isProtection && <>Trailing Stop-Loss Form</>}
-      {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
-        isOptimization && <>Auto Buy Form</>}
-      {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
-        isOptimization && <>Partial Take Profit Form</>}
+      {currentStep === OmniSidebarAutomationStep.Manage && (
+        <>
+          {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
+            isProtection && <>Auto Sell Form</>}
+          {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
+            isProtection && <>Stop-Loss Form</>}
+          {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
+            isProtection && <>Trailing Stop-Loss Form</>}
+          {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
+            isOptimization && <>Auto Buy Form</>}
+          {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
+            isOptimization && <>Partial Take Profit Form</>}
+        </>
+      )}
       {currentStep === OmniSidebarAutomationStep.Transaction && <>Tx step</>}
       {/*{currentStep === OmniSidebarStep.Transaction && (*/}
       {/*  <OmniFormContentTransaction orderInformation={OmniMultiplyFormOrder} />*/}
