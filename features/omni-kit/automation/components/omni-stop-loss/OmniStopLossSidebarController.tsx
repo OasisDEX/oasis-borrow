@@ -1,22 +1,18 @@
-import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
 import { AutomationFeatures } from 'features/automation/common/types'
-import {
-  getDynamicStopLossPrice,
-  getSliderPercentageFill,
-} from 'features/automation/protection/stopLoss/helpers'
 import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components'
 import { stopLossConstants } from 'features/omni-kit/automation/constants'
-import { getStopLossFormatters } from 'features/omni-kit/automation/helpers'
+import {
+  getStopLossFormatters,
+  useOmniStopLossDataHandler,
+} from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import { curry } from 'ramda'
 import type { FC } from 'react'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 export const OmniStopLossSidebarController: FC = () => {
@@ -31,55 +27,16 @@ export const OmniStopLossSidebarController: FC = () => {
     dynamicMetadata: {
       values: { automation: automationDynamicValues },
     },
-    position: {
-      currentPosition: { position },
-    },
   } = useOmniProductContext(productType)
 
-  const { riskRatio, category, debtAmount, collateralAmount } = position as AaveLikePositionV2
-
-  const positionLtv = riskRatio.loanToValue
-  const liquidationRatio = category.liquidationThreshold
-  const defaultStopLossLevel = category.maxLoanToValue
-    .minus(stopLossConstants.offsets.manage.max)
-    .times(100)
-
-  const stopLossLevel = automationFormState.triggerLtv || defaultStopLossLevel
-  const sliderMin = useMemo(
-    () => positionLtv.plus(stopLossConstants.offsets.manage.min).times(100),
-    [positionLtv],
-  )
-  const sliderMax = useMemo(
-    () => liquidationRatio.minus(stopLossConstants.offsets.manage.max).times(100),
-    [liquidationRatio],
-  )
-
-  const sliderPercentageFill = useMemo(
-    () =>
-      getSliderPercentageFill({
-        min: sliderMin,
-        max: sliderMax,
-        value: stopLossLevel,
-      }),
-    [sliderMax, sliderMin, stopLossLevel],
-  )
-  const liquidationPrice = useMemo(
-    () => debtAmount.div(collateralAmount.times(liquidationRatio)) || zero,
-    [collateralAmount, debtAmount, liquidationRatio],
-  )
-  const dynamicStopLossPrice = useMemo(
-    () =>
-      getDynamicStopLossPrice({
-        liquidationPrice,
-        liquidationRatio: one.div(liquidationRatio),
-        stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
-      }),
-    [liquidationPrice, liquidationRatio, stopLossLevel],
-  )
-  const dynamicStopLossPriceForView = useMemo(
-    () => (isShort ? one.div(dynamicStopLossPrice) : dynamicStopLossPrice),
-    [dynamicStopLossPrice, isShort],
-  )
+  const {
+    resolvedAfterDynamicStopLossPrice,
+    sliderStep,
+    sliderMax,
+    sliderMin,
+    sliderPercentageFill,
+    displayStopLossLevel,
+  } = useOmniStopLossDataHandler()
 
   const { leftFormatter, rightFormatter } = getStopLossFormatters({
     isShort,
@@ -114,16 +71,18 @@ export const OmniStopLossSidebarController: FC = () => {
         </AppLink>
       </Text>
       <SliderValuePicker
-        step={stopLossConstants.sliderStep}
+        step={sliderStep}
         leftBoundryFormatter={leftFormatter}
         rightBoundryFormatter={rightFormatter}
         sliderPercentageFill={sliderPercentageFill}
-        lastValue={stopLossLevel}
+        lastValue={displayStopLossLevel}
         maxBoundry={sliderMax}
         minBoundry={sliderMin}
-        rightBoundry={dynamicStopLossPriceForView}
-        leftBoundry={stopLossLevel}
-        onChange={curry(automationUpdateState)('triggerLtv')}
+        rightBoundry={resolvedAfterDynamicStopLossPrice}
+        leftBoundry={displayStopLossLevel}
+        onChange={(triggerLtv) => {
+          automationUpdateState('triggerLtv', triggerLtv)
+        }}
         leftLabel={t('protection.stop-loss-something', {
           value: t('vault-changes.loan-to-value'),
         })}
@@ -135,6 +94,15 @@ export const OmniStopLossSidebarController: FC = () => {
           automationUpdateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
         }}
       />
+      <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+        {t('protection.not-guaranteed')}
+      </Text>
+      <Text as="p" variant="paragraph3">
+        {t('protection.guarantee-factors')}{' '}
+        <AppLink href={EXTERNAL_LINKS.KB.AUTOMATION} sx={{ fontWeight: 'body' }}>
+          {t('protection.learn-more-about-automation')}
+        </AppLink>
+      </Text>
     </>
   )
 }

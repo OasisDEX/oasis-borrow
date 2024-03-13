@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import type { OmniCloseTo } from 'features/omni-kit/types'
 
 export const stopLossConstants = {
-  sliderStep: 0.1,
+  sliderStep: new BigNumber(0.1).div(100), // 0.1% step
   defaultResolveTo: 'collateral' as OmniCloseTo,
   offsets: {
     open: {
