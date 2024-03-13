@@ -12,7 +12,6 @@ import { stopLossConstants } from 'features/omni-kit/automation/constants'
 import { getStopLossFormatters } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
@@ -28,9 +27,9 @@ export const OmniStopLossSidebarController: FC = () => {
   const {
     automation: {
       automationForm: { state: automationFormState, updateState: automationUpdateState },
-      positionTriggers: {
-        triggers: { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA },
-      },
+    },
+    dynamicMetadata: {
+      values: { automation: automationDynamicValues },
     },
     position: {
       currentPosition: { position },
@@ -131,7 +130,7 @@ export const OmniStopLossSidebarController: FC = () => {
         rightLabel={t('slider.set-stoploss.right-label')}
       />
       <OmniDoubleStopLossWarning
-        hasTrailingStopLoss={isAnyValueDefined(aaveTrailingStopLossDMA, sparkTrailingStopLossDMA)}
+        hasTrailingStopLoss={automationDynamicValues?.flags.isTrailingStopLossEnabled}
         onClick={() => {
           automationUpdateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
         }}

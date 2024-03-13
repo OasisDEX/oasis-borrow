@@ -5,9 +5,9 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
 export const OmniDoubleStopLossWarning: FC<{
-  hasTrailingStopLoss: boolean
+  hasTrailingStopLoss?: boolean
   onClick: () => void
-}> = ({ hasTrailingStopLoss, onClick }) => {
+}> = ({ hasTrailingStopLoss = false, onClick }) => {
   const { t } = useTranslation()
   return hasTrailingStopLoss ? (
     <MessageCard
