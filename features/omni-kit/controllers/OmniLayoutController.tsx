@@ -20,7 +20,7 @@ import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { hasCommonElement } from 'helpers/hasCommonElement'
@@ -59,6 +59,8 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       isYieldLoop,
       settings,
     },
+    tx: { isTxInProgress },
+    automationSteps,
   } = useOmniGeneralContext()
   const {
     position: {
@@ -171,6 +173,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                   ? [
                       {
                         value: 'protection',
+                        callback: !isTxInProgress
+                          ? () => automationSteps.setStep(OmniSidebarAutomationStep.Manage)
+                          : undefined,
                         tag: {
                           include: true,
                           active: hasActiveProtection(positionTriggers, protocol),
@@ -191,6 +196,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                   ? [
                       {
                         value: 'optimization',
+                        callback: !isTxInProgress
+                          ? () => automationSteps.setStep(OmniSidebarAutomationStep.Manage)
+                          : undefined,
                         tag: {
                           include: true,
                           active: hasActiveOptimization(positionTriggers, protocol),

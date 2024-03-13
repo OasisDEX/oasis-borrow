@@ -5,6 +5,7 @@ import {
   OmniPartialTakeProfitOverviewDetailsSection,
 } from 'features/omni-kit/automation/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -12,6 +13,8 @@ import { Grid } from 'theme-ui'
 export const OmniOptimizationOverviewController: FC = () => {
   const {
     environment: { productType, settings, networkId },
+    automationSteps: { setStep },
+    tx: { isTxInProgress },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -49,16 +52,20 @@ export const OmniOptimizationOverviewController: FC = () => {
         state.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT &&
         !isPartialTakeProfitEnabled && (
           <PartialTakeProfitBanner
-            buttonClicked={() =>
+            buttonClicked={() => {
+              !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
               updateState('uiDropdownOptimization', AutomationFeatures.PARTIAL_TAKE_PROFIT)
-            }
+            }}
           />
         )}
       {availableAutomations?.includes(AutomationFeatures.AUTO_BUY) &&
         state.uiDropdownOptimization !== AutomationFeatures.AUTO_BUY &&
         !isAutoBuyEnabled && (
           <AutoBuyBanner
-            buttonClicked={() => updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)}
+            buttonClicked={() => {
+              !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+              updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
+            }}
           />
         )}
     </Grid>

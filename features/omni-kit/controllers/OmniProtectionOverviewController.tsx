@@ -10,6 +10,7 @@ import {
   OmniTrailingStopLossOverviewDetailsSection,
 } from 'features/omni-kit/automation/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -17,6 +18,8 @@ import { Grid } from 'theme-ui'
 export const OmniProtectionOverviewController: FC = () => {
   const {
     environment: { productType, settings, networkId },
+    automationSteps: { setStep },
+    tx: { isTxInProgress },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -58,36 +61,32 @@ export const OmniProtectionOverviewController: FC = () => {
         state.uiDropdownProtection !== AutomationFeatures.AUTO_SELL &&
         !isAutoSellEnabled && (
           <AutoSellBanner
-            buttonClicked={() => updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)}
+            buttonClicked={() => {
+              !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+              updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
+            }}
           />
         )}
       {availableAutomations?.includes(AutomationFeatures.STOP_LOSS) &&
         state.uiDropdownProtection !== AutomationFeatures.STOP_LOSS &&
         !isStopLossEnabled && (
           <StopLossBanner
-            buttonClicked={() => updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)}
+            buttonClicked={() => {
+              !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+              updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+            }}
           />
         )}
       {availableAutomations?.includes(AutomationFeatures.TRAILING_STOP_LOSS) &&
         state.uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS &&
         !isTrailingStopLossEnabled && (
           <TrailingStopLossBanner
-            buttonClicked={() =>
+            buttonClicked={() => {
+              !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
               updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
-            }
+            }}
           />
         )}
-      {/*{state.uiDropdown === AutomationFeatures.STOP_LOSS &&*/}
-      {/*  !protectionControlUI.trailingStopLoss.banner && (*/}
-      {/*    <StopLossBanner buttonClicked={goToView('stop-loss')} />*/}
-      {/*  )}*/}
-      {/*{state.uiDropdown === AutomationFeatures.TRAILING_STOP_LOSS &&*/}
-      {/*  !protectionControlUI.stopLoss.banner && (*/}
-      {/*    <TrailingStopLossBanner buttonClicked={goToView('trailing-stop-loss')} />*/}
-      {/*  )}*/}
-      {/*{state.uiDropdown === AutomationFeatures.STOP_LOSS && protectionControlUI.trailingStopLoss.banner && (*/}
-      {/*  <StopLossBanner buttonClicked={goToView('stop-loss-selector')} />*/}
-      {/*)}*/}
     </Grid>
   )
 }

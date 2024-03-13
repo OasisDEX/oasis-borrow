@@ -13,7 +13,8 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
   const { t } = useTranslation()
   const {
     environment: { isOpening, productType },
-    automationSteps: { currentStep },
+    automationSteps: { currentStep, setStep },
+    tx: { isTxInProgress },
   } = useOmniGeneralContext()
   const {
     automation: { automationForm },
@@ -33,6 +34,7 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
         iconShrink: 2,
         action: () => {
           automationForm.dispatch({ type: 'reset' })
+          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
           automationForm.updateState(
             'uiDropdownOptimization',
             AutomationFeatures.PARTIAL_TAKE_PROFIT,
@@ -47,6 +49,7 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
         iconShrink: 2,
         action: () => {
           automationForm.dispatch({ type: 'reset' })
+          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
           automationForm.updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
         },
       },
@@ -60,6 +63,7 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
         iconShrink: 2,
         action: () => {
           automationForm.dispatch({ type: 'reset' })
+          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
           automationForm.updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
         },
       },
@@ -71,6 +75,7 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
         iconShrink: 2,
         action: () => {
           automationForm.dispatch({ type: 'reset' })
+          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
           automationForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
         },
       },
@@ -82,6 +87,7 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
         iconShrink: 2,
         action: () => {
           automationForm.dispatch({ type: 'reset' })
+          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
           automationForm.updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
         },
       },
