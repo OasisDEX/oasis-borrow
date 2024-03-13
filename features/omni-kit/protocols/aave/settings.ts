@@ -113,7 +113,4 @@ export const settingsV3: OmniProtocolSettings = {
     [NetworkIds.BASEMAINNET]: availableAaveAutomations,
     [NetworkIds.OPTIMISMMAINNET]: availableAaveAutomations,
   },
-  automationDefaultValues: {
-    resolveTo: 'quote',
-  },
 }
