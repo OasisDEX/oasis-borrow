@@ -57,6 +57,7 @@ import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
 import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave-like/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getErc4626Position$ } from 'features/omni-kit/protocols/erc-4626/observables'
+import type { Erc4626Token } from 'features/omni-kit/protocols/erc-4626/types'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniTokensPrecision } from 'features/omni-kit/types'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
@@ -659,9 +660,10 @@ export function setupProductContext(
       quotePrice: BigNumber,
       vaultAddress: string,
       dpmPositionData: DpmPositionData,
+      token: Erc4626Token,
       network: NetworkIds,
     ) =>
-      `${dpmPositionData.vaultId}-${network}-${vaultAddress}-${quotePrice
+      `${dpmPositionData.vaultId}-${network}-${vaultAddress}-${JSON.stringify(token)}-${quotePrice
         .decimalPlaces(2)
         .toString()}`,
   )

@@ -15,7 +15,7 @@ export function useErc4626Data({
   const { erc4626Position$ } = useProductContext()
 
   // it is safe to assume that in erc-4626 context label is always availabe string
-  const { address } = erc4626VaultsByName[label as string]
+  const { address, token } = erc4626VaultsByName[label as string]
 
   const [erc4626PositionData, erc4626PositionError] = useObservable(
     useMemo(
@@ -24,6 +24,7 @@ export function useErc4626Data({
           ? erc4626Position$(
               tokenPriceUSDData[dpmPositionData.quoteToken],
               address,
+              token,
               dpmPositionData,
               networkId,
             )

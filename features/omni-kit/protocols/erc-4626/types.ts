@@ -1,7 +1,13 @@
 import type { OmniSupportedProtocols } from 'features/omni-kit/types'
 
+export interface Erc4626Token {
+  address: string
+  precision: number
+  symbol: string
+}
+
 export interface Erc4626Config {
-  address: string,
+  address: string
   curator: {
     label: string
     url: string
@@ -9,5 +15,5 @@ export interface Erc4626Config {
   id: string
   name: string
   protocol: OmniSupportedProtocols
-  token: string
+  token: Erc4626Token
 }

@@ -49,15 +49,19 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     }
   }
 
-  const { name, protocol, token } = erc4626VaultsById[label]
+  const {
+    name,
+    protocol,
+    token: { symbol },
+  } = erc4626VaultsById[label]
 
   return getOmniServerSideProps({
-    collateralToken: token,
+    collateralToken: symbol,
     label: name,
     locale,
     protocol,
     query,
-    quoteToken: token,
+    quoteToken: symbol,
     settings,
   })
 }
