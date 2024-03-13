@@ -7,7 +7,7 @@ export const useOmniAutomationSidebarTitle = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { label, productType, protocol },
+    environment: { productType },
     automationSteps: { currentStep },
   } = useOmniGeneralContext()
 
