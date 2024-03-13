@@ -20,7 +20,7 @@ import type { FC } from 'react'
 import React, { useMemo } from 'react'
 import { Text } from 'theme-ui'
 
-export const OmniStopLossSidebarPrepare: FC = () => {
+export const OmniStopLossSidebarController: FC = () => {
   const { t } = useTranslation()
   const {
     environment: { productType, collateralToken, quoteToken, isShort, priceFormat },
