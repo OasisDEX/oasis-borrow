@@ -1,6 +1,7 @@
+import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
 import { useHash } from 'helpers/useHash'
 import React from 'react'
@@ -11,19 +12,17 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
   const { t } = useTranslation()
   const {
     environment: { isOpening, productType },
-    steps: { currentStep },
+    automationSteps: { currentStep },
   } = useOmniGeneralContext()
   const {
     automation: { automationForm },
   } = useOmniProductContext(productType)
-  const [hash] = useHash<string>()
+  const [hash] = useHash()
 
-  const resolvedHash = hash.replace('#', '') as 'optimization' | 'protection'
+  const isProtection = hash === 'protection'
+  const isOptimization = hash === 'optimization'
 
-  const isProtection = resolvedHash === 'protection'
-  const isOptimization = resolvedHash === 'optimization'
-
-  const itemsMap = {
+  const itemsMap: { [key: string]: SidebarSectionHeaderSelectItem[] } | undefined = {
     optimization: [
       {
         label: t('system.partial-take-profit'),
@@ -88,13 +87,18 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
     ],
   }
 
+  const forcePanelMap: { [key: string]: AutomationFeatures | undefined } | undefined = {
+    optimization: automationForm.state.uiDropdownOptimization,
+    protection: automationForm.state.uiDropdownProtection,
+  }
+
   return (
     <OmniAutomationFormView
       {...(!isOpening && {
         dropdown: {
-          // forcePanel: automationForm.state.uiDropdown,
-          disabled: currentStep !== OmniSidebarStep.Manage,
-          items: itemsMap[resolvedHash] || [],
+          forcePanel: forcePanelMap[hash],
+          disabled: currentStep !== OmniSidebarAutomationStep.Manage,
+          items: itemsMap[hash] || [],
         },
       })}
       txHandler={txHandler}
@@ -105,16 +109,21 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
         // }
       }}
     >
-      {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
-        isProtection && <>Auto Sell Form</>}
-      {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
-        isProtection && <>Stop-Loss Form</>}
-      {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
-        isProtection && <>Trailing Stop-Loss Form</>}
-      {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
-        isOptimization && <>Auto Buy Form</>}
-      {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
-        isOptimization && <>Partial Take Profit Form</>}
+      {currentStep === OmniSidebarAutomationStep.Manage && (
+        <>
+          {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
+            isProtection && <>Auto Sell Form</>}
+          {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
+            isProtection && <>Stop-Loss Form</>}
+          {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
+            isProtection && <>Trailing Stop-Loss Form</>}
+          {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
+            isOptimization && <>Auto Buy Form</>}
+          {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
+            isOptimization && <>Partial Take Profit Form</>}
+        </>
+      )}
+      {currentStep === OmniSidebarAutomationStep.Transaction && <>Tx step</>}
       {/*{currentStep === OmniSidebarStep.Transaction && (*/}
       {/*  <OmniFormContentTransaction orderInformation={OmniMultiplyFormOrder} />*/}
       {/*)}*/}

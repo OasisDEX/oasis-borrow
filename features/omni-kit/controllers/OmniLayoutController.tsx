@@ -68,7 +68,12 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       elements: { faq },
       values: { headline, headlineDetails, isHeadlineDetailsLoading },
     },
-    automation: { positionTriggers },
+    automation: {
+      positionTriggers,
+      automationForm: {
+        state: { uiDropdownProtection, uiDropdownOptimization },
+      },
+    },
   } = useOmniProductContext(productType)
 
   const isMultiplySupported = isPoolSupportingMultiply({
@@ -174,7 +179,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniProtectionOverviewController />
-                            <OmniAutomationFormController txHandler={() => () => null} />
+                            {uiDropdownProtection && (
+                              <OmniAutomationFormController txHandler={() => () => null} />
+                            )}
                           </Grid>
                         ),
                       },
@@ -192,7 +199,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniOptimizationOverviewController />
-                            <OmniAutomationFormController txHandler={() => () => null} />
+                            {uiDropdownOptimization && (
+                              <OmniAutomationFormController txHandler={() => () => null} />
+                            )}
                           </Grid>
                         ),
                       },

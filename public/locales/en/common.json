@@ -2950,6 +2950,10 @@
         "transaction": "Confirm your {{protocol}} {{productType}} Position",
         "transition": "Switch your {{protocol}} {{productType}} Position"
       },
+      "automation-title": {
+        "manage": "Manage your {{automationFeature}}",
+        "transaction": "Confirm your {{automationFeature}}"
+      },
       "transaction": {
         "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} {{protocol}} {{productType}} Position.",
         "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} {{protocol}} Position",
