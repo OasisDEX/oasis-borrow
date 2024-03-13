@@ -1,7 +1,7 @@
 <svg width="592" height="315" viewBox="0 0 592 315" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="592" height="315" rx="8" fill="white"/>
 <path d="M66 99H310" stroke="#EAEAEA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8"/>
-<path d="M65.9062 141C65.9062 141 90.9062 130.5 108.906 112C126.906 93.5003 122.581 68 145.609 68C168.637 68 161.603 129.405 193.127 127C211.135 125.627 218.83 111.221 236.875 112C252.916 112.693 259.126 127.942 275.155 127C295.397 125.812 317.536 99.0003 317.536 99.0003V159C317.536 159 325.63 107.974 344.656 127C366.656 149 372.221 99.0003 372.221 99.0003V159C372.221 159 392.221 152.843 409.564 135.5C426.906 118.158 426.906 99.0003 426.906 99.0003V159C442.403 153.221 431.986 122 456.696 122C481.407 122 480.906 99.0003 480.906 99.0003V159" stroke="#5FC4B9" stroke-width="2" stroke-linejoin="round"/>
+<path d="M65.9062 141C65.9062 141 90.9062 130.5 108.906 112C126.906 93.5003 145.609 68 145.609 68V159C145.609 159 171.439 112 189.5 112C205 112 252.944 135.5 269 135.5C286 135.5 317.536 99.0003 317.536 99.0003V159C317.536 159 325.63 107.974 344.656 127C366.656 149 372.221 99.0003 372.221 99.0003V159C372.221 159 392.221 152.843 409.564 135.5C426.906 118.158 426.906 99.0003 426.906 99.0003V159C442.403 153.221 431.986 122 456.696 122C481.407 122 480.906 99.0003 480.906 99.0003V159" stroke="#5FC4B9" stroke-width="2" stroke-linejoin="round"/>
 <path d="M65.9062 193H483.906" stroke="#E49F6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M65.9062 267H483.906" stroke="#E48062" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M65.9062 279H483.906" stroke="#EAEAEA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8"/>
@@ -21,6 +21,7 @@
 <circle cx="426.906" cy="99" r="3" fill="#17344F"/>
 <circle cx="480.906" cy="99" r="3" fill="#17344F"/>
 <circle cx="318" cy="159" r="3" fill="#575CFE"/>
+<circle cx="146" cy="159" r="3" fill="#575CFE"/>
 <circle cx="371.906" cy="159" r="3" fill="#575CFE"/>
 <circle cx="426.906" cy="159" r="3" fill="#575CFE"/>
 <circle cx="480.906" cy="159" r="3" fill="#575CFE"/>
