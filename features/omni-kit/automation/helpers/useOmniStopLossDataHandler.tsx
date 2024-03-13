@@ -20,7 +20,7 @@ import {
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { one } from 'helpers/zero'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 export const useOmniStopLossDataHandler = () => {
   const {
