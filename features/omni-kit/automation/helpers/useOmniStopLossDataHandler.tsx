@@ -183,7 +183,7 @@ export const useOmniStopLossDataHandler = () => {
       }),
     [sliderMax, sliderMin, displayStopLossLevel],
   )
-  const sliderStep = useMemo(() => stopLossConstants.sliderStep.toNumber(), [])
+  const sliderStep = stopLossConstants.sliderStep
   return {
     isStopLossEnabled,
     castedPosition,
