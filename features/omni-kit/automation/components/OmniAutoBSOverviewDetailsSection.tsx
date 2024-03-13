@@ -55,6 +55,10 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
 
   const castedPosition = position as LendingPosition
 
+  const isActive =
+    state.uiDropdownProtection === AutomationFeatures.AUTO_SELL ||
+    state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY
+
   if (!isAutoBSSimulationResponse(simulationData?.simulationResponse)) {
     throw new Error('Wrong auto BS simulation response type')
   }
@@ -105,7 +109,7 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
     automationFeature: type,
     collateralToken: collateralToken,
     currentExecutionLTV: currentExecutionLTV,
-    afterTxExecutionLTV: afterTriggerLtv,
+    afterTxExecutionLTV: isActive ? afterTriggerLtv : undefined,
     nextPrice: nextPrice,
     denomination: priceFormat,
   })
@@ -114,7 +118,7 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
     automationFeature: type,
     collateralToken: collateralToken,
     currentTargetLTV: currentTargetLTV,
-    afterTxTargetLTV: afterTargetLtv,
+    afterTxTargetLTV: isActive ? afterTargetLtv : undefined,
     thresholdPrice: resolvedThresholdPrice,
     denomination: priceFormat,
   })
