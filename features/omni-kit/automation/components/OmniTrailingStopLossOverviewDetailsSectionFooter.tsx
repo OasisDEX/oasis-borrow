@@ -4,30 +4,20 @@ import type { FC } from 'react'
 import React from 'react'
 import { Box, Divider, Image, Text } from 'theme-ui'
 
-interface OmniTrailingStopLossOvereviewDetailsSectionFooterProps {
-  simpleView: boolean
-}
-
-export const OmniTrailingStopLossOverviewDetailsSectionFooter: FC<
-  OmniTrailingStopLossOvereviewDetailsSectionFooterProps
-> = ({ simpleView }) => {
+export const OmniTrailingStopLossOverviewDetailsSectionFooter: FC = () => {
   const { t } = useTranslation()
 
   return (
     <>
-      {!simpleView && (
-        <>
-          <Box>
-            <Text variant="paragraph3" sx={{ color: 'neutral80', mb: 4 }}>
-              {t('protection.stop-loss-type-select.trailing-stop-loss-description')}
-            </Text>
-          </Box>
-          <Divider sx={{ my: '24px' }} />
-          <Box sx={{ mt: 4, textAlign: 'center' }}>
-            <Image src={staticFilesRuntimeUrl(`/static/img/trailing-stop-loss-graph.svg`)} />
-          </Box>
-        </>
-      )}
+      <Box>
+        <Text variant="paragraph3" sx={{ color: 'neutral80', mb: 4 }}>
+          {t('protection.stop-loss-type-select.trailing-stop-loss-description')}
+        </Text>
+      </Box>
+      <Divider sx={{ my: '24px' }} />
+      <Box sx={{ mt: 4, textAlign: 'center' }}>
+        <Image src={staticFilesRuntimeUrl(`/static/img/trailing-stop-loss-graph.svg`)} />
+      </Box>
     </>
   )
 }
