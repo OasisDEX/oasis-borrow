@@ -10,7 +10,10 @@ import { OmniLayoutController } from 'features/omni-kit/controllers'
 import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
-import { useOmniAutomationFormReducto } from 'features/omni-kit/state/automation'
+import {
+  getAutomationFormDefaults,
+  useOmniAutomationFormReducto,
+} from 'features/omni-kit/state/automation'
 import type {
   OmniFormDefaults,
   OmniProductType,
@@ -19,6 +22,7 @@ import type {
   OmniSupportedNetworkIds,
   OmniSupportedProtocols,
 } from 'features/omni-kit/types'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -254,6 +258,10 @@ export const OmniProductController = <Auction, History, Position>({
                       settings={settings}
                       slippage={slippage}
                       steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
+                      automationSteps={[
+                        OmniSidebarAutomationStep.Manage,
+                        OmniSidebarAutomationStep.Transaction,
+                      ]}
                       isYieldLoop={isYieldLoop}
                       isYieldLoopWithData={isYieldLoopWithData}
                     >
@@ -277,7 +285,7 @@ export const OmniProductController = <Auction, History, Position>({
                             positionHistory: _aggregatedData.history as PositionHistoryEvent[],
                             positionTriggers: positionTriggers,
                             automationFormReducto: useOmniAutomationFormReducto,
-                            automationFormDefaults: {}, // to be determined
+                            automationFormDefaults: getAutomationFormDefaults(positionTriggers),
                           }
                           const omniProductContextProviderData = getOmniProductContextProviderData({
                             formDefaults,

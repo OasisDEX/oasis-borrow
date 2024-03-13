@@ -4,20 +4,21 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
-  getOmniPrimaryButtonLabelKey,
+  getOmniAutomationPrimaryButtonLabelKey,
   getOmniSidebarButtonsStatus,
   getOmniSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
-import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
-import { OmniSidebarStep } from 'features/omni-kit/types'
+import {
+  useOmniAutomationSidebarTitle,
+  useOmniProductTypeTransition,
+} from 'features/omni-kit/hooks'
 import { useConnection } from 'features/web3OnBoard/useConnection'
-import { useModalContext } from 'helpers/modalHook'
 import { useAccount } from 'helpers/useAccount'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
-import React, { useState } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface OmniFormViewProps {
@@ -49,7 +50,7 @@ export function OmniAutomationFormView({
       network,
       networkId,
     },
-    steps: { currentStep, editingStep, isStepWithTransaction, setNextStep, setStep },
+    automationSteps: { currentStep, editingStep, isStepWithTransaction, setNextStep, setStep },
     tx: {
       isTxError,
       isTxSuccess,
@@ -77,10 +78,8 @@ export function OmniAutomationFormView({
 
   const { connect, setChain } = useConnection()
   const { walletAddress } = useAccount()
-  const { openModal } = useModalContext()
-  const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
 
-  const genericSidebarTitle = useOmniSidebarTitle()
+  const genericSidebarTitle = useOmniAutomationSidebarTitle()
 
   const {
     isTransitionAction,
@@ -108,7 +107,7 @@ export function OmniAutomationFormView({
     hasErrors,
     isAllowanceLoading: false,
     isFormFrozen,
-    isFormValid,
+    isFormValid: true, // TODO add isFormValid resolver for automation
     isOpening,
     isOwner,
     isSimulationLoading,
@@ -122,17 +121,12 @@ export function OmniAutomationFormView({
     shouldSwitchNetwork,
     walletAddress,
   })
-  const primaryButtonLabel = getOmniPrimaryButtonLabelKey({
+  const primaryButtonLabel = getOmniAutomationPrimaryButtonLabelKey({
     currentStep,
-    hasAllowance: true,
-    hasDpmAddress: true,
-    isOpening,
-    isTransitionInProgress,
     isTxError,
     isTxSuccess,
     shouldSwitchNetwork,
     walletAddress,
-    uiDropdown: state.uiDropdown,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
     collateralAddress,
@@ -150,10 +144,7 @@ export function OmniAutomationFormView({
     onDefault: setNextStep,
     onDisconnected: connect,
     onSelectTransition: txHandler,
-    onTransition: () => {
-      setStep(OmniSidebarStep.Transition)
-      setisTransitionWaitingForApproval(true)
-    },
+    onTransition: () => null,
     onUpdated: () => {
       setTxDetails(undefined)
       setStep(editingStep)
