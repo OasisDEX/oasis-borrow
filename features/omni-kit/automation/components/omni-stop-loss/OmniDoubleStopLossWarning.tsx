@@ -1,5 +1,6 @@
 import { MessageCard } from 'components/MessageCard'
 import type { FC } from 'react'
+import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
