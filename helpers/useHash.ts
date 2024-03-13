@@ -6,7 +6,7 @@ export function useHash<T extends string>(): [string, (newHash: T) => void] {
   const [hash, setHash] = useState<T>(window?.location.hash.replace('#', '') as T)
 
   const hashChange = useCallback(() => {
-    setHash(window?.location.hash as T)
+    setHash(window?.location.hash.replace('#', '') as T)
   }, [])
 
   useEffect(() => {

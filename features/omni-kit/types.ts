@@ -52,9 +52,19 @@ export enum OmniSidebarStep {
   Transition = 'transition',
 }
 
+export enum OmniSidebarAutomationStep {
+  Manage = 'manage',
+  Transaction = 'transaction',
+}
+
 export type OmniSidebarEditingStep = Extract<
   OmniSidebarStep,
   OmniSidebarStep.Setup | OmniSidebarStep.Manage
+>
+
+export type OmniSidebarAutomationEditingStep = Extract<
+  OmniSidebarAutomationStep,
+  OmniSidebarAutomationStep.Manage
 >
 
 export type OmniSidebarStepsSet = {
