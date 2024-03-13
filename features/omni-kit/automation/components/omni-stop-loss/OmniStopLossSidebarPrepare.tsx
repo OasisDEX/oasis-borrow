@@ -2,14 +2,17 @@ import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
+import { AutomationFeatures } from 'features/automation/common/types'
 import {
   getDynamicStopLossPrice,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
+import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components'
 import { stopLossConstants } from 'features/omni-kit/automation/constants'
 import { getStopLossFormatters } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
@@ -24,7 +27,10 @@ export const OmniStopLossSidebarPrepare: FC = () => {
   } = useOmniGeneralContext()
   const {
     automation: {
-      automationForm: { state, updateState },
+      automationForm: { state: automationFormState, updateState: automationUpdateState },
+      positionTriggers: {
+        triggers: { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA },
+      },
     },
     position: {
       currentPosition: { position },
@@ -39,7 +45,7 @@ export const OmniStopLossSidebarPrepare: FC = () => {
     .minus(stopLossConstants.offsets.manage.max)
     .times(100)
 
-  const stopLossLevel = state.triggerLtv || defaultStopLossLevel
+  const stopLossLevel = automationFormState.triggerLtv || defaultStopLossLevel
   const sliderMin = useMemo(
     () => positionLtv.plus(stopLossConstants.offsets.manage.min).times(100),
     [positionLtv],
@@ -90,15 +96,15 @@ export const OmniStopLossSidebarPrepare: FC = () => {
           {
             id: 'quote',
             label: t('close-to', { token: quoteToken }),
-            action: () => updateState('resolveTo', 'quote'),
+            action: () => automationUpdateState('resolveTo', 'quote'),
           },
           {
             id: 'collateral',
             label: t('close-to', { token: collateralToken }),
-            action: () => updateState('resolveTo', 'collateral'),
+            action: () => automationUpdateState('resolveTo', 'collateral'),
           },
         ]}
-        active={state.resolveTo || stopLossConstants.defaultResolveTo}
+        active={automationFormState.resolveTo || stopLossConstants.defaultResolveTo}
       />
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.set-downside-protection-desc', {
@@ -118,11 +124,17 @@ export const OmniStopLossSidebarPrepare: FC = () => {
         minBoundry={sliderMin}
         rightBoundry={dynamicStopLossPriceForView}
         leftBoundry={stopLossLevel}
-        onChange={curry(updateState)('triggerLtv')}
+        onChange={curry(automationUpdateState)('triggerLtv')}
         leftLabel={t('protection.stop-loss-something', {
           value: t('vault-changes.loan-to-value'),
         })}
         rightLabel={t('slider.set-stoploss.right-label')}
+      />
+      <OmniDoubleStopLossWarning
+        hasTrailingStopLoss={isAnyValueDefined(aaveTrailingStopLossDMA, sparkTrailingStopLossDMA)}
+        onClick={() => {
+          automationUpdateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
+        }}
       />
     </>
   )
