@@ -167,7 +167,7 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
           <OmniContentCard {...estTokenOnTriggerContentCardCommonData} />
         </DetailsSectionContentCardWrapper>
       }
-      footer={<OmniTrailingStopLossOverviewDetailsSectionFooter simpleView={simpleView} />}
+      footer={!simpleView && <OmniTrailingStopLossOverviewDetailsSectionFooter />}
     />
   )
 }
