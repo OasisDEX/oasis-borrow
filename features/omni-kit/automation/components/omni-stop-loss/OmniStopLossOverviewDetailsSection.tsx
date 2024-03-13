@@ -52,6 +52,7 @@ export const OmniStopLossOverviewDetailsSection: FC<OmniStopLossOverviewDetailsS
   // during clean up extend LendingPosition with common properties
   const castedPosition = position as AaveLikePositionV2
 
+  const isActive = state.uiDropdownProtection === AutomationFeatures.STOP_LOSS
   const isStopLossEnabled = !!automation?.flags.isStopLossEnabled
 
   // maybe we could always resolve it to either ltv or executionLtv
@@ -61,6 +62,7 @@ export const OmniStopLossOverviewDetailsSection: FC<OmniStopLossOverviewDetailsS
 
   const stopLossLevel = currentTriggerLtv ? new BigNumber(currentTriggerLtv).div(10000) : undefined
   const afterStopLossLevel = state.triggerLtv
+  const resolvedAfterStopLossLevel = isActive ? afterStopLossLevel : undefined
 
   const isCollateralActive = !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
   const closeToToken = isCollateralActive ? collateralToken : quoteToken
@@ -75,16 +77,16 @@ export const OmniStopLossOverviewDetailsSection: FC<OmniStopLossOverviewDetailsS
     })
 
   const afterDynamicStopLossPrice =
-    afterStopLossLevel &&
+    resolvedAfterStopLossLevel &&
     getDynamicStopLossPrice({
       liquidationPrice: castedPosition.liquidationPrice,
       liquidationRatio: one.div(castedPosition.maxRiskRatio.loanToValue),
-      stopLossLevel: one.div(afterStopLossLevel.div(100)).times(100),
+      stopLossLevel: one.div(resolvedAfterStopLossLevel.div(100)).times(100),
     })
 
-  const resolvedAfterDynamicStopLossPrice = afterDynamicStopLossPrice
-    ? (isShort ? one.div(afterDynamicStopLossPrice) : afterDynamicStopLossPrice).div(100)
-    : undefined
+  const resolvedAfterDynamicStopLossPrice =
+    afterDynamicStopLossPrice &&
+    (isShort ? one.div(afterDynamicStopLossPrice) : afterDynamicStopLossPrice).div(100)
 
   const resolvedDynamicStopLossPrice = dynamicStopLossPrice
     ? (isShort ? one.div(dynamicStopLossPrice) : dynamicStopLossPrice).div(100)
@@ -92,7 +94,7 @@ export const OmniStopLossOverviewDetailsSection: FC<OmniStopLossOverviewDetailsS
 
   const stopLossLtvContentCardCommonData = useOmniCardDataStopLossLtv({
     stopLossLtv: stopLossLevel,
-    afterStopLossLtv: afterStopLossLevel,
+    afterStopLossLtv: resolvedAfterStopLossLevel,
     loanToValue: castedPosition.riskRatio.loanToValue,
     ratioToPositionLtv: stopLossLevel?.minus(castedPosition.riskRatio.loanToValue),
     modal: <OmniCardDataStopLossLtvModal stopLossLtv={stopLossLevel} />,
@@ -122,9 +124,9 @@ export const OmniStopLossOverviewDetailsSection: FC<OmniStopLossOverviewDetailsS
     })
 
   const afterMaxToken =
-    afterStopLossLevel &&
+    resolvedAfterStopLossLevel &&
     getMaxToken({
-      stopLossLevel: one.div(afterStopLossLevel).times(100),
+      stopLossLevel: one.div(resolvedAfterStopLossLevel).times(100),
       lockedCollateral: castedPosition.collateralAmount,
       liquidationRatio: one.div(castedPosition.maxRiskRatio.loanToValue),
       liquidationPrice: castedPosition.liquidationPrice,

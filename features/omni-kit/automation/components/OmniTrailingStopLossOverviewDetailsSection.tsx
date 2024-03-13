@@ -55,6 +55,8 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
   // during clean up extend LendingPosition with common properties
   const castedPosition = position as AaveLikePositionV2
 
+  const isActive = state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS
+
   const closeTo = automation?.triggers.trailingStopLoss?.decodedParams?.closeToCollateral
     ? 'collateral'
     : 'debt'
@@ -100,14 +102,14 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
 
   const trailingDistanceContentCardCommonData = useOmniCardTrailingDistance({
     trailingDistance: isTrailingStopLossEnabled ? currentTrailingDistanceValue : undefined,
-    afterTrailingDistance: afterTraillingStopLossLevel ? trailingDistanceValue : undefined,
+    afterTrailingDistance:
+      afterTraillingStopLossLevel && isActive ? trailingDistanceValue : undefined,
     priceFormat,
   })
 
   const resolvedDynamicStopLossPrice = isTrailingStopLossEnabled ? dynamicStopPrice : undefined
-  const resolvedAfterDynamicStopLossPrice = afterTraillingStopLossLevel
-    ? dynamicStopPriceChange
-    : undefined
+  const resolvedAfterDynamicStopLossPrice =
+    afterTraillingStopLossLevel && isActive ? dynamicStopPriceChange : undefined
 
   const dynamicStopPriceContentCardCommonData = useOmniCardDataDynamicStopLossPrice({
     dynamicStopPrice: resolvedDynamicStopLossPrice,
@@ -134,7 +136,8 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
     closeToToken,
     stateCloseToToken,
     maxToken: isTrailingStopLossEnabled ? estimatedTokenOnSLTrigger : undefined,
-    afterMaxToken: afterTraillingStopLossLevel ? estimatedTokenOnSLTriggerChange : undefined,
+    afterMaxToken:
+      afterTraillingStopLossLevel && isActive ? estimatedTokenOnSLTriggerChange : undefined,
     modal: (
       <OmniCardDataEstTokenOnTriggerModal
         token={closeToToken}
