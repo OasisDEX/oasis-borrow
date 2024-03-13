@@ -3,6 +3,8 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import { getTrailingStopLossParams } from 'features/aave/open/helpers/get-aave-like-trailing-stop-loss-params'
+import { AutomationFeatures } from 'features/automation/common/types'
+import { OmniTrailingStopLossOverviewDetailsSectionFooter } from 'features/omni-kit/automation/components/OmniTrailingStopLossOverviewDetailsSectionFooter'
 import { resolveActiveOrder } from 'features/omni-kit/automation/helpers'
 import {
   OmniCardDataDynamicStopLossPriceModal,
@@ -147,6 +149,8 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
     unit: priceFormat,
   }
 
+  const simpleView = state.uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS
+
   return (
     <DetailsSection
       sx={resolveActiveOrder(active)}
@@ -160,6 +164,7 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
           <OmniContentCard {...estTokenOnTriggerContentCardCommonData} />
         </DetailsSectionContentCardWrapper>
       }
+      footer={<OmniTrailingStopLossOverviewDetailsSectionFooter simpleView={simpleView} />}
     />
   )
 }
