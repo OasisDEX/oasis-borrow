@@ -35,6 +35,9 @@ interface OmniGeneralContextProviderProps {
   collateralIcon: string
   collateralPrecision: number
   collateralPrice: BigNumber
+  /**
+   * Collateral token symbol (ETH,USDC, etc)
+   */
   collateralToken: string
   dpmProxy?: string
   ethBalance: BigNumber
@@ -60,6 +63,9 @@ interface OmniGeneralContextProviderProps {
   quoteIcon: string
   quotePrecision: number
   quotePrice: BigNumber
+  /**
+   * Quote token symbol (ETH,USDC, etc)
+   */
   quoteToken: string
   settings: OmniProtocolSettings
   slippage: BigNumber
@@ -80,6 +86,9 @@ type OmniGeneralContextEnvironment = Omit<
   isOwner: boolean
   shouldSwitchNetwork: boolean
   isShort: boolean
+  /**
+   * Price format for the position eg. `ETH/USDC`
+   */
   priceFormat: string
   gasEstimation: GasEstimationContext | undefined
   slippageSource: OmniSlippageSourceSettings

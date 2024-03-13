@@ -1,4 +1,6 @@
-export * from './OmniStopLossOverviewDetailsSection'
+export * from './omni-stop-loss/OmniStopLossOverviewDetailsSection'
+export * from './omni-stop-loss/OmniStopLossSidebarController'
+export * from './omni-stop-loss/OmniDoubleStopLossWarning'
 export * from './OmniTrailingStopLossOverviewDetailsSection'
 export * from './OmniAutoBSOverviewDetailsSection'
 export * from './OmniPartialTakeProfitOverviewDetailsSection'

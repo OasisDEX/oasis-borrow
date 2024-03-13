@@ -19,7 +19,7 @@ export interface SliderValuePickerProps {
   minBoundry: BigNumber
   maxBoundry: BigNumber
   lastValue: BigNumber
-  disabled: boolean
+  disabled?: boolean
   leftBoundryStyling?: ThemeUIStyleObject
   rightBoundryStyling?: ThemeUIStyleObject
   step: number
@@ -93,7 +93,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       {props.useRcSlider ? (
         <RcSlider
           {...props.customSliderProps}
-          disabled={props.disabled}
+          disabled={props.disabled || false}
           step={props.step}
           min={props.minBoundry.toNumber()}
           max={props.maxBoundry.toNumber()}
