@@ -1,5 +1,4 @@
 import type { Erc4626Position } from '@oasisdex/dma-library'
-import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import faq from 'features/content/faqs/erc4626/earn/en'
 import type {
   GetOmniMetadata,
@@ -18,7 +17,11 @@ import {
   Erc4626EstimatedMarketCap,
   Erc4626FormOrder,
 } from 'features/omni-kit/protocols/erc-4626/components/sidebar'
-import { erc4626FlowStateFilter, getErc4626Apy } from 'features/omni-kit/protocols/erc-4626/helpers'
+import {
+  erc4626FlowStateFilter,
+  getErc4626Apy,
+  getErc4626EarnIsFormValid,
+} from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -54,13 +57,14 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   const { address: vaultAddress } = erc4626VaultsByName[label as string]
 
   const validations = productContext.position.simulationCommon.getValidations({
-    safetySwitchOn: safetySwitch,
+    earnIsFormValid: getErc4626EarnIsFormValid({
+      currentStep,
+      state: productContext.form.state,
+    }),
     isFormFrozen: false,
     protocolLabel: LendingProtocolLabel.morphoblue,
+    safetySwitchOn: safetySwitch,
   })
-
-  // TODO: replace with real notifications
-  const notifications: DetailsSectionNotificationItem[] = []
 
   switch (productType) {
     case OmniProductType.Earn:
@@ -72,7 +76,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
         | undefined
 
       return {
-        notifications,
+        notifications: [],
         validations,
         handlers: {},
         filters: {

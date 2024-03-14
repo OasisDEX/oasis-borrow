@@ -34,7 +34,6 @@ export function getErc4626Position$(
         },
         {
           provider: getRpcProvider(networkId),
-          // TODO: replace with values from API
           getVaultApyParameters: getErc4626ApyParameters,
           getLazyVaultSubgraphResponse: getErc4626PositionParameters(networkId),
         },
