@@ -1,6 +1,7 @@
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { OmniStopLossSidebarController } from 'features/omni-kit/automation/components'
+import { OmniTrailingStopLossSidebarController } from 'features/omni-kit/automation/components/trailing-stop-loss/OmniTrailingStopLossSidebarController'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
@@ -122,7 +123,7 @@ export function OmniAutomationFormController() {
           {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
             isProtection && <OmniStopLossSidebarController />}
           {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
-            isProtection && <>Trailing Stop-Loss Form</>}
+            isProtection && <OmniTrailingStopLossSidebarController />}
           {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
             isOptimization && <>Auto Buy Form</>}
           {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
