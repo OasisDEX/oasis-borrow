@@ -5,21 +5,9 @@ import {
   useOmniCardDataAutoBSTriggerExecutionLtv,
   useOmniCardDataAutoBSTriggerTargetLtv,
 } from 'features/omni-kit/components/details-section'
-import type { OmniAutomationSimulationResponse } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import type { SetupBasicAutoResponse } from 'helpers/triggers'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-
-const isAutoBSSimulationResponse = (
-  resp?: OmniAutomationSimulationResponse,
-): resp is SetupBasicAutoResponse => {
-  if (!resp) {
-    return true
-  }
-
-  return 'executionLTV' in resp && 'targetLTV' in resp
-}
 
 export const useOmniAutoBSDataHandler = ({
   type,
@@ -35,7 +23,6 @@ export const useOmniAutoBSDataHandler = ({
       values: { automation },
     },
     automation: {
-      simulationData,
       automationForm: { state },
     },
     position: {
@@ -48,10 +35,6 @@ export const useOmniAutoBSDataHandler = ({
   const isActive =
     state.uiDropdownProtection === AutomationFeatures.AUTO_SELL ||
     state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY
-
-  if (!isAutoBSSimulationResponse(simulationData)) {
-    throw new Error('Wrong auto BS simulation response type')
-  }
 
   const afterTriggerLtv = state?.triggerLtv
   const afterTargetLtv = state?.targetLtv
