@@ -5,9 +5,11 @@ import {
   OmniStopLossSidebarController,
   OmniTrailingStopLossSidebarController,
 } from 'features/omni-kit/automation/components'
+import { OmniAutomationRemoveTriggerSidebar } from 'features/omni-kit/automation/components/common'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
+import { TriggerAction } from 'helpers/triggers'
 import { useHash } from 'helpers/useHash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -103,6 +105,11 @@ export function OmniAutomationFormController() {
     protection: automationForm.state.uiDropdownProtection,
   }
 
+  const isAddOrUpdateAction =
+    automationForm.state.action &&
+    [TriggerAction.Add, TriggerAction.Update].includes(automationForm.state.action)
+  const isRemoveAction = automationForm.state.action === TriggerAction.Remove
+
   return (
     <OmniAutomationFormView
       {...(!isOpening && {
@@ -119,7 +126,7 @@ export function OmniAutomationFormController() {
         // }
       }}
     >
-      {currentStep === OmniSidebarAutomationStep.Manage && (
+      {currentStep === OmniSidebarAutomationStep.Manage && isAddOrUpdateAction && (
         <>
           {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
             isProtection && <OmniAutoBSSidebarController type={AutomationFeatures.AUTO_SELL} />}
@@ -133,7 +140,10 @@ export function OmniAutomationFormController() {
             isOptimization && <>Partial Take Profit Form</>}
         </>
       )}
-      {currentStep === OmniSidebarAutomationStep.Transaction && <>Tx step</>}
+      {currentStep === OmniSidebarAutomationStep.Transaction && isAddOrUpdateAction && <>Tx step</>}
+      {currentStep === OmniSidebarAutomationStep.Transaction && isRemoveAction && (
+        <OmniAutomationRemoveTriggerSidebar />
+      )}
       {/*{currentStep === OmniSidebarStep.Transaction && (*/}
       {/*  <OmniFormContentTransaction orderInformation={OmniMultiplyFormOrder} />*/}
       {/*)}*/}

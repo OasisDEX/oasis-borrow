@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { resolveStopLossishAction } from 'features/omni-kit/automation/helpers/resolveStopLossishAction'
 import type {
   AutomationMetadataValues,
   OmniAutomationSimulationResponse,
 } from 'features/omni-kit/contexts'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
-import { setupAaveLikeStopLoss, TriggerAction } from 'helpers/triggers'
+import { setupAaveLikeStopLoss } from 'helpers/triggers'
 import { setupAaveLikeTrailingStopLoss } from 'helpers/triggers/setup-triggers/setup-aave-trailing-stop-loss'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -70,10 +71,11 @@ export const getOmniAutomationParameters = ({
               ? debtAddress
               : collateralAddress,
           executionLTV,
-          action:
-            existingSLTrigger_sl || existingTSLTrigger_sl
-              ? TriggerAction.Update
-              : TriggerAction.Add,
+          action: resolveStopLossishAction({
+            action: automationState.action,
+            existingSLTrigger: !!existingSLTrigger_sl,
+            existingTSLTrigger: !!existingTSLTrigger_sl,
+          }),
         })
     case AutomationFeatures.TRAILING_STOP_LOSS:
       const existingSLTrigger_tsl = automation?.triggers.stopLoss?.decodedParams
@@ -99,10 +101,11 @@ export const getOmniAutomationParameters = ({
               ? debtAddress
               : collateralAddress,
           trailingDistance,
-          action:
-            existingSLTrigger_tsl || existingTSLTrigger_tsl
-              ? TriggerAction.Update
-              : TriggerAction.Add,
+          action: resolveStopLossishAction({
+            action: automationState.action,
+            existingSLTrigger: !!existingSLTrigger_tsl,
+            existingTSLTrigger: !!existingTSLTrigger_tsl,
+          }),
         })
     default:
       return () => defaultPromise

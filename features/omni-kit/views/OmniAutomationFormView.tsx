@@ -81,6 +81,8 @@ export function OmniAutomationFormView({
   useMemo(() => {
     if (isTriggerEnabled) {
       updateState('action', TriggerAction.Update)
+    } else {
+      updateState('action', TriggerAction.Add)
     }
   }, [isTriggerEnabled])
 
@@ -157,10 +159,14 @@ export function OmniAutomationFormView({
   const textButtonAction = () => {
     if (currentStep === OmniSidebarAutomationStep.Manage && isTriggerEnabled) {
       updateState('action', TriggerAction.Remove)
+      setStep(OmniSidebarAutomationStep.Transaction)
+      return
     }
 
     if (isTriggerEnabled && state?.action === TriggerAction.Remove) {
       updateState('action', TriggerAction.Update)
+      setStep(OmniSidebarAutomationStep.Manage)
+      return
     }
 
     setStep(editingStep)
@@ -198,7 +204,10 @@ export function OmniAutomationFormView({
           : t('back-to-editing'),
       action: textButtonAction,
       hidden:
-        isTextButtonHidden && currentStep === OmniSidebarAutomationStep.Manage && !isTriggerEnabled,
+        isTxInProgress ||
+        (isTextButtonHidden &&
+          currentStep === OmniSidebarAutomationStep.Manage &&
+          !isTriggerEnabled),
     },
     status,
   }
