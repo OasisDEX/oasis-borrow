@@ -70,7 +70,10 @@ export const getOmniAutomationParameters = ({
               : collateralAddress,
           executionLTV,
           action:
-            existingSLTrigger || existingTSLTrigger ? TriggerAction.Update : TriggerAction.Add,
+            // If either SL or TSL is enabled action has to be update
+            existingSLTrigger || existingTSLTrigger
+              ? TriggerAction.Update
+              : automationState.action || TriggerAction.Add,
         })
     default:
       return () => defaultPromise

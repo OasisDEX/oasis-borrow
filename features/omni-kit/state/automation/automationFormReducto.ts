@@ -74,6 +74,11 @@ export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomation
             ...prevState,
             useThreshold: action.useThreshold,
           }
+        case 'update-action':
+          return {
+            ...prevState,
+            action: action.action,
+          }
         case 'reset':
           return { ...prevState, ...omniAutomationFormReset }
         default:

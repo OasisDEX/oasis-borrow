@@ -14,6 +14,7 @@ export const omniAutomationFormReset = {
   percentageOffset: undefined,
   resolveTo: undefined,
   useThreshold: true,
+  action: undefined,
 }
 
 export const omniAutomationFormDefault: OmniAutomationFormState = {

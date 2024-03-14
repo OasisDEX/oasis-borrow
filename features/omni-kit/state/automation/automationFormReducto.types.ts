@@ -2,6 +2,7 @@ import type BigNumber from 'bignumber.js'
 import type { AutomationFeatures } from 'features/automation/common/types'
 import type { FormActionsReset } from 'features/omni-kit/state'
 import type { OmniCloseTo } from 'features/omni-kit/types'
+import type { TriggerAction } from 'helpers/triggers'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniAutomationFormState {
@@ -19,6 +20,7 @@ export interface OmniAutomationFormState {
   resolveTo?: OmniCloseTo
   uiDropdownProtection?: AutomationFeatures
   uiDropdownOptimization?: AutomationFeatures
+  action?: TriggerAction
 }
 
 export interface AutomationFormActionsUpdateTargetLtv {
@@ -76,6 +78,11 @@ export interface AutomationFormActionsUpdateUseThreshold {
   useThreshold?: boolean
 }
 
+export interface AutomationFormActionsUpdateAction {
+  type: 'update-action'
+  action?: TriggerAction
+}
+
 export type OmniAutomationFormActions = ReductoActions<
   OmniAutomationFormState,
   | AutomationFormActionsUpdateTargetLtv
@@ -89,5 +96,6 @@ export type OmniAutomationFormActions = ReductoActions<
   | AutomationFormActionsUpdateLtvStep
   | AutomationFormActionsUpdatePercentageOffset
   | AutomationFormActionsUpdateUseThreshold
+  | AutomationFormActionsUpdateAction
   | FormActionsReset
 >
