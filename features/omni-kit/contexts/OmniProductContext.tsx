@@ -36,9 +36,6 @@ import type {
   SetupTrailingStopLossResponse,
   StopLossTriggers,
   TrailingStopLossTriggers,
-  TriggersApiError,
-  TriggersApiWarning,
-  TriggerTransaction,
 } from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
@@ -69,7 +66,7 @@ export interface OmniSupplyMetadataHandlers {
   customReset?: () => void
 }
 
-interface AutomationMetadataValues {
+export interface AutomationMetadataValues {
   flags: {
     isStopLossEnabled: boolean
     isTrailingStopLossEnabled: boolean
@@ -238,20 +235,13 @@ export type OmniAutomationSimulationResponse =
 
 type AutomationMetadataValuesSimulation = OmniAutomationSimulationResponse['simulation']
 
-interface OmniAutomationSimulationData {
-  simulationResponse?: OmniAutomationSimulationResponse
-  errors?: TriggersApiError[]
-  warnings?: TriggersApiWarning[]
-  transaction?: TriggerTransaction
-}
-
 interface ProductContextAutomation {
   positionTriggers: GetTriggersResponse
   automationForm: ReturnType<typeof useOmniAutomationFormReducto>
-  simulationData?: OmniAutomationSimulationData
+  simulationData?: OmniAutomationSimulationResponse
   isSimulationLoading?: boolean
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationData | undefined>>
+  setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationResponse | undefined>>
 }
 
 interface GenericProductContext<Position, Form, Auction, Metadata> {
@@ -367,7 +357,7 @@ export function OmniProductContextProvider({
   // TODO these could be potentially generalized within single hook
 
   const [automationSimulationData, setAutomationSimulationData] =
-    useState<OmniAutomationSimulationData>()
+    useState<OmniAutomationSimulationResponse>()
   const [isAutomationSimulationLoading, setAutomationIsLoadingSimulation] = useState(false)
 
   // We need to determine the direction of the swap based on change in position risk

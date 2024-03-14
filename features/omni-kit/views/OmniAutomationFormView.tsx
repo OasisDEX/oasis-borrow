@@ -2,6 +2,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { useOmniAutomationTxHandler } from 'features/omni-kit/automation/hooks/useOmniAutomationTxHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   getOmniAutomationPrimaryButtonLabelKey,
@@ -21,14 +22,12 @@ import { Grid } from 'theme-ui'
 interface OmniFormViewProps {
   dropdown?: SidebarSectionHeaderDropdown
   txSuccessAction?: () => void
-  txHandler: () => () => void
 }
 
 export function OmniAutomationFormView({
   dropdown,
   children,
   txSuccessAction,
-  txHandler: _txHandler,
 }: PropsWithChildren<OmniFormViewProps>) {
   const { t } = useTranslation()
 
@@ -68,7 +67,7 @@ export function OmniAutomationFormView({
     },
   } = useOmniProductContext(productType)
 
-  const txHandler = _txHandler()
+  const txHandler = useOmniAutomationTxHandler()
 
   const { connect, setChain } = useConnection()
   const { walletAddress } = useAccount()

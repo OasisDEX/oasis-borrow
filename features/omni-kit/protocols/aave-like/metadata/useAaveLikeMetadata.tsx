@@ -116,7 +116,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           isHeadlineDetailsLoading,
           automation: getAaveLikeAutomationMetadataValues({
             positionTriggers: productContext.automation.positionTriggers,
-            simulationResponse: productContext.automation.simulationData?.simulationResponse,
+            simulationResponse: productContext.automation.simulationData,
           }),
         },
         elements: {

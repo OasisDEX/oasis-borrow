@@ -59,7 +59,7 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
     state.uiDropdownProtection === AutomationFeatures.AUTO_SELL ||
     state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY
 
-  if (!isAutoBSSimulationResponse(simulationData?.simulationResponse)) {
+  if (!isAutoBSSimulationResponse(simulationData)) {
     throw new Error('Wrong auto BS simulation response type')
   }
 
