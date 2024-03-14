@@ -174,8 +174,6 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
     },
   ]
 
-  const hasRefinance = true
-
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
@@ -246,7 +244,8 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
       {stopLossReadEnabled && stopLossWriteEnabled && (
         <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
-      {refinanceEnabled && hasRefinance && walletAddress && chainId && (
+
+      {refinanceEnabled && walletAddress && chainId && (
         <RefinanceBanner chainId={chainId} address={walletAddress} />
       )}
     </Grid>
