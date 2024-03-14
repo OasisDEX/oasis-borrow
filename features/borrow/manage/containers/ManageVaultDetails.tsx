@@ -24,8 +24,10 @@ import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import { RefinanceBanner } from 'features/refinance/RefinanceBanner'
 import { useAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
+import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { bell } from 'theme/icons'
@@ -142,8 +144,12 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const { StopLossRead: stopLossReadEnabled, StopLossWrite: stopLossWriteEnabled } =
-    useAppConfig('features')
+  const {
+    StopLossRead: stopLossReadEnabled,
+    StopLossWrite: stopLossWriteEnabled,
+    EnableRefinance: refinanceEnabled,
+  } = useAppConfig('features')
+  const { walletAddress, chainId } = useAccount()
 
   const shouldShowOverrideAutoBuy =
     isTriggerEnabled &&
@@ -167,6 +173,8 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
       type: 'notice',
     },
   ]
+
+  const hasRefinance = true
 
   return (
     <Grid>
@@ -237,6 +245,9 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
 
       {stopLossReadEnabled && stopLossWriteEnabled && (
         <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
+      )}
+      {refinanceEnabled && hasRefinance && walletAddress && chainId && (
+        <RefinanceBanner chainId={chainId} address={walletAddress} />
       )}
     </Grid>
   )

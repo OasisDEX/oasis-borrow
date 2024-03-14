@@ -2,6 +2,7 @@ import type { BigNumber } from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
+import { MakerRefinanceContext } from 'features/refinance/MakerRefinanceContext'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'
@@ -44,16 +45,18 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <GeneralManageLayout
-              generalManageVault={generalManageVault}
-              followButton={{
-                followerAddress: account,
-                vaultId: id,
-                chainId: chainId,
-                protocol: 'maker',
-              }}
-              chainId={chainId}
-            />
+            <MakerRefinanceContext generalManageVault={generalManageVault}>
+              <GeneralManageLayout
+                generalManageVault={generalManageVault}
+                followButton={{
+                  followerAddress: account,
+                  vaultId: id,
+                  chainId: chainId,
+                  protocol: 'maker',
+                }}
+                chainId={chainId}
+              />
+            </MakerRefinanceContext>
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>
