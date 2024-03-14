@@ -2,7 +2,7 @@ import type BigNumber from 'bignumber.js'
 import { Icon } from 'components/Icon'
 import { TokensGroup } from 'components/TokensGroup'
 import { StatefulTooltip } from 'components/Tooltip'
-import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import type { FC, ReactNode } from 'react'
 import React from 'react'
 import { sparks } from 'theme/icons'
@@ -10,6 +10,7 @@ import { Flex, Text } from 'theme-ui'
 
 interface Erc4626DetailsSectionContentEstimatedEarningsProps {
   estimatedEarnings: BigNumber
+  token: string
   tooltip?: ReactNode
   rewards?: {
     amount: BigNumber
@@ -19,7 +20,7 @@ interface Erc4626DetailsSectionContentEstimatedEarningsProps {
 
 export const Erc4626DetailsSectionContentEstimatedEarnings: FC<
   Erc4626DetailsSectionContentEstimatedEarningsProps
-> = ({ estimatedEarnings, tooltip, rewards }) => {
+> = ({ estimatedEarnings, token, tooltip, rewards }) => {
   const icon = <Icon icon={sparks} size={16} color="interactive100" />
 
   return (
@@ -32,7 +33,7 @@ export const Erc4626DetailsSectionContentEstimatedEarnings: FC<
           columnGap: 1,
         }}
       >
-        {formatUsdValue(estimatedEarnings)}{' '}
+        {formatCryptoBalance(estimatedEarnings)} {token}
         {(rewards || tooltip) && (
           <>
             {tooltip ? (

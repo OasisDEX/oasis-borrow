@@ -4,16 +4,16 @@ import {
   OmniContentCard,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
+import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { Erc4626ApyTooltip } from 'features/omni-kit/protocols/erc-4626/components'
 import { Erc4626DetailsSectionContentEstimatedEarnings } from 'features/omni-kit/protocols/erc-4626/components/details-section'
+import { getErc4626Apy } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
-import { Box } from 'theme-ui'
 
 export const Erc4626DetailsSectionContent: FC = () => {
   const { t } = useTranslation()
@@ -22,6 +22,9 @@ export const Erc4626DetailsSectionContent: FC = () => {
     environment: { isOpening, quoteToken },
   } = useOmniGeneralContext()
   const {
+    form: {
+      state: { depositAmount },
+    },
     position: { currentPosition },
   } = useOmniProductContext(OmniProductType.Earn)
 
@@ -40,9 +43,26 @@ export const Erc4626DetailsSectionContent: FC = () => {
     footnote: t('erc-4626.content-card.earnings-to-date.footnote'),
   })
 
-  console.log(position)
-  console.log(position.apy)
-  console.log(position.apyFromRewards)
+  const resolvedDepositAmount = depositAmount ?? omniDefaultOverviewSimulationDeposit
+
+  const earningsPer1d = resolvedDepositAmount.times(
+    getErc4626Apy({
+      rewardsApy: position.apyFromRewards.per1d,
+      vaultApy: position.apy.per1d,
+    }),
+  )
+  const earningsPer30d = resolvedDepositAmount.times(
+    getErc4626Apy({
+      rewardsApy: position.apyFromRewards.per30d,
+      vaultApy: position.apy.per30d,
+    }),
+  )
+  const earningsPer365d = resolvedDepositAmount.times(
+    getErc4626Apy({
+      rewardsApy: position.apyFromRewards.per365d,
+      vaultApy: position.apy.per365d,
+    }),
+  )
 
   return (
     <>
@@ -57,7 +77,8 @@ export const Erc4626DetailsSectionContent: FC = () => {
             [
               t('omni-kit.position-page.earn.open.earnings-per-1d'),
               <Erc4626DetailsSectionContentEstimatedEarnings
-                estimatedEarnings={zero}
+                estimatedEarnings={earningsPer1d}
+                token={quoteToken}
                 tooltip={
                   <Erc4626ApyTooltip
                     rewardsApy={position.apyFromRewards.per1d}
@@ -65,12 +86,13 @@ export const Erc4626DetailsSectionContent: FC = () => {
                   />
                 }
               />,
-              `${formatCryptoBalance(zero)} ${quoteToken}`,
+              `${formatCryptoBalance(resolvedDepositAmount.plus(earningsPer1d))} ${quoteToken}`,
             ],
             [
               t('omni-kit.position-page.earn.open.earnings-per-30d'),
               <Erc4626DetailsSectionContentEstimatedEarnings
-                estimatedEarnings={zero}
+                estimatedEarnings={earningsPer30d}
+                token={quoteToken}
                 tooltip={
                   <Erc4626ApyTooltip
                     rewardsApy={position.apyFromRewards.per30d}
@@ -78,12 +100,13 @@ export const Erc4626DetailsSectionContent: FC = () => {
                   />
                 }
               />,
-              `${formatCryptoBalance(zero)} ${quoteToken}`,
+              `${formatCryptoBalance(resolvedDepositAmount.plus(earningsPer30d))} ${quoteToken}`,
             ],
             [
               t('omni-kit.position-page.earn.open.earnings-per-365d'),
               <Erc4626DetailsSectionContentEstimatedEarnings
-                estimatedEarnings={zero}
+                estimatedEarnings={earningsPer365d}
+                token={quoteToken}
                 tooltip={
                   <Erc4626ApyTooltip
                     rewardsApy={position.apyFromRewards.per365d}
@@ -91,7 +114,7 @@ export const Erc4626DetailsSectionContent: FC = () => {
                   />
                 }
               />,
-              `${formatCryptoBalance(zero)} ${quoteToken}`,
+              `${formatCryptoBalance(resolvedDepositAmount.plus(earningsPer365d))} ${quoteToken}`,
             ],
           ]}
           footnote={<>{t('omni-kit.position-page.earn.open.disclaimer')}</>}
