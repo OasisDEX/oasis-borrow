@@ -57,6 +57,7 @@ export const Erc4626ApyTooltip: FC<Erc4626ApyTooltipProps> = ({ rewardsApy, vaul
       />
       {rewardsApy.map(({ per1kUsd, token, value }) => (
         <Erc4626ApyTooltipRow
+          key={token}
           label={token}
           value={value}
           token={token}
