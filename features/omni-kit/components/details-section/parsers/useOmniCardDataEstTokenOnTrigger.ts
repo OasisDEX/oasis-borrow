@@ -79,7 +79,7 @@ export function useOmniCardDataEstTokenOnTrigger({
           `${t('manage-multiply-vault.card.up-to')} ${formatTokenOrDebtToken(
             afterMaxToken,
             afterDynamicStopLossPrice,
-          )} ${stateCloseToToken} ${t('system.cards.common.after')}`,
+          )} ${stateCloseToToken}`,
         ],
       }),
   }

@@ -2,6 +2,7 @@ import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import {
   OmniCardDataDynamicStopLossPriceModal,
   OmniCardDataEstTokenOnTriggerModal,
@@ -13,7 +14,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 const getSliderStep = (tokenPrice: BigNumber) => {
   if (tokenPrice.isGreaterThan(100000)) {
@@ -85,7 +86,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
   const closeToToken = isCollateralActive ? collateralToken : quoteToken
   const stateCloseToToken = state.resolveTo === 'collateral' ? collateralToken : quoteToken
 
-  const afterTraillingStopLossLevel = state.trailingDistance
+  const afterTraillingDistance = state.trailingDistance
   const liquidationPrice =
     castedPosition.debtAmount.div(
       castedPosition.collateralAmount.times(castedPosition.maxRiskRatio.loanToValue),
@@ -121,22 +122,29 @@ export const useOmniTrailingStopLossDataHandler = () => {
   const sliderMax = new BigNumber(
     priceRatio.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
   ).times(sliderStep)
-  const getTrailingDistanceValue = useCallback((td: BigNumber) => sliderMax.minus(td), [sliderMax])
   // then the trailing distance - if it's lower (by default) than the slider min, I'm setting it to the slider min
   // the actual value of the trailing distance used in the TX is called "trailingDistanceValue"
   const trailingDistance = useMemo(() => {
-    if (afterTraillingStopLossLevel) {
-      return afterTraillingStopLossLevel.lt(sliderMin) ? sliderMin : afterTraillingStopLossLevel
+    if (afterTraillingDistance) {
+      return afterTraillingDistance.lt(sliderMin) ? sliderMin : afterTraillingDistance
+    }
+    if (trailingStopLossLambdaData.trailingDistance) {
+      return sliderMax.minus(trailingStopLossLambdaData.trailingDistance)
     }
     return sliderMax
-  }, [afterTraillingStopLossLevel, sliderMax, sliderMin])
+  }, [afterTraillingDistance, sliderMax, sliderMin, trailingStopLossLambdaData.trailingDistance])
   const trailingDistanceValue = useMemo(
     // we use the opposite value when handling state
     // it's hard to have the slider go from token price to zero, so we do the opposite
     // then the actual value (distance) is sliderMax (token price) minus "trailingDistance" value
-    () => getTrailingDistanceValue(trailingDistance),
-    [getTrailingDistanceValue, trailingDistance],
+    () => sliderMax.minus(trailingDistance),
+    [sliderMax, trailingDistance],
   )
+  const sliderPercentageFill = getSliderPercentageFill({
+    min: sliderMin,
+    max: sliderMax.minus(sliderStep),
+    value: trailingDistance,
+  })
   const currentTrailingDistanceValue = useMemo(() => {
     const distance = trailingStopLossLambdaData.trailingDistance ?? zero
     if (isShort) {
@@ -213,14 +221,13 @@ export const useOmniTrailingStopLossDataHandler = () => {
 
   const trailingDistanceContentCardCommonData = useOmniCardTrailingDistance({
     trailingDistance: isTrailingStopLossEnabled ? currentTrailingDistanceValue : undefined,
-    afterTrailingDistance:
-      afterTraillingStopLossLevel && isActive ? trailingDistanceValue : undefined,
+    afterTrailingDistance: afterTraillingDistance && isActive ? trailingDistanceValue : undefined,
     priceFormat,
   })
 
   const resolvedDynamicStopLossPrice = isTrailingStopLossEnabled ? dynamicStopPrice : undefined
   const resolvedAfterDynamicStopLossPrice =
-    afterTraillingStopLossLevel && isActive ? dynamicStopPriceChange : undefined
+    afterTraillingDistance && isActive ? dynamicStopPriceChange : undefined
 
   const dynamicStopPriceContentCardCommonData = useOmniCardDataDynamicStopLossPrice({
     dynamicStopPrice: resolvedDynamicStopLossPrice,
@@ -247,8 +254,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
     closeToToken,
     stateCloseToToken,
     maxToken: isTrailingStopLossEnabled ? estimatedTokenOnSLTrigger : undefined,
-    afterMaxToken:
-      afterTraillingStopLossLevel && isActive ? estimatedTokenOnSLTriggerChange : undefined,
+    afterMaxToken: afterTraillingDistance && isActive ? estimatedTokenOnSLTriggerChange : undefined,
     modal: (
       <OmniCardDataEstTokenOnTriggerModal
         token={closeToToken}
@@ -275,13 +281,13 @@ export const useOmniTrailingStopLossDataHandler = () => {
     isCollateralActive,
     closeToToken,
     stateCloseToToken,
-    afterTraillingStopLossLevel,
+    afterTraillingDistance,
     liquidationPrice,
     priceRatio,
     sliderStep,
     sliderMin,
     sliderMax,
-    getTrailingDistanceValue,
+    sliderPercentageFill,
     trailingDistance,
     trailingDistanceValue,
     currentTrailingDistanceValue,
