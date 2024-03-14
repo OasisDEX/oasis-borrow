@@ -7,7 +7,7 @@ import {
 import type { OmniFormState, OmniGenericPosition } from 'features/omni-kit/types'
 import { OmniEarnFormAction } from 'features/omni-kit/types'
 
-interface Erc4626TxHandlerInput {
+interface GetErc4626ParametersParams {
   isFormValid: boolean
   state: OmniFormState
   walletAddress?: string
@@ -17,7 +17,7 @@ export async function getErc4626Parameters({
   isFormValid,
   state,
   walletAddress,
-}: Erc4626TxHandlerInput): Promise<SummerStrategy<OmniGenericPosition> | undefined> {
+}: GetErc4626ParametersParams): Promise<SummerStrategy<OmniGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
 
   const { action } = state

@@ -35,15 +35,19 @@ export function getErc4626Position$(
           getVaultApyParameters: () => {
             return new Promise((resolve) =>
               resolve({
-                apy: '4.75',
+                vault: {
+                  apy: '0.0175',
+                  curator: 'Steakhouse',
+                  fee: '0.05',
+                },
                 apyFromRewards: [
                   {
                     token: 'WSTETH',
-                    value: '1.25',
+                    value: '0.0125',
                   },
                   {
                     token: 'MORPHO',
-                    value: '2.5',
+                    value: '0.025',
                     per1kUsd: '250',
                   },
                 ],

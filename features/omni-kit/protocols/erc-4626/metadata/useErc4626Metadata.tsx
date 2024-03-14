@@ -18,9 +18,10 @@ import {
   Erc4626EstimatedMarketCap,
   Erc4626FormOrder,
 } from 'features/omni-kit/protocols/erc-4626/components/sidebar'
-import { erc4626FlowStateFilter } from 'features/omni-kit/protocols/erc-4626/helpers'
+import { erc4626FlowStateFilter, getErc4626Apy } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
+import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -86,7 +87,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             }),
         },
         values: {
-          interestRate: position.fee?.amount.div(100) ?? zero,
+          interestRate: position.fee?.amount ?? zero,
           isFormEmpty: getOmniIsEarnFormEmpty({
             currentStep,
             state: castedProductContext.form.state,
@@ -98,7 +99,12 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
           headlineDetails: [
             {
               label: t('omni-kit.headline.details.current-apy'),
-              value: '0%',
+              value: formatDecimalAsPercent(
+                getErc4626Apy({
+                  rewardsApy: position.apyFromRewards.per365d,
+                  vaultApy: position.apy.per365d,
+                }),
+              ),
               labelTooltip: 'Tooltip placeholder',
               labelIcon: sparks,
             },
@@ -108,7 +114,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             },
             {
               label: t('omni-kit.headline.details.tvl'),
-              value: '$0.00',
+              value: formatUsdValue(position.tvl.times(quotePrice)),
             },
           ],
           extraDropdownItems: [],
