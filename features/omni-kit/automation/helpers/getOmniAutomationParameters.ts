@@ -8,6 +8,7 @@ import type {
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import { setupAaveLikeStopLoss, TriggerAction } from 'helpers/triggers'
+import { setupAaveLikeTrailingStopLoss } from 'helpers/triggers/setup-triggers/setup-aave-trailing-stop-loss'
 import type { LendingProtocol } from 'lendingProtocols'
 
 const defaultPromise = Promise.resolve<OmniAutomationSimulationResponse | undefined>(undefined)
@@ -45,13 +46,13 @@ export const getOmniAutomationParameters = ({
 
   switch (automationState.uiDropdownProtection) {
     case AutomationFeatures.STOP_LOSS:
-      const existingSLTrigger = automation?.triggers.stopLoss?.decodedParams
-      const existingTSLTrigger = automation?.triggers.trailingStopLoss?.decodedParams
+      const existingSLTrigger_sl = automation?.triggers.stopLoss?.decodedParams
+      const existingTSLTrigger_sl = automation?.triggers.trailingStopLoss?.decodedParams
 
       // TODO I had to multiply it by 100 here
       const stateTriggerLtv = automationState.triggerLtv?.times(100)
-      const currentTriggerLtv = existingSLTrigger?.executionLtv
-        ? new BigNumber(existingSLTrigger.executionLtv)
+      const currentTriggerLtv = existingSLTrigger_sl?.executionLtv
+        ? new BigNumber(existingSLTrigger_sl.executionLtv)
         : undefined
 
       const executionLTV = stateTriggerLtv || currentTriggerLtv
@@ -70,10 +71,38 @@ export const getOmniAutomationParameters = ({
               : collateralAddress,
           executionLTV,
           action:
-            // If either SL or TSL is enabled action has to be update
-            existingSLTrigger || existingTSLTrigger
+            existingSLTrigger_sl || existingTSLTrigger_sl
               ? TriggerAction.Update
-              : automationState.action || TriggerAction.Add,
+              : TriggerAction.Add,
+        })
+    case AutomationFeatures.TRAILING_STOP_LOSS:
+      const existingSLTrigger_tsl = automation?.triggers.stopLoss?.decodedParams
+      const existingTSLTrigger_tsl = automation?.triggers.trailingStopLoss?.decodedParams
+
+      const stateTrailingDistance = automationState.trailingDistance
+      const currentTrailingDistance = existingTSLTrigger_tsl?.trailingDistance
+        ? new BigNumber(existingTSLTrigger_tsl.trailingDistance)
+        : undefined
+
+      const trailingDistance = stateTrailingDistance || currentTrailingDistance
+
+      if (!trailingDistance) {
+        return () => defaultPromise
+      }
+
+      return () =>
+        setupAaveLikeTrailingStopLoss({
+          ...commonPayload,
+          executionToken:
+            automationState.resolveTo === 'quote' ||
+            automation?.triggers.stopLoss?.triggerTypeName.includes('Debt')
+              ? debtAddress
+              : collateralAddress,
+          trailingDistance,
+          action:
+            existingSLTrigger_tsl || existingTSLTrigger_tsl
+              ? TriggerAction.Update
+              : TriggerAction.Add,
         })
     default:
       return () => defaultPromise

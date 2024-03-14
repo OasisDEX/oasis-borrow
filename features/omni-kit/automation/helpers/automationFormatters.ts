@@ -21,6 +21,25 @@ export const getStopLossFormatters = ({
   return { leftFormatter, rightFormatter }
 }
 
+export const getTrailingStopLossFormatters = ({
+  isShort,
+  collateralTokenSymbol,
+  quoteTokenSymbol,
+  priceFormat,
+}: {
+  isShort: boolean
+  collateralTokenSymbol: string
+  quoteTokenSymbol: string
+  priceFormat: string
+}) => {
+  const denominationToken = isShort ? collateralTokenSymbol : quoteTokenSymbol
+  const leftFormatter = (x: BigNumber) =>
+    x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${priceFormat}`
+  const rightFormatter = (x: BigNumber) =>
+    x.isZero() ? '-' : `${formatAmount(x, denominationToken)} ${priceFormat}`
+  return { leftFormatter, rightFormatter }
+}
+
 export const lambdaParsePercentageValueDown = (val: BigNumber) =>
   val.div(100).div(lambdaPercentageDenomination)
 export const lambdaParsePercentageValueUp = (val: BigNumber) =>

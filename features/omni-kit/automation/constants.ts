@@ -15,3 +15,17 @@ export const stopLossConstants = {
     },
   },
 }
+
+export const trailingStopLossConstants = {
+  defaultResolveTo: 'collateral' as OmniCloseTo,
+  offsets: {
+    open: {
+      min: new BigNumber(0.01),
+      max: new BigNumber(0.025),
+    },
+    manage: {
+      min: new BigNumber(0.01),
+      max: new BigNumber(0.025),
+    },
+  },
+}
