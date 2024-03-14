@@ -1,12 +1,8 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
-import { DetailsSection } from 'components/DetailsSection'
-import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { OmniPartialTakeProfitOverviewDetailsSectionFooter } from 'features/omni-kit/automation/components/OmniPartialTakeProfitOverviewDetailsSectionFooter'
-import { getRealizedProfit, resolveActiveOrder } from 'features/omni-kit/automation/helpers'
+import { getRealizedProfit } from 'features/omni-kit/automation/helpers'
 import {
-  OmniContentCard,
   useOmniCardDataCurrentProfitAndLoss,
   useOmniCardDataRealizedProfit,
 } from 'features/omni-kit/components/details-section'
@@ -17,28 +13,13 @@ import {
 } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react'
 import React, { useMemo, useState } from 'react'
 
-interface OmniPartialTakeProfitOverviewDetailsSectionProps {
-  active?: boolean
-}
-
-export const OmniPartialTakeProfitOverviewDetailsSection: FC<
-  OmniPartialTakeProfitOverviewDetailsSectionProps
-> = ({ active = false }) => {
+export const useOmniPartialTakeProfitDataHandler = () => {
   const { t } = useTranslation()
   const [chartView, setChartView] = useState<'price' | 'ltv'>('price')
-
   const {
-    environment: {
-      productType,
-      collateralPrice,
-      quotePrice,
-      priceFormat,
-      collateralToken,
-      quoteToken,
-    },
+    environment: { productType, collateralPrice, quotePrice, collateralToken, quoteToken },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -132,28 +113,26 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
     ),
   })
 
-  return (
-    <DetailsSection
-      sx={resolveActiveOrder(active)}
-      title={t('system.partial-take-profit')}
-      badge={isPartialTakeProfitEnabled}
-      content={
-        <DetailsSectionContentCardWrapper>
-          <OmniContentCard {...currentProfitAndLossCommonData} />
-          <OmniContentCard {...realizedProfitCommonData} />
-        </DetailsSectionContentCardWrapper>
-      }
-      footer={
-        <OmniPartialTakeProfitOverviewDetailsSectionFooter
-          liquidationPrice={castedPosition.liquidationPrice}
-          loanToValue={castedPosition.riskRatio.loanToValue}
-          multiple={castedPosition.riskRatio.multiple}
-          priceFormat={priceFormat}
-          simpleView={simpleView}
-          chartView={chartView}
-          setChartView={setChartView}
-        />
-      }
-    />
-  )
+  return {
+    castedPosition,
+    liquidationPrice: castedPosition.liquidationPrice,
+    loanToValue: castedPosition.riskRatio.loanToValue,
+    multiple: castedPosition.riskRatio.multiple,
+    simpleView,
+    isPartialTakeProfitEnabled,
+    partialTakeProfitSecondTokenData,
+    partialTakeProfitTokenData,
+    realizedProfit,
+    realizedProfitMap,
+    primaryRealizedProfit,
+    secondaryRealizedProfit,
+    pnlConfig,
+    netValuePnlDataMap,
+    primaryPnlValue,
+    secondaryPnLValue,
+    currentProfitAndLossCommonData,
+    realizedProfitCommonData,
+    chartView,
+    setChartView,
+  }
 }

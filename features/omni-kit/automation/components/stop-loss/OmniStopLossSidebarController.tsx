@@ -4,10 +4,8 @@ import { AppLink } from 'components/Links'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components'
 import { stopLossConstants } from 'features/omni-kit/automation/constants'
-import {
-  getStopLossFormatters,
-  useOmniStopLossDataHandler,
-} from 'features/omni-kit/automation/helpers'
+import { getStopLossFormatters } from 'features/omni-kit/automation/helpers'
+import { useOmniStopLossDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
