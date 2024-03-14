@@ -1,5 +1,4 @@
 import type { Erc4626Position } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import faq from 'features/content/faqs/erc4626/earn/en'
 import type {
@@ -12,8 +11,8 @@ import { getOmniIsEarnFormEmpty } from 'features/omni-kit/helpers'
 import { Erc4626ApyTooltip } from 'features/omni-kit/protocols/erc-4626/components'
 import {
   Erc4626DetailsSectionContent,
+  Erc4626DetailsSectionContentAllocation,
   Erc4626DetailsSectionFooter,
-  Erc4626VaultAllocation,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import {
   Erc4626EstimatedMarketCap,
@@ -46,7 +45,6 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
       protocol,
       quoteAddress,
       quotePrice,
-      quoteToken,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -134,22 +132,8 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
           overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: (
             <>
-              <Erc4626VaultAllocation
-                supplyTokenPrice={quotePrice}
-                supplyTokenSymbol={quoteToken}
-                tokens={[
-                  {
-                    supply: new BigNumber(13493403),
-                    tokenSymbol: 'WSTETH',
-                    maxLtv: new BigNumber(0.886),
-                  },
-                  {
-                    supply: new BigNumber(3443490),
-                    tokenSymbol: 'WBTC',
-                    maxLtv: new BigNumber(0.862),
-                  },
-                ]}
-              />
+              <Erc4626DetailsSectionContentAllocation />
+              {/* TODO: display rewards */}
             </>
           ),
           overviewWithSimulation: true,
