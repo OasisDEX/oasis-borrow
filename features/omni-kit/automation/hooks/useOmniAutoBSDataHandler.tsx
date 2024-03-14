@@ -1,6 +1,7 @@
 import type { LendingPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AutomationFeatures } from 'features/automation/common/types'
+import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
 import {
   useOmniCardDataAutoBSTriggerExecutionLtv,
   useOmniCardDataAutoBSTriggerTargetLtv,
@@ -9,11 +10,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
-export const useOmniAutoBSDataHandler = ({
-  type,
-}: {
-  type: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
-}) => {
+export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationTypes }) => {
   const { t } = useTranslation()
   const {
     environment: { productType, collateralToken, priceFormat, isShort },
@@ -96,9 +93,16 @@ export const useOmniAutoBSDataHandler = ({
     denomination: priceFormat,
   })
 
+  const maxLtv = castedPosition.maxRiskRatio.loanToValue
+  const currentLtv = castedPosition.riskRatio.loanToValue
+  const pricesDenomination = isShort ? ('debt' as const) : ('collateral' as const)
+
   return {
     castedPosition,
     isActive,
+    maxLtv,
+    currentLtv,
+    pricesDenomination,
     afterTriggerLtv,
     afterTargetLtv,
     resolvedTitle,

@@ -1,8 +1,11 @@
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { OmniStopLossSidebarController } from 'features/omni-kit/automation/components'
+import {
+  OmniAutoBSSidebarController,
+  OmniStopLossSidebarController,
+  OmniTrailingStopLossSidebarController,
+} from 'features/omni-kit/automation/components'
 import { OmniAutomationRemoveTriggerSidebar } from 'features/omni-kit/automation/components/common'
-import { OmniTrailingStopLossSidebarController } from 'features/omni-kit/automation/components/trailing-stop-loss/OmniTrailingStopLossSidebarController'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
@@ -126,13 +129,13 @@ export function OmniAutomationFormController() {
       {currentStep === OmniSidebarAutomationStep.Manage && isAddOrUpdateAction && (
         <>
           {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
-            isProtection && <>Auto Sell Form</>}
+            isProtection && <OmniAutoBSSidebarController type={AutomationFeatures.AUTO_SELL} />}
           {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
             isProtection && <OmniStopLossSidebarController />}
           {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
             isProtection && <OmniTrailingStopLossSidebarController />}
           {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
-            isOptimization && <>Auto Buy Form</>}
+            isOptimization && <OmniAutoBSSidebarController type={AutomationFeatures.AUTO_BUY} />}
           {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
             isOptimization && <>Partial Take Profit Form</>}
         </>
