@@ -81,6 +81,8 @@ export function OmniAutomationFormView({
   useMemo(() => {
     if (isTriggerEnabled) {
       updateState('action', TriggerAction.Update)
+    } else {
+      updateState('action', TriggerAction.Add)
     }
   }, [isTriggerEnabled])
 
