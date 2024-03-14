@@ -108,7 +108,7 @@ export function ContentCardTriggerExecutionLTV({
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
 
-function ContentCardTriggerTargetLTV({
+export function ContentCardTriggerTargetLTV({
   automationFeature,
   currentTargetLTV,
   afterTxTargetLTV,

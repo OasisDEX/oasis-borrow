@@ -194,6 +194,13 @@ export function AaveManagePositionStopLossLambdaSidebar({
   }
   const [leftFormatter, rightFormatter] = getFormatters(strategyConfig)
 
+  const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
+    return [
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
+    ].filter(Boolean) as string[]
+  }, [])
+
   const sidebarPreparingContent: SidebarSectionProps['content'] = (
     <Grid gap={3}>
       <ActionPills
@@ -280,6 +287,11 @@ export function AaveManagePositionStopLossLambdaSidebar({
         />
       )}
       <>
+        <MessageCard
+          type="error"
+          messages={frontendErrors}
+          withBullet={frontendErrors.length > 1}
+        />
         <VaultErrors errorMessages={mapErrorsToErrorVaults(errors)} autoType="Stop-Loss" />
         <VaultWarnings warningMessages={mapWarningsToWarningVaults(warnings)} />
       </>

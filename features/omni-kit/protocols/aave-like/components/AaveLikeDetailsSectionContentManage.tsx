@@ -4,6 +4,7 @@ import { useAaveEarnYields } from 'features/aave/hooks'
 import {
   OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,
+  OmniCardDataLtvModal,
   OmniCardDataPositionDebtModal,
   OmniContentCard,
   useOmniCardDataBuyingPower,
@@ -21,7 +22,6 @@ import {
 } from 'features/omni-kit/helpers'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
-import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one } from 'helpers/zero'
@@ -118,7 +118,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
     ltv: castedPosition.riskRatio.loanToValue,
     maxLtv: castedPosition.category.liquidationThreshold,
     modal: (
-      <MorphoCardDataLtvModal
+      <OmniCardDataLtvModal
         ltv={castedPosition.riskRatio.loanToValue}
         maxLtv={castedPosition.category.liquidationThreshold}
       />

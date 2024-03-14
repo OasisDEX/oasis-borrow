@@ -214,6 +214,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
   }
 
   const frontendErrors = useMemo(() => {
+    const validationDisabled = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
     const currentLtvValue = currentLtv.times(lambdaPercentageDenomination)
     const triggerLtvTooHigh = triggerLtv.gt(currentLtvValue.plus(triggerLtvSliderConfig.step))
     const cumulativeLtvTooHight = triggerLtv
@@ -238,6 +239,7 @@ export function AaveManagePositionPartialTakeProfitLambdaSidebar({
       isShort &&
         startingTakeProfitPriceTooHigh &&
         'Starting take profit price should be lower or equal the current price.',
+      validationDisabled && 'Validation is disabled, you are proceeding on your own risk.',
     ].filter(Boolean) as string[]
   }, [
     currentLtv,

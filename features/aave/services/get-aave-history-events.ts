@@ -87,6 +87,11 @@ export async function getAaveHistoryEvents(
             totalFee: new BigNumber(event.totalFee),
             txHash: event.txHash,
             withdrawnUSD: new BigNumber(event.withdrawnUSD),
+            withdrawTransfers: event.withdrawTransfers.map(({ amount, amountUSD, token }) => ({
+              amount: new BigNumber(amount),
+              amountUSD: new BigNumber(amountUSD),
+              token,
+            })),
             trigger: event.trigger ?? undefined,
           }),
         )

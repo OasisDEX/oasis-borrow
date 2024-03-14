@@ -461,6 +461,7 @@
     "close-position": "Close Position",
     "deposit": "Deposit",
     "withdraw": "Withdraw",
+    "withdraw-to-debt": "Withdraw to debt",
     "generate": "Generate",
     "borrow": "Borrow",
     "repay": "Repay",
@@ -2386,7 +2387,13 @@
     "title": "Trailing Stop-Loss"
   },
   "partial-take-profit": {
-    "title": "Auto Take Profit"
+    "title": "Auto Take Profit",
+    "overview": {
+      "footer": {
+        "title": "Need help setting up auto take profit?",
+        "description": "However you learn, we’ve got you covered. Watch a video tutorial or read a in depth how to article. Both walk you through setting up your Auto Take Profit automation like a pro."
+      }
+    }
   },
   "automation": {
     "setup": "{{feature}} Setup",
@@ -2800,7 +2807,24 @@
       },
       "ltv": {
         "title": "Loan to Value",
-        "footnote": "Max LTV:"
+        "footnote": "Max LTV:",
+        "footnote-stop-loss-ltv": "Stop-Loss LTV:",
+        "footnote-trailing-stop-loss-ltv": "Trailing Stop-Loss LTV:",
+        "modal-description": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+        "modal-max-ltv-title": "Max Loan to Value",
+        "modal-max-ltv-description": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral. If your LTV rises above the Max Loan to Value, the position is undercollateralised and could be liquidated.",
+        "modal-sl-title": "Stop-Loss Loan to Value",
+        "modal-trailing-sl-title": "Trailing Stop-Loss Loan to Value",
+        "modal-sl-description": "The Stop-Loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the protection tab.",
+        "modal-trailing-sl-description": "The Trailing Stop-Loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the protection tab."
+      },
+      "current-pnl": {
+        "title": "Current profit/loss",
+        "modal-description": "The profit or loss of your position, denominated in collateral, including realized profits to wallet. Specifically, P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits."
+      },
+      "realized-profit": {
+        "title": "Profit realized to wallet",
+        "modal-description": "The cumulative amount of collateral or debt that you have realized as profits to your wallet."
       },
       "collateral-deposited": {
         "title": "Collateral Deposited",
@@ -2819,6 +2843,25 @@
       },
       "borrow-rate": {
         "title": "Borrow Rate"
+      },
+      "stop-loss-ltv": {
+        "title": "Stop-Loss Loan to Value",
+        "footnote-below": "below Loan to Value",
+        "footnote-above": "above Loan to Value",
+        "modal-description": "The Stop-Loss Loan to Value (LTV) is the trigger point for executing the Stop-Loss for this vault based on it's LTV. If the Vault's LTV is equal to or higher than the Trigger LTV, then the stop-loss protection will execute and the vault will be automatically closed.",
+        "modal-footnote-title": "The current Stop-Loss Loan to Value is:"
+      },
+      "dynamic-stop-loss-price": {
+        "title": "Dynamic Stop-Loss Price",
+        "footnote-below": "below Liquidation Price",
+        "footnote-above": "above Liquidation Price",
+        "modal-description": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss Loan to Value. The reason this price is dynamic is that the Stop-Loss trigger is based on a Loan to Value, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
+        "modal-footnote-title": "The current Dynamic Stop-Loss Price is:"
+      },
+      "estimated-token-on-trigger": {
+        "title": "Est. {{token}} on Stop-Loss trigger",
+        "footnote": "Saving compared to liquidation",
+        "modal-description": "The estimated {{token}} on Stop-Loss trigger is the approximate amount of {{token}} you can expect to get returned to the wallet when the Vault has been closed because of Stop-Loss. It is very difficult to give a perfect amount as it depends on several factors at the time of the Stop-Loss trigger, such as market price, available liquidity and gas costs. This calculation assumes a 2% difference from Trigger Price to Market Price. The amount saved compared to liquidation is based on the assumption of not paying a Liquidation Penalty, currently set to {{liquidationPenalty}}."
       },
       "available-to-withdraw": {
         "title": "Available to Withdraw",
@@ -3493,6 +3536,10 @@
     "susde": {
       "title": "Get paid to boost your sUSDe yield on Summer",
       "description": "Borrow DAI against your sUSDe with AJNA on summer and multiply your staking yield exposure, all while earning $AJNA rewards."
+    },
+    "auto-take-profit": {
+      "title": "Automate your exit strategy.",
+      "description": "Realize profits at specific prices, over time, automatically. Auto Take Profit automation allows you to exit your vault positions at your own pace."
     }
   }
 }

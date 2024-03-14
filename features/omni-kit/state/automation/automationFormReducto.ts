@@ -29,6 +29,11 @@ export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomation
             ...prevState,
             triggerLtv: action.triggerLtv,
           }
+        case 'update-extra-trigger-ltv':
+          return {
+            ...prevState,
+            extraTriggerLtv: action.extraTriggerLtv,
+          }
         case 'update-trailing-distance':
           return {
             ...prevState,
@@ -58,6 +63,11 @@ export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomation
           return {
             ...prevState,
             percentageOffset: action.percentageOffset,
+          }
+        case 'update-use-threshold':
+          return {
+            ...prevState,
+            useThreshold: action.useThreshold,
           }
         case 'reset':
           return { ...prevState, ...omniAutomationFormReset }

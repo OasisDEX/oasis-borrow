@@ -104,29 +104,10 @@ export enum MixpanelTopBannerEvents {
   TopBannerClicked = 'TopBannerClicked',
 }
 
-export enum MixpanelNotificationsEventIds {
-  OpenNotificationCenter = 'OpenNotificationCenter',
-  ScrollNotificationCenter = 'ScrollNotificationCenter',
-  MarkAsRead = 'MarkAsRead',
-  GoToVault = 'GoToVault',
-  NotificationPreferences = 'NotificationPreferences',
-  VaultActionNotificationSwitch = 'VaultActionNotificationSwitch',
-  VaultInfoNotificationSwitch = 'VaultInfoNotificationSwitch',
-}
-
-export interface MixpanelNotificationsEventAdditionalParams {
-  walletAddress: string
-  walletType: string
-  browserType: string
-  notificationSwitch?: 'on' | 'off'
-}
-
 export enum MixpanelCommonAnalyticsSections {
   HeaderTabs = 'HeaderTabs',
   Banner = 'Banner',
   Form = 'Form',
-  NotificationCenter = 'NotificationCenter',
-  NotificationPreferences = 'NotificationPreferences',
   OpenPosition = 'OpenPosition',
 }
 

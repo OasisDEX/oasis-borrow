@@ -348,3 +348,15 @@ export type GetTriggersResponse = {
   triggersCount: number
   additionalData?: Record<string, unknown>
 }
+
+// Types below to be extended when new triggers types will be available on other protocols
+export type StopLossTriggers =
+  | AaveStopLossToCollateral
+  | AaveStopLossToCollateralDMA
+  | AaveStopLossToDebt
+  | AaveStopLossToDebtDMA
+
+export type TrailingStopLossTriggers = DmaAaveTrailingStopLoss
+export type AutoSellTriggers = DmaAaveBasicSell
+export type AutoBuyTriggers = DmaAaveBasicBuy
+export type PartialTakeProfitTriggers = DmaAavePartialTakeProfit

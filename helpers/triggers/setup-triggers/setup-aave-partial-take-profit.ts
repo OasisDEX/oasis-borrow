@@ -1,4 +1,5 @@
 import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
@@ -11,6 +12,7 @@ export const setupAaveLikePartialTakeProfit = async (
   params: SetupAavePartialTakeProfitParams,
 ): Promise<SetupPartialTakeProfitResponse> => {
   const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-partial-take-profit' })
+  const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
     dpm: params.dpm,
@@ -48,6 +50,11 @@ export const setupAaveLikePartialTakeProfit = async (
   try {
     response = await fetch(url, {
       method: 'POST',
+      headers: shouldSkipValidation
+        ? {
+            'x-summer-skip-validation': '1',
+          }
+        : undefined,
       body: body,
     })
   } catch (error) {
