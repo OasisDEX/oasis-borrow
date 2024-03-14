@@ -86,7 +86,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
   const closeToToken = isCollateralActive ? collateralToken : quoteToken
   const stateCloseToToken = state.resolveTo === 'collateral' ? collateralToken : quoteToken
 
-  const afterTraillingDistance = state.trailingDistance
+  const afterTraillingDistance = state.price
   const liquidationPrice =
     castedPosition.debtAmount.div(
       castedPosition.collateralAmount.times(castedPosition.maxRiskRatio.loanToValue),
@@ -270,6 +270,11 @@ export const useOmniTrailingStopLossDataHandler = () => {
   }
 
   const simpleView = state.uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS
+
+  const trailingDistanceForTx = trailingDistanceValue.eq(zero)
+    ? currentTrailingDistanceValue
+    : trailingDistanceValue
+
   return {
     trailingStopLossLambdaData,
     castedPosition,
@@ -301,6 +306,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
     dynamicStopPriceContentCardCommonData,
     estTokenOnTriggerContentCardCommonData,
     currentMarketPriceContentCardCommonData,
+    trailingDistanceForTx,
     simpleView,
   }
 }

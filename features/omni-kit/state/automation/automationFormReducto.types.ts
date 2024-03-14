@@ -11,7 +11,7 @@ export interface OmniAutomationFormState {
   trailingDistance?: BigNumber
   minSellPrice?: BigNumber
   maxBuyPrice?: BigNumber
-  takePrice?: BigNumber
+  price?: BigNumber
   maxGasFee?: BigNumber
   ltvStep?: BigNumber
   percentageOffset?: BigNumber
@@ -51,9 +51,9 @@ export interface AutomationFormActionsUpdateMaxBuyPrice {
   maxBuyPrice?: BigNumber
 }
 
-export interface AutomationFormActionsUpdateTakePrice {
-  type: 'update-take-price'
-  takePrice?: BigNumber
+export interface AutomationFormActionsUpdatePrice {
+  type: 'update-price'
+  price?: BigNumber
 }
 
 export interface AutomationFormActionsUpdateMaxGasFee {
@@ -84,7 +84,7 @@ export type OmniAutomationFormActions = ReductoActions<
   | AutomationFormActionsUpdateTrailingDistance
   | AutomationFormActionsUpdateMinSellPrice
   | AutomationFormActionsUpdateMaxBuyPrice
-  | AutomationFormActionsUpdateTakePrice
+  | AutomationFormActionsUpdatePrice
   | AutomationFormActionsUpdateMaxGasFee
   | AutomationFormActionsUpdateLtvStep
   | AutomationFormActionsUpdatePercentageOffset

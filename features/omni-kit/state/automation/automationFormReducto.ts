@@ -49,10 +49,10 @@ export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomation
             ...prevState,
             maxBuyPrice: action.maxBuyPrice,
           }
-        case 'update-take-price':
+        case 'update-price':
           return {
             ...prevState,
-            takePrice: action.takePrice,
+            takePrice: action.price,
           }
         case 'update-max-gas-fee':
           return {

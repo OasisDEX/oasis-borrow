@@ -8,10 +8,9 @@ import { getTrailingStopLossFormatters } from 'features/omni-kit/automation/help
 import { useOmniTrailingStopLossDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import type { FC } from 'react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Text } from 'theme-ui'
 
 export const OmniTrailingStopLossSidebarController: FC = () => {
@@ -34,9 +33,8 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
     sliderMin,
     sliderPercentageFill,
     trailingDistance,
-    currentTrailingDistanceValue,
-    trailingDistanceValue,
     dynamicStopPriceChange,
+    trailingDistanceForTx,
   } = useOmniTrailingStopLossDataHandler()
 
   const { leftFormatter, rightFormatter } = getTrailingStopLossFormatters({
@@ -45,6 +43,10 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
     quoteTokenSymbol: quoteToken,
     priceFormat,
   })
+
+  useMemo(() => {
+    automationUpdateState('trailingDistance', trailingDistanceForTx)
+  }, [trailingDistanceForTx.toString()])
 
   return (
     <>
@@ -85,11 +87,9 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
         minBoundry={sliderMin}
         maxBoundry={sliderMax.minus(sliderStep)}
         rightBoundry={dynamicStopPriceChange}
-        leftBoundry={
-          trailingDistanceValue.eq(zero) ? currentTrailingDistanceValue : trailingDistanceValue
-        }
+        leftBoundry={trailingDistanceForTx}
         onChange={(nextTrailingDistance) => {
-          automationUpdateState('trailingDistance', nextTrailingDistance)
+          automationUpdateState('price', nextTrailingDistance)
         }}
         useRcSlider
         leftLabel={t('protection.trailing-distance')}
