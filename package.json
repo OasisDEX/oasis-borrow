@@ -7,7 +7,7 @@
   },
   "packageManager": "yarn@1.22.21",
   "scripts": {
-    "start": "yarn get-config-types && NODE_OPTIONS=--max-old-space-size=8192 next dev & node ./scripts/notification-dummy",
+    "start": "yarn get-config-types && NODE_OPTIONS=--max-old-space-size=8192 next dev",
     "get-config-types": "node scripts/get-config-types.js",
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",

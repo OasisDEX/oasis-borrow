@@ -5,7 +5,7 @@ import { Flex, Grid } from 'theme-ui'
 
 function InputLoadingState() {
   return (
-    <Flex sx={{ gap: '12px', flexDirection: 'column', '&:first-child': { mb: 3 } }}>
+    <Flex sx={{ gap: '12px', flexDirection: 'column', '&:first-of-type': { mb: 3 } }}>
       <Skeleton width="30%" />
       <Skeleton height="48px" />
     </Flex>
