@@ -3,6 +3,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
+import { ethers } from 'ethers'
 import {
   getOmniAutomationParameters,
   isOmniAutomationFormEmpty,
@@ -90,7 +91,10 @@ export const useOmniAutomationTxHandler = () => {
         promise
           .then((data) => {
             if (data?.transaction && signer && dpmProxy) {
-              const txDataFromResponse = { ...data.transaction, value: '0' }
+              const txDataFromResponse = {
+                ...data.transaction,
+                value: ethers.utils.parseEther('0').toHexString(),
+              }
 
               setTxData(txDataFromResponse)
               setSimulation(data)
