@@ -34,8 +34,6 @@ export function useErc4626TxHandler(): () => void {
     getOmniParameters: () =>
       getErc4626Parameters({
         isFormValid,
-        state,
-        walletAddress,
         networkId,
         quoteAddress,
         quotePrecision,
@@ -43,7 +41,9 @@ export function useErc4626TxHandler(): () => void {
         quoteToken,
         rpcProvider: getRpcProvider(networkId),
         slippage,
+        state,
         vaultAddress: address,
+        walletAddress,
       }),
   })
 }
