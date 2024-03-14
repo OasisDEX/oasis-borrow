@@ -22,7 +22,7 @@ export const isOmniAutomationFormEmpty = (
     case AutomationFeatures.AUTO_BUY:
       return (!state.targetLtv && !state.triggerLtv) || (state.useThreshold && !state.maxBuyPrice)
     case AutomationFeatures.PARTIAL_TAKE_PROFIT:
-      return !state.resolveTo && !state.takePrice && !state.triggerLtv && !state.ltvStep
+      return !state.resolveTo && !state.price && !state.triggerLtv && !state.ltvStep
     default:
       return true
   }
