@@ -5,10 +5,11 @@ import type { ethers } from 'ethers'
 import { omniNetworkMap, omniSwapVersionMap } from 'features/omni-kit/constants'
 import type {
   Erc4626CommonPayload,
-  Erc4626Dependencies } from 'features/omni-kit/protocols/erc-4626/actions';
+  Erc4626Dependencies,
+} from 'features/omni-kit/protocols/erc-4626/actions'
 import {
   erc4626ActionDepositEarn,
-  erc4626ActionWithdrawEarn
+  erc4626ActionWithdrawEarn,
 } from 'features/omni-kit/protocols/erc-4626/actions'
 import {
   getErc4626ApyParameters,
