@@ -4,6 +4,7 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
+import type { AutomationFeatures } from 'features/automation/common/types'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
@@ -75,11 +76,13 @@ export interface AutomationMetadataValues {
     isPartialTakeProfitEnabled: boolean
   }
   triggers: {
-    stopLoss?: StopLossTriggers
-    trailingStopLoss?: TrailingStopLossTriggers
-    autoSell?: AutoSellTriggers
-    autoBuy?: AutoBuyTriggers
-    partialTakeProfit?: PartialTakeProfitTriggers
+    [AutomationFeatures.STOP_LOSS]?: StopLossTriggers
+    [AutomationFeatures.TRAILING_STOP_LOSS]?: TrailingStopLossTriggers
+    [AutomationFeatures.AUTO_SELL]?: AutoSellTriggers
+    [AutomationFeatures.AUTO_BUY]?: AutoBuyTriggers
+    [AutomationFeatures.PARTIAL_TAKE_PROFIT]?: PartialTakeProfitTriggers
+    [AutomationFeatures.CONSTANT_MULTIPLE]?: PartialTakeProfitTriggers
+    [AutomationFeatures.AUTO_TAKE_PROFIT]?: PartialTakeProfitTriggers
   }
   simulation: AutomationMetadataValuesSimulation
 }

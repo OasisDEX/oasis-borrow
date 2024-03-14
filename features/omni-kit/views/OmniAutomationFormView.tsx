@@ -11,12 +11,15 @@ import {
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
 import { useOmniAutomationSidebarTitle } from 'features/omni-kit/hooks'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
+import { TriggerAction } from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
+import { useHash } from 'helpers/useHash'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 interface OmniFormViewProps {
@@ -58,14 +61,28 @@ export function OmniAutomationFormView({
     },
   } = useOmniGeneralContext()
   const {
-    form: { state },
+    automation: {
+      automationForm: { state, updateState },
+    },
     position: { isSimulationLoading, resolvedId },
     dynamicMetadata: {
       featureToggles: { suppressValidation, safetySwitch },
       validations: { isFormFrozen, hasErrors },
-      values: { sidebarTitle },
+      values: { sidebarTitle, automation },
     },
   } = useOmniProductContext(productType)
+
+  const [hash] = useHash()
+  const activeUiDropdown =
+    hash === 'protection' ? state.uiDropdownProtection : state.uiDropdownOptimization
+
+  const isTriggerEnabled = activeUiDropdown && automation?.triggers[activeUiDropdown]
+
+  useMemo(() => {
+    if (isTriggerEnabled) {
+      updateState('action', TriggerAction.Update)
+    }
+  }, [isTriggerEnabled])
 
   const txHandler = useOmniAutomationTxHandler()
 
@@ -80,7 +97,6 @@ export function OmniAutomationFormView({
     isPrimaryButtonLoading,
     isTextButtonHidden,
   } = getOmniSidebarButtonsStatus({
-    action: state.action,
     currentStep,
     editingStep,
     hasErrors,
@@ -139,6 +155,14 @@ export function OmniAutomationFormView({
     walletAddress,
   })
   const textButtonAction = () => {
+    if (currentStep === OmniSidebarAutomationStep.Manage && isTriggerEnabled) {
+      updateState('action', TriggerAction.Remove)
+    }
+
+    if (isTriggerEnabled && state?.action === TriggerAction.Remove) {
+      updateState('action', TriggerAction.Update)
+    }
+
     setStep(editingStep)
   }
   const status = getOmniSidebarTransactionStatus({
@@ -168,9 +192,13 @@ export function OmniAutomationFormView({
       ...primaryButtonActions,
     },
     textButton: {
-      label: t('back-to-editing'),
+      label:
+        currentStep === OmniSidebarAutomationStep.Manage && state?.action === TriggerAction.Update
+          ? t('system.remove-trigger')
+          : t('back-to-editing'),
       action: textButtonAction,
-      hidden: isTextButtonHidden,
+      hidden:
+        isTextButtonHidden && currentStep === OmniSidebarAutomationStep.Manage && !isTriggerEnabled,
     },
     status,
   }
