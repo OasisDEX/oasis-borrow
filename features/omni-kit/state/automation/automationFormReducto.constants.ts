@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
 
 export const omniAutomationFormReset = {
@@ -7,11 +8,12 @@ export const omniAutomationFormReset = {
   trailingDistance: undefined,
   minSellPrice: undefined,
   maxBuyPrice: undefined,
-  maxGasFee: undefined,
+  takePrice: undefined,
+  maxGasFee: new BigNumber(300),
   ltvStep: undefined,
   percentageOffset: undefined,
   resolveTo: undefined,
-  useThreshold: undefined,
+  useThreshold: true,
 }
 
 export const omniAutomationFormDefault: OmniAutomationFormState = {

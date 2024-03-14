@@ -184,9 +184,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniProtectionOverviewController />
-                            {uiDropdownProtection && (
-                              <OmniAutomationFormController txHandler={() => () => null} />
-                            )}
+                            {uiDropdownProtection && <OmniAutomationFormController />}
                           </Grid>
                         ),
                       },
@@ -207,9 +205,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniOptimizationOverviewController />
-                            {uiDropdownOptimization && (
-                              <OmniAutomationFormController txHandler={() => () => null} />
-                            )}
+                            {uiDropdownOptimization && <OmniAutomationFormController />}
                           </Grid>
                         ),
                       },

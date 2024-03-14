@@ -17,11 +17,13 @@ export const sendOmniTransaction$ = ({
   networkId,
   proxyAddress,
   txData,
+  sendAsSinger = false,
 }: {
   signer: ethers.Signer
   networkId: OmniSupportedNetworkIds
   proxyAddress: string
   txData: OmniTxData
+  sendAsSinger?: boolean
 }): Observable<{
   status: TxStatus
   receipt: ethers.providers.TransactionReceipt
@@ -32,25 +34,45 @@ export const sendOmniTransaction$ = ({
     from(getOverrides(signer)),
   )
     .pipe(
-      switchMap(([{ dpm }, override]) =>
-        from(
-          dpm.estimateGas
-            .execute(txData.to, txData.data, {
+      switchMap(([{ dpm }, override]) => {
+        const estimateGasRequest = sendAsSinger
+          ? signer.estimateGas({
+              ...override,
+              to: txData.to,
+              data: txData.data,
+              value: txData.value,
+            })
+          : dpm.estimateGas.execute(txData.to, txData.data, {
               ...override,
               value: txData.value,
             })
-            .then((val) => new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0)),
+
+        return from(
+          estimateGasRequest.then((val) =>
+            new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0),
+          ),
         ).pipe(
           switchMap((gasLimit) => {
-            return from(
-              dpm.execute(txData.to, txData.data, {
-                ...override,
-                value: txData.value,
-                gasLimit: gasLimit ?? undefined,
-              }),
-            ).pipe(
+            const sendTxRequest = sendAsSinger
+              ? signer.sendTransaction({
+                  ...override,
+                  to: txData.to,
+                  data: txData.data,
+                  value: txData.value,
+                  gasLimit: gasLimit ?? undefined,
+                })
+              : dpm.execute(txData.to, txData.data, {
+                  ...override,
+                  value: txData.value,
+                  gasLimit: gasLimit ?? undefined,
+                })
+
+            return from(sendTxRequest).pipe(
               switchMap((tx) => {
-                return from(signer.provider!.waitForTransaction(tx.hash)).pipe(
+                if (!signer.provider) {
+                  throw new Error('Provider not available on signer')
+                }
+                return from(signer.provider.waitForTransaction(tx.hash)).pipe(
                   map((receipt) => {
                     let isSuccess = false
                     let isError = false
@@ -86,8 +108,8 @@ export const sendOmniTransaction$ = ({
               }),
             )
           }),
-        ),
-      ),
+        )
+      }),
     )
     .pipe(
       startWith({

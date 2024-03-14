@@ -11,10 +11,11 @@ export interface OmniAutomationFormState {
   trailingDistance?: BigNumber
   minSellPrice?: BigNumber
   maxBuyPrice?: BigNumber
+  takePrice?: BigNumber
   maxGasFee?: BigNumber
   ltvStep?: BigNumber
   percentageOffset?: BigNumber
-  useThreshold?: BigNumber
+  useThreshold?: boolean
   resolveTo?: OmniCloseTo
   uiDropdownProtection?: AutomationFeatures
   uiDropdownOptimization?: AutomationFeatures
@@ -50,6 +51,11 @@ export interface AutomationFormActionsUpdateMaxBuyPrice {
   maxBuyPrice?: BigNumber
 }
 
+export interface AutomationFormActionsUpdateTakePrice {
+  type: 'update-take-price'
+  takePrice?: BigNumber
+}
+
 export interface AutomationFormActionsUpdateMaxGasFee {
   type: 'update-max-gas-fee'
   maxGasFee?: BigNumber
@@ -67,7 +73,7 @@ export interface AutomationFormActionsUpdatePercentageOffset {
 
 export interface AutomationFormActionsUpdateUseThreshold {
   type: 'update-use-threshold'
-  useThreshold?: BigNumber
+  useThreshold?: boolean
 }
 
 export type OmniAutomationFormActions = ReductoActions<
@@ -78,6 +84,7 @@ export type OmniAutomationFormActions = ReductoActions<
   | AutomationFormActionsUpdateTrailingDistance
   | AutomationFormActionsUpdateMinSellPrice
   | AutomationFormActionsUpdateMaxBuyPrice
+  | AutomationFormActionsUpdateTakePrice
   | AutomationFormActionsUpdateMaxGasFee
   | AutomationFormActionsUpdateLtvStep
   | AutomationFormActionsUpdatePercentageOffset

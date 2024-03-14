@@ -9,7 +9,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { circle_slider } from 'theme/icons'
 
-export function OmniAutomationFormController({ txHandler }: { txHandler: () => () => void }) {
+export function OmniAutomationFormController() {
   const { t } = useTranslation()
   const {
     environment: { isOpening, productType },
@@ -108,7 +108,6 @@ export function OmniAutomationFormController({ txHandler }: { txHandler: () => (
           items: itemsMap[hash] || [],
         },
       })}
-      txHandler={txHandler}
       txSuccessAction={() => {
         // if (uiDropdown === OmniMultiplyPanel.Close) {
         //   updateState('uiDropdown', OmniMultiplyPanel.Adjust)

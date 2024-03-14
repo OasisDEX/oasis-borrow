@@ -130,7 +130,6 @@ export type SetupBasicStopLossResponse = ResponseCommon & {
 export interface SetupAaveStopLossParams {
   executionToken: string
   executionLTV: BigNumber
-  targetLTV: BigNumber
   dpm: string
   strategy: StrategyLike
   networkId: number
@@ -150,7 +149,9 @@ export interface SetupAaveTrailingStopLossParams {
 
 export type SetupTrailingStopLossResponse = ResponseCommon & {
   encodedTriggerData?: string
-  simulation?: unknown
+  simulation?: {
+    somethingToBeUpdated: boolean
+  }
   transaction?: TriggerTransaction
 }
 

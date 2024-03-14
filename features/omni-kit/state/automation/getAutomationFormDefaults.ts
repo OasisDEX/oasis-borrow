@@ -29,6 +29,5 @@ export const getAutomationFormDefaults = (
       : isAutoBuyEnabled
       ? AutomationFeatures.AUTO_BUY
       : undefined,
-    resolveTo: 'quote',
   }
 }
