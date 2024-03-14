@@ -25,6 +25,7 @@ import {
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
+import { useAppConfig } from 'helpers/config'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
@@ -35,9 +36,10 @@ import { sparks } from 'theme/icons'
 export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
 
-  // TODO: get from feature flags
-  const safetySwitch = false
-  const suppressValidation = false
+  const {
+    Erc4626VaultsSafetySwitch: safetySwitch,
+    Erc4626VaultsSuppressValidation: suppressValidation,
+  } = useAppConfig('features')
 
   const {
     environment: {
