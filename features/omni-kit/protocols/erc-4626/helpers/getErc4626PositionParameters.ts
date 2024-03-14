@@ -12,14 +12,16 @@ export interface Erc4626PositionParametersResponse {
   id: string
   shares: string
   vault: {
-    fee?: string
-    curator?: string
+    interestRates: {
+      timestamp: string
+      rate: string
+    }[]
     totalAssets: string
     totalShares: string
   }
 }
 
-const emptyErc4626PositionParametersResponse = {
+const emptyErc4626PositionParametersResponse: Erc4626PositionParametersResponse = {
   earnCumulativeDepositInQuoteToken: '0',
   earnCumulativeDepositUSD: '0',
   earnCumulativeFeesInQuoteToken: '0',
@@ -29,6 +31,7 @@ const emptyErc4626PositionParametersResponse = {
   id: '',
   shares: '0',
   vault: {
+    interestRates: [],
     totalAssets: '0',
     totalShares: '0',
   },

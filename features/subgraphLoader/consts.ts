@@ -663,10 +663,12 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         earnCumulativeDepositInQuoteToken
         earnCumulativeWithdrawInQuoteToken
         vault {
+          interestRates(orderBy: timestamp, orderDirection: desc, first: 30) {
+            timestamp
+            rate
+          }
           totalAssets
           totalShares
-          curator
-          fee
         }
       }
     }
