@@ -1,11 +1,7 @@
 import type { LendingPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { DetailsSection } from 'components/DetailsSection'
-import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { resolveActiveOrder } from 'features/omni-kit/automation/helpers'
 import {
-  OmniContentCard,
   useOmniCardDataAutoBSTriggerExecutionLtv,
   useOmniCardDataAutoBSTriggerTargetLtv,
 } from 'features/omni-kit/components/details-section'
@@ -14,13 +10,6 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import type { SetupBasicAutoResponse } from 'helpers/triggers'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react'
-import React from 'react'
-
-interface OmniAutoBSOverviewDetailsSectionProps {
-  type: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
-  active?: boolean
-}
 
 const isAutoBSSimulationResponse = (
   resp?: OmniAutomationSimulationResponse,
@@ -32,9 +21,10 @@ const isAutoBSSimulationResponse = (
   return 'executionLTV' in resp && 'targetLTV' in resp
 }
 
-export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSectionProps> = ({
+export const useOmniAutoBSDataHandler = ({
   type,
-  active,
+}: {
+  type: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
 }) => {
   const { t } = useTranslation()
   const {
@@ -123,17 +113,20 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
     denomination: priceFormat,
   })
 
-  return (
-    <DetailsSection
-      sx={resolveActiveOrder(active)}
-      title={resolvedTitle}
-      badge={resolvedFlag}
-      content={
-        <DetailsSectionContentCardWrapper>
-          <OmniContentCard {...autoBSTriggerExecutionLtvContentCardCommonData} />
-          <OmniContentCard {...autoBSTriggerTargetLtvContentCardCommonData} />
-        </DetailsSectionContentCardWrapper>
-      }
-    />
-  )
+  return {
+    castedPosition,
+    isActive,
+    afterTriggerLtv,
+    afterTargetLtv,
+    resolvedTitle,
+    resolvedFlag,
+    resolvedTrigger,
+    resolvedThresholdPrice,
+    currentExecutionLTV,
+    currentTargetLTV,
+    debtToCollateralRatio,
+    nextPrice,
+    autoBSTriggerExecutionLtvContentCardCommonData,
+    autoBSTriggerTargetLtvContentCardCommonData,
+  }
 }

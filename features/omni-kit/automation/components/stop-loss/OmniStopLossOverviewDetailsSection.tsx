@@ -1,9 +1,7 @@
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
-import {
-  resolveActiveOrder,
-  useOmniStopLossDataHandler,
-} from 'features/omni-kit/automation/helpers'
+import { resolveActiveOrder } from 'features/omni-kit/automation/helpers'
+import { useOmniStopLossDataHandler } from 'features/omni-kit/automation/hooks'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
