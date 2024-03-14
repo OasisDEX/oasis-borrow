@@ -3230,12 +3230,14 @@
         "modal-description": "MetaMorpho Vaults have a fee charged by the curator of the Vault for performing the risk management and selection of Blue Markets."
       },
       "earnings-to-date": {
-        "footnote": "Not including token rewards" 
+        "footnote": "Not including token rewards"
       }
     },
     "position-page": {
       "common": {
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
+        "market-apy": "Market APY",
+        "per-1k-usd": "{{amount}} {{token}} per $1,000",
         "vault-allocation-breakdown": "Vault allocation breakdown"
       },
       "earn": {

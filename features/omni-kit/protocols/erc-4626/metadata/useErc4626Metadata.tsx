@@ -9,6 +9,7 @@ import type {
 } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniIsEarnFormEmpty } from 'features/omni-kit/helpers'
+import { Erc4626ApyTooltip } from 'features/omni-kit/protocols/erc-4626/components'
 import {
   Erc4626DetailsSectionContent,
   Erc4626DetailsSectionFooter,
@@ -21,6 +22,7 @@ import {
 import { erc4626FlowStateFilter, getErc4626Apy } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
+import { notAvailable } from 'handlers/portfolio/constants'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
@@ -95,7 +97,6 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
           }),
           footerColumns: isOpening ? 2 : 3,
           headline: label,
-          // TODO replace with real values
           headlineDetails: [
             {
               label: t('omni-kit.headline.details.current-apy'),
@@ -105,12 +106,18 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
                   vaultApy: position.apy.per365d,
                 }),
               ),
-              labelTooltip: 'Tooltip placeholder',
+              valueTooltip: (
+                <Erc4626ApyTooltip
+                  rewardsApy={position.apyFromRewards.per365d}
+                  vaultApy={position.apy.per365d}
+                />
+              ),
               labelIcon: sparks,
             },
+            // TODO replace with real values
             {
               label: t('omni-kit.headline.details.30-days-avg-apy'),
-              value: '0%',
+              value: notAvailable,
             },
             {
               label: t('omni-kit.headline.details.tvl'),

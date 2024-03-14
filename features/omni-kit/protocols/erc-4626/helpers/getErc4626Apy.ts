@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-interface GetErc4626ApyParams {
+export interface GetErc4626ApyParams {
   rewardsApy: {
     per1kUsd?: BigNumber
     token: string
