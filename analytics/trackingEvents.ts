@@ -17,8 +17,6 @@ import { TrackingProductType } from './TrackingProductType'
 import type {
   MixpanelAutomationEventIds,
   MixpanelAutomationEventsAdditionalParams,
-  MixpanelNotificationsEventAdditionalParams,
-  MixpanelNotificationsEventIds,
   MixpanelSwapWidgetEvents,
   MixpanelTopBannerEvents,
 } from './types'
@@ -869,31 +867,6 @@ export const trackingEvents = {
       additionalParams: MixpanelAutomationEventsAdditionalParams,
     ) => {
       const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
-
-      !mixpanel.has_opted_out_tracking() &&
-        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
-    },
-  },
-  notifications: {
-    scroll: (
-      id: MixpanelNotificationsEventIds,
-      section: MixpanelCommonAnalyticsSections.NotificationCenter,
-      additionalParams: MixpanelNotificationsEventAdditionalParams,
-    ) => {
-      const eventBody = { id, section, product: 'Notifications', ...additionalParams }
-
-      !mixpanel.has_opted_out_tracking() &&
-        mixpanelInternalAPI(MixpanelEventTypes.OnScroll, eventBody)
-    },
-    buttonClick: (
-      id: MixpanelNotificationsEventIds,
-      section:
-        | MixpanelCommonAnalyticsSections.HeaderTabs
-        | MixpanelCommonAnalyticsSections.NotificationCenter
-        | MixpanelCommonAnalyticsSections.NotificationPreferences,
-      additionalParams: MixpanelNotificationsEventAdditionalParams,
-    ) => {
-      const eventBody = { id, section, product: 'Notifications', ...additionalParams }
 
       !mixpanel.has_opted_out_tracking() &&
         mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
