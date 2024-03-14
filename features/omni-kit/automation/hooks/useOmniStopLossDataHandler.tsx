@@ -52,7 +52,7 @@ export const useOmniStopLossDataHandler = () => {
   const positionLiquidationPenalty = castedPosition.liquidationPenalty
 
   const defaultStopLossLevel = useMemo(
-    () => castedPosition.category.maxLoanToValue.minus(stopLossConstants.offsets.manage.max),
+    () => castedPosition.category.maxLoanToValue.minus(stopLossConstants.offsets.max),
     [castedPosition.category.maxLoanToValue],
   )
 
@@ -171,12 +171,9 @@ export const useOmniStopLossDataHandler = () => {
       />
     ),
   })
-  const sliderMin = useMemo(
-    () => positionLtv.plus(stopLossConstants.offsets.manage.min),
-    [positionLtv],
-  )
+  const sliderMin = useMemo(() => positionLtv.plus(stopLossConstants.offsets.min), [positionLtv])
   const sliderMax = useMemo(
-    () => positionMaxLtv.minus(stopLossConstants.offsets.manage.max),
+    () => positionMaxLtv.minus(stopLossConstants.offsets.max),
     [positionMaxLtv],
   )
 
