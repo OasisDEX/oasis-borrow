@@ -151,7 +151,12 @@ export function AssetsTable({
         >
           {paginatedRows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <AssetsTableDataRow key={getRandomString()} row={row} rowKeys={rowKeys} verticalAlign={verticalAlign} />
+              <AssetsTableDataRow
+                key={getRandomString()}
+                row={row}
+                rowKeys={rowKeys}
+                verticalAlign={verticalAlign}
+              />
               {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row.items).length}>
@@ -326,7 +331,12 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
       }}
     >
       {rowKeys.map((label, i) => (
-        <AssetsTableDataCell key={getRowKey(i, row)} label={label} row={row} verticalAlign={verticalAlign} />
+        <AssetsTableDataCell
+          key={getRowKey(i, row)}
+          label={label}
+          row={row}
+          verticalAlign={verticalAlign}
+        />
       ))}
     </Box>
   )

@@ -37,6 +37,7 @@ async function getErc4626VaultData({
 
     const vaults = response.vaults[0]
 
+    const hasRewards = !!(rewards && rewards?.length)
     const tokenGroup = getTokenGroup(token.symbol)
     const weeklyNetApy = vaults
       ? vaults.interestRates
@@ -62,7 +63,22 @@ async function getErc4626VaultData({
           weeklyNetApy,
           primaryTokenAddress: token.address,
           secondaryTokenAddress: token.address,
-          hasRewards: rewards && rewards?.length > 0,
+          hasRewards,
+          tooltips: {
+            ...(hasRewards && {
+              weeklyNetApy: {
+                content: {
+                  title: {
+                    key: 'erc-4626.product-hub-tooltips.this-vault-is-earning-tokens',
+                  },
+                  description: rewards
+                    .map(({ label, token: _token }) => label ?? _token)
+                    .join(', '),
+                },
+                icon: 'sparks',
+              },
+            }),
+          },
         },
       ],
       warnings: [],
