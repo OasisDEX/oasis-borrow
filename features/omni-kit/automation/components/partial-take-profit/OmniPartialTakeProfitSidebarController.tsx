@@ -5,6 +5,7 @@ import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { FormatPercentWithSmallPercentCharacter } from 'components/FormatPercentWithSmallPercentCharacter'
 import { Icon } from 'components/Icon'
+import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
@@ -13,12 +14,13 @@ import { partialTakeProfitConstants } from 'features/omni-kit/automation/constan
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { nbsp } from 'helpers/nbsp'
-import { hundred, zero } from 'helpers/zero'
+import type { SetupPartialTakeProfitResponse } from 'helpers/triggers'
+import { hundred, one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { createNumberMask } from 'text-mask-addons'
 import { question_o } from 'theme/icons'
@@ -42,9 +44,13 @@ export const OmniPartialTakeProfitSidebarController = () => {
       automationForm: { state: automationFormState, updateState: automationUpdateState },
     },
     dynamicMetadata: {
-      values: { automation: automationDynamicValues },
+      values: { automation },
     },
   } = useOmniProductContext(productType)
+
+  // TODO: better type this
+  const partialTakeProfitSimulation =
+    automation?.simulation as SetupPartialTakeProfitResponse['simulation']
 
   const {
     startingTakeProfitPrice,
@@ -55,12 +61,23 @@ export const OmniPartialTakeProfitSidebarController = () => {
     withdrawalLtvSliderConfig,
     castedPosition,
     resolvedWithdrawalLtv,
+    hasStopLoss,
+    hasTrailingStopLoss,
+    stopLossLevelLabel,
+    currentStopLossLevel,
+    trailingStopLossDistanceLabel,
+    dynamicStopLossPrice,
+    selectedPartialTakeProfitToken,
+    extraTriggerLtv,
+    newStopLossSliderConfig,
+    partialTakeProfitTokenData,
+    partialTakeProfitSecondTokenData,
   } = useOmniPartialTakeProfitDataHandler()
 
   const [isFocus, setStartingPriceInputFocus] = useState<boolean>(false)
   const [customPriceRatioPercentage, setCustomPriceRatioPercentage] = useState<
     PercentageOptionsType[number] | undefined
-  >(0)
+  >()
 
   const inputMask = useMemo(() => {
     const selectedResolveToTokenData = getToken(
@@ -108,6 +125,67 @@ export const OmniPartialTakeProfitSidebarController = () => {
     startingTakeProfitPriceValue,
   ])
 
+  const parsedProfits = useMemo(() => {
+    return partialTakeProfitSimulation?.profits
+      ? partialTakeProfitSimulation.profits.map((profit) => {
+          const isSelectedTokenDebt = selectedPartialTakeProfitToken === 'quote'
+          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
+          const selectedSecondaryTokenSymbol = partialTakeProfitSecondTokenData.symbol
+          const realizedProfitValue = isSelectedTokenDebt
+            ? profit.realizedProfitInDebt
+            : profit.realizedProfitInCollateral
+          const totalProfitValue = isSelectedTokenDebt
+            ? profit.totalProfitInDebt
+            : profit.totalProfitInCollateral
+          const totalProfitSecondValue = isSelectedTokenDebt
+            ? profit.totalProfitInCollateral
+            : profit.totalProfitInDebt
+          return [
+            // Trigger price
+            `${formatAmount(
+              new BigNumber(profit.triggerPrice),
+              selectedTokenSymbol,
+            )} ${priceFormat}`,
+            // Realized profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  new BigNumber(realizedProfitValue.balance),
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+            </Flex>,
+            // Total profit
+            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
+                {`${formatAmount(
+                  new BigNumber(totalProfitValue.balance),
+                  selectedTokenSymbol,
+                )} ${selectedTokenSymbol}`}
+              </Text>
+              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
+                {`${formatAmount(
+                  new BigNumber(totalProfitSecondValue.balance),
+                  selectedSecondaryTokenSymbol,
+                )} ${selectedSecondaryTokenSymbol}`}
+              </Text>
+            </Flex>,
+            // Stop loss
+            `${formatAmount(
+              new BigNumber(profit.stopLossDynamicPrice),
+              selectedTokenSymbol,
+            )} ${priceFormat}`,
+          ]
+        })
+      : []
+  }, [
+    partialTakeProfitSimulation,
+    selectedPartialTakeProfitToken,
+    partialTakeProfitTokenData.symbol,
+    partialTakeProfitSecondTokenData.symbol,
+    priceFormat,
+  ])
+
   return (
     <Grid gap={3} sx={partialTakeProfitConstants.wrapperSx}>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -128,11 +206,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
             action: () => automationUpdateState('resolveTo', 'collateral'),
           },
         ]}
-        active={
-          automationFormState.resolveTo ||
-          partialTakeProfitToken ||
-          partialTakeProfitConstants.defaultResolveTo
-        }
+        active={selectedPartialTakeProfitToken}
       />
       <Box
         sx={{
@@ -492,15 +566,15 @@ export const OmniPartialTakeProfitSidebarController = () => {
             if (x.isZero()) {
               return '-'
             }
-            return `${formatAmount(x, priceDenominationToken)} ${priceFormat}`
+            return `${formatCryptoBalance(x)} ${priceFormat}`
           }}
           leftLabel={t('protection.partial-take-profit-sidebar.trigger-ltv')}
           rightLabel={t('slider.set-stoploss.right-label')}
-          lastValue={newStopLossLtv}
-          leftBoundry={newStopLossLtv}
-          rightBoundry={dynamicStopLossPriceForView}
+          lastValue={extraTriggerLtv}
+          leftBoundry={extraTriggerLtv}
+          rightBoundry={isShort ? one.div(dynamicStopLossPrice) : dynamicStopLossPrice}
           {...newStopLossSliderConfig}
-          onChange={setNewStopLossLtv}
+          onChange={curry(automationUpdateState)('extraTriggerLtv')}
           useRcSlider
           customSliderProps={
             currentStopLossLevel
@@ -528,7 +602,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
               <Trans
                 i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.no-stop-loss"
                 components={{
-                  partialTakeProfitToken,
+                  partialTakeProfitToken: <>`${partialTakeProfitToken}`</>,
                 }}
               />
             ) : (
@@ -537,7 +611,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
             hasStopLoss && stopLossLevelLabel ? (
               <Trans
                 i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.has-stop-loss"
-                components={{
+                values={{
                   nbsp,
                   stopLossLevelLabel,
                 }}
@@ -545,10 +619,10 @@ export const OmniPartialTakeProfitSidebarController = () => {
             ) : (
               ''
             ),
-            hasStopLoss && trailingStopLossDistanceLabel ? (
+            hasTrailingStopLoss && trailingStopLossDistanceLabel ? (
               <Trans
                 i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.has-trailing-stop-loss"
-                components={{
+                values={{
                   nbsp,
                   trailingStopLossDistanceLabel,
                 }}
@@ -556,11 +630,11 @@ export const OmniPartialTakeProfitSidebarController = () => {
             ) : (
               ''
             ),
-            hasStopLoss && currentStopLossLevel && !currentStopLossLevel.eq(newStopLossLtv) ? (
+            hasStopLoss && currentStopLossLevel && !currentStopLossLevel.eq(extraTriggerLtv) ? (
               <Trans
                 i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.new-stop-loss"
-                components={{
-                  newStopLossValue: formatPercent(newStopLossLtv, {
+                values={{
+                  newStopLossValue: formatPercent(extraTriggerLtv, {
                     precision: 2,
                   }),
                 }}
@@ -571,6 +645,53 @@ export const OmniPartialTakeProfitSidebarController = () => {
           ].filter(Boolean)}
         />
       </SidebarAccordion>
+      <InfoSectionTable
+        withListPadding={false}
+        title={
+          <>
+            {t('protection.partial-take-profit-sidebar.profits-table.full-realized-profit-range')}
+            <StatefulTooltip
+              tooltip={
+                <Text variant="paragraph4">
+                  {t('protection.partial-take-profit-sidebar.profits-table.tooltip')}
+                </Text>
+              }
+              containerSx={{ display: 'inline' }}
+              inline
+              tooltipSx={{ maxWidth: '350px' }}
+            >
+              <Icon
+                color={'neutral80'}
+                icon={question_o}
+                size="auto"
+                width="14px"
+                height="14px"
+                sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+              />
+            </StatefulTooltip>
+          </>
+        }
+        headers={[
+          t('protection.partial-take-profit-sidebar.profits-table.trigger-price'),
+          t('protection.partial-take-profit-sidebar.profits-table.realized-profit'),
+          t('protection.partial-take-profit-sidebar.profits-table.total-profit'),
+          t('protection.partial-take-profit-sidebar.profits-table.stop-loss'),
+        ]}
+        rows={parsedProfits}
+        loading={!parsedProfits}
+        wrapperSx={{
+          gridGap: 1,
+          backgroundColor: 'transparent',
+        }}
+        defaultLimitItems={partialTakeProfitConstants.realizedProfitRangeVisible}
+        expandItemsButtonLabel={
+          (parsedProfits && parsedProfits.length) || !parsedProfits
+            ? `See next ${
+                (parsedProfits?.length || 0) - partialTakeProfitConstants.realizedProfitRangeVisible
+              } price triggers`
+            : ''
+        }
+      />
     </Grid>
   )
 }

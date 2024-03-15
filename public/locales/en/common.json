@@ -1907,6 +1907,14 @@
         "has-stop-loss": "You already have a Stop-Loss trigger set at{{nbsp}}{{stopLossLevelLabel}}. You can update the Stop-Loss LTV above and it all be handled within your Auto Take Profit transaction.",
         "has-trailing-stop-loss": "You already have a Trailing Stop-Loss trigger set at{{nbsp}}{{trailingStopLossDistanceLabel}} distance.",
         "new-stop-loss": "Your stop-Loss will be updated to a new value: {{newStopLossValue}}. Use the dot on the slider if you want to reset it."
+      },
+      "profits-table": {
+        "full-realized-profit-range": "Full realized profit range",
+        "tooltip": "Your Auto Take Profit automation run continuously. The Realized Profit Range simulates and forecasts how your Auto Take Profit will perform and impact your Stop-Loss based on different Trigger Prices. You can turn off Auto Take Profit at any time, if you feel satisfied at specific Trigger Price.",
+        "trigger-price": "Trigger Price",
+        "realized-profit": "Realized profit",
+        "total-profit": "Total profit",
+        "stop-loss": "Stop-Loss"
       }
     }
   },

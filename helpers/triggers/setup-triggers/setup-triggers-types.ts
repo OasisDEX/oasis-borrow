@@ -186,7 +186,7 @@ export interface ProfitsSimulationBalanceRaw {
   token: ProfitsSimulationToken
 }
 
-interface ProfitsSimulationRaw {
+export interface ProfitsSimulationRaw {
   triggerPrice: string
   realizedProfitInCollateral: ProfitsSimulationBalanceRaw
   realizedProfitInDebt: ProfitsSimulationBalanceRaw

@@ -3,9 +3,19 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
 import { lambdaPercentageDenomination, lambdaPriceDenomination } from 'features/aave/constants'
+import {
+  hasActiveStopLossFromTriggers,
+  hasActiveTrailingStopLossFromTriggers,
+} from 'features/aave/manage/state'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
-import { partialTakeProfitConstants } from 'features/omni-kit/automation/constants'
+import {
+  getDynamicStopLossPrice,
+  getSliderPercentageFill,
+} from 'features/automation/protection/stopLoss/helpers'
+import {
+  partialTakeProfitConstants,
+  stopLossConstants,
+} from 'features/omni-kit/automation/constants'
 import { getRealizedProfit } from 'features/omni-kit/automation/helpers'
 import {
   useOmniCardDataCurrentProfitAndLoss,
@@ -17,7 +27,9 @@ import {
   mapBorrowCumulativesToOmniCumulatives,
 } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
-import { hundred, zero } from 'helpers/zero'
+import { formatPercent } from 'helpers/formatters/format'
+import { nbsp } from 'helpers/nbsp'
+import { hundred, one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
 
@@ -79,7 +91,16 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   const { t } = useTranslation()
   const [chartView, setChartView] = useState<'price' | 'ltv'>('price')
   const {
-    environment: { productType, collateralPrice, quotePrice, collateralToken, quoteToken, isShort },
+    environment: {
+      productType,
+      collateralPrice,
+      quotePrice,
+      collateralToken,
+      quoteToken,
+      isShort,
+      protocol,
+      priceFormat,
+    },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -87,6 +108,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     },
     automation: {
       automationForm: { state: automationFormState },
+      positionTriggers,
     },
     position: {
       currentPosition: { position },
@@ -99,10 +121,14 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   const simpleView =
     automationFormState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
   const maxMultiple = castedPosition?.category.maxLoanToValue || zero
+  const loanToValue = castedPosition.riskRatio.loanToValue
+  const liquidationRatio = castedPosition.category.liquidationThreshold
 
   const isPartialTakeProfitEnabled = !!automationDynamicValues?.flags.isPartialTakeProfitEnabled
 
   const resolvedTrigger = automationDynamicValues?.triggers.partialTakeProfit
+  const resolvedStopLossTrigger = automationDynamicValues?.triggers.stopLoss
+  const resolvedTrailingStopLossTrigger = automationDynamicValues?.triggers.trailingStopLoss
 
   const resolvedTriggerLtv = resolvedTrigger?.decodedParams.executionLtv
     ? new BigNumber(Number(resolvedTrigger.decodedParams.executionLtv)).div(
@@ -134,11 +160,16 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       ? ('quote' as const)
       : ('collateral' as const)
 
+  const selectedPartialTakeProfitToken =
+    automationFormState.resolveTo ||
+    partialTakeProfitToken ||
+    partialTakeProfitConstants.defaultResolveTo
+
   const partialTakeProfitTokenData = getToken(
-    partialTakeProfitToken === 'quote' ? quoteToken : collateralToken,
+    selectedPartialTakeProfitToken === 'quote' ? quoteToken : collateralToken,
   )
   const partialTakeProfitSecondTokenData = getToken(
-    partialTakeProfitToken === 'quote' ? collateralToken : quoteToken,
+    selectedPartialTakeProfitToken === 'quote' ? collateralToken : quoteToken,
   )
 
   const realizedProfit = useMemo(() => {
@@ -216,10 +247,81 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     triggerLtv: automationFormState.triggerLtv || resolvedTriggerLtv || zero,
   })
 
+  const hasStopLoss = hasActiveStopLossFromTriggers({
+    triggers: positionTriggers.triggers,
+    protocol,
+  })
+  const hasTrailingStopLoss = hasActiveTrailingStopLossFromTriggers({
+    triggers: positionTriggers.triggers,
+    protocol,
+  })
+
+  const currentStopLossLevel = useMemo(() => {
+    if (resolvedStopLossTrigger) {
+      return new BigNumber(
+        Number(
+          resolvedStopLossTrigger.decodedParams.executionLtv ||
+            resolvedStopLossTrigger.decodedParams.ltv,
+        ),
+      ).div(lambdaPercentageDenomination)
+    }
+    return undefined
+  }, [resolvedStopLossTrigger])
+
+  const currentTrailingStopLossDistance = useMemo(() => {
+    if (resolvedTrailingStopLossTrigger) {
+      return new BigNumber(
+        Number(resolvedTrailingStopLossTrigger.decodedParams.trailingDistance),
+      ).div(lambdaPriceDenomination)
+    }
+    return undefined
+  }, [resolvedTrailingStopLossTrigger])
+
+  const stopLossLevelLabel =
+    hasStopLoss && currentStopLossLevel ? `${formatPercent(currentStopLossLevel)}` : ''
+  const trailingStopLossDistanceLabel = hasTrailingStopLoss
+    ? `${currentTrailingStopLossDistance}${nbsp}${priceFormat}`
+    : ''
+
+  const defaultStopLossLevel = castedPosition.category.liquidationThreshold
+    .minus(stopLossConstants.offsets.max)
+    .times(100)
+
+  const extraTriggerLtv =
+    automationFormState.extraTriggerLtv || currentStopLossLevel || defaultStopLossLevel
+
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice: castedPosition.debtAmount.div(
+      castedPosition.collateralAmount.times(liquidationRatio),
+    ),
+    liquidationRatio: one.div(liquidationRatio),
+    stopLossLevel: one.div(extraTriggerLtv.div(100)).times(100),
+  })
+
+  const newStopLossSliderConfig = useMemo(() => {
+    const sliderMin = new BigNumber(
+      loanToValue.plus(stopLossConstants.offsets.min).times(100).toFixed(0, BigNumber.ROUND_UP),
+    )
+    const sliderMax = liquidationRatio.minus(stopLossConstants.offsets.max).times(100)
+    const sliderPercentageFill = getSliderPercentageFill({
+      min: sliderMin,
+      max: sliderMax,
+      value: extraTriggerLtv,
+    })
+    return {
+      sliderPercentageFill,
+      minBoundry: sliderMin,
+      maxBoundry: sliderMax,
+      step: 0.1,
+    }
+  }, [extraTriggerLtv, liquidationRatio, loanToValue])
+
   return {
     castedPosition,
-    liquidationPrice: castedPosition.liquidationPrice,
-    loanToValue: castedPosition.riskRatio.loanToValue,
+    loanToValue,
+    liquidationPrice: castedPosition.debtAmount.div(
+      castedPosition.collateralAmount.times(liquidationRatio),
+    ),
     multiple: castedPosition.riskRatio.multiple,
     startingTakeProfitPrice: isShort ? startingTakeProfitPriceShort : startingTakeProfitPriceLong,
     resolvedWithdrawalLtv,
@@ -244,5 +346,16 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     setChartView,
     triggerLtvSliderConfig,
     withdrawalLtvSliderConfig,
+    hasStopLoss,
+    hasTrailingStopLoss,
+    dynamicStopLossPrice,
+    selectedPartialTakeProfitToken,
+    newStopLossSliderConfig,
+    extraTriggerLtv,
+    stopLossLevelLabel,
+    defaultStopLossLevel,
+    currentStopLossLevel,
+    currentTrailingStopLossDistance,
+    trailingStopLossDistanceLabel,
   }
 }
