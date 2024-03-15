@@ -36,11 +36,13 @@ interface AssetsTableHeaderCellProps {
 interface AssetsTableDataRowProps {
   row: AssetsTableRowData
   rowKeys: string[]
+  verticalAlign?: string
 }
 
 interface AssetsTableDataCellProps {
   label: string
   row: AssetsTableRowData
+  verticalAlign?: string
 }
 
 export function AssetsTable({
@@ -52,6 +54,7 @@ export function AssetsTable({
   perPage,
   rows,
   tooltips = [],
+  verticalAlign,
 }: AssetsTableProps) {
   const [page, setPage] = useState<number>(1)
   const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
@@ -148,7 +151,7 @@ export function AssetsTable({
         >
           {paginatedRows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <AssetsTableDataRow key={getRandomString()} row={row} rowKeys={rowKeys} />
+              <AssetsTableDataRow key={getRandomString()} row={row} rowKeys={rowKeys} verticalAlign={verticalAlign} />
               {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row.items).length}>
@@ -279,7 +282,7 @@ export function AssetsTableHeaderCell({
   )
 }
 
-export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
+export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableDataRowProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [hasUndisabledButton, setHasUndisabledButton] = useState<boolean>(false)
 
@@ -323,13 +326,13 @@ export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
       }}
     >
       {rowKeys.map((label, i) => (
-        <AssetsTableDataCell key={getRowKey(i, row)} label={label} row={row} />
+        <AssetsTableDataCell key={getRowKey(i, row)} label={label} row={row} verticalAlign={verticalAlign} />
       ))}
     </Box>
   )
 }
 
-export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
+export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDataCellProps) {
   return (
     <Box
       as="td"
@@ -337,6 +340,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
         p: '14px 12px',
         textAlign: 'right',
         whiteSpace: 'nowrap',
+        verticalAlign,
         '&:first-of-type': {
           textAlign: 'left',
         },
