@@ -1,9 +1,5 @@
-import type {
-  Erc4626CommonDependencies,
-  Erc4646ViewDependencies } from '@oasisdex/dma-library';
-import {
-  strategies,
-} from '@oasisdex/dma-library'
+import type { Erc4626CommonDependencies, Erc4646ViewDependencies } from '@oasisdex/dma-library'
+import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import { zero } from 'helpers/zero'
