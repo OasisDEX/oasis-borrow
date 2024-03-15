@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { CHAIN_LINK_PRECISION } from 'components/constants'
+import { MORPHO_ORACLE_PRECISION } from 'components/constants'
 import type { PriceServiceResponse } from 'helpers/types'
 import { SusdePriceOracle__factory } from 'types/ethers-contracts'
 
@@ -16,7 +16,7 @@ export async function getSUSDEOracleTicker(): Promise<PriceServiceResponse> {
 
   const response = await susdePriceOracleContract.price()
   const susde = new BigNumber(response.toString())
-    .div(new BigNumber(CHAIN_LINK_PRECISION))
+    .div(new BigNumber(MORPHO_ORACLE_PRECISION))
     .toNumber()
 
   return {
