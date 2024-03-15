@@ -58,8 +58,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   }, [history])
 
   const realizedProfitMap = {
-    [collateralToken]: realizedProfit.collateralRealized,
-    [quoteToken]: realizedProfit.debtRealized,
+    [collateralToken]: realizedProfit.collateralToken,
+    [quoteToken]: realizedProfit.debtToken,
   }
 
   const primaryRealizedProfit = realizedProfitMap[partialTakeProfitTokenData.symbol]
