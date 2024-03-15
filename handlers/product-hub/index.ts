@@ -1,8 +1,9 @@
-import type { Prisma, PrismaPromise, Protocol } from '@prisma/client'
+import { EarnStrategies, type Prisma, type PrismaPromise, type Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
+import { Erc4626PseudoProtocol } from 'handlers/product-hub/constants'
 import { filterTableData, getMissingHandlers, measureTime } from 'handlers/product-hub/helpers'
 import type {
   HandleGetProductHubDataProps,
@@ -162,13 +163,21 @@ export async function updateProductHubData(
     const protocolsToRemove = dataHandlersPromiseList
       .map(({ name }) => name)
       .filter((protocol) => protocolsInResponse.includes(protocol))
+    const removeErc4626Products = !!dataHandlersPromiseList.find(
+      ({ name }) => (name as string) === Erc4626PseudoProtocol,
+    )
 
     const txItems: PrismaPromise<Prisma.BatchPayload>[] = [
       prisma.productHubItems.deleteMany({
         where: {
-          protocol: {
-            in: protocolsToRemove,
-          },
+          OR: [
+            {
+              protocol: {
+                in: protocolsToRemove,
+              },
+            },
+            ...(removeErc4626Products ? [{ earnStrategy: EarnStrategies.erc_4626 }] : []),
+          ],
         },
       }),
       prisma.productHubItems.createMany({

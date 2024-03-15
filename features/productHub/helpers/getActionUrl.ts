@@ -2,8 +2,10 @@ import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import { strategies as aaveStrategyList } from 'features/aave'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
+import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { Erc4626PseudoProtocol } from 'handlers/product-hub/constants'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -55,6 +57,12 @@ export function getActionUrl({
   secondaryToken,
   secondaryTokenAddress,
 }: ProductHubItem & { bypassFeatureFlag?: boolean; networkId?: NetworkIds }): string {
+  if (earnStrategy === EarnStrategies.erc_4626) {
+    const { id } = erc4626VaultsByName[label]
+
+    return `/${network}/${Erc4626PseudoProtocol}/${product[0]}/${id}`
+  }
+
   switch (protocol) {
     case LendingProtocol.Ajna:
       const isEarnProduct = product[0] === ProductHubProductType.Earn

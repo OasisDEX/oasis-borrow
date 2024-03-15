@@ -94,7 +94,7 @@ export const Erc4626VaultAllocation: FC<Erc4626VaultAllocationProps> = ({
 
   return (
     <DetailsSection
-      content={<AssetsResponsiveTable paddless rows={rows} />}
+      content={<AssetsResponsiveTable paddless rows={rows} verticalAlign="top" />}
       title={t('erc-4626.position-page.common.vault-allocation-breakdown')}
       accordion
     />

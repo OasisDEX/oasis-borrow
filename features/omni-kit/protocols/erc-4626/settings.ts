@@ -35,7 +35,7 @@ export const settings: OmniProtocolSettings = {
   },
 }
 
-const erc4626Vaults: Erc4626Config[] = [
+export const erc4626Vaults: Erc4626Config[] = [
   {
     address: '0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB',
     curator: {
@@ -46,6 +46,18 @@ const erc4626Vaults: Erc4626Config[] = [
     name: 'Steakhouse USDC',
     networkId: NetworkIds.MAINNET,
     protocol: LendingProtocol.MorphoBlue,
+    rewards: [
+      {
+        token: 'MORPHO',
+        label: 'Morpho token rewards',
+        withPricePicker: true,
+      },
+      {
+        token: 'WSTETH',
+        label: 'Lido rewards in WSTETH',
+      },
+    ],
+    strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
       precision: getToken('USDC').precision,

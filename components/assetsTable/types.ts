@@ -38,4 +38,5 @@ export interface AssetsTableProps {
   perPage?: number
   rows: AssetsTableRowData[]
   tooltips?: string[]
+  verticalAlign?: string
 }
