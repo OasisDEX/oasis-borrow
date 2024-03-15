@@ -3,7 +3,8 @@ import type { ModalProps } from 'helpers/modalHook'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
-import { RefinanceController, type RefinanceControllerProps } from './RefinanceController'
+import { type RefinanceControllerProps } from './RefinanceController'
+import { RefinanceController } from './RefinanceController.1'
 
 export function RefinanceModal({
   close: _close,

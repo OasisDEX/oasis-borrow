@@ -1,30 +1,25 @@
-import type { IPoolId } from '@summerfi/sdk-common/dist/protocols/interfaces/IPoolId'
+import type { PositionId, TokenAmount } from '@summerfi/sdk-common/dist/common'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 
-export interface IPosition {
-  poolId: IPoolId
-  data: any
-  // TODO: placeholder for missing sdk interface fields
-}
-
 export type RefinanceContext = {
-  position: IPosition
+  positionId: PositionId
+  debtAmount: TokenAmount
+  collateralAmount: TokenAmount
+  slippage: number
 }
 
 export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
 
 interface RefinanceContextProviderProps {
-  position: IPosition
+  context: RefinanceContext
 }
 
 export function RefinanceContextProvider({
   children,
-  position,
+  context,
 }: PropsWithChildren<RefinanceContextProviderProps>) {
-  const data = {
-    position,
-  }
+  const ctx = context
 
-  return <refinanceContext.Provider value={data}>{children}</refinanceContext.Provider>
+  return <refinanceContext.Provider value={ctx}>{children}</refinanceContext.Provider>
 }

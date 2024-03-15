@@ -5,18 +5,14 @@ import { Box, Button } from 'theme-ui'
 import type { RefinanceControllerProps } from './RefinanceController'
 import { RefinanceModal } from './RefinanceModal'
 
-// placeholder for banner that will open modal
-export const RefinanceBanner: React.FC<RefinanceControllerProps> = ({
-  address,
-  chainId: networkId,
-}) => {
+export const RefinanceBanner: React.FC<RefinanceControllerProps> = ({ address, chainId }) => {
   const { openModal } = useModalContext()
 
   return (
     <Button
       variant="bean"
       sx={{ fontSize: 2 }}
-      onClick={() => openModal(RefinanceModal, { address, chainId: networkId })}
+      onClick={() => openModal(RefinanceModal, { address, chainId })}
     >
       <Box sx={{ width: '100%' }}>Refinance POC 👷‍♂️</Box>
     </Button>

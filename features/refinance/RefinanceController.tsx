@@ -3,8 +3,8 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 
-import { refinanceContext } from './RefinanceContext'
 import { useSdk } from './useSdk'
+import { useSdkSimulation } from './useSdkSimulation'
 
 export interface RefinanceControllerProps {
   chainId: number
@@ -15,22 +15,21 @@ export function RefinanceController({
   chainId,
   address,
 }: PropsWithChildren<RefinanceControllerProps>) {
-  const context = React.useContext(refinanceContext)
-  if (context === undefined) {
-    throw new Error('RefinanceContextProvider is missing in the hierarchy')
-  }
-  const { position } = context
-  const { user, chain, error } = useSdk(address, chainId)
+  const { error: sdkError, sdk, user, chain } = useSdk(address, chainId)
+
+  const { error: sdkSimulationError, simulation, position } = useSdkSimulation(sdk)
 
   return (
-    <WithErrorHandler error={[error?.message]}>
+    <WithErrorHandler error={[sdkError, sdkSimulationError]}>
       <WithLoadingIndicator
-        value={[user, chain, position]}
+        value={[user, chain, position, simulation]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([_user, _chain, _position]) => (
+        {([_user, _chain, _position, _simulation]) => (
           <div>
-            {_user?.wallet.address} : {_chain?.chainInfo.name} : {_position?.poolId.protocol.name}
+            {/* // TODO: Use Step Manager here */}
+            {_user?.wallet.address} : {_chain?.chainInfo.name} : {_position?.id} :{' '}
+            {_simulation?.positionId}
           </div>
         )}
       </WithLoadingIndicator>

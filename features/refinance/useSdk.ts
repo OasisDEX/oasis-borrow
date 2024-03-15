@@ -8,7 +8,7 @@ export function useSdk(address: string, chainId: number) {
     address: Address.createFrom({ value: address }),
   })
 
-  const [error, setError] = useState<null | any>(null)
+  const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
 
@@ -24,10 +24,9 @@ export function useSdk(address: string, chainId: number) {
     }
 
     void fetchData().catch((err) => {
-      setError(err)
+      setError(err.message)
     })
   }, [sdk, chainId, address, wallet])
 
-  // TODO: Implement the rest of the logic here when the SDK is ready
-  return { user, chain, error }
+  return { error, sdk, user, chain }
 }
