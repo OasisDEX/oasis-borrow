@@ -21,6 +21,7 @@ export const tokensBase = {
   STYETH: contractDesc(erc20, base.common.STYETH),
   TBTC: contractDesc(erc20, base.common.TBTC),
   USDC: contractDesc(erc20, base.common.USDC),
+  USDE: contractDesc(erc20, base.common.USDE),
   USDBC: contractDesc(erc20, base.common.USDBC),
   USDT: contractDesc(erc20, base.common.USDT),
   USDP: contractDesc(erc20, base.common.PAXUSD),

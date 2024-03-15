@@ -62,6 +62,20 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+  Erc4626: {
+    [NetworkIds.MAINNET]: 'summer-lazy-vaults',
+    [NetworkIds.HARDHAT]: 'summer-lazy-vaults',
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: '',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.BASEMAINNET]: '',
+    [NetworkIds.BASEGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: '',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
   Referral: {
     [NetworkIds.MAINNET]: 'summer-referrals-optimism',
     [NetworkIds.HARDHAT]: 'summer-referrals-optimism',
@@ -635,6 +649,28 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           borrowCumulativeFeesUSD
           borrowCumulativeFeesInQuoteToken
           borrowCumulativeFeesInCollateralToken
+        }
+      }
+    }
+  `,
+  getErc4626PositionParameters: gql`
+    query getPositionParameters($vault: String!, $dpmProxyAddress: String!) {
+      positions(where: { vault: $vault, account: $dpmProxyAddress }) {
+        id
+        shares
+        earnCumulativeFeesUSD
+        earnCumulativeDepositUSD
+        earnCumulativeWithdrawUSD
+        earnCumulativeFeesInQuoteToken
+        earnCumulativeDepositInQuoteToken
+        earnCumulativeWithdrawInQuoteToken
+        vault {
+          interestRates(orderBy: timestamp, orderDirection: desc, first: 30) {
+            timestamp
+            rate
+          }
+          totalAssets
+          totalShares
         }
       }
     }

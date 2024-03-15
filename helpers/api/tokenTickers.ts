@@ -3,6 +3,8 @@ import { getCoinbaseTickers } from 'server/services/coinbase'
 import { getCoingeckoTickers } from 'server/services/coingecko'
 import { getCoinPaprikaTickers } from 'server/services/coinPaprika'
 import { getSDaiOracleTicker } from 'server/services/sdaiOracle'
+import { getSUSDEOracleTicker } from 'server/services/susdeOracle'
+import { getUSDEOracleTicker } from 'server/services/usdeOracle'
 import { getWSTETHOracleTicker } from 'server/services/wstethOracle'
 
 export async function tokenTickers() {
@@ -28,6 +30,14 @@ export async function tokenTickers() {
     }),
     getWSTETHOracleTicker().catch((error) => {
       console.error('Error getting WSTETH oracle price', error)
+      return {}
+    }),
+    getSUSDEOracleTicker().catch((error) => {
+      console.error('Error getting SUSDE oracle price', error)
+      return {}
+    }),
+    getUSDEOracleTicker().catch((error) => {
+      console.error('Error getting USDE oracle price', error)
       return {}
     }),
   ])
