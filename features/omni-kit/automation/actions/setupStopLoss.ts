@@ -30,6 +30,7 @@ export const setupStopLoss = ({
   const executionLTV = stateTriggerLtv || currentTriggerLtv
 
   if (!executionLTV) {
+    console.warn('One of required action parameters missing')
     return defaultAutomationActionPromise
   }
 

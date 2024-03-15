@@ -5,7 +5,7 @@ import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/com
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
-import { setupAaveAutoBuy, setupAaveAutoSell, TriggerAction } from 'helpers/triggers'
+import { setupAaveAutoBuy, setupAaveAutoSell } from 'helpers/triggers'
 
 export const setupAutoBS = ({
   automation,
@@ -38,7 +38,8 @@ export const setupAutoBS = ({
     : undefined
   const maxBaseFee = stateMaxBaseFee || currentMaxBaseFee
 
-  if (!targetLTV || !executionLTV || !maxBaseFee) {
+  if (!targetLTV || !executionLTV || !maxBaseFee || !automationState.action) {
+    console.warn('One of required action parameters missing')
     return defaultAutomationActionPromise
   }
 
@@ -48,17 +49,12 @@ export const setupAutoBS = ({
   }[uiDropdown]
 
   return setupFnMap({
+    ...commonPayload,
     price: automationState.price,
     executionLTV,
     targetLTV,
     maxBaseFee,
     usePrice: !!automationState.useThreshold,
-    action:
-      automationState.action === TriggerAction.Remove
-        ? TriggerAction.Remove
-        : existingAutoSellTrigger
-        ? TriggerAction.Update
-        : TriggerAction.Add,
-    ...commonPayload,
+    action: automationState.action,
   })
 }

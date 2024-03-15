@@ -43,7 +43,8 @@ export const setupPartialTakeProfit = ({
     : undefined
   const withdrawalLtv = stateWithdrawalLtv || currentWithdrawalLtv
 
-  if (!triggerLtv || !startingTakeProfitPrice || !withdrawalLtv) {
+  if (!triggerLtv || !startingTakeProfitPrice || !withdrawalLtv || !automationState.action) {
+    console.warn('One of required action parameters missing')
     return defaultAutomationActionPromise
   }
 
@@ -71,11 +72,6 @@ export const setupPartialTakeProfit = ({
             existingSLTrigger || existingTSLTrigger ? TriggerAction.Update : TriggerAction.Add,
         }
       : undefined,
-    action:
-      automationState.action === TriggerAction.Remove
-        ? TriggerAction.Remove
-        : existingPartialTakeProfitTrigger
-        ? TriggerAction.Update
-        : TriggerAction.Add,
+    action: automationState.action,
   })
 }

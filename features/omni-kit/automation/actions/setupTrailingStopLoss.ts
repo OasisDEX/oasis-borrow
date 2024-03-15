@@ -30,6 +30,7 @@ export const setupTrailingStopLoss = ({
   const trailingDistance = stateTrailingDistance || currentTrailingDistance
 
   if (!trailingDistance) {
+    console.warn('One of required action parameters missing')
     return defaultAutomationActionPromise
   }
 
