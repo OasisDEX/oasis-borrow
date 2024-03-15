@@ -217,6 +217,7 @@ export const mainnetContracts = {
     'DETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_DETHWETH),
     'UNIETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_EZETHWETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -229,7 +230,6 @@ export const mainnetContracts = {
       mainnet.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
     ),
     'APXETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_APXETHETH),
-    'SUSDE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDEDAI),
     'MPETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CSETHWETH),
   },
@@ -254,6 +254,8 @@ export const mainnetContracts = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
+  SUSDEOracle: contractDesc(ajnaPoolInfo, mainnet.common.SUSDEOracle),
+  USDEOracle: contractDesc(ajnaPoolInfo, mainnet.common.USDEOracle),
   WSTETHOracle: contractDesc(ajnaPoolInfo, mainnet.common.WSTETHOracle),
 }
 

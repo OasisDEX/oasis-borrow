@@ -188,6 +188,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'DETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_DETHWETH),
     'UNIETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_EZETHWETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -200,7 +201,6 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
       arbitrum.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
     ),
     'APXETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_APXETHETH),
-    'SUSDE-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SUSDEDAI),
     'MPETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_CSETHWETH),
   },
@@ -226,4 +226,6 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, arbitrum.common.SdaiOracle),
   WSTETHOracle: contractDesc(ajnaPoolInfo, arbitrum.common.WSTETHOracle),
+  SUSDEOracle: contractDesc(ajnaPoolInfo, arbitrum.common.SUSDEOracle),
+  USDEOracle: contractDesc(ajnaPoolInfo, arbitrum.common.USDEOracle),
 }
