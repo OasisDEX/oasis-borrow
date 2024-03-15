@@ -324,6 +324,7 @@ enum EarnStrategies {
   liquidity_provision
   yield_loop
   other
+  erc_4626
 
   @@map("earnStrategies")
 }

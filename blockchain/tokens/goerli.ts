@@ -28,6 +28,7 @@ export const tokensGoerli = {
   STYETH: contractDesc(erc20, goerli.common.STYETH),
   TBTC: contractDesc(erc20, goerli.common.TBTC),
   USDC: contractDesc(erc20, goerli.common.USDC),
+  USDE: contractDesc(erc20, goerli.common.USDE),
   USDP: contractDesc(erc20, goerli.common.PAXUSD),
   WBTC: contractDesc(erc20, goerli.common.WBTC),
   WETH: contractDesc(erc20, goerli.common.WETH),
