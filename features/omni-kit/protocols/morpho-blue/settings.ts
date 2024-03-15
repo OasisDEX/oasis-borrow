@@ -24,7 +24,7 @@ export const settings: OmniProtocolSettings = {
       'WBTC',
       'EZETH',
       'SUSDE',
-      'USDE'
+      'USDE',
     ],
   },
   steps: {
