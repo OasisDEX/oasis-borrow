@@ -1,4 +1,4 @@
-import { Erc4626PseudoProtocol } from 'handlers/product-hub/constants'
+import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import { LendingProtocol } from 'lendingProtocols'
 
 import aaveV2Handler from './aaveV2/aaveV2Handler'

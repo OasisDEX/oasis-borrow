@@ -51,6 +51,7 @@ interface OmniGeneralContextProviderProps {
   protocol: LendingProtocol
   protocolRaw: string
   protocolVersion?: string
+  pseudoProtocol?: string
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number

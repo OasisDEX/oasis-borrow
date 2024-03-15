@@ -64,6 +64,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
     }
     errors: string[]
   }
+  pseudoProtocol?: string
   quoteToken: string
   settings: OmniProtocolSettings
   seoTags: {
@@ -83,6 +84,7 @@ export const OmniProductController = <Auction, History, Position>({
   productType,
   protocol,
   protocolHook,
+  pseudoProtocol,
   quoteToken,
   settings,
   seoTags,
@@ -235,16 +237,18 @@ export const OmniProductController = <Auction, History, Position>({
                       isOpening={isOpening}
                       isOracless={!!isOracless}
                       isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
+                      isYieldLoop={isYieldLoop}
+                      isYieldLoopWithData={isYieldLoopWithData}
                       label={label}
                       network={network}
                       networkId={networkId}
                       owner={dpmPosition.user}
-                      walletNetwork={walletNetwork}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
-                      protocolVersion={version}
                       protocolRaw={protocolRaw}
+                      protocolVersion={version}
+                      pseudoProtocol={pseudoProtocol}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
@@ -255,8 +259,7 @@ export const OmniProductController = <Auction, History, Position>({
                       settings={settings}
                       slippage={slippage}
                       steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
-                      isYieldLoop={isYieldLoop}
-                      isYieldLoopWithData={isYieldLoopWithData}
+                      walletNetwork={walletNetwork}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,

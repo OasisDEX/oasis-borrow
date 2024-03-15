@@ -2,8 +2,8 @@ import { EarnStrategies, type Prisma, type PrismaPromise, type Protocol } from '
 import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
+import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
-import { Erc4626PseudoProtocol } from 'handlers/product-hub/constants'
 import { filterTableData, getMissingHandlers, measureTime } from 'handlers/product-hub/helpers'
 import type {
   HandleGetProductHubDataProps,
