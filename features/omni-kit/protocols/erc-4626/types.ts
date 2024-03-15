@@ -1,4 +1,4 @@
-import type { OmniSupportedProtocols } from 'features/omni-kit/types'
+import type { OmniSupportedNetworkIds, OmniSupportedProtocols } from 'features/omni-kit/types'
 
 export interface Erc4626Token {
   address: string
@@ -14,6 +14,7 @@ export interface Erc4626Config {
   }
   id: string
   name: string
+  networkId: OmniSupportedNetworkIds
   protocol: OmniSupportedProtocols
   token: Erc4626Token
 }

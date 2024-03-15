@@ -63,5 +63,8 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     query,
     quoteToken: symbol,
     settings,
+    isProductPageValid: ({ networkId: _networkId, protocol: _protocol }) =>
+      erc4626VaultsById[label].networkId === _networkId &&
+      erc4626VaultsById[label].protocol === _protocol,
   })
 }

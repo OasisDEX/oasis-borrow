@@ -44,6 +44,7 @@ const erc4626Vaults: Erc4626Config[] = [
     },
     id: 'steakhouse-USDC',
     name: 'Steakhouse USDC',
+    networkId: NetworkIds.MAINNET,
     protocol: LendingProtocol.MorphoBlue,
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
