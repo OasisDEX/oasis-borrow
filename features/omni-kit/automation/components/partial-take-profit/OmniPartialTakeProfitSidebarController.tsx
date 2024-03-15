@@ -5,6 +5,8 @@ import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { FormatPercentWithSmallPercentCharacter } from 'components/FormatPercentWithSmallPercentCharacter'
 import { Icon } from 'components/Icon'
+import { MessageCard } from 'components/MessageCard'
+import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { partialTakeProfitConstants } from 'features/omni-kit/automation/constants'
@@ -13,10 +15,11 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { nbsp } from 'helpers/nbsp'
 import { hundred, zero } from 'helpers/zero'
 import { curry } from 'ramda'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { createNumberMask } from 'text-mask-addons'
 import { question_o } from 'theme/icons'
 import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
@@ -437,6 +440,137 @@ export const OmniPartialTakeProfitSidebarController = () => {
           </Flex>
         </Flex>
       </Box>
+      <SidebarAccordion
+        title={
+          <>
+            {t('protection.partial-take-profit-sidebar.configure-stop-loss-loan-to-value')}
+            <StatefulTooltip
+              tooltip={
+                <Text variant="paragraph4">
+                  {t('protection.partial-take-profit-sidebar.tooltips.stop-loss-ltv')}
+                </Text>
+              }
+              containerSx={{ display: 'inline' }}
+              inline
+              tooltipSx={{ maxWidth: '350px' }}
+            >
+              <Icon
+                color={'neutral80'}
+                icon={question_o}
+                size="auto"
+                width="14px"
+                height="14px"
+                sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
+              />
+            </StatefulTooltip>
+          </>
+        }
+        additionalDescriptionComponent={
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mb: 3 }}>
+            {t('protection.partial-take-profit-sidebar.stop-loss-info')}
+          </Text>
+        }
+        openByDefault={!hasStopLoss}
+      >
+        <SliderValuePicker
+          disabled={!!hasStopLoss && !!trailingStopLossDistanceLabel}
+          leftBoundryFormatter={(x) => {
+            if (x.isZero()) {
+              return '-'
+            }
+            return (
+              <Flex sx={{ flexDirection: 'column' }}>
+                <Text variant="paragraph2">
+                  <FormatPercentWithSmallPercentCharacter
+                    value={x.div(lambdaPercentageDenomination)}
+                  />
+                </Text>
+              </Flex>
+            )
+          }}
+          rightBoundryFormatter={(x) => {
+            if (x.isZero()) {
+              return '-'
+            }
+            return `${formatAmount(x, priceDenominationToken)} ${priceFormat}`
+          }}
+          leftLabel={t('protection.partial-take-profit-sidebar.trigger-ltv')}
+          rightLabel={t('slider.set-stoploss.right-label')}
+          lastValue={newStopLossLtv}
+          leftBoundry={newStopLossLtv}
+          rightBoundry={dynamicStopLossPriceForView}
+          {...newStopLossSliderConfig}
+          onChange={setNewStopLossLtv}
+          useRcSlider
+          customSliderProps={
+            currentStopLossLevel
+              ? {
+                  marks: {
+                    [currentStopLossLevel.toNumber()]: (
+                      <Text
+                        variant="boldParagraph3"
+                        sx={{ fontSize: '10px', textTransform: 'uppercase' }}
+                      >
+                        {t('protection.partial-take-profit-sidebar.current-stop-loss')}
+                      </Text>
+                    ),
+                  },
+                }
+              : {}
+          }
+        />
+        <MessageCard
+          sx={{ mt: 3 }}
+          type="ok"
+          withBullet={false}
+          messages={[
+            !hasStopLoss ? (
+              <Trans
+                i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.no-stop-loss"
+                components={{
+                  partialTakeProfitToken,
+                }}
+              />
+            ) : (
+              ''
+            ),
+            hasStopLoss && stopLossLevelLabel ? (
+              <Trans
+                i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.has-stop-loss"
+                components={{
+                  nbsp,
+                  stopLossLevelLabel,
+                }}
+              />
+            ) : (
+              ''
+            ),
+            hasStopLoss && trailingStopLossDistanceLabel ? (
+              <Trans
+                i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.has-trailing-stop-loss"
+                components={{
+                  nbsp,
+                  trailingStopLossDistanceLabel,
+                }}
+              />
+            ) : (
+              ''
+            ),
+            hasStopLoss && currentStopLossLevel && !currentStopLossLevel.eq(newStopLossLtv) ? (
+              <Trans
+                i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.new-stop-loss"
+                components={{
+                  newStopLossValue: formatPercent(newStopLossLtv, {
+                    precision: 2,
+                  }),
+                }}
+              />
+            ) : (
+              ''
+            ),
+          ].filter(Boolean)}
+        />
+      </SidebarAccordion>
     </Grid>
   )
 }
