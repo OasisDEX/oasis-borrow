@@ -89,7 +89,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
               productType,
               quoteAddress,
               protocol,
-              protocolRaw: `erc4626-${vaultAddress}`,
+              protocolRaw: `erc4626-${vaultAddress.toLowerCase()}`,
             }),
         },
         values: {

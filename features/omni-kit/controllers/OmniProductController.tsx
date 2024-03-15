@@ -7,7 +7,11 @@ import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
-import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
+import {
+  getOmniHeadlineProps,
+  getOmniProductContextProviderData,
+  getOmniRawProtocol,
+} from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { useOmniAutomationFormReducto } from 'features/omni-kit/state/automation'
@@ -98,7 +102,12 @@ export const OmniProductController = <Auction, History, Position>({
   const network = getNetworkById(networkId)
   const walletNetwork = getNetworkById(chainId || networkId)
   const isOpening = !positionId
-  const protocolRaw = settings.rawName[networkId] as string
+  const protocolRaw = getOmniRawProtocol({
+    networkId,
+    settings,
+    label,
+    pseudoProtocol,
+  })
 
   const {
     data: {
