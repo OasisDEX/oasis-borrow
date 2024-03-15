@@ -44,7 +44,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     },
     id: 'steakhouse-USDC',
     name: 'Steakhouse USDC',
-    network: NetworkIds.MAINNET,
+    networkId: NetworkIds.MAINNET,
     protocol: LendingProtocol.MorphoBlue,
     rewards: [
       {

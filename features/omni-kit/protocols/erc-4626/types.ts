@@ -14,7 +14,7 @@ export interface Erc4626Config {
   }
   id: string
   name: string
-  network: OmniSupportedNetworkIds
+  networkId: OmniSupportedNetworkIds
   protocol: OmniSupportedProtocols
   rewards: {
     label?: string
