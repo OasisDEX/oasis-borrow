@@ -60,6 +60,7 @@ export type Subgraphs = {
   Erc4626: {
     getErc4626PositionParameters: { vault: string; dpmProxyAddress: string }
     getErc4626InterestRates: { vault: string }
+    getErc4626DpmPositions: { dpmProxyAddress: string[] }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -149,6 +150,7 @@ export type SubgraphsResponses = {
   Erc4626: {
     getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse[]>
     getErc4626InterestRates: SubgraphBaseResponse<Erc4626InterestRatesResponse>
+    getErc4626DpmPositions: SubgraphBaseResponse<unknown>
   }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{
