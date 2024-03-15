@@ -1,152 +1,88 @@
-import { getMarketRate } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider, networksById } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
-import type { Tickers } from 'blockchain/prices.types'
-import { getToken } from 'blockchain/tokensMetadata'
-import { amountFromWei } from 'blockchain/utils'
-import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import { isShortPosition } from 'features/omni-kit/helpers'
-import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
+import { networksById } from 'blockchain/networks'
 import { erc4626Vaults } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
-import { morphoMarkets, settings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import { ProductHubProductType, type ProductHubSupportedNetworks } from 'features/productHub/types'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
+import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
-import { one, zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
-import { uniq } from 'lodash'
-import {
-  AdaptiveCurveIrm__factory as AdaptiveCurveIrmFactory,
-  MorphoBlue__factory as MorphoBlueFactory,
-} from 'types/ethers-contracts'
+import { zero } from 'helpers/zero'
 
-async function getErc4626VaultData(
-  vault: Erc4626Config,
-  tickers: Tickers,
-): Promise<ProductHubHandlerResponseData> {
-  const rpcProvider = getRpcProvider(networkId)
+export interface Erc4626InterestRatesResponse {
+  vaults: {
+    interestRates: {
+      rate: string
+    }[]
+  }[]
+}
 
-  const AdaptiveCurveIrmContract = AdaptiveCurveIrmFactory.connect(
-    getNetworkContracts(networkId).adaptiveCurveIrm.address,
-    rpcProvider,
-  )
-  const MorphoBlueContract = MorphoBlueFactory.connect(
-    getNetworkContracts(networkId).morphoBlue.address,
-    rpcProvider,
-  )
-
-  const markets = morphoMarkets[networkId] ?? {}
-  const prices = uniq(
-    Object.keys(markets)
-      .map((pair) => pair.split('-'))
-      .flat(),
-  ).reduce<Tickers>(
-    (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
-    {},
-  )
-
+async function getErc4626VaultData({
+  address,
+  name,
+  networkId,
+  protocol,
+  rewards,
+  strategy,
+  token,
+}: Erc4626Config): Promise<ProductHubHandlerResponseData> {
   try {
-    return await Object.keys(markets).reduce<Promise<ProductHubHandlerResponseData>>(
-      async (v, pair) => {
-        const [collateralToken, quoteToken] = pair.split('-')
-        const marketId = markets[pair]
+    const { response } = (await loadSubgraph('Erc4626', 'getErc4626InterestRates', networkId, {
+      vault: address,
+    })) as SubgraphsResponses['Erc4626']['getErc4626InterestRates']
 
-        const market = await MorphoBlueContract.market(marketId)
-        const marketParams = await MorphoBlueContract.idToMarketParams(marketId)
-        const rate = await AdaptiveCurveIrmContract.borrowRateView(marketParams, market)
+    const vaults = response.vaults[0]
 
-        const totalSupplyAssets = amountFromWei(
-          new BigNumber(market.totalSupplyAssets.toString()),
-          getToken(quoteToken).precision,
-        )
-        const totalBorrowAssets = amountFromWei(
-          new BigNumber(market.totalBorrowAssets.toString()),
-          getToken(quoteToken).precision,
-        )
-
-        const quotePrice = prices[quoteToken]
-
-        const label = `${collateralToken}/${quoteToken}`
-        const network = networksById[networkId].name as ProductHubSupportedNetworks
-        const protocol = LendingProtocol.MorphoBlue
-        const maxLtv = new BigNumber(marketParams.lltv.toString())
-          .shiftedBy(NEGATIVE_WAD_PRECISION)
+    const tokenGroup = getTokenGroup(token.symbol)
+    const weeklyNetApy = vaults
+      ? vaults.interestRates
+          .reduce<BigNumber>((total, { rate }) => total.plus(new BigNumber(rate)), zero)
+          .div(vaults.interestRates.length)
           .toString()
-        const liquidity = totalSupplyAssets.minus(totalBorrowAssets).times(quotePrice).toString()
-        const fee = getMarketRate(rate.toString()).toString()
-        const primaryTokenAddress = marketParams.collateralToken.toLowerCase()
-        const secondaryTokenAddress = marketParams.loanToken.toLowerCase()
+      : undefined
 
-        const primaryTokenGroup = getTokenGroup(collateralToken)
-        const secondaryTokenGroup = getTokenGroup(quoteToken)
-
-        const isWithMultiply = isPoolSupportingMultiply({
-          collateralToken,
-          quoteToken,
-          supportedTokens: settings.supportedMultiplyTokens[networkId],
-        })
-
-        const isShort = isShortPosition({ collateralToken })
-        const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
-        const multiplyStrategyType = isShort ? 'short' : 'long'
-        const maxMultiply = BigNumber.max(
-          one.plus(one.div(one.div(maxLtv).minus(one))),
-          zero,
-        ).toString()
-        return {
-          table: [
-            ...(await v).table,
-            {
-              label,
-              network,
-              primaryToken: collateralToken,
-              ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
-              product: [
-                ProductHubProductType.Borrow,
-                ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
-              ],
-              protocol,
-              secondaryToken: quoteToken,
-              ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
-              fee,
-              liquidity,
-              maxLtv,
-              maxMultiply,
-              primaryTokenAddress,
-              secondaryTokenAddress,
-              multiplyStrategy,
-              multiplyStrategyType,
-            },
-          ],
-          warnings: [],
-        }
-      },
-      Promise.resolve({ table: [], warnings: [] }),
-    )
+    return {
+      table: [
+        {
+          label: name,
+          network: networksById[networkId].name as ProductHubSupportedNetworks,
+          primaryToken: token.symbol,
+          ...(tokenGroup !== token.symbol && { primaryTokenGroup: tokenGroup }),
+          product: [ProductHubProductType.Earn],
+          protocol,
+          secondaryToken: token.symbol,
+          ...(tokenGroup !== token.symbol && { secondaryTokenGroup: tokenGroup }),
+          earnStrategy: EarnStrategies.other,
+          earnStrategyDescription: strategy ?? name,
+          managementType: 'passive',
+          weeklyNetApy,
+          primaryTokenAddress: token.address,
+          secondaryTokenAddress: token.address,
+          hasRewards: rewards && rewards?.length > 0,
+        },
+      ],
+      warnings: [],
+    }
   } catch (e) {
     // @ts-ignore
     return { table: [], warnings: [e.toString()] }
   }
 }
 
-export default async function (tickers: Tickers): ProductHubHandlerResponse {
-  return Promise.all(erc4626Vaults.map((vault) => getErc4626VaultData(vault, tickers))).then(
-    (responses) => {
-      return responses.reduce<ProductHubHandlerResponseData>(
-        (v, response) => {
-          return {
-            table: [...v.table, ...response.table],
-            warnings: [...v.warnings, ...response.warnings],
-          }
-        },
-        { table: [], warnings: [] },
-      )
-    },
-  )
+export default async function (): ProductHubHandlerResponse {
+  return Promise.all(erc4626Vaults.map((vault) => getErc4626VaultData(vault))).then((responses) => {
+    return responses.reduce<ProductHubHandlerResponseData>(
+      (v, response) => {
+        return {
+          table: [...v.table, ...response.table],
+          warnings: [...v.warnings, ...response.warnings],
+        }
+      },
+      { table: [], warnings: [] },
+    )
+  })
 }

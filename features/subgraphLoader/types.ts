@@ -22,6 +22,7 @@ import type { ClaimedReferralRewards } from 'features/referralOverview/getClaime
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
+import type { Erc4626InterestRatesResponse } from 'handlers/product-hub/update-handlers/erc-4626/erc4626Handler'
 
 export type Subgraphs = {
   Ajna: {
@@ -58,6 +59,7 @@ export type Subgraphs = {
   }
   Erc4626: {
     getErc4626PositionParameters: { vault: string; dpmProxyAddress: string }
+    getErc4626InterestRates: { vault: string }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -146,6 +148,7 @@ export type SubgraphsResponses = {
   }
   Erc4626: {
     getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse[]>
+    getErc4626InterestRates: SubgraphBaseResponse<Erc4626InterestRatesResponse>
   }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{
