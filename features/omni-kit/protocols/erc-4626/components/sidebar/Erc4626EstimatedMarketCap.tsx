@@ -21,7 +21,7 @@ export const Erc4626EstimatedMarketCap: FC<Erc4626EstimatedMarketCapProps> = ({ 
 
   return (
     <Box sx={{ mb: 2, pb: '24px', borderBottom: '1px solid', borderBottomColor: 'neutral20' }}>
-      <Text variant="paragraph4" as="p" sx={{ mb: 2 }}>
+      <Text variant="paragraph4" as="div" sx={{ mb: 2 }}>
         <Trans
           i18nKey="erc-4626.position-page.common.estimated-market-cap"
           components={{

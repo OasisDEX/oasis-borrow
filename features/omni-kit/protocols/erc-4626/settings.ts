@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
+import { getToken } from 'blockchain/tokensMetadata'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
 import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
 import type { OmniProtocolSettings } from 'features/omni-kit/types'
@@ -35,14 +37,20 @@ export const settings: OmniProtocolSettings = {
 
 const erc4626Vaults: Erc4626Config[] = [
   {
+    address: '0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB',
     curator: {
       label: 'Steakhouse',
       url: 'https://www.steakhouse.financial/',
     },
     id: 'steakhouse-USDC',
     name: 'Steakhouse USDC',
+    networkId: NetworkIds.MAINNET,
     protocol: LendingProtocol.MorphoBlue,
-    token: 'USDC',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
+      precision: getToken('USDC').precision,
+      symbol: 'USDC',
+    },
   },
 ]
 
