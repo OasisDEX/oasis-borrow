@@ -18,9 +18,9 @@ export const isOmniAutomationFormEmpty = (
     case AutomationFeatures.TRAILING_STOP_LOSS:
       return !state.trailingDistance && !state.resolveTo
     case AutomationFeatures.AUTO_SELL:
-      return (!state.targetLtv && !state.triggerLtv) || (state.useThreshold && !state.minSellPrice)
+      return (!state.targetLtv && !state.triggerLtv) || (state.useThreshold && !state.price)
     case AutomationFeatures.AUTO_BUY:
-      return (!state.targetLtv && !state.triggerLtv) || (state.useThreshold && !state.maxBuyPrice)
+      return (!state.targetLtv && !state.triggerLtv) || (state.useThreshold && !state.price)
     case AutomationFeatures.PARTIAL_TAKE_PROFIT:
       return !state.resolveTo && !state.price && !state.triggerLtv && !state.ltvStep
     default:

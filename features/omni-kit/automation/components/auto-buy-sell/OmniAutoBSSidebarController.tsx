@@ -149,7 +149,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         defaultToggle={automationFormState.useThreshold}
       />
       <MaxGasPriceSection
-        onChange={curry(updateFormState)('maxGasFee')}
+        onChange={(value) => updateFormState('maxGasFee', new BigNumber(value))}
         value={Number(automationFormState.maxGasFee) || autoBuySellConstants.defaultGasFee}
       />
     </>

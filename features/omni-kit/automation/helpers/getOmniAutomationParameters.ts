@@ -1,113 +1,98 @@
-import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { resolveStopLossishAction } from 'features/omni-kit/automation/helpers/resolveStopLossishAction'
+import {
+  defaultAutomationActionPromise,
+  setupAutoBS,
+  setupPartialTakeProfit,
+  setupStopLoss,
+  setupTrailingStopLoss,
+} from 'features/omni-kit/automation/actions'
+import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type {
   AutomationMetadataValues,
   OmniAutomationSimulationResponse,
 } from 'features/omni-kit/contexts'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
-import { setupAaveLikeStopLoss } from 'helpers/triggers'
-import { setupAaveLikeTrailingStopLoss } from 'helpers/triggers/setup-triggers/setup-aave-trailing-stop-loss'
 import type { LendingProtocol } from 'lendingProtocols'
 
-const defaultPromise = Promise.resolve<OmniAutomationSimulationResponse | undefined>(undefined)
-
-export const getOmniAutomationParameters = ({
-  automation,
-  automationState,
-  proxyAddress,
-  collateralAddress,
-  debtAddress,
-  networkId,
-  protocol,
-}: {
-  automation?: AutomationMetadataValues
-  automationState: OmniAutomationFormState
-  proxyAddress?: string
-  collateralAddress: string
-  debtAddress: string
-  networkId: NetworkIds
-  protocol: LendingProtocol
-}): (() => Promise<OmniAutomationSimulationResponse | undefined>) => {
-  if (!proxyAddress) {
-    return () => defaultPromise
-  }
-
-  const commonPayload = {
-    dpm: proxyAddress,
+export const getOmniAutomationParameters =
+  ({
+    automation,
+    automationState,
+    proxyAddress,
+    collateralAddress,
+    debtAddress,
     networkId,
-    protocol: protocol as SupportedLambdaProtocols,
-    strategy: {
-      collateralAddress,
-      debtAddress,
-    },
-  }
+    protocol,
+    hash,
+    isShort,
+  }: {
+    automation?: AutomationMetadataValues
+    automationState: OmniAutomationFormState
+    proxyAddress?: string
+    collateralAddress: string
+    debtAddress: string
+    networkId: NetworkIds
+    protocol: LendingProtocol
+    hash: string
+    isShort: boolean
+  }) =>
+  (): Promise<OmniAutomationSimulationResponse | undefined> => {
+    if (!proxyAddress) {
+      return defaultAutomationActionPromise
+    }
 
-  switch (automationState.uiDropdownProtection) {
-    case AutomationFeatures.STOP_LOSS:
-      const existingSLTrigger_sl = automation?.triggers.stopLoss?.decodedParams
-      const existingTSLTrigger_sl = automation?.triggers.trailingStopLoss?.decodedParams
+    const commonPayload: OmniAutomationCommonActionPayload = {
+      dpm: proxyAddress,
+      networkId,
+      protocol: protocol as SupportedLambdaProtocols,
+      strategy: {
+        collateralAddress,
+        debtAddress,
+      },
+    }
 
-      // TODO I had to multiply it by 100 here
-      const stateTriggerLtv = automationState.triggerLtv?.times(100)
-      const currentTriggerLtv = existingSLTrigger_sl?.executionLtv
-        ? new BigNumber(existingSLTrigger_sl.executionLtv)
-        : undefined
+    const resolvedUiDropdown =
+      hash === 'protection'
+        ? automationState.uiDropdownProtection
+        : automationState.uiDropdownOptimization
 
-      const executionLTV = stateTriggerLtv || currentTriggerLtv
-
-      if (!executionLTV) {
-        return () => defaultPromise
-      }
-
-      return () =>
-        setupAaveLikeStopLoss({
-          ...commonPayload,
-          executionToken:
-            automationState.resolveTo === 'quote' ||
-            automation?.triggers.stopLoss?.triggerTypeName.includes('Debt')
-              ? debtAddress
-              : collateralAddress,
-          executionLTV,
-          action: resolveStopLossishAction({
-            action: automationState.action,
-            existingSLTrigger: !!existingSLTrigger_sl,
-            existingTSLTrigger: !!existingTSLTrigger_sl,
-          }),
+    switch (resolvedUiDropdown) {
+      case AutomationFeatures.STOP_LOSS:
+        return setupStopLoss({
+          automationState,
+          automation,
+          collateralAddress,
+          debtAddress,
+          commonPayload,
         })
-    case AutomationFeatures.TRAILING_STOP_LOSS:
-      const existingSLTrigger_tsl = automation?.triggers.stopLoss?.decodedParams
-      const existingTSLTrigger_tsl = automation?.triggers.trailingStopLoss?.decodedParams
-
-      const stateTrailingDistance = automationState.trailingDistance
-      const currentTrailingDistance = existingTSLTrigger_tsl?.trailingDistance
-        ? new BigNumber(existingTSLTrigger_tsl.trailingDistance)
-        : undefined
-
-      const trailingDistance = stateTrailingDistance || currentTrailingDistance
-
-      if (!trailingDistance) {
-        return () => defaultPromise
-      }
-
-      return () =>
-        setupAaveLikeTrailingStopLoss({
-          ...commonPayload,
-          executionToken:
-            automationState.resolveTo === 'quote' ||
-            automation?.triggers.stopLoss?.triggerTypeName.includes('Debt')
-              ? debtAddress
-              : collateralAddress,
-          trailingDistance,
-          action: resolveStopLossishAction({
-            action: automationState.action,
-            existingSLTrigger: !!existingSLTrigger_tsl,
-            existingTSLTrigger: !!existingTSLTrigger_tsl,
-          }),
+      case AutomationFeatures.TRAILING_STOP_LOSS:
+        return setupTrailingStopLoss({
+          automationState,
+          automation,
+          collateralAddress,
+          debtAddress,
+          commonPayload,
         })
-    default:
-      return () => defaultPromise
+      case AutomationFeatures.AUTO_BUY:
+      case AutomationFeatures.AUTO_SELL:
+        return setupAutoBS({
+          automationState,
+          automation,
+          commonPayload,
+          uiDropdown: resolvedUiDropdown,
+        })
+      case AutomationFeatures.PARTIAL_TAKE_PROFIT:
+        return setupPartialTakeProfit({
+          automationState,
+          automation,
+          collateralAddress,
+          debtAddress,
+          commonPayload,
+          isShort,
+        })
+      default:
+        return defaultAutomationActionPromise
+    }
   }
-}
