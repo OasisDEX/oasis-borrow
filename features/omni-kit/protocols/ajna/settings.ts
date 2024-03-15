@@ -48,6 +48,7 @@ export const settings: OmniProtocolSettings = {
       'OP',
       'MEVETH',
       'XETH',
+      'SUSDE',
     ],
     [NetworkIds.GOERLI]: [],
     [NetworkIds.BASEMAINNET]: ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH'],
@@ -66,6 +67,7 @@ export const settings: OmniProtocolSettings = {
       'OP',
       'MEVETH',
       'XETH',
+      'SUSDE',
     ],
     [NetworkIds.OPTIMISMMAINNET]: [
       'CBETH',
@@ -82,6 +84,7 @@ export const settings: OmniProtocolSettings = {
       'OP',
       'MEVETH',
       'XETH',
+      'SUSDE',
     ],
   },
   steps: {

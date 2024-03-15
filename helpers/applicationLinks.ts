@@ -105,7 +105,7 @@ export const EXTERNAL_LINKS = {
         'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-to-create-a-pool-on-ajna',
     },
     MORPHO_BLUE: {
-      HUB: 'https://docs.summer.fi/protocols/morphoblue',
+      HUB: 'https://docs.summer.fi/protocols/morpho-blue',
     },
     NAVIGATION: [
       'https://docs.summer.fi/general/get-liquidity-without-selling-your-crypto',

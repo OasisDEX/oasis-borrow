@@ -11,6 +11,7 @@ import type {
   AjnaBorrowerEventsResponse,
   AjnaHistoryResponse,
 } from 'features/omni-kit/protocols/ajna/history/types'
+import type { Erc4626PositionParametersResponse } from 'features/omni-kit/protocols/erc-4626/helpers'
 import type { MorphoBorrowerEventsResponse } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type {
   AaveCumulativesResponse,
@@ -54,6 +55,9 @@ export type Subgraphs = {
       quoteAddress: string
     }
     getMorphoCumulatives: { dpmProxyAddress: string; marketId: string }
+  }
+  Erc4626: {
+    getErc4626PositionParameters: { vault: string; dpmProxyAddress: string }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -140,6 +144,9 @@ export type SubgraphsResponses = {
       }
     }>
   }
+  Erc4626: {
+    getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse[]>
+  }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{
       claimeds: ClaimedReferralRewards[]
@@ -168,5 +175,6 @@ export type SubgraphMethodsRecord = {
     Subgraphs['Ajna'] &
     Subgraphs['Discover'] &
     Subgraphs['Morpho'] &
+    Subgraphs['Erc4626'] &
     Subgraphs['Referral'])]: string
 }

@@ -10,6 +10,7 @@ const cache = new NodeCache({ stdTTL: 10 })
 const handler = async function ({ query }: NextApiRequest, res: NextApiResponse) {
   const config = getConfig()
   const url = config?.publicRuntimeConfig.awsGasPriceUrl
+  const gasApiKey = process.env.GAS_API_API_KEY
 
   const networkId =
     (Array.isArray(query.networkId) ? query.networkId[0] : query.networkId) ?? NetworkIds.MAINNET
@@ -34,6 +35,11 @@ const handler = async function ({ query }: NextApiRequest, res: NextApiResponse)
         method: 'get',
         url: `${url}${networkId}`,
         responseType: 'json',
+        headers: gasApiKey
+          ? {
+              'x-api-key': gasApiKey,
+            }
+          : {},
       })
       .then(
         ({

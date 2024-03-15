@@ -60,7 +60,7 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
                   handlers?.customReset?.()
                   updateState('uiPill', OmniEarnFormAction.DepositEarn)
                   updateState('action', OmniEarnFormAction.DepositEarn)
-                  handlers?.txSuccessEarnHandler()
+                  handlers?.txSuccessEarnHandler?.()
                 },
               },
               {
@@ -86,7 +86,7 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
         if (quoteTokenAmount.isZero() || simulation?.quoteTokenAmount.isZero()) {
           updateState('uiPill', OmniEarnFormAction.DepositEarn)
           updateState('action', OmniEarnFormAction.DepositEarn)
-          handlers?.txSuccessEarnHandler()
+          handlers?.txSuccessEarnHandler?.()
         }
       }}
       txHandler={txHandler}
