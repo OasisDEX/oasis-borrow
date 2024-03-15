@@ -1,4 +1,9 @@
-import { strategies } from '@oasisdex/dma-library'
+import type {
+  Erc4626CommonDependencies,
+  Erc4646ViewDependencies } from '@oasisdex/dma-library';
+import {
+  strategies,
+} from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import { zero } from 'helpers/zero'
@@ -14,8 +19,7 @@ export interface Erc4626CommonPayload {
   vault: string
 }
 
-// TODO: replace with direct imports from dma library
-export type Erc4626Dependencies = Parameters<typeof strategies.common.erc4626.deposit>[1]
+export type Erc4626Dependencies = Erc4626CommonDependencies & Erc4646ViewDependencies
 
 export const erc4626ActionDepositEarn = ({
   commonPayload: { quoteAddress, quotePrecision, quotePrice, quoteToken, ...commonPayload },
