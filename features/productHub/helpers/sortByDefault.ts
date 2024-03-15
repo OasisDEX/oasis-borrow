@@ -67,12 +67,12 @@ export function sortByDefault(
   switch (selectedProduct) {
     case ProductHubProductType.Borrow:
       return [
-        ...sortByProductValue('fee', available.filter(filterOutLowLiquidityProducts)),
+        ...sortByProductValue('fee', available),
         ...sortByProductValue('fee', comingSoon),
       ]
     case ProductHubProductType.Multiply:
       return [
-        ...sortByProductValue('maxMultiply', available.filter(filterOutLowLiquidityProducts), -1),
+        ...sortByProductValue('maxMultiply', available, -1),
         ...sortByProductValue('maxMultiply', comingSoon, -1),
       ]
     case ProductHubProductType.Earn:
