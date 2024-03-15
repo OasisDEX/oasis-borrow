@@ -33,6 +33,7 @@ export const useOmniAutomationTxHandler = () => {
       collateralAddress,
       quoteAddress,
       dpmProxy,
+      isShort,
     },
   } = useOmniGeneralContext()
   const {
@@ -67,6 +68,8 @@ export const useOmniAutomationTxHandler = () => {
     collateralAddress,
     debtAddress: quoteAddress,
     automation,
+    hash,
+    isShort,
   })
 
   useEffect(() => {
