@@ -1,3 +1,4 @@
+import { Erc4626PseudoProtocol } from 'handlers/product-hub/constants'
 import { LendingProtocol } from 'lendingProtocols'
 
 import aaveV2Handler from './aaveV2/aaveV2Handler'
@@ -22,5 +23,5 @@ export const PRODUCT_HUB_HANDLERS = {
   [LendingProtocol.Maker]: makerHandler,
   [LendingProtocol.MorphoBlue]: morphoBlueHandler,
   [LendingProtocol.SparkV3]: sparkV3Handler,
-  'erc-4626': erc4626Handler,
+  [Erc4626PseudoProtocol]: erc4626Handler,
 }
