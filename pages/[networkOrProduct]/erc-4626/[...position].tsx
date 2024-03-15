@@ -1,4 +1,4 @@
-import type { SupplyPosition } from '@oasisdex/dma-library'
+import type { Erc4626Position } from '@oasisdex/dma-library'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -19,7 +19,7 @@ function Erc4626PositionPage(props: Erc4626PositionPageProps) {
   return (
     <AppLayout>
       <ProductContextHandler>
-        <OmniProductController<unknown, unknown[], SupplyPosition>
+        <OmniProductController<unknown, unknown[], Erc4626Position>
           {...props}
           customState={Erc4626CustomStateProvider}
           protocolHook={useErc4626Data}
@@ -49,15 +49,22 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     }
   }
 
-  const { name, protocol, token } = erc4626VaultsById[label]
+  const {
+    name,
+    protocol,
+    token: { symbol },
+  } = erc4626VaultsById[label]
 
   return getOmniServerSideProps({
-    collateralToken: token.symbol,
+    collateralToken: symbol,
     label: name,
     locale,
     protocol,
     query,
-    quoteToken: token.symbol,
+    quoteToken: symbol,
     settings,
+    isProductPageValid: ({ networkId: _networkId, protocol: _protocol }) =>
+      erc4626VaultsById[label].networkId === _networkId &&
+      erc4626VaultsById[label].protocol === _protocol,
   })
 }
