@@ -20,7 +20,8 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
       values: { automation },
     },
     automation: {
-      automationForm: { state },
+      commonForm: { state: commonState },
+      automationForms,
     },
     position: {
       currentPosition: { position },
@@ -30,8 +31,10 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
   const castedPosition = position as LendingPosition
 
   const isActive =
-    state.uiDropdownProtection === AutomationFeatures.AUTO_SELL ||
-    state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY
+    commonState.uiDropdownProtection === AutomationFeatures.AUTO_SELL ||
+    commonState.uiDropdownOptimization === AutomationFeatures.AUTO_BUY
+
+  const { state } = automationForms[type]
 
   const afterTriggerLtv = state?.triggerLtv
   const afterTargetLtv = state?.targetLtv

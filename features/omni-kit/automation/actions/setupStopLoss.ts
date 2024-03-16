@@ -3,7 +3,7 @@ import { defaultAutomationActionPromise } from 'features/omni-kit/automation/act
 import { resolveStopLossishAction } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
+import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
 import { setupAaveLikeStopLoss } from 'helpers/triggers'
 
 export const setupStopLoss = ({
@@ -15,7 +15,7 @@ export const setupStopLoss = ({
 }: {
   automation?: AutomationMetadataValues
   commonPayload: OmniAutomationCommonActionPayload
-  automationState: OmniAutomationFormState
+  automationState: OmniAutomationStopLossFormState
   debtAddress: string
   collateralAddress: string
 }) => {
@@ -36,11 +36,7 @@ export const setupStopLoss = ({
 
   return setupAaveLikeStopLoss({
     ...commonPayload,
-    executionToken:
-      automationState.resolveTo === 'quote' ||
-      automation?.triggers.stopLoss?.triggerTypeName.includes('Debt')
-        ? debtAddress
-        : collateralAddress,
+    executionToken: automationState.resolveTo === 'quote' ? debtAddress : collateralAddress,
     executionLTV,
     action: resolveStopLossishAction({
       action: automationState.action,

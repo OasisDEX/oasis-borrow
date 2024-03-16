@@ -23,12 +23,18 @@ export function OmniAutomationFormController() {
     tx: { isTxInProgress },
   } = useOmniGeneralContext()
   const {
-    automation: { automationForm },
+    automation: { commonForm, automationForms },
   } = useOmniProductContext(productType)
   const [hash] = useHash()
 
   const isProtection = hash === 'protection'
   const isOptimization = hash === 'optimization'
+
+  const activeUiDropdown = isProtection
+    ? commonForm.state.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
+    : commonForm.state.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
+
+  const currentAutomationForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
 
   const itemsMap: { [key: string]: SidebarSectionHeaderSelectItem[] } | undefined = {
     optimization: [
@@ -39,12 +45,9 @@ export function OmniAutomationFormController() {
         icon: circle_slider,
         iconShrink: 2,
         action: () => {
-          automationForm.dispatch({ type: 'reset' })
+          currentAutomationForm.dispatch({ type: 'reset' })
           !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          automationForm.updateState(
-            'uiDropdownOptimization',
-            AutomationFeatures.PARTIAL_TAKE_PROFIT,
-          )
+          commonForm.updateState('uiDropdownOptimization', AutomationFeatures.PARTIAL_TAKE_PROFIT)
         },
       },
       {
@@ -54,9 +57,9 @@ export function OmniAutomationFormController() {
         icon: circle_slider,
         iconShrink: 2,
         action: () => {
-          automationForm.dispatch({ type: 'reset' })
+          currentAutomationForm.dispatch({ type: 'reset' })
           !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          automationForm.updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
+          commonForm.updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
         },
       },
     ],
@@ -68,9 +71,9 @@ export function OmniAutomationFormController() {
         icon: circle_slider,
         iconShrink: 2,
         action: () => {
-          automationForm.dispatch({ type: 'reset' })
+          currentAutomationForm.dispatch({ type: 'reset' })
           !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          automationForm.updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
+          commonForm.updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
         },
       },
       {
@@ -80,9 +83,9 @@ export function OmniAutomationFormController() {
         icon: circle_slider,
         iconShrink: 2,
         action: () => {
-          automationForm.dispatch({ type: 'reset' })
+          currentAutomationForm.dispatch({ type: 'reset' })
           !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          automationForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+          commonForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
         },
       },
       {
@@ -92,23 +95,23 @@ export function OmniAutomationFormController() {
         icon: circle_slider,
         iconShrink: 2,
         action: () => {
-          automationForm.dispatch({ type: 'reset' })
+          currentAutomationForm.dispatch({ type: 'reset' })
           !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          automationForm.updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
+          commonForm.updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
         },
       },
     ],
   }
 
   const forcePanelMap: { [key: string]: AutomationFeatures | undefined } | undefined = {
-    optimization: automationForm.state.uiDropdownOptimization,
-    protection: automationForm.state.uiDropdownProtection,
+    optimization: commonForm.state.uiDropdownOptimization,
+    protection: commonForm.state.uiDropdownProtection,
   }
 
   const isAddOrUpdateAction =
-    automationForm.state.action &&
-    [TriggerAction.Add, TriggerAction.Update].includes(automationForm.state.action)
-  const isRemoveAction = automationForm.state.action === TriggerAction.Remove
+    currentAutomationForm.state.action &&
+    [TriggerAction.Add, TriggerAction.Update].includes(currentAutomationForm.state.action)
+  const isRemoveAction = currentAutomationForm.state.action === TriggerAction.Remove
 
   return (
     <OmniAutomationFormView
@@ -128,15 +131,15 @@ export function OmniAutomationFormController() {
     >
       {currentStep === OmniSidebarAutomationStep.Manage && isAddOrUpdateAction && (
         <>
-          {automationForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
+          {commonForm.state.uiDropdownProtection === AutomationFeatures.AUTO_SELL &&
             isProtection && <OmniAutoBSSidebarController type={AutomationFeatures.AUTO_SELL} />}
-          {automationForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
+          {commonForm.state.uiDropdownProtection === AutomationFeatures.STOP_LOSS &&
             isProtection && <OmniStopLossSidebarController />}
-          {automationForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
+          {commonForm.state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS &&
             isProtection && <OmniTrailingStopLossSidebarController />}
-          {automationForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
+          {commonForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
             isOptimization && <OmniAutoBSSidebarController type={AutomationFeatures.AUTO_BUY} />}
-          {automationForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
+          {commonForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
             isOptimization && <>Partial Take Profit Form</>}
         </>
       )}

@@ -12,31 +12,62 @@ import type {
   AutomationMetadataValues,
   OmniAutomationSimulationResponse,
 } from 'features/omni-kit/contexts'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
+import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
+import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
+import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
+import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import type { LendingProtocol } from 'lendingProtocols'
+
+export type OmniGetAutomationDataParams =
+  | {
+      activeUiDropdown: AutomationFeatures.AUTO_SELL
+      automationState: OmniAutomationAutoBSFormState
+    }
+  | {
+      activeUiDropdown: AutomationFeatures.AUTO_BUY
+      automationState: OmniAutomationAutoBSFormState
+    }
+  | {
+      activeUiDropdown: AutomationFeatures.STOP_LOSS
+      automationState: OmniAutomationStopLossFormState
+    }
+  | {
+      activeUiDropdown: AutomationFeatures.TRAILING_STOP_LOSS
+      automationState: OmniAutomationTrailingStopLossFormState
+    }
+  | {
+      activeUiDropdown: AutomationFeatures.PARTIAL_TAKE_PROFIT
+      automationState: OmniAutomationPartialTakeProfitFormState
+    }
+  | {
+      activeUiDropdown: AutomationFeatures.AUTO_TAKE_PROFIT
+      automationState: OmniAutomationPartialTakeProfitFormState
+    }
+  | {
+      activeUiDropdown: AutomationFeatures.CONSTANT_MULTIPLE
+      automationState: OmniAutomationPartialTakeProfitFormState
+    }
 
 export const getOmniAutomationParameters =
   ({
     automation,
-    automationState,
     proxyAddress,
     collateralAddress,
     debtAddress,
     networkId,
     protocol,
-    hash,
     isShort,
+    data,
   }: {
     automation?: AutomationMetadataValues
-    automationState: OmniAutomationFormState
     proxyAddress?: string
     collateralAddress: string
     debtAddress: string
     networkId: NetworkIds
     protocol: LendingProtocol
-    hash: string
     isShort: boolean
+    data: OmniGetAutomationDataParams
   }) =>
   (): Promise<OmniAutomationSimulationResponse | undefined> => {
     if (!proxyAddress) {
@@ -53,12 +84,9 @@ export const getOmniAutomationParameters =
       },
     }
 
-    const resolvedUiDropdown =
-      hash === 'protection'
-        ? automationState.uiDropdownProtection
-        : automationState.uiDropdownOptimization
+    const { activeUiDropdown, automationState } = data
 
-    switch (resolvedUiDropdown) {
+    switch (activeUiDropdown) {
       case AutomationFeatures.STOP_LOSS:
         return setupStopLoss({
           automationState,
@@ -81,7 +109,7 @@ export const getOmniAutomationParameters =
           automationState,
           automation,
           commonPayload,
-          uiDropdown: resolvedUiDropdown,
+          uiDropdown: activeUiDropdown,
         })
       case AutomationFeatures.PARTIAL_TAKE_PROFIT:
         return setupPartialTakeProfit({

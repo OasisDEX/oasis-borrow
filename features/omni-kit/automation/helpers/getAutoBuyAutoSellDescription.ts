@@ -2,7 +2,7 @@ import type { LendingPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
+import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import type { TranslationType } from 'ts_modules/i18next'
@@ -44,7 +44,7 @@ export function getAutoBuyAutoSellDescription({
 }: {
   triggerLtv: BigNumber
   targetLtv: BigNumber
-  automationFormState: OmniAutomationFormState
+  automationFormState: OmniAutomationAutoBSFormState
   t: TranslationType
   position: LendingPosition
   pricesDenomination: 'debt' | 'collateral'

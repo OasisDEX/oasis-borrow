@@ -13,7 +13,7 @@ import type { DpmPositionData } from 'features/omni-kit/observables'
 import {
   getAutomationFormDefaults,
   useOmniAutomationFormReducto,
-} from 'features/omni-kit/state/automation'
+} from 'features/omni-kit/state/automation/common'
 import type {
   OmniFormDefaults,
   OmniProductType,

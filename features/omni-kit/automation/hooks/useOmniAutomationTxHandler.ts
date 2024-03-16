@@ -4,6 +4,8 @@ import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { ethers } from 'ethers'
+import { AutomationFeatures } from 'features/automation/common/types'
+import type { OmniGetAutomationDataParams } from 'features/omni-kit/automation/helpers'
 import {
   getOmniAutomationParameters,
   isOmniAutomationFormEmpty,
@@ -40,7 +42,8 @@ export const useOmniAutomationTxHandler = () => {
     automation: {
       setSimulation,
       setIsLoadingSimulation,
-      automationForm: { state: automationState, dispatch },
+      commonForm: { state: commonState },
+      automationForms,
     },
     dynamicMetadata: {
       values: { automation },
@@ -51,24 +54,28 @@ export const useOmniAutomationTxHandler = () => {
 
   const activeUiDropdown =
     hash === 'protection'
-      ? automationState.uiDropdownProtection
-      : automationState.uiDropdownOptimization
+      ? commonState.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
+      : commonState.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
 
-  const isFormEmpty = isOmniAutomationFormEmpty(automationState, activeUiDropdown)
+  const { state, dispatch } = automationForms[activeUiDropdown as `${AutomationFeatures}`]
+
+  const isFormEmpty = isOmniAutomationFormEmpty(state, activeUiDropdown)
 
   const [txData, setTxData] = useState<OmniTxData>()
   const [cancelablePromise, setCancelablePromise] =
     useState<CancelablePromise<OmniAutomationSimulationResponse | undefined>>()
 
   const automationParameters = getOmniAutomationParameters({
-    automationState,
     proxyAddress: dpmProxy,
     networkId,
     protocol,
     collateralAddress,
     debtAddress: quoteAddress,
     automation,
-    hash,
+    data: {
+      activeUiDropdown,
+      automationState: state,
+    } as OmniGetAutomationDataParams,
     isShort,
   })
 
@@ -83,7 +90,7 @@ export const useOmniAutomationTxHandler = () => {
       setGasEstimation(undefined)
       setIsLoadingSimulation(true)
     }
-  }, [automationState, isFormEmpty])
+  }, [state, isFormEmpty])
 
   useDebouncedEffect(
     () => {
@@ -117,7 +124,7 @@ export const useOmniAutomationTxHandler = () => {
           })
       }
     },
-    [automationState, signer],
+    [state, signer],
     250,
   )
 
@@ -134,6 +141,7 @@ export const useOmniAutomationTxHandler = () => {
       sendAsSinger: true,
     }).subscribe((txState) => {
       if (txState.status === TxStatus.Success) {
+        // TODO dispatch specific form action
         dispatch({ type: 'reset' })
       }
 

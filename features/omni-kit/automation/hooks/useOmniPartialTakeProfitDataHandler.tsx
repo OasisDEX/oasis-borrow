@@ -26,7 +26,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       values: { automation },
     },
     automation: {
-      automationForm: { state },
+      commonForm: { state: commonState },
     },
     position: {
       currentPosition: { position },
@@ -36,7 +36,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
 
   const castedPosition = position as AaveLikePositionV2
 
-  const simpleView = state.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
+  const simpleView = commonState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
 
   const isPartialTakeProfitEnabled = !!automation?.flags.isPartialTakeProfitEnabled
 

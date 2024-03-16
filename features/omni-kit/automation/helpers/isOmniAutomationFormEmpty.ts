@@ -1,11 +1,15 @@
 import { AutomationFeatures } from 'features/automation/common/types'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
+import type { OmniAutomationFormStates } from 'features/omni-kit/automation/types'
+import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
+import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
+import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
+import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
 
 // Handler to check whether state has been updated
 // This handler shouldn't take into account predefined, default form values
 // as for example maxGasFee or useThreshold
 export const isOmniAutomationFormEmpty = (
-  state: OmniAutomationFormState,
+  state: OmniAutomationFormStates,
   activeUiDropdown?: AutomationFeatures,
 ) => {
   if (!activeUiDropdown) {
@@ -14,15 +18,30 @@ export const isOmniAutomationFormEmpty = (
 
   switch (activeUiDropdown) {
     case AutomationFeatures.STOP_LOSS:
-      return !state.triggerLtv && !state.resolveTo
+      const stopLossState = state as OmniAutomationStopLossFormState
+      return !stopLossState.triggerLtv
     case AutomationFeatures.TRAILING_STOP_LOSS:
-      return !state.trailingDistance && !state.resolveTo
+      const trailingStopLossState = state as OmniAutomationTrailingStopLossFormState
+      return !trailingStopLossState.trailingDistance
     case AutomationFeatures.AUTO_SELL:
-      return (!state.targetLtv && !state.triggerLtv) || (state.useThreshold && !state.price)
+      const autoSellState = state as OmniAutomationAutoBSFormState
+      return (
+        (!autoSellState.targetLtv && !autoSellState.triggerLtv) ||
+        (autoSellState.useThreshold && !autoSellState.price)
+      )
     case AutomationFeatures.AUTO_BUY:
-      return (!state.targetLtv && !state.triggerLtv) || (state.useThreshold && !state.price)
+      const autoBuyState = state as OmniAutomationAutoBSFormState
+      return (
+        (!autoBuyState.targetLtv && !autoBuyState.triggerLtv) ||
+        (autoBuyState.useThreshold && !autoBuyState.price)
+      )
     case AutomationFeatures.PARTIAL_TAKE_PROFIT:
-      return !state.resolveTo && !state.price && !state.triggerLtv && !state.ltvStep
+      const partialTakeProfitState = state as OmniAutomationPartialTakeProfitFormState
+      return (
+        !partialTakeProfitState.price &&
+        !partialTakeProfitState.triggerLtv &&
+        !partialTakeProfitState.ltvStep
+      )
     default:
       return true
   }

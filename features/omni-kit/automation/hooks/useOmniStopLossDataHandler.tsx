@@ -31,7 +31,10 @@ export const useOmniStopLossDataHandler = () => {
       values: { automation },
     },
     automation: {
-      automationForm: { state },
+      commonForm: { state: commonState },
+      automationForms: {
+        stopLoss: { state },
+      },
     },
     position: {
       currentPosition: { position },
@@ -55,8 +58,7 @@ export const useOmniStopLossDataHandler = () => {
     () => castedPosition.category.maxLoanToValue.minus(stopLossConstants.offsets.max),
     [castedPosition.category.maxLoanToValue],
   )
-
-  const isActive = state.uiDropdownProtection === AutomationFeatures.STOP_LOSS
+  const isActive = commonState.uiDropdownProtection === AutomationFeatures.STOP_LOSS
   const stopLossLevel = currentTriggerLtv ? new BigNumber(currentTriggerLtv) : undefined
   const afterStopLossLevel = state.triggerLtv
   const resolvedAfterStopLossLevel = isActive ? afterStopLossLevel : undefined

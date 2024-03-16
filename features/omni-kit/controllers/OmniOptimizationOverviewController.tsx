@@ -21,7 +21,7 @@ export const OmniOptimizationOverviewController: FC = () => {
       values: { automation },
     },
     automation: {
-      automationForm: { state, updateState },
+      commonForm: { state, updateState },
     },
   } = useOmniProductContext(productType)
 

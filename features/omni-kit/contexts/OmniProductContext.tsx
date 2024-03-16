@@ -4,14 +4,30 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
-import type { AutomationFeatures } from 'features/automation/common/types'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
+import {
+  getAutomationAutoBSFormDefaults,
+  useOmniAutomationAutoBSFormReducto,
+} from 'features/omni-kit/state/automation/auto-bs'
 import type {
   OmniAutomationFormState,
   useOmniAutomationFormReducto,
-} from 'features/omni-kit/state/automation'
+} from 'features/omni-kit/state/automation/common'
+import {
+  getAutomationPartialTakeProfitFormDefaults,
+  useOmniAutomationPartialTakeProfitFormReducto,
+} from 'features/omni-kit/state/automation/partial-take-profit'
+import {
+  getAutomationStopLossFormDefaults,
+  useOmniStopLossAutomationFormReducto,
+} from 'features/omni-kit/state/automation/stop-loss'
+import {
+  getAutomationTrailingStopLossFormDefaults,
+  useOmniAutomationTrailingStopLossFormReducto,
+} from 'features/omni-kit/state/automation/trailing-stop-loss'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
 import type {
@@ -240,7 +256,16 @@ type AutomationMetadataValuesSimulation = OmniAutomationSimulationResponse['simu
 
 interface ProductContextAutomation {
   positionTriggers: GetTriggersResponse
-  automationForm: ReturnType<typeof useOmniAutomationFormReducto>
+  automationForms: {
+    stopLoss: ReturnType<typeof useOmniStopLossAutomationFormReducto>
+    trailingStopLoss: ReturnType<typeof useOmniAutomationTrailingStopLossFormReducto>
+    autoSell: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
+    autoBuy: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
+    partialTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+    autoTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+    constantMultiple: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+  }
+  commonForm: ReturnType<typeof useOmniAutomationFormReducto>
   simulationData?: OmniAutomationSimulationResponse
   isSimulationLoading?: boolean
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
@@ -344,7 +369,34 @@ export function OmniProductContextProvider({
   // @ts-ignore
   // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
   const form = formReducto(formDefaults)
+
   const automationForm = automationFormReducto(automationFormDefaults)
+  const stopLossForm = useOmniStopLossAutomationFormReducto(
+    getAutomationStopLossFormDefaults(positionTriggers),
+  )
+  const trailingStopLossForm = useOmniAutomationTrailingStopLossFormReducto(
+    getAutomationTrailingStopLossFormDefaults(positionTriggers),
+  )
+  const autoSellForm = useOmniAutomationAutoBSFormReducto(
+    getAutomationAutoBSFormDefaults(positionTriggers, AutomationFeatures.AUTO_SELL),
+  )
+  const autoBuyForm = useOmniAutomationAutoBSFormReducto(
+    getAutomationAutoBSFormDefaults(positionTriggers, AutomationFeatures.AUTO_BUY),
+  )
+  const partialTakeProfitForm = useOmniAutomationPartialTakeProfitFormReducto(
+    getAutomationPartialTakeProfitFormDefaults(positionTriggers),
+  )
+
+  const automationForms = {
+    stopLoss: stopLossForm,
+    trailingStopLoss: trailingStopLossForm,
+    autoSell: autoSellForm,
+    autoBuy: autoBuyForm,
+    partialTakeProfit: partialTakeProfitForm,
+    constantMultiple: partialTakeProfitForm,
+    autoTakeProfit: partialTakeProfitForm,
+  }
+
   const { state } = form
   const { state: automationState } = automationForm
 
@@ -424,7 +476,8 @@ export function OmniProductContextProvider({
       },
       automation: {
         positionTriggers,
-        automationForm,
+        automationForms,
+        commonForm: automationForm,
         simulationData: automationSimulationData,
         isSimulationLoading: isAutomationSimulationLoading,
         setIsLoadingSimulation: setAutomationIsLoadingSimulation,
@@ -449,6 +502,7 @@ export function OmniProductContextProvider({
     cachedSwap,
     positionTriggers,
     automationState,
+    automationForms,
     automationSimulationData,
     isAutomationSimulationLoading,
   ])
