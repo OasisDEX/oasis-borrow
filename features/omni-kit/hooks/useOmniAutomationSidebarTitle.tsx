@@ -13,7 +13,7 @@ export const useOmniAutomationSidebarTitle = () => {
 
   const {
     automation: {
-      automationForm: { state },
+      commonForm: { state },
     },
   } = useOmniProductContext(productType)
 

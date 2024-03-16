@@ -1,26 +1,12 @@
 import type BigNumber from 'bignumber.js'
 import type { AutomationFeatures } from 'features/automation/common/types'
-import type { FormActionsReset } from 'features/omni-kit/state'
-import type { OmniCloseTo } from 'features/omni-kit/types'
+import type { FormActionsReset } from 'features/omni-kit/state/index'
 import type { TriggerAction } from 'helpers/triggers'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniAutomationFormState {
-  targetLtv?: BigNumber
-  triggerLtv?: BigNumber
-  extraTriggerLtv?: BigNumber
-  trailingDistance?: BigNumber
-  minSellPrice?: BigNumber
-  maxBuyPrice?: BigNumber
-  price?: BigNumber
-  maxGasFee?: BigNumber
-  ltvStep?: BigNumber
-  percentageOffset?: BigNumber
-  useThreshold?: boolean
-  resolveTo?: OmniCloseTo
   uiDropdownProtection?: AutomationFeatures
   uiDropdownOptimization?: AutomationFeatures
-  action?: TriggerAction
 }
 
 export interface AutomationFormActionsUpdateTargetLtv {
@@ -41,16 +27,6 @@ export interface AutomationFormActionsUpdateExtraTriggerLtv {
 export interface AutomationFormActionsUpdateTrailingDistance {
   type: 'update-trailing-distance'
   trailingDistance?: BigNumber
-}
-
-export interface AutomationFormActionsUpdateMinSellPrice {
-  type: 'update-min-sell-price'
-  minSellPrice?: BigNumber
-}
-
-export interface AutomationFormActionsUpdateMaxBuyPrice {
-  type: 'update-max-buy-price'
-  maxBuyPrice?: BigNumber
 }
 
 export interface AutomationFormActionsUpdatePrice {
@@ -75,27 +51,12 @@ export interface AutomationFormActionsUpdatePercentageOffset {
 
 export interface AutomationFormActionsUpdateUseThreshold {
   type: 'update-use-threshold'
-  useThreshold?: boolean
+  useThreshold: boolean
 }
 
 export interface AutomationFormActionsUpdateAction {
   type: 'update-action'
-  action?: TriggerAction
+  action: TriggerAction
 }
 
-export type OmniAutomationFormActions = ReductoActions<
-  OmniAutomationFormState,
-  | AutomationFormActionsUpdateTargetLtv
-  | AutomationFormActionsUpdateTriggerLtv
-  | AutomationFormActionsUpdateExtraTriggerLtv
-  | AutomationFormActionsUpdateTrailingDistance
-  | AutomationFormActionsUpdateMinSellPrice
-  | AutomationFormActionsUpdateMaxBuyPrice
-  | AutomationFormActionsUpdatePrice
-  | AutomationFormActionsUpdateMaxGasFee
-  | AutomationFormActionsUpdateLtvStep
-  | AutomationFormActionsUpdatePercentageOffset
-  | AutomationFormActionsUpdateUseThreshold
-  | AutomationFormActionsUpdateAction
-  | FormActionsReset
->
+export type OmniAutomationFormActions = ReductoActions<OmniAutomationFormState, FormActionsReset>

@@ -20,7 +20,10 @@ export const OmniStopLossSidebarController: FC = () => {
   } = useOmniGeneralContext()
   const {
     automation: {
-      automationForm: { state: automationFormState, updateState: automationUpdateState },
+      automationForms: {
+        stopLoss: { state: automationFormState, updateState: automationUpdateState },
+      },
+      commonForm: { updateState: commonUpdateState },
     },
     dynamicMetadata: {
       values: { automation: automationDynamicValues },
@@ -89,7 +92,7 @@ export const OmniStopLossSidebarController: FC = () => {
       <OmniDoubleStopLossWarning
         hasTrailingStopLoss={automationDynamicValues?.flags.isTrailingStopLossEnabled}
         onClick={() => {
-          automationUpdateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
+          commonUpdateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
         }}
       />
       <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>

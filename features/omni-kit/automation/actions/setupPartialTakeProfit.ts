@@ -3,7 +3,7 @@ import { lambdaPriceDenomination } from 'features/aave/constants'
 import { defaultAutomationActionPromise } from 'features/omni-kit/automation/actions/common'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
+import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
 import { setupAaveLikePartialTakeProfit, TriggerAction } from 'helpers/triggers'
 
 export const setupPartialTakeProfit = ({
@@ -16,7 +16,7 @@ export const setupPartialTakeProfit = ({
 }: {
   automation?: AutomationMetadataValues
   commonPayload: OmniAutomationCommonActionPayload
-  automationState: OmniAutomationFormState
+  automationState: OmniAutomationPartialTakeProfitFormState
   debtAddress: string
   collateralAddress: string
   isShort: boolean
@@ -48,11 +48,7 @@ export const setupPartialTakeProfit = ({
     return defaultAutomationActionPromise
   }
 
-  const executionToken =
-    automationState.resolveTo === 'quote' ||
-    existingPartialTakeProfitTrigger?.withdrawToDebt === 'true'
-      ? debtAddress
-      : collateralAddress
+  const executionToken = automationState.resolveTo === 'quote' ? debtAddress : collateralAddress
 
   return setupAaveLikePartialTakeProfit({
     ...commonPayload,

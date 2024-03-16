@@ -72,7 +72,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     },
     automation: {
       positionTriggers,
-      automationForm: {
+      commonForm: {
         state: { uiDropdownProtection, uiDropdownOptimization },
       },
     },

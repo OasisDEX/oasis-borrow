@@ -16,15 +16,15 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
     tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
   const {
-    automation: { isSimulationLoading, automationForm },
+    automation: { isSimulationLoading, commonForm },
   } = useOmniProductContext(productType)
 
   const [hash] = useHash()
 
   const activeUiDropdown =
     hash === 'protection'
-      ? automationForm.state.uiDropdownProtection
-      : automationForm.state.uiDropdownOptimization
+      ? commonForm.state.uiDropdownProtection
+      : commonForm.state.uiDropdownOptimization
 
   if (!activeUiDropdown) {
     return null

@@ -1,23 +1,28 @@
 import type {
-  OmniAutomationFormActions,
-  OmniAutomationFormState,
-} from 'features/omni-kit/state/automation'
+  OmniAutomationPartialTakeProfitFormActions,
+  OmniAutomationPartialTakeProfitFormState,
+} from 'features/omni-kit/state/automation/partial-take-profit'
 import {
-  omniAutomationFormDefault,
-  omniAutomationFormReset,
-} from 'features/omni-kit/state/automation'
+  omniAutomationPartialTakeProfitFormDefault,
+  omniAutomationPartialTakeProfitFormReset,
+} from 'features/omni-kit/state/automation/partial-take-profit'
 import { useReducto } from 'helpers/useReducto'
 
-export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomationFormState>) {
+export function useOmniAutomationPartialTakeProfitFormReducto({
+  ...rest
+}: OmniAutomationPartialTakeProfitFormState) {
   const { dispatch, state, updateState } = useReducto<
-    OmniAutomationFormState,
-    OmniAutomationFormActions
+    OmniAutomationPartialTakeProfitFormState,
+    OmniAutomationPartialTakeProfitFormActions
   >({
     defaults: {
-      ...omniAutomationFormDefault,
+      ...omniAutomationPartialTakeProfitFormDefault,
       ...rest,
     },
-    reducer: (prevState: OmniAutomationFormState, action: OmniAutomationFormActions) => {
+    reducer: (
+      prevState: OmniAutomationPartialTakeProfitFormState,
+      action: OmniAutomationPartialTakeProfitFormActions,
+    ) => {
       switch (action.type) {
         case 'update-target-ltv':
           return {
@@ -34,30 +39,10 @@ export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomation
             ...prevState,
             extraTriggerLtv: action.extraTriggerLtv,
           }
-        case 'update-trailing-distance':
-          return {
-            ...prevState,
-            trailingDistance: action.trailingDistance,
-          }
-        case 'update-min-sell-price':
-          return {
-            ...prevState,
-            minSellPrice: action.minSellPrice,
-          }
-        case 'update-max-buy-price':
-          return {
-            ...prevState,
-            maxBuyPrice: action.maxBuyPrice,
-          }
         case 'update-price':
           return {
             ...prevState,
             takePrice: action.price,
-          }
-        case 'update-max-gas-fee':
-          return {
-            ...prevState,
-            maxGasFee: action.maxGasFee,
           }
         case 'update-ltv-step':
           return {
@@ -69,18 +54,13 @@ export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomation
             ...prevState,
             percentageOffset: action.percentageOffset,
           }
-        case 'update-use-threshold':
-          return {
-            ...prevState,
-            useThreshold: action.useThreshold,
-          }
         case 'update-action':
           return {
             ...prevState,
             action: action.action,
           }
         case 'reset':
-          return { ...prevState, ...omniAutomationFormReset }
+          return { ...prevState, ...omniAutomationPartialTakeProfitFormReset }
         default:
           return prevState
       }

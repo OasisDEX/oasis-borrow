@@ -20,7 +20,10 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
   } = useOmniGeneralContext()
   const {
     automation: {
-      automationForm: { state: automationFormState, updateState: automationUpdateState },
+      automationForms: {
+        trailingStopLoss: { state, updateState },
+      },
+      commonForm: { updateState: commonUpdateState },
     },
     dynamicMetadata: {
       values: { automation: automationDynamicValues },
@@ -45,7 +48,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
   })
 
   useMemo(() => {
-    automationUpdateState('trailingDistance', trailingDistanceForTx)
+    updateState('trailingDistance', trailingDistanceForTx)
   }, [trailingDistanceForTx.toString()])
 
   return (
@@ -55,15 +58,15 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
           {
             id: 'quote',
             label: t('close-to', { token: quoteToken }),
-            action: () => automationUpdateState('resolveTo', 'quote'),
+            action: () => updateState('resolveTo', 'quote'),
           },
           {
             id: 'collateral',
             label: t('close-to', { token: collateralToken }),
-            action: () => automationUpdateState('resolveTo', 'collateral'),
+            action: () => updateState('resolveTo', 'collateral'),
           },
         ]}
-        active={automationFormState.resolveTo || trailingStopLossConstants.defaultResolveTo}
+        active={state.resolveTo || trailingStopLossConstants.defaultResolveTo}
       />
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         <Trans
@@ -89,7 +92,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
         rightBoundry={dynamicStopPriceChange}
         leftBoundry={trailingDistanceForTx}
         onChange={(nextTrailingDistance) => {
-          automationUpdateState('price', nextTrailingDistance)
+          updateState('price', nextTrailingDistance)
         }}
         useRcSlider
         leftLabel={t('protection.trailing-distance')}
@@ -98,7 +101,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
       <OmniDoubleStopLossWarning
         hasStopLoss={automationDynamicValues?.flags.isStopLossEnabled}
         onClick={() => {
-          automationUpdateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+          commonUpdateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
         }}
       />
       <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>

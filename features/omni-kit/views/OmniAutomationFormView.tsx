@@ -2,6 +2,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import type { AutomationFeatures } from 'features/automation/common/types'
 import { useOmniAutomationTxHandler } from 'features/omni-kit/automation/hooks/useOmniAutomationTxHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -19,7 +20,7 @@ import { useHash } from 'helpers/useHash'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface OmniFormViewProps {
@@ -62,7 +63,8 @@ export function OmniAutomationFormView({
   } = useOmniGeneralContext()
   const {
     automation: {
-      automationForm: { state, updateState },
+      commonForm: { state: commonFormState },
+      automationForms,
     },
     position: { isSimulationLoading, resolvedId },
     dynamicMetadata: {
@@ -74,17 +76,13 @@ export function OmniAutomationFormView({
 
   const [hash] = useHash()
   const activeUiDropdown =
-    hash === 'protection' ? state.uiDropdownProtection : state.uiDropdownOptimization
+    hash === 'protection'
+      ? commonFormState.uiDropdownProtection
+      : commonFormState.uiDropdownOptimization
+
+  const { state, dispatch } = automationForms[activeUiDropdown as `${AutomationFeatures}`]
 
   const isTriggerEnabled = activeUiDropdown && automation?.triggers[activeUiDropdown]
-
-  useMemo(() => {
-    if (isTriggerEnabled) {
-      updateState('action', TriggerAction.Update)
-    } else {
-      updateState('action', TriggerAction.Add)
-    }
-  }, [isTriggerEnabled])
 
   const txHandler = useOmniAutomationTxHandler()
 
@@ -158,13 +156,13 @@ export function OmniAutomationFormView({
   })
   const textButtonAction = () => {
     if (currentStep === OmniSidebarAutomationStep.Manage && isTriggerEnabled) {
-      updateState('action', TriggerAction.Remove)
+      dispatch({ type: 'partial-update', state: { action: TriggerAction.Remove } })
       setStep(OmniSidebarAutomationStep.Transaction)
       return
     }
 
     if (isTriggerEnabled && state?.action === TriggerAction.Remove) {
-      updateState('action', TriggerAction.Update)
+      dispatch({ type: 'partial-update', state: { action: TriggerAction.Update } })
       setStep(OmniSidebarAutomationStep.Manage)
       return
     }

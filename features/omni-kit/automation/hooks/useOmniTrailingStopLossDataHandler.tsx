@@ -53,7 +53,10 @@ export const useOmniTrailingStopLossDataHandler = () => {
       values: { automation },
     },
     automation: {
-      automationForm: { state },
+      automationForms: {
+        trailingStopLoss: { state },
+      },
+      commonForm: { state: commonState },
       positionTriggers,
     },
     position: {
@@ -69,7 +72,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
   // during clean up extend LendingPosition with common properties
   const castedPosition = position as AaveLikePositionV2
 
-  const isActive = state.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS
+  const isActive = commonState.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS
 
   const closeTo = automation?.triggers.trailingStopLoss?.decodedParams?.closeToCollateral
     ? 'collateral'
@@ -269,7 +272,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
     unit: priceFormat,
   }
 
-  const simpleView = state.uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS
+  const simpleView = commonState.uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS
 
   const trailingDistanceForTx = trailingDistanceValue.eq(zero)
     ? currentTrailingDistanceValue

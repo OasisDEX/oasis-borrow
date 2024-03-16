@@ -4,7 +4,7 @@ import { defaultAutomationActionPromise } from 'features/omni-kit/automation/act
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
+import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
 import { setupAaveAutoBuy, setupAaveAutoSell } from 'helpers/triggers'
 
 export const setupAutoBS = ({
@@ -15,7 +15,7 @@ export const setupAutoBS = ({
 }: {
   automation?: AutomationMetadataValues
   commonPayload: OmniAutomationCommonActionPayload
-  automationState: OmniAutomationFormState
+  automationState: OmniAutomationAutoBSFormState
   uiDropdown: OmniAutoBSAutomationTypes
 }) => {
   const existingAutoSellTrigger = automation?.triggers[uiDropdown]?.decodedParams

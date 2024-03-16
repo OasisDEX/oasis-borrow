@@ -3,7 +3,7 @@ import { defaultAutomationActionPromise } from 'features/omni-kit/automation/act
 import { resolveStopLossishAction } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation'
+import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
 import { setupAaveLikeTrailingStopLoss } from 'helpers/triggers'
 
 export const setupTrailingStopLoss = ({
@@ -15,7 +15,7 @@ export const setupTrailingStopLoss = ({
 }: {
   automation?: AutomationMetadataValues
   commonPayload: OmniAutomationCommonActionPayload
-  automationState: OmniAutomationFormState
+  automationState: OmniAutomationTrailingStopLossFormState
   debtAddress: string
   collateralAddress: string
 }) => {
@@ -36,11 +36,7 @@ export const setupTrailingStopLoss = ({
 
   return setupAaveLikeTrailingStopLoss({
     ...commonPayload,
-    executionToken:
-      automationState.resolveTo === 'quote' ||
-      automation?.triggers.stopLoss?.triggerTypeName.includes('Debt')
-        ? debtAddress
-        : collateralAddress,
+    executionToken: automationState.resolveTo === 'quote' ? debtAddress : collateralAddress,
     trailingDistance,
     action: resolveStopLossishAction({
       action: automationState.action,

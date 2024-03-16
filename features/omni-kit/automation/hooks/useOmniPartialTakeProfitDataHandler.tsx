@@ -107,8 +107,11 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       values: { automation: automationDynamicValues },
     },
     automation: {
-      automationForm: { state: automationFormState },
+      commonForm: { state: commonState },
       positionTriggers,
+      automationForms: {
+        partialTakeProfit: { state },
+      },
     },
     position: {
       currentPosition: { position },
@@ -118,8 +121,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
 
   const castedPosition = position as AaveLikePositionV2
 
-  const simpleView =
-    automationFormState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
+  const simpleView = commonState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
   const maxMultiple = castedPosition?.category.maxLoanToValue || zero
   const loanToValue = castedPosition.riskRatio.loanToValue
   const liquidationRatio = castedPosition.category.liquidationThreshold
@@ -161,9 +163,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       : ('collateral' as const)
 
   const selectedPartialTakeProfitToken =
-    automationFormState.resolveTo ||
-    partialTakeProfitToken ||
-    partialTakeProfitConstants.defaultResolveTo
+    state.resolveTo || partialTakeProfitToken || partialTakeProfitConstants.defaultResolveTo
 
   const partialTakeProfitTokenData = getToken(
     selectedPartialTakeProfitToken === 'quote' ? quoteToken : collateralToken,
@@ -237,14 +237,14 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   }, [collateralPrice, isShort, quotePrice])
 
   const triggerLtvSliderConfig = getTriggerLtvSliderConfig({
-    triggerLtv: automationFormState.triggerLtv || resolvedTriggerLtv || zero,
+    triggerLtv: state.triggerLtv || resolvedTriggerLtv || zero,
     maxMultiple: maxMultiple.times(hundred),
   })
 
   const withdrawalLtvSliderConfig = getWithdrawalLtvSliderConfig({
-    withdrawalLtv: automationFormState.targetLtv || resolvedWithdrawalLtv || zero,
+    withdrawalLtv: state.targetLtv || resolvedWithdrawalLtv || zero,
     maxMultiple: maxMultiple.times(hundred),
-    triggerLtv: automationFormState.triggerLtv || resolvedTriggerLtv || zero,
+    triggerLtv: state.triggerLtv || resolvedTriggerLtv || zero,
   })
 
   const hasStopLoss = hasActiveStopLossFromTriggers({
@@ -287,8 +287,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     .minus(stopLossConstants.offsets.max)
     .times(100)
 
-  const extraTriggerLtv =
-    automationFormState.extraTriggerLtv || currentStopLossLevel || defaultStopLossLevel
+  const extraTriggerLtv = state.extraTriggerLtv || currentStopLossLevel || defaultStopLossLevel
 
   const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice: castedPosition.debtAmount.div(

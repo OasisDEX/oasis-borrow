@@ -24,7 +24,9 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   } = useOmniGeneralContext()
   const {
     automation: {
-      automationForm: { state: automationFormState, updateState: updateFormState },
+      automationForms: {
+        autoBuy: { state: automationFormState, updateState: updateFormState },
+      },
     },
   } = useOmniProductContext(productType)
   const {
