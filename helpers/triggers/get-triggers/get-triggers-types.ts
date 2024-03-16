@@ -256,6 +256,26 @@ export type DmaSparkTrailingStopLoss = {
   }
 }
 
+type ProfitType = {
+  balance: string
+  token: {
+    decimals: number
+    symbol: string
+    address: string
+  }
+}
+
+type NextProfitDynamicParam = {
+  triggerPrice: string
+  stopLossDynamicPrice: string
+  realizedProfitInCollateral: ProfitType
+  realizedProfitInDebt: ProfitType
+  totalProfitInCollateral: ProfitType
+  totalProfitInDebt: ProfitType
+  fee: ProfitType
+  totalFee: ProfitType
+}
+
 export type DmaAavePartialTakeProfit = {
   triggerTypeName: 'DmaAavePartialTakeProfit'
   triggerType: bigint
@@ -272,6 +292,9 @@ export type DmaAavePartialTakeProfit = {
     targetLtv: string
     triggerType: string
     withdrawToDebt: 'true' | 'false'
+  }
+  dynamicParams?: {
+    nextProfit?: NextProfitDynamicParam
   }
 }
 
@@ -292,6 +315,9 @@ export type DmaSparkPartialTakeProfit = {
     deviation: string
     closeToCollateral: string
     withdrawToDebt: 'true' | 'false'
+  }
+  dynamicParams?: {
+    nextProfit?: NextProfitDynamicParam
   }
 }
 

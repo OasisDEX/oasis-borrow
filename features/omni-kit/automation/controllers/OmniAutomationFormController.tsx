@@ -2,6 +2,7 @@ import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarS
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   OmniAutoBSSidebarController,
+  OmniPartialTakeProfitSidebarController,
   OmniStopLossSidebarController,
   OmniTrailingStopLossSidebarController,
 } from 'features/omni-kit/automation/components'
@@ -140,7 +141,7 @@ export function OmniAutomationFormController() {
           {commonForm.state.uiDropdownOptimization === AutomationFeatures.AUTO_BUY &&
             isOptimization && <OmniAutoBSSidebarController type={AutomationFeatures.AUTO_BUY} />}
           {commonForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
-            isOptimization && <>Partial Take Profit Form</>}
+            isOptimization && <OmniPartialTakeProfitSidebarController />}
         </>
       )}
       {currentStep === OmniSidebarAutomationStep.Transaction && isAddOrUpdateAction && <>Tx step</>}
