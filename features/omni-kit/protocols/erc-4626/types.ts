@@ -16,5 +16,11 @@ export interface Erc4626Config {
   name: string
   networkId: OmniSupportedNetworkIds
   protocol: OmniSupportedProtocols
+  rewards: {
+    label?: string
+    token: string
+    withPricePicker?: boolean
+  }[]
+  strategy: string
   token: Erc4626Token
 }

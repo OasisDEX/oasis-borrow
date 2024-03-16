@@ -7,6 +7,7 @@ export const RAY_PRECISION = 27
 export const RAD_PRECISION = 45
 
 export const CHAIN_LINK_PRECISION = 10 ** 8
+export const MORPHO_ORACLE_PRECISION = 10 ** 36
 
 export const WAD = new BigNumber(10).pow(WAD_PRECISION)
 export const RAY = new BigNumber(10).pow(RAY_PRECISION)

@@ -3334,6 +3334,9 @@
           "total-deposit": "Total {{quoteToken}} deposit"
         }
       }
+    },
+    "product-hub-tooltips": {
+      "this-vault-is-earning-tokens": "This Vault is earning following rewards"
     }
   },
   "product-hub": {
