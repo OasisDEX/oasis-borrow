@@ -40,6 +40,7 @@ async function getMorphoPositions({
   prices,
   protocolRaw,
 }: GetMorphoPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
+  throw new Error('Test')
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph('Morpho', 'getMorphoDpmPositions', networkId, {
     dpmProxyAddress,
