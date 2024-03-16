@@ -109,7 +109,9 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     automation: {
       commonForm: { state: commonState },
       positionTriggers,
-      automationForms: { partialTakeProfit: { state} },
+      automationForms: {
+        partialTakeProfit: { state },
+      },
     },
     position: {
       currentPosition: { position },
@@ -119,8 +121,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
 
   const castedPosition = position as AaveLikePositionV2
 
-  const simpleView =
-    commonState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
+  const simpleView = commonState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
   const maxMultiple = castedPosition?.category.maxLoanToValue || zero
   const loanToValue = castedPosition.riskRatio.loanToValue
   const liquidationRatio = castedPosition.category.liquidationThreshold
@@ -162,9 +163,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       : ('collateral' as const)
 
   const selectedPartialTakeProfitToken =
-    state.resolveTo ||
-    partialTakeProfitToken ||
-    partialTakeProfitConstants.defaultResolveTo
+    state.resolveTo || partialTakeProfitToken || partialTakeProfitConstants.defaultResolveTo
 
   const partialTakeProfitTokenData = getToken(
     selectedPartialTakeProfitToken === 'quote' ? quoteToken : collateralToken,
@@ -288,8 +287,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     .minus(stopLossConstants.offsets.max)
     .times(100)
 
-  const extraTriggerLtv =
-    state.extraTriggerLtv || currentStopLossLevel || defaultStopLossLevel
+  const extraTriggerLtv = state.extraTriggerLtv || currentStopLossLevel || defaultStopLossLevel
 
   const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice: castedPosition.debtAmount.div(

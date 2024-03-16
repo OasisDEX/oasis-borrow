@@ -41,7 +41,9 @@ export const OmniPartialTakeProfitSidebarController = () => {
   } = useOmniGeneralContext()
   const {
     automation: {
-      automationForm: { state: automationFormState, updateState: automationUpdateState },
+      automationForms: {
+        partialTakeProfit: { state: automationFormState, updateState: automationUpdateState },
+      },
     },
     dynamicMetadata: {
       values: { automation },
