@@ -10,6 +10,7 @@ import {
 } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626Vaults } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
+import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import { OmniProductType, type OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -89,6 +90,7 @@ async function getErc4626Positions({
           const netValue = position.netValue.times(quotePrice)
 
           return {
+            assetLabel: vault.name,
             availableToMigrate: false,
             automations: {},
             details: [
@@ -130,11 +132,12 @@ async function getErc4626Positions({
             type: OmniProductType.Earn,
             url: getOmniPositionUrl({
               collateralToken: quoteToken,
+              label: vault.name,
               networkName,
-              positionId: vaultId,
               productType: OmniProductType.Earn,
               protocol: vault.protocol,
-              quoteToken,
+              pseudoProtocol: Erc4626PseudoProtocol,
+              quoteToken: quoteToken,
             }),
           }
         },

@@ -48,7 +48,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
   const { t: tPortfolio } = useTranslation('portfolio')
 
   const asset =
-    position.primaryToken === position.secondaryToken
+    position.assetLabel ?? position.primaryToken === position.secondaryToken
       ? position.primaryToken
       : `${position.primaryToken}/${position.secondaryToken}`
   const icons =

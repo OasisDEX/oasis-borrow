@@ -2,9 +2,9 @@ import { aaveLikePositionsHandler } from 'handlers/portfolio/positions/handlers/
 import { aaveV2PositionHandler } from 'handlers/portfolio/positions/handlers/aave-v2'
 import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna'
 import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
+import { erc4626PositionsHandler } from 'handlers/portfolio/positions/handlers/erc-4626'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
 import { morphoPositionsHandler } from 'handlers/portfolio/positions/handlers/morpho-blue'
-import { erc4626PositionsHandler } from 'handlers/portfolio/positions/handlers/erc-4626'
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type {
@@ -58,32 +58,32 @@ export const portfolioPositionsHandler = async ({
     }
 
     const positionsReply = await Promise.all([
-      // aaveLikePositionsHandler(payload),
-      // aaveV2PositionHandler(payload),
-      // ajnaPositionsHandler(payload),
-      // dsrPositionsHandler(payload),
-      // makerPositionsHandler(payload),
-      // morphoPositionsHandler(payload),
+      aaveLikePositionsHandler(payload),
+      aaveV2PositionHandler(payload),
+      ajnaPositionsHandler(payload),
+      dsrPositionsHandler(payload),
       erc4626PositionsHandler(payload),
+      makerPositionsHandler(payload),
+      morphoPositionsHandler(payload),
     ])
       .then(
         ([
-          // { positions: aaveLikePositions },
-          // { positions: aaveV2Positions },
-          // { positions: ajnaPositions },
-          // { positions: dsrPositions },
-          // { positions: makerPositions },
-          // { positions: morphoPositions },
+          { positions: aaveLikePositions },
+          { positions: aaveV2Positions },
+          { positions: ajnaPositions },
+          { positions: dsrPositions },
           { positions: erc4626Positions },
+          { positions: makerPositions },
+          { positions: morphoPositions },
         ]) => ({
           positions: [
-            // ...aaveLikePositions,
-            // ...aaveV2Positions,
-            // ...ajnaPositions,
-            // ...dsrPositions,
-            // ...makerPositions,
-            // ...morphoPositions,
+            ...aaveLikePositions,
+            ...aaveV2Positions,
+            ...ajnaPositions,
+            ...dsrPositions,
             ...erc4626Positions,
+            ...makerPositions,
+            ...morphoPositions,
           ],
           error: false,
           ...(debug && {
