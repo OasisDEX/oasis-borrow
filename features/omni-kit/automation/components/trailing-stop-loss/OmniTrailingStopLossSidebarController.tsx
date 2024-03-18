@@ -8,7 +8,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
 import type { FC } from 'react'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 export const OmniTrailingStopLossSidebarController: FC = () => {
@@ -41,13 +41,6 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
     priceFormat,
   })
 
-  useMemo(() => {
-    updateState(
-      'trailingDistance',
-      trailingDistanceForTx.isZero() ? undefined : trailingDistanceForTx,
-    )
-  }, [trailingDistanceForTx.toString()])
-
   return (
     <>
       <ActionPills
@@ -55,12 +48,22 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
           {
             id: 'quote',
             label: t('close-to', { token: quoteToken }),
-            action: () => updateState('resolveTo', 'quote'),
+            action: () => {
+              updateState('resolveTo', 'quote')
+              // initialize other state fields to get full after state picture
+              updateState('price', trailingDistance)
+              updateState('trailingDistance', sliderMax.minus(trailingDistance))
+            },
           },
           {
             id: 'collateral',
             label: t('close-to', { token: collateralToken }),
-            action: () => updateState('resolveTo', 'collateral'),
+            action: () => {
+              updateState('resolveTo', 'collateral')
+              // initialize other state fields to get full after state picture
+              updateState('price', trailingDistance)
+              updateState('trailingDistance', sliderMax.minus(trailingDistance))
+            },
           },
         ]}
         active={state.resolveTo || trailingStopLossConstants.defaultResolveTo}
@@ -90,6 +93,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
         leftBoundry={trailingDistanceForTx}
         onChange={(nextTrailingDistance) => {
           updateState('price', nextTrailingDistance)
+          updateState('trailingDistance', sliderMax.minus(nextTrailingDistance))
         }}
         useRcSlider
         leftLabel={t('protection.trailing-distance')}

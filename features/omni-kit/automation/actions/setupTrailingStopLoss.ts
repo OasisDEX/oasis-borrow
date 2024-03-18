@@ -19,12 +19,12 @@ export const setupTrailingStopLoss = ({
   debtAddress: string
   collateralAddress: string
 }) => {
-  const existingSLTrigger_tsl = automation?.triggers.stopLoss?.decodedParams
-  const existingTSLTrigger_tsl = automation?.triggers.trailingStopLoss?.decodedParams
+  const existingSLTrigger = automation?.triggers.stopLoss?.decodedParams
+  const existingTSLTrigger = automation?.triggers.trailingStopLoss?.decodedParams
 
   const stateTrailingDistance = automationState.trailingDistance
-  const currentTrailingDistance = existingTSLTrigger_tsl?.trailingDistance
-    ? new BigNumber(existingTSLTrigger_tsl.trailingDistance)
+  const currentTrailingDistance = existingTSLTrigger?.trailingDistance
+    ? new BigNumber(existingTSLTrigger.trailingDistance)
     : undefined
 
   const trailingDistance = stateTrailingDistance || currentTrailingDistance
@@ -40,8 +40,8 @@ export const setupTrailingStopLoss = ({
     trailingDistance,
     action: resolveStopLossishAction({
       action: automationState.action,
-      existingSLTrigger: !!existingSLTrigger_tsl,
-      existingTSLTrigger: !!existingTSLTrigger_tsl,
+      existingSLTrigger: !!existingSLTrigger,
+      existingTSLTrigger: !!existingTSLTrigger,
     }),
   })
 }

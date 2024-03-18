@@ -48,12 +48,20 @@ export const OmniStopLossSidebarController: FC = () => {
           {
             id: 'quote',
             label: t('close-to', { token: quoteToken }),
-            action: () => automationUpdateState('resolveTo', 'quote'),
+            action: () => {
+              automationUpdateState('resolveTo', 'quote')
+              // initialize other state fields to get full after state picture
+              automationUpdateState('triggerLtv', displayStopLossLevel)
+            },
           },
           {
             id: 'collateral',
             label: t('close-to', { token: collateralToken }),
-            action: () => automationUpdateState('resolveTo', 'collateral'),
+            action: () => {
+              automationUpdateState('resolveTo', 'collateral')
+              // initialize other state fields to get full after state picture
+              automationUpdateState('triggerLtv', displayStopLossLevel)
+            },
           },
         ]}
         active={automationFormState.resolveTo || stopLossConstants.defaultResolveTo}
