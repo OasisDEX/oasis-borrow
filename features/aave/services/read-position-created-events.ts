@@ -5,6 +5,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import { getRpcProvidersForLogs } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { userDpmProxies$ } from 'blockchain/userDpmProxies'
+import { erc4626Vaults } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -105,6 +106,16 @@ export function extractLendingProtocolFromPositionCreatedEvent(
     case 'MorphoBlue':
       return LendingProtocol.MorphoBlue
     default:
+      // support for ERC-4626 positions that does not belong to any supported protocol
+      if (positionCreatedChainEvent.args.protocol.startsWith('erc4626')) {
+        const vaultAddress = positionCreatedChainEvent.args.protocol.replace('erc4626-', '')
+        const vaultProtocol = erc4626Vaults.find(
+          ({ address }) => address.toLowerCase() === vaultAddress.toLowerCase(),
+        )?.protocol
+
+        if (vaultProtocol) return vaultProtocol
+      }
+
       throw new Error(
         `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
           positionCreatedChainEvent,

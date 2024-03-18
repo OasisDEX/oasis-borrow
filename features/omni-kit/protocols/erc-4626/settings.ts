@@ -11,7 +11,7 @@ import { keyBy } from 'lodash'
 
 export const settings: OmniProtocolSettings = {
   rawName: {
-    [NetworkIds.MAINNET]: 'erc-4626',
+    [NetworkIds.MAINNET]: 'erc4626',
   },
   supportedNetworkIds: [NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
