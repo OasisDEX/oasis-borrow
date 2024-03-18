@@ -3,10 +3,10 @@ import type { Dispatch, FC } from 'react'
 import React, { createContext, useContext, useMemo, useReducer } from 'react'
 
 interface Erc4626CustomState {
-  estimatedMarketCap: BigNumber
+  estimatedPrice: BigNumber
 }
 
-type Erc4626CustomActions = { type: 'estimated-market-cap-change'; estimatedMarketCap: BigNumber }
+type Erc4626CustomActions = { type: 'estimated-price-change'; estimatedPrice: BigNumber }
 
 const erc4626CustomStateContext = createContext<
   { state: Erc4626CustomState; dispatch: Dispatch<Erc4626CustomActions> } | undefined
@@ -14,8 +14,8 @@ const erc4626CustomStateContext = createContext<
 
 const reducer = (state: Erc4626CustomState, action: Erc4626CustomActions): Erc4626CustomState => {
   switch (action.type) {
-    case 'estimated-market-cap-change':
-      return { estimatedMarketCap: action.estimatedMarketCap }
+    case 'estimated-price-change':
+      return { estimatedPrice: action.estimatedPrice }
     default:
       return state
   }
@@ -32,13 +32,13 @@ export const useErc4626CustomState = () => {
 
 export const Erc4626CustomStateContextProvider: FC<Erc4626CustomState> = ({
   children,
-  estimatedMarketCap,
+  estimatedPrice,
 }) => {
-  const [state, dispatch] = useReducer(reducer, { estimatedMarketCap })
+  const [state, dispatch] = useReducer(reducer, { estimatedPrice })
 
   useMemo(() => {
-    dispatch({ type: 'estimated-market-cap-change', estimatedMarketCap })
-  }, [estimatedMarketCap?.toString()])
+    dispatch({ type: 'estimated-price-change', estimatedPrice })
+  }, [estimatedPrice?.toString()])
 
   return (
     <erc4626CustomStateContext.Provider value={{ state, dispatch }}>

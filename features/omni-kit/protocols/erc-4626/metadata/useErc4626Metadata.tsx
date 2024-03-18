@@ -14,7 +14,7 @@ import {
   Erc4626DetailsSectionFooter,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import {
-  Erc4626EstimatedMarketCap,
+  Erc4626EstimatedMarketPrice,
   Erc4626FormOrder,
 } from 'features/omni-kit/protocols/erc-4626/components/sidebar'
 import {
@@ -56,7 +56,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   } = useOmniGeneralContext()
 
   // it is safe to assume that in erc-4626 context label is always availabe string
-  const { address: vaultAddress } = erc4626VaultsByName[label as string]
+  const { address: vaultAddress, pricePicker } = erc4626VaultsByName[label as string]
 
   const validations = productContext.position.simulationCommon.getValidations({
     earnIsFormValid: getErc4626EarnIsFormValid({
@@ -142,8 +142,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             </>
           ),
           overviewWithSimulation: true,
-          // TODO: show only when rewards are available in vault
-          sidebarContent: <Erc4626EstimatedMarketCap token="MORPHO" />,
+          sidebarContent: pricePicker && <Erc4626EstimatedMarketPrice pricePicker={pricePicker} />,
           earnFormOrder: <Erc4626FormOrder />,
           earnFormOrderAsElement: Erc4626FormOrder,
         },

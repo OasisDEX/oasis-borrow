@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -45,12 +44,16 @@ export const erc4626Vaults: Erc4626Config[] = [
     id: 'steakhouse-USDC',
     name: 'Steakhouse USDC',
     networkId: NetworkIds.MAINNET,
+    pricePicker: {
+      marketCap: 1000000000,
+      prices: [0.5, 0.75, 1, 2],
+      token: 'MORPHO',
+    },
     protocol: LendingProtocol.MorphoBlue,
     rewards: [
       {
         token: 'MORPHO',
         label: 'Morpho token rewards',
-        withPricePicker: true,
       },
       {
         token: 'WSTETH',
@@ -68,10 +71,3 @@ export const erc4626Vaults: Erc4626Config[] = [
 
 export const erc4626VaultsById = keyBy(erc4626Vaults, 'id')
 export const erc4626VaultsByName = keyBy(erc4626Vaults, 'name')
-
-export const erc4626EstimatedMarketCaps = [
-  new BigNumber(500000000),
-  new BigNumber(750000000),
-  new BigNumber(1000000000),
-  new BigNumber(2000000000),
-]
