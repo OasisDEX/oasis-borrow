@@ -63,13 +63,15 @@ export function OmniAutomationFormView({
   } = useOmniGeneralContext()
   const {
     automation: {
+      isSimulationLoading,
       commonForm: { state: commonFormState },
       automationForms,
+      simulationData,
     },
-    position: { isSimulationLoading, resolvedId },
+    position: { resolvedId },
     dynamicMetadata: {
       featureToggles: { suppressValidation, safetySwitch },
-      validations: { isFormFrozen, hasErrors },
+      validations: { isFormFrozen },
       values: { sidebarTitle, automation },
     },
   } = useOmniProductContext(productType)
@@ -99,7 +101,7 @@ export function OmniAutomationFormView({
   } = getOmniSidebarButtonsStatus({
     currentStep,
     editingStep,
-    hasErrors,
+    hasErrors: !!simulationData?.errors?.length,
     isAllowanceLoading: false,
     isFormFrozen,
     isFormValid: true, // TODO add isFormValid resolver for automation
