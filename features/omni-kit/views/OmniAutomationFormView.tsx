@@ -3,6 +3,7 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import type { AutomationFeatures } from 'features/automation/common/types'
+import { isOmniAutomationFormValid } from 'features/omni-kit/automation/helpers'
 import { useOmniAutomationTxHandler } from 'features/omni-kit/automation/hooks/useOmniAutomationTxHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -104,7 +105,7 @@ export function OmniAutomationFormView({
     hasErrors: !!simulationData?.errors?.length,
     isAllowanceLoading: false,
     isFormFrozen,
-    isFormValid: true, // TODO add isFormValid resolver for automation
+    isFormValid: isOmniAutomationFormValid(state, activeUiDropdown),
     isOpening,
     isOwner,
     isSimulationLoading,

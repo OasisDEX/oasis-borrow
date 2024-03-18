@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { lambdaPriceDenomination } from 'features/aave/constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { defaultAutomationActionPromise } from 'features/omni-kit/automation/actions/common'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
@@ -18,23 +19,29 @@ export const setupAutoBS = ({
   automationState: OmniAutomationAutoBSFormState
   uiDropdown: OmniAutoBSAutomationTypes
 }) => {
-  const existingAutoSellTrigger = automation?.triggers[uiDropdown]?.decodedParams
+  const existingAutoBSTrigger = automation?.triggers[uiDropdown]?.decodedMappedParams
 
   const stateExecutionLtv = automationState.triggerLtv
-  const currentExecutionLtv = existingAutoSellTrigger?.executionLtv
-    ? new BigNumber(existingAutoSellTrigger?.executionLtv)
-    : undefined
-  const executionLTV = stateExecutionLtv || currentExecutionLtv
+  const currentExecutionLtv = existingAutoBSTrigger?.executionLtv
+
+  const executionLTV = (stateExecutionLtv || currentExecutionLtv)?.times(100)
 
   const stateTargetLtv = automationState.targetLtv
-  const currentTargetLtv = existingAutoSellTrigger?.executionLtv
-    ? new BigNumber(existingAutoSellTrigger?.executionLtv)
-    : undefined
-  const targetLTV = stateTargetLtv || currentTargetLtv
+  const currentTargetLtv = existingAutoBSTrigger?.targetLtv
+
+  const targetLTV = (stateTargetLtv || currentTargetLtv)?.times(100)
+
+  const statePrice = automationState.price
+  const currentPrice =
+    existingAutoBSTrigger && 'minSellPrice' in existingAutoBSTrigger
+      ? existingAutoBSTrigger?.minSellPrice
+      : existingAutoBSTrigger?.maxBuyPrice
+
+  const price = (statePrice || currentPrice)?.times(lambdaPriceDenomination)
 
   const stateMaxBaseFee = automationState.maxGasFee
-  const currentMaxBaseFee = existingAutoSellTrigger?.maxBaseFeeInGwei
-    ? new BigNumber(existingAutoSellTrigger?.executionLtv)
+  const currentMaxBaseFee = existingAutoBSTrigger?.maxBaseFeeInGwei
+    ? new BigNumber(existingAutoBSTrigger?.maxBaseFeeInGwei)
     : undefined
   const maxBaseFee = stateMaxBaseFee || currentMaxBaseFee
 
@@ -50,11 +57,11 @@ export const setupAutoBS = ({
 
   return setupFnMap({
     ...commonPayload,
-    price: automationState.price,
+    price,
     executionLTV,
     targetLTV,
     maxBaseFee,
-    usePrice: !!automationState.useThreshold,
+    usePrice: automationState.useThreshold,
     action: automationState.action,
   })
 }
