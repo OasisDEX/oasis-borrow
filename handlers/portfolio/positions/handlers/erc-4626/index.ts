@@ -1,17 +1,18 @@
 import { views } from '@oasisdex/dma-library'
 import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers'
-import { type OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
+import { getOmniPositionUrl } from 'features/omni-kit/helpers'
+import {
+  getErc4626Apy,
+  getErc4626ApyParameters,
+  getErc4626PositionParameters,
+} from 'features/omni-kit/protocols/erc-4626/helpers'
+import { erc4626Vaults } from 'features/omni-kit/protocols/erc-4626/settings'
+import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
+import { OmniProductType, type OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import {
-  getMorphoPositionDetails,
-  getMorphoPositionInfo,
-} from 'handlers/portfolio/positions/handlers/morpho-blue/helpers'
 import { type TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type {
@@ -20,17 +21,19 @@ import type {
   PortfolioPositionsHandler,
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
-import { LendingProtocol } from 'lendingProtocols'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 
 interface GetErc4626PositionsParams {
   apiVaults?: Vault[]
   dpmList: DpmSubgraphData[]
-  prices: TokensPricesList
   networkId: OmniSupportedNetworkIds
-  protocolRaw: string
   positionsCount?: boolean
+  prices: TokensPricesList
 }
-import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
 
 async function getErc4626Positions({
   apiVaults,
@@ -38,104 +41,107 @@ async function getErc4626Positions({
   networkId,
   positionsCount,
   prices,
-  protocolRaw,
 }: GetErc4626PositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
-  const subgraphPositions = (await loadSubgraph('Morpho', 'getMorphoDpmPositions', networkId, {
+  const subgraphPositions = (await loadSubgraph('Erc4626', 'getErc4626DpmPositions', networkId, {
     dpmProxyAddress,
-  })) as SubgraphsResponses['Morpho']['getMorphoDpmPositions']
-  const positionsArray = subgraphPositions.response.accounts.flatMap(
-    ({ address: proxyAddress, borrowPositions, vaultId: positionId }) =>
-      borrowPositions.map((position) => ({
-        ...position,
-        proxyAddress,
-        positionId,
-      })),
-  )
+  })) as SubgraphsResponses['Erc4626']['getErc4626DpmPositions']
+  const positionsArray = subgraphPositions.response.positions.flatMap(({ account, vault }) => ({
+    ...account,
+    ...vault,
+  }))
 
   if (positionsCount || !apiVaults) {
     return {
-      positions: positionsArray.map(({ positionId }) => ({ positionId })),
+      positions: positionsArray.map(({ vaultId }) => ({ positionId: vaultId })),
     }
   } else {
     const positions = await Promise.all(
       positionsArray.map(
-        async ({ market, positionId, proxyAddress }): Promise<PortfolioPosition> => {
-          const {
-            collateralToken,
-            id: marketId,
-            latestInterestRates: [{ rate }],
-            liquidationRatio,
-            debtToken,
-          } = market
+        async ({ address, asset, id, user, vaultId }): Promise<PortfolioPosition> => {
+          const vault = erc4626Vaults.find(
+            ({ address: _address }) => _address.toLowerCase() === id.toLowerCase(),
+          ) as Erc4626Config
 
-          const {
-            collateralPrice,
-            networkName,
-            primaryToken,
-            quotePrice,
-            secondaryToken,
-            type,
-            url,
-          } = getMorphoPositionInfo({
-            apiVaults,
-            dpmList,
-            market,
-            networkId,
-            positionId,
-            prices,
-            proxyAddress,
-            protocolRaw,
-          })
+          const networkName = networksById[networkId].name
+          const quotePrice = new BigNumber(prices[asset.symbol.toUpperCase()])
+          const quoteToken = asset.symbol.toUpperCase()
 
-          const position = await views.morpho.getPosition(
+          const position = await views.common.getErc4626Position(
             {
-              collateralPrecision: Number(collateralToken.decimals),
-              collateralPriceUSD: collateralPrice,
-              marketId,
-              proxyAddress: proxyAddress,
-              quotePrecision: Number(debtToken.decimals),
-              quotePriceUSD: quotePrice,
+              proxyAddress: address,
+              quotePrice: new BigNumber(prices[quoteToken]),
+              user: user.id,
+              vaultAddress: id,
+              underlyingAsset: {
+                address: asset.address,
+                precision: Number(asset.decimals),
+                symbol: asset.symbol,
+              },
             },
             {
-              getCumulatives: getMorphoCumulatives(networkId),
-              morphoAddress: getNetworkContracts(networkId).morphoBlue.address,
               provider: getRpcProvider(networkId),
+              getVaultApyParameters: getErc4626ApyParameters,
+              getLazyVaultSubgraphResponse: getErc4626PositionParameters(networkId),
             },
           )
 
-          const netValue = position.collateralAmount
-            .times(collateralPrice)
-            .minus(position.debtAmount.times(quotePrice))
-            .toNumber()
+          const netValue = position.netValue.times(quotePrice)
 
           return {
             availableToMigrate: false,
             automations: {},
-            details: getMorphoPositionDetails({
-              collateralPrice,
-              liquidationRatio: new BigNumber(liquidationRatio).shiftedBy(NEGATIVE_WAD_PRECISION),
-              position,
-              primaryToken,
-              quotePrice,
-              rate: new BigNumber(rate),
-              secondaryToken,
-              type,
-            }),
+            details: [
+              {
+                type: 'netValue',
+                value: formatUsdValue(netValue),
+              },
+              {
+                type: 'earnings',
+                value: `${formatCryptoBalance(
+                  new BigNumber(position.totalEarnings.withoutFees),
+                )} ${quoteToken}`,
+              },
+              {
+                type: 'apy',
+                value: formatDecimalAsPercent(
+                  getErc4626Apy({
+                    rewardsApy: position.apyFromRewards.per365d,
+                    vaultApy: position.apy.per365d,
+                  }),
+                ),
+              },
+              {
+                type: '90dApy',
+                value: formatDecimalAsPercent(
+                  getErc4626Apy({
+                    rewardsApy: position.apyFromRewards.per90d,
+                    vaultApy: position.apy.per90d,
+                  }),
+                ),
+              },
+            ],
             network: networkName,
-            netValue,
-            positionId: Number(positionId),
-            primaryToken,
-            protocol: LendingProtocol.MorphoBlue,
-            secondaryToken,
-            type,
-            url,
+            netValue: netValue.toNumber(),
+            positionId: Number(vaultId),
+            primaryToken: quoteToken,
+            protocol: vault.protocol,
+            secondaryToken: quoteToken,
+            type: OmniProductType.Earn,
+            url: getOmniPositionUrl({
+              collateralToken: quoteToken,
+              networkName,
+              positionId: vaultId,
+              productType: OmniProductType.Earn,
+              protocol: vault.protocol,
+              quoteToken,
+            }),
           }
         },
       ),
     )
 
-    return { positions: [] }
+    return { positions }
   }
 }
 
@@ -153,13 +159,11 @@ export const erc4626PositionsHandler: PortfolioPositionsHandler = async ({
       networkId: NetworkIds.MAINNET,
       prices,
       positionsCount,
-      protocolRaw: morphoSettings.rawName[NetworkIds.MAINNET] as string,
     }),
   ]).then((responses) => {
     return {
       address,
-      positions: [],
-      // positions: responses.flatMap(({ positions }) => positions),
+      positions: responses.flatMap(({ positions }) => positions),
     }
   })
 }
