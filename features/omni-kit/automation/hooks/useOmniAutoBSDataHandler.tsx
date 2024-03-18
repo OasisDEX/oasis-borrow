@@ -1,5 +1,6 @@
 import type { LendingPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { lambdaPriceDenomination } from 'features/aave/constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
 import {
@@ -57,16 +58,20 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
   const resolvedThresholdPrice = {
     [AutomationFeatures.AUTO_SELL]:
       automation?.triggers.autoSell &&
-      new BigNumber(automation?.triggers.autoSell?.decodedParams.minSellPrice),
+      new BigNumber(automation.triggers.autoSell.decodedParams.minSellPrice).div(
+        lambdaPriceDenomination,
+      ),
     [AutomationFeatures.AUTO_BUY]:
       automation?.triggers.autoBuy &&
-      new BigNumber(automation?.triggers.autoBuy?.decodedParams.maxBuyPrice),
+      new BigNumber(automation.triggers.autoBuy.decodedParams.maxBuyPrice).div(
+        lambdaPriceDenomination,
+      ),
   }[type]
 
   const currentExecutionLTV =
-    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.executionLtv).div(100)
+    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.executionLtv).div(10000)
   const currentTargetLTV =
-    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.targetLtv).div(100)
+    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.targetLtv).div(10000)
 
   const debtToCollateralRatio =
     currentExecutionLTV &&
@@ -82,7 +87,7 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
     automationFeature: type,
     collateralToken: collateralToken,
     currentExecutionLTV: currentExecutionLTV,
-    afterTxExecutionLTV: isActive ? afterTriggerLtv : undefined,
+    afterTxExecutionLTV: isActive ? afterTriggerLtv?.div(100) : undefined,
     nextPrice: nextPrice,
     denomination: priceFormat,
   })
@@ -91,7 +96,7 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
     automationFeature: type,
     collateralToken: collateralToken,
     currentTargetLTV: currentTargetLTV,
-    afterTxTargetLTV: isActive ? afterTargetLtv : undefined,
+    afterTxTargetLTV: isActive ? afterTargetLtv?.div(100) : undefined,
     thresholdPrice: resolvedThresholdPrice,
     denomination: priceFormat,
   })

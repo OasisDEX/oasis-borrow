@@ -34,6 +34,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     currentTargetLTV,
     pricesDenomination,
     castedPosition,
+    resolvedThresholdPrice,
   } = useOmniAutoBSDataHandler({ type })
   const defaultTriggerValues = useMemo(() => {
     return {
@@ -47,10 +48,18 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const sliderValues = useMemo(() => {
     return {
       value0: Number(
-        (afterTriggerLtv || currentExecutionLTV || defaultTriggerValues.triggerLtv).toPrecision(2),
+        (
+          afterTriggerLtv ||
+          currentExecutionLTV?.times(100) ||
+          defaultTriggerValues.triggerLtv
+        ).toPrecision(2),
       ),
       value1: Number(
-        (afterTargetLtv || currentTargetLTV || defaultTriggerValues.targetLtv).toPrecision(2),
+        (
+          afterTargetLtv ||
+          currentTargetLTV?.times(100) ||
+          defaultTriggerValues.targetLtv
+        ).toPrecision(2),
       ),
     }
   }, [afterTargetLtv, afterTriggerLtv, currentExecutionLTV, currentTargetLTV, defaultTriggerValues])
@@ -136,7 +145,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
             [AutomationFeatures.AUTO_SELL]: t('auto-sell.set-min-sell-price'),
           }[type]
         }
-        amount={automationFormState.price}
+        amount={automationFormState.price || resolvedThresholdPrice}
         hasAuxiliary={false}
         hasError={false}
         currencyCode={pricesDenomination === 'collateral' ? quoteToken : collateralToken}
