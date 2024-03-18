@@ -64,11 +64,13 @@ export const useOmniStopLossDataHandler = () => {
 
   const displayStopLossLevel = afterStopLossLevel || stopLossLevel || defaultStopLossLevel
 
-  const isCollateralActive = !state.resolveTo
-    ? !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
-    : state.resolveTo === 'collateral'
+  const isCollateralActive = state.resolveTo
+    ? state.resolveTo === 'collateral'
+    : !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
 
-  const closeToToken = isCollateralActive ? collateralToken : quoteToken
+  const closeToToken = automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
+    ? collateralToken
+    : quoteToken
   const stateCloseToToken = state.resolveTo === 'collateral' ? collateralToken : quoteToken
 
   const dynamicStopLossPrice =
@@ -124,6 +126,7 @@ export const useOmniStopLossDataHandler = () => {
       liquidationRatio,
       liquidationPrice,
       debt: castedPosition.debtAmount,
+      isCollateralActive: !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral'),
     })
 
   const afterMaxToken =
@@ -133,6 +136,7 @@ export const useOmniStopLossDataHandler = () => {
       lockedCollateral: castedPosition.collateralAmount,
       liquidationRatio,
       liquidationPrice,
+      isCollateralActive,
       debt: castedPosition.debtAmount,
     })
 

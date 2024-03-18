@@ -102,12 +102,14 @@ export function getMaxToken({
   stopLossLevel,
   lockedCollateral,
   debt,
+  isCollateralActive = true,
 }: {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
   stopLossLevel: BigNumber
   lockedCollateral: BigNumber
   debt: BigNumber
+  isCollateralActive?: boolean
 }) {
   const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice,
@@ -117,7 +119,10 @@ export function getMaxToken({
 
   return dynamicStopLossPrice.isZero()
     ? zero
-    : lockedCollateral.times(dynamicStopLossPrice).minus(debt).div(dynamicStopLossPrice)
+    : lockedCollateral
+        .times(dynamicStopLossPrice)
+        .minus(debt)
+        .div(isCollateralActive ? dynamicStopLossPrice : one)
 }
 
 export function getCollateralDuringLiquidation({

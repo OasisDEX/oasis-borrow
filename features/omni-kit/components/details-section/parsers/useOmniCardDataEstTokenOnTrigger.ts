@@ -5,6 +5,7 @@ import type {
   OmniContentCardDataWithModal,
 } from 'features/omni-kit/components/details-section'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
 interface OmniCardDataEstTokenOnTriggerParams extends OmniContentCardDataWithModal {
@@ -44,37 +45,33 @@ export function useOmniCardDataEstTokenOnTrigger({
     liquidationPenalty,
   })
 
-  const savingCompareToLiquidation = maxToken?.minus(collateralDuringLiquidation)
-
-  const formatTokenOrDebtToken = (val: BigNumber, stopPrice: BigNumber): string => {
-    return `${formatCryptoBalance(val)}`
-  }
+  const savingCompareToLiquidation =
+    dynamicStopLossPrice && maxToken
+      ? maxToken
+          .minus(collateralDuringLiquidation)
+          .times(!isCollateralActive ? dynamicStopLossPrice : one)
+      : undefined
 
   return {
     title: t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', {
       token: closeToToken,
     }),
     modal,
-    value:
-      dynamicStopLossPrice && maxToken
-        ? formatTokenOrDebtToken(maxToken, dynamicStopLossPrice)
-        : '-',
+    value: dynamicStopLossPrice && maxToken ? formatCryptoBalance(maxToken) : '-',
     ...(dynamicStopLossPrice &&
       savingCompareToLiquidation && {
         unit: closeToToken,
         footnote: [
-          `${formatTokenOrDebtToken(
-            savingCompareToLiquidation,
-            dynamicStopLossPrice,
-          )} ${closeToToken} ${t('manage-multiply-vault.card.saving-comp-to-liquidation')}`,
+          `${formatCryptoBalance(savingCompareToLiquidation)} ${closeToToken} ${t(
+            'manage-multiply-vault.card.saving-comp-to-liquidation',
+          )}`,
         ],
       }),
     ...(afterDynamicStopLossPrice &&
       afterMaxToken && {
         change: [
-          `${t('manage-multiply-vault.card.up-to')} ${formatTokenOrDebtToken(
+          `${t('manage-multiply-vault.card.up-to')} ${formatCryptoBalance(
             afterMaxToken,
-            afterDynamicStopLossPrice,
           )} ${stateCloseToToken}`,
         ],
       }),

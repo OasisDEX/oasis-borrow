@@ -86,9 +86,11 @@ export const useOmniTrailingStopLossDataHandler = () => {
 
   const isCollateralActive = state.resolveTo
     ? state.resolveTo === 'collateral'
-    : !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
+    : !!automation?.triggers.trailingStopLoss?.triggerTypeName.includes('Collateral')
 
-  const closeToToken = isCollateralActive ? collateralToken : quoteToken
+  const closeToToken = automation?.triggers.trailingStopLoss?.triggerTypeName.includes('Collateral')
+    ? collateralToken
+    : quoteToken
   const stateCloseToToken = state.resolveTo === 'collateral' ? collateralToken : quoteToken
 
   const afterTraillingDistance = state.price
