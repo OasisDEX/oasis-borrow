@@ -24,7 +24,6 @@ import {
 } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
-import { notAvailable } from 'handlers/portfolio/constants'
 import { useAppConfig } from 'helpers/config'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -121,7 +120,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             // TODO replace with real values
             {
               label: t('omni-kit.headline.details.30-days-avg-apy'),
-              value: notAvailable,
+              value: formatDecimalAsPercent(position.historicalApy.thirtyDayAverage),
             },
             {
               label: t('omni-kit.headline.details.tvl'),
