@@ -23,11 +23,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     environment: { productType, collateralToken, quoteToken },
   } = useOmniGeneralContext()
   const {
-    automation: {
-      automationForms: {
-        autoBuy: { state: automationFormState, updateState: updateFormState },
-      },
-    },
+    automation: { automationForms },
   } = useOmniProductContext(productType)
   const {
     maxLtv,
@@ -45,6 +41,8 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
       targetLtv: currentLtv.times(100),
     }
   }, [currentLtv])
+
+  const { state: automationFormState, updateState: updateFormState } = automationForms[type]
 
   const sliderValues = useMemo(() => {
     return {
@@ -92,8 +90,8 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         rightDescription: t('auto-buy.target-ltv'),
       },
       [AutomationFeatures.AUTO_SELL]: {
-        leftDescription: t('auto-sell.trigger-ltv'),
-        rightDescription: t('auto-sell.target-ltv'),
+        leftDescription: t('auto-sell.target-ltv'),
+        rightDescription: t('auto-sell.trigger-ltv'),
       },
     }[type]
   }, [t, type])

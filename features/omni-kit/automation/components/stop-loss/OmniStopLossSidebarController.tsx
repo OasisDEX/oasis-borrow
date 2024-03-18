@@ -32,6 +32,7 @@ export const OmniStopLossSidebarController: FC = () => {
 
   const {
     resolvedAfterDynamicStopLossPrice,
+    dynamicStopLossPrice,
     sliderStep,
     sliderMax,
     sliderMin,
@@ -79,7 +80,7 @@ export const OmniStopLossSidebarController: FC = () => {
         lastValue={displayStopLossLevel}
         maxBoundry={sliderMax}
         minBoundry={sliderMin}
-        rightBoundry={resolvedAfterDynamicStopLossPrice}
+        rightBoundry={resolvedAfterDynamicStopLossPrice || dynamicStopLossPrice?.div(100)}
         leftBoundry={displayStopLossLevel}
         onChange={(triggerLtv) => {
           automationUpdateState('triggerLtv', triggerLtv)

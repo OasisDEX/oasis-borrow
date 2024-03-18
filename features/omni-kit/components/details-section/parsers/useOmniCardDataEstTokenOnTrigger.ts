@@ -4,12 +4,11 @@ import type {
   OmniContentCardBase,
   OmniContentCardDataWithModal,
 } from 'features/omni-kit/components/details-section'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 
 interface OmniCardDataEstTokenOnTriggerParams extends OmniContentCardDataWithModal {
   isCollateralActive: boolean
-  collateralToken: string
   dynamicStopLossPrice?: BigNumber
   afterDynamicStopLossPrice?: BigNumber
   closeToToken: string
@@ -24,7 +23,6 @@ interface OmniCardDataEstTokenOnTriggerParams extends OmniContentCardDataWithMod
 
 export function useOmniCardDataEstTokenOnTrigger({
   isCollateralActive,
-  collateralToken,
   dynamicStopLossPrice,
   afterDynamicStopLossPrice,
   closeToToken,
@@ -50,8 +48,8 @@ export function useOmniCardDataEstTokenOnTrigger({
 
   const formatTokenOrDebtToken = (val: BigNumber, stopPrice: BigNumber): string => {
     return isCollateralActive
-      ? `${formatAmount(val, collateralToken)}`
-      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')}`
+      ? `${formatCryptoBalance(val)}`
+      : `${formatCryptoBalance(val.multipliedBy(stopPrice))}`
   }
 
   return {

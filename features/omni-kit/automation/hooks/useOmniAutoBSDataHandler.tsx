@@ -64,9 +64,9 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
   }[type]
 
   const currentExecutionLTV =
-    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.executionLtv).div(10000)
+    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.executionLtv).div(100)
   const currentTargetLTV =
-    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.targetLtv).div(10000)
+    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.targetLtv).div(100)
 
   const debtToCollateralRatio =
     currentExecutionLTV &&

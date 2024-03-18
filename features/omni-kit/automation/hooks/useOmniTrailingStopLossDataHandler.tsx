@@ -250,7 +250,6 @@ export const useOmniTrailingStopLossDataHandler = () => {
     liquidationPrice: castedPosition.liquidationPrice,
     collateralAmount: castedPosition.collateralAmount,
     debtAmount: castedPosition.debtAmount,
-    collateralToken,
     liquidationPenalty: castedPosition.liquidationPenalty,
     dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
