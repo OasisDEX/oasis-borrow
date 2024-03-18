@@ -63,7 +63,7 @@ export const Erc4626ApyTooltip: FC<Erc4626ApyTooltipProps> = ({ rewardsApy, vaul
           token={token}
           {...(per1kUsd && {
             footnote: t('erc-4626.position-page.common.per-1k-usd', {
-              amount: per1kUsd.dp(0, BigNumber.ROUND_HALF_EVEN),
+              amount: per1kUsd.dp(2, BigNumber.ROUND_HALF_EVEN),
               token,
             }),
           })}
