@@ -1,8 +1,11 @@
+import type { LendingPosition } from '@oasisdex/dma-library'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
+import { AutomationFeatures } from 'features/automation/common/types'
+import { OmniAutomationCancelNotice } from 'features/omni-kit/automation/components/common/OmniAutomationCancelNotice'
 import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { formatUsdValue } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -12,12 +15,20 @@ import { Grid, Text } from 'theme-ui'
 export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
   const { t } = useTranslation()
   const {
-    environment: { productType },
+    environment: { productType, priceFormat },
     tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
   const {
     automation: { isSimulationLoading, commonForm },
+    position: {
+      currentPosition: { position },
+    },
+    dynamicMetadata: {
+      values: { automation },
+    },
   } = useOmniProductContext(productType)
+
+  const castedPosition = position as LendingPosition
 
   const [hash] = useHash()
 
@@ -32,7 +43,48 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
 
   const formatted = {
     totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
+    liquidationPrice: `${formatCryptoBalance(castedPosition.liquidationPrice)} ${priceFormat}`,
   }
+
+  const items = {
+    [AutomationFeatures.STOP_LOSS]: [
+      {
+        label: t('cancel-stoploss.liquidation'),
+        value: formatted.liquidationPrice,
+      },
+      {
+        label: t('position-history.sl-level'),
+        value: automation?.triggers.stopLoss?.decodedParams.executionLtv,
+        change: 'n/a',
+      },
+    ],
+    [AutomationFeatures.TRAILING_STOP_LOSS]: [],
+    [AutomationFeatures.AUTO_SELL]: [],
+    [AutomationFeatures.AUTO_BUY]: [],
+    [AutomationFeatures.PARTIAL_TAKE_PROFIT]: [],
+    [AutomationFeatures.CONSTANT_MULTIPLE]: [],
+    [AutomationFeatures.AUTO_TAKE_PROFIT]: [],
+  }[activeUiDropdown]
+
+  const notice = {
+    [AutomationFeatures.STOP_LOSS]: (
+      <OmniAutomationCancelNotice
+        content={t('protection.cancel-notice', { ratioParam: t('system.loan-to-value') })}
+      />
+    ),
+    [AutomationFeatures.TRAILING_STOP_LOSS]: (
+      <OmniAutomationCancelNotice
+        content={t('protection.cancel-notice', { ratioParam: t('system.loan-to-value') })}
+      />
+    ),
+    [AutomationFeatures.AUTO_SELL]: null,
+    [AutomationFeatures.AUTO_BUY]: null,
+    [AutomationFeatures.PARTIAL_TAKE_PROFIT]: (
+      <OmniAutomationCancelNotice content={t('protection.take-profit-cancel-notice')} />
+    ),
+    [AutomationFeatures.CONSTANT_MULTIPLE]: null,
+    [AutomationFeatures.AUTO_TAKE_PROFIT]: null,
+  }[activeUiDropdown]
 
   const isLoading = !isTxSuccess && isSimulationLoading
 
@@ -56,6 +108,7 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
                 },
               ]
             : [
+                ...items,
                 {
                   label: t('max-gas-fee'),
                   value: <OmniGasEstimation />,
@@ -64,6 +117,7 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
               ]),
         ]}
       />
+      {notice}
     </Grid>
   )
 }
