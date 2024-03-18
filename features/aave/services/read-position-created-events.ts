@@ -105,11 +105,12 @@ export function extractLendingProtocolFromPositionCreatedEvent(
     case 'MorphoBlue':
       return LendingProtocol.MorphoBlue
     default:
-      throw new Error(
+      console.warn(
         `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
           positionCreatedChainEvent,
         )}`,
       )
+      return LendingProtocol.Unknown
   }
 }
 
