@@ -1,4 +1,5 @@
 import { getTokensPrices, type TokensPricesList } from 'handlers/portfolio/positions/helpers'
+import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
 
 interface GetErc4626ApyParametersParams {
   prices?: TokensPricesList
@@ -46,13 +47,12 @@ interface GetRewardsResponse {
 
 export function getErc4626ApyParameters({ prices }: GetErc4626ApyParametersParams) {
   return async (vaultAddress: string) => {
-    const resolvedUrl = global.window?.location.origin || 'http://localhost:3000'
     const resolvedPrices = prices ?? (await getTokensPrices()).tokens ?? {}
 
     const wstETHPrice = resolvedPrices['WSTETH']
     // TODO: Pass Morhpo price
-    const response = await fetch(
-      `${resolvedUrl}/api/morpho/meta-morpho?address=${vaultAddress}&morhoPrice=1&wsEthPrice=${wstETHPrice}`,
+    const response = await fetchFromFunctionsApi(
+      `/api/morpho/meta-morpho?address=${vaultAddress}&morhoPrice=1&wsEthPrice=${wstETHPrice}`,
     )
 
     if (response.status !== 200) {
