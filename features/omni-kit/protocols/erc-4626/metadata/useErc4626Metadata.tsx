@@ -89,7 +89,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
               productType,
               quoteAddress,
               protocol,
-              protocolRaw: `erc4626-${vaultAddress}`,
+              protocolRaw: `erc4626-${vaultAddress.toLowerCase()}`,
             }),
         },
         values: {
@@ -128,7 +128,6 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
               value: formatUsdValue(position.tvl.times(quotePrice)),
             },
           ],
-          extraDropdownItems: [],
           earnWithdrawMax: position.maxWithdrawal,
           earnAfterWithdrawMax: simulation?.maxWithdrawal ?? zero,
         },

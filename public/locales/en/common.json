@@ -2963,6 +2963,7 @@
     },
     "dupe-modal": {
       "title": "Are you sure you want to open a new {{collateralToken}}/{{quoteToken}} {{productType}} position on {{protocol}}?",
+      "title-with-label": "Are you sure you want to open a new {{label}} position?",
       "description-borrower-singular": "You already have borrower position of this type.",
       "description-borrower-plural": "You already have borrower positions of this type.",
       "description-lender-singular": "You already have lender position of this type.",
