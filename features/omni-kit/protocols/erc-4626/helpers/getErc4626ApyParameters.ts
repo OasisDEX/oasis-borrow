@@ -62,31 +62,40 @@ export async function getErc4626ApyParameters(
     return {
       vault: {
         apy: '0',
-        curator: 'Steakhouse',
         fee: '0',
       },
       apyFromRewards: [],
       allocations: [],
     }
   }
+
   const data = (await response.json()) as GetRewardsResponse
+
+  const apyFromRewards = data.rewardsByToken
+    .map((token) => {
+      return {
+        token: token.symbol.toUpperCase(),
+        value: token.apy.toString(),
+        per1kUsd: token.humanReadable.toString(),
+      }
+    })
+    .filter((token) => token.value !== '0')
+
+  const allocations = data.rewardsByMarket
+    .map((market) => ({
+      token: market.market.collateral.symbol.toUpperCase(),
+      supply: market.market.suppliedAssetsHumanReadable,
+      riskRatio: market.market.liquidationLtv.toString(),
+    }))
+    .filter((market) => market.supply !== '0')
+
   return {
     vault: {
       apy: data.metaMorpho.apy.toString(),
       curator: 'Steakhouse',
       fee: data.metaMorpho.fee.toString(),
     },
-    apyFromRewards: data.rewardsByToken.map((token) => {
-      return {
-        token: token.symbol.toUpperCase(),
-        value: token.apy.toString(),
-        per1kUsd: token.humanReadable.toString(),
-      }
-    }),
-    allocations: data.rewardsByMarket.map((market) => ({
-      token: market.market.collateral.symbol.toUpperCase(),
-      supply: market.market.suppliedAssetsHumanReadable,
-      riskRatio: market.market.liquidationLtv.toString(),
-    })),
+    apyFromRewards: apyFromRewards.length > 0 ? apyFromRewards : undefined,
+    allocations: allocations.length > 0 ? allocations : undefined,
   }
 }
