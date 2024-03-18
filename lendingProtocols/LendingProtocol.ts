@@ -5,6 +5,7 @@ export enum LendingProtocol {
   Maker = 'maker',
   MorphoBlue = 'morphoblue',
   SparkV3 = 'sparkv3',
+  Unknown = 'unknown',
 }
 
 export enum LendingProtocolLabel {
