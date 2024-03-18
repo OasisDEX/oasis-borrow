@@ -47,9 +47,7 @@ export function useOmniCardDataEstTokenOnTrigger({
   const savingCompareToLiquidation = maxToken?.minus(collateralDuringLiquidation)
 
   const formatTokenOrDebtToken = (val: BigNumber, stopPrice: BigNumber): string => {
-    return isCollateralActive
-      ? `${formatCryptoBalance(val)}`
-      : `${formatCryptoBalance(val.multipliedBy(stopPrice))}`
+    return `${formatCryptoBalance(val)}`
   }
 
   return {

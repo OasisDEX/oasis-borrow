@@ -79,13 +79,15 @@ export const useOmniTrailingStopLossDataHandler = () => {
     : 'debt'
 
   const isTrailingStopLossEnabled = !!automation?.flags.isTrailingStopLossEnabled
-  const isCloseToCollateral = closeTo === 'collateral'
 
   const currentMarketPrice = isShort
     ? quotePrice.div(collateralPrice)
     : collateralPrice.div(quotePrice)
 
-  const isCollateralActive = !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
+  const isCollateralActive = state.resolveTo
+    ? state.resolveTo === 'collateral'
+    : !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
+
   const closeToToken = isCollateralActive ? collateralToken : quoteToken
   const stateCloseToToken = state.resolveTo === 'collateral' ? collateralToken : quoteToken
 
@@ -173,7 +175,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
   }, [isShort, priceRatio, trailingDistanceValue, quotePrice, collateralPrice])
   const estimatedTokenOnSLTrigger = useMemo(() => {
     if (isShort) {
-      return isCloseToCollateral
+      return isCollateralActive
         ? castedPosition.collateralAmount
             .times(one.div(dynamicStopPrice))
             .minus(castedPosition.debtAmount)
@@ -182,7 +184,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
             .times(one.div(dynamicStopPrice))
             .minus(castedPosition.debtAmount)
     }
-    return isCloseToCollateral
+    return isCollateralActive
       ? castedPosition.collateralAmount
           .times(dynamicStopPrice)
           .minus(castedPosition.debtAmount)
@@ -191,13 +193,13 @@ export const useOmniTrailingStopLossDataHandler = () => {
   }, [
     castedPosition.debtAmount,
     dynamicStopPrice,
-    isCloseToCollateral,
+    isCollateralActive,
     isShort,
     castedPosition.collateralAmount,
   ])
   const estimatedTokenOnSLTriggerChange = useMemo(() => {
     if (isShort) {
-      return isCloseToCollateral
+      return isCollateralActive
         ? castedPosition.collateralAmount
             .times(one.div(dynamicStopPriceChange))
             .minus(castedPosition.debtAmount)
@@ -206,7 +208,8 @@ export const useOmniTrailingStopLossDataHandler = () => {
             .times(one.div(dynamicStopPriceChange))
             .minus(castedPosition.debtAmount)
     }
-    return isCloseToCollateral
+
+    return isCollateralActive
       ? castedPosition.collateralAmount
           .times(dynamicStopPriceChange)
           .minus(castedPosition.debtAmount)
@@ -217,7 +220,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
   }, [
     castedPosition.debtAmount,
     dynamicStopPriceChange,
-    isCloseToCollateral,
+    isCollateralActive,
     isShort,
     castedPosition.collateralAmount,
   ])
@@ -283,7 +286,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
     isActive,
     closeTo,
     isTrailingStopLossEnabled,
-    isCloseToCollateral,
+    isCloseToCollateral: isCollateralActive,
     currentMarketPrice,
     isCollateralActive,
     closeToToken,
