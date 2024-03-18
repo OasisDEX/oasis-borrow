@@ -3279,6 +3279,7 @@
     },
     "position-page": {
       "common": {
+        "estimated-price": "Estimate <icon /> {{token}} price for better APY accuracy",
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
         "market-apy": "Market APY",
         "per-1k-usd": "{{amount}} {{token}} per $1,000",

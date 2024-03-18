@@ -655,7 +655,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   `,
   getErc4626PositionParameters: gql`
     query getPositionParameters($vault: String!, $dpmProxyAddress: String!) {
-      positions(where: { vault: $vault, account: $dpmProxyAddress }) {
+      positions(where: { account: $dpmProxyAddress }) {
         id
         shares
         earnCumulativeFeesUSD
@@ -664,14 +664,14 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         earnCumulativeFeesInQuoteToken
         earnCumulativeDepositInQuoteToken
         earnCumulativeWithdrawInQuoteToken
-        vault {
-          interestRates(orderBy: timestamp, orderDirection: desc, first: 30) {
-            timestamp
-            rate
-          }
-          totalAssets
-          totalShares
+      }
+      vaults(where: { id: $vault }) {
+        interestRates(orderBy: timestamp, orderDirection: desc, first: 30) {
+          timestamp
+          rate
         }
+        totalAssets
+        totalShares
       }
     }
   `,

@@ -149,7 +149,7 @@ export type SubgraphsResponses = {
     }>
   }
   Erc4626: {
-    getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse[]>
+    getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse>
     getErc4626InterestRates: SubgraphBaseResponse<Erc4626InterestRatesResponse>
     getErc4626DpmPositions: SubgraphBaseResponse<Erc4626DpmPositionsResponse>
   }

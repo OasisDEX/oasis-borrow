@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { Icon } from 'components/Icon'
 import { TokensGroup } from 'components/TokensGroup'
 import type { GetErc4626ApyParams } from 'features/omni-kit/protocols/erc-4626/helpers'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -63,7 +63,7 @@ export const Erc4626ApyTooltip: FC<Erc4626ApyTooltipProps> = ({ rewardsApy, vaul
           token={token}
           {...(per1kUsd && {
             footnote: t('erc-4626.position-page.common.per-1k-usd', {
-              amount: per1kUsd.dp(2, BigNumber.ROUND_HALF_EVEN),
+              amount: formatCryptoBalance(per1kUsd),
               token,
             }),
           })}
