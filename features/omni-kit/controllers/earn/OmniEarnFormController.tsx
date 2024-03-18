@@ -36,52 +36,59 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
     },
     dynamicMetadata: {
       elements: { riskSidebar, earnFormOrderAsElement },
-      values: { extraDropdownItems },
+      values: { extraDropdownItems, withAdjust },
       handlers,
     },
   } = useOmniProductContext(OmniProductType.Earn)
 
+  const hasDropdown =
+    !isOpening &&
+    ((extraDropdownItems && extraDropdownItems.length) || (withAdjust && quoteTokenAmount.gt(zero)))
+
   return (
     <OmniFormView
-      {...(!isOpening &&
-        quoteTokenAmount.gt(zero) && {
-          dropdown: {
-            forcePanel: uiDropdown,
-            disabled: currentStep !== OmniSidebarStep.Manage,
-            items: [
-              {
-                label: t('system.adjust-position'),
-                panel: OmniSidebarEarnPanel.Adjust,
-                shortLabel: t('adjust'),
-                icon: circle_slider,
-                iconShrink: 2,
-                action: () => {
-                  dispatch({ type: 'reset' })
-                  handlers?.customReset?.()
-                  updateState('uiPill', OmniEarnFormAction.DepositEarn)
-                  updateState('action', OmniEarnFormAction.DepositEarn)
-                  handlers?.txSuccessEarnHandler?.()
-                },
+      {...(hasDropdown && {
+        dropdown: {
+          forcePanel: uiDropdown,
+          disabled: currentStep !== OmniSidebarStep.Manage,
+          items: [
+            ...(withAdjust
+              ? [
+                  {
+                    label: t('system.adjust-position'),
+                    panel: OmniSidebarEarnPanel.Adjust,
+                    shortLabel: t('adjust'),
+                    icon: circle_slider,
+                    iconShrink: 2,
+                    action: () => {
+                      dispatch({ type: 'reset' })
+                      handlers?.customReset?.()
+                      updateState('uiPill', OmniEarnFormAction.DepositEarn)
+                      updateState('action', OmniEarnFormAction.DepositEarn)
+                      handlers?.txSuccessEarnHandler?.()
+                    },
+                  },
+                ]
+              : []),
+            {
+              label: t('system.manage-liquidity', {
+                token: quoteToken,
+              }),
+              panel: OmniSidebarEarnPanel.Liquidity,
+              shortLabel: quoteToken,
+              tokenIcon: quoteIcon,
+              action: () => {
+                dispatch({ type: 'reset' })
+                handlers?.customReset?.()
+                updateState('uiDropdown', OmniSidebarEarnPanel.Liquidity)
+                updateState('uiPill', OmniEarnFormAction.DepositEarn)
+                updateState('action', OmniEarnFormAction.DepositEarn)
               },
-              {
-                label: t('system.manage-liquidity', {
-                  token: quoteToken,
-                }),
-                panel: OmniSidebarEarnPanel.Liquidity,
-                shortLabel: quoteToken,
-                tokenIcon: quoteIcon,
-                action: () => {
-                  dispatch({ type: 'reset' })
-                  handlers?.customReset?.()
-                  updateState('uiDropdown', OmniSidebarEarnPanel.Liquidity)
-                  updateState('uiPill', OmniEarnFormAction.DepositEarn)
-                  updateState('action', OmniEarnFormAction.DepositEarn)
-                },
-              },
-              ...(extraDropdownItems ?? []),
-            ],
-          },
-        })}
+            },
+            ...(extraDropdownItems ?? []),
+          ],
+        },
+      })}
       txSuccessAction={() => {
         if (quoteTokenAmount.isZero() || simulation?.quoteTokenAmount.isZero()) {
           updateState('uiPill', OmniEarnFormAction.DepositEarn)

@@ -128,7 +128,6 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
               value: formatUsdValue(position.tvl.times(quotePrice)),
             },
           ],
-          extraDropdownItems: [],
           earnWithdrawMax: position.maxWithdrawal,
           earnAfterWithdrawMax: simulation?.maxWithdrawal ?? zero,
         },

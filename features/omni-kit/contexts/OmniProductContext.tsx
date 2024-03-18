@@ -132,9 +132,10 @@ export type LendingMetadata = CommonMetadata & {
 export type SupplyMetadata = CommonMetadata & {
   handlers: OmniSupplyMetadataHandlers
   values: CommonMetadataValues & {
+    earnAfterWithdrawMax?: BigNumber
     earnWithdrawMax: BigNumber
     extraDropdownItems?: SidebarSectionHeaderSelectItem[]
-    earnAfterWithdrawMax?: BigNumber
+    withAdjust?: boolean
   }
   elements: CommonMetadataElements & {
     earnExtraUiDropdownContent?: ReactNode

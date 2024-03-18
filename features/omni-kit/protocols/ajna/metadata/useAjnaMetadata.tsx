@@ -415,6 +415,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ],
           earnWithdrawMax: availableToWithdraw,
           earnAfterWithdrawMax: afterAvailableToWithdraw,
+          withAdjust: true,
         },
         elements: {
           faq: faqEarn,
