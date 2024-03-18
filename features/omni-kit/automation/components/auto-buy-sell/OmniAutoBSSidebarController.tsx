@@ -16,6 +16,7 @@ import { curry } from 'ramda'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 import { Text } from 'theme-ui'
+import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common'
 
 export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }> = ({ type }) => {
   const { t } = useTranslation()
@@ -161,6 +162,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         onChange={(value) => updateFormState('maxGasFee', new BigNumber(value))}
         value={Number(automationFormState.maxGasFee) || autoBuySellConstants.defaultGasFee}
       />
+      <OmniAutomationNotGuaranteedInfo />
     </>
   )
 }

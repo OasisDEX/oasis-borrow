@@ -3,6 +3,7 @@ import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components'
+import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common'
 import { stopLossConstants } from 'features/omni-kit/automation/constants'
 import { getStopLossFormatters } from 'features/omni-kit/automation/helpers'
 import { useOmniStopLossDataHandler } from 'features/omni-kit/automation/hooks'
@@ -96,15 +97,7 @@ export const OmniStopLossSidebarController: FC = () => {
           commonUpdateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
         }}
       />
-      <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
-        {t('protection.not-guaranteed')}
-      </Text>
-      <Text as="p" variant="paragraph3">
-        {t('protection.guarantee-factors')}{' '}
-        <AppLink href={EXTERNAL_LINKS.KB.AUTOMATION} sx={{ fontWeight: 'body' }}>
-          {t('protection.learn-more-about-automation')}
-        </AppLink>
-      </Text>
+      <OmniAutomationNotGuaranteedInfo />
     </>
   )
 }

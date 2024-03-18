@@ -10,6 +10,7 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common'
 import { partialTakeProfitConstants } from 'features/omni-kit/automation/constants'
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -694,6 +695,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
             : ''
         }
       />
+      <OmniAutomationNotGuaranteedInfo />
     </Grid>
   )
 }
