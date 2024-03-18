@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
 import { lambdaPriceDenomination } from 'features/aave/constants'
 import { defaultAutomationActionPromise } from 'features/omni-kit/automation/actions/common'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
 import { setupAaveLikePartialTakeProfit, TriggerAction } from 'helpers/triggers'
+import { one } from 'helpers/zero'
 
 export const setupPartialTakeProfit = ({
   automation,
@@ -21,26 +21,23 @@ export const setupPartialTakeProfit = ({
   collateralAddress: string
   isShort: boolean
 }) => {
-  const existingPartialTakeProfitTrigger = automation?.triggers.partialTakeProfit?.decodedParams
-  const existingSLTrigger = automation?.triggers.stopLoss?.decodedParams
-  const existingTSLTrigger = automation?.triggers.trailingStopLoss?.decodedParams
+  const existingPartialTakeProfitTrigger =
+    automation?.triggers.partialTakeProfit?.decodedMappedParams
+  const existingSLTrigger = automation?.triggers.stopLoss?.decodedMappedParams
+  const existingTSLTrigger = automation?.triggers.trailingStopLoss?.decodedMappedParams
 
-  const stateTriggerLtv = automationState.triggerLtv?.times(100)
-  const currentTriggerLtv = existingPartialTakeProfitTrigger?.executionLtv
-    ? new BigNumber(existingPartialTakeProfitTrigger.executionLtv)
-    : undefined
+  const stateTriggerLtv = automationState.triggerLtv
+  const currentTriggerLtv = existingPartialTakeProfitTrigger?.executionLtv?.times(100)
+
   const triggerLtv = stateTriggerLtv || currentTriggerLtv
 
-  const statePrice = automationState.price?.times(100)
+  const statePrice = automationState.price
   const currentPrice = existingPartialTakeProfitTrigger?.executionPrice
-    ? new BigNumber(existingPartialTakeProfitTrigger.executionPrice)
-    : undefined
+
   const startingTakeProfitPrice = statePrice || currentPrice
 
-  const stateWithdrawalLtv = automationState.ltvStep?.times(100)
-  const currentWithdrawalLtv = existingPartialTakeProfitTrigger?.targetLtv
-    ? new BigNumber(existingPartialTakeProfitTrigger.targetLtv)
-    : undefined
+  const stateWithdrawalLtv = automationState.ltvStep
+  const currentWithdrawalLtv = existingPartialTakeProfitTrigger?.ltvStep?.times(100)
   const withdrawalLtv = stateWithdrawalLtv || currentWithdrawalLtv
 
   if (!triggerLtv || !startingTakeProfitPrice || !withdrawalLtv || !automationState.action) {
@@ -53,9 +50,10 @@ export const setupPartialTakeProfit = ({
   return setupAaveLikePartialTakeProfit({
     ...commonPayload,
     triggerLtv,
-    startingTakeProfitPrice: isShort
-      ? new BigNumber(lambdaPriceDenomination).div(startingTakeProfitPrice)
-      : startingTakeProfitPrice.times(lambdaPriceDenomination),
+    startingTakeProfitPrice: (isShort
+      ? one.div(startingTakeProfitPrice)
+      : startingTakeProfitPrice
+    ).times(lambdaPriceDenomination),
     withdrawalLtv,
     executionToken,
     stopLoss: automationState.extraTriggerLtv

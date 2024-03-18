@@ -12,7 +12,7 @@ import type { ReductoActions } from 'helpers/useReducto'
 export interface OmniAutomationTrailingStopLossFormState {
   trailingDistance?: BigNumber
   price?: BigNumber
-  resolveTo: OmniCloseTo
+  resolveTo?: OmniCloseTo
   action: TriggerAction
 }
 

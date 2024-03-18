@@ -100,7 +100,7 @@ const mapPartialTakeProfitTriggers = (
       executionPrice: new BigNumber(triggers.decodedParams.executionPrice).div(
         lambdaPriceDenomination,
       ),
-      targetLtv: new BigNumber(triggers.decodedParams.targetLtv).div(10000),
+      ltvStep: new BigNumber(triggers.decodedParams.targetLtv).div(10000),
     },
   }
 }

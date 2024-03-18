@@ -54,7 +54,7 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
       },
       {
         label: t('position-history.sl-level'),
-        value: automation?.triggers.stopLoss?.decodedParams.executionLtv,
+        value: automation?.triggers.stopLoss?.decodedMappedParams.executionLtv,
         change: 'n/a',
       },
     ],

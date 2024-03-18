@@ -7,6 +7,8 @@ import {
   OmniTrailingStopLossSidebarController,
 } from 'features/omni-kit/automation/components'
 import { OmniAutomationRemoveTriggerSidebar } from 'features/omni-kit/automation/components/common'
+import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components/common/OmniAutomationFromOrder'
+import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
@@ -114,6 +116,8 @@ export function OmniAutomationFormController() {
     [TriggerAction.Add, TriggerAction.Update].includes(currentAutomationForm.state.action)
   const isRemoveAction = currentAutomationForm.state.action === TriggerAction.Remove
 
+  const isFormEmpty = isOmniAutomationFormEmpty(currentAutomationForm.state, activeUiDropdown)
+
   return (
     <OmniAutomationFormView
       {...(!isOpening && {
@@ -142,6 +146,7 @@ export function OmniAutomationFormController() {
             isOptimization && <OmniAutoBSSidebarController type={AutomationFeatures.AUTO_BUY} />}
           {commonForm.state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT &&
             isOptimization && <OmniPartialTakeProfitSidebarController />}
+          {!isFormEmpty && <OmniAutomationFromOrder />}
         </>
       )}
       {currentStep === OmniSidebarAutomationStep.Transaction && isAddOrUpdateAction && <>Tx step</>}

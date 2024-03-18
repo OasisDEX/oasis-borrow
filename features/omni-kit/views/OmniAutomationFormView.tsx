@@ -156,6 +156,7 @@ export function OmniAutomationFormView({
   })
   const textButtonAction = () => {
     if (currentStep === OmniSidebarAutomationStep.Manage && isTriggerEnabled) {
+      dispatch({ type: 'reset' })
       dispatch({ type: 'partial-update', state: { action: TriggerAction.Remove } })
       setStep(OmniSidebarAutomationStep.Transaction)
       return

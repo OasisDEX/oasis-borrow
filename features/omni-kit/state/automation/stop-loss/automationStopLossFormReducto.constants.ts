@@ -2,6 +2,7 @@ import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/au
 
 export const omniAutomationStopLossFormReset = {
   triggerLtv: undefined,
+  resolveTo: undefined,
 }
 
 export const omniAutomationStopLossFormDefault: Partial<OmniAutomationStopLossFormState> = {

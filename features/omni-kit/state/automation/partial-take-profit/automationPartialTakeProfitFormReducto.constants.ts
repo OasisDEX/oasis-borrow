@@ -11,6 +11,7 @@ export const omniAutomationPartialTakeProfitFormReset = {
   ltvStep: undefined,
   percentageOffset: undefined,
   useThreshold: true,
+  resolveTo: undefined,
 }
 
 export const omniAutomationPartialTakeProfitFormDefault: Partial<OmniAutomationPartialTakeProfitFormState> =

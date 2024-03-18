@@ -1,9 +1,6 @@
 import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
-import { AutomationFeatures } from 'features/automation/common/types'
-import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common'
-import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components/common/OmniDoubleStopLossWarning'
 import { trailingStopLossConstants } from 'features/omni-kit/automation/constants'
 import { getTrailingStopLossFormatters } from 'features/omni-kit/automation/helpers'
 import { useOmniTrailingStopLossDataHandler } from 'features/omni-kit/automation/hooks'
@@ -24,10 +21,6 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
       automationForms: {
         trailingStopLoss: { state, updateState },
       },
-      commonForm: { updateState: commonUpdateState },
-    },
-    dynamicMetadata: {
-      values: { automation: automationDynamicValues },
     },
   } = useOmniProductContext(productType)
 
@@ -49,7 +42,10 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
   })
 
   useMemo(() => {
-    updateState('trailingDistance', trailingDistanceForTx)
+    updateState(
+      'trailingDistance',
+      trailingDistanceForTx.isZero() ? undefined : trailingDistanceForTx,
+    )
   }, [trailingDistanceForTx.toString()])
 
   return (
@@ -99,13 +95,6 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
         leftLabel={t('protection.trailing-distance')}
         rightLabel={t('slider.set-stoploss.right-label')}
       />
-      <OmniDoubleStopLossWarning
-        hasStopLoss={automationDynamicValues?.flags.isStopLossEnabled}
-        onClick={() => {
-          commonUpdateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
-        }}
-      />
-      <OmniAutomationNotGuaranteedInfo />
     </>
   )
 }

@@ -100,22 +100,24 @@ export const useOmniAutomationTxHandler = () => {
 
         promise
           .then((data) => {
-            if (data?.transaction && signer && dpmProxy) {
-              const txDataFromResponse = {
-                ...data.transaction,
-                value: ethers.utils.parseEther('0').toHexString(),
+            if (data && signer && dpmProxy) {
+              if (data.transaction) {
+                const txDataFromResponse = {
+                  ...data.transaction,
+                  value: ethers.utils.parseEther('0').toHexString(),
+                }
+                setTxData(txDataFromResponse)
+                estimateOmniGas$({
+                  networkId,
+                  proxyAddress: dpmProxy,
+                  signer,
+                  txData: txDataFromResponse,
+                  sendAsSinger: true,
+                }).subscribe((value) => setGasEstimation(value))
               }
 
-              setTxData(txDataFromResponse)
               setSimulation(data)
               setIsLoadingSimulation(false)
-              estimateOmniGas$({
-                networkId,
-                proxyAddress: dpmProxy,
-                signer,
-                txData: txDataFromResponse,
-                sendAsSinger: true,
-              }).subscribe((value) => setGasEstimation(value))
             }
           })
           .catch((error) => {

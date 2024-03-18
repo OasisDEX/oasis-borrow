@@ -21,7 +21,7 @@ export interface OmniAutomationPartialTakeProfitFormState {
   price?: BigNumber
   ltvStep?: BigNumber
   percentageOffset?: BigNumber
-  resolveTo: OmniCloseTo
+  resolveTo?: OmniCloseTo
   action: TriggerAction
 }
 

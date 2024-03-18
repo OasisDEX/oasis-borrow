@@ -5,7 +5,6 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
-import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common'
 import { autoBuySellConstants } from 'features/omni-kit/automation/constants'
 import { getAutoBuyAutoSellDescription } from 'features/omni-kit/automation/helpers'
 import { useOmniAutoBSDataHandler } from 'features/omni-kit/automation/hooks'
@@ -181,7 +180,6 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         onChange={(value) => updateFormState('maxGasFee', new BigNumber(value))}
         value={Number(automationFormState.maxGasFee) || autoBuySellConstants.defaultGasFee}
       />
-      <OmniAutomationNotGuaranteedInfo />
     </>
   )
 }

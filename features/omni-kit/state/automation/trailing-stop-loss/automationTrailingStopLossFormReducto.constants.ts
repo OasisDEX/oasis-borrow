@@ -2,6 +2,7 @@ import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/
 
 export const omniAutomationTrailingStopLossFormReset = {
   trailingDistance: undefined,
+  resolveTo: undefined,
   price: undefined,
 }
 

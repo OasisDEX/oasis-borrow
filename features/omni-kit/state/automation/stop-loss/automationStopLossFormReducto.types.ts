@@ -11,7 +11,7 @@ import type { ReductoActions } from 'helpers/useReducto'
 export interface OmniAutomationStopLossFormState {
   triggerLtv?: BigNumber
   maxGasFee?: BigNumber
-  resolveTo: OmniCloseTo
+  resolveTo?: OmniCloseTo
   action: TriggerAction
 }
 

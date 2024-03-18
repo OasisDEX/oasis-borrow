@@ -140,9 +140,9 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     : undefined
 
   const resolvedWithdrawalLtv =
-    resolvedTrigger?.decodedMappedParams.targetLtv &&
+    resolvedTrigger?.decodedMappedParams.ltvStep &&
     resolvedTrigger?.decodedMappedParams.executionLtv
-      ? resolvedTrigger.decodedMappedParams.targetLtv.minus(
+      ? resolvedTrigger.decodedMappedParams.ltvStep.minus(
           resolvedTrigger.decodedMappedParams.executionLtv,
         )
       : undefined
@@ -232,7 +232,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   })
 
   const withdrawalLtvSliderConfig = getWithdrawalLtvSliderConfig({
-    withdrawalLtv: state.targetLtv || resolvedWithdrawalLtv?.times(100) || zero,
+    withdrawalLtv: state.ltvStep || resolvedWithdrawalLtv?.times(100) || zero,
     maxMultiple: maxMultiple.times(hundred),
     triggerLtv: state.triggerLtv || resolvedTriggerLtv?.times(100) || zero,
   })

@@ -409,7 +409,7 @@ type WithMappedPartialTakeProfitDecodedParams = {
   decodedMappedParams: {
     executionPrice: BigNumber
     executionLtv: BigNumber
-    targetLtv: BigNumber
+    ltvStep: BigNumber
   }
 }
 

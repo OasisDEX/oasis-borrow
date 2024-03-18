@@ -8,11 +8,9 @@ export const getAutomationStopLossFormDefaults = (
 ): OmniAutomationStopLossFormState => {
   const {
     flags: { isStopLossEnabled },
-    triggers: { stopLoss },
   } = getAaveLikeAutomationMetadataValues({ positionTriggers })
 
   return {
-    resolveTo: stopLoss?.triggerTypeName.includes('Debt') ? 'quote' : 'collateral',
     action: isStopLossEnabled ? TriggerAction.Update : TriggerAction.Add,
   }
 }

@@ -7,12 +7,10 @@ export const getAutomationTrailingStopLossFormDefaults = (
   positionTriggers: GetTriggersResponse,
 ): OmniAutomationTrailingStopLossFormState => {
   const {
-    triggers: { trailingStopLoss },
     flags: { isTrailingStopLossEnabled },
   } = getAaveLikeAutomationMetadataValues({ positionTriggers })
 
   return {
-    resolveTo: trailingStopLoss?.triggerTypeName.includes('Debt') ? 'quote' : 'collateral',
     action: isTrailingStopLossEnabled ? TriggerAction.Update : TriggerAction.Add,
   }
 }

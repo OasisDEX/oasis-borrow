@@ -7,12 +7,10 @@ export const getAutomationPartialTakeProfitFormDefaults = (
   positionTriggers: GetTriggersResponse,
 ): OmniAutomationPartialTakeProfitFormState => {
   const {
-    triggers: { partialTakeProfit },
     flags: { isPartialTakeProfitEnabled },
   } = getAaveLikeAutomationMetadataValues({ positionTriggers })
 
   return {
     action: isPartialTakeProfitEnabled ? TriggerAction.Update : TriggerAction.Add,
-    resolveTo: partialTakeProfit?.decodedParams.withdrawToDebt === 'true' ? 'quote' : 'collateral',
   }
 }
