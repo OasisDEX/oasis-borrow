@@ -82,7 +82,7 @@ async function getErc4626Positions({
             },
             {
               provider: getRpcProvider(networkId),
-              getVaultApyParameters: getErc4626ApyParameters,
+              getVaultApyParameters: getErc4626ApyParameters({ prices }),
               getLazyVaultSubgraphResponse: getErc4626PositionParameters(networkId),
             },
           )
