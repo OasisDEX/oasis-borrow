@@ -684,4 +684,25 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getErc4626DpmPositions: gql`
+    query getInterestRates($dpmProxyAddress: [String!]) {
+      positions(where: { account_in: $dpmProxyAddress }) {
+        account {
+          address
+          user {
+            id
+          }
+          vaultId
+        }
+        vault {
+          asset {
+            address
+            decimals
+            symbol
+          }
+          id
+        }
+      }
+    }
+  `,
 }

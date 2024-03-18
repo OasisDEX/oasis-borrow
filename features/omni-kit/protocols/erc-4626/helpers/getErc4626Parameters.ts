@@ -76,7 +76,7 @@ export async function getErc4626Parameters({
       networkId,
       omniSwapVersionMap[networkId],
     ),
-    getVaultApyParameters: getErc4626ApyParameters,
+    getVaultApyParameters: getErc4626ApyParameters({}),
     network: omniNetworkMap[networkId] as Network,
     operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
     provider: rpcProvider,

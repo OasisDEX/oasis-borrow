@@ -2,6 +2,7 @@ import { aaveLikePositionsHandler } from 'handlers/portfolio/positions/handlers/
 import { aaveV2PositionHandler } from 'handlers/portfolio/positions/handlers/aave-v2'
 import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna'
 import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
+import { erc4626PositionsHandler } from 'handlers/portfolio/positions/handlers/erc-4626'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
 import { morphoPositionsHandler } from 'handlers/portfolio/positions/handlers/morpho-blue'
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
@@ -61,6 +62,7 @@ export const portfolioPositionsHandler = async ({
       aaveV2PositionHandler(payload),
       ajnaPositionsHandler(payload),
       dsrPositionsHandler(payload),
+      erc4626PositionsHandler(payload),
       makerPositionsHandler(payload),
       morphoPositionsHandler(payload),
     ])
@@ -70,6 +72,7 @@ export const portfolioPositionsHandler = async ({
           { positions: aaveV2Positions },
           { positions: ajnaPositions },
           { positions: dsrPositions },
+          { positions: erc4626Positions },
           { positions: makerPositions },
           { positions: morphoPositions },
         ]) => ({
@@ -78,6 +81,7 @@ export const portfolioPositionsHandler = async ({
             ...aaveV2Positions,
             ...ajnaPositions,
             ...dsrPositions,
+            ...erc4626Positions,
             ...makerPositions,
             ...morphoPositions,
           ],
