@@ -1,3 +1,4 @@
+import type BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 
@@ -375,6 +376,43 @@ export type GetTriggersResponse = {
   additionalData?: Record<string, unknown>
 }
 
+type WithMappedStopLossDecodedParams = {
+  decodedMappedParams: {
+    executionLtv?: BigNumber
+    ltv?: BigNumber
+  }
+}
+
+type WithMappedTrailingStopLossDecodedParams = {
+  decodedMappedParams: {
+    trailingDistance: BigNumber
+  }
+}
+
+type WithMappedAutoSellDecodedParams = {
+  decodedMappedParams: {
+    minSellPrice: BigNumber
+    executionLtv: BigNumber
+    targetLtv: BigNumber
+    maxBaseFeeInGwei: BigNumber
+  }
+}
+type WithMappedAutoBuyDecodedParams = {
+  decodedMappedParams: {
+    maxBuyPrice: BigNumber
+    executionLtv: BigNumber
+    targetLtv: BigNumber
+    maxBaseFeeInGwei: BigNumber
+  }
+}
+type WithMappedPartialTakeProfitDecodedParams = {
+  decodedMappedParams: {
+    executionPrice: BigNumber
+    executionLtv: BigNumber
+    targetLtv: BigNumber
+  }
+}
+
 // Types below to be extended when new triggers types will be available on other protocols
 export type StopLossTriggers =
   | AaveStopLossToCollateral
@@ -386,3 +424,18 @@ export type TrailingStopLossTriggers = DmaAaveTrailingStopLoss
 export type AutoSellTriggers = DmaAaveBasicSell
 export type AutoBuyTriggers = DmaAaveBasicBuy
 export type PartialTakeProfitTriggers = DmaAavePartialTakeProfit
+
+export type StopLossTriggersWithDecodedParams = (
+  | AaveStopLossToCollateral
+  | AaveStopLossToCollateralDMA
+  | AaveStopLossToDebt
+  | AaveStopLossToDebtDMA
+) &
+  WithMappedStopLossDecodedParams
+export type AutoSellTriggersWithDecodedParams = AutoSellTriggers & WithMappedAutoSellDecodedParams
+export type AutoBuyTriggersWithDecodedParams = AutoBuyTriggers & WithMappedAutoBuyDecodedParams
+export type TrailingStopLossTriggersWithDecodedParams = TrailingStopLossTriggers &
+  WithMappedTrailingStopLossDecodedParams
+
+export type PartialTakeProfitTriggersWithDecodedParams = PartialTakeProfitTriggers &
+  WithMappedPartialTakeProfitDecodedParams

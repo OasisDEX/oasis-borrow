@@ -43,16 +43,17 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import type {
-  AutoBuyTriggers,
-  AutoSellTriggers,
+  AutoBuyTriggersWithDecodedParams,
+  AutoSellTriggersWithDecodedParams,
   GetTriggersResponse,
   PartialTakeProfitTriggers,
+  PartialTakeProfitTriggersWithDecodedParams,
   SetupBasicAutoResponse,
   SetupBasicStopLossResponse,
   SetupPartialTakeProfitResponse,
   SetupTrailingStopLossResponse,
-  StopLossTriggers,
-  TrailingStopLossTriggers,
+  StopLossTriggersWithDecodedParams,
+  TrailingStopLossTriggersWithDecodedParams,
 } from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
@@ -92,11 +93,11 @@ export interface AutomationMetadataValues {
     isPartialTakeProfitEnabled: boolean
   }
   triggers: {
-    [AutomationFeatures.STOP_LOSS]?: StopLossTriggers
-    [AutomationFeatures.TRAILING_STOP_LOSS]?: TrailingStopLossTriggers
-    [AutomationFeatures.AUTO_SELL]?: AutoSellTriggers
-    [AutomationFeatures.AUTO_BUY]?: AutoBuyTriggers
-    [AutomationFeatures.PARTIAL_TAKE_PROFIT]?: PartialTakeProfitTriggers
+    [AutomationFeatures.STOP_LOSS]?: StopLossTriggersWithDecodedParams
+    [AutomationFeatures.TRAILING_STOP_LOSS]?: TrailingStopLossTriggersWithDecodedParams
+    [AutomationFeatures.AUTO_SELL]?: AutoSellTriggersWithDecodedParams
+    [AutomationFeatures.AUTO_BUY]?: AutoBuyTriggersWithDecodedParams
+    [AutomationFeatures.PARTIAL_TAKE_PROFIT]?: PartialTakeProfitTriggersWithDecodedParams
     [AutomationFeatures.CONSTANT_MULTIPLE]?: PartialTakeProfitTriggers
     [AutomationFeatures.AUTO_TAKE_PROFIT]?: PartialTakeProfitTriggers
   }

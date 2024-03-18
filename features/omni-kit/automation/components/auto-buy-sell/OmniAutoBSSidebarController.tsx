@@ -5,6 +5,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
+import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common'
 import { autoBuySellConstants } from 'features/omni-kit/automation/constants'
 import { getAutoBuyAutoSellDescription } from 'features/omni-kit/automation/helpers'
 import { useOmniAutoBSDataHandler } from 'features/omni-kit/automation/hooks'
@@ -16,7 +17,6 @@ import { curry } from 'ramda'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 import { Text } from 'theme-ui'
-import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common'
 
 export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }> = ({ type }) => {
   const { t } = useTranslation()
@@ -105,6 +105,29 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
       },
     }[type]
   }, [t, type])
+
+  const valueColors = {
+    [AutomationFeatures.AUTO_BUY]: {
+      value0: 'primary100',
+      value1: 'success100',
+    },
+    [AutomationFeatures.AUTO_SELL]: {
+      value0: 'success100',
+      value1: 'primary100',
+    },
+  }[type]
+
+  const thumbColors = {
+    [AutomationFeatures.AUTO_BUY]: {
+      leftThumbColor: 'primary100',
+      rightThumbColor: 'success100',
+    },
+    [AutomationFeatures.AUTO_SELL]: {
+      leftThumbColor: 'success100',
+      rightThumbColor: 'primary100',
+    },
+  }[type]
+
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -129,15 +152,11 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
           updateFormState('targetLtv', new BigNumber(change.value1))
         }}
         value={sliderValues}
-        valueColors={{
-          value0: 'primary100',
-          value1: 'success100',
-        }}
+        valueColors={valueColors}
         step={0.01}
         leftDescription={sliderDescriptions.leftDescription}
         rightDescription={sliderDescriptions.rightDescription}
-        leftThumbColor="primary100"
-        rightThumbColor="success100"
+        {...thumbColors}
       />
       <VaultActionInput
         action={

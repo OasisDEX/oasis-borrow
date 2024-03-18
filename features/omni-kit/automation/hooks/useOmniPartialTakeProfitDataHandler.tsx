@@ -2,7 +2,6 @@ import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
-import { lambdaPercentageDenomination, lambdaPriceDenomination } from 'features/aave/constants'
 import {
   hasActiveStopLossFromTriggers,
   hasActiveTrailingStopLossFromTriggers,
@@ -132,29 +131,20 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   const resolvedStopLossTrigger = automationDynamicValues?.triggers.stopLoss
   const resolvedTrailingStopLossTrigger = automationDynamicValues?.triggers.trailingStopLoss
 
-  const resolvedTriggerLtv = resolvedTrigger?.decodedParams.executionLtv
-    ? new BigNumber(Number(resolvedTrigger.decodedParams.executionLtv)).div(
-        lambdaPercentageDenomination,
-      )
-    : undefined
+  const resolvedTriggerLtv = resolvedTrigger?.decodedMappedParams.executionLtv
 
-  const startingTakeProfitPriceLong = resolvedTrigger?.decodedParams.executionPrice
-    ? new BigNumber(Number(resolvedTrigger.decodedParams.executionPrice)).div(
-        lambdaPriceDenomination,
-      )
-    : undefined
+  const startingTakeProfitPriceLong = resolvedTrigger?.decodedMappedParams.executionPrice
 
-  const startingTakeProfitPriceShort = resolvedTrigger?.decodedParams.executionPrice
-    ? new BigNumber(lambdaPriceDenomination).div(
-        new BigNumber(Number(resolvedTrigger.decodedParams.executionPrice)),
-      )
+  const startingTakeProfitPriceShort = resolvedTrigger?.decodedMappedParams.executionPrice
+    ? one.div(resolvedTrigger?.decodedMappedParams.executionPrice)
     : undefined
 
   const resolvedWithdrawalLtv =
-    resolvedTrigger?.decodedParams.targetLtv && resolvedTrigger?.decodedParams.executionLtv
-      ? new BigNumber(Number(resolvedTrigger.decodedParams.targetLtv))
-          .minus(new BigNumber(Number(resolvedTrigger?.decodedParams.executionLtv)))
-          .div(lambdaPercentageDenomination)
+    resolvedTrigger?.decodedMappedParams.targetLtv &&
+    resolvedTrigger?.decodedMappedParams.executionLtv
+      ? resolvedTrigger.decodedMappedParams.targetLtv.minus(
+          resolvedTrigger.decodedMappedParams.executionLtv,
+        )
       : undefined
 
   const partialTakeProfitToken =
@@ -237,14 +227,14 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   }, [collateralPrice, isShort, quotePrice])
 
   const triggerLtvSliderConfig = getTriggerLtvSliderConfig({
-    triggerLtv: state.triggerLtv || resolvedTriggerLtv || zero,
+    triggerLtv: state.triggerLtv || resolvedTriggerLtv?.times(100) || zero,
     maxMultiple: maxMultiple.times(hundred),
   })
 
   const withdrawalLtvSliderConfig = getWithdrawalLtvSliderConfig({
-    withdrawalLtv: state.targetLtv || resolvedWithdrawalLtv || zero,
+    withdrawalLtv: state.targetLtv || resolvedWithdrawalLtv?.times(100) || zero,
     maxMultiple: maxMultiple.times(hundred),
-    triggerLtv: state.triggerLtv || resolvedTriggerLtv || zero,
+    triggerLtv: state.triggerLtv || resolvedTriggerLtv?.times(100) || zero,
   })
 
   const hasStopLoss = hasActiveStopLossFromTriggers({
@@ -260,19 +250,17 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     if (resolvedStopLossTrigger) {
       return new BigNumber(
         Number(
-          resolvedStopLossTrigger.decodedParams.executionLtv ||
-            resolvedStopLossTrigger.decodedParams.ltv,
+          resolvedStopLossTrigger.decodedMappedParams.executionLtv ||
+            resolvedStopLossTrigger.decodedMappedParams.ltv,
         ),
-      ).div(lambdaPercentageDenomination)
+      )
     }
     return undefined
   }, [resolvedStopLossTrigger])
 
   const currentTrailingStopLossDistance = useMemo(() => {
     if (resolvedTrailingStopLossTrigger) {
-      return new BigNumber(
-        Number(resolvedTrailingStopLossTrigger.decodedParams.trailingDistance),
-      ).div(lambdaPriceDenomination)
+      return resolvedTrailingStopLossTrigger.decodedMappedParams.trailingDistance
     }
     return undefined
   }, [resolvedTrailingStopLossTrigger])
@@ -287,7 +275,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     .minus(stopLossConstants.offsets.max)
     .times(100)
 
-  const extraTriggerLtv = state.extraTriggerLtv || currentStopLossLevel || defaultStopLossLevel
+  const extraTriggerLtv =
+    state.extraTriggerLtv || currentStopLossLevel?.times(100) || defaultStopLossLevel
 
   const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice: castedPosition.debtAmount.div(

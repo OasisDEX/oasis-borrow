@@ -1,6 +1,4 @@
 import type { LendingPosition } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { lambdaPriceDenomination } from 'features/aave/constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
 import {
@@ -58,20 +56,13 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
   const resolvedThresholdPrice = {
     [AutomationFeatures.AUTO_SELL]:
       automation?.triggers.autoSell &&
-      new BigNumber(automation.triggers.autoSell.decodedParams.minSellPrice).div(
-        lambdaPriceDenomination,
-      ),
+      automation.triggers.autoSell.decodedMappedParams.minSellPrice,
     [AutomationFeatures.AUTO_BUY]:
-      automation?.triggers.autoBuy &&
-      new BigNumber(automation.triggers.autoBuy.decodedParams.maxBuyPrice).div(
-        lambdaPriceDenomination,
-      ),
+      automation?.triggers.autoBuy && automation.triggers.autoBuy.decodedMappedParams.maxBuyPrice,
   }[type]
 
-  const currentExecutionLTV =
-    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.executionLtv).div(10000)
-  const currentTargetLTV =
-    resolvedTrigger && new BigNumber(resolvedTrigger.decodedParams.targetLtv).div(10000)
+  const currentExecutionLTV = resolvedTrigger && resolvedTrigger.decodedMappedParams.executionLtv
+  const currentTargetLTV = resolvedTrigger && resolvedTrigger.decodedMappedParams.targetLtv
 
   const debtToCollateralRatio =
     currentExecutionLTV &&

@@ -1,5 +1,4 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   getDynamicStopLossPrice,
@@ -45,8 +44,8 @@ export const useOmniStopLossDataHandler = () => {
 
   // maybe we could always resolve it to either ltv or executionLtv
   const currentTriggerLtv =
-    automation?.triggers.stopLoss?.decodedParams?.ltv ||
-    automation?.triggers.stopLoss?.decodedParams?.executionLtv
+    automation?.triggers.stopLoss?.decodedMappedParams?.ltv ||
+    automation?.triggers.stopLoss?.decodedMappedParams?.executionLtv
 
   const liquidationPrice = castedPosition.liquidationPrice
   const liquidationRatio = one.div(castedPosition.maxRiskRatio.loanToValue)
@@ -59,7 +58,7 @@ export const useOmniStopLossDataHandler = () => {
     [castedPosition.category.maxLoanToValue],
   )
   const isActive = commonState.uiDropdownProtection === AutomationFeatures.STOP_LOSS
-  const stopLossLevel = currentTriggerLtv ? new BigNumber(currentTriggerLtv).div(10000) : undefined
+  const stopLossLevel = currentTriggerLtv
   const afterStopLossLevel = state.triggerLtv
   const resolvedAfterStopLossLevel = isActive ? afterStopLossLevel : undefined
 

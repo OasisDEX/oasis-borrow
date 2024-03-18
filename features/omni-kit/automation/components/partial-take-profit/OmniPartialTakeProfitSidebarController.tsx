@@ -98,11 +98,11 @@ export const OmniPartialTakeProfitSidebarController = () => {
   }, [automationFormState.price, startingTakeProfitPrice])
 
   const triggerLtvValue = useMemo(() => {
-    return automationFormState.triggerLtv || resolvedTriggerLtv || zero
+    return automationFormState.triggerLtv || resolvedTriggerLtv?.times(100) || zero
   }, [automationFormState.triggerLtv, resolvedTriggerLtv])
 
   const targetLtvValue = useMemo(() => {
-    return automationFormState.targetLtv || resolvedWithdrawalLtv || zero
+    return automationFormState.targetLtv || resolvedWithdrawalLtv?.times(100) || zero
   }, [automationFormState.targetLtv, resolvedWithdrawalLtv])
 
   const getTriggerLtvMultiple = useCallback((ltv: BigNumber) => {
