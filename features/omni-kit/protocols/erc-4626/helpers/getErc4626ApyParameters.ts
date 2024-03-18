@@ -1,4 +1,5 @@
 import type { views } from '@oasisdex/dma-library'
+import { tokenPrices } from 'blockchain/prices.constants'
 
 // TODO: entire file is a mock
 
@@ -49,9 +50,11 @@ interface GetRewardsResponse {
 export async function getErc4626ApyParameters(
   vaultAddress: string,
 ): GetErc4626ApyParametersResponse {
-  // TODO: Pass proper prices
+  const prices = await tokenPrices()
+  const wstETHPrice = prices['wsteth']
+  // TODO: Pass Morhpo price
   const response = await fetch(
-    `/api/morpho/meta-morpho?address=${vaultAddress}&morhoPrice=1&wsEthPrice=4500`,
+    `/api/morpho/meta-morpho?address=${vaultAddress}&morhoPrice=1&wsEthPrice=${wstETHPrice}`,
   )
 
   if (response.status !== 200) {
