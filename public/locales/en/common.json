@@ -1503,8 +1503,7 @@
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
-    "stop-loss-triggered-immediately": "Stop-Loss will be triggered immediately.",
-    "partial-take-profit-target-higher-than-stop-loss": "Your Auto Take Profit target LTV is higher than your Stop-Loss. Reduce your Auto Take Profit target, or update your Stop-Loss."
+    "stop-loss-triggered-immediately": "Stop-Loss will be triggered immediately."
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",

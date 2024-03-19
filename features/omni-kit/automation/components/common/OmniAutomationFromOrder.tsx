@@ -1,6 +1,8 @@
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { MessageCard } from 'components/MessageCard'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common/OmniAutomationNotGuaranteedInfo'
 import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components/common/OmniDoubleStopLossWarning'
@@ -39,9 +41,6 @@ export const OmniAutomationFromOrder = () => {
 
   const currentAutomationForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
 
-  const errors = simulationData?.errors?.map((item) => t(`vault-warnings.${item.code}`)) || []
-  const warnings = simulationData?.warnings?.map((item) => t(`vault-warnings.${item.code}`)) || []
-
   return (
     <>
       <SidebarResetButton
@@ -49,8 +48,8 @@ export const OmniAutomationFromOrder = () => {
           currentAutomationForm.dispatch({ type: 'reset' })
         }}
       />
-      <MessageCard messages={errors} type="error" withBullet={errors.length > 1} />
-      <MessageCard messages={warnings} type="warning" withBullet={warnings.length > 1} />
+      <VaultErrors errorMessages={mapErrorsToErrorVaults(simulationData?.errors)} />
+      <VaultWarnings warningMessages={mapWarningsToWarningVaults(simulationData?.warnings)} />
       {activeUiDropdown === AutomationFeatures.TRAILING_STOP_LOSS && (
         <OmniDoubleStopLossWarning
           hasStopLoss={automation?.flags.isStopLossEnabled}
