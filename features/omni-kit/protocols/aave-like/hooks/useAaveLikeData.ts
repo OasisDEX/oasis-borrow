@@ -91,7 +91,7 @@ export function useAaveLikeData({
     ),
   )
 
-  const [positionTriggersData, positionTriggersError] = useObservable(
+  const [positionTriggersData] = useObservable(
     useMemo(
       () =>
         dpmPositionData ? from(getTriggersRequest({ dpm: dpmPositionData, networkId })) : EMPTY,
@@ -120,7 +120,6 @@ export function useAaveLikeData({
       aavePositionAggregatedError,
       aaveLikeAssetsPricesError,
       chainLinkEthUsdcPriceError,
-      positionTriggersError,
     ],
   }
 }
