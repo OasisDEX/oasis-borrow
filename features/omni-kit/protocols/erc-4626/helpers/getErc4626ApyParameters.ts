@@ -1,8 +1,11 @@
+import type BigNumber from 'bignumber.js'
 import { getTokensPrices, type TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
+import { one } from 'helpers/zero'
 
 interface GetErc4626ApyParametersParams {
   prices?: TokensPricesList
+  rewardTokenPrice?: BigNumber
 }
 
 interface RewardToken {
@@ -45,14 +48,16 @@ interface GetRewardsResponse {
   rewardsByToken: RewardToken[]
 }
 
-export function getErc4626ApyParameters({ prices }: GetErc4626ApyParametersParams) {
+export function getErc4626ApyParameters({
+  prices,
+  rewardTokenPrice = one,
+}: GetErc4626ApyParametersParams) {
   return async (vaultAddress: string) => {
     const resolvedPrices = prices ?? (await getTokensPrices()).tokens ?? {}
 
     const wstETHPrice = resolvedPrices['WSTETH']
-    // TODO: Pass Morhpo price
     const response = await fetchFromFunctionsApi(
-      `/api/morpho/meta-morpho?address=${vaultAddress}&morhoPrice=1&wsEthPrice=${wstETHPrice}`,
+      `/api/morpho/meta-morpho?address=${vaultAddress}&morhoPrice=${rewardTokenPrice}&wsEthPrice=${wstETHPrice}`,
     )
 
     if (response.status !== 200) {

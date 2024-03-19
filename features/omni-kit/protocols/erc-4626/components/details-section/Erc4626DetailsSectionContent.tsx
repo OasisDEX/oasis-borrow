@@ -7,8 +7,13 @@ import {
 import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { Erc4626ApyTooltip } from 'features/omni-kit/protocols/erc-4626/components'
-import { Erc4626DetailsSectionContentEstimatedEarnings } from 'features/omni-kit/protocols/erc-4626/components/details-section'
-import { getErc4626Apy } from 'features/omni-kit/protocols/erc-4626/helpers'
+import {
+  Erc4626DetailsSectionContentEstimatedEarnings,
+  Erc4626DetailsSectionContentEstimationLoader,
+} from 'features/omni-kit/protocols/erc-4626/components/details-section'
+import { useErc4626CustomState } from 'features/omni-kit/protocols/erc-4626/contexts'
+import { useErc4626ApySimulation } from 'features/omni-kit/protocols/erc-4626/hooks'
+import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -19,7 +24,7 @@ export const Erc4626DetailsSectionContent: FC = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { isOpening, quoteToken },
+    environment: { isOpening, label, quoteToken },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -27,6 +32,11 @@ export const Erc4626DetailsSectionContent: FC = () => {
     },
     position: { currentPosition },
   } = useOmniProductContext(OmniProductType.Earn)
+  const {
+    state: { estimatedPrice },
+  } = useErc4626CustomState()
+
+  const { address: vaultAddress } = erc4626VaultsByName[label as string]
 
   const position = currentPosition.position as Erc4626Position
 
@@ -43,26 +53,16 @@ export const Erc4626DetailsSectionContent: FC = () => {
     footnote: t('erc-4626.content-card.earnings-to-date.footnote'),
   })
 
-  const resolvedDepositAmount = depositAmount ?? omniDefaultOverviewSimulationDeposit
-
-  const earningsPer1d = resolvedDepositAmount.times(
-    getErc4626Apy({
-      rewardsApy: position.apyFromRewards.per1d,
-      vaultApy: position.apy.per1d,
-    }),
-  )
-  const earningsPer30d = resolvedDepositAmount.times(
-    getErc4626Apy({
-      rewardsApy: position.apyFromRewards.per30d,
-      vaultApy: position.apy.per30d,
-    }),
-  )
-  const earningsPer365d = resolvedDepositAmount.times(
-    getErc4626Apy({
-      rewardsApy: position.apyFromRewards.per365d,
-      vaultApy: position.apy.per365d,
-    }),
-  )
+  const {
+    apy,
+    earnings,
+    isLoading: isApyLoading,
+    netValue,
+  } = useErc4626ApySimulation({
+    depositAmount: depositAmount ?? omniDefaultOverviewSimulationDeposit,
+    vaultAddress,
+    rewardTokenPrice: estimatedPrice,
+  })
 
   return (
     <>
@@ -74,48 +74,68 @@ export const Erc4626DetailsSectionContent: FC = () => {
             t('omni-kit.position-page.earn.open.net-value'),
           ]}
           rows={[
-            [
-              t('omni-kit.position-page.earn.open.earnings-per-1d'),
-              <Erc4626DetailsSectionContentEstimatedEarnings
-                estimatedEarnings={earningsPer1d}
-                token={quoteToken}
-                tooltip={
-                  <Erc4626ApyTooltip
-                    rewardsApy={position.apyFromRewards.per1d}
-                    vaultApy={position.apy.per1d}
-                  />
-                }
-              />,
-              `${formatCryptoBalance(resolvedDepositAmount.plus(earningsPer1d))} ${quoteToken}`,
-            ],
-            [
-              t('omni-kit.position-page.earn.open.earnings-per-30d'),
-              <Erc4626DetailsSectionContentEstimatedEarnings
-                estimatedEarnings={earningsPer30d}
-                token={quoteToken}
-                tooltip={
-                  <Erc4626ApyTooltip
-                    rewardsApy={position.apyFromRewards.per30d}
-                    vaultApy={position.apy.per30d}
-                  />
-                }
-              />,
-              `${formatCryptoBalance(resolvedDepositAmount.plus(earningsPer30d))} ${quoteToken}`,
-            ],
-            [
-              t('omni-kit.position-page.earn.open.earnings-per-365d'),
-              <Erc4626DetailsSectionContentEstimatedEarnings
-                estimatedEarnings={earningsPer365d}
-                token={quoteToken}
-                tooltip={
-                  <Erc4626ApyTooltip
-                    rewardsApy={position.apyFromRewards.per365d}
-                    vaultApy={position.apy.per365d}
-                  />
-                }
-              />,
-              `${formatCryptoBalance(resolvedDepositAmount.plus(earningsPer365d))} ${quoteToken}`,
-            ],
+            ...(!isApyLoading && apy && earnings && netValue
+              ? [
+                  [
+                    t('omni-kit.position-page.earn.open.earnings-per-1d'),
+                    <Erc4626DetailsSectionContentEstimatedEarnings
+                      estimatedEarnings={earnings.per1d}
+                      token={quoteToken}
+                      tooltip={
+                        <Erc4626ApyTooltip
+                          rewardsApy={apy.rewardsApy.per1d}
+                          vaultApy={apy.vaultApy.per1d}
+                        />
+                      }
+                    />,
+                    `${formatCryptoBalance(netValue.per1d)} ${quoteToken}`,
+                  ],
+                  [
+                    t('omni-kit.position-page.earn.open.earnings-per-30d'),
+                    <Erc4626DetailsSectionContentEstimatedEarnings
+                      estimatedEarnings={earnings.per30d}
+                      token={quoteToken}
+                      tooltip={
+                        <Erc4626ApyTooltip
+                          rewardsApy={apy.rewardsApy.per30d}
+                          vaultApy={apy.vaultApy.per30d}
+                        />
+                      }
+                    />,
+                    `${formatCryptoBalance(netValue.per30d)} ${quoteToken}`,
+                  ],
+                  [
+                    t('omni-kit.position-page.earn.open.earnings-per-365d'),
+                    <Erc4626DetailsSectionContentEstimatedEarnings
+                      estimatedEarnings={earnings.per365d}
+                      token={quoteToken}
+                      tooltip={
+                        <Erc4626ApyTooltip
+                          rewardsApy={apy.rewardsApy.per365d}
+                          vaultApy={apy.vaultApy.per365d}
+                        />
+                      }
+                    />,
+                    `${formatCryptoBalance(netValue.per365d)} ${quoteToken}`,
+                  ],
+                ]
+              : [
+                  [
+                    t('omni-kit.position-page.earn.open.earnings-per-1d'),
+                    <Erc4626DetailsSectionContentEstimationLoader />,
+                    <Erc4626DetailsSectionContentEstimationLoader />,
+                  ],
+                  [
+                    t('omni-kit.position-page.earn.open.earnings-per-30d'),
+                    <Erc4626DetailsSectionContentEstimationLoader />,
+                    <Erc4626DetailsSectionContentEstimationLoader />,
+                  ],
+                  [
+                    t('omni-kit.position-page.earn.open.earnings-per-365d'),
+                    <Erc4626DetailsSectionContentEstimationLoader />,
+                    <Erc4626DetailsSectionContentEstimationLoader />,
+                  ],
+                ]),
           ]}
           footnote={<>{t('omni-kit.position-page.earn.open.disclaimer')}</>}
         />
