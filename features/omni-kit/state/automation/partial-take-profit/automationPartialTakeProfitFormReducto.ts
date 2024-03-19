@@ -24,11 +24,6 @@ export function useOmniAutomationPartialTakeProfitFormReducto({
       action: OmniAutomationPartialTakeProfitFormActions,
     ) => {
       switch (action.type) {
-        case 'update-target-ltv':
-          return {
-            ...prevState,
-            targetLtv: action.targetLtv,
-          }
         case 'update-trigger-ltv':
           return {
             ...prevState,

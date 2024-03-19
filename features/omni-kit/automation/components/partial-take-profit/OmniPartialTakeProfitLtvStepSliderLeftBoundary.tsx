@@ -13,7 +13,7 @@ interface OmniPartialTakeProfitSliderLeftBoundaryProps {
   value: BigNumber
 }
 
-export const OmniPartialTakeProfitSliderLeftBoundary: FC<
+export const OmniPartialTakeProfitLtvStepSliderLeftBoundary: FC<
   OmniPartialTakeProfitSliderLeftBoundaryProps
 > = ({ value }) => {
   const { t } = useTranslation()

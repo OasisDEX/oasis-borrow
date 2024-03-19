@@ -10,8 +10,11 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
-import { OmniPartialTakeProfitSliderLeftBoundary } from 'features/omni-kit/automation/components/partial-take-profit/OmniPartialTakeProfitSliderLeftBoundary'
-import { OmniPartialTakeProfitSliderRightBoundary } from 'features/omni-kit/automation/components/partial-take-profit/OmniPartialTakeProfitSliderRightBoundary'
+import {
+  OmniPartialTakeProfitLtvStepSliderLeftBoundary,
+  OmniPartialTakeProfitLtvStepSliderRightBoundary,
+  OmniPartialTakeProfitTriggerLtvSliderLeftBoundary,
+} from 'features/omni-kit/automation/components/partial-take-profit'
 import { partialTakeProfitConstants } from 'features/omni-kit/automation/constants'
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -190,28 +193,40 @@ export const OmniPartialTakeProfitSidebarController = () => {
     priceFormat,
   ])
 
+  const resolveDefaultUpdate = () => {
+    automationUpdateState('price', startingTakeProfitPriceValue)
+    automationUpdateState('triggerLtv', triggerLtvValue)
+    automationUpdateState('ltvStep', targetLtvValue)
+  }
+
   return (
     <Grid gap={3} sx={partialTakeProfitConstants.wrapperSx}>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('protection.partial-take-profit-sidebar.main-description')}
-      </Text>
       <ActionPills
         items={[
           {
             id: 'quote',
             label: t('protection.partial-take-profit-sidebar.profit-in', { token: quoteToken }),
-            action: () => automationUpdateState('resolveTo', 'quote'),
+            action: () => {
+              automationUpdateState('resolveTo', 'quote')
+              resolveDefaultUpdate()
+            },
           },
           {
             id: 'collateral',
             label: t('protection.partial-take-profit-sidebar.profit-in', {
               token: collateralToken,
             }),
-            action: () => automationUpdateState('resolveTo', 'collateral'),
+            action: () => {
+              automationUpdateState('resolveTo', 'collateral')
+              resolveDefaultUpdate()
+            },
           },
         ]}
         active={selectedPartialTakeProfitToken}
       />
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('protection.partial-take-profit-sidebar.main-description')}
+      </Text>
       <Box
         sx={{
           padding: 3,
@@ -277,6 +292,10 @@ export const OmniPartialTakeProfitSidebarController = () => {
             onChange={handleNumericInput((value) => {
               if (value) {
                 automationUpdateState('price', value)
+                // Initialize state
+                automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
+                automationUpdateState('triggerLtv', triggerLtvValue)
+                automationUpdateState('ltvStep', targetLtvValue)
                 setCustomPriceRatioPercentage(undefined)
               }
             })}
@@ -332,49 +351,22 @@ export const OmniPartialTakeProfitSidebarController = () => {
       <Box sx={{ mb: 3 }}>
         <SliderValuePicker
           disabled={false}
-          leftBoundryFormatter={(x) => {
-            if (x.isZero()) {
-              return '-'
-            }
-            return (
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Text variant="paragraph3" sx={{ mb: 2 }}>
-                  {t('protection.partial-take-profit-sidebar.trigger-ltv')}
-                  <StatefulTooltip
-                    tooltip={
-                      <Text variant="paragraph4">
-                        {t('protection.partial-take-profit-sidebar.tooltips.trigger-ltv-tooltip')}
-                      </Text>
-                    }
-                    containerSx={{ display: 'inline', zIndex: 10, position: 'relative' }}
-                    inline
-                    tooltipSx={{ width: '350px' }}
-                  >
-                    <Icon
-                      color={'neutral80'}
-                      icon={question_o}
-                      size="auto"
-                      width="14px"
-                      height="14px"
-                      sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
-                    />
-                  </StatefulTooltip>
-                </Text>
-                <Text variant="paragraph2">
-                  <FormatPercentWithSmallPercentCharacter
-                    value={x.div(lambdaPercentageDenomination)}
-                  />
-                  <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
-                    {getTriggerLtvMultiple(x)}
-                  </Text>
-                </Text>
-              </Flex>
-            )
-          }}
+          leftBoundryFormatter={(x) => (
+            <OmniPartialTakeProfitTriggerLtvSliderLeftBoundary
+              value={x}
+              maxMultiple={getTriggerLtvMultiple(x)}
+            />
+          )}
           rightBoundryFormatter={() => null}
           lastValue={triggerLtvValue}
           leftBoundry={triggerLtvValue}
-          onChange={curry(automationUpdateState)('triggerLtv')}
+          onChange={(triggerLtv) => {
+            automationUpdateState('triggerLtv', triggerLtv)
+            // Initialize state
+            automationUpdateState('price', startingTakeProfitPriceValue)
+            automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
+            automationUpdateState('ltvStep', targetLtvValue)
+          }}
           useRcSlider
           {...triggerLtvSliderConfig}
           customSliderProps={{
@@ -417,12 +409,21 @@ export const OmniPartialTakeProfitSidebarController = () => {
       >
         <SliderValuePicker
           disabled={false}
-          leftBoundryFormatter={(x) => <OmniPartialTakeProfitSliderLeftBoundary value={x} />}
-          rightBoundryFormatter={(x) => <OmniPartialTakeProfitSliderRightBoundary value={x} />}
+          leftBoundryFormatter={(x) => <OmniPartialTakeProfitLtvStepSliderLeftBoundary value={x} />}
+          rightBoundryFormatter={(x) => (
+            <OmniPartialTakeProfitLtvStepSliderRightBoundary value={x} />
+          )}
           lastValue={targetLtvValue}
           leftBoundry={targetLtvValue}
           rightBoundry={targetLtvValue.plus(triggerLtvValue)}
-          onChange={curry(automationUpdateState)('ltvStep')}
+          onChange={(ltvStep) => {
+            automationUpdateState('ltvStep', ltvStep)
+
+            // Initialize state
+            automationUpdateState('price', startingTakeProfitPriceValue)
+            automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
+            automationUpdateState('triggerLtv', triggerLtvValue)
+          }}
           useRcSlider
           {...withdrawalLtvSliderConfig}
           customSliderProps={{

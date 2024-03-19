@@ -6,7 +6,6 @@ import type {
   AutomationFormActionsUpdateLtvStep,
   AutomationFormActionsUpdatePercentageOffset,
   AutomationFormActionsUpdatePrice,
-  AutomationFormActionsUpdateTargetLtv,
   AutomationFormActionsUpdateTriggerLtv,
 } from 'features/omni-kit/state/automation/common'
 import type { OmniCloseTo } from 'features/omni-kit/types'
@@ -14,7 +13,6 @@ import type { TriggerAction } from 'helpers/triggers'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniAutomationPartialTakeProfitFormState {
-  targetLtv?: BigNumber
   triggerLtv?: BigNumber
   extraTriggerLtv?: BigNumber
   trailingDistance?: BigNumber
@@ -27,7 +25,6 @@ export interface OmniAutomationPartialTakeProfitFormState {
 
 export type OmniAutomationPartialTakeProfitFormActions = ReductoActions<
   OmniAutomationPartialTakeProfitFormState,
-  | AutomationFormActionsUpdateTargetLtv
   | AutomationFormActionsUpdateTriggerLtv
   | AutomationFormActionsUpdateExtraTriggerLtv
   | AutomationFormActionsUpdatePrice
