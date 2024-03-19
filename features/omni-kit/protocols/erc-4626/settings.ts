@@ -67,6 +67,118 @@ export const erc4626Vaults: Erc4626Config[] = [
       symbol: 'USDC',
     },
   },
+  {
+    address: '0xbEEF02e5E13584ab96848af90261f0C8Ee04722a',
+    curator: {
+      label: 'Steakhouse',
+      url: 'https://www.steakhouse.financial/',
+    },
+    id: 'steakhouse-PYUSD',
+    name: 'Steakhouse PYUSD',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: {
+      marketCap: 1000000000,
+      prices: [0.5, 0.75, 1, 2],
+      token: 'MORPHO',
+    },
+    rewards: [
+      {
+        token: 'MORPHO',
+        label: 'Morpho token rewards',
+      },
+    ],
+    strategy: 'MetaMorpho Lending',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.PYUSD.address,
+      precision: getToken('PYUSD').precision,
+      symbol: 'PYUSD',
+    },
+  },
+  {
+    address: '0xbEef047a543E45807105E51A8BBEFCc5950fcfBa',
+    curator: {
+      label: 'Steakhouse',
+      url: 'https://www.steakhouse.financial/',
+    },
+    id: 'steakhouse-USDT',
+    name: 'Steakhouse USDT',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: {
+      marketCap: 1000000000,
+      prices: [0.5, 0.75, 1, 2],
+      token: 'MORPHO',
+    },
+    rewards: [
+      {
+        token: 'MORPHO',
+        label: 'Morpho token rewards',
+      },
+    ],
+    strategy: 'MetaMorpho Lending',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDT.address,
+      precision: getToken('USDT').precision,
+      symbol: 'USDT',
+    },
+  },
+  {
+    address: '0xBEEf050ecd6a16c4e7bfFbB52Ebba7846C4b8cD4',
+    curator: {
+      label: 'Steakhouse',
+      url: 'https://www.steakhouse.financial/',
+    },
+    id: 'steakhouse-ETH',
+    name: 'Steakhouse ETH',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: {
+      marketCap: 1000000000,
+      prices: [0.5, 0.75, 1, 2],
+      token: 'MORPHO',
+    },
+    rewards: [
+      {
+        token: 'MORPHO',
+        label: 'Morpho token rewards',
+      },
+    ],
+    strategy: 'MetaMorpho Lending',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address,
+      precision: getToken('ETH').precision,
+      symbol: 'ETH',
+    },
+  },
+  {
+    address: '0xbeEf094333AEdD535c130958c204E84f681FD9FA',
+    curator: {
+      label: 'Steakhouse',
+      url: 'https://www.steakhouse.financial/',
+    },
+    id: 'steakhouse-WBTC',
+    name: 'Steakhouse WBTC',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: {
+      marketCap: 1000000000,
+      prices: [0.5, 0.75, 1, 2],
+      token: 'MORPHO',
+    },
+    rewards: [
+      {
+        token: 'MORPHO',
+        label: 'Morpho token rewards',
+      },
+    ],
+    strategy: 'MetaMorpho Lending',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.WBTC.address,
+      precision: getToken('WBTC').precision,
+      symbol: 'WBTC',
+    },
+  },
 ]
 
 export const erc4626VaultsById = keyBy(erc4626Vaults, 'id')
