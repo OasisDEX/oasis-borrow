@@ -12,7 +12,6 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import { curry } from 'ramda'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 import { Text } from 'theme-ui'
@@ -46,23 +45,40 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const { state: automationFormState, updateState: updateFormState } = automationForms[type]
 
   const sliderValues = useMemo(() => {
-    return {
-      value0: Number(
-        (
-          afterTriggerLtv ||
-          currentExecutionLTV?.times(100) ||
-          defaultTriggerValues.triggerLtv
-        ).toPrecision(2),
-      ),
-      value1: Number(
-        (
-          afterTargetLtv ||
-          currentTargetLTV?.times(100) ||
-          defaultTriggerValues.targetLtv
-        ).toPrecision(2),
-      ),
+    const triggerValue = Number(
+      (
+        afterTriggerLtv ||
+        currentExecutionLTV?.times(100) ||
+        defaultTriggerValues.triggerLtv
+      ).toPrecision(2),
+    )
+    const targetValue = Number(
+      (
+        afterTargetLtv ||
+        currentTargetLTV?.times(100) ||
+        defaultTriggerValues.targetLtv
+      ).toPrecision(2),
+    )
+
+    if (type === AutomationFeatures.AUTO_BUY) {
+      return {
+        value0: triggerValue,
+        value1: targetValue,
+      }
     }
-  }, [afterTargetLtv, afterTriggerLtv, currentExecutionLTV, currentTargetLTV, defaultTriggerValues])
+
+    return {
+      value0: targetValue,
+      value1: triggerValue,
+    }
+  }, [
+    afterTargetLtv,
+    afterTriggerLtv,
+    currentExecutionLTV,
+    currentTargetLTV,
+    defaultTriggerValues,
+    type,
+  ])
 
   const description = useMemo(() => {
     return getAutoBuyAutoSellDescription({
@@ -127,6 +143,19 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     },
   }[type]
 
+  const defaultPrice = automationFormState.price || resolvedThresholdPrice
+
+  const resolveSliderDefaultUpdate = ({ value0, value1 }: { value0: number; value1: number }) => {
+    if (type === AutomationFeatures.AUTO_BUY) {
+      updateFormState('triggerLtv', new BigNumber(value0))
+      updateFormState('targetLtv', new BigNumber(value1))
+    }
+    if (type === AutomationFeatures.AUTO_SELL) {
+      updateFormState('targetLtv', new BigNumber(value0))
+      updateFormState('triggerLtv', new BigNumber(value1))
+    }
+  }
+
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -147,8 +176,8 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         min={1}
         max={maxSliderValue}
         onChange={(change) => {
-          updateFormState('triggerLtv', new BigNumber(change.value0))
-          updateFormState('targetLtv', new BigNumber(change.value1))
+          updateFormState('price', defaultPrice)
+          resolveSliderDefaultUpdate({ value0: change.value0, value1: change.value1 })
         }}
         value={sliderValues}
         valueColors={valueColors}
@@ -164,12 +193,19 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
             [AutomationFeatures.AUTO_SELL]: t('auto-sell.set-min-sell-price'),
           }[type]
         }
-        amount={automationFormState.price || resolvedThresholdPrice}
+        amount={defaultPrice}
         hasAuxiliary={false}
         hasError={false}
         currencyCode={pricesDenomination === 'collateral' ? quoteToken : collateralToken}
-        onChange={handleNumericInput(curry(updateFormState)('price'))}
-        onToggle={curry(updateFormState)('useThreshold')}
+        onChange={handleNumericInput((price) => {
+          updateFormState('price', price)
+          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+        })}
+        onToggle={(flag) => {
+          updateFormState('useThreshold', flag)
+          updateFormState('price', defaultPrice)
+          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+        }}
         showToggle={true}
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}
