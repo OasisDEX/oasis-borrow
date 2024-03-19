@@ -32,10 +32,6 @@ import { createNumberMask } from 'text-mask-addons'
 import { question_o } from 'theme/icons'
 import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
 
-type PercentageOptionsType =
-  | typeof partialTakeProfitConstants.startingPercentageOptionsLong
-  | typeof partialTakeProfitConstants.startingPercentageOptionsShort
-
 const getPriceIncreasedByPercentage = (price: BigNumber, percentage: number) => {
   return price.plus(price.times(percentage))
 }
@@ -83,9 +79,6 @@ export const OmniPartialTakeProfitSidebarController = () => {
   } = useOmniPartialTakeProfitDataHandler()
 
   const [isFocus, setStartingPriceInputFocus] = useState<boolean>(false)
-  const [customPriceRatioPercentage, setCustomPriceRatioPercentage] = useState<
-    PercentageOptionsType[number] | undefined
-  >()
 
   const inputMask = useMemo(() => {
     const selectedResolveToTokenData = getToken(
@@ -117,10 +110,10 @@ export const OmniPartialTakeProfitSidebarController = () => {
 
   useEffect(() => {
     // if the custom percentage is set, calculate the next price and update it
-    if (customPriceRatioPercentage !== undefined) {
+    if (automationFormState.percentageOffset) {
       const probableNextprice = getPriceIncreasedByPercentage(
         positionPriceRatio,
-        customPriceRatioPercentage,
+        automationFormState.percentageOffset.toNumber(),
       )
       if (!startingTakeProfitPriceValue.eq(probableNextprice)) {
         automationUpdateState('price', probableNextprice)
@@ -129,12 +122,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
         automationUpdateState('ltvStep', targetLtvValue)
       }
     }
-  }, [
-    automationUpdateState,
-    customPriceRatioPercentage,
-    positionPriceRatio,
-    startingTakeProfitPriceValue,
-  ])
+  }, [automationUpdateState, positionPriceRatio, startingTakeProfitPriceValue])
 
   const parsedProfits = useMemo(() => {
     return mapProfits(partialTakeProfitSimulation, isShort).map((profit) => {
@@ -296,7 +284,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
                 automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
                 automationUpdateState('triggerLtv', triggerLtvValue)
                 automationUpdateState('ltvStep', targetLtvValue)
-                setCustomPriceRatioPercentage(undefined)
+                automationUpdateState('percentageOffset', undefined)
               }
             })}
             sx={{
@@ -326,16 +314,16 @@ export const OmniPartialTakeProfitSidebarController = () => {
                 backgroundColor: 'neutral80',
                 color: 'secondary60',
               },
-              ...(customPriceRatioPercentage === percentage
+              ...(automationFormState.percentageOffset?.toNumber() === percentage
                 ? {
                     backgroundColor: 'neutral80',
                     color: 'secondary60',
                   }
                 : {}),
             }}
-            disabled={customPriceRatioPercentage === percentage}
+            disabled={automationFormState.percentageOffset?.toNumber() === percentage}
             onClick={() => {
-              setCustomPriceRatioPercentage(percentage)
+              automationUpdateState('percentageOffset', new BigNumber(percentage))
             }}
           >
             {percentage === 0
