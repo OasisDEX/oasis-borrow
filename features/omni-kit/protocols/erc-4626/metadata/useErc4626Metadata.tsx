@@ -102,20 +102,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             {
               label: t('omni-kit.headline.details.current-apy'),
               children: <Erc4626HeadlineApy vaultAddress={vaultAddress} />,
-              // value: formatDecimalAsPercent(
-              //   getErc4626Apy({
-              //     rewardsApy: position.apyFromRewards.per365d,
-              //     vaultApy: position.apy.per365d,
-              //   }),
-              // ),
-              // valueTooltip: (
-              //   <Erc4626ApyTooltip
-              //     rewardsApy={position.apyFromRewards.per365d}
-              //     vaultApy={position.apy.per365d}
-              //   />
-              // ),
             },
-            // TODO replace with real values
             {
               label: t('omni-kit.headline.details.30-days-avg-apy'),
               value: formatDecimalAsPercent(position.historicalApy.thirtyDayAverage),
