@@ -34,33 +34,37 @@ export const settings: OmniProtocolSettings = {
   },
 }
 
+const steakhouseCurator = {
+  label: 'Steakhouse',
+  url: 'https://www.steakhouse.financial/',
+  icon: '/static/img/protocol_icons/steakhouse_logo.svg',
+}
+
+const morphoRewards = {
+  token: 'MORPHO',
+  label: 'Morpho token rewards',
+}
+const wstethRewards = {
+  token: 'WSTETH',
+  label: 'Lido rewards in WSTETH',
+}
+
+const morphoPricePicker = {
+  marketCap: 1000000000,
+  prices: [0.5, 0.75, 1, 2],
+  token: 'MORPHO',
+}
+
 export const erc4626Vaults: Erc4626Config[] = [
   {
     address: '0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB',
-    curator: {
-      label: 'Steakhouse',
-      url: 'https://www.steakhouse.financial/',
-      icon: '/static/img/protocol_icons/steakhouse_logo.svg',
-    },
+    curator: steakhouseCurator,
     id: 'steakhouse-USDC',
     name: 'Steakhouse USDC',
     networkId: NetworkIds.MAINNET,
-    pricePicker: {
-      marketCap: 1000000000,
-      prices: [0.5, 0.75, 1, 2],
-      token: 'MORPHO',
-    },
+    pricePicker: morphoPricePicker,
     protocol: LendingProtocol.MorphoBlue,
-    rewards: [
-      {
-        token: 'MORPHO',
-        label: 'Morpho token rewards',
-      },
-      {
-        token: 'WSTETH',
-        label: 'Lido rewards in WSTETH',
-      },
-    ],
+    rewards: [morphoRewards, wstethRewards],
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
@@ -70,25 +74,13 @@ export const erc4626Vaults: Erc4626Config[] = [
   },
   {
     address: '0xbEEF02e5E13584ab96848af90261f0C8Ee04722a',
-    curator: {
-      label: 'Steakhouse',
-      url: 'https://www.steakhouse.financial/',
-    },
+    curator: steakhouseCurator,
     id: 'steakhouse-PYUSD',
     name: 'Steakhouse PYUSD',
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
-    pricePicker: {
-      marketCap: 1000000000,
-      prices: [0.5, 0.75, 1, 2],
-      token: 'MORPHO',
-    },
-    rewards: [
-      {
-        token: 'MORPHO',
-        label: 'Morpho token rewards',
-      },
-    ],
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards],
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.PYUSD.address,
@@ -98,25 +90,13 @@ export const erc4626Vaults: Erc4626Config[] = [
   },
   {
     address: '0xbEef047a543E45807105E51A8BBEFCc5950fcfBa',
-    curator: {
-      label: 'Steakhouse',
-      url: 'https://www.steakhouse.financial/',
-    },
+    curator: steakhouseCurator,
     id: 'steakhouse-USDT',
     name: 'Steakhouse USDT',
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
-    pricePicker: {
-      marketCap: 1000000000,
-      prices: [0.5, 0.75, 1, 2],
-      token: 'MORPHO',
-    },
-    rewards: [
-      {
-        token: 'MORPHO',
-        label: 'Morpho token rewards',
-      },
-    ],
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards],
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDT.address,
@@ -126,25 +106,13 @@ export const erc4626Vaults: Erc4626Config[] = [
   },
   {
     address: '0xBEEf050ecd6a16c4e7bfFbB52Ebba7846C4b8cD4',
-    curator: {
-      label: 'Steakhouse',
-      url: 'https://www.steakhouse.financial/',
-    },
+    curator: steakhouseCurator,
     id: 'steakhouse-ETH',
     name: 'Steakhouse ETH',
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
-    pricePicker: {
-      marketCap: 1000000000,
-      prices: [0.5, 0.75, 1, 2],
-      token: 'MORPHO',
-    },
-    rewards: [
-      {
-        token: 'MORPHO',
-        label: 'Morpho token rewards',
-      },
-    ],
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards],
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address,
@@ -154,25 +122,13 @@ export const erc4626Vaults: Erc4626Config[] = [
   },
   {
     address: '0xbeEf094333AEdD535c130958c204E84f681FD9FA',
-    curator: {
-      label: 'Steakhouse',
-      url: 'https://www.steakhouse.financial/',
-    },
+    curator: steakhouseCurator,
     id: 'steakhouse-WBTC',
     name: 'Steakhouse WBTC',
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
-    pricePicker: {
-      marketCap: 1000000000,
-      prices: [0.5, 0.75, 1, 2],
-      token: 'MORPHO',
-    },
-    rewards: [
-      {
-        token: 'MORPHO',
-        label: 'Morpho token rewards',
-      },
-    ],
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards],
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.WBTC.address,
