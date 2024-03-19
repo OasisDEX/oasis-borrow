@@ -2469,6 +2469,7 @@
       "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
     },
     "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction.",
+    "add-update-summary-description": "To add or update the {{feature}} you'll need to click the button below and confirm the transaction.",
     "trailing-stop-loss-execution-price-increased": "As the price increased, the Trailing Stop-Loss price changed to {{executionPriceAndToken}} ({{delta}}) from the original {{originalExecutionPriceAndToken}}"
   },
   "optimization": {

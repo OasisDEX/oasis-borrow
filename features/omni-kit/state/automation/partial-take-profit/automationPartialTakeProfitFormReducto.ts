@@ -55,7 +55,7 @@ export function useOmniAutomationPartialTakeProfitFormReducto({
             action: action.action,
           }
         case 'reset':
-          return { ...prevState, ...omniAutomationPartialTakeProfitFormReset }
+          return { ...prevState, ...omniAutomationPartialTakeProfitFormReset, ...rest }
         default:
           return prevState
       }

@@ -1,7 +1,10 @@
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
-export function useHash<T extends string>(): [string, (newHash: T) => void] {
+export function useHash<T extends string>(): [
+  string,
+  (newHash: T, shouldForceUpdate?: boolean) => void,
+] {
   const { events } = useRouter()
   const [hash, setHash] = useState<T>(window?.location.hash.replace('#', '') as T)
 
@@ -19,7 +22,10 @@ export function useHash<T extends string>(): [string, (newHash: T) => void] {
   }, [hashChange, events])
 
   const updateHash = useCallback(
-    (newHash: T) => {
+    (newHash: T, shouldForceUpdate: boolean = false) => {
+      if (shouldForceUpdate) {
+        window.location.hash = newHash
+      }
       if (newHash !== hash) {
         window.location.hash = newHash
       }

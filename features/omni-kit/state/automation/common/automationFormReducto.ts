@@ -20,7 +20,7 @@ export function useOmniAutomationFormReducto({ ...rest }: Partial<OmniAutomation
     reducer: (prevState: OmniAutomationFormState, action: OmniAutomationFormActions) => {
       switch (action.type) {
         case 'reset':
-          return { ...prevState, ...omniAutomationFormReset }
+          return { ...prevState, ...omniAutomationFormReset, ...rest }
         default:
           return prevState
       }

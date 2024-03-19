@@ -20,26 +20,26 @@ export const useOmniAutomationSidebarTitle = () => {
   const [hash] = useHash()
 
   const translationKeyMap = {
-    protection: {
-      [AutomationFeatures.TRAILING_STOP_LOSS]: t('system.trailing-stop-loss'),
-      [AutomationFeatures.STOP_LOSS]: t('system.stop-loss'),
-      [AutomationFeatures.AUTO_SELL]: t('auto-sell.title'),
-    },
-    optimization: {
-      [AutomationFeatures.PARTIAL_TAKE_PROFIT]: t('system.partial-take-profit'),
-      [AutomationFeatures.AUTO_BUY]: t('auto-buy.title'),
-      [AutomationFeatures.CONSTANT_MULTIPLE]: t('system.constant-multiple'),
-      [AutomationFeatures.AUTO_TAKE_PROFIT]: t('system.auto-take-profit'),
-    },
-  }[hash]
+    [AutomationFeatures.TRAILING_STOP_LOSS]: t('system.trailing-stop-loss'),
+    [AutomationFeatures.STOP_LOSS]: t('system.stop-loss'),
+    [AutomationFeatures.AUTO_SELL]: t('auto-sell.title'),
+    [AutomationFeatures.PARTIAL_TAKE_PROFIT]: t('system.partial-take-profit'),
+    [AutomationFeatures.AUTO_BUY]: t('auto-buy.title'),
+    [AutomationFeatures.CONSTANT_MULTIPLE]: t('system.constant-multiple'),
+    [AutomationFeatures.AUTO_TAKE_PROFIT]: t('system.auto-take-profit'),
+  }
 
   const uiDropdown = {
     protection: state.uiDropdownProtection,
     optimization: state.uiDropdownOptimization,
   }[hash]
 
+  const resolvedUiDropdown = state.activeTxUiDropdown || uiDropdown
+
   return t(`omni-kit.form.automation-title.${currentStep}`, {
     automationFeature:
-      uiDropdown && translationKeyMap ? translationKeyMap[uiDropdown] : 'automation',
+      resolvedUiDropdown && translationKeyMap
+        ? translationKeyMap[resolvedUiDropdown]
+        : 'automation',
   })
 }

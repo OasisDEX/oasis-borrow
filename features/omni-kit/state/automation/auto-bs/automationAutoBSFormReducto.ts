@@ -53,7 +53,7 @@ export function useOmniAutomationAutoBSFormReducto({ ...rest }: OmniAutomationAu
             action: action.action,
           }
         case 'reset':
-          return { ...prevState, ...omniAutomationAutoBSFormReset }
+          return { ...prevState, ...omniAutomationAutoBSFormReset, ...rest }
         default:
           return prevState
       }

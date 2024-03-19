@@ -7,6 +7,8 @@ import type { ReductoActions } from 'helpers/useReducto'
 export interface OmniAutomationFormState {
   uiDropdownProtection?: AutomationFeatures
   uiDropdownOptimization?: AutomationFeatures
+  activeTxUiDropdown?: AutomationFeatures
+  activeAction?: TriggerAction
 }
 
 export interface AutomationFormActionsUpdateTargetLtv {

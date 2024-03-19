@@ -65,7 +65,7 @@ export function OmniAutomationFormView({
   const {
     automation: {
       isSimulationLoading,
-      commonForm: { state: commonFormState },
+      commonForm: { state: commonFormState, updateState: updateCommonState },
       automationForms,
       simulationData,
     },
@@ -167,6 +167,8 @@ export function OmniAutomationFormView({
 
     if (isTriggerEnabled && state?.action === TriggerAction.Remove) {
       dispatch({ type: 'partial-update', state: { action: TriggerAction.Update } })
+      updateCommonState('activeAction', undefined)
+      updateCommonState('activeTxUiDropdown', undefined)
       setStep(OmniSidebarAutomationStep.Manage)
       return
     }

@@ -40,7 +40,7 @@ export function useOmniAutomationTrailingStopLossFormReducto({
             action: action.action,
           }
         case 'reset':
-          return { ...prevState, ...omniAutomationTrailingStopLossFormReset }
+          return { ...prevState, ...omniAutomationTrailingStopLossFormReset, ...rest }
         default:
           return prevState
       }

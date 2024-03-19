@@ -18,12 +18,14 @@ export const sendOmniTransaction$ = ({
   proxyAddress,
   txData,
   sendAsSinger = false,
+  onError,
 }: {
   signer: ethers.Signer
   networkId: OmniSupportedNetworkIds
   proxyAddress: string
   txData: OmniTxData
   sendAsSinger?: boolean
+  onError?: () => void
 }): Observable<{
   status: TxStatus
   receipt: ethers.providers.TransactionReceipt
@@ -120,6 +122,7 @@ export const sendOmniTransaction$ = ({
       takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)),
       catchError((error) => {
         console.warn('Sending transaction failed', error)
+        onError && onError()
         return of({
           status: TxStatus.Error,
           txHash: '',

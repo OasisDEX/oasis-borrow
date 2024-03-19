@@ -3,6 +3,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { ethers } from 'ethers'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniGetAutomationDataParams } from 'features/omni-kit/automation/helpers'
@@ -42,7 +43,7 @@ export const useOmniAutomationTxHandler = () => {
     automation: {
       setSimulation,
       setIsLoadingSimulation,
-      commonForm: { state: commonState },
+      commonForm: { state: commonState, updateState: updateCommonState },
       automationForms,
     },
     dynamicMetadata: {
@@ -50,7 +51,7 @@ export const useOmniAutomationTxHandler = () => {
     },
   } = useOmniProductContext(productType)
 
-  const [hash] = useHash()
+  const [hash, updateHash] = useHash()
 
   const activeUiDropdown =
     hash === 'protection'
@@ -89,6 +90,8 @@ export const useOmniAutomationTxHandler = () => {
     } else {
       setGasEstimation(undefined)
       setIsLoadingSimulation(true)
+      updateCommonState('activeTxUiDropdown', activeUiDropdown)
+      updateCommonState('activeAction', state.action)
     }
   }, [state, isFormEmpty])
 
@@ -141,6 +144,44 @@ export const useOmniAutomationTxHandler = () => {
       txData,
       proxyAddress: dpmProxy,
       sendAsSinger: true,
+      onError: () => {
+        if (!commonState.activeTxUiDropdown) {
+          return
+        }
+
+        const callback = {
+          [AutomationFeatures.STOP_LOSS]: () => {
+            updateHash(VaultViewMode.Protection, true)
+            updateCommonState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+          },
+          [AutomationFeatures.AUTO_BUY]: () => {
+            updateHash(VaultViewMode.Optimization, true)
+            updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_BUY)
+          },
+          [AutomationFeatures.AUTO_SELL]: () => {
+            updateHash(VaultViewMode.Protection, true)
+            updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
+          },
+          [AutomationFeatures.CONSTANT_MULTIPLE]: () => {
+            updateHash(VaultViewMode.Optimization, true)
+            updateCommonState('uiDropdownProtection', AutomationFeatures.CONSTANT_MULTIPLE)
+          },
+          [AutomationFeatures.AUTO_TAKE_PROFIT]: () => {
+            updateHash(VaultViewMode.Optimization, true)
+            updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_TAKE_PROFIT)
+          },
+          [AutomationFeatures.TRAILING_STOP_LOSS]: () => {
+            updateHash(VaultViewMode.Protection, true)
+            updateCommonState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
+          },
+          [AutomationFeatures.PARTIAL_TAKE_PROFIT]: () => {
+            updateHash(VaultViewMode.Optimization, true)
+            updateCommonState('uiDropdownProtection', AutomationFeatures.PARTIAL_TAKE_PROFIT)
+          },
+        }[commonState.activeTxUiDropdown]
+
+        callback()
+      },
     }).subscribe((txState) => {
       if (txState.status === TxStatus.Success) {
         // TODO dispatch specific form action

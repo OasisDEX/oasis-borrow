@@ -33,7 +33,7 @@ export function useOmniStopLossAutomationFormReducto({ ...rest }: OmniAutomation
             action: action.action,
           }
         case 'reset':
-          return { ...prevState, ...omniAutomationStopLossFormReset }
+          return { ...prevState, ...omniAutomationStopLossFormReset, ...rest }
         default:
           return prevState
       }

@@ -11,9 +11,20 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { formatUsdValue } from 'helpers/formatters/format'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
+import type { FC } from 'react'
 import React from 'react'
 
-export const OmniAutomationFromOrder = () => {
+interface OmniAutomationFromOrderProps {
+  showReset?: boolean
+  showDisclaimer?: boolean
+  showValidation?: boolean
+}
+
+export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
+  showReset = true,
+  showDisclaimer = true,
+  showValidation = true,
+}) => {
   const { t } = useTranslation()
   const {
     environment: { productType },
@@ -43,28 +54,37 @@ export const OmniAutomationFromOrder = () => {
 
   return (
     <>
-      <SidebarResetButton
-        clear={() => {
-          currentAutomationForm.dispatch({ type: 'reset' })
-        }}
-      />
-      <VaultErrors errorMessages={mapErrorsToErrorVaults(simulationData?.errors)} />
-      <VaultWarnings warningMessages={mapWarningsToWarningVaults(simulationData?.warnings)} />
-      {activeUiDropdown === AutomationFeatures.TRAILING_STOP_LOSS && (
-        <OmniDoubleStopLossWarning
-          hasStopLoss={automation?.flags.isStopLossEnabled}
-          onClick={() => {
-            commonForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+      {showReset && (
+        <SidebarResetButton
+          clear={() => {
+            currentAutomationForm.dispatch({ type: 'reset' })
           }}
         />
       )}
-      {activeUiDropdown === AutomationFeatures.STOP_LOSS && (
-        <OmniDoubleStopLossWarning
-          hasTrailingStopLoss={automation?.flags.isTrailingStopLossEnabled}
-          onClick={() => {
-            commonForm.updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
-          }}
-        />
+      {showValidation && (
+        <>
+          <VaultErrors errorMessages={mapErrorsToErrorVaults(simulationData?.errors)} />
+          <VaultWarnings warningMessages={mapWarningsToWarningVaults(simulationData?.warnings)} />
+          {activeUiDropdown === AutomationFeatures.TRAILING_STOP_LOSS && (
+            <OmniDoubleStopLossWarning
+              hasStopLoss={automation?.flags.isStopLossEnabled}
+              onClick={() => {
+                commonForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+              }}
+            />
+          )}
+          {activeUiDropdown === AutomationFeatures.STOP_LOSS && (
+            <OmniDoubleStopLossWarning
+              hasTrailingStopLoss={automation?.flags.isTrailingStopLossEnabled}
+              onClick={() => {
+                commonForm.updateState(
+                  'uiDropdownProtection',
+                  AutomationFeatures.TRAILING_STOP_LOSS,
+                )
+              }}
+            />
+          )}
+        </>
       )}
       <InfoSection
         title={t('vault-changes.order-information')}
@@ -86,7 +106,7 @@ export const OmniAutomationFromOrder = () => {
               ]),
         ]}
       />
-      <OmniAutomationNotGuaranteedInfo />
+      {showDisclaimer && <OmniAutomationNotGuaranteedInfo />}
     </>
   )
 }

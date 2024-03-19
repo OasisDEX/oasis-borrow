@@ -6,7 +6,10 @@ import {
   OmniStopLossSidebarController,
   OmniTrailingStopLossSidebarController,
 } from 'features/omni-kit/automation/components'
-import { OmniAutomationRemoveTriggerSidebar } from 'features/omni-kit/automation/components/common'
+import {
+  OmniAutomationAddUpdateTriggerSidebar,
+  OmniAutomationRemoveTriggerSidebar,
+} from 'features/omni-kit/automation/components/common'
 import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components/common/OmniAutomationFromOrder'
 import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -111,10 +114,11 @@ export function OmniAutomationFormController() {
     protection: commonForm.state.uiDropdownProtection,
   }
 
+  const resolvedAction = commonForm.state.activeAction || currentAutomationForm.state.action
+
   const isAddOrUpdateAction =
-    currentAutomationForm.state.action &&
-    [TriggerAction.Add, TriggerAction.Update].includes(currentAutomationForm.state.action)
-  const isRemoveAction = currentAutomationForm.state.action === TriggerAction.Remove
+    resolvedAction && [TriggerAction.Add, TriggerAction.Update].includes(resolvedAction)
+  const isRemoveAction = resolvedAction === TriggerAction.Remove
 
   const isFormEmpty = isOmniAutomationFormEmpty(currentAutomationForm.state, activeUiDropdown)
 
@@ -128,10 +132,8 @@ export function OmniAutomationFormController() {
         },
       })}
       txSuccessAction={() => {
-        // if (uiDropdown === OmniMultiplyPanel.Close) {
-        //   updateState('uiDropdown', OmniMultiplyPanel.Adjust)
-        //   updateState('action', OmniMultiplyFormAction.AdjustMultiply)
-        // }
+        commonForm.updateState('activeTxUiDropdown', undefined)
+        commonForm.updateState('activeAction', TriggerAction.Add)
       }}
     >
       {currentStep === OmniSidebarAutomationStep.Manage && isAddOrUpdateAction && (
@@ -149,13 +151,12 @@ export function OmniAutomationFormController() {
           {!isFormEmpty && <OmniAutomationFromOrder />}
         </>
       )}
-      {currentStep === OmniSidebarAutomationStep.Transaction && isAddOrUpdateAction && <>Tx step</>}
+      {currentStep === OmniSidebarAutomationStep.Transaction && isAddOrUpdateAction && (
+        <OmniAutomationAddUpdateTriggerSidebar />
+      )}
       {currentStep === OmniSidebarAutomationStep.Transaction && isRemoveAction && (
         <OmniAutomationRemoveTriggerSidebar />
       )}
-      {/*{currentStep === OmniSidebarStep.Transaction && (*/}
-      {/*  <OmniFormContentTransaction orderInformation={OmniMultiplyFormOrder} />*/}
-      {/*)}*/}
     </OmniAutomationFormView>
   )
 }
