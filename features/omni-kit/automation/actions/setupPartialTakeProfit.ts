@@ -59,7 +59,7 @@ export const setupPartialTakeProfit = ({
     stopLoss: automationState.extraTriggerLtv
       ? {
           triggerData: {
-            executionLTV: automationState.extraTriggerLtv.times(100),
+            executionLTV: automationState.extraTriggerLtv,
             token: executionToken,
           },
           action:
