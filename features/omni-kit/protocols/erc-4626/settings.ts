@@ -40,6 +40,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     curator: {
       label: 'Steakhouse',
       url: 'https://www.steakhouse.financial/',
+      icon: '/static/img/protocol_icons/steakhouse_logo.svg',
     },
     id: 'steakhouse-USDC',
     name: 'Steakhouse USDC',

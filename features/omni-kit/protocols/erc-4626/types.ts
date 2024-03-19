@@ -15,6 +15,7 @@ export interface Erc4626Token {
 export interface Erc4626Config {
   address: string
   curator: {
+    icon?: string
     label: string
     url: string
   }
