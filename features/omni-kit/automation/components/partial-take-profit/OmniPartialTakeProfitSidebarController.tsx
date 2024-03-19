@@ -10,6 +10,7 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { mapProfits } from 'features/aave/open/helpers/use-lambda-debounced-partial-take-profit'
 import {
   OmniPartialTakeProfitLtvStepSliderLeftBoundary,
   OmniPartialTakeProfitLtvStepSliderRightBoundary,
@@ -136,58 +137,54 @@ export const OmniPartialTakeProfitSidebarController = () => {
   ])
 
   const parsedProfits = useMemo(() => {
-    return partialTakeProfitSimulation?.profits
-      ? partialTakeProfitSimulation.profits.map((profit) => {
-          const isSelectedTokenDebt = selectedPartialTakeProfitToken === 'quote'
-          const selectedTokenSymbol = partialTakeProfitTokenData.symbol
-          const selectedSecondaryTokenSymbol = partialTakeProfitSecondTokenData.symbol
-          const realizedProfitValue = isSelectedTokenDebt
-            ? profit.realizedProfitInDebt
-            : profit.realizedProfitInCollateral
-          const totalProfitValue = isSelectedTokenDebt
-            ? profit.totalProfitInDebt
-            : profit.totalProfitInCollateral
-          const totalProfitSecondValue = isSelectedTokenDebt
-            ? profit.totalProfitInCollateral
-            : profit.totalProfitInDebt
-          return [
-            // Trigger price
-            `${formatAmount(
-              new BigNumber(profit.triggerPrice),
+    return mapProfits(partialTakeProfitSimulation, isShort).map((profit) => {
+      const isSelectedTokenDebt = selectedPartialTakeProfitToken === 'quote'
+      const selectedTokenSymbol = partialTakeProfitTokenData.symbol
+      const selectedSecondaryTokenSymbol = partialTakeProfitSecondTokenData.symbol
+      const realizedProfitValue = isSelectedTokenDebt
+        ? profit.realizedProfitInDebt
+        : profit.realizedProfitInCollateral
+      const totalProfitValue = isSelectedTokenDebt
+        ? profit.totalProfitInDebt
+        : profit.totalProfitInCollateral
+      const totalProfitSecondValue = isSelectedTokenDebt
+        ? profit.totalProfitInCollateral
+        : profit.totalProfitInDebt
+
+      return [
+        // Trigger price
+        `${formatAmount(new BigNumber(profit.triggerPrice), selectedTokenSymbol)} ${priceFormat}`,
+        // Realized profit
+        <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+          <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
+            {`${formatAmount(
+              new BigNumber(realizedProfitValue.balance),
               selectedTokenSymbol,
-            )} ${priceFormat}`,
-            // Realized profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral80" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  new BigNumber(realizedProfitValue.balance),
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-            </Flex>,
-            // Total profit
-            <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
-              <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
-                {`${formatAmount(
-                  new BigNumber(totalProfitValue.balance),
-                  selectedTokenSymbol,
-                )} ${selectedTokenSymbol}`}
-              </Text>
-              <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
-                {`${formatAmount(
-                  new BigNumber(totalProfitSecondValue.balance),
-                  selectedSecondaryTokenSymbol,
-                )} ${selectedSecondaryTokenSymbol}`}
-              </Text>
-            </Flex>,
-            // Stop loss
-            `${formatAmount(
-              new BigNumber(profit.stopLossDynamicPrice),
+            )} ${selectedTokenSymbol}`}
+          </Text>
+        </Flex>,
+        // Total profit
+        <Flex sx={{ flexDirection: 'column', textAlign: 'right' }}>
+          <Text variant="paragraph4" color="neutral100" sx={{ fontSize: '11px' }}>
+            {`${formatAmount(
+              new BigNumber(totalProfitValue.balance),
               selectedTokenSymbol,
-            )} ${priceFormat}`,
-          ]
-        })
-      : []
+            )} ${selectedTokenSymbol}`}
+          </Text>
+          <Text variant="paragraph4" sx={{ fontSize: '11px', mt: '-5px' }} color="neutral80">
+            {`${formatAmount(
+              new BigNumber(totalProfitSecondValue.balance),
+              selectedSecondaryTokenSymbol,
+            )} ${selectedSecondaryTokenSymbol}`}
+          </Text>
+        </Flex>,
+        // Stop loss
+        `${formatAmount(
+          new BigNumber(profit.stopLossDynamicPrice),
+          selectedTokenSymbol,
+        )} ${priceFormat}`,
+      ]
+    })
   }, [
     partialTakeProfitSimulation,
     selectedPartialTakeProfitToken,
