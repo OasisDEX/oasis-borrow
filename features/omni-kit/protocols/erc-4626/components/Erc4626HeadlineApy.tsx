@@ -9,7 +9,7 @@ import { getErc4626Apy } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { useErc4626ApySimulation } from 'features/omni-kit/protocols/erc-4626/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
-import type { FC } from 'react'
+import React, { type FC } from 'react'
 import { sparks } from 'theme/icons'
 import { Box, Text } from 'theme-ui'
 
