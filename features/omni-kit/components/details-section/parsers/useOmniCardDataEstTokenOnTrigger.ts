@@ -47,9 +47,11 @@ export function useOmniCardDataEstTokenOnTrigger({
 
   const savingCompareToLiquidation =
     dynamicStopLossPrice && maxToken
-      ? maxToken
-          .minus(collateralDuringLiquidation)
-          .times(!isCollateralActive ? dynamicStopLossPrice : one)
+      ? (afterMaxToken || maxToken).minus(
+          collateralDuringLiquidation.times(
+            !isCollateralActive ? afterDynamicStopLossPrice || dynamicStopLossPrice : one,
+          ),
+        )
       : undefined
 
   return {
@@ -62,7 +64,7 @@ export function useOmniCardDataEstTokenOnTrigger({
       savingCompareToLiquidation && {
         unit: closeToToken,
         footnote: [
-          `${formatCryptoBalance(savingCompareToLiquidation)} ${closeToToken} ${t(
+          `${formatCryptoBalance(savingCompareToLiquidation)} ${stateCloseToToken} ${t(
             'manage-multiply-vault.card.saving-comp-to-liquidation',
           )}`,
         ],

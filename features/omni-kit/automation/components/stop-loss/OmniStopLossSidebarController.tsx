@@ -1,7 +1,6 @@
 import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
-import { stopLossConstants } from 'features/omni-kit/automation/constants'
 import { getStopLossFormatters } from 'features/omni-kit/automation/helpers'
 import { useOmniStopLossDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -19,7 +18,7 @@ export const OmniStopLossSidebarController: FC = () => {
   const {
     automation: {
       automationForms: {
-        stopLoss: { state: automationFormState, updateState: automationUpdateState },
+        stopLoss: { updateState: automationUpdateState },
       },
     },
   } = useOmniProductContext(productType)
@@ -32,6 +31,7 @@ export const OmniStopLossSidebarController: FC = () => {
     sliderMin,
     sliderPercentageFill,
     displayStopLossLevel,
+    isCollateralActive,
   } = useOmniStopLossDataHandler()
 
   const { leftFormatter, rightFormatter } = getStopLossFormatters({
@@ -40,6 +40,8 @@ export const OmniStopLossSidebarController: FC = () => {
     quoteTokenSymbol: quoteToken,
     priceFormat,
   })
+
+  const activePill = isCollateralActive ? 'collateral' : 'quote'
 
   return (
     <>
@@ -64,7 +66,7 @@ export const OmniStopLossSidebarController: FC = () => {
             },
           },
         ]}
-        active={automationFormState.resolveTo || stopLossConstants.defaultResolveTo}
+        active={activePill}
       />
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.set-downside-protection-desc', {
