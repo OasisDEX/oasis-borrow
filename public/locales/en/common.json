@@ -218,9 +218,9 @@
       "protection-value": "On {{protection}}%",
       "view-position": "View Position",
       "header": {
-        "30-day-avg-apy": "30 day avg. APY",
-        "7-day-net-apy": "7 day net APY",
-        "90-day-net-apy": "90 day net APY",
+        "30-day-avg-apy": "30 days avg. APY",
+        "7-day-net-apy": "7 days net APY",
+        "90-day-net-apy": "90 days net APY",
         "action": "",
         "activity": "Activity",
         "annual-fee": "Annual fee",
@@ -3317,7 +3317,7 @@
     },
     "featured": "Featured",
     "promo-cards": {
-      "7-day-avg-apy": "7 day avg APY",
+      "7-day-avg-apy": "7 days avg APY",
       "active-management": "Active management",
       "ajna-pools-accumulate-rewards": "Ajna pools supported in Summer.fi accumulate token rewards over time",
       "automation-enabled": "Automation enabled",
