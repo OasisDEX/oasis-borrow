@@ -5,15 +5,17 @@ import { sparks, tooltip } from 'theme/icons'
 import { Flex, Text } from 'theme-ui'
 
 export type HeadlineDetailsProp = {
+  children?: ReactNode
   label: string
   labelTooltip?: ReactNode
-  value: string | number
   sub?: string | string[]
   subColor?: string | string[]
+  value?: string | number
   valueTooltip?: ReactNode
 }
 
 export function VaultHeadlineDetails({
+  children,
   label,
   labelTooltip,
   sub,
@@ -68,9 +70,12 @@ export function VaultHeadlineDetails({
       <Text as="span" sx={{ color: 'neutral80' }}>
         {label}
       </Text>
-      <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold', color: 'primary100' }}>
-        {value}
-      </Text>
+      {children}
+      {value && (
+        <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold', color: 'primary100' }}>
+          {value}
+        </Text>
+      )}
       {typeof sub === 'string' && subColor && (
         <Text as="span" sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold', color: subColor }}>
           {sub}
