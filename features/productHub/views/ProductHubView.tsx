@@ -128,7 +128,9 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         }}
       >
         {!hiddenNLS && (
-          <Box sx={{ mb: [3, null, '48px'], textAlign: 'center' }}>
+          <Box
+            sx={{ position: 'relative', mb: [3, null, '48px'], textAlign: 'center', zIndex: '3' }}
+          >
             <ProductHubNaturalLanguageSelectorController
               gradient={headerGradient}
               product={product}
