@@ -675,6 +675,75 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getErc4626PositionAggregatedData: gql`
+    query Erc4626AggregatedData($vault: String!, $dpmProxyAddress: String!) {
+      summerEvents(where: { account: $dpmProxyAddress, vault: $vault }) {
+        id
+        kind
+        quoteToken {
+          id
+          address
+        }
+        isOpen
+        depositedUSD
+        depositedInQuoteToken
+        depositTransfers {
+          id
+          priceInUSD
+          token
+          from
+          to
+          amount
+          amountUSD
+          txHash
+        }
+        withdrawnUSD
+        withdrawnInQuoteToken
+        withdrawTransfers {
+          id
+          priceInUSD
+          token
+          from
+          to
+          amount
+          amountUSD
+          txHash
+        }
+        quoteToken {
+          id
+          address
+          decimals
+          symbol
+        }
+        quoteAddress
+        quoteBefore
+        quoteAfter
+        quoteDelta
+        quoteTokenPriceUSD
+        swapToToken
+        swapToAmount
+        swapFromToken
+        swapFromAmount
+        gasFeeInQuoteToken
+        marketPrice
+        oasisFeeToken
+        oasisFee
+        oasisFeeUSD
+        oasisFeeInQuoteToken
+        gasUsed
+        gasPrice
+        gasFeeUSD
+        gasFeeInQuoteToken
+        totalFee
+        totalFeeUSD
+        totalFeeInQuoteToken
+        ethPrice
+        timestamp
+        blockNumber
+        txHash
+      }
+    }
+  `,
   getErc4626InterestRates: gql`
     query getInterestRates($vault: String!) {
       vaults(where: { id: $vault }) {

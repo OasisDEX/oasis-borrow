@@ -1,5 +1,8 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
+import { mapErc4626Events } from 'features/omni-kit/protocols/erc-4626/history/mapErc4626Events'
+import type { Erc4626HistoryEvent } from 'features/omni-kit/protocols/erc-4626/history/types'
+import { getErc4626PositionAggregatedData$ } from 'features/omni-kit/protocols/erc-4626/observables/getErc4626AggregatedData'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
@@ -33,16 +36,32 @@ export function useErc4626Data({
     ),
   )
 
+  const [erc4626PositionAggregatedData, erc2626PositionAggregatedError] = useObservable(
+    useMemo(
+      () =>
+        dpmPositionData && erc4626PositionData
+          ? getErc4626PositionAggregatedData$({
+              dpmPositionData,
+              networkId,
+              vault: address,
+            })
+          : EMPTY,
+      [dpmPositionData, erc4626PositionData, networkId],
+    ),
+  )
+
   return {
     data: {
       aggregatedData: {
         auction: {},
-        history: [],
+        history: mapErc4626Events(
+          erc4626PositionAggregatedData?.history ?? [],
+        ) as Erc4626HistoryEvent[],
       },
       positionData: erc4626PositionData,
       protocolPricesData: tokenPriceUSDData,
       positionTriggersData: omniPositionTriggersDataDefault,
     },
-    errors: [erc4626PositionError],
+    errors: [erc4626PositionError, erc2626PositionAggregatedError],
   }
 }

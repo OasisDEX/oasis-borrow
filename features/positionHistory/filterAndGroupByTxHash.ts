@@ -1,5 +1,6 @@
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
+import type { Erc4626HistoryEvent } from 'features/omni-kit/protocols/erc-4626/history/types'
 import { find, groupBy, map } from 'lodash'
 
 import type { PositionHistoryEvent } from './types'
@@ -15,8 +16,13 @@ export function filterAndGroupByTxHash(
   events:
     | Partial<AjnaHistoryEvent>[]
     | Partial<AaveLikeHistoryEvent>[]
-    | Partial<PositionHistoryEvent>[],
-): Partial<AjnaHistoryEvent>[] | Partial<AaveLikeHistoryEvent>[] | Partial<PositionHistoryEvent>[] {
+    | Partial<PositionHistoryEvent>[]
+    | Partial<Erc4626HistoryEvent>[],
+):
+  | Partial<AjnaHistoryEvent>[]
+  | Partial<AaveLikeHistoryEvent>[]
+  | Partial<PositionHistoryEvent>[]
+  | Partial<Erc4626HistoryEvent>[] {
   const groups = groupBy(events, 'txHash')
 
   return map(
@@ -26,4 +32,5 @@ export function filterAndGroupByTxHash(
     | Partial<AjnaHistoryEvent>[]
     | Partial<AaveLikeHistoryEvent>[]
     | Partial<PositionHistoryEvent>[]
+    | Partial<Erc4626HistoryEvent>[]
 }

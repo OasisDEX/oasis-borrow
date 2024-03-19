@@ -12,6 +12,7 @@ import type {
   AjnaHistoryResponse,
 } from 'features/omni-kit/protocols/ajna/history/types'
 import type { Erc4626PositionParametersResponse } from 'features/omni-kit/protocols/erc-4626/helpers'
+import type { Erc4626SummerEventsResponse } from 'features/omni-kit/protocols/erc-4626/history/types'
 import type { MorphoBorrowerEventsResponse } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type {
   AaveCumulativesResponse,
@@ -60,6 +61,7 @@ export type Subgraphs = {
   }
   Erc4626: {
     getErc4626PositionParameters: { vault: string; dpmProxyAddress: string }
+    getErc4626PositionAggregatedData: { vault: string; dpmProxyAddress: string }
     getErc4626InterestRates: { vault: string }
     getErc4626DpmPositions: { dpmProxyAddress: string[] }
   }
@@ -150,6 +152,7 @@ export type SubgraphsResponses = {
   }
   Erc4626: {
     getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse>
+    getErc4626PositionAggregatedData: SubgraphBaseResponse<Erc4626SummerEventsResponse>
     getErc4626InterestRates: SubgraphBaseResponse<Erc4626InterestRatesResponse>
     getErc4626DpmPositions: SubgraphBaseResponse<Erc4626DpmPositionsResponse>
   }
