@@ -123,6 +123,9 @@ export const OmniPartialTakeProfitSidebarController = () => {
       )
       if (!startingTakeProfitPriceValue.eq(probableNextprice)) {
         automationUpdateState('price', probableNextprice)
+        automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
+        automationUpdateState('triggerLtv', triggerLtvValue)
+        automationUpdateState('ltvStep', targetLtvValue)
       }
     }
   }, [
