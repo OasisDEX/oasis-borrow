@@ -31,6 +31,7 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
     simpleView,
     chartView,
     setChartView,
+    nextDynamicTriggerPriceCommonData,
   } = useOmniPartialTakeProfitDataHandler()
 
   return (
@@ -40,6 +41,7 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
       badge={isPartialTakeProfitEnabled}
       content={
         <DetailsSectionContentCardWrapper>
+          <OmniContentCard {...nextDynamicTriggerPriceCommonData} />
           <OmniContentCard {...currentProfitAndLossCommonData} />
           <OmniContentCard {...realizedProfitCommonData} />
         </DetailsSectionContentCardWrapper>

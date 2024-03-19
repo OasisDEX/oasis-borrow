@@ -18,6 +18,7 @@ import {
 import { getRealizedProfit } from 'features/omni-kit/automation/helpers'
 import {
   useOmniCardDataCurrentProfitAndLoss,
+  useOmniCardDataNextDynamicTriggerPrice,
   useOmniCardDataRealizedProfit,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -304,6 +305,23 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     }
   }, [extraTriggerLtv, liquidationRatio, loanToValue])
 
+  const startingTakeProfitPrice = isShort
+    ? startingTakeProfitPriceShort
+    : startingTakeProfitPriceLong
+
+  const nextDynamicTriggerPriceCommonData = useOmniCardDataNextDynamicTriggerPrice({
+    priceFormat,
+    nextDynamicTriggerPrice: startingTakeProfitPrice,
+    afterNextDynamicTriggerPrice: state.price,
+    triggerLtv: resolvedTriggerLtv,
+    modal: (
+      <DetailsSectionContentSimpleModal
+        title={t('omni-kit.content-card.next-dynamic-trigger-price.title')}
+        description={t('omni-kit.content-card.next-dynamic-trigger-price.modal-description')}
+      />
+    ),
+  })
+
   return {
     castedPosition,
     loanToValue,
@@ -311,7 +329,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       castedPosition.collateralAmount.times(liquidationRatio),
     ),
     multiple: castedPosition.riskRatio.multiple,
-    startingTakeProfitPrice: isShort ? startingTakeProfitPriceShort : startingTakeProfitPriceLong,
+    startingTakeProfitPrice,
     resolvedWithdrawalLtv,
     resolvedTriggerLtv,
     positionPriceRatio,
@@ -345,5 +363,6 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     currentStopLossLevel,
     currentTrailingStopLossDistance,
     trailingStopLossDistanceLabel,
+    nextDynamicTriggerPriceCommonData,
   }
 }

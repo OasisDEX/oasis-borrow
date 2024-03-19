@@ -2900,6 +2900,11 @@
         "modal-description": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss Loan to Value. The reason this price is dynamic is that the Stop-Loss trigger is based on a Loan to Value, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
         "modal-footnote-title": "The current Dynamic Stop-Loss Price is:"
       },
+      "next-dynamic-trigger-price": {
+        "title": "Next Dynamic Trigger Price",
+        "modal-description": "The next price in which you will realize profits to your wallet. It is dynamic because position changes made prior to it triggering may make the trigger price increase.",
+        "footnote": "Trigger LTV: {{percentage}}"
+      },
       "estimated-token-on-trigger": {
         "title": "Est. {{token}} on Stop-Loss trigger",
         "footnote": "Saving compared to liquidation",
