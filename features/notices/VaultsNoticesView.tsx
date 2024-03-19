@@ -165,13 +165,13 @@ export function VaultOwnershipBanner({
           <Icon size="auto" width="24" height="24" icon={bannerWallet} />
         </StatusFrame>
       }
-      header={t('vault-notices.ownership.header', { address: formatAddress(controller) })}
+      header={t('vault-notices.position.header', { address: formatAddress(controller) })}
       subheader={
         !account ? (
-          `${t('vault-notices.ownership.subheader1')}`
+          `${t('vault-notices.position.subheader1')}`
         ) : (
           <Text as="span">
-            {t('vault-notices.ownership.subheader2')}{' '}
+            {t('vault-notices.position.subheader2')}{' '}
             <AppLink href={getPortfolioLink(account)} target="_blank" sx={{ fontSize: 3 }}>
               {t('here')}
             </AppLink>

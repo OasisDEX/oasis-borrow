@@ -1,5 +1,5 @@
 import type { NetworkConfig } from 'blockchain/networks'
-import { getOmniProtocolUrlMap } from 'features/omni-kit/helpers'
+import { getOmniPositionUrl } from 'features/omni-kit/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -14,6 +14,7 @@ interface GetOmniSidebarPrimaryButtonActionsParams {
   isTransitionAction: boolean
   isTransitionWaitingForApproval: boolean
   isTxSuccess: boolean
+  label?: string
   network: NetworkConfig
   onConfirmTransition: () => void
   onDefault: () => void
@@ -24,6 +25,7 @@ interface GetOmniSidebarPrimaryButtonActionsParams {
   onUpdated: () => void
   productType: OmniProductType
   protocol: LendingProtocol
+  pseudoProtocol?: string
   quoteAddress: string
   quoteToken: string
   resolvedId?: string
@@ -42,6 +44,7 @@ export function getOmniSidebarPrimaryButtonActions({
   isTransitionAction,
   isTransitionWaitingForApproval,
   isTxSuccess,
+  label,
   network,
   onConfirmTransition,
   onDefault,
@@ -52,6 +55,7 @@ export function getOmniSidebarPrimaryButtonActions({
   onUpdated,
   productType,
   protocol,
+  pseudoProtocol,
   quoteAddress,
   quoteToken,
   resolvedId,
@@ -64,13 +68,20 @@ export function getOmniSidebarPrimaryButtonActions({
     case shouldSwitchNetwork && currentStep === editingStep:
       return { action: onSwitchNetwork }
     case isTxSuccess && isOpening:
-      const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
-      const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
-
       return {
-        url: `/${network.name}/${getOmniProtocolUrlMap(
+        url: getOmniPositionUrl({
+          collateralAddress,
+          collateralToken,
+          isPoolOracless: isOracless,
+          label,
+          networkName: network.name,
+          positionId: resolvedId,
+          productType,
           protocol,
-        )}/${productType}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
+          pseudoProtocol,
+          quoteAddress,
+          quoteToken: quoteToken,
+        }),
       }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }
