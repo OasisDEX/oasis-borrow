@@ -10,6 +10,8 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { OmniPartialTakeProfitSliderLeftBoundary } from 'features/omni-kit/automation/components/partial-take-profit/OmniPartialTakeProfitSliderLeftBoundary'
+import { OmniPartialTakeProfitSliderRightBoundary } from 'features/omni-kit/automation/components/partial-take-profit/OmniPartialTakeProfitSliderRightBoundary'
 import { partialTakeProfitConstants } from 'features/omni-kit/automation/constants'
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -415,65 +417,8 @@ export const OmniPartialTakeProfitSidebarController = () => {
       >
         <SliderValuePicker
           disabled={false}
-          leftBoundryFormatter={(x) => {
-            if (x.isZero()) {
-              return '-'
-            }
-            return (
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Text variant="paragraph3" sx={{ mb: 2 }}>
-                  {t('protection.partial-take-profit-sidebar.ltv-withdrawal-step')}
-                  <StatefulTooltip
-                    tooltip={
-                      <Text variant="paragraph4">
-                        {t('protection.partial-take-profit-sidebar.tooltips.withdrawal-step')}
-                      </Text>
-                    }
-                    containerSx={{ display: 'inline', zIndex: 10, position: 'relative' }}
-                    inline
-                    tooltipSx={{ width: '350px' }}
-                  >
-                    <Icon
-                      color={'neutral80'}
-                      icon={question_o}
-                      size="auto"
-                      width="14px"
-                      height="14px"
-                      sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
-                    />
-                  </StatefulTooltip>
-                </Text>
-                <Text variant="paragraph2">
-                  <FormatPercentWithSmallPercentCharacter
-                    value={x.div(lambdaPercentageDenomination)}
-                  />
-                  <Text as="span" variant="paragraph4" sx={{ ml: 1, color: 'neutral80' }}>
-                    {t('protection.partial-take-profit-sidebar.step-amount')}
-                  </Text>
-                </Text>
-              </Flex>
-            )
-          }}
-          rightBoundryFormatter={(x) => {
-            if (x.isZero()) {
-              return '-'
-            }
-            return (
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Text variant="paragraph3" sx={{ mb: 2 }}>
-                  {' ' /** empty space so the lines match with the left boundary formatter */}
-                </Text>
-                <Text variant="paragraph2">
-                  <Text as="span" variant="paragraph4" sx={{ mr: 1, color: 'neutral80' }}>
-                    {t('protection.partial-take-profit-sidebar.ltv-after-execution')}
-                  </Text>
-                  <FormatPercentWithSmallPercentCharacter
-                    value={x.div(lambdaPercentageDenomination)}
-                  />
-                </Text>
-              </Flex>
-            )
-          }}
+          leftBoundryFormatter={(x) => <OmniPartialTakeProfitSliderLeftBoundary value={x} />}
+          rightBoundryFormatter={(x) => <OmniPartialTakeProfitSliderRightBoundary value={x} />}
           lastValue={targetLtvValue}
           leftBoundry={targetLtvValue}
           rightBoundry={targetLtvValue.plus(triggerLtvValue)}
