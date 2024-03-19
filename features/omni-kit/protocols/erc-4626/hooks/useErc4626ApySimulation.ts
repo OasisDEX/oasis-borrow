@@ -112,7 +112,7 @@ export function useErc4626ApySimulation({
         setIsLoading(false)
       })
     },
-    [rewardTokenPrice, vaultAddress],
+    [depositAmount, rewardTokenPrice, vaultAddress],
     250,
   )
 
