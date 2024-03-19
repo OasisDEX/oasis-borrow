@@ -47,6 +47,7 @@ export const getHistoryEventLabel = ({
     case 'AjnaUnstakeNftAndWithdrawQuote':
     case 'MorphoBlueWithdraw':
     case 'AAVEV3Withdraw':
+    case 'ERC4626Withdraw':
       return t('position-history.withdraw')
     case 'AAVEV3WithdrawToDebt':
       return t('position-history.withdraw-to-debt')
@@ -100,7 +101,10 @@ export const getHistoryEventLabel = ({
     case 'AAVEDeposit':
     case 'AAVEV3Deposit':
     case 'SparkDeposit':
+    case 'ERC4626Deposit':
       return t('position-history.deposit')
+    case 'ERC4626Transfer':
+      return t('position-history.transfer-to')
     case 'AjnaUnstakeNftAndClaimCollateral':
       return t('position-history.claim-collateral')
     case 'SparkDepositBorrow':

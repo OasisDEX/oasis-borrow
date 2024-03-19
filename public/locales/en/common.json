@@ -477,6 +477,7 @@
     "collateral-deposit": "Collateral Deposit",
     "withdrawn": "Withdrawn",
     "repaid": "Repaid",
+    "transfer-to": "Transfer to",
     "debt-borrowed": "Debt Borrowed",
     "ltv": "Loan To Value",
     "liquidation-price": "Liquidation price",
