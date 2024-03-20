@@ -83,7 +83,7 @@ export interface OmniProtocolSettings {
   supportedProducts: OmniProductType[]
   entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
   yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
-  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
+  availableAutomations: NetworkIdsWithValues<AutomationFeatures[]>
 }
 
 export type OmniProtocolsSettings = {

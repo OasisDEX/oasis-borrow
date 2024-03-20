@@ -24,7 +24,7 @@ import { circle_slider } from 'theme/icons'
 export function OmniAutomationFormController() {
   const { t } = useTranslation()
   const {
-    environment: { isOpening, productType },
+    environment: { isOpening, productType, settings, networkId },
     automationSteps: { currentStep, setStep },
     tx: { isTxInProgress },
   } = useOmniGeneralContext()
@@ -42,70 +42,98 @@ export function OmniAutomationFormController() {
 
   const currentAutomationForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
 
+  const availableAutomations = settings.availableAutomations[networkId]
+
   const itemsMap: { [key: string]: SidebarSectionHeaderSelectItem[] } | undefined = {
     optimization: [
-      {
-        label: t('system.partial-take-profit'),
-        panel: AutomationFeatures.PARTIAL_TAKE_PROFIT,
-        shortLabel: t('system.partial-take-profit'),
-        icon: circle_slider,
-        iconShrink: 2,
-        action: () => {
-          currentAutomationForm.dispatch({ type: 'reset' })
-          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          commonForm.updateState('uiDropdownOptimization', AutomationFeatures.PARTIAL_TAKE_PROFIT)
-        },
-      },
-      {
-        label: t('auto-buy.title'),
-        panel: AutomationFeatures.AUTO_BUY,
-        shortLabel: t('auto-buy.title'),
-        icon: circle_slider,
-        iconShrink: 2,
-        action: () => {
-          currentAutomationForm.dispatch({ type: 'reset' })
-          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          commonForm.updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
-        },
-      },
+      ...(availableAutomations?.includes(AutomationFeatures.PARTIAL_TAKE_PROFIT)
+        ? [
+            {
+              label: t('system.partial-take-profit'),
+              panel: AutomationFeatures.PARTIAL_TAKE_PROFIT,
+              shortLabel: t('system.partial-take-profit'),
+              icon: circle_slider,
+              iconShrink: 2,
+              action: () => {
+                currentAutomationForm.dispatch({ type: 'reset' })
+                !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+                commonForm.updateState(
+                  'uiDropdownOptimization',
+                  AutomationFeatures.PARTIAL_TAKE_PROFIT,
+                )
+              },
+            },
+          ]
+        : []),
+      ...(availableAutomations?.includes(AutomationFeatures.AUTO_BUY)
+        ? [
+            {
+              label: t('auto-buy.title'),
+              panel: AutomationFeatures.AUTO_BUY,
+              shortLabel: t('auto-buy.title'),
+              icon: circle_slider,
+              iconShrink: 2,
+              action: () => {
+                currentAutomationForm.dispatch({ type: 'reset' })
+                !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+                commonForm.updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
+              },
+            },
+          ]
+        : []),
     ],
     protection: [
-      {
-        label: t('system.trailing-stop-loss'),
-        panel: AutomationFeatures.TRAILING_STOP_LOSS,
-        shortLabel: t('system.trailing-stop-loss'),
-        icon: circle_slider,
-        iconShrink: 2,
-        action: () => {
-          currentAutomationForm.dispatch({ type: 'reset' })
-          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          commonForm.updateState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
-        },
-      },
-      {
-        label: t('system.stop-loss'),
-        panel: AutomationFeatures.STOP_LOSS,
-        shortLabel: t('system.stop-loss'),
-        icon: circle_slider,
-        iconShrink: 2,
-        action: () => {
-          currentAutomationForm.dispatch({ type: 'reset' })
-          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          commonForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
-        },
-      },
-      {
-        label: t('auto-sell.title'),
-        panel: AutomationFeatures.AUTO_SELL,
-        shortLabel: t('auto-sell.title'),
-        icon: circle_slider,
-        iconShrink: 2,
-        action: () => {
-          currentAutomationForm.dispatch({ type: 'reset' })
-          !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
-          commonForm.updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
-        },
-      },
+      ...(availableAutomations?.includes(AutomationFeatures.TRAILING_STOP_LOSS)
+        ? [
+            {
+              label: t('system.trailing-stop-loss'),
+              panel: AutomationFeatures.TRAILING_STOP_LOSS,
+              shortLabel: t('system.trailing-stop-loss'),
+              icon: circle_slider,
+              iconShrink: 2,
+              action: () => {
+                currentAutomationForm.dispatch({ type: 'reset' })
+                !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+                commonForm.updateState(
+                  'uiDropdownProtection',
+                  AutomationFeatures.TRAILING_STOP_LOSS,
+                )
+              },
+            },
+          ]
+        : []),
+      ...(availableAutomations?.includes(AutomationFeatures.STOP_LOSS)
+        ? [
+            {
+              label: t('system.stop-loss'),
+              panel: AutomationFeatures.STOP_LOSS,
+              shortLabel: t('system.stop-loss'),
+              icon: circle_slider,
+              iconShrink: 2,
+              action: () => {
+                currentAutomationForm.dispatch({ type: 'reset' })
+                !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+                commonForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+              },
+            },
+          ]
+        : []),
+      ...(availableAutomations?.includes(AutomationFeatures.AUTO_SELL)
+        ? [
+            {
+              label: t('auto-sell.title'),
+              panel: AutomationFeatures.AUTO_SELL,
+              shortLabel: t('auto-sell.title'),
+              icon: circle_slider,
+              iconShrink: 2,
+              action: () => {
+                currentAutomationForm.dispatch({ type: 'reset' })
+                !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+                commonForm.updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
+              },
+            },
+          ]
+        : []),
     ],
   }
 

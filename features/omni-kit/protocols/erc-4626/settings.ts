@@ -33,6 +33,9 @@ export const settings: OmniProtocolSettings = {
       manage: [],
     },
   },
+  availableAutomations: {
+    [NetworkIds.MAINNET]: [],
+  },
 }
 
 export const erc4626Vaults: Erc4626Config[] = [
