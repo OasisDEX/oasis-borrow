@@ -2,39 +2,28 @@ import type BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
-import { getTokenBalances$ } from 'features/shared/balanceInfo'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
-import { useAccount } from 'helpers/useAccount'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import type { FC } from 'react'
 import React, { useMemo, useRef, useState } from 'react'
-import { EMPTY } from 'rxjs'
 import { Box, Flex, Text } from 'theme-ui'
 
 interface OmniInputSwapProps {
   defaultToken: string
   defaultTokenBalance: BigNumber
-  tokens: string[]
+  defaultTokenPrice: BigNumber
+  type: 'pull' | 'return'
 }
 
 export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   defaultToken,
   defaultTokenBalance,
-  tokens,
+  defaultTokenPrice,
+  type,
 }) => {
-  const { walletAddress } = useAccount()
   const {
-    environment: { networkId },
+    environment: { extraTokensData, networkId, settings },
   } = useOmniGeneralContext()
-
-  const [tokensBalanceData] = useObservable(
-    useMemo(
-      () => (walletAddress ? getTokenBalances$(tokens, walletAddress, networkId) : EMPTY),
-      [networkId, tokens, walletAddress],
-    ),
-  )
-
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedToken, setSelectedToken] = useState<string>(defaultToken)
 
@@ -44,21 +33,29 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
 
   const tokensList = useMemo(
     () =>
-      tokensBalanceData
-        ? [
-            {
-              token: defaultToken,
-              balance: defaultTokenBalance,
-            },
-            ...tokens.map((token, i) => ({
-              token,
-              balance: tokensBalanceData[i],
-            })),
-          ]
-            .filter(({ balance }) => !balance.isZero())
-            .sort((a, b) => b.balance.minus(a.balance).toNumber())
-        : undefined,
-    [defaultToken, defaultTokenBalance, tokens, tokensBalanceData],
+      [
+        {
+          token: defaultToken,
+          balance: defaultTokenBalance,
+          price: defaultTokenPrice,
+        },
+        ...(settings[`${type}Tokens`]?.[networkId] ?? []).map((token) => ({
+          token,
+          balance: extraTokensData[token].balance,
+          price: extraTokensData[token].price,
+        })),
+      ]
+        .filter(({ balance }) => !balance.isZero())
+        .sort((a, b) => b.balance.times(b.price).minus(a.balance.times(a.price)).toNumber()),
+    [
+      defaultToken,
+      defaultTokenBalance,
+      defaultTokenPrice,
+      extraTokensData,
+      networkId,
+      settings,
+      type,
+    ],
   )
   const showScroll =
     scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
@@ -131,6 +128,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
           {tokensList?.map(({ balance, token }) => (
             <Flex
               as="li"
+              key={token}
               sx={{
                 alignItems: 'center',
                 justifyContent: 'space-between',

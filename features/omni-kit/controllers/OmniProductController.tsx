@@ -8,6 +8,7 @@ import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
 import {
+  getOmniExtraTokenData,
   getOmniHeadlineProps,
   getOmniProductContextProviderData,
   getOmniRawProtocol,
@@ -53,6 +54,7 @@ export interface OmniCustomStateParams<Auction, History, Position> {
 interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
+  extraTokens?: string[]
   isOracless?: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
@@ -81,6 +83,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
 export const OmniProductController = <Auction, History, Position>({
   collateralToken,
   customState = ({ children }) => <>{children}</>,
+  extraTokens = [],
   isOracless = false,
   label,
   networkId,
@@ -90,8 +93,8 @@ export const OmniProductController = <Auction, History, Position>({
   protocolHook,
   pseudoProtocol,
   quoteToken,
-  settings,
   seoTags,
+  settings,
   version,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
@@ -123,13 +126,14 @@ export const OmniProductController = <Auction, History, Position>({
     tokensPrecision,
   } = useOmniProtocolData({
     collateralToken,
-    positionId,
+    extraTokens,
     isOracless,
+    networkId,
+    positionId,
     productType,
     protocol,
     protocolRaw,
     quoteToken,
-    networkId,
   })
 
   const {
@@ -196,7 +200,7 @@ export const OmniProductController = <Auction, History, Position>({
             >
               {([
                 _aggregatedData,
-                [collateralBalance, quoteBalance],
+                [collateralBalance, quoteBalance, ...extraBalances],
                 dpmPosition,
                 [ethBalance],
                 gasPrice,
@@ -209,6 +213,11 @@ export const OmniProductController = <Auction, History, Position>({
                 positionTriggers,
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
+                const extraTokensData = getOmniExtraTokenData({
+                  extraBalances,
+                  extraTokens,
+                  protocolPrices,
+                })
 
                 return (
                   <>
@@ -242,6 +251,7 @@ export const OmniProductController = <Auction, History, Position>({
                       {...(positionId && { dpmProxy: dpmPosition.proxy })}
                       ethBalance={ethBalance}
                       ethPrice={tokenPriceUSD.ETH}
+                      extraTokensData={extraTokensData}
                       gasPrice={gasPrice}
                       isOpening={isOpening}
                       isOracless={!!isOracless}

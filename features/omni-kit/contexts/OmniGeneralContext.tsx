@@ -13,6 +13,7 @@ import { getOmniEntryToken, isShortPosition } from 'features/omni-kit/helpers'
 import { useOmniSlippage } from 'features/omni-kit/hooks'
 import type {
   OmniEntryToken,
+  OmniExtraTokenData,
   OmniProductType,
   OmniProtocolSettings,
   OmniSidebarEditingStep,
@@ -36,6 +37,7 @@ interface OmniGeneralContextProviderProps {
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
+  extraTokensData: OmniExtraTokenData
   gasPrice: GasPriceParams
   isOpening: boolean
   isOracless: boolean

@@ -261,3 +261,10 @@ export type OmniEntryToken = {
   address: string
   icon: string
 }
+
+export interface OmniExtraTokenData {
+  [key: string]: {
+    balance: BigNumber
+    price: BigNumber
+  }
+}

@@ -55,7 +55,7 @@ export function OmniFormFieldDeposit({
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, networkId, productType, quoteToken, quoteBalance, settings },
+    environment: { isOracless, productType, quoteToken, quoteBalance, quotePrice },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
@@ -81,9 +81,10 @@ export function OmniFormFieldDeposit({
       maxAmountLabel={t(maxAmountLabel)}
       swapController={
         <OmniInputSwap
+          type="pull"
           defaultToken={quoteToken}
           defaultTokenBalance={quoteBalance}
-          tokens={settings.pullTokens?.[networkId] ?? []}
+          defaultTokenPrice={quotePrice}
         />
       }
       onChange={handleNumericInput((n) => {

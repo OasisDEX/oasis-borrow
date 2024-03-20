@@ -17,7 +17,7 @@ export interface SidebarSectionContentProps {
 export function SidebarSectionContent({
   activePanel,
   content,
-  disableMaxHeight = false,
+  disableMaxHeight = true,
 }: SidebarSectionContentProps) {
   const { DisableSidebarScroll } = useAppConfig('features')
   const ref = useRef<HTMLDivElement>(null)
@@ -42,8 +42,10 @@ export function SidebarSectionContent({
               : 'transparent',
           borderRadius: theme.radii.large,
         },
-        overflowY: !disableMaxHeight ? 'scroll' : 'auto',
-        overflowX: 'hidden',
+        ...(!disableMaxHeight && {
+          overflowY: 'auto',
+          overflowX: 'hidden',
+        }),
         mr: 2,
         p: '24px',
         pr: '10px',
