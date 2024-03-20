@@ -10,6 +10,7 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { partialTakeProfitConfig } from 'features/aave/open/helpers/get-aave-like-partial-take-profit-params'
 import { mapProfits } from 'features/aave/open/helpers/use-lambda-debounced-partial-take-profit'
 import {
   OmniPartialTakeProfitLtvStepSliderLeftBoundary,
@@ -96,11 +97,22 @@ export const OmniPartialTakeProfitSidebarController = () => {
   }, [automationFormState.price, startingTakeProfitPrice])
 
   const triggerLtvValue = useMemo(() => {
-    return automationFormState.triggerLtv || resolvedTriggerLtv?.times(100) || zero
+    return (
+      automationFormState.triggerLtv ||
+      resolvedTriggerLtv?.times(100) ||
+      castedPosition.riskRatio.loanToValue
+        .minus(partialTakeProfitConfig.defaultTriggelLtvOffset.div(100))
+        .times(100)
+        .decimalPlaces(0, BigNumber.ROUND_DOWN)
+    )
   }, [automationFormState.triggerLtv, resolvedTriggerLtv])
 
   const targetLtvValue = useMemo(() => {
-    return automationFormState.ltvStep || resolvedWithdrawalLtv?.times(100) || zero
+    return (
+      automationFormState.ltvStep ||
+      resolvedWithdrawalLtv?.times(100) ||
+      partialTakeProfitConfig.defaultWithdrawalLtv
+    )
   }, [automationFormState.ltvStep, resolvedWithdrawalLtv])
 
   const getTriggerLtvMultiple = useCallback((ltv: BigNumber) => {
