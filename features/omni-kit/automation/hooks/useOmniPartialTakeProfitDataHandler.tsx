@@ -30,6 +30,7 @@ import {
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatPercent } from 'helpers/formatters/format'
 import { nbsp } from 'helpers/nbsp'
+import { TriggerAction } from 'helpers/triggers'
 import { hundred, one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
@@ -356,17 +357,18 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       ? simulationData?.simulation?.profits?.[0]
       : undefined
 
-  const afterResolvedEstimatedToReceive = isCollateralActive
-    ? simulatedNextEstimatedToReceive
-      ? new BigNumber(simulatedNextEstimatedToReceive.realizedProfitInCollateral.balance).shiftedBy(
-          -collateralPrecision,
-        )
+  const isAddOrUpdateAction = state.action !== TriggerAction.Remove
+
+  const afterResolvedEstimatedToReceive =
+    simulatedNextEstimatedToReceive && isAddOrUpdateAction
+      ? isCollateralActive
+        ? new BigNumber(
+            simulatedNextEstimatedToReceive.realizedProfitInCollateral.balance,
+          ).shiftedBy(-collateralPrecision)
+        : new BigNumber(simulatedNextEstimatedToReceive.realizedProfitInDebt.balance).shiftedBy(
+            -quotePrecision,
+          )
       : undefined
-    : simulatedNextEstimatedToReceive
-    ? new BigNumber(simulatedNextEstimatedToReceive.realizedProfitInDebt.balance).shiftedBy(
-        -quotePrecision,
-      )
-    : undefined
 
   const estimatedToReceiveCommonData = useOmniCardDataEstToReceive({
     estimatedToReceive: resolvedEstimatedToReceive,
@@ -427,7 +429,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     trailingStopLossDistanceLabel,
     nextDynamicTriggerPriceCommonData,
     estimatedToReceiveCommonData,
-    isLoading: isSimulationLoading,
+    isLoading: isSimulationLoading && isAddOrUpdateAction,
     isCollateralActive,
     afterResolvedEstimatedToReceive,
     resolveToToken,

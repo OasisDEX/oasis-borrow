@@ -68,6 +68,7 @@ export function OmniAutomationFormView({
       commonForm: { state: commonFormState, updateState: updateCommonState },
       automationForms,
       simulationData,
+      setSimulation,
     },
     position: { resolvedId },
     dynamicMetadata: {
@@ -166,6 +167,7 @@ export function OmniAutomationFormView({
     }
 
     if (isTriggerEnabled && state?.action === TriggerAction.Remove) {
+      setSimulation(undefined)
       dispatch({ type: 'partial-update', state: { action: TriggerAction.Update } })
       updateCommonState('activeAction', undefined)
       updateCommonState('activeTxUiDropdown', undefined)
