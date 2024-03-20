@@ -72,7 +72,7 @@ export const useOmniStopLossDataHandler = () => {
   const closeToToken = automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
     ? collateralToken
     : quoteToken
-  const stateCloseToToken = state.resolveTo === 'collateral' ? collateralToken : quoteToken
+  const resolvedCloseToToken = isCollateralActive ? collateralToken : quoteToken
 
   const dynamicStopLossPrice =
     stopLossLevel &&
@@ -163,7 +163,7 @@ export const useOmniStopLossDataHandler = () => {
     dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
     closeToToken,
-    stateCloseToToken,
+    stateCloseToToken: resolvedCloseToToken,
     maxToken,
     afterMaxToken,
     savingCompareToLiquidation,
@@ -222,7 +222,7 @@ export const useOmniStopLossDataHandler = () => {
     displayStopLossLevel,
     isCollateralActive,
     closeToToken,
-    stateCloseToToken,
+    resolvedCloseToToken,
     dynamicStopLossPrice,
     afterDynamicStopLossPrice,
     resolvedAfterDynamicStopLossPrice,

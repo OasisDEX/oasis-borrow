@@ -94,7 +94,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
   const closeToToken = automation?.triggers.trailingStopLoss?.triggerTypeName.includes('Collateral')
     ? collateralToken
     : quoteToken
-  const stateCloseToToken = state.resolveTo === 'collateral' ? collateralToken : quoteToken
+  const resolvedCloseToToken = isCollateralActive ? collateralToken : quoteToken
 
   const afterTraillingDistance = state.price
   const liquidationPrice =
@@ -279,7 +279,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
     dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
     closeToToken,
-    stateCloseToToken,
+    stateCloseToToken: resolvedCloseToToken,
     maxToken,
     afterMaxToken,
     savingCompareToLiquidation,
@@ -313,7 +313,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
     currentMarketPrice,
     isCollateralActive,
     closeToToken,
-    stateCloseToToken,
+    resolvedCloseToToken,
     afterTraillingDistance,
     liquidationPrice,
     priceRatio,
