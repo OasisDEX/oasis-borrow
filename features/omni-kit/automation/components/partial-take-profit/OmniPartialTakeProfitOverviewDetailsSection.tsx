@@ -32,6 +32,8 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
     chartView,
     setChartView,
     nextDynamicTriggerPriceCommonData,
+    estimatedToReceiveCommonData,
+    isLoading,
   } = useOmniPartialTakeProfitDataHandler()
 
   return (
@@ -42,6 +44,7 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
       content={
         <DetailsSectionContentCardWrapper>
           <OmniContentCard {...nextDynamicTriggerPriceCommonData} />
+          <OmniContentCard {...estimatedToReceiveCommonData} isLoading={isLoading} />
           <OmniContentCard {...currentProfitAndLossCommonData} />
           <OmniContentCard {...realizedProfitCommonData} />
         </DetailsSectionContentCardWrapper>

@@ -2905,6 +2905,10 @@
         "modal-description": "The next price in which you will realize profits to your wallet. It is dynamic because position changes made prior to it triggering may make the trigger price increase.",
         "footnote": "Trigger LTV: {{percentage}}"
       },
+      "estimated-to-receive": {
+        "title": "Est. to receive next trigger",
+        "modal-description": "The amount of collateral or debt that will be withdrawn to your wallet upon trigger."
+      },
       "estimated-token-on-trigger": {
         "title": "Est. {{token}} on Stop-Loss trigger",
         "footnote": "Saving compared to liquidation",

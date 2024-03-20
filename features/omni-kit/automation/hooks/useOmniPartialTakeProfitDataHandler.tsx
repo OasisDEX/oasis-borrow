@@ -18,6 +18,7 @@ import {
 import { getRealizedProfit } from 'features/omni-kit/automation/helpers'
 import {
   useOmniCardDataCurrentProfitAndLoss,
+  useOmniCardDataEstToReceive,
   useOmniCardDataNextDynamicTriggerPrice,
   useOmniCardDataRealizedProfit,
 } from 'features/omni-kit/components/details-section'
@@ -100,6 +101,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       isShort,
       protocol,
       priceFormat,
+      collateralPrecision,
+      quotePrecision,
     },
   } = useOmniGeneralContext()
   const {
@@ -112,6 +115,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       automationForms: {
         partialTakeProfit: { state },
       },
+      simulationData,
+      isSimulationLoading,
     },
     position: {
       currentPosition: { position },
@@ -120,6 +125,10 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   } = useOmniProductContext(productType)
 
   const castedPosition = position as AaveLikePositionV2
+
+  const isCollateralActive = state.resolveTo
+    ? state.resolveTo === 'collateral'
+    : automationDynamicValues?.triggers.partialTakeProfit?.decodedParams.withdrawToDebt === 'false'
 
   const simpleView = commonState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
   const maxMultiple = castedPosition?.category.maxLoanToValue || zero
@@ -322,6 +331,57 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     ),
   })
 
+  const resolvedEstimatedToReceiveCollateral = resolvedTrigger?.dynamicParams?.nextProfit
+    ? new BigNumber(
+        resolvedTrigger.dynamicParams.nextProfit.realizedProfitInCollateral.balance,
+      ).shiftedBy(-collateralPrecision)
+    : undefined
+
+  const resolvedEstimatedToReceiveDebt = resolvedTrigger?.dynamicParams?.nextProfit
+    ? new BigNumber(
+        resolvedTrigger.dynamicParams.nextProfit.realizedProfitInDebt.balance,
+      ).shiftedBy(-quotePrecision)
+    : undefined
+
+  const resolvedEstimatedToReceive = isCollateralActive
+    ? resolvedEstimatedToReceiveCollateral
+    : resolvedEstimatedToReceiveDebt
+
+  const resolvedEstimatedToReceiveFooter = !isCollateralActive
+    ? resolvedEstimatedToReceiveCollateral
+    : resolvedEstimatedToReceiveDebt
+
+  const simulatedNextEstimatedToReceive =
+    simulationData?.simulation && 'profits' in simulationData?.simulation
+      ? simulationData?.simulation?.profits?.[0]
+      : undefined
+
+  const afterResolvedEstimatedToReceive = isCollateralActive
+    ? simulatedNextEstimatedToReceive
+      ? new BigNumber(simulatedNextEstimatedToReceive.realizedProfitInCollateral.balance).shiftedBy(
+          -collateralPrecision,
+        )
+      : undefined
+    : simulatedNextEstimatedToReceive
+    ? new BigNumber(simulatedNextEstimatedToReceive.realizedProfitInDebt.balance).shiftedBy(
+        -quotePrecision,
+      )
+    : undefined
+
+  const estimatedToReceiveCommonData = useOmniCardDataEstToReceive({
+    estimatedToReceive: resolvedEstimatedToReceive,
+    estimatedToReceiveFooter: resolvedEstimatedToReceiveFooter,
+    afterEstimatedToReceive: afterResolvedEstimatedToReceive,
+    primaryUnit: isCollateralActive ? collateralToken : quoteToken,
+    secondaryUnit: !isCollateralActive ? collateralToken : quoteToken,
+    modal: (
+      <DetailsSectionContentSimpleModal
+        title={t('omni-kit.content-card.estimated-to-receive.title')}
+        description={t('omni-kit.content-card.estimated-to-receive.modal-description')}
+      />
+    ),
+  })
+
   return {
     castedPosition,
     loanToValue,
@@ -364,5 +424,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     currentTrailingStopLossDistance,
     trailingStopLossDistanceLabel,
     nextDynamicTriggerPriceCommonData,
+    estimatedToReceiveCommonData,
+    isLoading: isSimulationLoading,
   }
 }
