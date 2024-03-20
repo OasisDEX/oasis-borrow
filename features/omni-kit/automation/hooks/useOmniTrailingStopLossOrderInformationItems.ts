@@ -24,16 +24,11 @@ export const useOmniTrailingStopLossOrderInformationItems = () => {
   return [
     {
       label: t('protection.trailing-distance'),
-      value: automation?.triggers.trailingStopLoss?.decodedMappedParams.trailingDistance
+      value: automationForms.trailingStopLoss.state.trailingDistance
         ? `${formatCryptoBalance(
-            automation.triggers.trailingStopLoss.decodedMappedParams.trailingDistance,
+            automationForms.trailingStopLoss.state.trailingDistance,
           )} ${priceFormat}`
         : '-',
-      ...(automationForms.trailingStopLoss.state.trailingDistance && {
-        change: `${formatCryptoBalance(
-          automationForms.trailingStopLoss.state.trailingDistance,
-        )} ${priceFormat}`,
-      }),
     },
     {
       label: t('protection.estimated-to-receive'),
