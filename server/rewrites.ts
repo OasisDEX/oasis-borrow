@@ -18,6 +18,15 @@ const rewriteRules = () => [
     source: '/api/morpho/:path*',
     destination: `${process.env.FUNCTIONS_API_URL}/api/morpho/:path*`,
   },
+  {
+    source: '/api/exchange/:path*',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/exchange/:path*`,
+    additionalParams: {
+      headers: {
+        'auth-key': process.env.ONE_INCH_API_KEY,
+      },
+    },
+  },
   // ... other rules
 ]
 
@@ -68,10 +77,21 @@ export function handleRewrite(request: NextRequest): NextResponse | null {
       url.host = destinationUrl.host
       url.port = destinationUrl.port
       url.pathname = destinationUrl.pathname
-      // console.info(
-      //   `rewriting ${request.nextUrl.pathname} to ${url.pathname}. With search: ${url.search}. And original search: ${request.nextUrl.search}`,
-      // )
-      return NextResponse.rewrite(url)
+
+      const headers = new Headers(request.headers)
+
+      if (rule.additionalParams) {
+        if (rule.additionalParams.headers) {
+          for (const [key, value] of Object.entries(rule.additionalParams.headers)) {
+            if (value) headers.set(key, value)
+          }
+        }
+      }
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: headers,
+        },
+      })
     }
   }
   return null // no rewrite
