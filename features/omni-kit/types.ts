@@ -65,15 +65,17 @@ export type OmniSidebarStepsSet = {
 }
 
 export interface OmniProtocolSettings {
+  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
+  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
+  pullTokens?: NetworkIdsWithValues<string[]>
   rawName: NetworkIdsWithValues<string>
+  returnTokens?: NetworkIdsWithValues<string[]>
   steps: OmniSidebarStepsSet
   supportedMainnetNetworkIds: OmniSupportedNetworkIds[]
   supportedMultiplyTokens: NetworkIdsWithValues<string[]>
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
-  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
   yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
-  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
 }
 
 export type OmniProtocolsSettings = {

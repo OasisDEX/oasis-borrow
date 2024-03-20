@@ -32,6 +32,9 @@ export const settings: OmniProtocolSettings = {
       manage: [],
     },
   },
+  pullTokens: {
+    [NetworkIds.MAINNET]: ['DAI', 'ETH', 'WBTC'],
+  },
 }
 
 const steakhouseCurator = {
