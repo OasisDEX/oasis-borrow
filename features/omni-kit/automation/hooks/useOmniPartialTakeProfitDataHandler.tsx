@@ -382,6 +382,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     ),
   })
 
+  const resolveToToken = isCollateralActive ? collateralToken : quoteToken
+
   return {
     castedPosition,
     loanToValue,
@@ -426,5 +428,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     nextDynamicTriggerPriceCommonData,
     estimatedToReceiveCommonData,
     isLoading: isSimulationLoading,
+    isCollateralActive,
+    afterResolvedEstimatedToReceive,
+    resolveToToken,
   }
 }

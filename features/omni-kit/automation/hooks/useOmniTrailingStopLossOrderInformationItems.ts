@@ -11,9 +11,6 @@ export const useOmniTrailingStopLossOrderInformationItems = () => {
   } = useOmniGeneralContext()
   const {
     automation: { automationForms },
-    dynamicMetadata: {
-      values: { automation },
-    },
   } = useOmniProductContext(productType)
 
   const { savingCompareToLiquidation, isCollateralActive, afterMaxToken } =

@@ -2434,7 +2434,11 @@
         "title": "Need help setting up auto take profit?",
         "description": "However you learn, we’ve got you covered. Watch a video tutorial or read a in depth how to article. Both walk you through setting up your Auto Take Profit automation like a pro."
       }
-    }
+    },
+    "next-trigger-price": "Next trigger price",
+    "next-realized-profit": "Next realized profit",
+    "ltv-withdrawal-step": "LTV withdrawal step",
+    "trigger-ltv": "Trigger LTV"
   },
   "automation": {
     "setup": "{{feature}} Setup",

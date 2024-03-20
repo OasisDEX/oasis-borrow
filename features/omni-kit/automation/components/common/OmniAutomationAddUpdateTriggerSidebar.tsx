@@ -55,9 +55,10 @@ export const OmniAutomationAddUpdateTriggerSidebar: FC = ({ children }) => {
       ) : null,
     [AutomationFeatures.AUTO_SELL]: null,
     [AutomationFeatures.AUTO_BUY]: null,
-    [AutomationFeatures.PARTIAL_TAKE_PROFIT]: (
-      <OmniAutomationCancelNotice content={t('protection.take-profit-cancel-notice')} />
-    ),
+    [AutomationFeatures.PARTIAL_TAKE_PROFIT]:
+      commonForm.state.activeAction === TriggerAction.Remove ? (
+        <OmniAutomationCancelNotice content={t('protection.take-profit-cancel-notice')} />
+      ) : null,
     [AutomationFeatures.CONSTANT_MULTIPLE]: null,
     [AutomationFeatures.AUTO_TAKE_PROFIT]: null,
   }[resolvedActiveUiDropdown]

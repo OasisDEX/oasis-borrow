@@ -1,6 +1,7 @@
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   useOmniAutoBSOrderInformationItems,
+  useOmniPartialTakeProfitOrderInformationItems,
   useOmniStopLossOrderInformationItems,
   useOmniTrailingStopLossOrderInformationItems,
 } from 'features/omni-kit/automation/hooks'
@@ -68,6 +69,9 @@ export const useOmniAutomationOrderInformationItems = () => {
       const autoBSItems = useOmniAutoBSOrderInformationItems()
       return [...autoBSItems, ...common]
     }
+    case AutomationFeatures.PARTIAL_TAKE_PROFIT:
+      const partialTakeProfitItems = useOmniPartialTakeProfitOrderInformationItems()
+      return [...partialTakeProfitItems, ...common]
     default:
       return common
   }
