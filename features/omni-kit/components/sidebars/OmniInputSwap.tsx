@@ -4,7 +4,7 @@ import { TokensGroup } from 'components/TokensGroup'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import type { FC } from 'react'
+import type { FC, ReactElement, ReactNode } from 'react'
 import React, { useMemo, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
@@ -13,9 +13,11 @@ interface OmniInputSwapProps {
   defaultTokenBalance: BigNumber
   defaultTokenPrice: BigNumber
   type: 'pull' | 'return'
+  children: (params: { swapController?: ReactNode }) => ReactElement
 }
 
 export const OmniInputSwap: FC<OmniInputSwapProps> = ({
+  children,
   defaultToken,
   defaultTokenBalance,
   defaultTokenPrice,
@@ -60,7 +62,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   const showScroll =
     scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
 
-  return (
+  const swapController = (
     <Box sx={{ position: 'absolute', left: 0, bottom: '22px' }} ref={outsideRef}>
       <Flex
         ref={positionRef}
@@ -137,8 +139,9 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
                 borderRadius: 'medium',
                 cursor: 'pointer',
                 transition: 'background-color 200ms',
+                bg: selectedToken === token ? 'neutral30' : 'neutral10',
                 '&:hover': {
-                  backgroundColor: 'neutral30',
+                  bg: 'neutral30',
                 },
               }}
               onClick={() => {
@@ -159,4 +162,6 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
       </Box>
     </Box>
   )
+
+  return children({ ...(tokensList.length > 1 && { swapController }) })
 }
