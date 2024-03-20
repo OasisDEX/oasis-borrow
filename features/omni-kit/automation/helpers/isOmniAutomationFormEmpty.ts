@@ -29,16 +29,13 @@ export const isOmniAutomationFormEmpty = (
       const trailingStopLossState = state as OmniAutomationTrailingStopLossFormState
       return !trailingStopLossState.trailingDistance && !trailingStopLossState.resolveTo
     case AutomationFeatures.AUTO_SELL:
-      const autoSellState = state as OmniAutomationAutoBSFormState
-      return (
-        (!autoSellState.targetLtv && !autoSellState.triggerLtv) ||
-        (autoSellState.useThreshold && !autoSellState.price)
-      )
     case AutomationFeatures.AUTO_BUY:
-      const autoBuyState = state as OmniAutomationAutoBSFormState
+      const autoBSState = state as OmniAutomationAutoBSFormState
       return (
-        (!autoBuyState.targetLtv && !autoBuyState.triggerLtv) ||
-        (autoBuyState.useThreshold && !autoBuyState.price)
+        !autoBSState.targetLtv &&
+        !autoBSState.triggerLtv &&
+        autoBSState.useThreshold &&
+        !autoBSState.price
       )
     case AutomationFeatures.PARTIAL_TAKE_PROFIT:
       const partialTakeProfitState = state as OmniAutomationPartialTakeProfitFormState

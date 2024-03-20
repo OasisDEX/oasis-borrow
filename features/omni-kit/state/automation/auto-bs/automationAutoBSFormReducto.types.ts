@@ -16,7 +16,7 @@ export interface OmniAutomationAutoBSFormState {
   triggerLtv?: BigNumber
   price?: BigNumber
   maxGasFee?: BigNumber
-  useThreshold: boolean
+  useThreshold?: boolean
   action: TriggerAction
 }
 

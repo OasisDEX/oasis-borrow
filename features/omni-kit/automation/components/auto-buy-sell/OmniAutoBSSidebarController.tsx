@@ -36,9 +36,15 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     resolvedThresholdPrice,
   } = useOmniAutoBSDataHandler({ type })
   const defaultTriggerValues = useMemo(() => {
+    if (type === AutomationFeatures.AUTO_BUY) {
+      return {
+        triggerLtv: currentLtv.times(100).minus(5),
+        targetLtv: currentLtv.times(100),
+      }
+    }
     return {
-      triggerLtv: currentLtv.times(100).minus(5),
-      targetLtv: currentLtv.times(100),
+      targetLtv: currentLtv.times(100).minus(5),
+      triggerLtv: currentLtv.times(100),
     }
   }, [currentLtv])
 
@@ -156,6 +162,10 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     }
   }
 
+  const defaultMaxGasFee = new BigNumber(
+    automationFormState.maxGasFee || autoBuySellConstants.defaultGasFee,
+  )
+
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -177,6 +187,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         max={maxSliderValue}
         onChange={(change) => {
           updateFormState('price', defaultPrice)
+          updateFormState('maxGasFee', defaultMaxGasFee)
           resolveSliderDefaultUpdate({ value0: change.value0, value1: change.value1 })
         }}
         value={sliderValues}
@@ -199,11 +210,13 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         currencyCode={pricesDenomination === 'collateral' ? quoteToken : collateralToken}
         onChange={handleNumericInput((price) => {
           updateFormState('price', price)
+          updateFormState('maxGasFee', defaultMaxGasFee)
           resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
         })}
         onToggle={(flag) => {
           updateFormState('useThreshold', flag)
           updateFormState('price', defaultPrice)
+          updateFormState('maxGasFee', defaultMaxGasFee)
           resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
         }}
         showToggle={true}
@@ -213,8 +226,12 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         defaultToggle={automationFormState.useThreshold}
       />
       <MaxGasPriceSection
-        onChange={(value) => updateFormState('maxGasFee', new BigNumber(value))}
-        value={Number(automationFormState.maxGasFee) || autoBuySellConstants.defaultGasFee}
+        onChange={(value) => {
+          updateFormState('maxGasFee', new BigNumber(value))
+          updateFormState('price', defaultPrice)
+          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+        }}
+        value={defaultMaxGasFee.toNumber()}
       />
     </>
   )

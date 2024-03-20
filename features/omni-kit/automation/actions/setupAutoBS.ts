@@ -3,6 +3,7 @@ import { lambdaPriceDenomination } from 'features/aave/constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { defaultAutomationActionPromise } from 'features/omni-kit/automation/actions/common'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
+import { autoBuySellConstants } from 'features/omni-kit/automation/constants'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
@@ -41,8 +42,8 @@ export const setupAutoBS = ({
 
   const stateMaxBaseFee = automationState.maxGasFee
   const currentMaxBaseFee = existingAutoBSTrigger?.maxBaseFeeInGwei
-    ? new BigNumber(existingAutoBSTrigger?.maxBaseFeeInGwei)
-    : undefined
+    ? new BigNumber(existingAutoBSTrigger.maxBaseFeeInGwei)
+    : new BigNumber(autoBuySellConstants.defaultGasFee)
   const maxBaseFee = stateMaxBaseFee || currentMaxBaseFee
 
   if (!targetLTV || !executionLTV || !maxBaseFee || !automationState.action) {
@@ -61,7 +62,7 @@ export const setupAutoBS = ({
     executionLTV,
     targetLTV,
     maxBaseFee,
-    usePrice: automationState.useThreshold,
+    usePrice: !!automationState.useThreshold,
     action: automationState.action,
   })
 }
