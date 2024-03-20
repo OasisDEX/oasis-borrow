@@ -19,7 +19,7 @@ import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useHash } from 'helpers/useHash'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 export const useOmniAutomationTxHandler = () => {
   const { connectedContext$ } = useMainContext()
@@ -56,11 +56,11 @@ export const useOmniAutomationTxHandler = () => {
     return () => null
   }
 
-  const { activeUiDropdown } = automation.resolved
+  const { activeUiDropdown, activeForm } = automation.resolved
 
   const [, updateHash] = useHash()
 
-  const { state, dispatch } = automationForms[activeUiDropdown as `${AutomationFeatures}`]
+  const { state, dispatch } = activeForm
 
   const isFormEmpty = isOmniAutomationFormEmpty(state, activeUiDropdown)
 
@@ -135,6 +135,44 @@ export const useOmniAutomationTxHandler = () => {
     250,
   )
 
+  // Callback to redirect user back to given auto feature UI for which Tx was in progress
+  const onTxEndCallback = useMemo(() => {
+    if (!commonState.activeTxUiDropdown) {
+      return () => null
+    }
+
+    return {
+      [AutomationFeatures.STOP_LOSS]: () => {
+        updateHash(VaultViewMode.Protection, true)
+        updateCommonState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
+      },
+      [AutomationFeatures.AUTO_BUY]: () => {
+        updateHash(VaultViewMode.Optimization, true)
+        updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_BUY)
+      },
+      [AutomationFeatures.AUTO_SELL]: () => {
+        updateHash(VaultViewMode.Protection, true)
+        updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
+      },
+      [AutomationFeatures.CONSTANT_MULTIPLE]: () => {
+        updateHash(VaultViewMode.Optimization, true)
+        updateCommonState('uiDropdownProtection', AutomationFeatures.CONSTANT_MULTIPLE)
+      },
+      [AutomationFeatures.AUTO_TAKE_PROFIT]: () => {
+        updateHash(VaultViewMode.Optimization, true)
+        updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_TAKE_PROFIT)
+      },
+      [AutomationFeatures.TRAILING_STOP_LOSS]: () => {
+        updateHash(VaultViewMode.Protection, true)
+        updateCommonState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
+      },
+      [AutomationFeatures.PARTIAL_TAKE_PROFIT]: () => {
+        updateHash(VaultViewMode.Optimization, true)
+        updateCommonState('uiDropdownProtection', AutomationFeatures.PARTIAL_TAKE_PROFIT)
+      },
+    }[commonState.activeTxUiDropdown]
+  }, [commonState.activeTxUiDropdown])
+
   if (!txData || !dpmProxy || !signer?.provider) {
     return () => console.warn('no txData or proxyAddress or signer provider')
   }
@@ -147,47 +185,12 @@ export const useOmniAutomationTxHandler = () => {
       proxyAddress: dpmProxy,
       sendAsSinger: true,
       onError: () => {
-        if (!commonState.activeTxUiDropdown) {
-          return
-        }
-
-        const callback = {
-          [AutomationFeatures.STOP_LOSS]: () => {
-            updateHash(VaultViewMode.Protection, true)
-            updateCommonState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
-          },
-          [AutomationFeatures.AUTO_BUY]: () => {
-            updateHash(VaultViewMode.Optimization, true)
-            updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_BUY)
-          },
-          [AutomationFeatures.AUTO_SELL]: () => {
-            updateHash(VaultViewMode.Protection, true)
-            updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
-          },
-          [AutomationFeatures.CONSTANT_MULTIPLE]: () => {
-            updateHash(VaultViewMode.Optimization, true)
-            updateCommonState('uiDropdownProtection', AutomationFeatures.CONSTANT_MULTIPLE)
-          },
-          [AutomationFeatures.AUTO_TAKE_PROFIT]: () => {
-            updateHash(VaultViewMode.Optimization, true)
-            updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_TAKE_PROFIT)
-          },
-          [AutomationFeatures.TRAILING_STOP_LOSS]: () => {
-            updateHash(VaultViewMode.Protection, true)
-            updateCommonState('uiDropdownProtection', AutomationFeatures.TRAILING_STOP_LOSS)
-          },
-          [AutomationFeatures.PARTIAL_TAKE_PROFIT]: () => {
-            updateHash(VaultViewMode.Optimization, true)
-            updateCommonState('uiDropdownProtection', AutomationFeatures.PARTIAL_TAKE_PROFIT)
-          },
-        }[commonState.activeTxUiDropdown]
-
-        callback()
+        onTxEndCallback()
       },
     }).subscribe((txState) => {
       if (txState.status === TxStatus.Success) {
-        // TODO dispatch specific form action
         dispatch({ type: 'reset' })
+        onTxEndCallback()
       }
 
       const castedTxState = txState as TxState<TxMeta>
