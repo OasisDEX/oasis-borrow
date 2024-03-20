@@ -1,3 +1,4 @@
+import type { ItemProps } from 'components/infoSection/Item'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   useOmniAutoBSOrderInformationItems,
@@ -8,11 +9,10 @@ import {
 import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatUsdValue } from 'helpers/formatters/format'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export const useOmniAutomationOrderInformationItems = () => {
+export const useOmniAutomationOrderInformationItems = (): ItemProps[] => {
   const { t } = useTranslation()
 
   const {
@@ -20,7 +20,10 @@ export const useOmniAutomationOrderInformationItems = () => {
     tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
   const {
-    automation: { isSimulationLoading, commonForm },
+    automation: { isSimulationLoading },
+    dynamicMetadata: {
+      values: { automation },
+    },
   } = useOmniProductContext(productType)
 
   const formatted = {
@@ -28,14 +31,6 @@ export const useOmniAutomationOrderInformationItems = () => {
   }
 
   const isLoading = !isTxSuccess && isSimulationLoading
-
-  const [hash] = useHash()
-
-  const isProtection = hash === 'protection'
-
-  const activeUiDropdown = isProtection
-    ? commonForm.state.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
-    : commonForm.state.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
 
   const common = [
     ...(isTxSuccess
@@ -54,6 +49,12 @@ export const useOmniAutomationOrderInformationItems = () => {
           },
         ]),
   ]
+
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
+    return common
+  }
+  const { activeUiDropdown } = automation.resolved
 
   switch (activeUiDropdown) {
     case AutomationFeatures.STOP_LOSS: {

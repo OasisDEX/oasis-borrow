@@ -10,7 +10,6 @@ import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TriggerAction } from 'helpers/triggers'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -25,20 +24,18 @@ export const OmniAutomationAddUpdateTriggerSidebar: FC = ({ children }) => {
   } = useOmniGeneralContext()
   const {
     automation: { commonForm },
+    dynamicMetadata: {
+      values: { automation },
+    },
   } = useOmniProductContext(productType)
 
-  const [hash] = useHash()
-
-  const activeUiDropdown =
-    hash === 'protection'
-      ? commonForm.state.uiDropdownProtection
-      : commonForm.state.uiDropdownOptimization
-
-  const resolvedActiveUiDropdown = commonForm.state.activeTxUiDropdown || activeUiDropdown
-
-  if (!resolvedActiveUiDropdown) {
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
     return null
   }
+
+  const resolvedActiveUiDropdown =
+    commonForm.state.activeTxUiDropdown || automation.resolved.activeUiDropdown
 
   const notice = {
     [AutomationFeatures.STOP_LOSS]:

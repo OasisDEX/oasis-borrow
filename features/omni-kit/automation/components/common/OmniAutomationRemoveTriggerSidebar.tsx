@@ -9,7 +9,6 @@ import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -34,14 +33,13 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
 
   const castedPosition = position as LendingPosition
 
-  const [hash] = useHash()
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
+    return null
+  }
 
-  const activeUiDropdown =
-    hash === 'protection'
-      ? commonForm.state.uiDropdownProtection
-      : commonForm.state.uiDropdownOptimization
-
-  const resolvedActiveUiDropdown = commonForm.state.activeTxUiDropdown || activeUiDropdown
+  const resolvedActiveUiDropdown =
+    commonForm.state.activeTxUiDropdown || automation.resolved.activeUiDropdown
 
   if (!resolvedActiveUiDropdown) {
     return null

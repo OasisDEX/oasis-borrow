@@ -2,7 +2,6 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
-import type { AutomationFeatures } from 'features/automation/common/types'
 import { isOmniAutomationFormValid } from 'features/omni-kit/automation/helpers'
 import { useOmniAutomationTxHandler } from 'features/omni-kit/automation/hooks/useOmniAutomationTxHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -17,7 +16,6 @@ import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { TriggerAction } from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
-import { useHash } from 'helpers/useHash'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
@@ -65,8 +63,7 @@ export function OmniAutomationFormView({
   const {
     automation: {
       isSimulationLoading,
-      commonForm: { state: commonFormState, updateState: updateCommonState },
-      automationForms,
+      commonForm: { updateState: updateCommonState },
       simulationData,
       setSimulation,
     },
@@ -78,13 +75,14 @@ export function OmniAutomationFormView({
     },
   } = useOmniProductContext(productType)
 
-  const [hash] = useHash()
-  const activeUiDropdown =
-    hash === 'protection'
-      ? commonFormState.uiDropdownProtection
-      : commonFormState.uiDropdownOptimization
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
+    return null
+  }
 
-  const { state, dispatch } = automationForms[activeUiDropdown as `${AutomationFeatures}`]
+  const { activeForm, activeUiDropdown } = automation.resolved
+
+  const { state, dispatch } = activeForm
 
   const isTriggerEnabled = activeUiDropdown && automation?.triggers[activeUiDropdown]
 

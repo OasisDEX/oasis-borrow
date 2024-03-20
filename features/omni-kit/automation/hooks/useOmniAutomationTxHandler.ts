@@ -51,12 +51,14 @@ export const useOmniAutomationTxHandler = () => {
     },
   } = useOmniProductContext(productType)
 
-  const [hash, updateHash] = useHash()
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
+    return () => null
+  }
 
-  const activeUiDropdown =
-    hash === 'protection'
-      ? commonState.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
-      : commonState.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
+  const { activeUiDropdown } = automation.resolved
+
+  const [, updateHash] = useHash()
 
   const { state, dispatch } = automationForms[activeUiDropdown as `${AutomationFeatures}`]
 

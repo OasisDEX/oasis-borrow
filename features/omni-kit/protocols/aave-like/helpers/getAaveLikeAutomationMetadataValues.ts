@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { lambdaPriceDenomination } from 'features/aave/constants'
-import type { OmniAutomationSimulationResponse } from 'features/omni-kit/contexts'
+import { AutomationFeatures } from 'features/automation/common/types'
+import type {
+  OmniAutomationSimulationResponse,
+  ProductContextAutomationForms,
+} from 'features/omni-kit/contexts'
+import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
 import type {
   AutoBuyTriggers,
   AutoBuyTriggersWithDecodedParams,
@@ -105,7 +110,7 @@ const mapPartialTakeProfitTriggers = (
   }
 }
 
-export const getAaveLikeAutomationMetadataValues = ({
+export const getAaveLikeAutomationMetadataCommonValues = ({
   positionTriggers,
   simulationResponse,
 }: {
@@ -142,5 +147,52 @@ export const getAaveLikeAutomationMetadataValues = ({
       ),
     },
     simulation: simulationResponse?.simulation,
+  }
+}
+
+export const getAaveLikeAutomationMetadataResolvedValues = ({
+  commonFormState,
+  automationForms,
+  hash,
+}: {
+  commonFormState: OmniAutomationFormState
+  automationForms: ProductContextAutomationForms
+  hash: string
+}) => {
+  const isProtection = hash === 'protection'
+  const isOptimization = hash === 'optimization'
+
+  const activeUiDropdown: `${AutomationFeatures}` = isProtection
+    ? commonFormState.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
+    : commonFormState.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
+
+  const activeForm = automationForms[activeUiDropdown]
+
+  return {
+    resolved: {
+      activeUiDropdown,
+      activeForm,
+      isProtection,
+      isOptimization,
+    },
+  }
+}
+
+export const getAaveLikeAutomationMetadataValues = ({
+  positionTriggers,
+  simulationResponse,
+  commonFormState,
+  automationForms,
+  hash,
+}: {
+  positionTriggers: GetTriggersResponse
+  simulationResponse?: OmniAutomationSimulationResponse
+  commonFormState: OmniAutomationFormState
+  automationForms: ProductContextAutomationForms
+  hash: string
+}) => {
+  return {
+    ...getAaveLikeAutomationMetadataCommonValues({ positionTriggers, simulationResponse }),
+    ...getAaveLikeAutomationMetadataResolvedValues({ commonFormState, automationForms, hash }),
   }
 }

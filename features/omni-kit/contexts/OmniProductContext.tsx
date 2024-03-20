@@ -101,6 +101,12 @@ export interface AutomationMetadataValues {
     [AutomationFeatures.CONSTANT_MULTIPLE]?: PartialTakeProfitTriggers
     [AutomationFeatures.AUTO_TAKE_PROFIT]?: PartialTakeProfitTriggers
   }
+  resolved: {
+    activeUiDropdown: AutomationFeatures
+    activeForm: ProductContextAutomationForm
+    isProtection: boolean
+    isOptimization: boolean
+  }
   simulation: AutomationMetadataValuesSimulation
 }
 
@@ -255,17 +261,22 @@ export type OmniAutomationSimulationResponse =
 
 type AutomationMetadataValuesSimulation = OmniAutomationSimulationResponse['simulation']
 
+export interface ProductContextAutomationForms {
+  stopLoss: ReturnType<typeof useOmniStopLossAutomationFormReducto>
+  trailingStopLoss: ReturnType<typeof useOmniAutomationTrailingStopLossFormReducto>
+  autoSell: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
+  autoBuy: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
+  partialTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+  autoTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+  constantMultiple: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+}
+
+export type ProductContextAutomationForm =
+  ProductContextAutomationForms[keyof ProductContextAutomationForms]
+
 interface ProductContextAutomation {
   positionTriggers: GetTriggersResponse
-  automationForms: {
-    stopLoss: ReturnType<typeof useOmniStopLossAutomationFormReducto>
-    trailingStopLoss: ReturnType<typeof useOmniAutomationTrailingStopLossFormReducto>
-    autoSell: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
-    autoBuy: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
-    partialTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
-    autoTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
-    constantMultiple: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
-  }
+  automationForms: ProductContextAutomationForms
   commonForm: ReturnType<typeof useOmniAutomationFormReducto>
   simulationData?: OmniAutomationSimulationResponse
   isSimulationLoading?: boolean

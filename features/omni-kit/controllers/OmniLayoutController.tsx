@@ -1,6 +1,5 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { OmniAutomationFormController } from 'features/omni-kit/automation/controllers/'
 import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
@@ -26,7 +25,6 @@ import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { hasCommonElement } from 'helpers/hasCommonElement'
 import { useAccount } from 'helpers/useAccount'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Container, Grid } from 'theme-ui'
@@ -70,7 +68,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     },
     dynamicMetadata: {
       elements: { faq },
-      values: { headline, headlineDetails, isHeadlineDetailsLoading },
+      values: { headline, headlineDetails, isHeadlineDetailsLoading, automation },
     },
     automation: {
       positionTriggers,
@@ -78,19 +76,10 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         state: { uiDropdownProtection, uiDropdownOptimization },
         dispatch: commonFormStateDispatch,
       },
-      automationForms,
     },
   } = useOmniProductContext(productType)
 
-  const [hash] = useHash()
-
-  const activeUiDropdown =
-    hash === 'protection'
-      ? uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
-      : uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
-
-  const { dispatch: automationFormtStateDispatch } =
-    automationForms[activeUiDropdown as `${AutomationFeatures}`]
+  const automationFormStateDispatch = automation?.resolved.activeForm.dispatch
 
   const isMultiplySupported = isPoolSupportingMultiply({
     collateralToken,
@@ -191,7 +180,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           ? () => {
                               automationSteps.setStep(OmniSidebarAutomationStep.Manage)
                               commonFormStateDispatch({ type: 'reset' })
-                              automationFormtStateDispatch({ type: 'reset' })
+                              automationFormStateDispatch?.({ type: 'reset' })
                             }
                           : undefined,
                         tag: {
@@ -216,7 +205,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           ? () => {
                               automationSteps.setStep(OmniSidebarAutomationStep.Manage)
                               commonFormStateDispatch({ type: 'reset' })
-                              automationFormtStateDispatch({ type: 'reset' })
+                              automationFormStateDispatch?.({ type: 'reset' })
                             }
                           : undefined,
                         tag: {

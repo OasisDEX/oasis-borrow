@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
+import type { ItemProps } from 'components/infoSection/Item'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { useOmniAutoBSDataHandler } from 'features/omni-kit/automation/hooks/useOmniAutoBSDataHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 
-export const useOmniAutoBSOrderInformationItems = () => {
+export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
   const { t } = useTranslation()
 
   const {
@@ -14,11 +14,16 @@ export const useOmniAutoBSOrderInformationItems = () => {
   } = useOmniGeneralContext()
   const {
     automation: { isSimulationLoading },
+    dynamicMetadata: {
+      values: { automation },
+    },
   } = useOmniProductContext(productType)
 
-  const [hash] = useHash()
-
-  const isProtection = hash === 'protection'
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
+    return []
+  }
+  const { isProtection } = automation.resolved
 
   const type = isProtection ? AutomationFeatures.AUTO_SELL : AutomationFeatures.AUTO_BUY
 

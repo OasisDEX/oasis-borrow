@@ -8,7 +8,6 @@ import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/co
 import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components/common/OmniDoubleStopLossWarning'
 import { useOmniAutomationOrderInformationItems } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -29,20 +28,18 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
     environment: { productType },
   } = useOmniGeneralContext()
   const {
-    automation: { commonForm, automationForms, simulationData },
+    automation: { commonForm, simulationData },
     dynamicMetadata: {
       values: { automation },
     },
   } = useOmniProductContext(productType)
-  const [hash] = useHash()
 
-  const isProtection = hash === 'protection'
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
+    return null
+  }
 
-  const activeUiDropdown = isProtection
-    ? commonForm.state.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
-    : commonForm.state.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
-
-  const currentAutomationForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
+  const { activeForm, activeUiDropdown } = automation.resolved
 
   const items = useOmniAutomationOrderInformationItems()
 
@@ -51,7 +48,7 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
       {showReset && (
         <SidebarResetButton
           clear={() => {
-            currentAutomationForm.dispatch({ type: 'reset' })
+            activeForm.dispatch({ type: 'reset' })
           }}
         />
       )}

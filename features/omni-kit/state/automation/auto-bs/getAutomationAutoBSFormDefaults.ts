@@ -1,5 +1,5 @@
 import { AutomationFeatures } from 'features/automation/common/types'
-import { getAaveLikeAutomationMetadataValues } from 'features/omni-kit/protocols/aave-like/helpers'
+import { getAaveLikeAutomationMetadataCommonValues } from 'features/omni-kit/protocols/aave-like/helpers'
 import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { TriggerAction } from 'helpers/triggers'
@@ -11,7 +11,7 @@ export const getAutomationAutoBSFormDefaults = (
   const {
     // triggers: { autoBuy, autoSell },
     flags: { isAutoSellEnabled, isAutoBuyEnabled },
-  } = getAaveLikeAutomationMetadataValues({ positionTriggers })
+  } = getAaveLikeAutomationMetadataCommonValues({ positionTriggers })
 
   const isEnabled = {
     [AutomationFeatures.AUTO_SELL]: isAutoSellEnabled,

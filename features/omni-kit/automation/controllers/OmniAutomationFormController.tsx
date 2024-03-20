@@ -29,18 +29,19 @@ export function OmniAutomationFormController() {
     tx: { isTxInProgress },
   } = useOmniGeneralContext()
   const {
-    automation: { commonForm, automationForms },
+    automation: { commonForm },
+    dynamicMetadata: {
+      values: { automation },
+    },
   } = useOmniProductContext(productType)
   const [hash] = useHash()
 
-  const isProtection = hash === 'protection'
-  const isOptimization = hash === 'optimization'
+  if (!automation) {
+    console.warn('Automation dynamic metadata not available')
+    return null
+  }
 
-  const activeUiDropdown = isProtection
-    ? commonForm.state.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
-    : commonForm.state.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
-
-  const currentAutomationForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
+  const { activeForm, activeUiDropdown, isOptimization, isProtection } = automation.resolved
 
   const availableAutomations = settings.availableAutomations[networkId]
 
@@ -55,7 +56,7 @@ export function OmniAutomationFormController() {
               icon: circle_slider,
               iconShrink: 2,
               action: () => {
-                currentAutomationForm.dispatch({ type: 'reset' })
+                activeForm.dispatch({ type: 'reset' })
                 !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
                 commonForm.updateState(
                   'uiDropdownOptimization',
@@ -74,7 +75,7 @@ export function OmniAutomationFormController() {
               icon: circle_slider,
               iconShrink: 2,
               action: () => {
-                currentAutomationForm.dispatch({ type: 'reset' })
+                activeForm.dispatch({ type: 'reset' })
                 !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
                 commonForm.updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
               },
@@ -92,7 +93,7 @@ export function OmniAutomationFormController() {
               icon: circle_slider,
               iconShrink: 2,
               action: () => {
-                currentAutomationForm.dispatch({ type: 'reset' })
+                activeForm.dispatch({ type: 'reset' })
                 !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
                 commonForm.updateState(
                   'uiDropdownProtection',
@@ -111,7 +112,7 @@ export function OmniAutomationFormController() {
               icon: circle_slider,
               iconShrink: 2,
               action: () => {
-                currentAutomationForm.dispatch({ type: 'reset' })
+                activeForm.dispatch({ type: 'reset' })
                 !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
                 commonForm.updateState('uiDropdownProtection', AutomationFeatures.STOP_LOSS)
               },
@@ -127,7 +128,7 @@ export function OmniAutomationFormController() {
               icon: circle_slider,
               iconShrink: 2,
               action: () => {
-                currentAutomationForm.dispatch({ type: 'reset' })
+                activeForm.dispatch({ type: 'reset' })
                 !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
                 commonForm.updateState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
               },
@@ -142,13 +143,13 @@ export function OmniAutomationFormController() {
     protection: commonForm.state.uiDropdownProtection,
   }
 
-  const resolvedAction = commonForm.state.activeAction || currentAutomationForm.state.action
+  const resolvedAction = commonForm.state.activeAction || activeForm.state.action
 
   const isAddOrUpdateAction =
     resolvedAction && [TriggerAction.Add, TriggerAction.Update].includes(resolvedAction)
   const isRemoveAction = resolvedAction === TriggerAction.Remove
 
-  const isFormEmpty = isOmniAutomationFormEmpty(currentAutomationForm.state, activeUiDropdown)
+  const isFormEmpty = isOmniAutomationFormEmpty(activeForm.state, activeUiDropdown)
 
   return (
     <OmniAutomationFormView

@@ -23,6 +23,7 @@ import {
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
+import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
@@ -45,6 +46,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+  const [hash] = useHash()
 
   const featureToggles = getAaveLikeFeatureToggle(protocol)
 
@@ -117,6 +119,9 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           automation: getAaveLikeAutomationMetadataValues({
             positionTriggers: productContext.automation.positionTriggers,
             simulationResponse: productContext.automation.simulationData,
+            commonFormState: productContext.automation.commonForm.state,
+            automationForms: productContext.automation.automationForms,
+            hash,
           }),
         },
         elements: {
