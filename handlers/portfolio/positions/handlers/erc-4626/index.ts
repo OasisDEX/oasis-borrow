@@ -134,6 +134,7 @@ async function getErc4626Positions({
               collateralToken: quoteToken,
               label: vault.name,
               networkName,
+              positionId: vaultId,
               productType: OmniProductType.Earn,
               protocol: vault.protocol,
               pseudoProtocol: Erc4626PseudoProtocol,
