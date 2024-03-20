@@ -677,7 +677,11 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   `,
   getErc4626PositionAggregatedData: gql`
     query Erc4626AggregatedData($vault: String!, $dpmProxyAddress: String!) {
-      summerEvents(where: { account: $dpmProxyAddress, vault: $vault }) {
+      summerEvents(
+        where: { account: $dpmProxyAddress, vault: $vault }
+        orderBy: timestamp
+        orderDirection: desc
+      ) {
         id
         kind
         quoteToken {
