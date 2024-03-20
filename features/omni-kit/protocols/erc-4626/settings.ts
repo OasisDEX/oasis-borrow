@@ -33,7 +33,15 @@ export const settings: OmniProtocolSettings = {
     },
   },
   pullTokens: {
-    [NetworkIds.MAINNET]: ['DAI', 'ETH', 'WBTC'],
+    [NetworkIds.MAINNET]: [
+      'CBETH',
+      'DAI',
+      'ETH',
+      'RETH',
+      'STETH',
+      'WBTC',
+      'WSTETH',
+    ],
   },
 }
 

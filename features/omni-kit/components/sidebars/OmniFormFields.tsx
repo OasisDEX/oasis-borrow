@@ -1,5 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { OmniInputSwap } from 'features/omni-kit/components/sidebars/OmniInputSwap'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import type {
   FormActionsUpdateDeposit,
@@ -54,7 +55,7 @@ export function OmniFormFieldDeposit({
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, productType },
+    environment: { isOracless, networkId, productType, quoteToken, quoteBalance, settings },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
@@ -78,6 +79,13 @@ export function OmniFormFieldDeposit({
       maxAmount={maxAmount}
       maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
       maxAmountLabel={t(maxAmountLabel)}
+      swapController={
+        <OmniInputSwap
+          defaultToken={quoteToken}
+          defaultTokenBalance={quoteBalance}
+          tokens={settings.pullTokens?.[networkId] ?? []}
+        />
+      }
       onChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-deposit',
