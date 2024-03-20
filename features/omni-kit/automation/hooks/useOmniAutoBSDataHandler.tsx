@@ -1,4 +1,6 @@
 import type { LendingPosition } from '@oasisdex/dma-library'
+import { RiskRatio } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
 import {
@@ -12,7 +14,14 @@ import { useTranslation } from 'next-i18next'
 export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationTypes }) => {
   const { t } = useTranslation()
   const {
-    environment: { productType, collateralToken, priceFormat, isShort },
+    environment: {
+      productType,
+      collateralToken,
+      priceFormat,
+      isShort,
+      collateralPrecision,
+      quotePrecision,
+    },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -21,6 +30,7 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
     automation: {
       commonForm: { state: commonState },
       automationForms,
+      simulationData,
     },
     position: {
       currentPosition: { position },
@@ -96,6 +106,36 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
   const currentLtv = castedPosition.riskRatio.loanToValue
   const pricesDenomination = isShort ? ('debt' as const) : ('collateral' as const)
 
+  const afterTargetMultiply = afterTargetLtv
+    ? new RiskRatio(afterTargetLtv.div(100), RiskRatio.TYPE.LTV).multiple
+    : undefined
+
+  const deviation =
+    simulationData?.simulation && 'targetLTVWithDeviation' in simulationData?.simulation
+      ? simulationData?.simulation.targetLTVWithDeviation
+      : undefined
+
+  const collateralAmountAfterExecution =
+    simulationData?.simulation && 'collateralAmountAfterExecution' in simulationData?.simulation
+      ? new BigNumber(simulationData.simulation.collateralAmountAfterExecution).shiftedBy(
+          -collateralPrecision,
+        )
+      : undefined
+
+  const debtAmountAfterExecution =
+    simulationData?.simulation && 'debtAmountAfterExecution' in simulationData?.simulation
+      ? new BigNumber(simulationData.simulation.debtAmountAfterExecution).shiftedBy(-quotePrecision)
+      : undefined
+
+  const collateralToBuyOrSellOnExecution = {
+    [AutomationFeatures.AUTO_BUY]: collateralAmountAfterExecution?.minus(
+      castedPosition.collateralAmount,
+    ),
+    [AutomationFeatures.AUTO_SELL]:
+      collateralAmountAfterExecution &&
+      castedPosition.collateralAmount.minus(collateralAmountAfterExecution),
+  }[type]
+
   return {
     castedPosition,
     isActive,
@@ -114,5 +154,10 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
     nextPrice,
     autoBSTriggerExecutionLtvContentCardCommonData,
     autoBSTriggerTargetLtvContentCardCommonData,
+    afterTargetMultiply,
+    deviation,
+    collateralAmountAfterExecution,
+    debtAmountAfterExecution,
+    collateralToBuyOrSellOnExecution,
   }
 }

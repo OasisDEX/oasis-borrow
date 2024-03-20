@@ -195,7 +195,7 @@ export function OmniAutomationFormView({
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
       label: t(primaryButtonLabel),
-      disabled: suppressValidation ? false : isPrimaryButtonDisabled,
+      disabled: suppressValidation || isTxSuccess ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
       withoutNextLink: true,
@@ -209,6 +209,7 @@ export function OmniAutomationFormView({
       action: textButtonAction,
       hidden:
         isTxInProgress ||
+        isTxSuccess ||
         (isTextButtonHidden &&
           currentStep === OmniSidebarAutomationStep.Manage &&
           !isTriggerEnabled),

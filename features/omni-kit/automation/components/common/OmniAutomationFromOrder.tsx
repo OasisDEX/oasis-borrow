@@ -6,9 +6,8 @@ import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aav
 import { AutomationFeatures } from 'features/automation/common/types'
 import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/components/common/OmniAutomationNotGuaranteedInfo'
 import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components/common/OmniDoubleStopLossWarning'
-import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
+import { useOmniAutomationOrderInformationItems } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { formatUsdValue } from 'helpers/formatters/format'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -28,10 +27,9 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
   const { t } = useTranslation()
   const {
     environment: { productType },
-    tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
   const {
-    automation: { isSimulationLoading, commonForm, automationForms, simulationData },
+    automation: { commonForm, automationForms, simulationData },
     dynamicMetadata: {
       values: { automation },
     },
@@ -40,17 +38,13 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
 
   const isProtection = hash === 'protection'
 
-  const formatted = {
-    totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
-  }
-
-  const isLoading = !isTxSuccess && isSimulationLoading
-
   const activeUiDropdown = isProtection
     ? commonForm.state.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
     : commonForm.state.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
 
   const currentAutomationForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
+
+  const items = useOmniAutomationOrderInformationItems()
 
   return (
     <>
@@ -86,26 +80,7 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
           )}
         </>
       )}
-      <InfoSection
-        title={t('vault-changes.order-information')}
-        items={[
-          ...(isTxSuccess
-            ? [
-                {
-                  label: t('system.total-cost'),
-                  value: formatted.totalCost,
-                  isLoading,
-                },
-              ]
-            : [
-                {
-                  label: t('max-gas-fee'),
-                  value: <OmniGasEstimation />,
-                  isLoading,
-                },
-              ]),
-        ]}
-      />
+      <InfoSection title={t('vault-changes.order-information')} items={items} />
       {showDisclaimer && <OmniAutomationNotGuaranteedInfo />}
     </>
   )

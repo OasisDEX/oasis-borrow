@@ -731,5 +731,6 @@ export function setupProductContext(
     vaultHistory$,
     yields$,
     yieldsChange$,
+    onEveryBlock$,
   }
 }

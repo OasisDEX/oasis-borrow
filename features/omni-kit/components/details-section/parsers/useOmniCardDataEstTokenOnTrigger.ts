@@ -1,58 +1,32 @@
 import type BigNumber from 'bignumber.js'
-import { getCollateralDuringLiquidation } from 'features/automation/protection/stopLoss/helpers'
 import type {
   OmniContentCardBase,
   OmniContentCardDataWithModal,
 } from 'features/omni-kit/components/details-section'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
 interface OmniCardDataEstTokenOnTriggerParams extends OmniContentCardDataWithModal {
-  isCollateralActive: boolean
   dynamicStopLossPrice?: BigNumber
   afterDynamicStopLossPrice?: BigNumber
   closeToToken: string
   stateCloseToToken: string
-  collateralAmount: BigNumber
-  debtAmount: BigNumber
-  liquidationPrice: BigNumber
-  liquidationPenalty: BigNumber
   maxToken?: BigNumber
   afterMaxToken?: BigNumber
+  savingCompareToLiquidation?: BigNumber
 }
 
 export function useOmniCardDataEstTokenOnTrigger({
-  isCollateralActive,
   dynamicStopLossPrice,
   afterDynamicStopLossPrice,
   closeToToken,
   stateCloseToToken,
-  collateralAmount,
-  debtAmount,
-  liquidationPrice,
-  liquidationPenalty,
   maxToken,
   afterMaxToken,
+  savingCompareToLiquidation,
   modal,
 }: OmniCardDataEstTokenOnTriggerParams): OmniContentCardBase {
   const { t } = useTranslation()
-
-  const collateralDuringLiquidation = getCollateralDuringLiquidation({
-    lockedCollateral: collateralAmount,
-    debt: debtAmount,
-    liquidationPrice,
-    liquidationPenalty,
-  })
-
-  const savingCompareToLiquidation =
-    dynamicStopLossPrice && maxToken
-      ? (afterMaxToken || maxToken).minus(
-          collateralDuringLiquidation.times(
-            !isCollateralActive ? afterDynamicStopLossPrice || dynamicStopLossPrice : one,
-          ),
-        )
-      : undefined
 
   return {
     title: t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', {

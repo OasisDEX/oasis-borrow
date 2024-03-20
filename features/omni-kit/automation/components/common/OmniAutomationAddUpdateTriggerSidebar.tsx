@@ -9,6 +9,7 @@ import { OmniAutomationCancelNotice } from 'features/omni-kit/automation/compone
 import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components/common/OmniAutomationFromOrder'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { TriggerAction } from 'helpers/triggers'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -40,16 +41,18 @@ export const OmniAutomationAddUpdateTriggerSidebar: FC = ({ children }) => {
   }
 
   const notice = {
-    [AutomationFeatures.STOP_LOSS]: (
-      <OmniAutomationCancelNotice
-        content={t('protection.cancel-notice', { ratioParam: t('system.loan-to-value') })}
-      />
-    ),
-    [AutomationFeatures.TRAILING_STOP_LOSS]: (
-      <OmniAutomationCancelNotice
-        content={t('protection.cancel-notice', { ratioParam: t('system.loan-to-value') })}
-      />
-    ),
+    [AutomationFeatures.STOP_LOSS]:
+      commonForm.state.activeAction === TriggerAction.Remove ? (
+        <OmniAutomationCancelNotice
+          content={t('protection.cancel-notice', { ratioParam: t('system.loan-to-value') })}
+        />
+      ) : null,
+    [AutomationFeatures.TRAILING_STOP_LOSS]:
+      commonForm.state.activeAction === TriggerAction.Remove ? (
+        <OmniAutomationCancelNotice
+          content={t('protection.cancel-notice', { ratioParam: t('system.loan-to-value') })}
+        />
+      ) : null,
     [AutomationFeatures.AUTO_SELL]: null,
     [AutomationFeatures.AUTO_BUY]: null,
     [AutomationFeatures.PARTIAL_TAKE_PROFIT]: (

@@ -1,6 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
+  getCollateralDuringLiquidation,
   getDynamicStopLossPrice,
   getMaxToken,
   getSliderPercentageFill,
@@ -140,18 +141,32 @@ export const useOmniStopLossDataHandler = () => {
       debt: castedPosition.debtAmount,
     })
 
-  const estTokenOnTriggerContentCardCommonData = useOmniCardDataEstTokenOnTrigger({
-    isCollateralActive,
+  const collateralDuringLiquidation = getCollateralDuringLiquidation({
+    lockedCollateral: castedPosition.collateralAmount,
+    debt: castedPosition.debtAmount,
     liquidationPrice,
-    collateralAmount: castedPosition.collateralAmount,
-    debtAmount: castedPosition.debtAmount,
     liquidationPenalty: positionLiquidationPenalty,
+  })
+
+  const savingCompareToLiquidation =
+    resolvedDynamicStopLossPrice && maxToken
+      ? (afterMaxToken || maxToken).minus(
+          collateralDuringLiquidation.times(
+            !isCollateralActive
+              ? resolvedAfterDynamicStopLossPrice || resolvedDynamicStopLossPrice
+              : one,
+          ),
+        )
+      : undefined
+
+  const estTokenOnTriggerContentCardCommonData = useOmniCardDataEstTokenOnTrigger({
     dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
     closeToToken,
     stateCloseToToken,
     maxToken,
     afterMaxToken,
+    savingCompareToLiquidation,
     modal: (
       <OmniCardDataEstTokenOnTriggerModal
         token={closeToToken}
@@ -223,5 +238,6 @@ export const useOmniStopLossDataHandler = () => {
     sliderMax,
     sliderPercentageFill,
     sliderStep,
+    savingCompareToLiquidation,
   }
 }
