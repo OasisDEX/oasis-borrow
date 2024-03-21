@@ -66,6 +66,7 @@ export function OmniAutomationFormView({
       commonForm: { updateState: updateCommonState },
       simulationData,
       setSimulation,
+      setCachedOrderInfoItems,
     },
     position: { resolvedId },
     dynamicMetadata: {
@@ -142,6 +143,7 @@ export function OmniAutomationFormView({
     onSelectTransition: txHandler,
     onTransition: () => null,
     onUpdated: () => {
+      setCachedOrderInfoItems(undefined)
       setTxDetails(undefined)
       setStep(editingStep)
       txSuccessAction && txSuccessAction()

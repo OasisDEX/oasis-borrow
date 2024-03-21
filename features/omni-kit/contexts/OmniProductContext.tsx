@@ -2,6 +2,7 @@ import type { LendingPosition, Strategy, SupplyPosition, SwapData } from '@oasis
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { ItemProps } from 'components/infoSection/Item'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -283,6 +284,8 @@ interface ProductContextAutomation {
   isSimulationLoading?: boolean
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationResponse | undefined>>
+  cachedOrderInfoItems?: ItemProps[]
+  setCachedOrderInfoItems: Dispatch<SetStateAction<ItemProps[] | undefined>>
 }
 
 interface GenericProductContext<Position, Form, Auction, Metadata> {
@@ -427,6 +430,8 @@ export function OmniProductContextProvider({
   const [automationSimulationData, setAutomationSimulationData] =
     useState<OmniAutomationSimulationResponse>()
   const [isAutomationSimulationLoading, setAutomationIsLoadingSimulation] = useState(false)
+  const [cachedAutomationOrderInfoItems, setCachedAutomationOrderInfoItems] =
+    useState<ItemProps[]>()
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
@@ -495,6 +500,8 @@ export function OmniProductContextProvider({
         isSimulationLoading: isAutomationSimulationLoading,
         setIsLoadingSimulation: setAutomationIsLoadingSimulation,
         setSimulation: setAutomationSimulationData,
+        cachedOrderInfoItems: cachedAutomationOrderInfoItems,
+        setCachedOrderInfoItems: setCachedAutomationOrderInfoItems,
       },
     }
   }, [

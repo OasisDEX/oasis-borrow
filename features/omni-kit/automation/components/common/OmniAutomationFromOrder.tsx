@@ -8,9 +8,10 @@ import { OmniAutomationNotGuaranteedInfo } from 'features/omni-kit/automation/co
 import { OmniDoubleStopLossWarning } from 'features/omni-kit/automation/components/common/OmniDoubleStopLossWarning'
 import { useOmniAutomationOrderInformationItems } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 interface OmniAutomationFromOrderProps {
   showReset?: boolean
@@ -26,15 +27,23 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
   const { t } = useTranslation()
   const {
     environment: { productType },
+    tx: { isTxInProgress, isTxSuccess },
+    automationSteps: { currentStep },
   } = useOmniGeneralContext()
   const {
-    automation: { commonForm, simulationData },
+    automation: { commonForm, simulationData, setCachedOrderInfoItems, cachedOrderInfoItems },
     dynamicMetadata: {
       values: { automation },
     },
   } = useOmniProductContext(productType)
 
-  const items = useOmniAutomationOrderInformationItems()
+  const { items, gasItem } = useOmniAutomationOrderInformationItems()
+
+  useEffect(() => {
+    if (!isTxInProgress && !isTxSuccess && currentStep === OmniSidebarAutomationStep.Transaction) {
+      setCachedOrderInfoItems(items)
+    }
+  }, [isTxInProgress, isTxSuccess, currentStep])
 
   if (!automation) {
     throw new Error('Automation dynamic metadata not available')
@@ -76,7 +85,10 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
           )}
         </>
       )}
-      <InfoSection title={t('vault-changes.order-information')} items={items} />
+      <InfoSection
+        title={t('vault-changes.order-information')}
+        items={[...(cachedOrderInfoItems || items), gasItem]}
+      />
       {showDisclaimer && <OmniAutomationNotGuaranteedInfo />}
     </>
   )

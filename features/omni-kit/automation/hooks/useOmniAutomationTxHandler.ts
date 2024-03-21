@@ -183,6 +183,13 @@ export const useOmniAutomationTxHandler = () => {
         onTxEndCallback()
       },
     }).subscribe((txState) => {
+      // if (txState.status === TxStatus.WaitingForConfirmation) {
+      //   setCachedTrigger({
+      //     current: null,
+      //     simulation: ,
+      //   })
+      // }
+
       if (txState.status === TxStatus.Success) {
         dispatch({ type: 'reset' })
         onTxEndCallback()

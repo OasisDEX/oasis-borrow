@@ -12,7 +12,10 @@ import { formatUsdValue } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export const useOmniAutomationOrderInformationItems = (): ItemProps[] => {
+export const useOmniAutomationOrderInformationItems = (): {
+  items: ItemProps[]
+  gasItem: ItemProps
+} => {
   const { t } = useTranslation()
 
   const {
@@ -32,23 +35,19 @@ export const useOmniAutomationOrderInformationItems = (): ItemProps[] => {
 
   const isLoading = !isTxSuccess && isSimulationLoading
 
-  const common = [
-    ...(isTxSuccess
-      ? [
-          {
-            label: t('system.total-cost'),
-            value: formatted.totalCost,
-            isLoading,
-          },
-        ]
-      : [
-          {
-            label: t('max-gas-fee'),
-            value: <OmniGasEstimation />,
-            isLoading,
-          },
-        ]),
-  ]
+  const estimationItem = {
+    label: t('max-gas-fee'),
+    value: <OmniGasEstimation />,
+    isLoading,
+  }
+
+  const totalCostItem = {
+    label: t('system.total-cost'),
+    value: formatted.totalCost,
+    isLoading,
+  }
+
+  const gasItem = isTxSuccess ? totalCostItem : estimationItem
 
   if (!automation) {
     throw new Error('Automation dynamic metadata not available')
@@ -59,21 +58,37 @@ export const useOmniAutomationOrderInformationItems = (): ItemProps[] => {
   switch (activeUiDropdown) {
     case AutomationFeatures.STOP_LOSS: {
       const stopLossItems = useOmniStopLossOrderInformationItems()
-      return [...stopLossItems, ...common]
+      return {
+        items: stopLossItems,
+        gasItem,
+      }
     }
     case AutomationFeatures.TRAILING_STOP_LOSS: {
       const trailingStopLossItems = useOmniTrailingStopLossOrderInformationItems()
-      return [...trailingStopLossItems, ...common]
+      return {
+        items: trailingStopLossItems,
+        gasItem,
+      }
     }
     case AutomationFeatures.AUTO_BUY:
     case AutomationFeatures.AUTO_SELL: {
       const autoBSItems = useOmniAutoBSOrderInformationItems()
-      return [...autoBSItems, ...common]
+      return {
+        items: autoBSItems,
+        gasItem,
+      }
     }
     case AutomationFeatures.PARTIAL_TAKE_PROFIT:
       const partialTakeProfitItems = useOmniPartialTakeProfitOrderInformationItems()
-      return [...partialTakeProfitItems, ...common]
+      return {
+        items: partialTakeProfitItems,
+        gasItem,
+      }
+
     default:
-      return common
+      return {
+        items: [],
+        gasItem,
+      }
   }
 }
