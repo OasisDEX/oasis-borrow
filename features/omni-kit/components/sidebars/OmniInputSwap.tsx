@@ -56,7 +56,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
           token: defaultToken,
         },
         ...(settings[`${type}Tokens`]?.[networkId] ?? []).map((token) => ({
-          address: getNetworkContracts(networkId).tokens.PYUSD.address,
+          address: getNetworkContracts(networkId).tokens[token].address,
           balance: extraTokensData[token].balance,
           digits: getToken(token).digits,
           precision: getToken(token).precision,
