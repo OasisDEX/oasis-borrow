@@ -44,7 +44,7 @@ export function OmniAutomationFormController() {
     throw new Error('Automation dynamic metadata not available')
   }
 
-  const { activeForm, activeUiDropdown, isOptimization, isProtection } = automation.resolved
+  const { activeForm, isOptimization, isProtection } = automation.resolved
 
   const availableAutomations = settings.availableAutomations[networkId]
 
