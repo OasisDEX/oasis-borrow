@@ -7,31 +7,28 @@ import type {
 } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniIsEarnFormEmpty } from 'features/omni-kit/helpers'
-import { Erc4626ApyTooltip } from 'features/omni-kit/protocols/erc-4626/components'
+import { Erc4626HeadlineApy } from 'features/omni-kit/protocols/erc-4626/components'
 import {
   Erc4626DetailsSectionContent,
   Erc4626DetailsSectionContentAllocation,
   Erc4626DetailsSectionFooter,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import {
-  Erc4626EstimatedMarketCap,
+  Erc4626EstimatedMarketPrice,
   Erc4626FormOrder,
 } from 'features/omni-kit/protocols/erc-4626/components/sidebar'
 import {
   erc4626FlowStateFilter,
-  getErc4626Apy,
   getErc4626EarnIsFormValid,
 } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
-import { notAvailable } from 'handlers/portfolio/constants'
 import { useAppConfig } from 'helpers/config'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { sparks } from 'theme/icons'
 
 export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
@@ -56,7 +53,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   } = useOmniGeneralContext()
 
   // it is safe to assume that in erc-4626 context label is always availabe string
-  const { address: vaultAddress } = erc4626VaultsByName[label as string]
+  const { address: vaultAddress, pricePicker } = erc4626VaultsByName[label as string]
 
   const validations = productContext.position.simulationCommon.getValidations({
     earnIsFormValid: getErc4626EarnIsFormValid({
@@ -89,7 +86,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
               productType,
               quoteAddress,
               protocol,
-              protocolRaw: `erc4626-${vaultAddress}`,
+              protocolRaw: `erc4626-${vaultAddress.toLowerCase()}`,
             }),
         },
         values: {
@@ -104,31 +101,17 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
           headlineDetails: [
             {
               label: t('omni-kit.headline.details.current-apy'),
-              value: formatDecimalAsPercent(
-                getErc4626Apy({
-                  rewardsApy: position.apyFromRewards.per365d,
-                  vaultApy: position.apy.per365d,
-                }),
-              ),
-              valueTooltip: (
-                <Erc4626ApyTooltip
-                  rewardsApy={position.apyFromRewards.per365d}
-                  vaultApy={position.apy.per365d}
-                />
-              ),
-              labelIcon: sparks,
+              children: <Erc4626HeadlineApy vaultAddress={vaultAddress} />,
             },
-            // TODO replace with real values
             {
               label: t('omni-kit.headline.details.30-days-avg-apy'),
-              value: notAvailable,
+              value: formatDecimalAsPercent(position.historicalApy.thirtyDayAverage),
             },
             {
               label: t('omni-kit.headline.details.tvl'),
               value: formatUsdValue(position.tvl.times(quotePrice)),
             },
           ],
-          extraDropdownItems: [],
           earnWithdrawMax: position.maxWithdrawal,
           earnAfterWithdrawMax: simulation?.maxWithdrawal ?? zero,
         },
@@ -143,8 +126,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             </>
           ),
           overviewWithSimulation: true,
-          // TODO: show only when rewards are available in vault
-          sidebarContent: <Erc4626EstimatedMarketCap token="MORPHO" />,
+          sidebarContent: pricePicker && <Erc4626EstimatedMarketPrice pricePicker={pricePicker} />,
           earnFormOrder: <Erc4626FormOrder />,
           earnFormOrderAsElement: Erc4626FormOrder,
         },

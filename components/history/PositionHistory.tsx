@@ -5,6 +5,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
+import type { Erc4626HistoryEvent } from 'features/omni-kit/protocols/erc-4626/history/types'
 import { filterAndGroupByTxHash } from 'features/positionHistory/filterAndGroupByTxHash'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useTranslation } from 'next-i18next'
@@ -17,6 +18,7 @@ interface PositionHistoryProps {
     | Partial<AjnaHistoryEvent>[]
     | Partial<AaveLikeHistoryEvent>[]
     | Partial<PositionHistoryEvent>[]
+    | Partial<Erc4626HistoryEvent>[]
   isOracless?: boolean
   isShort?: boolean
   priceFormat?: string

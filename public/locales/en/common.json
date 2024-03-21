@@ -218,9 +218,9 @@
       "protection-value": "On {{protection}}%",
       "view-position": "View Position",
       "header": {
-        "30-day-avg-apy": "30 day avg. APY",
-        "7-day-net-apy": "7 day net APY",
-        "90-day-net-apy": "90 day net APY",
+        "30-day-avg-apy": "30 days avg. APY",
+        "7-day-net-apy": "7 days net APY",
+        "90-day-net-apy": "90 days net APY",
         "action": "",
         "activity": "Activity",
         "annual-fee": "Annual fee",
@@ -477,6 +477,7 @@
     "collateral-deposit": "Collateral Deposit",
     "withdrawn": "Withdrawn",
     "repaid": "Repaid",
+    "transfer-to": "Transfer to",
     "debt-borrowed": "Debt Borrowed",
     "ltv": "Loan To Value",
     "liquidation-price": "Liquidation price",
@@ -3022,6 +3023,7 @@
     },
     "dupe-modal": {
       "title": "Are you sure you want to open a new {{collateralToken}}/{{quoteToken}} {{productType}} position on {{protocol}}?",
+      "title-with-label": "Are you sure you want to open a new {{label}} position?",
       "description-borrower-singular": "You already have borrower position of this type.",
       "description-borrower-plural": "You already have borrower positions of this type.",
       "description-lender-singular": "You already have lender position of this type.",
@@ -3337,6 +3339,7 @@
     },
     "position-page": {
       "common": {
+        "estimated-price": "Estimate <icon /> {{token}} price for better APY accuracy",
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
         "market-apy": "Market APY",
         "per-1k-usd": "{{amount}} {{token}} per $1,000",
@@ -3373,7 +3376,7 @@
     },
     "featured": "Featured",
     "promo-cards": {
-      "7-day-avg-apy": "7 day avg APY",
+      "7-day-avg-apy": "7 days avg APY",
       "active-management": "Active management",
       "ajna-pools-accumulate-rewards": "Ajna pools supported in Summer.fi accumulate token rewards over time",
       "automation-enabled": "Automation enabled",
@@ -3409,6 +3412,8 @@
       "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
       "passive-management": "Passive management",
       "short-token": "Short {{token}}",
+      "steakhouse-managed": "Steakhouse managed",
+      "token-rewards": "Token rewards",
       "up-to-exposure-against": "Up to {{maxMultiple}} exposure to {{collateralToken}} against {{debtToken}}",
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "up-to-yield-exposure": "Up to {{maxMultiple}} Yield Exposure",

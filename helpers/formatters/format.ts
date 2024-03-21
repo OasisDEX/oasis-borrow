@@ -68,7 +68,7 @@ export function formatCryptoBalance(amount: BigNumber): string {
   return formatAsShorthandNumbers(amount, 2)
 }
 
-export function formatUsdValue(amount: BigNumber): string {
+export function formatUsdValue(amount: BigNumber, decimalPlaces = 2): string {
   const absoluteAmount = amount.absoluteValue()
 
   return amount.isZero()
@@ -76,8 +76,8 @@ export function formatUsdValue(amount: BigNumber): string {
     : absoluteAmount.lt(0.01)
     ? `$<${amount.isNegative() ? '-' : ''}0.01`
     : absoluteAmount.lt(million)
-    ? `$${amount.toFormat(2, BigNumber.ROUND_DOWN)}`
-    : `$${formatAsShorthandNumbers(amount, 2)}`
+    ? `$${amount.toFormat(decimalPlaces, BigNumber.ROUND_DOWN)}`
+    : `$${formatAsShorthandNumbers(amount, decimalPlaces)}`
 }
 
 export function formatFiatBalance(amount: BigNumber): string {

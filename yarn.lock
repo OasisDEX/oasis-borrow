@@ -2390,17 +2390,17 @@
   resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.49.tgz#40ee447b2475778f1d633558d0f51609a20cfff3"
   integrity sha512-zyM5p6eDbLsug9txOI+vpOt603tIqsxvtnRMNT/IxlMiGhyQMavIPq4DrKrCBFxdZAxJ/71I2VqUuGR9mqGP9A==
 
-"@oasisdex/automation@1.6.4-alpha.2":
-  version "1.6.4-alpha.2"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.4-alpha.2.tgz#126ced26a991483b400d71bd42e6191634231786"
-  integrity sha512-FbOUQAjn4Cr9Q0giCXrxiwiIZ8kh3dJW5uG4oR7VJW+GNA8x1HdJdMcKaTD3uROzMZg1M2UnCaprZY9bfSxXeg==
+"@oasisdex/automation@1.6.5":
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.5.tgz#ef75d4ef296012d6345c0dbe71e3c8fe8a131c78"
+  integrity sha512-W/z1OllFujfF/pocgrPS8wT4h32yuumFmXe+OxZuPcQEOsnxFDrAKfsCC2k20bLOYdL06J7G2smzFaZb6qCVHg==
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.34":
-  version "0.6.34"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.34.tgz#29ce8a186562713395066a455d32bfe0befa58ab"
-  integrity sha512-kAc5dr4kxVI2Yo5Tfm1wm32GuI/y/8zqGr86cbaLXCRBj1MNsZaFTBis3xDYHsewH5zjQuZM9aMFpjpO9BZekw==
+"@oasisdex/dma-library@0.6.41":
+  version "0.6.41"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.41.tgz#51b90a94900b471a919ee551a93d1737a6fd5e8b"
+  integrity sha512-Moco9hxKEGG3f1IMwYNHxZzOXoJCw+qyHvoATg6SGuyFjIcIuP9ewhcEZvk2blfE4Y09SSQCOJQbdatnX/Kfsg==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
@@ -16678,10 +16678,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-1.5.0.tgz#26fd5a914f627fa722b1a0731049b3590128817e"
-  integrity sha512-C4/Z78DKwjggL0WyUJai570J7HdP7sSjYVcug/9Y6bTbp1H2Qwlz/LOP/3FJvnVTJuTXoOUWsH94KHUb5lTvog==
+zod@^3.22.4:
+  version "3.22.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
+  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
 
 zustand@^4.4.1:
   version "4.4.2"

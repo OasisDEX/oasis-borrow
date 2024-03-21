@@ -1,30 +1,104 @@
-import type { views } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
+import { getTokensPrices, type TokensPricesList } from 'handlers/portfolio/positions/helpers'
+import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
+import { one } from 'helpers/zero'
 
-// TODO: entire file is a mock
+interface GetErc4626ApyParametersParams {
+  prices?: TokensPricesList
+  rewardTokenPrice?: BigNumber
+}
 
-type GetErc4626ApyParametersResponse = ReturnType<
-  Parameters<typeof views.common.getErc4626Position>[1]['getVaultApyParameters']
->
+interface RewardToken {
+  address: string
+  symbol: string
+  decimals: number
+  amountWei: string
+  humanReadable: string
+  apy: number
+}
 
-export async function getErc4626ApyParameters(): GetErc4626ApyParametersResponse {
-  return new Promise((resolve) =>
-    resolve({
+interface RewardsByMarket {
+  market: {
+    marketId: string
+    collateral: {
+      address: string
+      symbol: string
+      decimals: number
+      priceUsd: number | undefined
+    }
+    suppliedAssets: string
+    suppliedAssetsHumanReadable: string
+    allocation: number
+    liquidationLtv: number
+  }
+  tokens: RewardToken[]
+}
+
+interface GetRewardsResponse {
+  metaMorpho: {
+    address: string
+    weeklyApy: number
+    monthlyApy: number
+    dailyApy: number
+    apy: number
+    fee: number
+    totalAssets: string
+  }
+  rewardsByMarket: RewardsByMarket[]
+  rewardsByToken: RewardToken[]
+}
+
+export function getErc4626ApyParameters({
+  prices,
+  rewardTokenPrice = one,
+}: GetErc4626ApyParametersParams) {
+  return async (vaultAddress: string) => {
+    const resolvedPrices = prices ?? (await getTokensPrices()).tokens ?? {}
+
+    const wstETHPrice = resolvedPrices['WSTETH']
+    const response = await fetchFromFunctionsApi(
+      `/api/morpho/meta-morpho?address=${vaultAddress}&price_MORPHO=${rewardTokenPrice}&price_WSTETH=${wstETHPrice}`,
+    )
+
+    if (response.status !== 200) {
+      console.warn('Failed to fetch vault details', response)
+      return {
+        vault: {
+          apy: '0',
+          fee: '0',
+        },
+      }
+    }
+
+    const data = (await response.json()) as GetRewardsResponse
+
+    const apyFromRewards = data.rewardsByToken
+      .map((token) => {
+        return {
+          token: token.symbol.toUpperCase(),
+          value: token.apy.toString(),
+          per1kUsd:
+            token.symbol.toUpperCase() === 'MORPHO' ? token.humanReadable.toString() : undefined,
+        }
+      })
+      .filter((token) => token.value !== '0')
+
+    const allocations = data.rewardsByMarket
+      .map((market) => ({
+        token: market.market.collateral.symbol.toUpperCase(),
+        supply: market.market.suppliedAssetsHumanReadable,
+        riskRatio: market.market.liquidationLtv.toString(),
+      }))
+      .filter((market) => market.supply !== '0')
+
+    return {
       vault: {
-        apy: '0.0175',
+        apy: data.metaMorpho.apy.toString(),
         curator: 'Steakhouse',
-        fee: '0.05',
+        fee: data.metaMorpho.fee.toString(),
       },
-      apyFromRewards: [
-        {
-          token: 'WSTETH',
-          value: '0.0125',
-        },
-        {
-          token: 'MORPHO',
-          value: '0.025',
-          per1kUsd: '250',
-        },
-      ],
-    }),
-  )
+      apyFromRewards: apyFromRewards.length > 0 ? apyFromRewards : undefined,
+      allocations: allocations.length > 0 ? allocations : undefined,
+    }
+  }
 }

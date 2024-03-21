@@ -12,6 +12,7 @@ import type {
   AjnaHistoryResponse,
 } from 'features/omni-kit/protocols/ajna/history/types'
 import type { Erc4626PositionParametersResponse } from 'features/omni-kit/protocols/erc-4626/helpers'
+import type { Erc4626SummerEventsResponse } from 'features/omni-kit/protocols/erc-4626/history/types'
 import type { MorphoBorrowerEventsResponse } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type {
   AaveCumulativesResponse,
@@ -20,6 +21,7 @@ import type {
 } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
+import type { Erc4626DpmPositionsResponse } from 'handlers/portfolio/positions/handlers/erc-4626/types'
 import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 import type { Erc4626InterestRatesResponse } from 'handlers/product-hub/update-handlers/erc-4626/erc4626Handler'
@@ -59,7 +61,9 @@ export type Subgraphs = {
   }
   Erc4626: {
     getErc4626PositionParameters: { vault: string; dpmProxyAddress: string }
+    getErc4626PositionAggregatedData: { vault: string; dpmProxyAddress: string }
     getErc4626InterestRates: { vault: string }
+    getErc4626DpmPositions: { dpmProxyAddress: string[] }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -147,8 +151,10 @@ export type SubgraphsResponses = {
     }>
   }
   Erc4626: {
-    getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse[]>
+    getErc4626PositionParameters: SubgraphBaseResponse<Erc4626PositionParametersResponse>
+    getErc4626PositionAggregatedData: SubgraphBaseResponse<Erc4626SummerEventsResponse>
     getErc4626InterestRates: SubgraphBaseResponse<Erc4626InterestRatesResponse>
+    getErc4626DpmPositions: SubgraphBaseResponse<Erc4626DpmPositionsResponse>
   }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{

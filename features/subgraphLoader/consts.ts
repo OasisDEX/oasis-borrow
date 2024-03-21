@@ -655,7 +655,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   `,
   getErc4626PositionParameters: gql`
     query getPositionParameters($vault: String!, $dpmProxyAddress: String!) {
-      positions(where: { vault: $vault, account: $dpmProxyAddress }) {
+      positions(where: { account: $dpmProxyAddress }) {
         id
         shares
         earnCumulativeFeesUSD
@@ -664,14 +664,87 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         earnCumulativeFeesInQuoteToken
         earnCumulativeDepositInQuoteToken
         earnCumulativeWithdrawInQuoteToken
-        vault {
-          interestRates(orderBy: timestamp, orderDirection: desc, first: 30) {
-            timestamp
-            rate
-          }
-          totalAssets
-          totalShares
+      }
+      vaults(where: { id: $vault }) {
+        interestRates(orderBy: timestamp, orderDirection: desc, first: 30) {
+          timestamp
+          rate
         }
+        totalAssets
+        totalShares
+      }
+    }
+  `,
+  getErc4626PositionAggregatedData: gql`
+    query Erc4626AggregatedData($vault: String!, $dpmProxyAddress: String!) {
+      summerEvents(
+        where: { account: $dpmProxyAddress, vault: $vault }
+        orderBy: timestamp
+        orderDirection: desc
+      ) {
+        id
+        kind
+        quoteToken {
+          id
+          address
+        }
+        isOpen
+        depositedUSD
+        depositedInQuoteToken
+        depositTransfers {
+          id
+          priceInUSD
+          token
+          from
+          to
+          amount
+          amountUSD
+          txHash
+        }
+        withdrawnUSD
+        withdrawnInQuoteToken
+        withdrawTransfers {
+          id
+          priceInUSD
+          token
+          from
+          to
+          amount
+          amountUSD
+          txHash
+        }
+        quoteToken {
+          id
+          address
+          decimals
+          symbol
+        }
+        quoteAddress
+        quoteBefore
+        quoteAfter
+        quoteDelta
+        quoteTokenPriceUSD
+        swapToToken
+        swapToAmount
+        swapFromToken
+        swapFromAmount
+        gasFeeInQuoteToken
+        marketPrice
+        oasisFeeToken
+        oasisFee
+        oasisFeeUSD
+        oasisFeeInQuoteToken
+        gasUsed
+        gasPrice
+        gasFeeUSD
+        gasFeeInQuoteToken
+        totalFee
+        totalFeeUSD
+        totalFeeInQuoteToken
+        ethPrice
+        timestamp
+        blockNumber
+        txHash
       }
     }
   `,
@@ -680,6 +753,27 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       vaults(where: { id: $vault }) {
         interestRates(orderBy: timestamp, orderDirection: desc, first: 7) {
           rate
+        }
+      }
+    }
+  `,
+  getErc4626DpmPositions: gql`
+    query getInterestRates($dpmProxyAddress: [String!]) {
+      positions(where: { account_in: $dpmProxyAddress }) {
+        account {
+          address
+          user {
+            id
+          }
+          vaultId
+        }
+        vault {
+          asset {
+            address
+            decimals
+            symbol
+          }
+          id
         }
       }
     }

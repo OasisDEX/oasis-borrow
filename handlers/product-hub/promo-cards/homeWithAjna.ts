@@ -5,14 +5,18 @@ import {
   getAaveV3PromoCards,
   getAjnaPromoCards,
   getMakerPromoCards,
+  getSteakhousePromoCards,
   promoCardEarnOnYourAssets,
   promoCardFullySelfCustodial,
   promoCardLearnAboutBorrow,
   promoCardLearnAboutMultiply,
   promoCardsWhatAreAjnaRewards,
 } from 'handlers/product-hub/promo-cards/collections'
+import { useAppConfig } from 'helpers/config'
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
+  const { Erc4626Vaults: erc4626VaultsEnabled } = useAppConfig('features')
+
   const {
     promoCardETHCMakerBorrow,
     promoCardWBTCBMakerBorrow,
@@ -48,6 +52,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardWBTCUSDCAjnaEarn,
     promoCardWSTETHDAIAjnaEarn,
   } = getAjnaPromoCards(table)
+  const { promoUSDCErc4626Steakhouse } = getSteakhousePromoCards(table)
 
   return {
     [ProductHubProductType.Borrow]: {
@@ -96,19 +101,36 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     },
     [ProductHubProductType.Earn]: {
       default: [
+        ...(erc4626VaultsEnabled ? [promoUSDCErc4626Steakhouse] : []),
         promoCardDsrMakerEarn,
         promoCardWSTETHUSDCAaveV3EthereumEarn,
-        promoCardETHUSDCAjnaEarn,
+        ...(!erc4626VaultsEnabled ? [promoCardETHUSDCAjnaEarn] : []),
       ],
       tokens: {
         ETH: [
+          ...(erc4626VaultsEnabled ? [promoUSDCErc4626Steakhouse] : []),
           promoCardWSTETHUSDCAaveV3EthereumEarn,
           promoCardSTETHUSDCAaveV2Earn,
-          promoCardUSDCETHAjnaEarn,
+          ...(!erc4626VaultsEnabled ? [promoCardUSDCETHAjnaEarn] : []),
         ],
-        BTC: [promoCardUSDCWBTCAjnaEarn, promoCardEarnOnYourAssets, promoCardFullySelfCustodial],
-        USDC: [promoCardETHUSDCAjnaEarn, promoCardWBTCUSDCAjnaEarn, promoCardEarnOnYourAssets],
-        DAI: [promoCardDsrMakerEarn, promoCardWSTETHDAIAjnaEarn, promoCardEarnOnYourAssets],
+        BTC: [
+          ...(erc4626VaultsEnabled ? [promoUSDCErc4626Steakhouse] : []),
+          promoCardUSDCWBTCAjnaEarn,
+          promoCardEarnOnYourAssets,
+          ...(!erc4626VaultsEnabled ? [promoCardFullySelfCustodial] : []),
+        ],
+        USDC: [
+          ...(erc4626VaultsEnabled ? [promoUSDCErc4626Steakhouse] : []),
+          promoCardETHUSDCAjnaEarn,
+          promoCardWBTCUSDCAjnaEarn,
+          ...(!erc4626VaultsEnabled ? [promoCardEarnOnYourAssets] : []),
+        ],
+        DAI: [
+          ...(erc4626VaultsEnabled ? [promoUSDCErc4626Steakhouse] : []),
+          promoCardDsrMakerEarn,
+          promoCardWSTETHDAIAjnaEarn,
+          ...(!erc4626VaultsEnabled ? [promoCardEarnOnYourAssets] : []),
+        ],
       },
     },
   }

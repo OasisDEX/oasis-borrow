@@ -19,6 +19,7 @@ export type PortfolioPositionAutomations = {
 }
 
 export type PortfolioPosition = {
+  assetLabel?: string
   availableToMigrate?: boolean
   automations: PortfolioPositionAutomations
   description?: string
