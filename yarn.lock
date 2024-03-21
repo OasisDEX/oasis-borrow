@@ -2397,10 +2397,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.38":
-  version "0.6.38"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.38.tgz#57b8136c45ea4b8dcd2b6ea7beb2b57a5d1a30b7"
-  integrity sha512-uQhQr3vgramj3cUjttwnEPtxXQSBYaiGI1oOi0jSoNHm/ZkLSs3xt1pVgYtH7MXpiIrgwN/0mfber3sBecNruw==
+"@oasisdex/dma-library@0.6.43":
+  version "0.6.43"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.43.tgz#f91ee9e34303957474cc348bd387931273e5359b"
+  integrity sha512-rgNahNO4aU5PN1K3/BWVa8OJjSmGme3VmkWW7Ga/+otvW1c4iM++0j8aflD4j51iSneQax2LOSmA1wF/epjE9w==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
@@ -16678,10 +16678,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-1.5.0.tgz#26fd5a914f627fa722b1a0731049b3590128817e"
-  integrity sha512-C4/Z78DKwjggL0WyUJai570J7HdP7sSjYVcug/9Y6bTbp1H2Qwlz/LOP/3FJvnVTJuTXoOUWsH94KHUb5lTvog==
+zod@^3.22.4:
+  version "3.22.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
+  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
 
 zustand@^4.4.1:
   version "4.4.2"

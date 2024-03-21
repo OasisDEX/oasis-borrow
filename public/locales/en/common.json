@@ -3353,6 +3353,8 @@
       "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
       "passive-management": "Passive management",
       "short-token": "Short {{token}}",
+      "steakhouse-managed": "Steakhouse managed",
+      "token-rewards": "Token rewards",
       "up-to-exposure-against": "Up to {{maxMultiple}} exposure to {{collateralToken}} against {{debtToken}}",
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "up-to-yield-exposure": "Up to {{maxMultiple}} Yield Exposure",

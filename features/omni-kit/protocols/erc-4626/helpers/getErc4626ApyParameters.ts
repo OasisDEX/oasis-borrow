@@ -58,7 +58,7 @@ export function getErc4626ApyParameters({
 
     const wstETHPrice = resolvedPrices['WSTETH']
     const response = await fetchFromFunctionsApi(
-      `/api/morpho/meta-morpho?address=${vaultAddress}&morhoPrice=${rewardTokenPrice}&wsEthPrice=${wstETHPrice}`,
+      `/api/morpho/meta-morpho?address=${vaultAddress}&price_MORPHO=${rewardTokenPrice}&price_WSTETH=${wstETHPrice}`,
     )
 
     if (response.status !== 200) {
@@ -78,7 +78,8 @@ export function getErc4626ApyParameters({
         return {
           token: token.symbol.toUpperCase(),
           value: token.apy.toString(),
-          per1kUsd: token.humanReadable.toString(),
+          per1kUsd:
+            token.symbol.toUpperCase() === 'MORPHO' ? token.humanReadable.toString() : undefined,
         }
       })
       .filter((token) => token.value !== '0')
