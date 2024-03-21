@@ -83,8 +83,6 @@ export const OmniPartialTakeProfitSidebarController = () => {
     partialTakeProfitSecondTokenData,
   } = useOmniPartialTakeProfitDataHandler()
 
-  console.log('partialTakeProfitToken', partialTakeProfitToken)
-
   const [isFocus, setStartingPriceInputFocus] = useState<boolean>(false)
 
   const inputMask = useMemo(() => {
