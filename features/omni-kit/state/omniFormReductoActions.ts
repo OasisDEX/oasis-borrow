@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import type { OmniSwapToken } from 'features/omni-kit/types'
 
 export interface FormActionsUpdateDeposit {
   type: 'update-deposit'
@@ -32,14 +33,19 @@ export interface FormActionsUpdateWithdrawMax {
   type: 'update-withdraw-max'
   withdrawAmountMax: boolean
 }
+export interface FormActionsUpdateLoanToValue {
+  type: 'update-loan-to-value'
+  loanToValue: BigNumber
+}
+export interface FormActionsUpdateSwapToken {
+  type: 'update-swap-token'
+  pullToken?: OmniSwapToken
+  returnToken?: OmniSwapToken
+}
 export interface FormActionsUpdateDpm {
   type: 'update-dpm'
   dpmAddress: string
 }
 export interface FormActionsReset {
   type: 'reset'
-}
-export interface UpdateLoanToValue {
-  type: 'update-loan-to-value'
-  loanToValue: BigNumber
 }

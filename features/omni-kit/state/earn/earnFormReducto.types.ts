@@ -3,6 +3,7 @@ import type {
   FormActionsReset,
   FormActionsUpdateDeposit,
   FormActionsUpdateDpm,
+  FormActionsUpdateSwapToken,
   FormActionsUpdateWithdraw,
   FormActionsUpdateWithdrawMax,
 } from 'features/omni-kit/state'
@@ -10,20 +11,23 @@ import type {
   OmniEarnFormAction,
   OmniProductType,
   OmniSidebarEarnPanel,
+  OmniSwapToken,
 } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniEarnFormState {
   productType: OmniProductType.Earn
   action?: OmniEarnFormAction
-  dpmAddress: string
-  withdrawAmountMax: boolean
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
+  dpmAddress: string
+  pullToken?: OmniSwapToken
+  returnToken?: OmniSwapToken
   uiDropdown: OmniSidebarEarnPanel
   uiPill: Exclude<OmniEarnFormAction, OmniEarnFormAction.OpenEarn | OmniEarnFormAction.ClaimEarn>
+  withdrawAmount?: BigNumber
+  withdrawAmountMax: boolean
+  withdrawAmountUSD?: BigNumber
 }
 
 export type OmniEarnFormActions = ReductoActions<
@@ -31,6 +35,7 @@ export type OmniEarnFormActions = ReductoActions<
   | FormActionsUpdateDeposit
   | FormActionsUpdateWithdraw
   | FormActionsUpdateWithdrawMax
+  | FormActionsUpdateSwapToken
   | FormActionsUpdateDpm
   | FormActionsReset
 >

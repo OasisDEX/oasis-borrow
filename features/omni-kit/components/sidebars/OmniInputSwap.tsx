@@ -1,7 +1,9 @@
 import type BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { getToken } from 'blockchain/tokensMetadata'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import type { FC, ReactElement, ReactNode } from 'react'
@@ -9,23 +11,31 @@ import React, { useMemo, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
 interface OmniInputSwapProps {
+  children: (params: { swapController?: ReactNode }) => ReactElement
   defaultToken: string
+  defaultTokenAddress: string
   defaultTokenBalance: BigNumber
+  defaultTokenPrecision: number
   defaultTokenPrice: BigNumber
   type: 'pull' | 'return'
-  children: (params: { swapController?: ReactNode }) => ReactElement
 }
 
 export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   children,
   defaultToken,
+  defaultTokenAddress,
   defaultTokenBalance,
+  defaultTokenPrecision,
   defaultTokenPrice,
   type,
 }) => {
   const {
-    environment: { extraTokensData, networkId, settings },
+    environment: { extraTokensData, networkId, productType, settings },
   } = useOmniGeneralContext()
+  const {
+    form: { dispatch },
+  } = useOmniProductContext(productType)
+
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedToken, setSelectedToken] = useState<string>(defaultToken)
 
@@ -36,21 +46,28 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
     () =>
       [
         {
-          token: defaultToken,
+          address: defaultTokenAddress,
           balance: defaultTokenBalance,
+          precision: defaultTokenPrecision,
           price: defaultTokenPrice,
+          token: defaultToken,
         },
         ...(settings[`${type}Tokens`]?.[networkId] ?? []).map((token) => ({
-          token,
+          address: getNetworkContracts(networkId).tokens.PYUSD.address,
           balance: extraTokensData[token].balance,
+          digits: getToken(token).digits,
+          precision: getToken(token).precision,
           price: extraTokensData[token].price,
+          token,
         })),
       ]
         .filter(({ balance }) => !balance.isZero())
         .sort((a, b) => b.balance.times(b.price).minus(a.balance.times(a.price)).toNumber()),
     [
       defaultToken,
+      defaultTokenAddress,
       defaultTokenBalance,
+      defaultTokenPrecision,
       defaultTokenPrice,
       extraTokensData,
       networkId,
@@ -125,7 +142,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
             },
           }}
         >
-          {tokensList?.map(({ balance, token }) => (
+          {tokensList?.map(({ balance, token, ...rest }) => (
             <Flex
               as="li"
               key={token}
@@ -145,6 +162,13 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
               onClick={() => {
                 setSelectedToken(token)
                 setIsOpen(false)
+                dispatch({ type: 'reset' })
+                if (token === defaultToken) dispatch({ type: 'update-swap-token' })
+                else
+                  dispatch({
+                    type: 'update-swap-token',
+                    [`${type}Token`]: { balance, token, ...rest },
+                  })
               }}
             >
               <Flex sx={{ alignItems: 'center', columnGap: 2 }}>

@@ -3185,7 +3185,7 @@
       }
     },
     "validations": {
-      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",
+      "deposit-amount-exceeds-balance": "You cannot deposit more tokens than the amount in your wallet.",
       "payback-amount-exceeds-debt-token-balance": "You cannot pay back more than the amount of debt token in your wallet.",
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",

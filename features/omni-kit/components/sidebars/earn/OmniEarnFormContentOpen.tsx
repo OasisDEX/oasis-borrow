@@ -6,10 +6,20 @@ import React from 'react'
 
 export function OmniEarnFormContentOpen() {
   const {
-    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits, quotePrecision },
+    environment: {
+      quoteAddress,
+      quoteBalance,
+      quoteDigits,
+      quotePrecision,
+      quotePrice,
+      quoteToken,
+    },
   } = useOmniGeneralContext()
   const {
-    form: { dispatch },
+    form: {
+      dispatch,
+      state: { pullToken },
+    },
     dynamicMetadata: {
       validations: { isFormValid },
       elements: { extraEarnInput, earnFormOrder },
@@ -22,16 +32,18 @@ export function OmniEarnFormContentOpen() {
         defaultToken={quoteToken}
         defaultTokenBalance={quoteBalance}
         defaultTokenPrice={quotePrice}
+        defaultTokenAddress={quoteAddress}
+        defaultTokenPrecision={quotePrecision}
         type="pull"
       >
         {({ swapController }) => (
           <OmniFormFieldDeposit
             dispatchAmount={dispatch}
-            token={quoteToken}
-            tokenPrice={quotePrice}
-            maxAmount={quoteBalance}
-            tokenDigits={quoteDigits}
-            tokenPrecision={quotePrecision}
+            token={pullToken?.token ?? quoteToken}
+            tokenPrice={pullToken?.price ?? quotePrice}
+            maxAmount={pullToken?.balance ?? quoteBalance}
+            tokenDigits={pullToken?.digits ?? quoteDigits}
+            tokenPrecision={pullToken?.precision ?? quotePrecision}
             resetOnClear
             swapController={swapController}
           />
