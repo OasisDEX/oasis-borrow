@@ -49,9 +49,9 @@ export const useOmniStopLossDataHandler = () => {
     automation?.triggers.stopLoss?.decodedMappedParams?.executionLtv
 
   const liquidationPrice = castedPosition.liquidationPrice
-  const liquidationRatio = one.div(castedPosition.maxRiskRatio.loanToValue)
   const positionLtv = castedPosition.riskRatio.loanToValue
   const positionMaxLtv = castedPosition.category.liquidationThreshold
+  const liquidationRatio = one.div(positionMaxLtv)
   const positionLiquidationPenalty = castedPosition.liquidationPenalty
 
   const defaultStopLossLevel = useMemo(
