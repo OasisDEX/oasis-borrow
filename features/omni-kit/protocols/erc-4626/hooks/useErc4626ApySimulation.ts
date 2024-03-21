@@ -2,16 +2,16 @@ import type { VaultApyResponse } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { getOmniDepositAmountFromPullToken } from 'features/omni-kit/helpers'
 import {
   getErc4626Apy,
   getErc4626ApyParameters,
 } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 interface Erc4626ApySimulationParams {
-  depositAmount: BigNumber
   rewardTokenPrice?: BigNumber
   vaultAddress: string
 }
@@ -44,12 +44,16 @@ interface Erc4626ApySimulationResponse {
 
 export function useErc4626ApySimulation({
   vaultAddress,
-  depositAmount,
   rewardTokenPrice,
 }: Erc4626ApySimulationParams): Erc4626ApySimulationResponse {
   const {
-    environment: { protocolPrices },
+    environment: { productType, protocolPrices, quotePrice },
   } = useOmniGeneralContext()
+  const {
+    form: {
+      state: { depositAmount, pullToken },
+    },
+  } = useOmniProductContext(productType)
 
   const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<VaultApyResponse>>()
 
@@ -58,10 +62,20 @@ export function useErc4626ApySimulation({
   const [earnings, setEarnings] = useState<Erc4626ApySimulationEarnings>()
   const [netValue, setNetValue] = useState<Erc4626ApySimulationNetValue>()
 
+  const resolvedDepositAmount = useMemo(
+    () =>
+      getOmniDepositAmountFromPullToken({
+        quotePrice,
+        depositAmount,
+        pullToken,
+      }),
+    [depositAmount, pullToken, quotePrice],
+  )
+
   useEffect(() => {
     setIsLoading(true)
     cancelablePromise?.cancel()
-  }, [depositAmount, rewardTokenPrice])
+  }, [resolvedDepositAmount, rewardTokenPrice])
 
   useDebouncedEffect(
     () => {
@@ -105,21 +119,21 @@ export function useErc4626ApySimulation({
             },
           })
           setEarnings({
-            per1d: depositAmount.times(totalApy.div(365)),
-            per30d: depositAmount.times(totalApy.div(12)),
-            per365d: depositAmount.times(totalApy),
+            per1d: resolvedDepositAmount.times(totalApy.div(365)),
+            per30d: resolvedDepositAmount.times(totalApy.div(12)),
+            per365d: resolvedDepositAmount.times(totalApy),
           })
           setNetValue({
-            per1d: depositAmount.plus(depositAmount.times(totalApy.div(365))),
-            per30d: depositAmount.plus(depositAmount.times(totalApy.div(12))),
-            per365d: depositAmount.plus(depositAmount.times(totalApy)),
+            per1d: resolvedDepositAmount.plus(resolvedDepositAmount.times(totalApy.div(365))),
+            per30d: resolvedDepositAmount.plus(resolvedDepositAmount.times(totalApy.div(12))),
+            per365d: resolvedDepositAmount.plus(resolvedDepositAmount.times(totalApy)),
           })
         }
 
         setIsLoading(false)
       })
     },
-    [depositAmount, rewardTokenPrice, vaultAddress],
+    [resolvedDepositAmount, rewardTokenPrice, vaultAddress],
     250,
   )
 

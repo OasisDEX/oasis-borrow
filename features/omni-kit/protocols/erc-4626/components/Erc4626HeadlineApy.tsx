@@ -1,13 +1,10 @@
 import { Icon } from 'components/Icon'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
-import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
-import { useOmniProductContext } from 'features/omni-kit/contexts'
 import { Erc4626ApyTooltip } from 'features/omni-kit/protocols/erc-4626/components'
 import { useErc4626CustomState } from 'features/omni-kit/protocols/erc-4626/contexts'
 import { getErc4626Apy } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { useErc4626ApySimulation } from 'features/omni-kit/protocols/erc-4626/hooks'
-import { OmniProductType } from 'features/omni-kit/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import React, { type FC } from 'react'
 import { sparks } from 'theme/icons'
@@ -19,16 +16,10 @@ interface Erc4626HeadlineApyProps {
 
 export const Erc4626HeadlineApy: FC<Erc4626HeadlineApyProps> = ({ vaultAddress }) => {
   const {
-    form: {
-      state: { depositAmount },
-    },
-  } = useOmniProductContext(OmniProductType.Earn)
-  const {
     state: { estimatedPrice },
   } = useErc4626CustomState()
 
   const { apy, isLoading } = useErc4626ApySimulation({
-    depositAmount: depositAmount ?? omniDefaultOverviewSimulationDeposit,
     vaultAddress,
     rewardTokenPrice: estimatedPrice,
   })
