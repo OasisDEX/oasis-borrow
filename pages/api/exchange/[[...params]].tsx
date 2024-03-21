@@ -35,7 +35,7 @@ const urlCreator = (
     // We are adding the connectorTokens query param only if it's not already present
     if (!connectorTokens) {
       const connectorsTokenParams: string[] = []
-      const keyToCheck = [toTokenAddress, fromTokenAddress]
+      const keyToCheck = [toTokenAddress?.toLowerCase(), fromTokenAddress?.toLowerCase()]
         .filter((key): key is string => key !== null && key !== undefined)
         .filter((key): key is keyof typeof connectorTokensMap => key in connectorTokensMap)
 
