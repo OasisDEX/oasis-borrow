@@ -1,11 +1,11 @@
 import type BigNumber from 'bignumber.js'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
+import { Skeleton } from 'components/Skeleton'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Heading, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 import { Icon } from './Icon'
 
@@ -48,17 +48,14 @@ export function SimulateTitle({
         <GenericTokenIcon size={64} symbol={token} sx={{ mr: 3 }} />
       )}
       <Box>
-        <Heading
-          as="h3"
-          variant="heading3"
-          sx={{
-            fontWeight: 'normal',
-            fontSize: '32px',
-            color: 'primary100',
-          }}
-        >
-          {`${formatCryptoBalance(depositAmount || zero)} ${tokenSymbol || token}`}
-        </Heading>
+        <Flex as="h3" variant="text.header3" sx={{ alignItems: 'center', columnGap: 2, py: 1 }}>
+          {depositAmount ? (
+            formatCryptoBalance(depositAmount)
+          ) : (
+            <Skeleton width="100px" height="28px" />
+          )}{' '}
+          {tokenSymbol ?? token}
+        </Flex>
         <Text
           variant="paragraph3"
           color="neutral80"

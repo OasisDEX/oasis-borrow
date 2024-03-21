@@ -3,40 +3,34 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { SimulateTitle } from 'components/SimulateTitle'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { getOmniDepositAmountFromPullToken } from 'features/omni-kit/helpers'
+import { useOmniInPositionAmount } from 'features/omni-kit/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function OmniOverviewController() {
-  const {
-    environment: { productType, isOpening, quotePrice, quoteToken },
-  } = useOmniGeneralContext()
   const { t } = useTranslation()
+
+  const {
+    environment: { productType, isOpening, quoteToken },
+  } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
       values: { footerColumns },
       elements: { overviewBanner, overviewContent, overviewFooter, overviewWithSimulation },
       notifications,
     },
-    form: {
-      state: { depositAmount, pullToken },
-    },
   } = useOmniProductContext(productType)
 
-  const resolvedDepositAmount = getOmniDepositAmountFromPullToken({
-    quotePrice,
-    depositAmount,
-    pullToken,
-  })
+  const amountInPosition = useOmniInPositionAmount()
 
   return (
     <Grid sx={{ rowGap: 3 }}>
       <DetailsSection
         title={
           (overviewWithSimulation && isOpening && (
-            <SimulateTitle token={quoteToken} depositAmount={resolvedDepositAmount} />
+            <SimulateTitle token={quoteToken} depositAmount={amountInPosition} />
           )) ||
           t('system.overview')
         }
