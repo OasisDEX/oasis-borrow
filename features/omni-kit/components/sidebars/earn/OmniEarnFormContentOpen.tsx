@@ -13,6 +13,7 @@ export function OmniEarnFormContentOpen() {
       quotePrecision,
       quotePrice,
       quoteToken,
+      shouldSwitchNetwork,
     },
   } = useOmniGeneralContext()
   const {
@@ -21,8 +22,8 @@ export function OmniEarnFormContentOpen() {
       state: { pullToken },
     },
     dynamicMetadata: {
-      validations: { isFormValid },
       elements: { extraEarnInput, earnFormOrder },
+      validations: { isFormValid },
     },
   } = useOmniProductContext(OmniProductType.Earn)
 
@@ -39,13 +40,13 @@ export function OmniEarnFormContentOpen() {
         {({ swapController }) => (
           <OmniFormFieldDeposit
             dispatchAmount={dispatch}
-            token={pullToken?.token ?? quoteToken}
-            tokenPrice={pullToken?.price ?? quotePrice}
-            maxAmount={pullToken?.balance ?? quoteBalance}
-            tokenDigits={pullToken?.digits ?? quoteDigits}
-            tokenPrecision={pullToken?.precision ?? quotePrecision}
             resetOnClear
             swapController={swapController}
+            token={pullToken?.token ?? quoteToken}
+            tokenDigits={pullToken?.digits ?? quoteDigits}
+            tokenPrecision={pullToken?.precision ?? quotePrecision}
+            tokenPrice={pullToken?.price ?? quotePrice}
+            {...(!shouldSwitchNetwork && { maxAmount: pullToken?.balance ?? quoteBalance })}
           />
         )}
       </OmniInputSwap>

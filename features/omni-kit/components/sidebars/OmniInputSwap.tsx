@@ -33,11 +33,14 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
     environment: { extraTokensData, networkId, productType, settings },
   } = useOmniGeneralContext()
   const {
-    form: { dispatch },
+    form: {
+      dispatch,
+      state: { pullToken },
+    },
   } = useOmniProductContext(productType)
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [selectedToken, setSelectedToken] = useState<string>(defaultToken)
+  const [selectedToken, setSelectedToken] = useState<string>(pullToken?.token ?? defaultToken)
 
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)
