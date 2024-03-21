@@ -17,7 +17,7 @@ export interface SidebarSectionContentProps {
 export function SidebarSectionContent({
   activePanel,
   content,
-  disableMaxHeight = true,
+  disableMaxHeight = false,
 }: SidebarSectionContentProps) {
   const { DisableSidebarScroll } = useAppConfig('features')
   const ref = useRef<HTMLDivElement>(null)

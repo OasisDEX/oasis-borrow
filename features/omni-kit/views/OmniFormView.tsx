@@ -57,6 +57,7 @@ export function OmniFormView({
       quoteAddress,
       quotePrecision,
       quoteToken,
+      settings,
       shouldSwitchNetwork,
     },
     steps: {
@@ -269,6 +270,7 @@ export function OmniFormView({
       hidden: isTextButtonHidden,
     },
     status,
+    disableMaxHeight: !!(settings.pullTokens?.[networkId] || settings.returnTokens?.[networkId]),
   }
 
   useEffect(() => {
