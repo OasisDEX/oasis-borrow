@@ -261,6 +261,7 @@ export const OmniProductController = <Auction, History, Position>({
                       protocol={protocol}
                       protocolRaw={protocolRaw}
                       protocolVersion={version}
+                      walletNetwork={walletNetwork}
                       pseudoProtocol={pseudoProtocol}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
