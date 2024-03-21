@@ -2,10 +2,12 @@ import type { Erc4626CommonDependencies, Erc4646ViewDependencies } from '@oasisd
 import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
+import type { OmniSwapToken } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 
 export interface Erc4626CommonPayload {
   proxyAddress: string
+  pullToken?: OmniSwapToken
   quoteAddress: string
   quotePrecision: number
   quotePrice: BigNumber
@@ -18,7 +20,14 @@ export interface Erc4626CommonPayload {
 export type Erc4626Dependencies = Erc4626CommonDependencies & Erc4646ViewDependencies
 
 export const erc4626ActionDepositEarn = ({
-  commonPayload: { quoteAddress, quotePrecision, quotePrice, quoteToken, ...commonPayload },
+  commonPayload: {
+    quoteAddress,
+    quotePrecision,
+    quotePrice,
+    quoteToken,
+    pullToken,
+    ...commonPayload
+  },
   dependencies,
   state,
 }: {
@@ -35,9 +44,9 @@ export const erc4626ActionDepositEarn = ({
       depositTokenAddress: quoteAddress,
       depositTokenPrecision: quotePrecision,
       depositTokenSymbol: quoteToken,
-      pullTokenAddress: quoteAddress,
-      pullTokenPrecision: quotePrecision,
-      pullTokenSymbol: quoteToken,
+      pullTokenAddress: pullToken?.address ?? quoteAddress,
+      pullTokenPrecision: pullToken?.precision ?? quotePrecision,
+      pullTokenSymbol: pullToken?.token ?? quoteToken,
       quoteTokenPrice: quotePrice,
     },
     dependencies,
