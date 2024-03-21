@@ -122,7 +122,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "xstate": "^4.37.2",
-    "zod": "^1.5.0"
+    "zod": "^3.22.4"
   },
   "resolutions": {
     "@emotion/react": "11.11.1",
