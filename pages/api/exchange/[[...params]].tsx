@@ -32,10 +32,21 @@ const urlCreator = (
     const toTokenAddress = url.searchParams.get('toTokenAddress')
     const fromTokenAddress = url.searchParams.get('fromTokenAddress')
     const connectorTokens = url.searchParams.get('connectorTokens')
+    // We are adding the connectorTokens query param only if it's not already present
     if (!connectorTokens) {
-      const keyToCheck = toTokenAddress ?? fromTokenAddress
-      if (keyToCheck && keyToCheck in connectorTokensMap) {
-        // url.searchParams.set('connectorTokens', connectorTokensMap[keyToCheck])
+      const connectorsTokenParams: string[] = []
+      const keyToCheck = [toTokenAddress, fromTokenAddress]
+        .filter((key): key is string => key !== null && key !== undefined)
+        .filter((key): key is keyof typeof connectorTokensMap => key in connectorTokensMap)
+
+      for (const key of keyToCheck) {
+        if (!connectorsTokenParams.includes(connectorTokensMap[key])) {
+          connectorsTokenParams.push(connectorTokensMap[key])
+        }
+      }
+
+      if (connectorsTokenParams.length > 0) {
+        url.searchParams.set('connectorTokens', connectorsTokenParams.join(','))
       }
     }
   }
