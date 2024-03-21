@@ -1,7 +1,7 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
-import type { GasPriceParams } from 'blockchain/prices.types'
+import type { GasPriceParams, Tickers } from 'blockchain/prices.types'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import {
   getOmniEditingStep,
@@ -51,6 +51,7 @@ interface OmniGeneralContextProviderProps {
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
+  protocolPrices: Tickers
   protocolRaw: string
   protocolVersion?: string
   pseudoProtocol?: string

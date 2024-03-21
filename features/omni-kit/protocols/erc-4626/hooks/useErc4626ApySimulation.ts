@@ -2,6 +2,7 @@ import type { VaultApyResponse } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getErc4626Apy,
   getErc4626ApyParameters,
@@ -46,6 +47,10 @@ export function useErc4626ApySimulation({
   depositAmount,
   rewardTokenPrice,
 }: Erc4626ApySimulationParams): Erc4626ApySimulationResponse {
+  const {
+    environment: { protocolPrices },
+  } = useOmniGeneralContext()
+
   const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<VaultApyResponse>>()
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -60,7 +65,9 @@ export function useErc4626ApySimulation({
 
   useDebouncedEffect(
     () => {
-      const promise = cancelable(getErc4626ApyParameters({ rewardTokenPrice })(vaultAddress))
+      const promise = cancelable(
+        getErc4626ApyParameters({ rewardTokenPrice, prices: protocolPrices })(vaultAddress),
+      )
 
       setCancelablePromise(promise)
 

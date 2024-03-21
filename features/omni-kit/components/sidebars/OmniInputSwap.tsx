@@ -30,7 +30,6 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   const [selectedToken, setSelectedToken] = useState<string>(defaultToken)
 
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
-  const positionRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const tokensList = useMemo(
@@ -65,7 +64,6 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   const swapController = (
     <Box sx={{ position: 'absolute', left: 0, bottom: '22px' }} ref={outsideRef}>
       <Flex
-        ref={positionRef}
         sx={{ alignItems: 'center', columnGap: 1, ml: '14px', cursor: 'pointer' }}
         onClick={() => setIsOpen(!isOpen)}
       >

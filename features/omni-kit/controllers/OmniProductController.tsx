@@ -265,6 +265,7 @@ export const OmniProductController = <Auction, History, Position>({
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
+                      protocolPrices={protocolPrices}
                       protocolRaw={protocolRaw}
                       protocolVersion={version}
                       pseudoProtocol={pseudoProtocol}

@@ -1,10 +1,11 @@
 import type BigNumber from 'bignumber.js'
+import type { Tickers } from 'blockchain/prices.types'
 import { getTokensPrices, type TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
 import { one } from 'helpers/zero'
 
 interface GetErc4626ApyParametersParams {
-  prices?: TokensPricesList
+  prices?: TokensPricesList | Tickers
   rewardTokenPrice?: BigNumber
 }
 
