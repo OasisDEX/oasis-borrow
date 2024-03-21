@@ -60,5 +60,6 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string }> = {
     'EZETH-ETH': '0x49bb2d114be9041a787432952927f6f144f05ad3e83196a7d062f374ee11d0ee',
     'SUSDE-DAI': '0x1247f1c237eceae0602eab1470a5061a6dd8f734ba88c7cdc5d6109fb0026b28',
     'USDE-DAI': '0x8e6aeb10c401de3279ac79b4b2ea15fc94b7d9cfc098d6c2a1ff7b2b26d9d02c',
+    'SUSDE-USDT': '0xdc5333039bcf15f1237133f74d5806675d83d9cf19cfd4cfdd9be674842651bf',
   },
 }
