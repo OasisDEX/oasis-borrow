@@ -7,10 +7,7 @@ import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { ethers } from 'ethers'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniGetAutomationDataParams } from 'features/omni-kit/automation/helpers'
-import {
-  getOmniAutomationParameters,
-  isOmniAutomationFormEmpty,
-} from 'features/omni-kit/automation/helpers'
+import { getOmniAutomationParameters } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationSimulationResponse } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import type { OmniTxData } from 'features/omni-kit/hooks'
@@ -60,7 +57,7 @@ export const useOmniAutomationTxHandler = () => {
 
   const { state, dispatch } = activeForm
 
-  const isFormEmpty = isOmniAutomationFormEmpty(state, activeUiDropdown)
+  const isFormEmpty = automation.resolved.isFormEmpty
 
   const [txData, setTxData] = useState<OmniTxData>()
   const [cancelablePromise, setCancelablePromise] =

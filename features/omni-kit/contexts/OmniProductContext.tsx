@@ -106,6 +106,7 @@ export interface AutomationMetadataValues {
     activeForm: ProductContextAutomationForm
     isProtection: boolean
     isOptimization: boolean
+    isFormEmpty: boolean
   }
   simulation: AutomationMetadataValuesSimulation
 }

@@ -11,7 +11,6 @@ import {
   OmniAutomationRemoveTriggerSidebar,
 } from 'features/omni-kit/automation/components/common'
 import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components/common/OmniAutomationFromOrder'
-import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
@@ -147,7 +146,7 @@ export function OmniAutomationFormController() {
     resolvedAction && [TriggerAction.Add, TriggerAction.Update].includes(resolvedAction)
   const isRemoveAction = resolvedAction === TriggerAction.Remove
 
-  const isFormEmpty = isOmniAutomationFormEmpty(activeForm.state, activeUiDropdown)
+  const isFormEmpty = automation.resolved.isFormEmpty
 
   return (
     <OmniAutomationFormView

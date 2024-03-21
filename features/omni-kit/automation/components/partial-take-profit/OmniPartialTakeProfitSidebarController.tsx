@@ -53,9 +53,13 @@ export const OmniPartialTakeProfitSidebarController = () => {
     },
   } = useOmniProductContext(productType)
 
+  if (!automation) {
+    throw new Error('Automation dynamic metadata not available')
+  }
+
   // TODO: better type this
   const partialTakeProfitSimulation =
-    automation?.simulation as SetupPartialTakeProfitResponse['simulation']
+    automation.simulation as SetupPartialTakeProfitResponse['simulation']
 
   const {
     startingTakeProfitPrice,
@@ -463,6 +467,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
         </Flex>
       </Box>
       <SidebarAccordion
+        isDisabled={automation.resolved.isFormEmpty}
         title={
           <>
             {t('protection.partial-take-profit-sidebar.configure-stop-loss-loan-to-value')}

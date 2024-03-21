@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { lambdaPriceDenomination } from 'features/aave/constants'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
 import type {
   OmniAutomationSimulationResponse,
   ProductContextAutomationForms,
@@ -162,11 +163,12 @@ export const getAaveLikeAutomationMetadataResolvedValues = ({
   const isProtection = hash === 'protection'
   const isOptimization = hash === 'optimization'
 
-  const activeUiDropdown: `${AutomationFeatures}` = isProtection
+  const activeUiDropdown = isProtection
     ? commonFormState.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
     : commonFormState.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
 
-  const activeForm = automationForms[activeUiDropdown]
+  const activeForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
+  const isFormEmpty = isOmniAutomationFormEmpty(activeForm.state, activeUiDropdown)
 
   return {
     resolved: {
@@ -174,6 +176,7 @@ export const getAaveLikeAutomationMetadataResolvedValues = ({
       activeForm,
       isProtection,
       isOptimization,
+      isFormEmpty,
     },
   }
 }
