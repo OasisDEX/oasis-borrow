@@ -1,7 +1,6 @@
 import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
-import { trailingStopLossConstants } from 'features/omni-kit/automation/constants'
 import { getTrailingStopLossFormatters } from 'features/omni-kit/automation/helpers'
 import { useOmniTrailingStopLossDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -19,7 +18,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
   const {
     automation: {
       automationForms: {
-        trailingStopLoss: { state, updateState },
+        trailingStopLoss: { updateState },
       },
     },
   } = useOmniProductContext(productType)
@@ -32,6 +31,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
     trailingDistance,
     dynamicStopPriceChange,
     trailingDistanceForTx,
+    isCollateralActive,
   } = useOmniTrailingStopLossDataHandler()
 
   const { leftFormatter, rightFormatter } = getTrailingStopLossFormatters({
@@ -40,6 +40,8 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
     quoteTokenSymbol: quoteToken,
     priceFormat,
   })
+
+  const activePill = isCollateralActive ? 'collateral' : 'quote'
 
   return (
     <>
@@ -66,7 +68,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
             },
           },
         ]}
-        active={state.resolveTo || trailingStopLossConstants.defaultResolveTo}
+        active={activePill}
       />
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         <Trans
