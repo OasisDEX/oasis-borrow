@@ -56,7 +56,11 @@ export function getDepositBorrowAaveMachine(
 
 export function getMigratePositionParametersMachine(networkId: NetworkIds) {
   return createTransactionParametersV2StateMachine(
-    (parameters: MigrateAaveLikeParameters) => getMigrationPositionParameters(parameters),
+    (parameters: MigrateAaveLikeParameters) =>
+      getMigrationPositionParameters(parameters).then((x) => ({
+        strategy: x.migration,
+        approval: x.approval,
+      })),
     networkId,
   )
 }

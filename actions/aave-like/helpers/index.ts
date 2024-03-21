@@ -1,4 +1,5 @@
 import type { AaveLikeStrategyAddresses, IPosition, Network, Tokens } from '@oasisdex/dma-library'
+import { SystemKeys } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -29,6 +30,38 @@ export function networkIdToLibraryNetwork(networkId: NetworkIds): Network {
       return 'base' as Network
     default:
       throw new Error(`Can't convert networkId ${networkId} to library network`)
+  }
+}
+
+export function lendingProtocolToSystemKeys(protocol: LendingProtocol): SystemKeys {
+  // MPA = "mpa",
+  //     COMMON = "common",
+  //     AAVE = "aave",
+  //     SPARK = "spark",
+  //     MAKER = "maker",
+  //     AUTOMATION = "automation",
+  //     AJNA = "ajna",
+  //     MORPHO_BLUE = "morphoblue"
+  try {
+    switch (protocol) {
+      case LendingProtocol.AaveV2:
+        throw new Error('Aave V2 is not supported')
+      case LendingProtocol.AaveV3:
+        return 'aave' as SystemKeys
+      case LendingProtocol.Ajna:
+        return 'ajna' as SystemKeys
+      case LendingProtocol.SparkV3:
+        return 'spark' as SystemKeys
+      case LendingProtocol.MorphoBlue:
+        return 'morphoblue' as SystemKeys
+      case LendingProtocol.Maker:
+        return 'maker' as SystemKeys
+      default:
+        throw new Error('Lending protocol not supported')
+    }
+  } catch (error) {
+    console.error(error)
+    return SystemKeys.AAVE
   }
 }
 

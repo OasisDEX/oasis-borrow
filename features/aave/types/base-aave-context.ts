@@ -2,7 +2,7 @@ import { AaveLikePosition, IPosition, IRiskRatio, IStrategy } from "@oasisdex/dm
 import BigNumber from 'bignumber.js'
 import {
   DpmExecuteOperationExecutorActionParameters,
-  DpmExecuteOperationParameters
+  DpmExecuteOperationParameters, ExecuteTransactionParameters
 } from "blockchain/better-calls/dpm-account";
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -165,6 +165,15 @@ export function migrationContextToEthersTransactions(context: MigrateAaveContext
     networkId: context.strategyConfig.networkId,
     proxyAddress: context.userDpmAccount?.proxy!,
     tx: context.strategy?.tx!,
+    signer: (context.web3Context as ContextConnected).transactionProvider,
+  }
+}
+
+export function migrationContextToEthersApprovalTransactions(context: MigrateAaveContext): ExecuteTransactionParameters {
+
+  return {
+    networkId: context.strategyConfig.networkId,
+    ...context.approval!,
     signer: (context.web3Context as ContextConnected).transactionProvider,
   }
 }

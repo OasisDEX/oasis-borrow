@@ -3546,6 +3546,10 @@
       "title": "Migrate your position into Summer.fi",
       "success-title": "Your position is now accessible on Summer.fi!"
     },
+    "allowance-form":{
+        "title": "Approve Summer.fi to access your position",
+        "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website."
+    },
     "vault-banners": {
       "automation": {
         "title": "Switch to Summer.fi to enable advanced features.",

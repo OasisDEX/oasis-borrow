@@ -222,7 +222,6 @@ export function setupAaveV3Context(
     migrateAaveStateMachineServices,
     migrateAaveMachine,
     dpmAccountStateMachine,
-    allowanceStateMachine,
   )
 
   const aaveManageStateMachine = getManageAaveStateMachine(
@@ -246,7 +245,7 @@ export function setupAaveV3Context(
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
   const migrationAssets = memoize(
-    ({ positionId }: { positionId: PositionId }) =>
+    ({ positionId }: { positionId: Pick<PositionId, 'positionAddress'> }) =>
       getAssetsForMigration({ network: networkId, protocol: LendingProtocol.AaveV3, positionId }),
     (positionId) => JSON.stringify(positionId),
   )

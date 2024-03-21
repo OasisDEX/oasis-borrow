@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { DpmOperationParams } from 'blockchain/better-calls/dpm-account'
+import type { ExecuteTransactionParameters } from 'blockchain/better-calls/dpm-account'
 import { estimateGas, executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
@@ -665,18 +665,18 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
 
           const { etherscan } = contracts
 
-          const machine = createEthersTransactionStateMachine<DpmOperationParams>().withContext({
-            etherscanUrl: etherscan.url,
-            transaction: executeTransaction,
-            transactionParameters: {
-              networkId: context.networkId,
-              signer: context.signer,
-              data: context.setupTriggerResponse.transaction.data,
-              to: context.setupTriggerResponse.transaction.to,
-              proxyAddress: context.position.dpm,
-            },
-            extract: () => {},
-          })
+          const machine =
+            createEthersTransactionStateMachine<ExecuteTransactionParameters>().withContext({
+              etherscanUrl: etherscan.url,
+              transaction: executeTransaction,
+              transactionParameters: {
+                networkId: context.networkId,
+                signer: context.signer,
+                data: context.setupTriggerResponse.transaction.data,
+                to: context.setupTriggerResponse.transaction.to,
+              },
+              extract: () => {},
+            })
 
           const actor = interpret(machine, {
             id: `${automationFeature}EthersTransactionMachine`,

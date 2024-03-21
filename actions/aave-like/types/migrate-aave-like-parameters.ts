@@ -6,9 +6,9 @@ import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 export interface MigrateAaveLikeParameters {
   position: AaveLikePosition,
   networkId: NetworkIds,
-  proxyAddress: string,
+  dpmAccount: string,
+  sourceAddress: string,
   userAddress: string,
-  reserveData: ReserveData,
   protocol: AaveLikeLendingProtocol,
 
 }

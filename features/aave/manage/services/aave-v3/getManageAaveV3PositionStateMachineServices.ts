@@ -164,7 +164,7 @@ export function getManageAaveV3PositionStateMachineServices(
         map((result) => {
           const proxy = result.dsProxy || result.dpmProxy?.proxy
           if (proxy === undefined && context.positionId.external) {
-            return result.walletAddress
+            return context.positionId.positionAddress!
           }
           return proxy
         }),

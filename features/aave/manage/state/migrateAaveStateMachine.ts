@@ -1,4 +1,4 @@
-import type { AaveLikePosition, IPosition, Strategy } from '@oasisdex/dma-library'
+import type { AaveLikePosition, IPosition, Strategy, Tx } from '@oasisdex/dma-library'
 import type { MigrateAaveLikeParameters } from 'actions/aave-like'
 import type BigNumber from 'bignumber.js'
 import type { Context, ContextConnected } from 'blockchain/network.types'
@@ -20,18 +20,11 @@ import type {
   TransactionParametersV2StateMachineResponseEvent,
 } from 'features/stateMachines/transactionParameters'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
-import { allDefined } from 'helpers/allDefined'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import type { MachineOptionsFrom } from 'xstate/lib/types'
-
-export const totalStepsMap = {
-  base: 2,
-  proxySteps: (needCreateProxy: boolean) => (needCreateProxy ? 2 : 0),
-  allowanceSteps: (needAllowance: boolean) => (needAllowance ? 1 : 0),
-}
 
 export interface MigrateAaveContext {
   refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
@@ -41,12 +34,11 @@ export interface MigrateAaveContext {
   >
   strategyConfig: IStrategyConfig
   positionOwner: string
+  positionAddress: string
   currentPosition?: AaveLikePosition
 
-  currentStep: number
-  totalSteps: number
-
   strategy?: Strategy<IPosition>
+  approval?: Tx
   estimatedGasPrice?: HasGasEstimation
   allowanceForProtocolToken?: BigNumber
   web3Context?: Context
@@ -55,14 +47,6 @@ export interface MigrateAaveContext {
   userDpmAccount?: UserDpmAccount
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   reserveData?: ReserveData
-}
-
-/**
- * To transfer all collateral from the position, we need to have a slightly higher allowance for the protocol token. However, the wallets show warnings about the allowance being too high.
- * @param position
- */
-export const allowanceAmount = (position: AaveLikePosition): BigNumber => {
-  return position.collateral.amount.times(1.01).integerValue()
 }
 
 export type MigrateAaveEvent =
@@ -85,7 +69,6 @@ export type MigrateAaveEvent =
 export function createMigrateAaveStateMachine(
   migratePositionStateMachine: TransactionParametersV2StateMachine<MigrateAaveLikeParameters>,
   dmpAccountStateMachine: DPMAccountStateMachine,
-  allowanceStateMachine: AllowanceStateMachine,
 ) {
   return createMachine(
     {
@@ -109,10 +92,6 @@ export function createMigrateAaveStateMachine(
           id: 'userSettings$',
         },
         {
-          src: 'allowance$',
-          id: 'allowance$',
-        },
-        {
           src: 'aaveReserveConfiguration$',
           id: 'aaveReserveConfiguration$',
         },
@@ -129,7 +108,7 @@ export function createMigrateAaveStateMachine(
       type: 'parallel',
       states: {
         background: {
-          initial: 'idle',
+          initial: 'loading',
           states: {
             idle: {},
             debouncing: {
@@ -171,12 +150,10 @@ export function createMigrateAaveStateMachine(
                   {
                     target: 'dpmProxyCreating',
                     cond: 'shouldCreateDpmProxy',
-                    actions: 'incrementCurrentStep',
                   },
                   {
-                    target: 'allowanceSetting',
+                    target: 'allowanceReview',
                     cond: 'isAllowanceNeeded',
-                    actions: 'incrementCurrentStep',
                   },
                   {
                     target: 'review',
@@ -186,7 +163,6 @@ export function createMigrateAaveStateMachine(
               },
             },
             review: {
-              entry: ['resetCurrentStep', 'setTotalSteps'],
               on: {
                 NEXT_STEP: [
                   {
@@ -200,18 +176,44 @@ export function createMigrateAaveStateMachine(
               exit: ['killDpmProxyMachine'],
               on: {
                 DPM_ACCOUNT_CREATED: {
-                  actions: ['updateContext', 'setTotalSteps'],
+                  actions: ['updateContext'],
+                  target: 'allowanceReview',
+                },
+              },
+            },
+            allowanceReview: {
+              on: {
+                NEXT_STEP: {
                   target: 'allowanceSetting',
                 },
               },
             },
             allowanceSetting: {
-              entry: ['spawnAllowanceMachine'],
-              exit: ['killAllowanceMachine'],
+              entry: [''],
+              invoke: {
+                src: 'runEthersApprovalTransaction',
+                id: 'runEthersApprovalTransaction',
+                onError: {
+                  target: 'allowanceFailure',
+                },
+              },
               on: {
-                ALLOWANCE_SUCCESS: {
-                  actions: ['updateAllowance'],
+                TRANSACTION_COMPLETED: {
                   target: 'review',
+                },
+                TRANSACTION_FAILED: {
+                  target: 'allowanceFailure',
+                  actions: ['updateContext'],
+                },
+              },
+            },
+            allowanceFailure: {
+              on: {
+                RETRY: {
+                  target: 'allowanceSetting',
+                },
+                BACK_TO_EDITING: {
+                  target: 'allowanceReview',
                 },
               },
             },
@@ -266,14 +268,11 @@ export function createMigrateAaveStateMachine(
         WEB3_CONTEXT_CHANGED: {
           actions: ['updateContext', 'sendSigner'],
         },
-        // UPDATE_META_INFO: {
-        //   actions: 'updateContext',
-        // },
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
         },
         DPM_PROXY_RECEIVED: {
-          actions: ['updateContext', 'setTotalSteps', 'requestParameters'],
+          actions: ['updateContext', 'requestParameters'],
         },
         UPDATE_RESERVE_DATA: {
           actions: ['updateContext', 'requestParameters'],
@@ -290,38 +289,11 @@ export function createMigrateAaveStateMachine(
       guards: {
         shouldCreateDpmProxy: (context) => context.userDpmAccount === undefined,
         isAllowanceNeeded: (context) => {
-          if (context.allowanceForProtocolToken === undefined) {
-            return true
-          }
-
-          return context.allowanceForProtocolToken.lt(allowanceAmount(context.currentPosition!))
+          return context.approval !== undefined
         },
         canMigrate: (context) => context.strategy !== undefined,
       },
       actions: {
-        setTotalSteps: assign((context) => {
-          const allowance = true
-          const proxy = !allDefined(context.userDpmAccount?.proxy)
-
-          const totalSteps =
-            totalStepsMap.base +
-            totalStepsMap.proxySteps(proxy) +
-            totalStepsMap.allowanceSteps(allowance)
-
-          return {
-            totalSteps: totalSteps,
-          }
-        }),
-        resetCurrentStep: assign((_) => ({
-          currentStep: 1,
-        })),
-        incrementCurrentStep: assign((context) => ({
-          currentStep: context.currentStep + 1,
-        })),
-        // decrementCurrentStep: assign((context) => ({
-        //   currentStep: context.currentStep - 1,
-        //   stopLossSkipped: false,
-        // })),
         updateContext: assign((_, event) => ({
           ...event,
         })),
@@ -362,40 +334,13 @@ export function createMigrateAaveStateMachine(
                 position: context.currentPosition!,
                 userAddress: context.positionOwner,
                 protocol: context.strategyConfig.protocol,
-                reserveData: context.reserveData!,
-                proxyAddress: context.userDpmAccount?.proxy ?? ethNullAddress,
+                dpmAccount: context.userDpmAccount?.proxy ?? ethNullAddress,
+                sourceAddress: context.positionAddress,
                 networkId: context.strategyConfig.networkId,
               },
             }
           },
         ),
-        killAllowanceMachine: pure((context) => {
-          if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
-            context.refAllowanceStateMachine.stop()
-          }
-          return undefined
-        }),
-        spawnAllowanceMachine: assign((context) => {
-          return {
-            refAllowanceStateMachine: spawn(
-              allowanceStateMachine.withContext({
-                token: context.reserveData!.collateral.tokenAddress,
-                spender: context.userDpmAccount?.proxy!,
-                allowanceType: 'unlimited',
-                minimumAmount: allowanceAmount(context.currentPosition!),
-                runWithEthers: true,
-                signer: (context.web3Context as ContextConnected)?.transactionProvider,
-                networkId: context.strategyConfig.networkId,
-              }),
-              'allowanceMachine',
-            ),
-          }
-        }),
-        updateAllowance: assign((context, event) => {
-          return {
-            allowanceForProtocolToken: event.amount,
-          }
-        }),
         sendSigner: sendTo(
           (context) => context.refParametersMachine!,
           (context) => {
