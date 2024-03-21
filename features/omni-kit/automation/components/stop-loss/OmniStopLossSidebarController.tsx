@@ -88,6 +88,7 @@ export const OmniStopLossSidebarController: FC = () => {
         leftBoundry={displayStopLossLevel}
         onChange={(triggerLtv) => {
           automationUpdateState('triggerLtv', triggerLtv)
+          automationUpdateState('resolveTo', activePill)
         }}
         leftLabel={t('protection.stop-loss-something', {
           value: t('vault-changes.loan-to-value'),

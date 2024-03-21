@@ -96,6 +96,7 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
         onChange={(nextTrailingDistance) => {
           updateState('price', nextTrailingDistance)
           updateState('trailingDistance', sliderMax.minus(nextTrailingDistance))
+          updateState('resolveTo', activePill)
         }}
         useRcSlider
         leftLabel={t('protection.trailing-distance')}
