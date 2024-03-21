@@ -83,6 +83,8 @@ export const OmniPartialTakeProfitSidebarController = () => {
     partialTakeProfitSecondTokenData,
   } = useOmniPartialTakeProfitDataHandler()
 
+  console.log('partialTakeProfitToken', partialTakeProfitToken)
+
   const [isFocus, setStartingPriceInputFocus] = useState<boolean>(false)
 
   const inputMask = useMemo(() => {
@@ -554,8 +556,8 @@ export const OmniPartialTakeProfitSidebarController = () => {
             !hasStopLoss ? (
               <Trans
                 i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.no-stop-loss"
-                components={{
-                  partialTakeProfitToken: <>`${partialTakeProfitToken}`</>,
+                values={{
+                  partialTakeProfitToken,
                 }}
               />
             ) : (
