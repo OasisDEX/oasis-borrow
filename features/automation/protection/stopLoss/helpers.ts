@@ -141,3 +141,29 @@ export function getCollateralDuringLiquidation({
     .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
     .div(liquidationPrice)
 }
+
+export const getSavingCompareToLiquidation = ({
+  dynamicStopLossPrice,
+  afterDynamicStopLossPrice,
+  maxToken,
+  afterMaxToken,
+  collateralDuringLiquidation,
+  isCollateralActive,
+}: {
+  collateralDuringLiquidation: BigNumber
+  dynamicStopLossPrice?: BigNumber
+  afterDynamicStopLossPrice?: BigNumber
+  maxToken?: BigNumber
+  afterMaxToken?: BigNumber
+  isCollateralActive?: boolean
+}) => {
+  return afterDynamicStopLossPrice && afterMaxToken
+    ? afterMaxToken.minus(
+        collateralDuringLiquidation.times(!isCollateralActive ? afterDynamicStopLossPrice : one),
+      )
+    : dynamicStopLossPrice && maxToken
+    ? maxToken.minus(
+        collateralDuringLiquidation.times(!isCollateralActive ? dynamicStopLossPrice : one),
+      )
+    : undefined
+}

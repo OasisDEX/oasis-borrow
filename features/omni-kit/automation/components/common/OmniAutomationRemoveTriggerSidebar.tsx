@@ -4,7 +4,6 @@ import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADe
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { OmniAutomationCancelNotice } from 'features/omni-kit/automation/components/common/OmniAutomationCancelNotice'
-import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components/common/OmniAutomationFromOrder'
 import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -121,10 +120,15 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
           })}
         </Text>
         <Box mt={3}>
-          <OmniAutomationFromOrder
-            showReset={false}
-            showDisclaimer={false}
-            showValidation={false}
+          <InfoSection
+            title={t('vault-changes.order-information')}
+            items={[
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]}
           />
         </Box>
         <Box>
@@ -145,22 +149,12 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
       <InfoSection
         title={t('vault-changes.order-information')}
         items={[
-          ...(isTxSuccess
-            ? [
-                {
-                  label: t('system.total-cost'),
-                  value: formatted.totalCost,
-                  isLoading,
-                },
-              ]
-            : [
-                ...items,
-                {
-                  label: t('max-gas-fee'),
-                  value: <OmniGasEstimation />,
-                  isLoading,
-                },
-              ]),
+          ...items,
+          {
+            label: t('max-gas-fee'),
+            value: <OmniGasEstimation />,
+            isLoading,
+          },
         ]}
       />
       {notice}

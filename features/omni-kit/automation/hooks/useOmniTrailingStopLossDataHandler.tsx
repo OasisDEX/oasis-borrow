@@ -4,6 +4,7 @@ import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   getCollateralDuringLiquidation,
+  getSavingCompareToLiquidation,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
 import {
@@ -264,16 +265,14 @@ export const useOmniTrailingStopLossDataHandler = () => {
     liquidationPenalty: castedPosition.liquidationPenalty,
   })
 
-  const savingCompareToLiquidation =
-    resolvedDynamicStopLossPrice && maxToken
-      ? (afterMaxToken || maxToken).minus(
-          collateralDuringLiquidation.times(
-            !isCollateralActive
-              ? resolvedAfterDynamicStopLossPrice || resolvedDynamicStopLossPrice
-              : one,
-          ),
-        )
-      : undefined
+  const savingCompareToLiquidation = getSavingCompareToLiquidation({
+    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
+    afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
+    maxToken,
+    afterMaxToken,
+    isCollateralActive,
+    collateralDuringLiquidation,
+  })
 
   const estTokenOnTriggerContentCardCommonData = useOmniCardDataEstTokenOnTrigger({
     dynamicStopLossPrice: resolvedDynamicStopLossPrice,

@@ -4,6 +4,7 @@ import {
   getCollateralDuringLiquidation,
   getDynamicStopLossPrice,
   getMaxToken,
+  getSavingCompareToLiquidation,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
 import { stopLossConstants } from 'features/omni-kit/automation/constants'
@@ -148,16 +149,14 @@ export const useOmniStopLossDataHandler = () => {
     liquidationPenalty: positionLiquidationPenalty,
   })
 
-  const savingCompareToLiquidation =
-    resolvedDynamicStopLossPrice && maxToken
-      ? (afterMaxToken || maxToken).minus(
-          collateralDuringLiquidation.times(
-            !isCollateralActive
-              ? resolvedAfterDynamicStopLossPrice || resolvedDynamicStopLossPrice
-              : one,
-          ),
-        )
-      : undefined
+  const savingCompareToLiquidation = getSavingCompareToLiquidation({
+    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
+    afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
+    maxToken,
+    afterMaxToken,
+    isCollateralActive,
+    collateralDuringLiquidation,
+  })
 
   const estTokenOnTriggerContentCardCommonData = useOmniCardDataEstTokenOnTrigger({
     dynamicStopLossPrice: resolvedDynamicStopLossPrice,
