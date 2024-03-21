@@ -44,7 +44,6 @@ export const useOmniAutomationTxHandler = () => {
       setSimulation,
       setIsLoadingSimulation,
       commonForm: { state: commonState, updateState: updateCommonState },
-      automationForms,
     },
     dynamicMetadata: {
       values: { automation },
@@ -52,8 +51,7 @@ export const useOmniAutomationTxHandler = () => {
   } = useOmniProductContext(productType)
 
   if (!automation) {
-    console.warn('Automation dynamic metadata not available')
-    return () => null
+    throw new Error('Automation dynamic metadata not available')
   }
 
   const { activeUiDropdown, activeForm } = automation.resolved

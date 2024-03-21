@@ -7,7 +7,11 @@ import { OmniAutomationCancelNotice } from 'features/omni-kit/automation/compone
 import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components/common/OmniAutomationFromOrder'
 import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -34,20 +38,18 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
   const castedPosition = position as LendingPosition
 
   if (!automation) {
-    console.warn('Automation dynamic metadata not available')
-    return null
+    throw new Error('Automation dynamic metadata not available')
   }
 
   const resolvedActiveUiDropdown =
     commonForm.state.activeTxUiDropdown || automation.resolved.activeUiDropdown
 
-  if (!resolvedActiveUiDropdown) {
-    return null
-  }
-
   const formatted = {
     totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
     liquidationPrice: `${formatCryptoBalance(castedPosition.liquidationPrice)} ${priceFormat}`,
+    stopLossLevel: automation?.triggers.stopLoss?.decodedMappedParams?.executionLtv
+      ? formatDecimalAsPercent(automation.triggers.stopLoss.decodedMappedParams.executionLtv)
+      : '-',
   }
 
   const items = {
@@ -58,7 +60,7 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
       },
       {
         label: t('position-history.sl-level'),
-        value: automation?.triggers.stopLoss?.decodedMappedParams.executionLtv,
+        value: formatted.stopLossLevel,
         change: 'n/a',
       },
     ],

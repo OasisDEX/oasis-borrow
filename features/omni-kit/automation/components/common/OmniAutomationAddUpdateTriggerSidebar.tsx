@@ -30,8 +30,7 @@ export const OmniAutomationAddUpdateTriggerSidebar: FC = ({ children }) => {
   } = useOmniProductContext(productType)
 
   if (!automation) {
-    console.warn('Automation dynamic metadata not available')
-    return null
+    throw new Error('Automation dynamic metadata not available')
   }
 
   const resolvedActiveUiDropdown =

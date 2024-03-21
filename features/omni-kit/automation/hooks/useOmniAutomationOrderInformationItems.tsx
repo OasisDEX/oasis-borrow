@@ -51,9 +51,9 @@ export const useOmniAutomationOrderInformationItems = (): ItemProps[] => {
   ]
 
   if (!automation) {
-    console.warn('Automation dynamic metadata not available')
-    return common
+    throw new Error('Automation dynamic metadata not available')
   }
+
   const { activeUiDropdown } = automation.resolved
 
   switch (activeUiDropdown) {

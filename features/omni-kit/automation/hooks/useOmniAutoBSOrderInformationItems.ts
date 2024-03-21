@@ -20,12 +20,12 @@ export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
   } = useOmniProductContext(productType)
 
   if (!automation) {
-    console.warn('Automation dynamic metadata not available')
-    return []
+    throw new Error('Automation dynamic metadata not available')
   }
-  const { isProtection } = automation.resolved
 
-  const type = isProtection ? AutomationFeatures.AUTO_SELL : AutomationFeatures.AUTO_BUY
+  const type = automation?.resolved.isProtection
+    ? AutomationFeatures.AUTO_SELL
+    : AutomationFeatures.AUTO_BUY
 
   const {
     afterTargetMultiply,

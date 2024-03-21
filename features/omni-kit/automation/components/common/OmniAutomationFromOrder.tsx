@@ -34,14 +34,13 @@ export const OmniAutomationFromOrder: FC<OmniAutomationFromOrderProps> = ({
     },
   } = useOmniProductContext(productType)
 
+  const items = useOmniAutomationOrderInformationItems()
+
   if (!automation) {
-    console.warn('Automation dynamic metadata not available')
-    return null
+    throw new Error('Automation dynamic metadata not available')
   }
 
   const { activeForm, activeUiDropdown } = automation.resolved
-
-  const items = useOmniAutomationOrderInformationItems()
 
   return (
     <>
