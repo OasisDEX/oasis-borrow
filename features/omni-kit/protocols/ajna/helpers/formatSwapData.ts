@@ -1,11 +1,11 @@
-import type { SwapData } from '@oasisdex/dma-library'
+import type { OmniSimulationSwap } from 'features/omni-kit/types'
 
 export const formatSwapData = ({
   swapData,
   fromTokenPrecision,
   toTokenPrecision,
 }: {
-  swapData?: SwapData
+  swapData?: OmniSimulationSwap
   fromTokenPrecision: number
   toTokenPrecision: number
 }) => {

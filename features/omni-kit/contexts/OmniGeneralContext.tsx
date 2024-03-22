@@ -1,7 +1,7 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
-import type { GasPriceParams } from 'blockchain/prices.types'
+import type { GasPriceParams, Tickers } from 'blockchain/prices.types'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import {
   getOmniEditingStep,
@@ -13,6 +13,7 @@ import { getOmniEntryToken, isShortPosition } from 'features/omni-kit/helpers'
 import { useOmniSlippage } from 'features/omni-kit/hooks'
 import type {
   OmniEntryToken,
+  OmniExtraTokenData,
   OmniProductType,
   OmniProtocolSettings,
   OmniSidebarEditingStep,
@@ -36,6 +37,7 @@ interface OmniGeneralContextProviderProps {
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
+  extraTokensData: OmniExtraTokenData
   gasPrice: GasPriceParams
   isOpening: boolean
   isOracless: boolean
@@ -49,6 +51,7 @@ interface OmniGeneralContextProviderProps {
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
+  protocolPrices: Tickers
   protocolRaw: string
   protocolVersion?: string
   pseudoProtocol?: string

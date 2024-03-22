@@ -1,6 +1,5 @@
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
-import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
-import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { Erc4626ApyTooltip } from 'features/omni-kit/protocols/erc-4626/components'
 import {
   Erc4626DetailsSectionContentEstimatedEarnings,
@@ -9,7 +8,6 @@ import {
 import { useErc4626CustomState } from 'features/omni-kit/protocols/erc-4626/contexts'
 import { useErc4626ApySimulation } from 'features/omni-kit/protocols/erc-4626/hooks'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
-import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -22,11 +20,6 @@ export const Erc4626DetailsSectionContentOpen: FC = () => {
     environment: { label, quoteToken },
   } = useOmniGeneralContext()
   const {
-    form: {
-      state: { depositAmount },
-    },
-  } = useOmniProductContext(OmniProductType.Earn)
-  const {
     state: { estimatedPrice },
   } = useErc4626CustomState()
 
@@ -38,7 +31,6 @@ export const Erc4626DetailsSectionContentOpen: FC = () => {
     isLoading: isApyLoading,
     netValue,
   } = useErc4626ApySimulation({
-    depositAmount: depositAmount ?? omniDefaultOverviewSimulationDeposit,
     vaultAddress,
     rewardTokenPrice: estimatedPrice,
   })

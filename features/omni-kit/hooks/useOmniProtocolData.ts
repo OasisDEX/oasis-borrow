@@ -17,6 +17,7 @@ import { EMPTY } from 'rxjs'
 
 interface OmniProtocolDataProps {
   collateralToken: string
+  extraTokens?: string[]
   isOracless?: boolean
   positionId?: string
   productType: OmniProductType
@@ -28,6 +29,7 @@ interface OmniProtocolDataProps {
 
 export function useOmniProtocolData({
   collateralToken,
+  extraTokens = [],
   isOracless,
   positionId,
   productType,
@@ -116,7 +118,7 @@ export function useOmniProtocolData({
       () =>
         !isOracless && dpmPositionData
           ? getTokenBalances$(
-              [dpmPositionData.collateralToken, dpmPositionData.quoteToken],
+              [dpmPositionData.collateralToken, dpmPositionData.quoteToken, ...extraTokens],
               walletAddress || dpmPositionData.user,
               networkId,
             )
@@ -151,7 +153,12 @@ export function useOmniProtocolData({
     useMemo(
       () =>
         dpmPositionData
-          ? tokenPriceUSD$([dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'])
+          ? tokenPriceUSD$([
+              dpmPositionData.collateralToken,
+              dpmPositionData.quoteToken,
+              'ETH',
+              ...extraTokens,
+            ])
           : EMPTY,
       [dpmPositionData],
     ),

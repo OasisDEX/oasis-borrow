@@ -56,6 +56,17 @@ export function useOmniMultiplyFormReducto({ ...rest }: Partial<OmniMultiplyForm
             ...state,
             withdrawAmountMax: action.withdrawAmountMax,
           }
+        case 'update-loan-to-value':
+          return {
+            ...state,
+            loanToValue: action.loanToValue,
+          }
+        case 'update-swap-token':
+          return {
+            ...state,
+            pullToken: action.pullToken,
+            returnToken: action.returnToken,
+          }
         case 'update-dpm':
           return {
             ...state,
@@ -65,11 +76,6 @@ export function useOmniMultiplyFormReducto({ ...rest }: Partial<OmniMultiplyForm
           return {
             ...state,
             ...omniMultiplyFormReset,
-          }
-        case 'update-loan-to-value':
-          return {
-            ...state,
-            loanToValue: action.loanToValue,
           }
         default:
           return state

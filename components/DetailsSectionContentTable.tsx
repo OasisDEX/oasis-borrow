@@ -65,7 +65,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
                   variant="text.paragraph4"
                   sx={{
                     color: 'neutral80',
-                    px: 3,
+                    px: 2,
                     pb: 3,
                     textAlign: 'right',
                     '&:first-of-type': {
@@ -93,7 +93,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
                   key={`${i}-${j}`}
                   variant="text.boldParagraph3"
                   sx={{
-                    px: 3,
+                    px: 2,
                     verticalAlign: 'top',
                     textAlign: 'right',
                     ...(i > 0 && {
