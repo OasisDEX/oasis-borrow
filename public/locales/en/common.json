@@ -3273,7 +3273,8 @@
       "deposit-amount-exceeds-supply-cap": "You cannot deposit more than {{cap}} {{collateralToken}} due to the maximum supply cap.",
       "debt-amount-exceeds-borrow-cap": "You cannot borrow more than {{cap}} {{quoteToken}} due to the maximum borrowing cap.",
       "target-ltv-exceeds-supply-cap": "Your target LTV is too high due to the maximum supply cap. You cannot supply more than {{cap}} {{collateralToken}}.",
-      "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{quoteToken}}."
+      "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{quoteToken}}.",
+      "after-ltv-ratio-above-or-below-trigger-ltv": "You cannot make adjustments to your position which take it {{aboveOrBelow}} your {{automationFeature}} Trigger Loan to Value, please update or cancel your {{automationFeature}} if you want to make this adjustment."
     },
     "rewards": {
       "title": "Earn more $AJNA on Summer.fi than any other platform",

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniCloseTo } from 'features/omni-kit/types'
 import type { ThemeUIStyleObject } from 'theme-ui'
 
@@ -60,4 +61,14 @@ export const partialTakeProfitConstants = {
   ltvSliderStep: 0.1,
   ltvSliderMin: new BigNumber(1), // 1% for both Trigger LTV and Withdrawal LTV
   realizedProfitRangeVisible: 3,
+}
+
+export const omniAutomationTranslationKeyMap = {
+  [AutomationFeatures.TRAILING_STOP_LOSS]: 'system.trailing-stop-loss',
+  [AutomationFeatures.STOP_LOSS]: 'system.stop-loss',
+  [AutomationFeatures.AUTO_SELL]: 'auto-sell.title',
+  [AutomationFeatures.PARTIAL_TAKE_PROFIT]: 'system.partial-take-profit',
+  [AutomationFeatures.AUTO_BUY]: 'auto-buy.title',
+  [AutomationFeatures.CONSTANT_MULTIPLE]: 'system.constant-multiple',
+  [AutomationFeatures.AUTO_TAKE_PROFIT]: 'system.auto-take-profit',
 }
