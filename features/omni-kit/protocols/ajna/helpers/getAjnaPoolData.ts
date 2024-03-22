@@ -97,8 +97,6 @@ export const getAjnaPoolData: (networkId: OmniSupportedNetworkIds) => GetPoolDat
             totalAuctionsInPool,
             t0debt,
           } = response.pool
-console.log(response.pool)
-console.log( new BigNumber(lendApr7dAverage).shiftedBy(NEGATIVE_WAD_PRECISION).toString())
           const htpBigNumber = new BigNumber(htp)
           // we are mapping 7388 htp index to actual bucket price since contracts returns zero when pool does not contain any borrowers
           const resolvedHighestThresholdPrice = htpBigNumber.eq(zero)
