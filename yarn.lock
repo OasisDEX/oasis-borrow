@@ -2385,10 +2385,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.53":
-  version "0.1.53"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.53.tgz#a188b76a21dbf01b9af2e48e928f9f54774f7eb3"
-  integrity sha512-rkSzfCLtOtoNq611+ndDrlG5M1rauhD/dqa+8oSPk3eBAgjcayZepeRhOk68Kiz+maBIT3XqgXnLEgUHL9WYNw==
+"@oasisdex/addresses@0.1.54":
+  version "0.1.54"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.54.tgz#b5224fba4dabc1bb993ac84d0cb7a2907530c3bb"
+  integrity sha512-EgqXBjrlBSbKXs+of3w/hr+TWqF5aPwzIfS9er0O5Xrx3JDpMPqsHj9vLFR4ilCQG0wdfbTqHsm3SsWR6u6Rng==
 
 "@oasisdex/automation@1.6.5":
   version "1.6.5"
@@ -2397,10 +2397,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.46":
-  version "0.6.46"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.46.tgz#087786dbc033301347bb66d347a65316dc247034"
-  integrity sha512-2dt7t8QYQn1ndQFDPhjOTrFsjU3PmxLxU/ghHn2Fl7EDkO3P1jApFnF5dmeP+vTH0IqsW3AyV7WwFFg6ZiLQLg==
+"@oasisdex/dma-library@0.6.47":
+  version "0.6.47"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.47.tgz#24c88ee8fccde9d1c5f7e4a7052920776377fc85"
+  integrity sha512-AfuaGepkIjJ6G5HQGas11J3GqxK9c2nSILZI5Q4c4IGBCbVToHztNabh6PRw4ovwH6hR98Gs728YcGp8XTrvaQ==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
