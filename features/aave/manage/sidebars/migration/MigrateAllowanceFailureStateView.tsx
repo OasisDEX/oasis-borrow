@@ -6,7 +6,7 @@ import { Grid, Text } from 'theme-ui'
 
 import type { MigrateAaveStateProps } from './migrateAaveStateProps'
 
-export function MigrateAllowanceFailureStateView({ state, send }: MigrateAaveStateProps) {
+export function MigrateAllowanceFailureStateView({ state, send, isLocked }: MigrateAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -20,7 +20,7 @@ export function MigrateAllowanceFailureStateView({ state, send }: MigrateAaveSta
     ),
     primaryButton: {
       isLoading: false,
-      disabled: false,
+      disabled: isLocked(state),
       label: t('migrate.retry'),
       action: () => send({ type: 'RETRY' }),
     },

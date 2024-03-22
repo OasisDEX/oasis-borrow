@@ -6,7 +6,12 @@ import { Grid, Text } from 'theme-ui'
 
 import type { MigrateAaveStateProps } from './migrateAaveStateProps'
 
-export function MigrateStartAllowanceStateView({ state, send, isLoading }: MigrateAaveStateProps) {
+export function MigrateStartAllowanceStateView({
+  state,
+  send,
+  isLoading,
+  isLocked,
+}: MigrateAaveStateProps) {
   const { t } = useTranslation()
 
   const loading = isLoading()
@@ -22,7 +27,7 @@ export function MigrateStartAllowanceStateView({ state, send, isLoading }: Migra
     ),
     primaryButton: {
       isLoading: loading,
-      disabled: loading || !state.can('NEXT_STEP'),
+      disabled: loading || isLocked(state) || !state.can('NEXT_STEP'),
       label: t('approve-allowance'),
       action: () => send('NEXT_STEP'),
     },

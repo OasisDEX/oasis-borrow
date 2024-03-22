@@ -13,7 +13,12 @@ import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import type { MigrateAaveStateProps } from './migrateAaveStateProps'
 
-export function MigrateWelcomeStateView({ state, send, isLoading }: MigrateAaveStateProps) {
+export function MigrateWelcomeStateView({
+  state,
+  send,
+  isLoading,
+  isLocked,
+}: MigrateAaveStateProps) {
   const { t } = useTranslation()
 
   const transactionCostWithLoader = useTransactionCostWithLoading({
@@ -78,7 +83,7 @@ export function MigrateWelcomeStateView({ state, send, isLoading }: MigrateAaveS
     ),
     primaryButton: {
       isLoading: isLoading(),
-      disabled: isLoading() || !state.can('NEXT_STEP'),
+      disabled: isLoading() || isLocked(state) || !state.can('NEXT_STEP'),
       label: t('migrate.button'),
       action: () => send('NEXT_STEP'),
     },
