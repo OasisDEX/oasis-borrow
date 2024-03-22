@@ -30,12 +30,6 @@ export async function getMigrationPositionParameters({
 
   const systemKeyProtocol = lendingProtocolToSystemKeys(protocol)
 
-  // enum PositionSource {
-  //     DS_PROXY = "dsProxy",
-  //     LITTLE_FROGGY = "littleFroggy",
-  //     EOA = "eoa"
-  // }
-
   const args: Args = {
     collateralToken: position.collateral,
     debtToken: position.debt,

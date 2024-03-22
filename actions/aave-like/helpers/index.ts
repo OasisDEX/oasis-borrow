@@ -1,5 +1,10 @@
-import type { AaveLikeStrategyAddresses, IPosition, Network, Tokens } from '@oasisdex/dma-library'
-import { SystemKeys } from '@oasisdex/dma-library'
+import type {
+  AaveLikeStrategyAddresses,
+  IPosition,
+  Network,
+  SystemKeys,
+  Tokens,
+} from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -34,14 +39,6 @@ export function networkIdToLibraryNetwork(networkId: NetworkIds): Network {
 }
 
 export function lendingProtocolToSystemKeys(protocol: LendingProtocol): SystemKeys {
-  // MPA = "mpa",
-  //     COMMON = "common",
-  //     AAVE = "aave",
-  //     SPARK = "spark",
-  //     MAKER = "maker",
-  //     AUTOMATION = "automation",
-  //     AJNA = "ajna",
-  //     MORPHO_BLUE = "morphoblue"
   try {
     switch (protocol) {
       case LendingProtocol.AaveV2:
@@ -61,7 +58,7 @@ export function lendingProtocolToSystemKeys(protocol: LendingProtocol): SystemKe
     }
   } catch (error) {
     console.error(error)
-    return SystemKeys.AAVE
+    throw new Error('Error converting lending protocol to system keys')
   }
 }
 
