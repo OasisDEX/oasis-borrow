@@ -75,7 +75,6 @@ export type OmniSidebarStepsSet = {
 }
 
 export interface OmniProtocolSettings {
-  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
   entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
   pullTokens?: NetworkIdsWithValues<string[]>
   rawName: NetworkIdsWithValues<string>
