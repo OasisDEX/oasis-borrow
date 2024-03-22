@@ -1,4 +1,4 @@
-import type { LendingPosition, Strategy, SupplyPosition, OmniSimulationSwap } from '@oasisdex/dma-library'
+import type { LendingPosition, Strategy, SupplyPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
@@ -20,6 +20,7 @@ import type {
 import type {
   OmniGenericPosition,
   OmniSimulationCommon,
+  OmniSimulationSwap,
   OmniValidations,
 } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
