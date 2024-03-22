@@ -1,4 +1,4 @@
-import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
+import type { LendingPosition, SupplyPosition, Swap, SwapData } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
@@ -188,6 +188,8 @@ export interface OmniSimulationCommon {
   warnings: { name: string; data?: { [key: string]: string } }[]
   getValidations: (params: GetOmniValidationResolverParams) => OmniValidations
 }
+
+export type OmniSimulationSwap = Swap & SwapData
 
 export interface OmniValidationItem {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
