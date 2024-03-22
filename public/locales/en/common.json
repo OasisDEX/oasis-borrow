@@ -3288,6 +3288,7 @@
       },
       "earn": {
         "form-order": {
+          "swapping": "Swapping",
           "total-deposit": "Total {{quoteToken}} deposit"
         }
       }

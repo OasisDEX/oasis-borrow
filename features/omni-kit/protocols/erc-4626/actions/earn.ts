@@ -28,19 +28,6 @@ export const erc4626ActionDepositEarn = ({
 }) => {
   const { depositAmount, pullToken } = state
 
-  const a = {
-    amount: `${depositAmount ?? zero}`,
-    depositTokenAddress: quoteAddress,
-    depositTokenPrecision: quotePrecision,
-    depositTokenSymbol: quoteToken,
-    pullTokenAddress: pullToken?.address ?? quoteAddress,
-    pullTokenPrecision: pullToken?.precision ?? quotePrecision,
-    pullTokenSymbol: pullToken?.token ?? quoteToken,
-    quoteTokenPrice: `${quotePrice}`,
-  }
-
-  console.log(a)
-
   return strategies.common.erc4626.deposit(
     {
       ...commonPayload,
