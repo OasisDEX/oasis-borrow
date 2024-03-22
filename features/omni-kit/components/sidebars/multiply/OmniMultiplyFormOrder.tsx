@@ -62,7 +62,6 @@ export function OmniMultiplyFormOrder() {
       networkId,
       slippageSource,
       isStrategyWithDefaultSlippage,
-      isYieldLoop,
     },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails, setSlippageSource },
@@ -103,8 +102,6 @@ export function OmniMultiplyFormOrder() {
     (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
 
-  const withOasisFee = (withBuying || withSelling) && !isYieldLoop
-
   const quoteAction = withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL'
   // use ~1$ worth amount of collateral or quote token
   const quoteAmount = one.div(withBuying ? quotePrice : collateralPrice)
@@ -136,13 +133,12 @@ export function OmniMultiplyFormOrder() {
       ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice).div(100)
       : undefined
 
-  const oasisFee =
-    withOasisFee && swapData
-      ? amountFromWei(
-          swapData.tokenFee,
-          swapData.collectFeeFrom === 'targetToken' ? quotePrecision : collateralPrecision,
-        ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? quotePrice : collateralPrice)
-      : zero
+  const oasisFee = swapData
+    ? amountFromWei(
+        swapData.tokenFee,
+        swapData.collectFeeFrom === 'targetToken' ? quotePrecision : collateralPrecision,
+      ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? quotePrice : collateralPrice)
+    : zero
 
   const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {
