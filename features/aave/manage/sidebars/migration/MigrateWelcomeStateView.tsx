@@ -47,6 +47,7 @@ const useMigrationTransactionCostWithLoading = ({
         })
       })
       .catch((error) => {
+        console.error('Failed to get transaction fee', error)
         setTransactionCost({
           gasEstimationStatus: GasEstimationStatus.error,
           gasEstimationEth: new BigNumber(gasForAllowanceDpmAndMigration),

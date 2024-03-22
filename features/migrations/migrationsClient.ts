@@ -65,7 +65,7 @@ export const fetchMigrations = async (
   return getPortfolioMigrationsResponse(address)
     .then((res: PortfolioMigrationsResponse | undefined) => {
       return (
-        res?.migrationsV2
+        (res?.migrationsV2 ?? [])
           .map((migration, index): PortfolioPosition => {
             const primaryToken =
               migration.collateralAsset.symbol === 'WETH' ? 'ETH' : migration.collateralAsset.symbol
