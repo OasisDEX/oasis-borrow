@@ -8,6 +8,7 @@ import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { GetTriggersResponse } from 'helpers/triggers'
 import type { TxError } from 'helpers/types'
 import type { LendingProtocolLabel } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
@@ -239,6 +240,7 @@ export interface GetOmniValidationsParams {
   gasEstimationUsd?: BigNumber
   isOpening: boolean
   position: OmniGenericPosition
+  simulation?: OmniGenericPosition
   productType: OmniProductType
   protocol: LendingProtocol
   quoteBalance: BigNumber
@@ -248,6 +250,7 @@ export interface GetOmniValidationsParams {
   simulationSuccesses?: SimulationValidations
   simulationWarnings?: SimulationValidations
   state: OmniFormState
+  positionTriggers: GetTriggersResponse
   txError?: TxError
 }
 

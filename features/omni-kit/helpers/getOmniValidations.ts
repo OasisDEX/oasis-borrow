@@ -1,8 +1,8 @@
 import { mapSimulationValidation } from 'features/omni-kit/components'
 import {
   getOmniCommonValidations,
-  getOmniLendingValidations,
   isOmniFormValid,
+  useOmniLendingValidations,
 } from 'features/omni-kit/helpers'
 import type {
   GetOmniValidationResolverParams,
@@ -21,6 +21,7 @@ export const getOmniValidations =
     gasEstimationUsd,
     isOpening,
     position,
+    simulation,
     productType,
     protocol,
     quoteBalance,
@@ -29,6 +30,7 @@ export const getOmniValidations =
     simulationNotices = [],
     simulationSuccesses = [],
     simulationWarnings = [],
+    positionTriggers,
     state,
     txError,
   }: GetOmniValidationsParams) =>
@@ -58,12 +60,14 @@ export const getOmniValidations =
       txError,
     })
 
-    const lendingValidations = getOmniLendingValidations({
+    const lendingValidations = useOmniLendingValidations({
       isOpening,
       position,
+      simulation,
       protocolLabel,
       quoteBalance,
       safetySwitchOn,
+      positionTriggers,
       state,
     })
 
