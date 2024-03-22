@@ -11,6 +11,7 @@ export function useErc4626TxHandler(): () => void {
       label,
       networkId,
       productType,
+      protocolPrices,
       quoteAddress,
       quotePrecision,
       quotePrice,
@@ -35,6 +36,7 @@ export function useErc4626TxHandler(): () => void {
       getErc4626Parameters({
         isFormValid,
         networkId,
+        protocolPrices,
         quoteAddress,
         quotePrecision,
         quotePrice,

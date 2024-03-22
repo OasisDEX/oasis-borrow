@@ -1,6 +1,7 @@
 import type { Network, SummerStrategy } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
+import type { Tickers } from 'blockchain/prices.types'
 import type { ethers } from 'ethers'
 import { omniNetworkMap, omniSwapVersionMap } from 'features/omni-kit/constants'
 import type {
@@ -26,6 +27,7 @@ import { getOneInchCall } from 'helpers/swap'
 interface GetErc4626ParametersParams {
   isFormValid: boolean
   networkId: OmniSupportedNetworkIds
+  protocolPrices: Tickers
   quoteAddress: string
   quotePrecision: number
   quotePrice: BigNumber
@@ -40,6 +42,7 @@ interface GetErc4626ParametersParams {
 export async function getErc4626Parameters({
   isFormValid,
   networkId,
+  protocolPrices,
   quoteAddress,
   quotePrecision,
   quotePrice,
@@ -76,7 +79,7 @@ export async function getErc4626Parameters({
       networkId,
       omniSwapVersionMap[networkId],
     ),
-    getVaultApyParameters: getErc4626ApyParameters({}),
+    getVaultApyParameters: getErc4626ApyParameters({ prices: protocolPrices }),
     network: omniNetworkMap[networkId] as Network,
     operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
     provider: rpcProvider,

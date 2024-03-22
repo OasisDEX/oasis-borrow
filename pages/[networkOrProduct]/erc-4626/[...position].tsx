@@ -56,10 +56,12 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     name,
     protocol,
     token: { symbol },
+    rewards,
   } = erc4626VaultsById[label]
 
   return getOmniServerSideProps({
     collateralToken: symbol,
+    extraTokens: rewards.map(({ token }) => token),
     label: name,
     locale,
     protocol,

@@ -1,4 +1,5 @@
-import type { LendingPosition, OmniSimulationSwap } from '@oasisdex/dma-library'
+import type { LendingPosition } from '@oasisdex/dma-library'
+import type { OmniSimulationSwap } from 'features/omni-kit/types'
 
 export const resolveSwapTokenPrice = ({
   positionData,

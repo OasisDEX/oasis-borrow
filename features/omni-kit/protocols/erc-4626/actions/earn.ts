@@ -26,7 +26,7 @@ export const erc4626ActionDepositEarn = ({
   dependencies: Erc4626Dependencies
   state: OmniEarnFormState
 }) => {
-  const { depositAmount } = state
+  const { depositAmount, pullToken } = state
 
   return strategies.common.erc4626.deposit(
     {
@@ -35,9 +35,9 @@ export const erc4626ActionDepositEarn = ({
       depositTokenAddress: quoteAddress,
       depositTokenPrecision: quotePrecision,
       depositTokenSymbol: quoteToken,
-      pullTokenAddress: quoteAddress,
-      pullTokenPrecision: quotePrecision,
-      pullTokenSymbol: quoteToken,
+      pullTokenAddress: pullToken?.address ?? quoteAddress,
+      pullTokenPrecision: pullToken?.precision ?? quotePrecision,
+      pullTokenSymbol: pullToken?.token ?? quoteToken,
       quoteTokenPrice: quotePrice,
     },
     dependencies,

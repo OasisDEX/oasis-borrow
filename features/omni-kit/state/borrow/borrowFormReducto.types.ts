@@ -5,39 +5,43 @@ import type {
   FormActionsUpdateDpm,
   FormActionsUpdateGenerate,
   FormActionsUpdateGenerateMax,
+  FormActionsUpdateLoanToValue,
   FormActionsUpdatePayback,
   FormActionsUpdatePaybackMax,
+  FormActionsUpdateSwapToken,
   FormActionsUpdateWithdraw,
   FormActionsUpdateWithdrawMax,
-  UpdateLoanToValue,
 } from 'features/omni-kit/state'
 import type {
   OmniBorrowFormAction,
   OmniCloseTo,
   OmniProductType,
   OmniSidebarBorrowPanel,
+  OmniSwapToken,
 } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniBorrowFormState {
   productType: OmniProductType.Borrow
   action?: OmniBorrowFormAction
-  dpmAddress: string
+  closeTo: OmniCloseTo
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  dpmAddress: string
   generateAmount?: BigNumber
   generateAmountMax: boolean
   generateAmountUSD?: BigNumber
+  loanToValue?: BigNumber
   paybackAmount?: BigNumber
-  paybackAmountUSD?: BigNumber
   paybackAmountMax: boolean
+  paybackAmountUSD?: BigNumber
+  pullToken?: OmniSwapToken
+  returnToken?: OmniSwapToken
+  uiDropdown: OmniSidebarBorrowPanel
+  uiPill: Exclude<OmniBorrowFormAction, OmniBorrowFormAction.OpenBorrow>
   withdrawAmount?: BigNumber
   withdrawAmountMax: boolean
   withdrawAmountUSD?: BigNumber
-  loanToValue?: BigNumber
-  closeTo: OmniCloseTo
-  uiDropdown: OmniSidebarBorrowPanel
-  uiPill: Exclude<OmniBorrowFormAction, OmniBorrowFormAction.OpenBorrow>
 }
 
 export type OmniBorrowFormActions = ReductoActions<
@@ -49,7 +53,8 @@ export type OmniBorrowFormActions = ReductoActions<
   | FormActionsUpdatePaybackMax
   | FormActionsUpdateWithdraw
   | FormActionsUpdateWithdrawMax
+  | FormActionsUpdateLoanToValue
+  | FormActionsUpdateSwapToken
   | FormActionsUpdateDpm
   | FormActionsReset
-  | UpdateLoanToValue
 >
