@@ -136,6 +136,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
         automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
         automationUpdateState('triggerLtv', triggerLtvValue)
         automationUpdateState('ltvStep', targetLtvValue)
+        !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
       }
     }
   }, [automationUpdateState, positionPriceRatio, startingTakeProfitPriceValue])
@@ -201,6 +202,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
     automationUpdateState('price', startingTakeProfitPriceValue)
     automationUpdateState('triggerLtv', triggerLtvValue)
     automationUpdateState('ltvStep', targetLtvValue)
+    !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
   }
 
   return (
@@ -301,6 +303,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
                 automationUpdateState('triggerLtv', triggerLtvValue)
                 automationUpdateState('ltvStep', targetLtvValue)
                 automationUpdateState('percentageOffset', undefined)
+                !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
               }
             })}
             sx={{
@@ -370,6 +373,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
             automationUpdateState('price', startingTakeProfitPriceValue)
             automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
             automationUpdateState('ltvStep', targetLtvValue)
+            !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
           }}
           useRcSlider
           {...triggerLtvSliderConfig}
@@ -427,6 +431,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
             automationUpdateState('price', startingTakeProfitPriceValue)
             automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
             automationUpdateState('triggerLtv', triggerLtvValue)
+            !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
           }}
           useRcSlider
           {...withdrawalLtvSliderConfig}
@@ -467,7 +472,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
         </Flex>
       </Box>
       <SidebarAccordion
-        isDisabled={automation.resolved.isFormEmpty}
+        isDisabled={automation.resolved.isFormEmpty || hasTrailingStopLoss}
         title={
           <>
             {t('protection.partial-take-profit-sidebar.configure-stop-loss-loan-to-value')}
@@ -497,7 +502,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
             {t('protection.partial-take-profit-sidebar.stop-loss-info')}
           </Text>
         }
-        openByDefault={!hasStopLoss}
+        openByDefault={!hasStopLoss || !hasTrailingStopLoss}
       >
         <SliderValuePicker
           disabled={!!hasStopLoss && !!trailingStopLossDistanceLabel}
@@ -551,7 +556,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
           type="ok"
           withBullet={false}
           messages={[
-            !hasStopLoss ? (
+            !hasStopLoss && !hasTrailingStopLoss ? (
               <Trans
                 i18nKey="protection.partial-take-profit-sidebar.stop-loss-messages.no-stop-loss"
                 values={{

@@ -28,10 +28,7 @@ import {
   mapBorrowCumulativesToOmniCumulatives,
 } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
-import {
-  formatCryptoBalance,
-  formatDecimalAsPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { nbsp } from 'helpers/nbsp'
 import { TriggerAction } from 'helpers/triggers'
 import { hundred, one, zero } from 'helpers/zero'
@@ -286,7 +283,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       ? `${formatCryptoBalance(currentTrailingStopLossDistance.div(10000))}${nbsp}${priceFormat}`
       : ''
 
-  const defaultStopLossLevel = castedPosition.category.liquidationThreshold
+  const defaultStopLossLevel = castedPosition.category.maxLoanToValue
     .minus(stopLossConstants.offsets.max)
     .times(100)
 
