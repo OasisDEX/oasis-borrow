@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
 import {
@@ -24,7 +25,6 @@ import {
   formatDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
-import { OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -53,6 +53,8 @@ export function OmniMultiplyFormOrder() {
     environment: {
       collateralPrice,
       collateralToken,
+      quotePrecision,
+      collateralPrecision,
       quoteToken,
       slippage,
       isShort,
@@ -60,7 +62,6 @@ export function OmniMultiplyFormOrder() {
       networkId,
       slippageSource,
       isStrategyWithDefaultSlippage,
-      isYieldLoop,
     },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails, setSlippageSource },
@@ -101,8 +102,6 @@ export function OmniMultiplyFormOrder() {
     (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
 
-  const withOasisFee = (withBuying || withSelling) && !isYieldLoop
-
   const quoteAction = withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL'
   // use ~1$ worth amount of collateral or quote token
   const quoteAmount = one.div(withBuying ? quotePrice : collateralPrice)
@@ -134,8 +133,11 @@ export function OmniMultiplyFormOrder() {
       ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice).div(100)
       : undefined
 
-  const oasisFee = withOasisFee
-    ? buyingOrSellingCollateral.times(OAZO_FEE.times(collateralPrice))
+  const oasisFee = swapData
+    ? amountFromWei(
+        swapData.tokenFee,
+        swapData.collectFeeFrom === 'targetToken' ? quotePrecision : collateralPrecision,
+      ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? quotePrice : collateralPrice)
     : zero
 
   const isLoading = !isTxSuccess && isSimulationLoading
