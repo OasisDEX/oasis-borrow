@@ -246,6 +246,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         depositSize
         interestRate
         apr30dAverage
+        apr7dAverage
+        lendApr30dAverage
+        lendApr7dAverage
         dailyPercentageRate30dAverage
         monthlyPercentageRate30dAverage
         poolMinDebtAmount

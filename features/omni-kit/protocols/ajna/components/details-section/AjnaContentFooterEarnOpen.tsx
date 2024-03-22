@@ -29,7 +29,7 @@ export function AjnaContentFooterEarnOpen({
   })
 
   const averageApyContentCardCommonData = useOmniCardDataAverageApy({
-    averageApy: position.poolApy.per7d,
+    averageApy: position.historicalApy.sevenDayAverage,
     days: '7',
   })
 
