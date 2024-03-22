@@ -199,12 +199,6 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         min={1}
         max={maxSliderValue}
         onChange={(change) => {
-          console.log('update', {
-            defaultPrice,
-            defaultMaxGasFee,
-            statePrice: automationFormState?.price,
-            stateFee: automationFormState?.maxGasFee,
-          })
           updateFormState('price', defaultPrice)
           updateFormState('maxGasFee', defaultMaxGasFee)
           resolveSliderDefaultUpdate({ value0: change.value0, value1: change.value1 })
@@ -236,7 +230,6 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         onToggle={(flag) => {
           updateFormState('useThreshold', flag)
           if (!flag) {
-            console.log('here')
             updateFormState('price', undefined)
           } else {
             updateFormState('price', defaultPrice)
