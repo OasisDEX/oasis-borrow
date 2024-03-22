@@ -391,7 +391,7 @@ type WithMappedTrailingStopLossDecodedParams = {
 
 type WithMappedAutoSellDecodedParams = {
   decodedMappedParams: {
-    minSellPrice: BigNumber
+    minSellPrice?: BigNumber
     executionLtv: BigNumber
     targetLtv: BigNumber
     maxBaseFeeInGwei: BigNumber
@@ -399,7 +399,7 @@ type WithMappedAutoSellDecodedParams = {
 }
 type WithMappedAutoBuyDecodedParams = {
   decodedMappedParams: {
-    maxBuyPrice: BigNumber
+    maxBuyPrice?: BigNumber
     executionLtv: BigNumber
     targetLtv: BigNumber
     maxBaseFeeInGwei: BigNumber

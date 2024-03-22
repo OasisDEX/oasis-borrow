@@ -11,6 +11,7 @@ import { useOmniAutoBSDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
+import { isBoolean } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
@@ -24,6 +25,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const {
     automation: { automationForms },
   } = useOmniProductContext(productType)
+
   const {
     maxLtv,
     currentLtv,
@@ -34,7 +36,9 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     pricesDenomination,
     castedPosition,
     resolvedThresholdPrice,
+    resolvedTrigger,
   } = useOmniAutoBSDataHandler({ type })
+
   const defaultTriggerValues = useMemo(() => {
     if (type === AutomationFeatures.AUTO_BUY) {
       return {
@@ -149,7 +153,16 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     },
   }[type]
 
-  const defaultPrice = automationFormState.price || resolvedThresholdPrice
+  const defaultPrice =
+    isBoolean(automationFormState.useThreshold) && !automationFormState.useThreshold
+      ? undefined
+      : automationFormState.price || resolvedThresholdPrice
+
+  const defaultToggle = isBoolean(automationFormState.useThreshold)
+    ? automationFormState.useThreshold
+    : resolvedTrigger && !resolvedThresholdPrice
+    ? false
+    : autoBuySellConstants.defaultToggle
 
   const resolveSliderDefaultUpdate = ({ value0, value1 }: { value0: number; value1: number }) => {
     if (type === AutomationFeatures.AUTO_BUY) {
@@ -215,7 +228,13 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         })}
         onToggle={(flag) => {
           updateFormState('useThreshold', flag)
-          updateFormState('price', defaultPrice)
+          if (!flag) {
+            console.log('here')
+            updateFormState('price', undefined)
+          } else {
+            updateFormState('price', defaultPrice)
+          }
+
           updateFormState('maxGasFee', defaultMaxGasFee)
           resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
         }}
@@ -223,7 +242,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
-        defaultToggle={automationFormState.useThreshold}
+        defaultToggle={defaultToggle}
       />
       <MaxGasPriceSection
         onChange={(value) => {

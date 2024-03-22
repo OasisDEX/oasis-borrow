@@ -29,7 +29,7 @@ export function OmniCardDataLtvModal({
     <DetailsSectionContentSimpleModal
       title={t('omni-kit.content-card.ltv.title')}
       description={t('omni-kit.content-card.ltv.modal-description')}
-      value={formatDecimalAsPercent(ltv)}
+      value={ltv.gt(1.1) ? '>110.00%' : formatDecimalAsPercent(ltv)}
     >
       <>
         {maxLtv && (

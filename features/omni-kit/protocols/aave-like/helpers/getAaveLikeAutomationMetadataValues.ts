@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { lambdaPriceDenomination } from 'features/aave/constants'
+import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
 import type {
@@ -63,10 +64,15 @@ const mapAutoSellTriggers = (
     return undefined
   }
 
+  const rawMinSellPrice = new BigNumber(triggers.decodedParams.minSellPrice)
+  const minSellPrice = rawMinSellPrice.isEqualTo(maxUint256)
+    ? undefined
+    : rawMinSellPrice.div(lambdaPriceDenomination)
+
   return {
     ...triggers,
     decodedMappedParams: {
-      minSellPrice: new BigNumber(triggers.decodedParams.minSellPrice).div(lambdaPriceDenomination),
+      minSellPrice,
       executionLtv: new BigNumber(triggers.decodedParams.executionLtv).div(10000),
       targetLtv: new BigNumber(triggers.decodedParams.targetLtv).div(10000),
       maxBaseFeeInGwei: new BigNumber(triggers.decodedParams.maxBaseFeeInGwei),
@@ -81,10 +87,15 @@ const mapAutoBuyTriggers = (
     return undefined
   }
 
+  const rawMaxBuyPrice = new BigNumber(triggers.decodedParams.maxBuyPrice)
+  const maxBuyPrice = rawMaxBuyPrice.isEqualTo(maxUint256)
+    ? undefined
+    : rawMaxBuyPrice.div(lambdaPriceDenomination)
+
   return {
     ...triggers,
     decodedMappedParams: {
-      maxBuyPrice: new BigNumber(triggers.decodedParams.maxBuyPrice).div(lambdaPriceDenomination),
+      maxBuyPrice,
       executionLtv: new BigNumber(triggers.decodedParams.executionLtv).div(10000),
       targetLtv: new BigNumber(triggers.decodedParams.targetLtv).div(10000),
       maxBaseFeeInGwei: new BigNumber(triggers.decodedParams.maxBaseFeeInGwei),

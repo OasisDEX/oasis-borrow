@@ -5,6 +5,7 @@ import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit
 import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
 import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
 import { TriggerAction } from 'helpers/triggers'
+import { isBoolean } from 'lodash'
 
 // Handler to check whether state has been updated
 // This handler shouldn't take into account predefined, default form values
@@ -34,8 +35,9 @@ export const isOmniAutomationFormEmpty = (
       return (
         !autoBSState.targetLtv &&
         !autoBSState.triggerLtv &&
-        autoBSState.useThreshold &&
-        !autoBSState.price
+        (isBoolean(autoBSState.useThreshold) && autoBSState.useThreshold
+          ? !autoBSState.price
+          : true)
       )
     case AutomationFeatures.PARTIAL_TAKE_PROFIT:
       const partialTakeProfitState = state as OmniAutomationPartialTakeProfitFormState

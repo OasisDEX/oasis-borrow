@@ -9,7 +9,6 @@ export const getAutomationAutoBSFormDefaults = (
   type: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL,
 ): OmniAutomationAutoBSFormState => {
   const {
-    // triggers: { autoBuy, autoSell },
     flags: { isAutoSellEnabled, isAutoBuyEnabled },
   } = getAaveLikeAutomationMetadataCommonValues({ positionTriggers })
 
@@ -18,13 +17,7 @@ export const getAutomationAutoBSFormDefaults = (
     [AutomationFeatures.AUTO_BUY]: isAutoBuyEnabled,
   }[type]
 
-  // const trigger = {
-  //   [AutomationFeatures.AUTO_SELL]: autoSell,
-  //   [AutomationFeatures.AUTO_BUY]: autoBuy,
-  // }[type]
-
   return {
     action: isEnabled ? TriggerAction.Update : TriggerAction.Add,
-    useThreshold: true, // TODO
   }
 }

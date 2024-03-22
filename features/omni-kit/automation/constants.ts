@@ -17,6 +17,7 @@ export const trailingStopLossConstants = {
 
 export const autoBuySellConstants = {
   defaultGasFee: 300,
+  defaultToggle: true,
 }
 
 export const partialTakeProfitConstants = {

@@ -8,6 +8,7 @@ import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automa
 import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
 import { setupAaveAutoBuy, setupAaveAutoSell } from 'helpers/triggers'
+import { isBoolean } from 'lodash'
 
 export const setupAutoBS = ({
   automation,
@@ -36,9 +37,25 @@ export const setupAutoBS = ({
   const currentPrice =
     existingAutoBSTrigger && 'minSellPrice' in existingAutoBSTrigger
       ? existingAutoBSTrigger?.minSellPrice
-      : existingAutoBSTrigger?.maxBuyPrice
+      : existingAutoBSTrigger && 'maxBuyPrice' in existingAutoBSTrigger
+      ? existingAutoBSTrigger?.maxBuyPrice
+      : undefined
 
-  const price = (statePrice || currentPrice)?.times(lambdaPriceDenomination)
+  const isTriggerEnabledWithNoThreshold =
+    (existingAutoBSTrigger &&
+      'minSellPrice' in existingAutoBSTrigger &&
+      !existingAutoBSTrigger.minSellPrice) ||
+    (existingAutoBSTrigger &&
+      'maxBuyPrice' in existingAutoBSTrigger &&
+      !existingAutoBSTrigger.maxBuyPrice)
+
+  const usePrice = isBoolean(automationState.useThreshold)
+    ? automationState.useThreshold
+    : existingAutoBSTrigger
+    ? !isTriggerEnabledWithNoThreshold
+    : autoBuySellConstants.defaultToggle
+
+  const price = usePrice ? (statePrice || currentPrice)?.times(lambdaPriceDenomination) : undefined
 
   const stateMaxBaseFee = automationState.maxGasFee
   const currentMaxBaseFee = existingAutoBSTrigger?.maxBaseFeeInGwei
@@ -62,7 +79,7 @@ export const setupAutoBS = ({
     executionLTV,
     targetLTV,
     maxBaseFee,
-    usePrice: !!automationState.useThreshold,
+    usePrice,
     action: automationState.action,
   })
 }
