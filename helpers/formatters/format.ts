@@ -154,6 +154,31 @@ export function formatDecimalAsPercent(
   })
 }
 
+export function formatLtvDecimalAsPercent(
+  number: BigNumber,
+  {
+    precision = 2,
+    plus = false,
+    roundMode = BigNumber.ROUND_DOWN,
+    noPercentSign = false,
+  }: FormatPercentOptions = {},
+) {
+  const ltvHighestUiValue = new BigNumber(1.1)
+  const value = number.gt(ltvHighestUiValue) ? ltvHighestUiValue : number
+  const percentageValue = formatPercent(value.times(100), {
+    precision,
+    plus,
+    roundMode,
+    noPercentSign,
+  })
+
+  if (number.gt(ltvHighestUiValue)) {
+    return `>${percentageValue}`
+  }
+
+  return percentageValue
+}
+
 export function formatDateTime(time: Date, showMs?: boolean): string {
   return dayjs(time).format(showMs ? 'DD.MM HH:mm:ss' : 'DD.MM HH:mm')
 }

@@ -23,6 +23,7 @@ import {
   formatAmount,
   formatCryptoBalance,
   formatDecimalAsPercent,
+  formatLtvDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -152,10 +153,10 @@ export function OmniMultiplyFormOrder() {
     positionDebt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterPositionDebt:
       afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
-    loanToValue: formatDecimalAsPercent(positionData.riskRatio.loanToValue),
+    loanToValue: formatLtvDecimalAsPercent(positionData.riskRatio.loanToValue),
     afterLoanToValue:
       simulationData?.riskRatio &&
-      formatDecimalAsPercent(
+      formatLtvDecimalAsPercent(
         simulationData.riskRatio.loanToValue.decimalPlaces(4, BigNumber.ROUND_DOWN),
       ),
     dynamicMaxLtv: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),

@@ -22,7 +22,7 @@ import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import { hasCommonElement } from 'helpers/hasCommonElement'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -120,7 +120,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                   ? [
                       {
                         label: t('omni-kit.headline.details.current-ltv'),
-                        value: formatDecimalAsPercent(ltv),
+                        value: formatLtvDecimalAsPercent(ltv),
                       },
                     ]
                   : []),
