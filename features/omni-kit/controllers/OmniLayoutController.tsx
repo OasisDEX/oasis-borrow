@@ -1,6 +1,7 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { OmniAutomationFormController } from 'features/omni-kit/automation/controllers/'
 import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
 import {
   omniOptimizationLikeAutomationFeatures,
@@ -19,7 +20,7 @@ import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { hasCommonElement } from 'helpers/hasCommonElement'
@@ -58,6 +59,8 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       isYieldLoop,
       settings,
     },
+    tx: { isTxInProgress },
+    automationSteps,
   } = useOmniGeneralContext()
   const {
     position: {
@@ -65,10 +68,18 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     },
     dynamicMetadata: {
       elements: { faq },
-      values: { headline, headlineDetails, isHeadlineDetailsLoading },
+      values: { headline, headlineDetails, isHeadlineDetailsLoading, automation },
     },
-    automation: { positionTriggers },
+    automation: {
+      positionTriggers,
+      commonForm: {
+        state: { uiDropdownProtection, uiDropdownOptimization },
+        dispatch: commonFormStateDispatch,
+      },
+    },
   } = useOmniProductContext(productType)
+
+  const automationFormStateDispatch = automation?.resolved.activeForm.dispatch
 
   const isMultiplySupported = isPoolSupportingMultiply({
     collateralToken,
@@ -165,6 +176,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                   ? [
                       {
                         value: 'protection',
+                        callback: !isTxInProgress
+                          ? () => {
+                              automationSteps.setStep(OmniSidebarAutomationStep.Manage)
+                              commonFormStateDispatch({ type: 'reset' })
+                              automationFormStateDispatch?.({ type: 'reset' })
+                            }
+                          : undefined,
                         tag: {
                           include: true,
                           active: hasActiveProtection(positionTriggers, protocol),
@@ -173,6 +191,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniProtectionOverviewController />
+                            {uiDropdownProtection && <OmniAutomationFormController />}
                           </Grid>
                         ),
                       },
@@ -182,6 +201,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                   ? [
                       {
                         value: 'optimization',
+                        callback: !isTxInProgress
+                          ? () => {
+                              automationSteps.setStep(OmniSidebarAutomationStep.Manage)
+                              commonFormStateDispatch({ type: 'reset' })
+                              automationFormStateDispatch?.({ type: 'reset' })
+                            }
+                          : undefined,
                         tag: {
                           include: true,
                           active: hasActiveOptimization(positionTriggers, protocol),
@@ -190,6 +216,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                         content: (
                           <Grid variant="vaultContainer">
                             <OmniOptimizationOverviewController />
+                            {uiDropdownOptimization && <OmniAutomationFormController />}
                           </Grid>
                         ),
                       },

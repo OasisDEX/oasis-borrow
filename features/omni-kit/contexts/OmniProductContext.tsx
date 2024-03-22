@@ -2,15 +2,33 @@ import type { LendingPosition, Strategy, SupplyPosition } from '@oasisdex/dma-li
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { ItemProps } from 'components/infoSection/Item'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
+import {
+  getAutomationAutoBSFormDefaults,
+  useOmniAutomationAutoBSFormReducto,
+} from 'features/omni-kit/state/automation/auto-bs'
 import type {
   OmniAutomationFormState,
   useOmniAutomationFormReducto,
-} from 'features/omni-kit/state/automation'
+} from 'features/omni-kit/state/automation/common'
+import {
+  getAutomationPartialTakeProfitFormDefaults,
+  useOmniAutomationPartialTakeProfitFormReducto,
+} from 'features/omni-kit/state/automation/partial-take-profit'
+import {
+  getAutomationStopLossFormDefaults,
+  useOmniStopLossAutomationFormReducto,
+} from 'features/omni-kit/state/automation/stop-loss'
+import {
+  getAutomationTrailingStopLossFormDefaults,
+  useOmniAutomationTrailingStopLossFormReducto,
+} from 'features/omni-kit/state/automation/trailing-stop-loss'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
 import type {
@@ -27,19 +45,17 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import type {
-  AutoBuyTriggers,
-  AutoSellTriggers,
+  AutoBuyTriggersWithDecodedParams,
+  AutoSellTriggersWithDecodedParams,
   GetTriggersResponse,
   PartialTakeProfitTriggers,
+  PartialTakeProfitTriggersWithDecodedParams,
   SetupBasicAutoResponse,
   SetupBasicStopLossResponse,
   SetupPartialTakeProfitResponse,
   SetupTrailingStopLossResponse,
-  StopLossTriggers,
-  TrailingStopLossTriggers,
-  TriggersApiError,
-  TriggersApiWarning,
-  TriggerTransaction,
+  StopLossTriggersWithDecodedParams,
+  TrailingStopLossTriggersWithDecodedParams,
 } from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
@@ -70,7 +86,7 @@ export interface OmniSupplyMetadataHandlers {
   customReset?: () => void
 }
 
-interface AutomationMetadataValues {
+export interface AutomationMetadataValues {
   flags: {
     isStopLossEnabled: boolean
     isTrailingStopLossEnabled: boolean
@@ -79,11 +95,20 @@ interface AutomationMetadataValues {
     isPartialTakeProfitEnabled: boolean
   }
   triggers: {
-    stopLoss?: StopLossTriggers
-    trailingStopLoss?: TrailingStopLossTriggers
-    autoSell?: AutoSellTriggers
-    autoBuy?: AutoBuyTriggers
-    partialTakeProfit?: PartialTakeProfitTriggers
+    [AutomationFeatures.STOP_LOSS]?: StopLossTriggersWithDecodedParams
+    [AutomationFeatures.TRAILING_STOP_LOSS]?: TrailingStopLossTriggersWithDecodedParams
+    [AutomationFeatures.AUTO_SELL]?: AutoSellTriggersWithDecodedParams
+    [AutomationFeatures.AUTO_BUY]?: AutoBuyTriggersWithDecodedParams
+    [AutomationFeatures.PARTIAL_TAKE_PROFIT]?: PartialTakeProfitTriggersWithDecodedParams
+    [AutomationFeatures.CONSTANT_MULTIPLE]?: PartialTakeProfitTriggers
+    [AutomationFeatures.AUTO_TAKE_PROFIT]?: PartialTakeProfitTriggers
+  }
+  resolved: {
+    activeUiDropdown: AutomationFeatures
+    activeForm: ProductContextAutomationForm
+    isProtection: boolean
+    isOptimization: boolean
+    isFormEmpty: boolean
   }
   simulation: AutomationMetadataValuesSimulation
 }
@@ -240,20 +265,29 @@ export type OmniAutomationSimulationResponse =
 
 type AutomationMetadataValuesSimulation = OmniAutomationSimulationResponse['simulation']
 
-interface OmniAutomationSimulationData {
-  simulationResponse?: OmniAutomationSimulationResponse
-  errors?: TriggersApiError[]
-  warnings?: TriggersApiWarning[]
-  transaction?: TriggerTransaction
+export interface ProductContextAutomationForms {
+  stopLoss: ReturnType<typeof useOmniStopLossAutomationFormReducto>
+  trailingStopLoss: ReturnType<typeof useOmniAutomationTrailingStopLossFormReducto>
+  autoSell: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
+  autoBuy: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
+  partialTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+  autoTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
+  constantMultiple: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
 }
+
+export type ProductContextAutomationForm =
+  ProductContextAutomationForms[keyof ProductContextAutomationForms]
 
 interface ProductContextAutomation {
   positionTriggers: GetTriggersResponse
-  automationForm: ReturnType<typeof useOmniAutomationFormReducto>
-  simulationData?: OmniAutomationSimulationData
+  automationForms: ProductContextAutomationForms
+  commonForm: ReturnType<typeof useOmniAutomationFormReducto>
+  simulationData?: OmniAutomationSimulationResponse
   isSimulationLoading?: boolean
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationData | undefined>>
+  setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationResponse | undefined>>
+  cachedOrderInfoItems?: ItemProps[]
+  setCachedOrderInfoItems: Dispatch<SetStateAction<ItemProps[] | undefined>>
 }
 
 interface GenericProductContext<Position, Form, Auction, Metadata> {
@@ -353,7 +387,34 @@ export function OmniProductContextProvider({
   // @ts-ignore
   // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
   const form = formReducto(formDefaults)
+
   const automationForm = automationFormReducto(automationFormDefaults)
+  const stopLossForm = useOmniStopLossAutomationFormReducto(
+    getAutomationStopLossFormDefaults(positionTriggers),
+  )
+  const trailingStopLossForm = useOmniAutomationTrailingStopLossFormReducto(
+    getAutomationTrailingStopLossFormDefaults(positionTriggers),
+  )
+  const autoSellForm = useOmniAutomationAutoBSFormReducto(
+    getAutomationAutoBSFormDefaults(positionTriggers, AutomationFeatures.AUTO_SELL),
+  )
+  const autoBuyForm = useOmniAutomationAutoBSFormReducto(
+    getAutomationAutoBSFormDefaults(positionTriggers, AutomationFeatures.AUTO_BUY),
+  )
+  const partialTakeProfitForm = useOmniAutomationPartialTakeProfitFormReducto(
+    getAutomationPartialTakeProfitFormDefaults(positionTriggers),
+  )
+
+  const automationForms = {
+    stopLoss: stopLossForm,
+    trailingStopLoss: trailingStopLossForm,
+    autoSell: autoSellForm,
+    autoBuy: autoBuyForm,
+    partialTakeProfit: partialTakeProfitForm,
+    constantMultiple: partialTakeProfitForm,
+    autoTakeProfit: partialTakeProfitForm,
+  }
+
   const { state } = form
   const { state: automationState } = automationForm
 
@@ -369,8 +430,10 @@ export function OmniProductContextProvider({
   // TODO these could be potentially generalized within single hook
 
   const [automationSimulationData, setAutomationSimulationData] =
-    useState<OmniAutomationSimulationData>()
+    useState<OmniAutomationSimulationResponse>()
   const [isAutomationSimulationLoading, setAutomationIsLoadingSimulation] = useState(false)
+  const [cachedAutomationOrderInfoItems, setCachedAutomationOrderInfoItems] =
+    useState<ItemProps[]>()
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
@@ -433,11 +496,14 @@ export function OmniProductContextProvider({
       },
       automation: {
         positionTriggers,
-        automationForm,
+        automationForms,
+        commonForm: automationForm,
         simulationData: automationSimulationData,
         isSimulationLoading: isAutomationSimulationLoading,
         setIsLoadingSimulation: setAutomationIsLoadingSimulation,
         setSimulation: setAutomationSimulationData,
+        cachedOrderInfoItems: cachedAutomationOrderInfoItems,
+        setCachedOrderInfoItems: setCachedAutomationOrderInfoItems,
       },
     }
   }, [
@@ -458,6 +524,7 @@ export function OmniProductContextProvider({
     cachedSwap,
     positionTriggers,
     automationState,
+    automationForms,
     automationSimulationData,
     isAutomationSimulationLoading,
   ])

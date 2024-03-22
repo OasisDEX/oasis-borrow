@@ -101,4 +101,10 @@ export const settings: OmniProtocolSettings = {
       manage: omniSidebarManageBorrowishSteps,
     },
   },
+  availableAutomations: {
+    [NetworkIds.MAINNET]: [],
+    [NetworkIds.ARBITRUMMAINNET]: [],
+    [NetworkIds.BASEMAINNET]: [],
+    [NetworkIds.OPTIMISMMAINNET]: [],
+  },
 }

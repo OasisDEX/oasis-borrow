@@ -52,9 +52,19 @@ export enum OmniSidebarStep {
   Transition = 'transition',
 }
 
+export enum OmniSidebarAutomationStep {
+  Manage = 'manage',
+  Transaction = 'transaction',
+}
+
 export type OmniSidebarEditingStep = Extract<
   OmniSidebarStep,
   OmniSidebarStep.Setup | OmniSidebarStep.Manage
+>
+
+export type OmniSidebarAutomationEditingStep = Extract<
+  OmniSidebarAutomationStep,
+  OmniSidebarAutomationStep.Manage
 >
 
 export type OmniSidebarStepsSet = {
@@ -65,7 +75,6 @@ export type OmniSidebarStepsSet = {
 }
 
 export interface OmniProtocolSettings {
-  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
   entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
   pullTokens?: NetworkIdsWithValues<string[]>
   rawName: NetworkIdsWithValues<string>
@@ -76,6 +85,7 @@ export interface OmniProtocolSettings {
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
   yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
+  availableAutomations: NetworkIdsWithValues<AutomationFeatures[]>
 }
 
 export type OmniProtocolsSettings = {

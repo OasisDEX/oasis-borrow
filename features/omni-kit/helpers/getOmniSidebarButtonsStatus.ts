@@ -1,4 +1,9 @@
-import type { OmniFormAction, OmniSidebarEditingStep } from 'features/omni-kit/types'
+import type {
+  OmniFormAction,
+  OmniSidebarAutomationEditingStep,
+  OmniSidebarAutomationStep,
+  OmniSidebarEditingStep,
+} from 'features/omni-kit/types'
 import {
   OmniBorrowFormAction,
   OmniEarnFormAction,
@@ -8,8 +13,8 @@ import {
 
 interface GetOmniSidebarButtonsStatusParams {
   action?: OmniFormAction
-  currentStep: OmniSidebarStep
-  editingStep: OmniSidebarEditingStep
+  currentStep: OmniSidebarStep | OmniSidebarAutomationStep
+  editingStep: OmniSidebarEditingStep | OmniSidebarAutomationEditingStep
   hasErrors: boolean
   isAllowanceLoading: boolean
   isFormFrozen: boolean

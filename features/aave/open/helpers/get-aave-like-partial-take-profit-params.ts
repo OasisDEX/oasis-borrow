@@ -15,7 +15,7 @@ import { hundred, one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import { useMemo, useState } from 'react'
 
-const partialTakeProfitConfig = {
+export const partialTakeProfitConfig = {
   takeProfitStartingPercentageOptionsLong: [0, 0.1, 0.2, 0.3, 0.4, 0.5] as const,
   takeProfitStartingPercentageOptionsShort: [0, -0.1, -0.2, -0.3, -0.4, -0.5] as const,
   defaultTriggelLtvOffset: new BigNumber(5),

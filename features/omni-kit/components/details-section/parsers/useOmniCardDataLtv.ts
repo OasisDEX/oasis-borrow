@@ -48,7 +48,7 @@ export function useOmniCardDataLtv({
 
   return {
     title: { key: 'omni-kit.content-card.ltv.title' },
-    value: formatDecimalAsPercent(ltv),
+    value: ltv.gt(1.1) ? '>110.00%' : formatDecimalAsPercent(ltv),
     ...(afterLtv && {
       change: [formatDecimalAsPercent(afterLtv)],
     }),

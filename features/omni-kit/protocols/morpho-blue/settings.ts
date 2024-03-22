@@ -41,6 +41,9 @@ export const settings: OmniProtocolSettings = {
       manage: omniSidebarManageBorrowishSteps,
     },
   },
+  availableAutomations: {
+    [NetworkIds.MAINNET]: [],
+  },
 }
 
 export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string }> = {
