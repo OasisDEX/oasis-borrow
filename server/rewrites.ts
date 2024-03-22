@@ -14,6 +14,10 @@ const rewriteRules = () => [
     source: '/api/migrations',
     destination: `${process.env.FUNCTIONS_API_URL}/api/migrations`,
   },
+  {
+    source: '/api/sdk',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/sdk`,
+  },
   // ... other rules
 ]
 

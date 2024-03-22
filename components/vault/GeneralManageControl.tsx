@@ -22,7 +22,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
-  const { chainId } = useWalletManagement()
+  const { chainId, wallet } = useWalletManagement()
   const { MakerTenderly } = useAppConfig('features')
 
   const account = context?.status === 'connected' ? context.account : ''
@@ -45,7 +45,11 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <MakerRefinanceContext generalManageVault={generalManageVault}>
+            <MakerRefinanceContext
+              generalManageVault={generalManageVault}
+              chainId={chainId}
+              address={wallet?.address}
+            >
               <GeneralManageLayout
                 generalManageVault={generalManageVault}
                 followButton={{

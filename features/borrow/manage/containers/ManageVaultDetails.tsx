@@ -27,7 +27,6 @@ import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/Ma
 import { RefinanceBanner } from 'features/refinance/RefinanceBanner'
 import { useAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
-import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { bell } from 'theme/icons'
@@ -149,7 +148,6 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
     StopLossWrite: stopLossWriteEnabled,
     EnableRefinance: refinanceEnabled,
   } = useAppConfig('features')
-  const { walletAddress, chainId } = useAccount()
 
   const shouldShowOverrideAutoBuy =
     isTriggerEnabled &&
@@ -245,9 +243,7 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
         <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
 
-      {refinanceEnabled && walletAddress && chainId && (
-        <RefinanceBanner chainId={chainId} address={walletAddress} />
-      )}
+      {refinanceEnabled && <RefinanceBanner />}
     </Grid>
   )
 }

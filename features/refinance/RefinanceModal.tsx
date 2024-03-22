@@ -4,19 +4,15 @@ import React from 'react'
 import { Box, Text } from 'theme-ui'
 
 import { type RefinanceControllerProps } from './RefinanceController'
-import { RefinanceController } from './RefinanceController.1'
+import { RefinanceController } from './RefinanceController'
 
-export function RefinanceModal({
-  close: _close,
-  address,
-  chainId: networkId,
-}: ModalProps<RefinanceControllerProps>) {
+export function RefinanceModal({ close: _close }: ModalProps<RefinanceControllerProps>) {
   return (
     <Modal close={_close} sx={{ maxWidth: '570px', margin: '0 auto' }}>
       <Box sx={{ p: 3 }}>
         <Text as="h2">Refinance</Text>
       </Box>
-      <RefinanceController address={address} chainId={networkId} />
+      <RefinanceController />
     </Modal>
   )
 }

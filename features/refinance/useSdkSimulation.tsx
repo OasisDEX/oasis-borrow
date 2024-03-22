@@ -1,6 +1,13 @@
-import type { SDKManager } from '@summerfi/sdk-client'
-import { Percentage, type Position } from '@summerfi/sdk-common/dist/common'
+import { PositionUtils, type SDKManager } from '@summerfi/sdk-client'
+import {
+  Percentage,
+  type Position,
+  RiskRatio,
+  RiskRatioType,
+} from '@summerfi/sdk-common/dist/common'
 import type { RefinanceParameters } from '@summerfi/sdk-common/dist/orders'
+import type { SimulationType } from '@summerfi/sdk-common/dist/simulation/Enums'
+import type { Simulation } from '@summerfi/sdk-common/dist/simulation/Simulation'
 import React, { useEffect, useState } from 'react'
 
 import { refinanceContext } from './RefinanceContext'
@@ -10,23 +17,48 @@ export function useSdkSimulation(sdk: SDKManager) {
   if (context === undefined) {
     throw new Error('RefinanceContextProvider is missing in the hierarchy')
   }
-  const { collateralAmount, debtAmount, positionId, slippage } = context
+  const {
+    positionId,
+    slippage,
+    chainInfo,
+    collateralPrice,
+    debtPrice,
+    liquidationThreshold,
+    collateralTokenAmount,
+    debtTokenAmount,
+    tokenPrices,
+    address,
+  } = context
 
   const [error, setError] = useState<null | string>(null)
-  const [position, setPosition] = useState<null | Position>(null)
-  const [simuiation, setSimulation] = useState<null | Simulation<SimulationType.Refinance>>(null)
+  const [targetPosition, setTargetPosition] = useState<null | Position>(null)
+  const [simulation, setSimulation] = useState<null | Simulation<SimulationType.Refinance>>(null)
 
   useEffect(() => {
     // TODO: grab from protocol.getPool
     const positionPool = {} as any
+    const ltv = PositionUtils.getLTV({
+      collateralTokenAmount,
+      debtTokenAmount,
+      collateralPrice,
+      debtPrice,
+    })
     const position: Position = {
       pool: positionPool,
-      collateralAmount,
-      debtAmount,
+      collateralAmount: collateralTokenAmount,
+      debtAmount: debtTokenAmount,
       positionId,
-      riskRatio: Percentage.createFrom({ percentage: 0 }), // TODO
+      riskRatio: RiskRatio.createFrom({ ratio: ltv, type: RiskRatioType.LTV }),
     }
-    setPosition(position)
+
+    setTargetPosition(position)
+
+    const liquidationPrice = PositionUtils.getLiquidationPrice({
+      position,
+      collateralPrice,
+      debtPrice,
+      liquidationThreshold,
+    })
 
     // TODO: grab from protocol.getPool
     const targetPool = {} as any
@@ -46,7 +78,16 @@ export function useSdkSimulation(sdk: SDKManager) {
     void fetchData().catch((err) => {
       setError(err.message)
     })
-  }, [collateralAmount, debtAmount, positionId, sdk, slippage])
+  }, [
+    collateralPrice,
+    collateralTokenAmount,
+    debtPrice,
+    debtTokenAmount,
+    liquidationThreshold,
+    positionId,
+    sdk,
+    slippage,
+  ])
 
-  return { error, position, simuiation }
+  return { error, position: targetPosition, simulation }
 }

@@ -1,9 +1,10 @@
-import { type Chain, getChainInfoByChainId, makeSDK, type User } from '@summerfi/sdk-client'
-import { Address, Wallet } from '@summerfi/sdk-common/dist/common'
+import { type Chain, makeSDK, type User } from '@summerfi/sdk-client'
+import { Address, type AddressValue, Wallet } from '@summerfi/sdk-common/dist/common'
+import { getChainInfoByChainId } from '@summerfi/sdk-common/dist/common/implementation/ChainFamilies'
 import { useEffect, useState } from 'react'
 
-export function useSdk(address: string, chainId: number) {
-  const sdk = makeSDK()
+export function useSdk(address: AddressValue, chainId: number) {
+  const sdk = makeSDK({ apiURL: '/api/sdk' })
   const wallet = Wallet.createFrom({
     address: Address.createFrom({ value: address }),
   })
@@ -19,7 +20,10 @@ export function useSdk(address: string, chainId: number) {
       })
       setChain(fetchedChain)
 
-      const fetchedUser = await sdk.users.getUser({ chain: fetchedChain, wallet })
+      const fetchedUser = await sdk.users.getUser({
+        chainInfo: fetchedChain,
+        walletAddress: wallet.address,
+      })
       setUser(fetchedUser)
     }
 

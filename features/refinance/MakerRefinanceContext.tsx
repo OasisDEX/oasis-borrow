@@ -1,43 +1,46 @@
-import { ChainFamilyMap, getChainInfoByChainId } from '@summerfi/sdk-client'
-import { type PositionId, TokenAmount } from '@summerfi/sdk-common/dist/common'
+import { type PositionId } from '@summerfi/sdk-common/dist/common'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 
-import { mapTokenToSdkToken } from './mapTokenToSdkToken'
-import { type RefinanceContext, RefinanceContextProvider } from './RefinanceContext'
+import { type RefinanceContextInput, RefinanceContextProvider } from './RefinanceContext'
 
 interface MakerRefinanceContextProps {
   generalManageVault: GeneralManageVaultState
+  chainId: number
+  address?: string
 }
 
 export function MakerRefinanceContext({
   children,
   generalManageVault,
+  chainId,
+  address,
 }: PropsWithChildren<MakerRefinanceContextProps>) {
-  const { vault } = generalManageVault.state
+  const { vault, priceInfo } = generalManageVault.state
   const slippage = generalManageVault.state.slippage.toNumber()
   const positionId: PositionId = {
     id: vault.id.toString(),
   }
-  const chainInfo = getChainInfoByChainId(ChainFamilyMap.Ethereum)
+  const collateralTokenSymbol = vault.token
+  const debtTokenSymbol = 'DAI'
 
-  const collateralAmount = TokenAmount.createFrom({
-    // TODO check backingCollateral
-    amount: vault.backingCollateral.toString(),
-    token: mapTokenToSdkToken(chainInfo, vault.token),
-  })
-  const debtAmount = TokenAmount.createFrom({
-    amount: vault.debt.toString(),
-    token: mapTokenToSdkToken(chainInfo, 'DAI'),
-  })
-
-  const ctx: RefinanceContext = {
-    collateralAmount,
-    debtAmount,
-    positionId,
-    slippage,
+  const tokenPrices = {
+    [collateralTokenSymbol]: priceInfo?.currentCollateralPrice.toString(),
+    [debtTokenSymbol]: '1',
   }
 
-  return <RefinanceContextProvider context={ctx}>{children}</RefinanceContextProvider>
+  const ctx: RefinanceContextInput = {
+    positionId,
+    address,
+    chainId,
+    slippage,
+    collateralTokenSymbol,
+    debtTokenSymbol,
+    collateralAmount: vault.lockedCollateral.toString(),
+    debtAmount: vault.debt.toString(),
+    tokenPrices,
+  }
+
+  return <RefinanceContextProvider contextInput={ctx}>{children}</RefinanceContextProvider>
 }

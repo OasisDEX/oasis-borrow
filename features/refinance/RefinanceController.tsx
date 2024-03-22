@@ -6,18 +6,11 @@ import React from 'react'
 import { useSdk } from './useSdk'
 import { useSdkSimulation } from './useSdkSimulation'
 
-export interface RefinanceControllerProps {
-  chainId: number
-  address: string
-}
+export interface RefinanceControllerProps {}
 
-export function RefinanceController({
-  chainId,
-  address,
-}: PropsWithChildren<RefinanceControllerProps>) {
+export function RefinanceController(props: PropsWithChildren<RefinanceControllerProps>) {
   const { error: sdkError, sdk, user, chain } = useSdk(address, chainId)
-
-  const { error: sdkSimulationError, simulation, position } = useSdkSimulation(sdk)
+  const { error: sdkSimulationError, position, simulation: simuiation } = useSdkSimulation(sdk)
 
   return (
     <WithErrorHandler error={[sdkError, sdkSimulationError]}>
