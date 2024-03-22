@@ -23,6 +23,9 @@ export interface AjnaPoolDataResponse {
   depositSize: string
   interestRate: string
   apr30dAverage: string
+  apr7dAverage: string
+  lendApr30dAverage: string
+  lendApr7dAverage: string
   dailyPercentageRate30dAverage: string
   monthlyPercentageRate30dAverage: string
   poolMinDebtAmount: string
@@ -77,6 +80,9 @@ export const getAjnaPoolData: (networkId: OmniSupportedNetworkIds) => GetPoolDat
             debt,
             depositSize,
             apr30dAverage,
+            apr7dAverage,
+            lendApr30dAverage,
+            lendApr7dAverage,
             dailyPercentageRate30dAverage,
             monthlyPercentageRate30dAverage,
             poolMinDebtAmount,
@@ -91,7 +97,8 @@ export const getAjnaPoolData: (networkId: OmniSupportedNetworkIds) => GetPoolDat
             totalAuctionsInPool,
             t0debt,
           } = response.pool
-
+console.log(response.pool)
+console.log( new BigNumber(lendApr7dAverage).shiftedBy(NEGATIVE_WAD_PRECISION).toString())
           const htpBigNumber = new BigNumber(htp)
           // we are mapping 7388 htp index to actual bucket price since contracts returns zero when pool does not contain any borrowers
           const resolvedHighestThresholdPrice = htpBigNumber.eq(zero)
@@ -129,6 +136,9 @@ export const getAjnaPoolData: (networkId: OmniSupportedNetworkIds) => GetPoolDat
             debt: new BigNumber(debt).shiftedBy(NEGATIVE_WAD_PRECISION),
             depositSize: new BigNumber(depositSize).shiftedBy(NEGATIVE_WAD_PRECISION),
             apr30dAverage: new BigNumber(apr30dAverage).shiftedBy(NEGATIVE_WAD_PRECISION),
+            apr7dAverage: new BigNumber(apr7dAverage).shiftedBy(NEGATIVE_WAD_PRECISION),
+            lendApr30dAverage: new BigNumber(lendApr30dAverage).shiftedBy(NEGATIVE_WAD_PRECISION),
+            lendApr7dAverage: new BigNumber(lendApr7dAverage).shiftedBy(NEGATIVE_WAD_PRECISION),
             dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage).shiftedBy(
               NEGATIVE_WAD_PRECISION,
             ),
