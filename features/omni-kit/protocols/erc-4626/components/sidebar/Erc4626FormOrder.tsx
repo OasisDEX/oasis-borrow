@@ -17,7 +17,7 @@ export const Erc4626FormOrder: FC = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { quotePrecision, quoteToken },
+    environment: { quotePrecision, quotePrice, quoteToken },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
@@ -46,7 +46,7 @@ export const Erc4626FormOrder: FC = () => {
     amountFromWei(
       swapData.tokenFee,
       swapData.collectFeeFrom === 'targetToken' ? quotePrecision : pullToken?.precision,
-    )
+    ).times(swapData.collectFeeFrom === 'targetToken' ? quotePrice : pullToken?.price)
 
   const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {
