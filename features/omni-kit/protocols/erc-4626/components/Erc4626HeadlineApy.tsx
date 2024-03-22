@@ -36,26 +36,28 @@ export const Erc4626HeadlineApy: FC<Erc4626HeadlineApyProps> = ({ vaultAddress }
               }),
             )}
           </Text>
-          <StatefulTooltip
-            tooltip={
-              <Erc4626ApyTooltip
-                rewardsApy={apy.rewardsApy.per365d}
-                vaultApy={apy.vaultApy.per365d}
-              />
-            }
-            containerSx={{ ml: 1 }}
-            tooltipSx={{
-              top: '24px',
-              fontSize: 1,
-              border: 'none',
-              borderRadius: 'medium',
-              boxShadow: 'buttonMenu',
-              fontWeight: 'regular',
-              lineHeight: 'body',
-            }}
-          >
-            <Icon icon={sparks} size={16} color="interactive100" sx={{ ml: 1 }} />
-          </StatefulTooltip>
+          {apy.rewardsApy.per365d.length > 0 && (
+            <StatefulTooltip
+              tooltip={
+                <Erc4626ApyTooltip
+                  rewardsApy={apy.rewardsApy.per365d}
+                  vaultApy={apy.vaultApy.per365d}
+                />
+              }
+              containerSx={{ ml: 1 }}
+              tooltipSx={{
+                top: '24px',
+                fontSize: 1,
+                border: 'none',
+                borderRadius: 'medium',
+                boxShadow: 'buttonMenu',
+                fontWeight: 'regular',
+                lineHeight: 'body',
+              }}
+            >
+              <Icon icon={sparks} size={16} color="interactive100" sx={{ ml: 1 }} />
+            </StatefulTooltip>
+          )}
         </>
       ) : (
         <Box sx={{ ml: 2, mr: 1 }}>
