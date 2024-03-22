@@ -4,7 +4,7 @@ import type {
   OmniContentCardBase,
   OmniContentCardDataWithModal,
 } from 'features/omni-kit/components/details-section'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 
 export type OmniCardLtvAutomationData = {
   isStopLossLikeEnabled: boolean
@@ -48,9 +48,9 @@ export function useOmniCardDataLtv({
 
   return {
     title: { key: 'omni-kit.content-card.ltv.title' },
-    value: ltv.gt(1.1) ? '>110.00%' : formatDecimalAsPercent(ltv),
+    value: formatLtvDecimalAsPercent(ltv),
     ...(afterLtv && {
-      change: [formatDecimalAsPercent(afterLtv)],
+      change: [formatLtvDecimalAsPercent(afterLtv)],
     }),
     ...(footnote && {
       footnote,
