@@ -13,7 +13,7 @@ export const getTriggersRequest = async ({
     const response = await fetch(url)
     return (await response.json()) as GetTriggersResponse
   } catch (e) {
-    console.warn('Failed to read data about triggers from server')
+    console.error('Failed to read data about triggers from server')
     // We are returning a default response to ensure that UI won't crash and user will have access to position
     return omniPositionTriggersDataDefault
   }
