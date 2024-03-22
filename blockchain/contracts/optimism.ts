@@ -28,6 +28,7 @@ import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
 import * as dssProxyActionsCharter from 'blockchain/abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
+import * as erc20proxyActions from 'blockchain/abi/erc20-proxy-actions.json'
 import * as exchange from 'blockchain/abi/exchange.json'
 import * as gasPriceOracle from 'blockchain/abi/gas-price-oracle.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
@@ -251,4 +252,5 @@ export const optimismContracts: OptimismContracts = {
   WSTETHOracle: contractDesc(ajnaPoolInfo, optimism.common.WSTETHOracle),
   SUSDEOracle: contractDesc(ajnaPoolInfo, optimism.common.SUSDEOracle),
   USDEOracle: contractDesc(ajnaPoolInfo, optimism.common.USDEOracle),
+  erc20ProxyActions: contractDesc(erc20proxyActions, optimism.mpa.core.ERC20ProxyActions),
 }

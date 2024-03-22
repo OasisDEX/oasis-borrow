@@ -1,4 +1,4 @@
-import type { IPosition, Strategy } from '@oasisdex/dma-library'
+import type { IPosition, Strategy, Tx } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { DpmExecuteOperationParameters } from 'blockchain/better-calls/dpm-account'
 import { estimateGasOnDpmForOperationExecutorAction } from 'blockchain/better-calls/dpm-account'
@@ -18,12 +18,13 @@ const { assign } = actions
 const MAX_RETRIES = 3
 
 export interface BaseTransactionParametersV2 {
-  proxyAddress: string
+  dpmAccount: string
 }
 
 export type TransactionParametersV2StateMachineContext<T extends BaseTransactionParametersV2> = {
   parameters?: T
   strategy?: Strategy<IPosition>
+  approval?: Tx
   estimatedGasPrice?: HasGasEstimation
   gasEstimationResult?: EstimatedGasResult
   signer?: ethers.Signer
@@ -35,6 +36,7 @@ export type TransactionParametersV2StateMachineResponseEvent =
   | {
       type: 'STRATEGY_RECEIVED'
       strategy?: Strategy<IPosition>
+      approval?: Tx
     }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
@@ -50,7 +52,9 @@ export type TransactionParametersV2StateMachineEvent<T> =
   | { type: 'SIGNER_CHANGED'; signer: ethers.Signer }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallDelegateV2<T> = (parameters: T) => Promise<Strategy<IPosition>>
+export type LibraryCallDelegateV2<T> = (
+  parameters: T,
+) => Promise<{ strategy: Strategy<IPosition>; approval: Tx }>
 
 export function createTransactionParametersV2StateMachine<T extends BaseTransactionParametersV2>(
   libraryCall: LibraryCallDelegateV2<T>,
@@ -67,7 +71,7 @@ export function createTransactionParametersV2StateMachine<T extends BaseTransact
         context: {} as TransactionParametersV2StateMachineContext<T>,
         events: {} as TransactionParametersV2StateMachineEvent<T>,
         services: {} as {
-          getParameters: { data: Strategy<IPosition> }
+          getParameters: { data: { strategy: Strategy<IPosition>; approval: Tx } }
         },
       },
       predictableActionArguments: true,
@@ -157,12 +161,13 @@ export function createTransactionParametersV2StateMachine<T extends BaseTransact
       actions: {
         updateContext: assign((_, event) => ({ ...event })),
         serviceUpdateContext: assign((_, event) => {
-          return { strategy: event.data }
+          return { ...event.data }
         }),
         sendStrategy: sendParent(
           (context): TransactionParametersV2StateMachineResponseEvent => ({
             type: 'STRATEGY_RECEIVED',
-            strategy: context.strategy!,
+            strategy: context.strategy,
+            approval: context.approval,
           }),
         ),
         sendGasEstimation: sendParent(
@@ -185,7 +190,7 @@ export function createTransactionParametersV2StateMachine<T extends BaseTransact
         estimateGas: ({ parameters, strategy, signer, networkId }) => {
           const dpmParams: DpmExecuteOperationParameters = {
             signer: signer!,
-            proxyAddress: parameters!.proxyAddress,
+            proxyAddress: parameters!.dpmAccount,
             networkId: networkId,
             tx: strategy!.tx,
           }
@@ -222,10 +227,10 @@ export function createTransactionParametersV2StateMachine<T extends BaseTransact
       },
       guards: {
         hasRealProxyAddress: ({ parameters }) => {
-          return parameters?.proxyAddress !== ethNullAddress
+          return parameters?.dpmAccount !== ethNullAddress
         },
         hasMockProxyAddress: ({ parameters }) => {
-          return parameters?.proxyAddress === ethNullAddress
+          return parameters?.dpmAccount === ethNullAddress
         },
         isRetryable: ({ retries }) => {
           return retries! <= MAX_RETRIES

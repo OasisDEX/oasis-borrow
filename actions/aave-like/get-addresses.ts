@@ -13,7 +13,7 @@ import { LendingProtocol } from 'lendingProtocols'
 export function getAddresses(
   networkId: NetworkIds,
   lendingProtocol: AaveLikeLendingProtocol,
-): AaveLikeStrategyAddresses & { swapAddress: string } {
+): AaveLikeStrategyAddresses & { swapAddress: string; erc20ProxyActions: string } {
   const contracts = getNetworkContracts(networkId)
   // Spark V3 is mainnet only right now
   const contractProperties =
@@ -29,6 +29,7 @@ export function getAddresses(
           'sparkV3Pool',
           'sparkV3Oracle',
           'sparkV3PoolDataProvider',
+          'erc20ProxyActions',
         ]
       : [
           'aaveV3Pool',
@@ -38,6 +39,7 @@ export function getAddresses(
           'aaveV2PriceOracle',
           'aaveV2ProtocolDataProvider',
           'aaveV3Oracle',
+          'erc20ProxyActions',
         ]
   ensureContractsExist(networkId, contracts, contractProperties)
   ensureGivenTokensExist(networkId, contracts, [
@@ -79,6 +81,7 @@ export function getAddresses(
     chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
     operationExecutor: contracts.operationExecutor.address,
     swapAddress: contracts.swapAddress,
+    erc20ProxyActions: contracts.erc20ProxyActions.address,
   }
 
   if (networkId === NetworkIds.BASEMAINNET) {

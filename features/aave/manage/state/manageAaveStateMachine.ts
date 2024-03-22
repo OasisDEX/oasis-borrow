@@ -1015,10 +1015,9 @@ export function createManageAaveStateMachine(
             migrateAaveStateMachine.withContext({
               strategyConfig: context.strategyConfig,
               positionOwner: context.positionId.walletAddress!,
+              positionAddress: context.positionId.positionAddress!,
               userSettings: context.userSettings,
               web3Context: context.web3Context,
-              currentStep: 1,
-              totalSteps: 3,
             }),
             'migrationMachine',
           ),

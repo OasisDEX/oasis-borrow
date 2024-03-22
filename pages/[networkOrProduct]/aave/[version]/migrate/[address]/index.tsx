@@ -58,7 +58,7 @@ function WithAaveStrategy({
   protocol,
   network,
 }: {
-  positionId: PositionId
+  positionId: Required<Pick<PositionId, 'positionAddress' | 'external'>>
   protocol: AaveLendingProtocol
   network: NetworkNames
 }) {
@@ -91,9 +91,10 @@ function WithAaveStrategy({
     )
   }
 
-  const _updateStrategyConfig = updateStrategyConfig
-    ? updateStrategyConfig(positionId, network)
-    : undefined
+  const _updateStrategyConfig =
+    updateStrategyConfig && info?.positionId
+      ? updateStrategyConfig(info?.positionId, network)
+      : undefined
   return (
     <WithErrorHandler error={[infoError]}>
       <WithLoadingIndicator value={[info]} customLoader={<VaultContainerSpinner />}>
@@ -152,10 +153,11 @@ function Position({
 }) {
   const { replace } = useRouter()
 
-  const walletAddress: string | undefined = safeGetAddress(address)
+  const positionAddress: string | undefined = safeGetAddress(address)
 
-  if (walletAddress === undefined) {
+  if (positionAddress === undefined) {
     void replace(INTERNAL_LINKS.notFound)
+    return <></>
   }
 
   return (
@@ -166,7 +168,10 @@ function Position({
             <WithConnection>
               <WithTermsOfService>
                 <WithAaveStrategy
-                  positionId={{ walletAddress: address, vaultId: undefined, external: true }}
+                  positionId={{
+                    positionAddress: positionAddress,
+                    external: true,
+                  }}
                   protocol={protocol}
                   network={network}
                 />

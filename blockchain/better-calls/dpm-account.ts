@@ -28,6 +28,14 @@ export interface DpmExecuteOperationParameters {
   tx: Tx
 }
 
+export interface ExecuteTransactionParameters {
+  networkId: NetworkIds
+  signer: ethers.Signer
+  to: string
+  data: string
+  value?: string
+}
+
 export type DpmExecuteOperationExecutorActionParameters =
   | DpmExecuteOperationLegacyParameters
   | DpmExecuteOperationParameters
@@ -79,6 +87,26 @@ export async function validateParameters({
   )
 
   return { dpm, operationExecutor: operationExecutorContract }
+}
+
+export async function simpleValidate({
+  signer,
+  networkId,
+}: Pick<ExecuteTransactionParameters, 'signer' | 'networkId'>) {
+  const signerChainId = await signer.getChainId()
+  if (signerChainId !== networkId) {
+    const signerNetworkConfig = networkSetById[signerChainId]
+    if (
+      signerNetworkConfig?.isCustomFork &&
+      networkId === signerNetworkConfig.getParentNetwork()?.id
+    ) {
+      console.info(`Using custom fork for the transaction. Network: ${networkId}`)
+    } else {
+      throw new Error(
+        `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
+      )
+    }
+  }
 }
 
 function extractTransactionData(
@@ -160,6 +188,32 @@ export async function createExecuteOperationExecutorTransaction(
   })
 }
 
+export async function createExecuteTransaction(
+  params: DpmExecuteOperationExecutorActionParameters,
+): Promise<ethers.ContractTransaction> {
+  const { dpm, operationExecutor } = await validateParameters({ ...params })
+
+  const { value, encodedOperationExecutorData } = extractTransactionData(params, operationExecutor)
+
+  const dangerTransactionEnabled = isDangerTransactionEnabled()
+
+  if (dangerTransactionEnabled.enabled) {
+    console.warn(`Danger transaction enabled. Gas limit: ${dangerTransactionEnabled.gasLimit}`)
+
+    return await dpm.execute(operationExecutor.address, encodedOperationExecutorData, {
+      ...(await getOverrides(params.signer)),
+      value: ethers.utils.parseEther(value.toString()).toHexString(),
+      gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
+    })
+  }
+  const gasLimit = await estimateGasOnDpmForOperationExecutorAction(params)
+  return await dpm.execute(operationExecutor.address, encodedOperationExecutorData, {
+    ...(await getOverrides(params.signer)),
+    value: ethers.utils.parseEther(value.toString()).toHexString(),
+    gasLimit: gasLimit?.estimatedGas ?? undefined,
+  })
+}
+
 export interface DpmOperationParams {
   networkId: NetworkIds
   proxyAddress?: string
@@ -199,15 +253,41 @@ export async function estimateGas({
   }
 }
 
+export async function estimateTransactionGas({
+  signer,
+  networkId,
+  to,
+  data,
+  value,
+}: ExecuteTransactionParameters) {
+  await simpleValidate({ signer, networkId })
+
+  try {
+    const result = await signer.estimateGas({
+      ...(await getOverrides(signer)),
+      to,
+      data,
+      value,
+    })
+
+    return new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0)
+  } catch (e) {
+    const message = `Error estimating gas. Action: ${data} to: ${to}. Network: ${networkId}`
+    console.error(message, e)
+    throw new Error(message, {
+      cause: e,
+    })
+  }
+}
+
 export async function executeTransaction({
   signer,
   networkId,
-  proxyAddress,
+  to,
   data,
   value,
-  to,
-}: DpmOperationParams) {
-  await validateParameters({ signer, networkId, proxyAddress: proxyAddress ?? to })
+}: ExecuteTransactionParameters) {
+  await simpleValidate({ signer, networkId })
 
   const dangerTransactionEnabled = isDangerTransactionEnabled()
 
@@ -216,25 +296,24 @@ export async function executeTransaction({
 
     return await signer.sendTransaction({
       ...(await getOverrides(signer)),
-      to: to,
-      data: data,
-      value: ethers.utils.parseEther(value?.toString() ?? '0').toHexString(),
+      to,
+      data,
+      value,
       gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
     })
   }
-  const gasLimit = await estimateGas({
+  const gasLimit = await estimateTransactionGas({
     networkId,
-    proxyAddress,
     signer,
-    value,
     to,
     data,
+    value,
   })
   return await signer.sendTransaction({
     ...(await getOverrides(signer)),
-    to: to,
-    data: data,
-    value: ethers.utils.parseEther(value?.toString() ?? '0').toHexString(),
+    to,
+    data,
+    value,
     gasLimit: gasLimit ?? undefined,
   })
 }

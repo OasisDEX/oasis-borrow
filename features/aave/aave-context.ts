@@ -50,5 +50,7 @@ export type AaveContext = AaveLikeServices & {
   dpmAccountStateMachine: DPMAccountStateMachine
   aaveHistory$: (proxyAddress: string) => Observable<VaultHistoryEvent[]>
   manageViewInfo$: (args: { positionId: PositionId }) => Observable<ManageViewInfo>
-  manageViewInfoExternal$: (args: { positionId: PositionId }) => Observable<ManageViewInfo>
+  manageViewInfoExternal$: (args: {
+    positionId: Required<Pick<PositionId, 'positionAddress'>>
+  }) => Observable<ManageViewInfo>
 }
