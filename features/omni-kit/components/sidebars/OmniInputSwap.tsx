@@ -55,14 +55,16 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
           price: defaultTokenPrice,
           token: defaultToken,
         },
-        ...(settings[`${type}Tokens`]?.[networkId] ?? []).map((token) => ({
-          address: getNetworkContracts(networkId).tokens[token].address,
-          balance: extraTokensData[token].balance,
-          digits: getToken(token).digits,
-          precision: getToken(token).precision,
-          price: extraTokensData[token].price,
-          token,
-        })),
+        ...(settings[`${type}Tokens`]?.[networkId] ?? [])
+          .filter((token) => token !== defaultToken)
+          .map((token) => ({
+            address: getNetworkContracts(networkId).tokens[token].address,
+            balance: extraTokensData[token].balance,
+            digits: getToken(token).digits,
+            precision: getToken(token).precision,
+            price: extraTokensData[token].price,
+            token,
+          })),
       ]
         .filter(({ balance }) => !balance.isZero())
         .sort((a, b) => b.balance.times(b.price).minus(a.balance.times(a.price)).toNumber()),

@@ -51,10 +51,12 @@ export const Erc4626DetailsSectionContentOpen: FC = () => {
                   estimatedEarnings={earnings.per1d}
                   token={quoteToken}
                   tooltip={
-                    <Erc4626ApyTooltip
-                      rewardsApy={apy.rewardsApy.per1d}
-                      vaultApy={apy.vaultApy.per1d}
-                    />
+                    apy.rewardsApy.per1d.length > 0 && (
+                      <Erc4626ApyTooltip
+                        rewardsApy={apy.rewardsApy.per1d}
+                        vaultApy={apy.vaultApy.per1d}
+                      />
+                    )
                   }
                 />,
                 `${formatCryptoBalance(netValue.per1d)} ${quoteToken}`,
@@ -65,10 +67,12 @@ export const Erc4626DetailsSectionContentOpen: FC = () => {
                   estimatedEarnings={earnings.per30d}
                   token={quoteToken}
                   tooltip={
-                    <Erc4626ApyTooltip
-                      rewardsApy={apy.rewardsApy.per30d}
-                      vaultApy={apy.vaultApy.per30d}
-                    />
+                    apy.rewardsApy.per30d.length > 0 && (
+                      <Erc4626ApyTooltip
+                        rewardsApy={apy.rewardsApy.per30d}
+                        vaultApy={apy.vaultApy.per30d}
+                      />
+                    )
                   }
                 />,
                 `${formatCryptoBalance(netValue.per30d)} ${quoteToken}`,
@@ -79,10 +83,12 @@ export const Erc4626DetailsSectionContentOpen: FC = () => {
                   estimatedEarnings={earnings.per365d}
                   token={quoteToken}
                   tooltip={
-                    <Erc4626ApyTooltip
-                      rewardsApy={apy.rewardsApy.per365d}
-                      vaultApy={apy.vaultApy.per365d}
-                    />
+                    apy.rewardsApy.per365d.length > 0 && (
+                      <Erc4626ApyTooltip
+                        rewardsApy={apy.rewardsApy.per365d}
+                        vaultApy={apy.vaultApy.per365d}
+                      />
+                    )
                   }
                 />,
                 `${formatCryptoBalance(netValue.per365d)} ${quoteToken}`,
