@@ -1,17 +1,63 @@
 import BigNumber from 'bignumber.js'
+import { getTransactionFee } from 'blockchain/transaction-fee'
 import { Icon } from 'components/Icon'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { useTransactionCostWithLoading } from 'features/aave/hooks/useTransactionCostWithLoading'
-import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
+import { GasEstimationStatus, type HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { LendingProtocolLabel } from 'lendingProtocols'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { tick } from 'theme/icons'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import type { MigrateAaveStateProps } from './migrateAaveStateProps'
+
+const useMigrationTransactionCostWithLoading = ({
+  state,
+}: Pick<MigrateAaveStateProps, 'state'>) => {
+  const [transactionCost, setTransactionCost] = React.useState<HasGasEstimation>({
+    gasEstimationStatus: GasEstimationStatus.calculating,
+  })
+
+  const gasForAllowanceDpmAndMigration = 150_000 + 50_000 + 1_500_000
+
+  const { networkId } = state.context.strategyConfig
+
+  useEffect(() => {
+    setTransactionCost({
+      gasEstimationStatus: GasEstimationStatus.calculating,
+      gasEstimation: gasForAllowanceDpmAndMigration,
+    })
+    getTransactionFee({ estimatedGas: gasForAllowanceDpmAndMigration.toString(), networkId })
+      .then((transactionFee) => {
+        if (!transactionFee) {
+          setTransactionCost({
+            gasEstimationStatus: GasEstimationStatus.error,
+            gasEstimation: gasForAllowanceDpmAndMigration,
+          })
+          return
+        }
+        setTransactionCost({
+          gasEstimationStatus: GasEstimationStatus.calculated,
+          gasEstimation: gasForAllowanceDpmAndMigration,
+          gasEstimationEth: new BigNumber(transactionFee.fee),
+          gasEstimationUsd: new BigNumber(transactionFee.feeUsd),
+        })
+      })
+      .catch((error) => {
+        setTransactionCost({
+          gasEstimationStatus: GasEstimationStatus.error,
+          gasEstimationEth: new BigNumber(gasForAllowanceDpmAndMigration),
+        })
+      })
+  }, [gasForAllowanceDpmAndMigration, networkId])
+
+  return useTransactionCostWithLoading({
+    transactionCost: transactionCost,
+  })
+}
 
 export function MigrateWelcomeStateView({
   state,
@@ -21,14 +67,7 @@ export function MigrateWelcomeStateView({
 }: MigrateAaveStateProps) {
   const { t } = useTranslation()
 
-  const transactionCostWithLoader = useTransactionCostWithLoading({
-    transactionCost: {
-      gasEstimationStatus: GasEstimationStatus.calculated,
-      gasEstimation: 1500,
-      gasEstimationEth: new BigNumber(0.04),
-      gasEstimationUsd: new BigNumber(12),
-    },
-  })
+  const transactionCostWithLoader = useMigrationTransactionCostWithLoading({ state })
 
   const protocol = LendingProtocolLabel[state.context.strategyConfig.protocol]
 
