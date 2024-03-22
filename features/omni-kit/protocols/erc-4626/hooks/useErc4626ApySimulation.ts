@@ -145,7 +145,7 @@ export function useErc4626ApySimulation({
   return {
     apy,
     earnings,
-    isLoading: !!(isLoading && isSimulationLoading),
+    isLoading: !!(isLoading || isSimulationLoading),
     netValue,
   }
 }
