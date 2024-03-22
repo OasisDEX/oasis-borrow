@@ -1,3 +1,4 @@
+export * from './useOmniInPositionAmount'
 export * from './useOmniProtocolData'
 export * from './useOmniSidebarTitle'
 export * from './useOmniSimulationYields'

@@ -1,4 +1,4 @@
-import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
+import type { LendingPosition, SupplyPosition, Swap, SwapData } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
@@ -75,13 +75,16 @@ export type OmniSidebarStepsSet = {
 }
 
 export interface OmniProtocolSettings {
+  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
+  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
+  pullTokens?: NetworkIdsWithValues<string[]>
   rawName: NetworkIdsWithValues<string>
+  returnTokens?: NetworkIdsWithValues<string[]>
   steps: OmniSidebarStepsSet
   supportedMainnetNetworkIds: OmniSupportedNetworkIds[]
   supportedMultiplyTokens: NetworkIdsWithValues<string[]>
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
-  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
   yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
   availableAutomations: NetworkIdsWithValues<AutomationFeatures[]>
 }
@@ -199,6 +202,8 @@ export interface OmniSimulationCommon {
   getValidations: (params: GetOmniValidationResolverParams) => OmniValidations
 }
 
+export type OmniSimulationSwap = Swap & SwapData
+
 export interface OmniValidationItem {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
 }
@@ -213,9 +218,9 @@ export interface OmniFlowStateFilterParams {
   collateralAddress: string
   event: CreatePositionEvent
   productType: OmniProductType
-  quoteAddress: string
   protocol: LendingProtocol
   protocolRaw?: string
+  quoteAddress: string
 }
 
 export type NetworkIdsWithValues<T> = {
@@ -228,6 +233,8 @@ export interface GetOmniValidationsParams {
   collateralBalance: BigNumber
   collateralToken: string
   currentStep: OmniSidebarStep
+  customErrors?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
   ethBalance: BigNumber
   ethPrice: BigNumber
   gasEstimationUsd?: BigNumber
@@ -243,29 +250,43 @@ export interface GetOmniValidationsParams {
   simulationWarnings?: SimulationValidations
   state: OmniFormState
   txError?: TxError
-  customErrors?: OmniValidationItem[]
-  customWarnings?: OmniValidationItem[]
 }
 
 export interface GetOmniValidationResolverParams {
-  protocolLabel: LendingProtocolLabel
-  safetySwitchOn: boolean
-  isFormFrozen: boolean
-  earnIsFormValid?: boolean
   customErrors?: OmniValidationItem[]
-  customWarnings?: OmniValidationItem[]
   customNotices?: OmniValidationItem[]
   customSuccesses?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
+  earnIsFormValid?: boolean
+  isFormFrozen: boolean
+  protocolLabel: LendingProtocolLabel
+  safetySwitchOn: boolean
 }
 
 export type OmniNotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
 
 export type OmniEntryToken = {
-  symbol: string
-  precision: number
-  balance: BigNumber
-  price: BigNumber
-  digits: number
   address: string
+  balance: BigNumber
+  digits: number
   icon: string
+  precision: number
+  price: BigNumber
+  symbol: string
+}
+
+export interface OmniSwapToken {
+  address: string
+  balance: BigNumber
+  digits: number
+  precision: number
+  price: BigNumber
+  token: string
+}
+
+export interface OmniExtraTokenData {
+  [key: string]: {
+    balance: BigNumber
+    price: BigNumber
+  }
 }

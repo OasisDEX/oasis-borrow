@@ -2,15 +2,18 @@ import type { VaultApyResponse } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
+import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   getErc4626Apy,
   getErc4626ApyParameters,
 } from 'features/omni-kit/protocols/erc-4626/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 interface Erc4626ApySimulationParams {
-  depositAmount: BigNumber
   rewardTokenPrice?: BigNumber
   vaultAddress: string
 }
@@ -43,9 +46,19 @@ interface Erc4626ApySimulationResponse {
 
 export function useErc4626ApySimulation({
   vaultAddress,
-  depositAmount,
   rewardTokenPrice,
 }: Erc4626ApySimulationParams): Erc4626ApySimulationResponse {
+  const {
+    environment: { protocolPrices },
+    tx: { isTxSuccess },
+  } = useOmniGeneralContext()
+  const {
+    form: {
+      state: { depositAmount },
+    },
+    position: { cachedPosition, currentPosition, isSimulationLoading },
+  } = useOmniProductContext(OmniProductType.Earn)
+
   const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<VaultApyResponse>>()
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -53,14 +66,27 @@ export function useErc4626ApySimulation({
   const [earnings, setEarnings] = useState<Erc4626ApySimulationEarnings>()
   const [netValue, setNetValue] = useState<Erc4626ApySimulationNetValue>()
 
+  const { simulationData } = resolveIfCachedPosition({
+    cached: isTxSuccess,
+    cachedPosition,
+    currentPosition,
+  })
+
+  const resolvedQuoteTokenAmount = useMemo(
+    () => simulationData?.quoteTokenAmount ?? omniDefaultOverviewSimulationDeposit,
+    [simulationData?.quoteTokenAmount],
+  )
+
   useEffect(() => {
     setIsLoading(true)
     cancelablePromise?.cancel()
-  }, [depositAmount, rewardTokenPrice])
+  }, [depositAmount, resolvedQuoteTokenAmount, rewardTokenPrice])
 
   useDebouncedEffect(
     () => {
-      const promise = cancelable(getErc4626ApyParameters({ rewardTokenPrice })(vaultAddress))
+      const promise = cancelable(
+        getErc4626ApyParameters({ rewardTokenPrice, prices: protocolPrices })(vaultAddress),
+      )
 
       setCancelablePromise(promise)
 
@@ -98,28 +124,28 @@ export function useErc4626ApySimulation({
             },
           })
           setEarnings({
-            per1d: depositAmount.times(totalApy.div(365)),
-            per30d: depositAmount.times(totalApy.div(12)),
-            per365d: depositAmount.times(totalApy),
+            per1d: resolvedQuoteTokenAmount.times(totalApy.div(365)),
+            per30d: resolvedQuoteTokenAmount.times(totalApy.div(12)),
+            per365d: resolvedQuoteTokenAmount.times(totalApy),
           })
           setNetValue({
-            per1d: depositAmount.plus(depositAmount.times(totalApy.div(365))),
-            per30d: depositAmount.plus(depositAmount.times(totalApy.div(12))),
-            per365d: depositAmount.plus(depositAmount.times(totalApy)),
+            per1d: resolvedQuoteTokenAmount.plus(resolvedQuoteTokenAmount.times(totalApy.div(365))),
+            per30d: resolvedQuoteTokenAmount.plus(resolvedQuoteTokenAmount.times(totalApy.div(12))),
+            per365d: resolvedQuoteTokenAmount.plus(resolvedQuoteTokenAmount.times(totalApy)),
           })
         }
 
         setIsLoading(false)
       })
     },
-    [depositAmount, rewardTokenPrice, vaultAddress],
+    [resolvedQuoteTokenAmount, rewardTokenPrice, vaultAddress],
     250,
   )
 
   return {
     apy,
     earnings,
-    isLoading,
+    isLoading: !!(isLoading || isSimulationLoading),
     netValue,
   }
 }

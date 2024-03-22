@@ -1,4 +1,4 @@
-import type { LendingPosition, Strategy, SupplyPosition, SwapData } from '@oasisdex/dma-library'
+import type { LendingPosition, Strategy, SupplyPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
@@ -38,6 +38,7 @@ import type {
 import type {
   OmniGenericPosition,
   OmniSimulationCommon,
+  OmniSimulationSwap,
   OmniValidations,
 } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -242,15 +243,15 @@ interface ProductContextPosition<Position, Auction> {
   cachedPosition?: PositionSet<Position>
   currentPosition: PositionSet<Position>
   swap?: {
-    current?: SwapData
-    cached?: SwapData
+    current?: OmniSimulationSwap
+    cached?: OmniSimulationSwap
   }
   isSimulationLoading?: boolean
   resolvedId?: string
   setCachedPosition: (positionSet: PositionSet<OmniGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<OmniSimulationData<OmniGenericPosition> | undefined>>
-  setCachedSwap: (swap: SwapData) => void
+  setCachedSwap: (swap: OmniSimulationSwap) => void
   positionAuction: Auction
   history: PositionHistoryEvent[]
   simulationCommon: OmniSimulationCommon
@@ -370,15 +371,15 @@ export function OmniProductContextProvider({
       collateralBalance,
       collateralPrecision,
       collateralToken,
+      entryToken,
       ethBalance,
       ethPrice,
+      gasEstimation,
+      isOpening,
+      protocol,
       quoteBalance,
       quotePrecision,
       quoteToken,
-      isOpening,
-      gasEstimation,
-      entryToken,
-      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -423,7 +424,7 @@ export function OmniProductContextProvider({
 
   // TODO these could be potentially generalized within single hook
   const [cachedPosition, setCachedPosition] = useState<PositionSet<typeof position>>()
-  const [cachedSwap, setCachedSwap] = useState<SwapData>()
+  const [cachedSwap, setCachedSwap] = useState<OmniSimulationSwap>()
   const [simulation, setSimulation] = useState<OmniSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
   // TODO these could be potentially generalized within single hook
@@ -460,13 +461,13 @@ export function OmniProductContextProvider({
             isOpening,
             position,
             productType,
+            protocol,
             quoteBalance,
             quoteToken,
-            protocol,
             simulationErrors: simulation?.errors as OmniSimulationCommon['errors'],
-            simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
             simulationNotices: simulation?.notices as OmniSimulationCommon['notices'],
             simulationSuccesses: simulation?.successes as OmniSimulationCommon['successes'],
+            simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
             state,
           }),
         },
@@ -474,7 +475,7 @@ export function OmniProductContextProvider({
           setCachedPosition(positionSet),
         setIsLoadingSimulation,
         setSimulation,
-        setCachedSwap: (swap: SwapData) => setCachedSwap(swap),
+        setCachedSwap: (swap: OmniSimulationSwap) => setCachedSwap(swap),
         cachedPosition,
         currentPosition: {
           position,
@@ -485,7 +486,7 @@ export function OmniProductContextProvider({
         positionAuction,
         swap: {
           current: formatSwapData({
-            swapData: simulation?.swaps[0],
+            swapData: simulation?.swaps[0] as OmniSimulationSwap | undefined,
             fromTokenPrecision,
             toTokenPrecision,
           }),

@@ -39,8 +39,11 @@ export function getOmniCommonValidations({
   const isEarnProduct = productType === OmniProductType.Earn
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
 
-  if ('depositAmount' in state && state.depositAmount?.gt(depositBalance)) {
-    localErrors.push({ message: { translationKey: 'deposit-amount-exceeds-collateral-balance' } })
+  if (
+    'depositAmount' in state &&
+    state.depositAmount?.gt(state.pullToken?.balance ?? depositBalance)
+  ) {
+    localErrors.push({ message: { translationKey: 'deposit-amount-exceeds-balance' } })
   }
 
   if (ethFundsForTxValidator({ txError })) {
@@ -52,14 +55,14 @@ export function getOmniCommonValidations({
   }
 
   const hasPotentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token: isEarnProduct ? quoteToken : collateralToken,
-    ethBalance,
-    ethPrice,
     depositAmount:
       'paybackAmount' in state && state.paybackAmount?.gt(zero) && quoteToken === 'ETH'
         ? state.paybackAmount
         : state.depositAmount,
     gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+    token: isEarnProduct ? quoteToken : collateralToken,
   })
 
   if (hasPotentialInsufficientEthFundsForTx) {

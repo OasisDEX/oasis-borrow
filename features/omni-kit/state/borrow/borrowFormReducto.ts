@@ -54,13 +54,19 @@ export function useOmniBorrowFormReducto({ ...rest }: Partial<OmniBorrowFormStat
             ...state,
             dpmAddress: action.dpmAddress,
           }
-        case 'reset':
-          return { ...state, ...omniBorrowFormReset }
         case 'update-loan-to-value':
           return {
             ...state,
             loanToValue: action.loanToValue,
           }
+        case 'update-swap-token':
+          return {
+            ...state,
+            pullToken: action.pullToken,
+            returnToken: action.returnToken,
+          }
+        case 'reset':
+          return { ...state, ...omniBorrowFormReset }
         default:
           return state
       }
