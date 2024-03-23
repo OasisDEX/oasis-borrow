@@ -1,5 +1,6 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
+import { productHubWeETHRewardsTooltip } from 'features/productHub/content'
 import { type ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers/get-token-group'
 import { LendingProtocol } from 'lendingProtocols'
@@ -62,6 +63,22 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     earnStrategy: EarnStrategies.yield_loop,
     earnStrategyDescription: 'CBETH/ETH Yield Loop',
     managementType: 'active',
+  },
+  {
+    product: [ProductHubProductType.Earn],
+    primaryToken: 'WEETH',
+    primaryTokenGroup: 'ETH',
+    secondaryToken: 'ETH',
+    network: NetworkNames.ethereumMainnet,
+    protocol: LendingProtocol.AaveV3,
+    label: 'WEETH/ETH',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'WEETH/ETH Yield Loop',
+    managementType: 'active',
+    hasRewards: true,
+    tooltips: {
+      liquidity: { ...productHubWeETHRewardsTooltip },
+    },
   },
   {
     product: [ProductHubProductType.Borrow],

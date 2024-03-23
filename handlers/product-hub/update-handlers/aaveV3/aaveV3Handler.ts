@@ -173,7 +173,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
-          hasRewards: false,
+          hasRewards: product.hasRewards ?? false,
         }
       }),
       warnings: [],
