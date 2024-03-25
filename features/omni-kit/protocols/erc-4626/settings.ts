@@ -162,22 +162,6 @@ export const erc4626Vaults: Erc4626Config[] = [
       symbol: 'ETH',
     },
   },
-  {
-    address: '0xbeEf094333AEdD535c130958c204E84f681FD9FA',
-    curator: steakhouseCurator,
-    id: 'steakhouse-WBTC',
-    name: 'Steakhouse WBTC',
-    protocol: LendingProtocol.MorphoBlue,
-    networkId: NetworkIds.MAINNET,
-    pricePicker: morphoPricePicker,
-    rewards: [morphoRewards],
-    strategy: 'MetaMorpho Lending',
-    token: {
-      address: getNetworkContracts(NetworkIds.MAINNET).tokens.WBTC.address,
-      precision: getToken('WBTC').precision,
-      symbol: 'WBTC',
-    },
-  },
 ]
 
 export const erc4626VaultsById = keyBy(erc4626Vaults, 'id')
