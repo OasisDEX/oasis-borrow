@@ -1,111 +1,132 @@
-import BigNumber from 'bignumber.js'
-import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
+import type { Erc4626Position } from '@oasisdex/dma-library'
+import faq from 'features/content/faqs/erc4626/earn/en'
+import type {
+  GetOmniMetadata,
+  ProductContextWithEarn,
+  SupplyMetadata,
+} from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { getOmniIsEarnFormEmpty } from 'features/omni-kit/helpers'
+import { Erc4626HeadlineApy } from 'features/omni-kit/protocols/erc-4626/components'
 import {
   Erc4626DetailsSectionContent,
+  Erc4626DetailsSectionContentAllocation,
   Erc4626DetailsSectionFooter,
-  Erc4626VaultAllocation,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import {
-  Erc4626EstimatedMarketCap,
+  Erc4626EstimatedMarketPrice,
   Erc4626FormOrder,
 } from 'features/omni-kit/protocols/erc-4626/components/sidebar'
+import {
+  erc4626FlowStateFilter,
+  getErc4626EarnIsFormValid,
+} from 'features/omni-kit/protocols/erc-4626/helpers'
+import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { OmniProductType } from 'features/omni-kit/types'
+import { useAppConfig } from 'helpers/config'
+import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { sparks } from 'theme/icons'
 
-export const useErc4626Metadata: GetOmniMetadata = () => {
+export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
 
-  // TODO: get from feature flags
-  const safetySwitch = false
-  const suppressValidation = false
+  const {
+    Erc4626VaultsSafetySwitch: safetySwitch,
+    Erc4626VaultsSuppressValidation: suppressValidation,
+  } = useAppConfig('features')
 
   const {
-    environment: { label, productType, isOpening, quoteToken, quotePrice },
+    environment: {
+      collateralAddress,
+      isOpening,
+      label,
+      productType,
+      protocol,
+      quoteAddress,
+      quotePrice,
+    },
+    steps: { currentStep },
+    tx: { txDetails },
   } = useOmniGeneralContext()
 
-  // TODO: replace with real validation
-  const validations = {
-    errors: [],
-    hasErrors: false,
-    isFormFrozen: false,
-    isFormValid: true,
-    notices: [],
-    successes: [],
-    warnings: [],
-  }
+  // it is safe to assume that in erc-4626 context label is always availabe string
+  const { address: vaultAddress, pricePicker } = erc4626VaultsByName[label as string]
 
-  // TODO: replace with real notifications
-  const notifications: DetailsSectionNotificationItem[] = []
+  const validations = productContext.position.simulationCommon.getValidations({
+    earnIsFormValid: getErc4626EarnIsFormValid({
+      currentStep,
+      state: productContext.form.state,
+    }),
+    isFormFrozen: false,
+    protocolLabel: LendingProtocolLabel.morphoblue,
+    safetySwitchOn: safetySwitch,
+  })
 
   switch (productType) {
     case OmniProductType.Earn:
+      const castedProductContext = productContext as ProductContextWithEarn
+
+      const position = productContext.position.currentPosition.position as Erc4626Position
+      const simulation = productContext.position.currentPosition.simulation as
+        | Erc4626Position
+        | undefined
+
       return {
-        notifications,
+        notifications: [],
         validations,
-        handlers: {
-          txSuccessEarnHandler: () => {},
-        },
+        handlers: {},
         filters: {
-          flowStateFilter: () => false,
+          flowStateFilter: (event) =>
+            erc4626FlowStateFilter({
+              collateralAddress,
+              event,
+              productType,
+              quoteAddress,
+              protocol,
+              protocolRaw: `erc4626-${vaultAddress.toLowerCase()}`,
+            }),
         },
         values: {
-          interestRate: zero,
-          isFormEmpty: false,
+          interestRate: position.fee?.amount ?? zero,
+          isFormEmpty: getOmniIsEarnFormEmpty({
+            currentStep,
+            state: castedProductContext.form.state,
+            txStatus: txDetails?.txStatus,
+          }),
           footerColumns: isOpening ? 2 : 3,
           headline: label,
-          // TODO replace with real values
           headlineDetails: [
             {
               label: t('omni-kit.headline.details.current-apy'),
-              value: '0%',
-              labelTooltip: 'Tooltip placeholder',
-              labelIcon: sparks,
+              children: <Erc4626HeadlineApy vaultAddress={vaultAddress} />,
             },
             {
               label: t('omni-kit.headline.details.30-days-avg-apy'),
-              value: '0%',
+              value: formatDecimalAsPercent(position.historicalApy.thirtyDayAverage),
             },
             {
               label: t('omni-kit.headline.details.tvl'),
-              value: '$0.00',
+              value: formatUsdValue(position.tvl.times(quotePrice)),
             },
           ],
-          extraDropdownItems: [],
-          earnWithdrawMax: zero,
-          earnAfterWithdrawMax: zero,
+          earnWithdrawMax: position.maxWithdrawal,
+          earnAfterWithdrawMax: simulation?.maxWithdrawal ?? zero,
         },
         elements: {
-          faq: <>FAQ placeholder</>,
+          faq,
           overviewContent: <Erc4626DetailsSectionContent />,
           overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: (
             <>
-              <Erc4626VaultAllocation
-                supplyTokenPrice={quotePrice}
-                supplyTokenSymbol={quoteToken}
-                tokens={[
-                  {
-                    supply: new BigNumber(13493403),
-                    tokenSymbol: 'WSTETH',
-                    maxLtv: new BigNumber(0.886),
-                  },
-                  {
-                    supply: new BigNumber(3443490),
-                    tokenSymbol: 'WBTC',
-                    maxLtv: new BigNumber(0.862),
-                  },
-                ]}
-              />
+              <Erc4626DetailsSectionContentAllocation />
+              {/* TODO: display rewards */}
             </>
           ),
           overviewWithSimulation: true,
-          // TODO: show only when rewards are available in vault
-          sidebarContent: <Erc4626EstimatedMarketCap token="MORPHO" />,
+          sidebarContent: pricePicker && <Erc4626EstimatedMarketPrice pricePicker={pricePicker} />,
           earnFormOrder: <Erc4626FormOrder />,
           earnFormOrderAsElement: Erc4626FormOrder,
         },

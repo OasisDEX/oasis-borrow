@@ -7,10 +7,18 @@ import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
-import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
+import {
+  getOmniExtraTokenData,
+  getOmniHeadlineProps,
+  getOmniProductContextProviderData,
+  getOmniRawProtocol,
+} from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
-import { useOmniAutomationFormReducto } from 'features/omni-kit/state/automation'
+import {
+  getAutomationFormDefaults,
+  useOmniAutomationFormReducto,
+} from 'features/omni-kit/state/automation/common'
 import type {
   OmniFormDefaults,
   OmniProductType,
@@ -19,6 +27,7 @@ import type {
   OmniSupportedNetworkIds,
   OmniSupportedProtocols,
 } from 'features/omni-kit/types'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -49,6 +58,7 @@ export interface OmniCustomStateParams<Auction, History, Position> {
 interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
+  extraTokens?: string[]
   isOracless?: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
@@ -64,6 +74,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
     }
     errors: string[]
   }
+  pseudoProtocol?: string
   quoteToken: string
   settings: OmniProtocolSettings
   seoTags: {
@@ -76,6 +87,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
 export const OmniProductController = <Auction, History, Position>({
   collateralToken,
   customState = ({ children }) => <>{children}</>,
+  extraTokens = [],
   isOracless = false,
   label,
   networkId,
@@ -83,9 +95,10 @@ export const OmniProductController = <Auction, History, Position>({
   productType,
   protocol,
   protocolHook,
+  pseudoProtocol,
   quoteToken,
-  settings,
   seoTags,
+  settings,
   version,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
@@ -96,7 +109,12 @@ export const OmniProductController = <Auction, History, Position>({
   const network = getNetworkById(networkId)
   const walletNetwork = getNetworkById(chainId || networkId)
   const isOpening = !positionId
-  const protocolRaw = settings.rawName[networkId] as string
+  const protocolRaw = getOmniRawProtocol({
+    networkId,
+    settings,
+    label,
+    pseudoProtocol,
+  })
 
   const {
     data: {
@@ -112,13 +130,14 @@ export const OmniProductController = <Auction, History, Position>({
     tokensPrecision,
   } = useOmniProtocolData({
     collateralToken,
-    positionId,
+    extraTokens,
     isOracless,
+    networkId,
+    positionId,
     productType,
     protocol,
     protocolRaw,
     quoteToken,
-    networkId,
   })
 
   const {
@@ -127,6 +146,7 @@ export const OmniProductController = <Auction, History, Position>({
   } = protocolHook({
     collateralToken,
     dpmPositionData,
+    label,
     networkId,
     quoteToken,
     tokenPriceUSDData,
@@ -184,7 +204,7 @@ export const OmniProductController = <Auction, History, Position>({
             >
               {([
                 _aggregatedData,
-                [collateralBalance, quoteBalance],
+                [collateralBalance, quoteBalance, ...extraBalances],
                 dpmPosition,
                 [ethBalance],
                 gasPrice,
@@ -197,6 +217,11 @@ export const OmniProductController = <Auction, History, Position>({
                 positionTriggers,
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
+                const extraTokensData = getOmniExtraTokenData({
+                  extraBalances,
+                  extraTokens,
+                  protocolPrices,
+                })
 
                 return (
                   <>
@@ -230,20 +255,25 @@ export const OmniProductController = <Auction, History, Position>({
                       {...(positionId && { dpmProxy: dpmPosition.proxy })}
                       ethBalance={ethBalance}
                       ethPrice={tokenPriceUSD.ETH}
+                      extraTokensData={extraTokensData}
                       gasPrice={gasPrice}
                       isOpening={isOpening}
                       isOracless={!!isOracless}
                       isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
+                      isYieldLoop={isYieldLoop}
+                      isYieldLoopWithData={isYieldLoopWithData}
                       label={label}
                       network={network}
                       networkId={networkId}
                       owner={dpmPosition.user}
-                      walletNetwork={walletNetwork}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
-                      protocolVersion={version}
+                      protocolPrices={protocolPrices}
                       protocolRaw={protocolRaw}
+                      protocolVersion={version}
+                      walletNetwork={walletNetwork}
+                      pseudoProtocol={pseudoProtocol}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
@@ -254,8 +284,10 @@ export const OmniProductController = <Auction, History, Position>({
                       settings={settings}
                       slippage={slippage}
                       steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
-                      isYieldLoop={isYieldLoop}
-                      isYieldLoopWithData={isYieldLoopWithData}
+                      automationSteps={[
+                        OmniSidebarAutomationStep.Manage,
+                        OmniSidebarAutomationStep.Transaction,
+                      ]}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,
@@ -277,7 +309,7 @@ export const OmniProductController = <Auction, History, Position>({
                             positionHistory: _aggregatedData.history as PositionHistoryEvent[],
                             positionTriggers: positionTriggers,
                             automationFormReducto: useOmniAutomationFormReducto,
-                            automationFormDefaults: {}, // to be determined
+                            automationFormDefaults: getAutomationFormDefaults(positionTriggers),
                           }
                           const omniProductContextProviderData = getOmniProductContextProviderData({
                             formDefaults,

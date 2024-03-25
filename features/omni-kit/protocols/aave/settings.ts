@@ -4,7 +4,7 @@ import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features
 import type { OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 
-const availableAaveAutomations = [
+const availableAaveV3Automations = [
   AutomationFeatures.STOP_LOSS,
   AutomationFeatures.TRAILING_STOP_LOSS,
   AutomationFeatures.AUTO_SELL,
@@ -41,6 +41,9 @@ export const settingsV2: OmniProtocolSettings = {
   },
   yieldLoopPairsWithData: {
     [NetworkIds.MAINNET]: ['STETH-ETH'],
+  },
+  availableAutomations: {
+    [NetworkIds.MAINNET]: [],
   },
 }
 
@@ -108,9 +111,9 @@ export const settingsV3: OmniProtocolSettings = {
     [NetworkIds.MAINNET]: ['WSTETH-ETH'],
   },
   availableAutomations: {
-    [NetworkIds.MAINNET]: availableAaveAutomations,
-    [NetworkIds.ARBITRUMMAINNET]: availableAaveAutomations,
-    [NetworkIds.BASEMAINNET]: availableAaveAutomations,
-    [NetworkIds.OPTIMISMMAINNET]: availableAaveAutomations,
+    [NetworkIds.MAINNET]: availableAaveV3Automations,
+    [NetworkIds.ARBITRUMMAINNET]: availableAaveV3Automations,
+    [NetworkIds.BASEMAINNET]: availableAaveV3Automations,
+    [NetworkIds.OPTIMISMMAINNET]: availableAaveV3Automations,
   },
 }

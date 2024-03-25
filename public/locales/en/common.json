@@ -218,9 +218,9 @@
       "protection-value": "On {{protection}}%",
       "view-position": "View Position",
       "header": {
-        "30-day-avg-apy": "30 day avg. APY",
-        "7-day-net-apy": "7 day net APY",
-        "90-day-net-apy": "90 day net APY",
+        "30-day-avg-apy": "30 days avg. APY",
+        "7-day-net-apy": "7 days net APY",
+        "90-day-net-apy": "90 days net APY",
         "action": "",
         "activity": "Activity",
         "annual-fee": "Annual fee",
@@ -477,6 +477,7 @@
     "collateral-deposit": "Collateral Deposit",
     "withdrawn": "Withdrawn",
     "repaid": "Repaid",
+    "transfer-to": "Transfer to",
     "debt-borrowed": "Debt Borrowed",
     "ltv": "Loan To Value",
     "liquidation-price": "Liquidation price",
@@ -1077,12 +1078,12 @@
   "send-to": "Send to",
   "sent": "Sent",
   "seo": {
-    "owner": {
-      "title": "Owner - Summer.fi",
-      "description": "Page not found, sorry."
-    },
     "404": {
       "title": "Page not found 🥹 - Summer.fi",
+      "description": "Page not found, sorry."
+    },
+    "owner": {
+      "title": "Owner - Summer.fi",
       "description": "Page not found, sorry."
     },
     "contact": {
@@ -1503,8 +1504,7 @@
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
-    "stop-loss-triggered-immediately": "Stop-Loss will be triggered immediately.",
-    "partial-take-profit-target-higher-than-stop-loss": "Your Auto Take Profit target LTV is higher than your Stop-Loss. Reduce your Auto Take Profit target, or update your Stop-Loss."
+    "stop-loss-triggered-immediately": "Stop-Loss will be triggered immediately."
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -1873,6 +1873,49 @@
       "trailing-stop-loss-description": "Set-up a Trailing Stop-Loss if you want a stop loss that moves up with the price. Perfect for following bullish trends. See the image below for an example.",
       "sidebar-title": "Select a type of Stop-Loss",
       "sidebar-description": "Choose between a Regular or Trailing Stop-loss. A Regular Stop-Loss does not automatically update, whilst a Trailing Stop-Loss moves up if the price moves up by your set Trailing Distance."
+    },
+    "partial-take-profit-sidebar": {
+      "main-description": "Set up your auto take profit price and trigger LTV. These parameters will determine when you withdraw assets to realize profits.",
+      "profit-in": "Profit in {{token}}",
+      "set-maximum-take-profit-price": "Set maximum starting take profit price",
+      "set-minimum-take-profit-price": "Set minimum starting take profit price",
+      "tooltips": {
+        "take-profit-price-highest": "The first and highest price in which you will begin to realize profits. The amount of profit you will realize at this price is determined by your Withdrawal Step, it is possible it will be triggered at its own LTV, distinct from your “Trigger LTV”. This maximum starting price is subject to change if you make changes to your position after setting it.",
+        "take-profit-price-lowest": "The first and lowest price in which you will begin to realize profits. The amount of profit you will realize at this price is determined by your Withdrawal Step, it is possible it will be triggered at its own LTV, distinct from your “Trigger LTV”. This minimum starting price is subject to change if you make changes to your position after setting it.",
+        "trigger-ltv-tooltip": "The LTV that once reached, it will trigger a realization of collateral or debt to your wallet. It is recurring and will have dynamic trigger prices that are relative to it.",
+        "withdrawal-step": "The chosen distance between your Trigger LTV and LTV after execution (The LTV your position will be at after collateral has been withdrawn). Your withdrawal step amount is 5% by default, but customizable. The larger the step the more profit you will realize, the smaller the step the less profit you realize.",
+        "stop-loss-ltv": "Your Stop-Loss Loan to Value is the specific debt to collateral ratio at which you have specified you want to be stopped out and have your position closed. If you have already setup a stop-Loss LTV, you can keep it the same or change it."
+      },
+      "configure-trigger-loan-to-value": "Configure Trigger Loan to Value and Loan to Value Withdrawal steps",
+      "trigger-ltv": "Trigger LTV",
+      "current-ltv": "Current LTV",
+      "profit-at-higher-price": "Profit at higher price",
+      "profit-at-lower-price": "Profit at lower price",
+      "ltv-withdrawal-step": "LTV Withdrawal Step",
+      "step-amount": "step amount",
+      "ltv-after-execution": "LTV after execution:",
+      "max-ltv": "MAX LTV",
+      "take-smaller-amounts": "Take smaller amounts",
+      "more-often": "more often",
+      "take-larger-amounts": "Take larger amounts",
+      "less-often": "less often",
+      "configure-stop-loss-loan-to-value": "Configure Stop-Loss Loan to Value",
+      "stop-loss-info": "Your previously configured stop-Loss LTV will remain unchanged, unless edited below.",
+      "current-stop-loss": "Current Stop-Loss",
+      "stop-loss-messages": {
+        "no-stop-loss": "The Stop-Loss you configure will close your position to the same asset you have chosen to take profit in: {{partialTakeProfitToken}}.",
+        "has-stop-loss": "You already have a Stop-Loss trigger set at{{nbsp}}{{stopLossLevelLabel}}. You can update the Stop-Loss LTV above and it all be handled within your Auto Take Profit transaction.",
+        "has-trailing-stop-loss": "You already have a Trailing Stop-Loss trigger set at{{nbsp}}{{trailingStopLossDistanceLabel}} distance.",
+        "new-stop-loss": "Your stop-Loss will be updated to a new value: {{newStopLossValue}}. Use the dot on the slider if you want to reset it."
+      },
+      "profits-table": {
+        "full-realized-profit-range": "Full realized profit range",
+        "tooltip": "Your Auto Take Profit automation run continuously. The Realized Profit Range simulates and forecasts how your Auto Take Profit will perform and impact your Stop-Loss based on different Trigger Prices. You can turn off Auto Take Profit at any time, if you feel satisfied at specific Trigger Price.",
+        "trigger-price": "Trigger Price",
+        "realized-profit": "Realized profit",
+        "total-profit": "Total profit",
+        "stop-loss": "Stop-Loss"
+      }
     }
   },
   "newsletter": {
@@ -2018,7 +2061,7 @@
     "unprofitable-position": "This position is currently likely unprofitable. Proceed if you know what you are doing."
   },
   "product-card-banner": {
-    "with": "With {{value}} {{token}} \uD83D\uDC47",
+    "with": "With {{value}} {{token}} 👇",
     "borrow": "Borrow up to {{value}} DAI",
     "multiply": "Get up to {{value}} {{token}} exposure",
     "earn": "Earn {{value}} {{token}} a year",
@@ -2241,7 +2284,6 @@
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
     "ltv-too-low-for-auto-sell": "Auto-Sell is not available as your Loan to Value is too low. Please <0>increase your Loan to value</0> above 1% before using Auto-Sell.",
     "ltv-too-low-for-auto-buy": "Auto-Buy is not available as your Loan to Value is too low. Please <0>increase your Loan to Value</0> above 1% before using Auto-Buy.",
-
     "collateral-after-next-sell": "Collateral after next sell",
     "confirmation": "Confirm your auto-sell setup.",
     "continual-sell-no-threshold": "Recurring sell order with no min",
@@ -2393,7 +2435,11 @@
         "title": "Need help setting up auto take profit?",
         "description": "However you learn, we’ve got you covered. Watch a video tutorial or read a in depth how to article. Both walk you through setting up your Auto Take Profit automation like a pro."
       }
-    }
+    },
+    "next-trigger-price": "Next trigger price",
+    "next-realized-profit": "Next realized profit",
+    "ltv-withdrawal-step": "LTV withdrawal step",
+    "trigger-ltv": "Trigger LTV"
   },
   "automation": {
     "setup": "{{feature}} Setup",
@@ -2428,6 +2474,7 @@
       "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
     },
     "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction.",
+    "add-update-summary-description": "To add or update the {{feature}} you'll need to click the button below and confirm the transaction.",
     "trailing-stop-loss-execution-price-increased": "As the price increased, the Trailing Stop-Loss price changed to {{executionPriceAndToken}} ({{delta}}) from the original {{originalExecutionPriceAndToken}}"
   },
   "optimization": {
@@ -2858,6 +2905,15 @@
         "modal-description": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss Loan to Value. The reason this price is dynamic is that the Stop-Loss trigger is based on a Loan to Value, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
         "modal-footnote-title": "The current Dynamic Stop-Loss Price is:"
       },
+      "next-dynamic-trigger-price": {
+        "title": "Next Dynamic Trigger Price",
+        "modal-description": "The next price in which you will realize profits to your wallet. It is dynamic because position changes made prior to it triggering may make the trigger price increase.",
+        "footnote": "Trigger LTV: {{percentage}}"
+      },
+      "estimated-to-receive": {
+        "title": "Est. to receive next trigger",
+        "modal-description": "The amount of collateral or debt that will be withdrawn to your wallet upon trigger."
+      },
       "estimated-token-on-trigger": {
         "title": "Est. {{token}} on Stop-Loss trigger",
         "footnote": "Saving compared to liquidation",
@@ -2927,6 +2983,9 @@
       },
       "vault-fee": {
         "title": "Vault Fee"
+      },
+      "earnings-to-date": {
+        "title": "Earnings to date"
       }
     },
     "position-page": {
@@ -2950,6 +3009,10 @@
         "transaction": "Confirm your {{protocol}} {{productType}} Position",
         "transition": "Switch your {{protocol}} {{productType}} Position"
       },
+      "automation-title": {
+        "manage": "Manage your {{automationFeature}}",
+        "transaction": "Confirm your {{automationFeature}}"
+      },
       "transaction": {
         "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} {{protocol}} {{productType}} Position.",
         "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} {{protocol}} Position",
@@ -2960,6 +3023,7 @@
     },
     "dupe-modal": {
       "title": "Are you sure you want to open a new {{collateralToken}}/{{quoteToken}} {{productType}} position on {{protocol}}?",
+      "title-with-label": "Are you sure you want to open a new {{label}} position?",
       "description-borrower-singular": "You already have borrower position of this type.",
       "description-borrower-plural": "You already have borrower positions of this type.",
       "description-lender-singular": "You already have lender position of this type.",
@@ -3180,7 +3244,7 @@
       }
     },
     "validations": {
-      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",
+      "deposit-amount-exceeds-balance": "You cannot deposit more tokens than the amount in your wallet.",
       "payback-amount-exceeds-debt-token-balance": "You cannot pay back more than the amount of debt token in your wallet.",
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
@@ -3209,7 +3273,8 @@
       "deposit-amount-exceeds-supply-cap": "You cannot deposit more than {{cap}} {{collateralToken}} due to the maximum supply cap.",
       "debt-amount-exceeds-borrow-cap": "You cannot borrow more than {{cap}} {{quoteToken}} due to the maximum borrowing cap.",
       "target-ltv-exceeds-supply-cap": "Your target LTV is too high due to the maximum supply cap. You cannot supply more than {{cap}} {{collateralToken}}.",
-      "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{quoteToken}}."
+      "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{quoteToken}}.",
+      "after-ltv-ratio-above-or-below-trigger-ltv": "You cannot make adjustments to your position which take it {{aboveOrBelow}} your {{automationFeature}} Trigger Loan to Value, please update or cancel your {{automationFeature}} if you want to make this adjustment."
     },
     "rewards": {
       "title": "Earn more $AJNA on Summer.fi than any other platform",
@@ -3266,20 +3331,30 @@
   },
   "erc-4626": {
     "content-card": {
-      "vault-fee-steakhouse-USDC": {
-        "modal-description": "MetaMorpho Vaults have a fee charged by the curator of the Vault for performing the risk management and selection of Blue Markets."
+      "vault-fee-steakhouse": {
+        "modal-description": "MetaMorpho Vaults have a fee charged by the curator of the Vault for performing the risk management and selection of Blue Markets. This fee is charged out of the earnings you make on the pool. The APY shown is after the fee has been applied"
+      },
+      "earnings-to-date": {
+        "footnote": "Not including token rewards"
       }
     },
     "position-page": {
       "common": {
+        "estimated-price": "Estimate <icon /> {{token}} price for better APY accuracy",
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
+        "market-apy": "Market APY",
+        "per-1k-usd": "{{amount}} {{token}} per $1,000",
         "vault-allocation-breakdown": "Vault allocation breakdown"
       },
       "earn": {
         "form-order": {
+          "swapping": "Swapping",
           "total-deposit": "Total {{quoteToken}} deposit"
         }
       }
+    },
+    "product-hub-tooltips": {
+      "this-vault-is-earning-tokens": "This Vault is earning following rewards"
     }
   },
   "product-hub": {
@@ -3303,7 +3378,7 @@
     },
     "featured": "Featured",
     "promo-cards": {
-      "7-day-avg-apy": "7 day avg APY",
+      "7-day-avg-apy": "7 days avg APY",
       "active-management": "Active management",
       "ajna-pools-accumulate-rewards": "Ajna pools supported in Summer.fi accumulate token rewards over time",
       "automation-enabled": "Automation enabled",
@@ -3339,6 +3414,8 @@
       "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
       "passive-management": "Passive management",
       "short-token": "Short {{token}}",
+      "steakhouse-managed": "Steakhouse managed",
+      "token-rewards": "Token rewards",
       "up-to-exposure-against": "Up to {{maxMultiple}} exposure to {{collateralToken}} against {{debtToken}}",
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "up-to-yield-exposure": "Up to {{maxMultiple}} Yield Exposure",
@@ -3468,6 +3545,10 @@
     "vault-form": {
       "title": "Migrate your position into Summer.fi",
       "success-title": "Your position is now accessible on Summer.fi!"
+    },
+    "allowance-form":{
+        "title": "Approve Summer.fi to access your position",
+        "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website."
     },
     "vault-banners": {
       "automation": {

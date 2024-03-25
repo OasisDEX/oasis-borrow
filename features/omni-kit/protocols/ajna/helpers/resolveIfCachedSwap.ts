@@ -1,9 +1,9 @@
-import type { SwapData } from '@oasisdex/dma-library'
+import type { OmniSimulationSwap } from 'features/omni-kit/types'
 
 interface ResolveIfCachedSwapParams {
   cached: boolean
-  currentSwap?: SwapData
-  cachedSwap?: SwapData
+  currentSwap?: OmniSimulationSwap
+  cachedSwap?: OmniSimulationSwap
 }
 
 export const resolveIfCachedSwap = ({

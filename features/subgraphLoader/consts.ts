@@ -62,6 +62,20 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+  Erc4626: {
+    [NetworkIds.MAINNET]: 'summer-lazy-vaults',
+    [NetworkIds.HARDHAT]: 'summer-lazy-vaults',
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: '',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.BASEMAINNET]: '',
+    [NetworkIds.BASEGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: '',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
   Referral: {
     [NetworkIds.MAINNET]: 'summer-referrals-optimism',
     [NetworkIds.HARDHAT]: 'summer-referrals-optimism',
@@ -232,6 +246,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         depositSize
         interestRate
         apr30dAverage
+        apr7dAverage
+        lendApr30dAverage
+        lendApr7dAverage
         dailyPercentageRate30dAverage
         monthlyPercentageRate30dAverage
         poolMinDebtAmount
@@ -635,6 +652,131 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           borrowCumulativeFeesUSD
           borrowCumulativeFeesInQuoteToken
           borrowCumulativeFeesInCollateralToken
+        }
+      }
+    }
+  `,
+  getErc4626PositionParameters: gql`
+    query getPositionParameters($vault: String!, $dpmProxyAddress: String!) {
+      positions(where: { account: $dpmProxyAddress, vault: $vault }) {
+        id
+        shares
+        earnCumulativeFeesUSD
+        earnCumulativeDepositUSD
+        earnCumulativeWithdrawUSD
+        earnCumulativeFeesInQuoteToken
+        earnCumulativeDepositInQuoteToken
+        earnCumulativeWithdrawInQuoteToken
+      }
+      vaults(where: { id: $vault }) {
+        interestRates(orderBy: timestamp, orderDirection: desc, first: 30) {
+          timestamp
+          rate
+        }
+        totalAssets
+        totalShares
+      }
+    }
+  `,
+  getErc4626PositionAggregatedData: gql`
+    query Erc4626AggregatedData($vault: String!, $dpmProxyAddress: String!) {
+      summerEvents(
+        where: { account: $dpmProxyAddress, vault: $vault }
+        orderBy: timestamp
+        orderDirection: desc
+      ) {
+        id
+        kind
+        quoteToken {
+          id
+          address
+        }
+        isOpen
+        depositedUSD
+        depositedInQuoteToken
+        depositTransfers {
+          id
+          priceInUSD
+          token
+          from
+          to
+          amount
+          amountUSD
+          txHash
+        }
+        withdrawnUSD
+        withdrawnInQuoteToken
+        withdrawTransfers {
+          id
+          priceInUSD
+          token
+          from
+          to
+          amount
+          amountUSD
+          txHash
+        }
+        quoteToken {
+          id
+          address
+          decimals
+          symbol
+        }
+        quoteAddress
+        quoteBefore
+        quoteAfter
+        quoteDelta
+        quoteTokenPriceUSD
+        swapToToken
+        swapToAmount
+        swapFromToken
+        swapFromAmount
+        gasFeeInQuoteToken
+        marketPrice
+        oasisFeeToken
+        oasisFee
+        oasisFeeUSD
+        oasisFeeInQuoteToken
+        gasUsed
+        gasPrice
+        gasFeeUSD
+        gasFeeInQuoteToken
+        totalFee
+        totalFeeUSD
+        totalFeeInQuoteToken
+        ethPrice
+        timestamp
+        blockNumber
+        txHash
+      }
+    }
+  `,
+  getErc4626InterestRates: gql`
+    query getInterestRates($vault: String!) {
+      vaults(where: { id: $vault }) {
+        interestRates(orderBy: timestamp, orderDirection: desc, first: 7) {
+          rate
+        }
+      }
+    }
+  `,
+  getErc4626DpmPositions: gql`
+    query getInterestRates($dpmProxyAddress: [String!]) {
+      positions(where: { account_in: $dpmProxyAddress }) {
+        account {
+          address
+          user {
+            id
+          }
+          vaultId
+        }
+        vault {
+          asset {
+            address
+            decimals
+            symbol
+          }
+          id
         }
       }
     }

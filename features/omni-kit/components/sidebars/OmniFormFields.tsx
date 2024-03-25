@@ -13,13 +13,14 @@ import type {
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { Dispatch } from 'react'
+import type { Dispatch, ReactNode } from 'react'
 import React from 'react'
 
 interface OmniFormField<D> {
   dispatchAmount: Dispatch<D>
   isDisabled?: boolean
   resetOnClear?: boolean
+  swapController?: ReactNode
 }
 
 interface OmniFormFieldWithDefinedToken {
@@ -45,6 +46,7 @@ export function OmniFormFieldDeposit({
   maxAmount,
   maxAmountLabel = 'balance',
   resetOnClear,
+  swapController,
   token,
   tokenDigits,
   tokenPrecision,
@@ -78,6 +80,7 @@ export function OmniFormFieldDeposit({
       maxAmount={maxAmount}
       maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
       maxAmountLabel={t(maxAmountLabel)}
+      swapController={swapController}
       onChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-deposit',

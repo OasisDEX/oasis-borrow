@@ -7,6 +7,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
+  formatLtvDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
@@ -48,9 +49,9 @@ export function OmniBorrowFormOrder() {
     afterCollateralLocked:
       simulationData?.collateralAmount &&
       `${formatCryptoBalance(simulationData.collateralAmount)} ${collateralToken}`,
-    ltv: formatDecimalAsPercent(positionData.riskRatio.loanToValue),
+    ltv: formatLtvDecimalAsPercent(positionData.riskRatio.loanToValue),
     afterLtv:
-      simulationData?.riskRatio && formatDecimalAsPercent(simulationData.riskRatio.loanToValue),
+      simulationData?.riskRatio && formatLtvDecimalAsPercent(simulationData.riskRatio.loanToValue),
     liquidationPrice: `${formatCryptoBalance(liquidationPrice)} ${priceFormat}`,
     afterLiquidationPrice:
       afterLiquidationPrice && `${formatCryptoBalance(afterLiquidationPrice)} ${priceFormat}`,

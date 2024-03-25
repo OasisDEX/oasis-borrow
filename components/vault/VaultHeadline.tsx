@@ -39,12 +39,14 @@ export function VaultHeadline({
   return (
     <Flex
       sx={{
+        position: 'relative',
         flexWrap: 'wrap',
         flexShrink: 0,
         flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'center'],
         gap: 2,
+        zIndex: 2,
       }}
       onClick={handleClick}
     >

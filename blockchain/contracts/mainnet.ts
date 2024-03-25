@@ -28,6 +28,7 @@ import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
 import * as dssProxyActionsCharter from 'blockchain/abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
+import * as erc20proxyActions from 'blockchain/abi/erc20-proxy-actions.json'
 import * as exchange from 'blockchain/abi/exchange.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
 import * as lidoCrvLiquidityFarmingReward from 'blockchain/abi/lido-crv-liquidity-farming-reward.json'
@@ -217,6 +218,7 @@ export const mainnetContracts = {
     'DETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_DETHWETH),
     'UNIETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_EZETHWETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -229,7 +231,6 @@ export const mainnetContracts = {
       mainnet.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
     ),
     'APXETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_APXETHETH),
-    'SUSDE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDEDAI),
     'MPETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CSETHWETH),
   },
@@ -254,7 +255,10 @@ export const mainnetContracts = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
+  SUSDEOracle: contractDesc(ajnaPoolInfo, mainnet.common.SUSDEOracle),
+  USDEOracle: contractDesc(ajnaPoolInfo, mainnet.common.USDEOracle),
   WSTETHOracle: contractDesc(ajnaPoolInfo, mainnet.common.WSTETHOracle),
+  erc20ProxyActions: contractDesc(erc20proxyActions, mainnet.mpa.core.ERC20ProxyActions),
 }
 
 type DeprecatedProperties = {

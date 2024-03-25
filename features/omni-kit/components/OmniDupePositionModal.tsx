@@ -20,9 +20,11 @@ export interface OmniDupePositionModalProps {
   dpmAccounts: UserDpmAccount[]
   events: CreatePositionEvent[]
   isOracless: boolean
+  label?: string
   networkId: OmniSupportedNetworkIds
   productType: OmniProductType
   protocol: LendingProtocol
+  pseudoProtocol?: string
   quoteAddress: string
   quoteToken: string
   theme?: Theme
@@ -35,9 +37,11 @@ export function OmniDupePositionModal({
   dpmAccounts,
   events,
   isOracless,
+  label,
   networkId,
   productType,
   protocol,
+  pseudoProtocol,
   quoteAddress,
   quoteToken,
   theme = {},
@@ -59,12 +63,14 @@ export function OmniDupePositionModal({
   const primaryLink = hasMultiplyPositions
     ? `/owner/${walletAddress}`
     : `${getOmniPositionUrl({
-        protocol,
-        isPoolOracless: isOracless,
         collateralAddress,
         collateralToken,
+        isPoolOracless: isOracless,
+        label,
         networkName,
         productType,
+        protocol,
+        pseudoProtocol,
         quoteAddress,
         quoteToken,
       })}/${positionIds[0]}`
@@ -80,8 +86,9 @@ export function OmniDupePositionModal({
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
             <Image src={staticFilesRuntimeUrl('/static/img/safe.svg')} />
             <Heading variant="header5" sx={{ pt: 3, pb: 2 }}>
-              {t('omni-kit.dupe-modal.title', {
+              {t(label ? 'omni-kit.dupe-modal.title-with-label' : 'omni-kit.dupe-modal.title', {
                 collateralToken,
+                label,
                 productType: startCase(productType),
                 protocol: LendingProtocolLabel[protocol],
                 quoteToken,

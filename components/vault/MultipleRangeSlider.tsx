@@ -75,6 +75,7 @@ interface MultipleRangeSliderProps {
   minDescription?: ReactNode
   maxDescription?: ReactNode
   isResetAction?: boolean
+  otherDependencies?: unknown[]
 }
 
 export function MultipleRangeSlider({
@@ -93,6 +94,7 @@ export function MultipleRangeSlider({
   minDescription = '',
   maxDescription = '',
   isResetAction = false,
+  otherDependencies = [],
 }: MultipleRangeSliderProps) {
   const [side, setSide] = useState('')
   const [sliderBoxBoundaries, setSliderBoxBoundaries] = useState(sliderDefaultBoundaries)
@@ -150,7 +152,7 @@ export function MultipleRangeSlider({
 
       onChange({ ...value, [`value${slider}`]: newValue })
     },
-    [step, value0, value1, middleMark?.value],
+    [step, value0, value1, middleMark?.value, ...otherDependencies],
   )
 
   const { value0InPercent, value1InPercent } = useMemo(

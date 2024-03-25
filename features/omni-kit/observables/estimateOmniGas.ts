@@ -15,26 +15,35 @@ export const estimateOmniGas$ = ({
   proxyAddress,
   signer,
   txData,
+  sendAsSinger = false,
 }: {
   networkId: OmniSupportedNetworkIds
   proxyAddress: string
   signer: ethers.Signer
   txData: OmniTxData
+  sendAsSinger?: boolean
 }) =>
   combineLatest(
     from(validateParameters({ signer, networkId, proxyAddress })),
     from(getOverrides(signer)),
   ).pipe(
-    switchMap(([{ dpm }, override]) =>
-      from(
-        dpm.estimateGas
-          .execute(txData.to, txData.data, {
+    switchMap(([{ dpm }, override]) => {
+      const estimateGasRequest = sendAsSinger
+        ? signer.estimateGas({
+            ...override,
+            to: txData.to,
+            data: txData.data,
+            value: txData.value,
+          })
+        : dpm.estimateGas.execute(txData.to, txData.data, {
             ...override,
             value: txData.value,
           })
-          .then((val) =>
-            new BigNumber(val.toString()).multipliedBy(GasMultiplier).decimalPlaces(0),
-          ),
+
+      return from(
+        estimateGasRequest.then((val) =>
+          new BigNumber(val.toString()).multipliedBy(GasMultiplier).decimalPlaces(0),
+        ),
       ).pipe(
         switchMap(async (gasAmount) => {
           const feeData = await getTransactionFee({
@@ -58,8 +67,8 @@ export const estimateOmniGas$ = ({
             isCompleted: true,
           }
         }),
-      ),
-    ),
+      )
+    }),
     first(),
     startWith({
       isSuccessful: false,

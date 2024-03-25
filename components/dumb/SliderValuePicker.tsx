@@ -19,7 +19,7 @@ export interface SliderValuePickerProps {
   minBoundry: BigNumber
   maxBoundry: BigNumber
   lastValue: BigNumber
-  disabled: boolean
+  disabled?: boolean
   leftBoundryStyling?: ThemeUIStyleObject
   rightBoundryStyling?: ThemeUIStyleObject
   step: number
@@ -81,11 +81,11 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           {hasRightLabel && (
             <Grid gap={2} sx={{ textAlign: 'right' }}>
               {props.rightLabel && <Text as="span">{props.rightLabel}</Text>}
-              {props.rightBoundry && props.rightBoundryFormatter && (
-                <Text as="span" variant="boldParagraph1" sx={props.rightBoundryStyling}>
-                  {props.rightBoundryFormatter(props.rightBoundry)}
-                </Text>
-              )}
+              <Text as="span" variant="boldParagraph1" sx={props.rightBoundryStyling}>
+                {props.rightBoundry && props.rightBoundryFormatter
+                  ? props.rightBoundryFormatter(props.rightBoundry)
+                  : '-'}
+              </Text>
             </Grid>
           )}
         </Flex>
@@ -93,7 +93,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       {props.useRcSlider ? (
         <RcSlider
           {...props.customSliderProps}
-          disabled={props.disabled}
+          disabled={props.disabled || false}
           step={props.step}
           min={props.minBoundry.toNumber()}
           max={props.maxBoundry.toNumber()}

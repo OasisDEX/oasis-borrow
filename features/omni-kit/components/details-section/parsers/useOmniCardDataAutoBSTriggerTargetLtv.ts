@@ -48,7 +48,7 @@ export function useOmniCardDataAutoBSTriggerTargetLtv({
     ]
   }
 
-  if (thresholdPrice?.isZero()) {
+  if (currentTargetLTV && !thresholdPrice) {
     contentCardBase.footnote = [
       t(
         automationFeature === AutomationFeatures.AUTO_SELL

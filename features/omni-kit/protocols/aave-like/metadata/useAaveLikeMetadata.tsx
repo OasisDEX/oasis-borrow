@@ -1,5 +1,6 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -23,6 +24,7 @@ import {
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
+import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
@@ -41,10 +43,12 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isYieldLoopWithData,
       isOpening,
       quoteToken,
+      isOwner,
     },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+  const [hash] = useHash()
 
   const featureToggles = getAaveLikeFeatureToggle(protocol)
 
@@ -116,7 +120,10 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           isHeadlineDetailsLoading,
           automation: getAaveLikeAutomationMetadataValues({
             positionTriggers: productContext.automation.positionTriggers,
-            simulationResponse: productContext.automation.simulationData?.simulationResponse,
+            simulationResponse: productContext.automation.simulationData,
+            commonFormState: productContext.automation.commonForm.state,
+            automationForms: productContext.automation.automationForms,
+            hash,
           }),
         },
         elements: {
@@ -130,6 +137,9 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             quoteToken,
             isOpening,
           }),
+          positionBanner: productContext.position.positionAuction ? (
+            <AaveLiquidatedNotice isPositionController={isOwner} />
+          ) : undefined,
           overviewWithSimulation: true,
         },
         featureToggles,

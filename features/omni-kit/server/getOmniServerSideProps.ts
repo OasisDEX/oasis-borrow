@@ -10,6 +10,7 @@ import type {
   OmniSupportedProtocols,
 } from 'features/omni-kit/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { uniq } from 'lodash'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import type { ParsedUrlQuery } from 'querystring'
 
@@ -24,6 +25,7 @@ interface OmniServerSidePropsWithoutTokens {
 }
 
 type OmniServerSideProps = (OmniServerSidePropsWithTokens | OmniServerSidePropsWithoutTokens) & {
+  extraTokens?: string[]
   isProductPageValid?: (params: OmniProductPage) => boolean
   label?: string
   locale?: string
@@ -34,6 +36,7 @@ type OmniServerSideProps = (OmniServerSidePropsWithTokens | OmniServerSidePropsW
 
 export async function getOmniServerSideProps({
   collateralToken,
+  extraTokens = [],
   isProductPageValid = () => true,
   label,
   locale,
@@ -74,6 +77,11 @@ export async function getOmniServerSideProps({
     positionId,
     productType: castedProductType,
     protocol,
+    extraTokens: uniq([
+      ...extraTokens,
+      ...(settings.pullTokens?.[networkId] ?? []),
+      ...(settings.returnTokens?.[networkId] ?? []),
+    ]),
     quoteToken: caseSensitiveQuoteToken,
   }
 
@@ -93,7 +101,6 @@ export async function getOmniServerSideProps({
       label: label ?? null,
       positionId: positionId ?? null,
       version: query.version ?? null,
-      protocol,
     },
   }
 }

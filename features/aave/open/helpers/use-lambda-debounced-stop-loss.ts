@@ -13,7 +13,6 @@ import type {
 } from 'helpers/triggers/setup-triggers'
 import { setupAaveLikeStopLoss } from 'helpers/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import { hundred, one } from 'helpers/zero'
 import { useState } from 'react'
 
 import { eth2weth } from '@oasisdex/utils/lib/src/utils'
@@ -55,15 +54,11 @@ export const useLambdaDebouncedStopLoss = ({
         setIsGettingStopLossTx(true)
         clearWarningsAndErrors()
       }
-      const openingLtv =
-        context.userInput.riskRatio?.loanToValue ?? context.defaultRiskRatio?.loanToValue
-      const manageLtv =
-        context.userInput.riskRatio?.loanToValue ?? context.currentPosition?.riskRatio?.loanToValue
+
       const stopLossTxDataPromise = cancelable(
         setupAaveLikeStopLoss({
           dpm: dpmAccount,
           executionLTV: stopLossLevel,
-          targetLTV: (openingLtv ?? manageLtv ?? one).times(hundred),
           networkId: strategyConfig.networkId,
           executionToken: stopLossToken === 'debt' ? debtAddress : collateralAddress,
           protocol: strategyConfig.protocol as SupportedLambdaProtocols,

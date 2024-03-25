@@ -28,6 +28,7 @@ import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
 import * as dssProxyActionsCharter from 'blockchain/abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
+import * as erc20proxyActions from 'blockchain/abi/erc20-proxy-actions.json'
 import * as exchange from 'blockchain/abi/exchange.json'
 import * as gasPriceOracle from 'blockchain/abi/gas-price-oracle.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
@@ -210,6 +211,7 @@ export const optimismContracts: OptimismContracts = {
     'DETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_DETHWETH),
     'UNIETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_EZETHWETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -222,7 +224,6 @@ export const optimismContracts: OptimismContracts = {
       optimism.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
     ),
     'APXETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_APXETHETH),
-    'SUSDE-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SUSDEDAI),
     'MPETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CSETHWETH),
   },
@@ -249,4 +250,7 @@ export const optimismContracts: OptimismContracts = {
   gasPriceOracle: contractDesc(gasPriceOracle, '0x420000000000000000000000000000000000000F'),
   SdaiOracle: contractDesc(ajnaPoolInfo, optimism.common.SdaiOracle),
   WSTETHOracle: contractDesc(ajnaPoolInfo, optimism.common.WSTETHOracle),
+  SUSDEOracle: contractDesc(ajnaPoolInfo, optimism.common.SUSDEOracle),
+  USDEOracle: contractDesc(ajnaPoolInfo, optimism.common.USDEOracle),
+  erc20ProxyActions: contractDesc(erc20proxyActions, optimism.mpa.core.ERC20ProxyActions),
 }

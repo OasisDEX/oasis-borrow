@@ -5,7 +5,6 @@ import { cancelable } from 'cancelable-promise'
 import { lambdaPriceDenomination } from 'features/aave/constants'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
-import type { IStrategyConfig } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import type {
@@ -22,9 +21,9 @@ import { useState } from 'react'
 
 import { eth2weth } from '@oasisdex/utils/lib/src/utils'
 
-const mapProfits = (
+export const mapProfits = (
   simulation: SetupPartialTakeProfitResponse['simulation'],
-  strategyConfig: IStrategyConfig,
+  isShort: boolean,
 ): ProfitsSimulationMapped[] => {
   const parseProfitValue = (value: ProfitsSimulationBalanceRaw) => {
     return {
@@ -34,7 +33,6 @@ const mapProfits = (
   }
   return simulation
     ? simulation.profits.map((sim) => {
-        const isShort = strategyConfig.strategyType === StrategyType.Short
         const triggerPrice = isShort
           ? new BigNumber(lambdaPriceDenomination).div(new BigNumber(sim.triggerPrice))
           : new BigNumber(sim.triggerPrice).div(lambdaPriceDenomination)
@@ -174,7 +172,10 @@ export const useLambdaDebouncedPartialTakeProfit = ({
             })
           }
           if (res.simulation) {
-            const profitsMapped = mapProfits(res.simulation, strategyConfig)
+            const profitsMapped = mapProfits(
+              res.simulation,
+              strategyConfig.strategyType === StrategyType.Short,
+            )
             setProfits(profitsMapped)
             if (
               state.context.partialTakeProfitFirstProfit === undefined ||

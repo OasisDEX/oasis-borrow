@@ -74,31 +74,45 @@ export function getManageViewInfoExternal(
     networkName: NetworkNames
     chainId: NetworkIds
     lendingProtocol: AaveLikeLendingProtocol
-    getExternalTokens: (args: { positionId: PositionId }) => Promise<AssetForMigration | undefined>
+    getExternalTokens: (args: {
+      positionId: Required<Pick<PositionId, 'positionAddress'>>
+    }) => Promise<AssetForMigration | undefined>
   },
-  args: { positionId: PositionId },
+  args: { positionId: Required<Pick<PositionId, 'positionAddress'>> },
 ): Observable<ManageViewInfo> {
   const { lendingProtocol, networkName, getExternalTokens } = deps
   return from(getExternalTokens({ positionId: args.positionId })).pipe(
-    map((tokens) => {
+    map((assetForMigration) => {
+      if (assetForMigration === undefined) {
+        throw new Error('Cannot obtain position information, there is no migration data.')
+      }
       const strategy = loadStrategyFromTokens(
-        tokens?.collateral ?? '',
-        tokens?.debt ?? '',
+        assetForMigration?.collateral ?? '',
+        assetForMigration?.debt ?? '',
         networkName,
         lendingProtocol,
         VaultType.Borrow,
       )
 
       return {
-        positionId: args.positionId,
+        positionId: {
+          positionAddress: args.positionId.positionAddress,
+          walletAddress: assetForMigration.walletAddress,
+          external: true,
+          positionAddressType: assetForMigration.positionAddressType,
+          vaultId: undefined,
+        },
         networkName: networkName,
         vaultType: VaultType.Borrow,
         protocol: lendingProtocol,
         strategyConfig: strategy,
         proxiesRelatedWithPosition: {
-          dsProxy: undefined,
+          dsProxy:
+            assetForMigration.positionAddressType === 'DS_PROXY'
+              ? assetForMigration.positionAddress
+              : undefined,
           dpmProxy: undefined,
-          walletAddress: args.positionId.walletAddress!,
+          walletAddress: assetForMigration.walletAddress,
         },
       }
     }),

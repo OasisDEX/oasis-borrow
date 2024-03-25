@@ -94,7 +94,9 @@ export const getNavProductsPanel = ({
                         }),
                   tags: [
                     [
-                      lendingProtocolsByName[item.protocol].label,
+                      item.earnStrategy === EarnStrategies.erc_4626
+                        ? [item.earnStrategyDescription]
+                        : [lendingProtocolsByName[item.protocol].label],
                       lendingProtocolsByName[item.protocol].gradient,
                     ],
                     [capitalize(item.network), networksByName[item.network].gradient],

@@ -2385,22 +2385,22 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.47":
-  version "0.1.47"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.47.tgz#ff161ffb95768b8cda21ccea0d7fae790bf71883"
-  integrity sha512-po36JPWODgqGorh6d9EgfMf+psDPko8b2wwLj0P3eYmUskexCvnsblLe3p2K0qjxK/3JiVl3BY3wMUkGD49zjQ==
+"@oasisdex/addresses@0.1.54":
+  version "0.1.54"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.54.tgz#b5224fba4dabc1bb993ac84d0cb7a2907530c3bb"
+  integrity sha512-EgqXBjrlBSbKXs+of3w/hr+TWqF5aPwzIfS9er0O5Xrx3JDpMPqsHj9vLFR4ilCQG0wdfbTqHsm3SsWR6u6Rng==
 
-"@oasisdex/automation@1.6.4-alpha.2":
-  version "1.6.4-alpha.2"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.4-alpha.2.tgz#126ced26a991483b400d71bd42e6191634231786"
-  integrity sha512-FbOUQAjn4Cr9Q0giCXrxiwiIZ8kh3dJW5uG4oR7VJW+GNA8x1HdJdMcKaTD3uROzMZg1M2UnCaprZY9bfSxXeg==
+"@oasisdex/automation@1.6.5":
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.5.tgz#ef75d4ef296012d6345c0dbe71e3c8fe8a131c78"
+  integrity sha512-W/z1OllFujfF/pocgrPS8wT4h32yuumFmXe+OxZuPcQEOsnxFDrAKfsCC2k20bLOYdL06J7G2smzFaZb6qCVHg==
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.32":
-  version "0.6.32"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.32.tgz#d5fdcff9d10354bba242c0356872505187eb8465"
-  integrity sha512-LS7F6nkAZvFEFe29KpABMtG7De4a1DM27CUo58bMfpWp7HgkdLRCV+g5stXgJP618P55YgH9frqkydk2y0ljHw==
+"@oasisdex/dma-library@0.6.48":
+  version "0.6.48"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.48.tgz#a0bd0604d87a46b8c94c2fd702f723999ea2e91f"
+  integrity sha512-QQVUum1rOFfdV55AayyyDvUL4KdnSPLi1OV7G2XXvDQzOdDqDYt9fDUY+TOflaOydQ8ixcKKHmoPW8s6E7SKZQ==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
@@ -16678,10 +16678,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-1.5.0.tgz#26fd5a914f627fa722b1a0731049b3590128817e"
-  integrity sha512-C4/Z78DKwjggL0WyUJai570J7HdP7sSjYVcug/9Y6bTbp1H2Qwlz/LOP/3FJvnVTJuTXoOUWsH94KHUb5lTvog==
+zod@^3.22.4:
+  version "3.22.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
+  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
 
 zustand@^4.4.1:
   version "4.4.2"

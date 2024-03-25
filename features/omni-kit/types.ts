@@ -1,4 +1,4 @@
-import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
+import type { LendingPosition, SupplyPosition, Swap, SwapData } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
@@ -8,6 +8,7 @@ import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { GetTriggersResponse } from 'helpers/triggers'
 import type { TxError } from 'helpers/types'
 import type { LendingProtocolLabel } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
@@ -52,9 +53,19 @@ export enum OmniSidebarStep {
   Transition = 'transition',
 }
 
+export enum OmniSidebarAutomationStep {
+  Manage = 'manage',
+  Transaction = 'transaction',
+}
+
 export type OmniSidebarEditingStep = Extract<
   OmniSidebarStep,
   OmniSidebarStep.Setup | OmniSidebarStep.Manage
+>
+
+export type OmniSidebarAutomationEditingStep = Extract<
+  OmniSidebarAutomationStep,
+  OmniSidebarAutomationStep.Manage
 >
 
 export type OmniSidebarStepsSet = {
@@ -65,15 +76,17 @@ export type OmniSidebarStepsSet = {
 }
 
 export interface OmniProtocolSettings {
+  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
+  pullTokens?: NetworkIdsWithValues<string[]>
   rawName: NetworkIdsWithValues<string>
+  returnTokens?: NetworkIdsWithValues<string[]>
   steps: OmniSidebarStepsSet
   supportedMainnetNetworkIds: OmniSupportedNetworkIds[]
   supportedMultiplyTokens: NetworkIdsWithValues<string[]>
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
-  entryTokens?: NetworkIdsWithValues<{ [pair: string]: string }>
   yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
-  availableAutomations?: NetworkIdsWithValues<AutomationFeatures[]>
+  availableAutomations: NetworkIdsWithValues<AutomationFeatures[]>
 }
 
 export type OmniProtocolsSettings = {
@@ -90,12 +103,13 @@ export interface OmniTokensPrecision {
 export interface OmniProtocolHookProps {
   collateralToken: string
   dpmPositionData?: DpmPositionData
+  label?: string
   networkId: OmniSupportedNetworkIds
   product?: OmniProductType
+  protocol: OmniSupportedProtocols
   quoteToken: string
   tokenPriceUSDData?: Tickers
   tokensPrecision?: OmniTokensPrecision
-  protocol: OmniSupportedProtocols
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'
@@ -188,6 +202,8 @@ export interface OmniSimulationCommon {
   getValidations: (params: GetOmniValidationResolverParams) => OmniValidations
 }
 
+export type OmniSimulationSwap = Swap & SwapData
+
 export interface OmniValidationItem {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
 }
@@ -202,9 +218,9 @@ export interface OmniFlowStateFilterParams {
   collateralAddress: string
   event: CreatePositionEvent
   productType: OmniProductType
-  quoteAddress: string
   protocol: LendingProtocol
   protocolRaw?: string
+  quoteAddress: string
 }
 
 export type NetworkIdsWithValues<T> = {
@@ -217,11 +233,14 @@ export interface GetOmniValidationsParams {
   collateralBalance: BigNumber
   collateralToken: string
   currentStep: OmniSidebarStep
+  customErrors?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
   ethBalance: BigNumber
   ethPrice: BigNumber
   gasEstimationUsd?: BigNumber
   isOpening: boolean
   position: OmniGenericPosition
+  simulation?: OmniGenericPosition
   productType: OmniProductType
   protocol: LendingProtocol
   quoteBalance: BigNumber
@@ -231,30 +250,45 @@ export interface GetOmniValidationsParams {
   simulationSuccesses?: SimulationValidations
   simulationWarnings?: SimulationValidations
   state: OmniFormState
+  positionTriggers: GetTriggersResponse
   txError?: TxError
-  customErrors?: OmniValidationItem[]
-  customWarnings?: OmniValidationItem[]
 }
 
 export interface GetOmniValidationResolverParams {
-  protocolLabel: LendingProtocolLabel
-  safetySwitchOn: boolean
-  isFormFrozen: boolean
-  earnIsFormValid?: boolean
   customErrors?: OmniValidationItem[]
-  customWarnings?: OmniValidationItem[]
   customNotices?: OmniValidationItem[]
   customSuccesses?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
+  earnIsFormValid?: boolean
+  isFormFrozen: boolean
+  protocolLabel: LendingProtocolLabel
+  safetySwitchOn: boolean
 }
 
 export type OmniNotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
 
 export type OmniEntryToken = {
-  symbol: string
-  precision: number
-  balance: BigNumber
-  price: BigNumber
-  digits: number
   address: string
+  balance: BigNumber
+  digits: number
   icon: string
+  precision: number
+  price: BigNumber
+  symbol: string
+}
+
+export interface OmniSwapToken {
+  address: string
+  balance: BigNumber
+  digits: number
+  precision: number
+  price: BigNumber
+  token: string
+}
+
+export interface OmniExtraTokenData {
+  [key: string]: {
+    balance: BigNumber
+    price: BigNumber
+  }
 }

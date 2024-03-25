@@ -50,13 +50,22 @@ export type PortfolioMigrationAsset = {
   usdValue: number
 }
 
+export type PortfolioMigrationAddressType = 'EOA' | 'DS_PROXY'
+
 export type PortfolioMigration = {
   chainId: ChainId
   protocolId: ProtocolId
   collateralAsset: PortfolioMigrationAsset
   debtAsset: PortfolioMigrationAsset
+  positionAddress: string
+  walletAddress: string
+  positionAddressType: PortfolioMigrationAddressType
 }
 
 export type PortfolioMigrationsResponse = {
+  /**
+   * @deprecated
+   */
   migrations: PortfolioMigration[]
+  migrationsV2: PortfolioMigration[]
 }

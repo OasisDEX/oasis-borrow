@@ -1,13 +1,13 @@
 {
   "name": "oasis-borrow",
-  "version": "12.14.2",
+  "version": "12.16.0",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.12"
   },
   "packageManager": "yarn@1.22.21",
   "scripts": {
-    "start": "yarn get-config-types && NODE_OPTIONS=--max-old-space-size=8192 next dev & node ./scripts/notification-dummy",
+    "start": "yarn get-config-types && NODE_OPTIONS=--max-old-space-size=8192 next dev",
     "get-config-types": "node scripts/get-config-types.js",
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",
@@ -43,9 +43,9 @@
     "@lifi/wallet-management": "^2.3.4",
     "@lifi/widget": "2.4.6",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "0.1.47",
-    "@oasisdex/automation": "1.6.4-alpha.2",
-    "@oasisdex/dma-library": "0.6.32",
+    "@oasisdex/addresses": "0.1.54",
+    "@oasisdex/automation": "1.6.5",
+    "@oasisdex/dma-library": "0.6.48",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
@@ -122,7 +122,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "xstate": "^4.37.2",
-    "zod": "^1.5.0"
+    "zod": "^3.22.4"
   },
   "resolutions": {
     "@emotion/react": "11.11.1",

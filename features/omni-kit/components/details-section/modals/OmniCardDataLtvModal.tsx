@@ -2,7 +2,7 @@ import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniCardLtvAutomationData } from 'features/omni-kit/components/details-section'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading, Text } from 'theme-ui'
@@ -29,7 +29,7 @@ export function OmniCardDataLtvModal({
     <DetailsSectionContentSimpleModal
       title={t('omni-kit.content-card.ltv.title')}
       description={t('omni-kit.content-card.ltv.modal-description')}
-      value={formatDecimalAsPercent(ltv)}
+      value={formatLtvDecimalAsPercent(ltv)}
     >
       <>
         {maxLtv && (

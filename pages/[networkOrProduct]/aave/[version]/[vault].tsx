@@ -145,7 +145,7 @@ function Position({
             <WithConnection>
               <WithTermsOfService>
                 <WithAaveStrategy
-                  positionId={{ walletAddress: address, vaultId }}
+                  positionId={{ walletAddress: address, vaultId, positionAddressType: 'DPM_PROXY' }}
                   protocol={protocol}
                   network={network}
                 />

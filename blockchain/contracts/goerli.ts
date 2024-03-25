@@ -29,6 +29,7 @@ import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
 import * as dssProxyActionsCharter from 'blockchain/abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
+import * as erc20proxyActions from 'blockchain/abi/erc20-proxy-actions.json'
 import * as exchange from 'blockchain/abi/exchange.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
 import * as lidoCrvLiquidityFarmingReward from 'blockchain/abi/lido-crv-liquidity-farming-reward.json'
@@ -205,6 +206,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
     'DETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_DETHWETH),
     'UNIETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_EZETHWETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SUSDEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -217,7 +219,6 @@ export const goerliContracts: MainnetContractsWithOptional = {
       goerli.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH,
     ),
     'APXETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_APXETHETH),
-    'SUSDE-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SUSDEDAI),
     'MPETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CSETHWETH),
   },
@@ -243,4 +244,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, goerli.common.SdaiOracle),
   WSTETHOracle: contractDesc(ajnaPoolInfo, goerli.common.WSTETHOracle),
+  SUSDEOracle: contractDesc(ajnaPoolInfo, goerli.common.SUSDEOracle),
+  USDEOracle: contractDesc(ajnaPoolInfo, goerli.common.USDEOracle),
+  erc20ProxyActions: contractDesc(erc20proxyActions, goerli.mpa.core.ERC20ProxyActions),
 }

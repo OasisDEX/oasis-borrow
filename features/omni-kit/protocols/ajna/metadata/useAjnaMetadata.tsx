@@ -386,8 +386,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             },
             {
               label: t('omni-kit.headline.details.7-days-avg-apy'),
-              value: earnPosition.poolApy.per7d
-                ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
+              value: earnPosition.historicalApy.sevenDayAverage
+                ? formatDecimalAsPercent(earnPosition.historicalApy.sevenDayAverage)
                 : notAvailable,
             },
           ],
@@ -415,6 +415,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ],
           earnWithdrawMax: availableToWithdraw,
           earnAfterWithdrawMax: afterAvailableToWithdraw,
+          withAdjust: true,
         },
         elements: {
           faq: faqEarn,

@@ -7,6 +7,7 @@ import { useObservable } from 'helpers/observableHook'
 import { getTriggersRequest } from 'helpers/triggers'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
+import { makeObservable } from 'lendingProtocols/pipelines'
 import { useMemo } from 'react'
 import { EMPTY, from } from 'rxjs'
 
@@ -17,7 +18,7 @@ export function useAaveLikeData({
   collateralToken,
   quoteToken,
 }: OmniProtocolHookProps) {
-  const { aaveLikePosition$ } = useProductContext()
+  const { aaveLikePosition$, onEveryBlock$ } = useProductContext()
 
   const networkName = networksById[networkId].name
 
@@ -90,20 +91,22 @@ export function useAaveLikeData({
       [dpmPositionData, aavePositionData, networkId],
     ),
   )
+  const getTriggersRequest$ = makeObservable(onEveryBlock$, getTriggersRequest)
 
-  const [positionTriggersData, positionTriggersError] = useObservable(
+  const [positionTriggersData] = useObservable(
     useMemo(
-      () =>
-        dpmPositionData ? from(getTriggersRequest({ dpm: dpmPositionData, networkId })) : EMPTY,
+      () => (dpmPositionData ? getTriggersRequest$({ dpm: dpmPositionData, networkId }) : EMPTY),
       [dpmPositionData, networkId],
     ),
   )
+  const historyEvents = aavePositionAggregatedData?.events
+  const recentHistoryEvent = historyEvents?.[0]
 
   return {
     data: {
       aggregatedData: {
-        history: aavePositionAggregatedData?.events || [],
-        auction: aavePositionAggregatedData?.events[0],
+        history: historyEvents || [],
+        auction: recentHistoryEvent?.kind === 'Liquidation' ? recentHistoryEvent : undefined,
       },
       positionData: aavePositionData,
       protocolPricesData:
@@ -120,7 +123,6 @@ export function useAaveLikeData({
       aavePositionAggregatedError,
       aaveLikeAssetsPricesError,
       chainLinkEthUsdcPriceError,
-      positionTriggersError,
     ],
   }
 }

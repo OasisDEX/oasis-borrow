@@ -52,7 +52,7 @@ export function getOmniFlowStateConfig({
       }
       return {
         amount: state.depositAmount || zero,
-        token: quoteToken,
+        token: state.pullToken?.token ?? quoteToken,
       }
 
     case OmniEarnFormAction.ClaimEarn:

@@ -1,3 +1,4 @@
+import { EarnStrategies } from '@prisma/client'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
@@ -55,6 +56,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     AjnaPoolFinder: ajnaPoolFinderEnabled,
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     MorphoBlue: morphoBlueEnabled,
+    Erc4626Vaults: erc4626VaultsEnabled,
   } = useAppConfig('features')
 
   const ajnaOraclessPoolPairsKeys = Object.keys(
@@ -68,9 +70,10 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter(({ label, network, protocol }) => {
+      tableData.filter(({ earnStrategy, label, network, protocol }) => {
         const isAjna = protocol === LendingProtocol.Ajna
         const isMorpho = protocol === LendingProtocol.MorphoBlue
+        const isErc4626 = earnStrategy === EarnStrategies.erc_4626
 
         const unalailableChecksList = [
           // these checks predicate that the pool/strategy is UNAVAILABLE
@@ -80,6 +83,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
             ajnaOraclessPoolPairsKeys.includes(label.replace('/', '-')),
           isAjna && network === NetworkNames.baseMainnet && !ajnaBaseEnabled,
           isMorpho && !morphoBlueEnabled,
+          isErc4626 && !erc4626VaultsEnabled,
         ]
         if (unalailableChecksList.some((check) => !!check)) {
           return false

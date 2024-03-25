@@ -1,24 +1,28 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
-import type { GasPriceParams } from 'blockchain/prices.types'
+import type { GasPriceParams, Tickers } from 'blockchain/prices.types'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import {
   getOmniEditingStep,
   getOmniTxStatuses,
   isOmniExternalStep,
   isOmniStepWithTransaction,
+  shiftOmniStep,
 } from 'features/omni-kit/contexts'
 import { getOmniEntryToken, isShortPosition } from 'features/omni-kit/helpers'
 import { useOmniSlippage } from 'features/omni-kit/hooks'
 import type {
   OmniEntryToken,
+  OmniExtraTokenData,
   OmniProductType,
   OmniProtocolSettings,
+  OmniSidebarAutomationEditingStep,
   OmniSidebarEditingStep,
   OmniSidebarStep,
   OmniSupportedNetworkIds,
 } from 'features/omni-kit/types'
+import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -32,10 +36,14 @@ interface OmniGeneralContextProviderProps {
   collateralIcon: string
   collateralPrecision: number
   collateralPrice: BigNumber
+  /**
+   * Collateral token symbol (ETH,USDC, etc)
+   */
   collateralToken: string
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
+  extraTokensData: OmniExtraTokenData
   gasPrice: GasPriceParams
   isOpening: boolean
   isOracless: boolean
@@ -49,18 +57,24 @@ interface OmniGeneralContextProviderProps {
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
+  protocolPrices: Tickers
   protocolRaw: string
   protocolVersion?: string
+  pseudoProtocol?: string
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number
   quoteIcon: string
   quotePrecision: number
   quotePrice: BigNumber
+  /**
+   * Quote token symbol (ETH,USDC, etc)
+   */
   quoteToken: string
   settings: OmniProtocolSettings
   slippage: BigNumber
   steps: OmniSidebarStep[]
+  automationSteps: OmniSidebarAutomationStep[]
   walletNetwork: NetworkConfig
 }
 
@@ -69,10 +83,16 @@ export enum OmniSlippageSourceSettings {
   STRATEGY_CONFIGS = 'strategyConfig',
 }
 
-type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'steps'> & {
+type OmniGeneralContextEnvironment = Omit<
+  OmniGeneralContextProviderProps,
+  'steps' | 'automationSteps'
+> & {
   isOwner: boolean
   shouldSwitchNetwork: boolean
   isShort: boolean
+  /**
+   * Price format for the position eg. `ETH/USDC`
+   */
   priceFormat: string
   gasEstimation: GasEstimationContext | undefined
   slippageSource: OmniSlippageSourceSettings
@@ -95,6 +115,17 @@ interface OmniGeneralContextSteps {
   setPrevStep: () => void
 }
 
+interface OmniGeneralContextAutomationSteps {
+  currentStep: OmniSidebarAutomationStep
+  isStepWithTransaction: boolean
+  steps: OmniSidebarAutomationStep[]
+  editingStep: OmniSidebarAutomationEditingStep
+  txStatus?: TxStatus
+  setStep: (step: OmniSidebarAutomationStep) => void
+  setNextStep: () => void
+  setPrevStep: () => void
+}
+
 interface OmniGeneralContextTx {
   isTxError: boolean
   isTxInProgress: boolean
@@ -110,6 +141,7 @@ interface OmniGeneralContextTx {
 interface OmniGeneralContext {
   environment: OmniGeneralContextEnvironment
   steps: OmniGeneralContextSteps
+  automationSteps: OmniGeneralContextAutomationSteps
   tx: OmniGeneralContextTx
 }
 
@@ -125,6 +157,7 @@ export function useOmniGeneralContext(): OmniGeneralContext {
 export function OmniGeneralContextProvider({
   children,
   steps,
+  automationSteps,
   ...props
 }: PropsWithChildren<OmniGeneralContextProviderProps>) {
   const {
@@ -144,6 +177,9 @@ export function OmniGeneralContextProvider({
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<OmniSidebarStep>(steps[0])
+  const [currentAutomationStep, setCurrentAutomationStep] = useState<OmniSidebarAutomationStep>(
+    automationSteps[0],
+  )
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
   const [txDetails, setTxDetails] = useState<TxDetails>()
   const [gasEstimation, setGasEstimation] = useState<GasEstimationContext>()
@@ -157,13 +193,6 @@ export function OmniGeneralContextProvider({
     isStrategyWithDefaultSlippage,
   } = useOmniSlippage({ slippage, strategies: { isYieldLoop } })
 
-  const shiftStep = (direction: 'next' | 'prev') => {
-    const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
-
-    if (steps[i]) setCurrentStep(steps[i])
-    else throw new Error(`A step with index ${i} does not exist in form flow.`)
-  }
-
   const setupStepManager = (): OmniGeneralContextSteps => {
     return {
       currentStep,
@@ -174,8 +203,32 @@ export function OmniGeneralContextProvider({
       isStepWithTransaction: isOmniStepWithTransaction({ currentStep }),
       setIsFlowStateReady,
       setStep: (step) => setCurrentStep(step),
-      setNextStep: () => shiftStep('next'),
-      setPrevStep: () => shiftStep('prev'),
+      setNextStep: () => shiftOmniStep({ direction: 'next', currentStep, steps, setCurrentStep }),
+      setPrevStep: () => shiftOmniStep({ direction: 'prev', currentStep, steps, setCurrentStep }),
+    }
+  }
+
+  const setupAutomationStepManager = (): OmniGeneralContextAutomationSteps => {
+    return {
+      currentStep: currentAutomationStep,
+      steps: automationSteps,
+      editingStep: OmniSidebarAutomationStep.Manage,
+      isStepWithTransaction: currentAutomationStep === OmniSidebarAutomationStep.Transaction,
+      setStep: (step) => setCurrentAutomationStep(step),
+      setNextStep: () =>
+        shiftOmniStep({
+          direction: 'next',
+          currentStep: currentAutomationStep,
+          steps: automationSteps,
+          setCurrentStep: setCurrentAutomationStep,
+        }),
+      setPrevStep: () =>
+        shiftOmniStep({
+          direction: 'prev',
+          currentStep: currentAutomationStep,
+          steps: automationSteps,
+          setCurrentStep: setCurrentAutomationStep,
+        }),
     }
   }
 
@@ -215,11 +268,13 @@ export function OmniGeneralContextProvider({
         entryToken: getOmniEntryToken(props),
       },
       steps: setupStepManager(),
+      automationSteps: setupAutomationStepManager(),
       tx: setupTxManager(),
     }
   }, [
     collateralBalance,
     currentStep,
+    currentAutomationStep,
     isFlowStateReady,
     quoteBalance,
     txDetails,
