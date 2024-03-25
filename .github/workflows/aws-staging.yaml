@@ -23,7 +23,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 18.19.1
 
       - name: Check required secrets
         env:

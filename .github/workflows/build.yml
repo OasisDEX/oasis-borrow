@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 18.19.1
       - uses: actions/cache@v3
         id: yarn-cache
         with:
@@ -36,7 +36,7 @@ jobs:
           if (( 10#${numbers[1]} != 10#${numbers[0]}+1 )); then
             echo "The last two migration files do not have consecutive numbers: ${numbers[0]} and ${numbers[1]}"
             exit 1
-          fi       
+          fi
       - name: Install packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
@@ -54,7 +54,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 18.19.1
       - uses: actions/cache@v3
         id: yarn-cache
         with:
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 18.19.1
       - uses: actions/cache@v3
         id: yarn-cache
         with:
@@ -103,7 +103,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 18.19.1
       - uses: actions/cache@v3
         id: yarn-cache
         with:
