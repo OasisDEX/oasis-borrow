@@ -53,6 +53,15 @@ jobs:
       - name: Install packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
+      - name: Create lint cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn lint --quiet
+      - name: Create prettier cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn format
+      - name: Create typescript cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn typecheck
   cleanup:
     name: Cleanup old caches
     needs: [search]
