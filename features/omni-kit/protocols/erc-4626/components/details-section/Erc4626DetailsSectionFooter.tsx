@@ -43,7 +43,9 @@ export const Erc4626DetailsSectionFooter: FC = () => {
     modal: (
       <DetailsSectionContentSimpleModal
         title={t('omni-kit.content-card.vault-fee.title')}
-        description={t(`erc-4626.content-card.vault-fee-${id}.modal-description`)}
+        description={t(
+          `erc-4626.content-card.vault-fee-${id.replace(`-${quoteToken}`, '')}.modal-description`,
+        )}
         value={formatDecimalAsPercent(interestRate)}
       />
     ),
