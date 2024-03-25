@@ -1,13 +1,17 @@
 import { amountFromWei } from 'blockchain/utils'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
+import { OmniGasEstimation, OmniSlippageInfoWithSettings } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   resolveIfCachedPosition,
   resolveIfCachedSwap,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
-import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -17,9 +21,16 @@ export const Erc4626FormOrder: FC = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { quotePrecision, quotePrice, quoteToken },
+    environment: {
+      isStrategyWithDefaultSlippage,
+      quotePrecision,
+      quotePrice,
+      quoteToken,
+      slippage,
+      slippageSource,
+    },
     steps: { isFlowStateReady },
-    tx: { isTxSuccess, txDetails },
+    tx: { isTxSuccess, txDetails, setSlippageSource },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -56,6 +67,7 @@ export const Erc4626FormOrder: FC = () => {
       `${formatCryptoBalance(simulationData.quoteTokenAmount)} ${quoteToken}`,
     swappingFrom: depositAmount && `${formatCryptoBalance(depositAmount)} ${pullToken?.token}`,
     swappingTo: swapData && `${formatCryptoBalance(swapData.minToTokenAmount)} ${quoteToken}`,
+    slippageLimit: formatDecimalAsPercent(slippage),
     oasisFee: oasisFee && formatUsdValue(oasisFee),
     totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
   }
@@ -76,6 +88,19 @@ export const Erc4626FormOrder: FC = () => {
                 label: t('erc-4626.position-page.earn.form-order.swapping'),
                 value: formatted.swappingFrom,
                 change: formatted.swappingTo,
+                isLoading,
+              },
+
+              {
+                label: t('vault-changes.slippage-limit'),
+                value: (
+                  <OmniSlippageInfoWithSettings
+                    changeSlippage={setSlippageSource}
+                    getSlippageFrom={slippageSource}
+                    slippage={formatted.slippageLimit}
+                    withDefaultSlippage={isStrategyWithDefaultSlippage}
+                  />
+                ),
                 isLoading,
               },
             ]

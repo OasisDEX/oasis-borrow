@@ -1,4 +1,3 @@
-import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import { getNetworkById } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import { WithConnection } from 'components/connectWallet'
@@ -10,6 +9,7 @@ import { OmniLayoutController } from 'features/omni-kit/controllers'
 import {
   getOmniExtraTokenData,
   getOmniHeadlineProps,
+  getOmniIsOmniYieldLoop,
   getOmniProductContextProviderData,
   getOmniRawProtocol,
 } from 'features/omni-kit/helpers'
@@ -158,7 +158,7 @@ export const OmniProductController = <Auction, History, Position>({
     if (dpmPositionData === null) void replace(INTERNAL_LINKS.notFound)
   }, [dpmPositionData])
 
-  const isYieldLoop = isCorrelatedPosition(collateralToken, quoteToken)
+  const isYieldLoop = getOmniIsOmniYieldLoop({ collateralToken, pseudoProtocol, quoteToken })
 
   // Flag to determine whether full yield-loop UI experience is available for given protocol & pair
   const isYieldLoopWithData = !!settings.yieldLoopPairsWithData?.[networkId]?.includes(
