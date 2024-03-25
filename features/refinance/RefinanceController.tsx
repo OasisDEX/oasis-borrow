@@ -1,19 +1,29 @@
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import type { PropsWithChildren } from 'react'
 import React from 'react'
 
-import { useSdk } from './useSdk'
+import { refinanceContext } from './RefinanceContext'
 import { useSdkSimulation } from './useSdkSimulation'
 
-export interface RefinanceControllerProps {}
+export function RefinanceController() {
+  const context = React.useContext(refinanceContext)
+  if (context === undefined) {
+    throw new Error('RefinanceContextProvider is missing in the hierarchy')
+  }
 
-export function RefinanceController(props: PropsWithChildren<RefinanceControllerProps>) {
-  const { error: sdkError, sdk, user, chain } = useSdk(address, chainId)
-  const { error: sdkSimulationError, position, simulation: simuiation } = useSdkSimulation(sdk)
+  // TODO: wallet not connected, add better handling
+  if (context.address === undefined) {
+    return null
+  }
+
+  const { error, user, chain, simulation, position, liquidationPrice } = useSdkSimulation(
+    context,
+    context.address,
+  )
 
   return (
-    <WithErrorHandler error={[sdkError, sdkSimulationError]}>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    <WithErrorHandler error={[error!]}>
       <WithLoadingIndicator
         value={[user, chain, position, simulation]}
         customLoader={<VaultContainerSpinner />}
@@ -21,8 +31,8 @@ export function RefinanceController(props: PropsWithChildren<RefinanceController
         {([_user, _chain, _position, _simulation]) => (
           <div>
             {/* // TODO: Use Step Manager here */}
-            {_user?.wallet.address} : {_chain?.chainInfo.name} : {_position?.id} :{' '}
-            {_simulation?.positionId}
+            {_user?.wallet.address} : {_chain?.chainInfo.name} : {_position?.positionId} :{' '}
+            {_simulation?.targetPosition.positionId} : {liquidationPrice}
           </div>
         )}
       </WithLoadingIndicator>

@@ -1,4 +1,4 @@
-import type { ChainInfo, PositionId } from '@summerfi/sdk-common/dist/common'
+import type { AddressValue, ChainInfo, PositionId } from '@summerfi/sdk-common/dist/common'
 import { Percentage, TokenAmount } from '@summerfi/sdk-common/dist/common'
 import { getChainInfoByChainId } from '@summerfi/sdk-common/dist/common/implementation/ChainFamilies'
 import type { PropsWithChildren } from 'react'
@@ -12,13 +12,11 @@ export type RefinanceContextInput = {
   debtTokenSymbol: string
   collateralAmount: string
   debtAmount: string
-  collateralPrice: string
-  debtPrice: string
   chainId: number
   slippage: number
   tokenPrices: Record<string, string>
   address?: string
-  liquidationThreshold: number
+  liquidationThresholdProportion: number
 }
 
 export type RefinanceContext = {
@@ -29,8 +27,7 @@ export type RefinanceContext = {
   debtPrice: string
   chainInfo: ChainInfo
   slippage: number
-  tokenPrices: Record<string, string>
-  address?: string
+  address?: AddressValue
   liquidationThreshold: Percentage
 }
 
@@ -44,8 +41,18 @@ export function RefinanceContextProvider({
   children,
   contextInput,
 }: PropsWithChildren<RefinanceContextProviderProps>) {
-  const { chainId, collateralTokenSymbol, debtTokenSymbol, collateralAmount, debtAmount, ...rest } =
-    contextInput
+  const {
+    chainId,
+    collateralTokenSymbol,
+    debtTokenSymbol,
+    collateralAmount,
+    debtAmount,
+    address,
+    tokenPrices,
+    liquidationThresholdProportion,
+    positionId,
+    slippage,
+  } = contextInput
   const chainInfo = getChainInfoByChainId(chainId)
   if (!chainInfo) {
     throw new Error(`ChainId ${chainId} is not supported`)
@@ -61,18 +68,38 @@ export function RefinanceContextProvider({
   })
 
   const liquidationThreshold = Percentage.createFrom({
-    percentage: rest.liquidationThreshold * 100,
+    percentage: liquidationThresholdProportion * 100,
   })
+
+  const collateralPrice = tokenPrices[collateralTokenAmount.token.symbol]
+  const debtPrice = tokenPrices[debtTokenAmount.token.symbol]
+
+  // TODO: validate address
+  const parsedAddress = address as AddressValue
 
   const ctx: RefinanceContext = React.useMemo(
     () => ({
-      ...rest,
+      collateralPrice,
+      debtPrice,
+      address: parsedAddress,
       chainInfo,
       collateralTokenAmount,
       debtTokenAmount,
       liquidationThreshold,
+      positionId,
+      slippage,
     }),
-    [collateralTokenAmount, debtTokenAmount, chainInfo, liquidationThreshold, rest],
+    [
+      collateralPrice,
+      debtPrice,
+      parsedAddress,
+      chainInfo,
+      collateralTokenAmount,
+      debtTokenAmount,
+      liquidationThreshold,
+      positionId,
+      slippage,
+    ],
   )
 
   return <refinanceContext.Provider value={ctx}>{children}</refinanceContext.Provider>

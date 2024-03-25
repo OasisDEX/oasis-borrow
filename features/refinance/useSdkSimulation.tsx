@@ -1,38 +1,64 @@
-import { PositionUtils, type SDKManager } from '@summerfi/sdk-client'
+import { type Chain, makeSDK, PositionUtils, type User } from '@summerfi/sdk-client'
 import {
+  Address,
+  type AddressValue,
   Percentage,
   type Position,
   RiskRatio,
   RiskRatioType,
+  Wallet,
 } from '@summerfi/sdk-common/dist/common'
+import { getChainInfoByChainId } from '@summerfi/sdk-common/dist/common/implementation/ChainFamilies'
 import type { RefinanceParameters } from '@summerfi/sdk-common/dist/orders'
 import type { SimulationType } from '@summerfi/sdk-common/dist/simulation/Enums'
 import type { Simulation } from '@summerfi/sdk-common/dist/simulation/Simulation'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { refinanceContext } from './RefinanceContext'
+import { type RefinanceContext } from './RefinanceContext'
 
-export function useSdkSimulation(sdk: SDKManager) {
-  const context = React.useContext(refinanceContext)
-  if (context === undefined) {
-    throw new Error('RefinanceContextProvider is missing in the hierarchy')
-  }
+export function useSdkSimulation(context: RefinanceContext, address: AddressValue) {
+  const [error, setError] = useState<null | string>(null)
+  const [user, setUser] = useState<null | User>(null)
+  const [chain, setChain] = useState<null | Chain>(null)
+
+  const [position, setPosition] = useState<null | Position>(null)
+  const [liquidationPrice, setLiquidationPrice] = useState<null | string>(null)
+  const [simulation, setSimulation] = useState<null | Simulation<SimulationType.Refinance>>(null)
+
   const {
     positionId,
     slippage,
     chainInfo,
-    collateralPrice,
-    debtPrice,
     liquidationThreshold,
     collateralTokenAmount,
     debtTokenAmount,
-    tokenPrices,
-    address,
+    collateralPrice,
+    debtPrice,
   } = context
 
-  const [error, setError] = useState<null | string>(null)
-  const [targetPosition, setTargetPosition] = useState<null | Position>(null)
-  const [simulation, setSimulation] = useState<null | Simulation<SimulationType.Refinance>>(null)
+  const sdk = makeSDK({ apiURL: '/api/sdk' })
+  const wallet = Wallet.createFrom({
+    address: Address.createFrom({ value: address }),
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedChain = await sdk.chains.getChain({
+        chainInfo: getChainInfoByChainId(chainInfo.chainId),
+      })
+      setChain(fetchedChain)
+
+      const fetchedUser = await sdk.users.getUser({
+        chainInfo: fetchedChain,
+        walletAddress: wallet.address,
+      })
+      setUser(fetchedUser)
+    }
+
+    void fetchData().catch((err) => {
+      setError(err.message)
+    })
+  }, [sdk, address, wallet, chainInfo.chainId])
 
   useEffect(() => {
     // TODO: grab from protocol.getPool
@@ -43,7 +69,7 @@ export function useSdkSimulation(sdk: SDKManager) {
       collateralPrice,
       debtPrice,
     })
-    const position: Position = {
+    const _position: Position = {
       pool: positionPool,
       collateralAmount: collateralTokenAmount,
       debtAmount: debtTokenAmount,
@@ -51,29 +77,30 @@ export function useSdkSimulation(sdk: SDKManager) {
       riskRatio: RiskRatio.createFrom({ ratio: ltv, type: RiskRatioType.LTV }),
     }
 
-    setTargetPosition(position)
+    setPosition(_position)
 
-    const liquidationPrice = PositionUtils.getLiquidationPrice({
-      position,
+    const _liquidationPrice = PositionUtils.getLiquidationPrice({
+      position: _position,
       collateralPrice,
       debtPrice,
       liquidationThreshold,
     })
+    setLiquidationPrice(_liquidationPrice)
 
     // TODO: grab from protocol.getPool
     const targetPool = {} as any
 
     const refinanceParameters: RefinanceParameters = {
-      position: position,
+      position: _position,
       targetPool,
       slippage: Percentage.createFrom({ percentage: slippage }),
     }
 
     const fetchData = async () => {
-      const simulation = await sdk.simulator.refinance.simulateRefinancePosition(
+      const _simulation = await sdk.simulator.refinance.simulateRefinancePosition(
         refinanceParameters,
       )
-      setSimulation(simulation)
+      setSimulation(_simulation)
     }
     void fetchData().catch((err) => {
       setError(err.message)
@@ -89,5 +116,5 @@ export function useSdkSimulation(sdk: SDKManager) {
     slippage,
   ])
 
-  return { error, position: targetPosition, simulation }
+  return { error, user, chain, position, simulation, liquidationPrice }
 }
