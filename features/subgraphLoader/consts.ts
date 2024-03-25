@@ -658,7 +658,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   `,
   getErc4626PositionParameters: gql`
     query getPositionParameters($vault: String!, $dpmProxyAddress: String!) {
-      positions(where: { account: $dpmProxyAddress }) {
+      positions(where: { account: $dpmProxyAddress, vault: $vault }) {
         id
         shares
         earnCumulativeFeesUSD
