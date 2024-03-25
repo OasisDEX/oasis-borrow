@@ -1,7 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { useAaveEarnYields } from 'features/aave/hooks'
-import { getOmniCardLtvAutomationParams } from 'features/omni-kit/automation/helpers/getOmniCardLtvAutomationParams'
+import { getOmniCardLtvAutomationParams } from 'features/omni-kit/automation/helpers'
 import {
   OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,

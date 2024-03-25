@@ -1,8 +1,11 @@
 import { TabBar } from 'components/TabBar'
+import { DisabledOptimizationControl } from 'components/vault/DisabledOptimizationControl'
+import { DisabledProtectionControl } from 'components/vault/DisabledProtectionControl'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { OmniAutomationFormController } from 'features/omni-kit/automation/controllers/'
 import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
+import { useOmniMinNetAutomationValue } from 'features/omni-kit/automation/hooks'
 import {
   omniOptimizationLikeAutomationFeatures,
   omniProtectionLikeAutomationFeatures,
@@ -90,6 +93,8 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     isMultiplySupported && !isYieldLoop ? settings.availableAutomations?.[networkId] || [] : []
 
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
+  const netValue = 'netValue' in position ? position.netValue : undefined
+  const minNetValue = useOmniMinNetAutomationValue({ protocol, networkId })
 
   return (
     <Container variant="vaultPageContainerStatic">
@@ -189,11 +194,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           active: hasActiveProtection(positionTriggers, protocol),
                         },
                         label: t('system.protection'),
-                        content: (
+                        content: netValue?.gt(minNetValue) ? (
                           <Grid variant="vaultContainer">
                             <OmniProtectionOverviewController />
                             {uiDropdownProtection && <OmniAutomationFormController />}
                           </Grid>
+                        ) : (
+                          <DisabledProtectionControl minNetValue={minNetValue} />
                         ),
                       },
                     ]
@@ -214,11 +221,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           active: hasActiveOptimization(positionTriggers, protocol),
                         },
                         label: t('system.optimization'),
-                        content: (
+                        content: netValue?.gt(minNetValue) ? (
                           <Grid variant="vaultContainer">
                             <OmniOptimizationOverviewController />
                             {uiDropdownOptimization && <OmniAutomationFormController />}
                           </Grid>
+                        ) : (
+                          <DisabledOptimizationControl minNetValue={minNetValue} />
                         ),
                       },
                     ]
