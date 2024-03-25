@@ -7,7 +7,7 @@ import { useOmniAutomationTxHandler } from 'features/omni-kit/automation/hooks/u
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   getOmniAutomationPrimaryButtonLabelKey,
-  getOmniSidebarButtonsStatus,
+  getOmniAutomationSidebarButtonsStatus,
   getOmniSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
@@ -98,18 +98,15 @@ export function OmniAutomationFormView({
     isPrimaryButtonHidden,
     isPrimaryButtonLoading,
     isTextButtonHidden,
-  } = getOmniSidebarButtonsStatus({
+  } = getOmniAutomationSidebarButtonsStatus({
     currentStep,
     editingStep,
     hasErrors: !!simulationData?.errors?.length,
-    isAllowanceLoading: false,
     isFormFrozen,
     isFormValid: isOmniAutomationFormValid(state, activeUiDropdown),
     isOpening,
     isOwner,
     isSimulationLoading,
-    isTransitionInProgress: false,
-    isTransitionWaitingForApproval: false,
     isTxError,
     isTxInProgress,
     isTxStarted,
