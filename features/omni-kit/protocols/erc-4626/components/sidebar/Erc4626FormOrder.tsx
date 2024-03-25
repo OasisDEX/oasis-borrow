@@ -20,6 +20,7 @@ import {
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
@@ -69,13 +70,13 @@ export const Erc4626FormOrder: FC = () => {
               networkId,
               collateralToken: pullToken.token,
               slippage,
-              amount: depositAmount,
+              amount: one.div(quotePrice),
               action: 'BUY_COLLATERAL',
               exchangeType: 'defaultExchange',
               quoteToken,
             })
           : EMPTY,
-      [depositAmount, networkId, pullToken, quoteToken, slippage],
+      [depositAmount, networkId, pullToken, quotePrice, quoteToken, slippage],
     ),
   )
 
@@ -128,7 +129,7 @@ export const Erc4626FormOrder: FC = () => {
           change: formatted.afterTotalDeposit,
           isLoading,
         },
-        ...(swapData
+        ...(swapData && pullToken
           ? [
               {
                 label: t('erc-4626.position-page.earn.form-order.swapping'),
@@ -138,7 +139,7 @@ export const Erc4626FormOrder: FC = () => {
               },
               {
                 label: t('vault-changes.price-impact', {
-                  token: `${pullToken?.token}/${quoteToken}`,
+                  token: `${pullToken.token}/${quoteToken}`,
                 }),
                 value: formatted.marketPrice,
                 secondary: {
