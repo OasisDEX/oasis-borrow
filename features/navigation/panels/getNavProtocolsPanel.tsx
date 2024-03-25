@@ -11,7 +11,11 @@ import React from 'react'
 import type { TranslationType } from 'ts_modules/i18next'
 import type { AppConfigType } from 'types/config'
 
-const { AjnaSafetySwitch, MorphoBlue: MorphoBlueEnabled } = getLocalAppConfig('features')
+const {
+  AjnaSafetySwitch,
+  Erc4626Vaults: erc4626VaultsEnabled,
+  MorphoBlue: MorphoBlueEnabled,
+} = getLocalAppConfig('features')
 
 export const getNavProtocolsPanel = ({
   t,
@@ -194,6 +198,16 @@ export const getNavProtocolsPanel = ({
                         url: `${INTERNAL_LINKS.multiply}`,
                         query: query.morphoBlue,
                       },
+                      ...(erc4626VaultsEnabled
+                        ? [
+                            {
+                              title: t('nav.earn'),
+                              description: navigation.protocols.morphoBlue.earn.description,
+                              url: `${INTERNAL_LINKS.earn}`,
+                              query: query.morphoBlue,
+                            },
+                          ]
+                        : []),
                       {
                         title: navigation.protocols.morphoBlue.extra.title,
                         promoted: true,
