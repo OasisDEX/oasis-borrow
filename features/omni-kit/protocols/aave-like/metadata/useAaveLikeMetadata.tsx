@@ -1,5 +1,6 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -42,6 +43,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isYieldLoopWithData,
       isOpening,
       quoteToken,
+      isOwner,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -135,6 +137,9 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             quoteToken,
             isOpening,
           }),
+          positionBanner: productContext.position.positionAuction ? (
+            <AaveLiquidatedNotice isPositionController={isOwner} />
+          ) : undefined,
           overviewWithSimulation: true,
         },
         featureToggles,

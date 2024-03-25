@@ -99,12 +99,14 @@ export function useAaveLikeData({
       [dpmPositionData, networkId],
     ),
   )
+  const historyEvents = aavePositionAggregatedData?.events
+  const recentHistoryEvent = historyEvents?.[0]
 
   return {
     data: {
       aggregatedData: {
-        history: aavePositionAggregatedData?.events || [],
-        auction: aavePositionAggregatedData?.events[0],
+        history: historyEvents || [],
+        auction: recentHistoryEvent?.kind === 'Liquidation' ? recentHistoryEvent : undefined,
       },
       positionData: aavePositionData,
       protocolPricesData:
