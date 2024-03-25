@@ -14,7 +14,10 @@ export const formatSwapData = ({
   return {
     ...swapData,
     fromTokenAmount: swapData.fromTokenAmount.shiftedBy(-fromTokenPrecision),
+    fromTokenAmountRaw: swapData.fromTokenAmount,
     toTokenAmount: swapData.toTokenAmount.shiftedBy(-toTokenPrecision),
+    toTokenAmountRaw: swapData.toTokenAmount,
     minToTokenAmount: swapData.minToTokenAmount.shiftedBy(-toTokenPrecision),
+    minToTokenAmountRaw: swapData.minToTokenAmount,
   }
 }
