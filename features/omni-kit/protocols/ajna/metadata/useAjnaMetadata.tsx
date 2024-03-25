@@ -5,14 +5,6 @@ import { PillAccordion } from 'components/PillAccordion'
 import faqBorrow from 'features/content/faqs/ajna/borrow/en'
 import faqEarn from 'features/content/faqs/ajna/earn/en'
 import faqMultiply from 'features/content/faqs/ajna/multiply/en'
-import type {
-  GetOmniMetadata,
-  LendingMetadata,
-  ProductContextWithBorrow,
-  ProductContextWithEarn,
-  ShouldShowDynamicLtvMetadata,
-  SupplyMetadata,
-} from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowDebtMax,
@@ -54,6 +46,14 @@ import type {
   AjnaPositionAuction,
 } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import type {
+  GetOmniMetadata,
+  LendingMetadata,
+  ProductContextWithBorrow,
+  ProductContextWithEarn,
+  ShouldShowDynamicLtvMetadata,
+  SupplyMetadata,
+} from 'features/omni-kit/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { useAppConfig } from 'helpers/config'

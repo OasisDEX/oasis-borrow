@@ -5,8 +5,8 @@ import { defaultAutomationActionPromise } from 'features/omni-kit/automation/act
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
 import { autoBuySellConstants } from 'features/omni-kit/automation/constants'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
-import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
+import type { AutomationMetadataValues } from 'features/omni-kit/types'
 import { setupAaveAutoBuy, setupAaveAutoSell } from 'helpers/triggers'
 import { isBoolean } from 'lodash'
 

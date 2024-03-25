@@ -3,11 +3,11 @@ import { lambdaPriceDenomination } from 'features/aave/constants'
 import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
+import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
 import type {
   OmniAutomationSimulationResponse,
   ProductContextAutomationForms,
-} from 'features/omni-kit/contexts'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
+} from 'features/omni-kit/types'
 import type {
   AutoBuyTriggers,
   AutoBuyTriggersWithDecodedParams,
