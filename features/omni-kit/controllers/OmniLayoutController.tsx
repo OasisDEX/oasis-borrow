@@ -67,7 +67,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       currentPosition: { position },
     },
     dynamicMetadata: {
-      elements: { faq },
+      elements: { faq, positionBanner },
       values: { headline, headlineDetails, isHeadlineDetailsLoading, automation },
     },
     automation: {
@@ -98,6 +98,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           <VaultOwnershipBanner controller={owner} account={walletAddress} />
         </Box>
       )}
+      {positionBanner && <Box sx={{ mb: 4 }}>{positionBanner}</Box>}
       <VaultHeadline
         loading={isHeadlineDetailsLoading}
         {...getOmniHeadlineProps({

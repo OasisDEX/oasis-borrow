@@ -126,6 +126,7 @@ interface CommonMetadataValues {
 interface CommonMetadataElements {
   faq: ReactNode
   overviewBanner?: ReactNode
+  positionBanner?: ReactNode
   overviewContent: ReactNode
   overviewFooter: ReactNode
   overviewWithSimulation?: boolean

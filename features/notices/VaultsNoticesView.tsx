@@ -483,7 +483,7 @@ export function AavePositionAlreadyOpenedNotice() {
   )
 }
 
-function AaveLiquidatedNotice({ isPositionController }: { isPositionController: boolean }) {
+export function AaveLiquidatedNotice({ isPositionController }: { isPositionController: boolean }) {
   const { t } = useTranslation()
 
   const header = t(getLiquidatedHeaderNotice(isPositionController), { position: t('position') })

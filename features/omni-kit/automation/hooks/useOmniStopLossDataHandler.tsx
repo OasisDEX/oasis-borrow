@@ -80,7 +80,7 @@ export const useOmniStopLossDataHandler = () => {
     getDynamicStopLossPrice({
       liquidationPrice,
       liquidationRatio,
-      stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
+      stopLossLevel: one.div(stopLossLevel),
     })
 
   const afterDynamicStopLossPrice =
