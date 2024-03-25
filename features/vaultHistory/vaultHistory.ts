@@ -226,7 +226,7 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
       groupId: 'groupId' in autoEvent && autoEvent.groupId,
       eventType: 'executed',
       autoKind: autoEvent.kind,
-    } as VaultHistoryEvent
+    } as unknown as VaultHistoryEvent
   }
 
   return undefined
