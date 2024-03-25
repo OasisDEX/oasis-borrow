@@ -22,14 +22,13 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
   const [chain, setChain] = useState<null | Chain>(null)
 
   const [position, setPosition] = useState<null | Position>(null)
-  const [liquidationPrice, setLiquidationPrice] = useState<null | string>(null)
   const [simulation, setSimulation] = useState<null | Simulation<SimulationType.Refinance>>(null)
 
   const {
     positionId,
     slippage,
     chainInfo,
-    liquidationThreshold,
+    liquidationPrice,
     collateralTokenAmount,
     debtTokenAmount,
     collateralPrice,
@@ -79,14 +78,6 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
 
     setPosition(_position)
 
-    const _liquidationPrice = PositionUtils.getLiquidationPrice({
-      position: _position,
-      collateralPrice,
-      debtPrice,
-      liquidationThreshold,
-    })
-    setLiquidationPrice(_liquidationPrice)
-
     // TODO: grab from protocol.getPool
     const targetPool = {} as any
 
@@ -110,7 +101,7 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     collateralTokenAmount,
     debtPrice,
     debtTokenAmount,
-    liquidationThreshold,
+    liquidationPrice,
     positionId,
     sdk,
     slippage,

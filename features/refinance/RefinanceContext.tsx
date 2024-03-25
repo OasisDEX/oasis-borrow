@@ -1,5 +1,5 @@
 import type { AddressValue, ChainInfo, PositionId } from '@summerfi/sdk-common/dist/common'
-import { Percentage, TokenAmount } from '@summerfi/sdk-common/dist/common'
+import { TokenAmount } from '@summerfi/sdk-common/dist/common'
 import { getChainInfoByChainId } from '@summerfi/sdk-common/dist/common/implementation/ChainFamilies'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
@@ -16,7 +16,7 @@ export type RefinanceContextInput = {
   slippage: number
   tokenPrices: Record<string, string>
   address?: string
-  liquidationThresholdProportion: number
+  liquidationPrice: string
 }
 
 export type RefinanceContext = {
@@ -28,7 +28,7 @@ export type RefinanceContext = {
   chainInfo: ChainInfo
   slippage: number
   address?: AddressValue
-  liquidationThreshold: Percentage
+  liquidationPrice: string
 }
 
 export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
@@ -49,7 +49,7 @@ export function RefinanceContextProvider({
     debtAmount,
     address,
     tokenPrices,
-    liquidationThresholdProportion,
+    liquidationPrice,
     positionId,
     slippage,
   } = contextInput
@@ -67,10 +67,6 @@ export function RefinanceContextProvider({
     token: mapTokenToSdkToken(chainInfo, debtTokenSymbol),
   })
 
-  const liquidationThreshold = Percentage.createFrom({
-    percentage: liquidationThresholdProportion * 100,
-  })
-
   const collateralPrice = tokenPrices[collateralTokenAmount.token.symbol]
   const debtPrice = tokenPrices[debtTokenAmount.token.symbol]
 
@@ -85,7 +81,7 @@ export function RefinanceContextProvider({
       chainInfo,
       collateralTokenAmount,
       debtTokenAmount,
-      liquidationThreshold,
+      liquidationPrice,
       positionId,
       slippage,
     }),
@@ -96,7 +92,7 @@ export function RefinanceContextProvider({
       chainInfo,
       collateralTokenAmount,
       debtTokenAmount,
-      liquidationThreshold,
+      liquidationPrice,
       positionId,
       slippage,
     ],

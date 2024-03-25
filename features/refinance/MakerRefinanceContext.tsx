@@ -30,8 +30,7 @@ export function MakerRefinanceContext({
     [debtTokenSymbol]: '1',
   }
 
-  // TODO: This should be fetched from generalManageVault
-  const liquidationThresholdProportion = 0.65
+  const liquidationPrice = generalManageVault.state.vault.liquidationPrice.toString()
 
   const ctx: RefinanceContextInput = {
     positionId,
@@ -43,7 +42,7 @@ export function MakerRefinanceContext({
     collateralAmount: vault.lockedCollateral.toString(),
     debtAmount: vault.debt.toString(),
     tokenPrices,
-    liquidationThresholdProportion,
+    liquidationPrice,
   }
 
   return <RefinanceContextProvider contextInput={ctx}>{children}</RefinanceContextProvider>
