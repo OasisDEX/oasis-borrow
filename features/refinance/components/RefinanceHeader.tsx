@@ -48,7 +48,7 @@ export const RefinanceHeader = () => {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
 
-  // use context to get these
+  // use refinance context to eventually get this data
   const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol, walletAddress } = {
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
@@ -61,7 +61,7 @@ export const RefinanceHeader = () => {
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.SparkV3,
     }, // toProtocol as optional
-    walletAddress: '0xbEf4befb4F230F43905313077e3824d7386E09F8',
+    walletAddress: '0xbEf4befb4F230F43905313077e3824d7386E09F8', // as optional
   }
 
   const { closeModal } = useModalContext()
