@@ -8,7 +8,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import {
   getOmniAutomationPrimaryButtonLabelKey,
   getOmniAutomationSidebarButtonsStatus,
-  getOmniSidebarPrimaryButtonActions,
+  getOmniAutomationSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
 import { useOmniAutomationSidebarTitle } from 'features/omni-kit/hooks'
@@ -122,7 +122,7 @@ export function OmniAutomationFormView({
     shouldSwitchNetwork,
     walletAddress,
   })
-  const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
+  const primaryButtonActions = getOmniAutomationSidebarPrimaryButtonActions({
     collateralAddress,
     collateralToken,
     currentStep,
@@ -130,15 +130,11 @@ export function OmniAutomationFormView({
     isOpening,
     isOracless,
     isStepWithTransaction,
-    isTransitionAction: false,
-    isTransitionWaitingForApproval: false,
     isTxSuccess,
     network,
-    onConfirmTransition: () => null,
     onDefault: setNextStep,
     onDisconnected: connect,
     onSelectTransition: txHandler,
-    onTransition: () => null,
     onUpdated: () => {
       setCachedOrderInfoItems(undefined)
       setTxDetails(undefined)
