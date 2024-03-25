@@ -2425,10 +2425,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.48":
-  version "0.6.48"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.48.tgz#a0bd0604d87a46b8c94c2fd702f723999ea2e91f"
-  integrity sha512-QQVUum1rOFfdV55AayyyDvUL4KdnSPLi1OV7G2XXvDQzOdDqDYt9fDUY+TOflaOydQ8ixcKKHmoPW8s6E7SKZQ==
+"@oasisdex/dma-library@0.6.49":
+  version "0.6.49"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.49.tgz#d3870e638774bf3a8b259afb26535c63c223f369"
+  integrity sha512-Alyx09r+KgXnej7RZrWD8w1tk3B3YgwMCrjdLRtRiRTYcQ9IRlMJ5PR3TspAu6tmvbdWM/4pZFf3AbvXcRDQtA==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
