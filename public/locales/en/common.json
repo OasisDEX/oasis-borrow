@@ -1521,13 +1521,13 @@
     "buying-token": "Buying {{token}}",
     "selling-token": "Selling {{token}}",
     "price-impact": "{{token}} Price (impact)",
-    "slippage-limit": "Slippage Limit",
+    "slippage-limit": "Slippage limit",
     "third-party-fees": "3rd party protocol fees",
     "oasis-fee": "Summer.fi fee",
     "ltv": "LTV",
     "outstanding-debt": "Outstanding debt",
     "loan-to-value": "Loan to Value",
-    "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
+    "slippage-info": "Slippage limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
     "slippage-from-settings": "Use slippage from settings",
     "slippage-from-strategy": "Use slippage from strategy"
   },
@@ -3613,6 +3613,10 @@
     "auto-take-profit": {
       "title": "Automate your exit strategy.",
       "description": "Realize profits at specific prices, over time, automatically. Auto Take Profit automation allows you to exit your vault positions at your own pace."
+    },
+    "steakhouse-metamorpho": {
+      "title": "Dual Engine vaults curated by Steakhouse Financial",
+      "description": "Access yields offered by both blue-chip crypto and real-world asset collateral."
     }
   }
 }

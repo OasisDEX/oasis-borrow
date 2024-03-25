@@ -237,7 +237,12 @@ export interface OmniSimulationCommon {
   getValidations: (params: GetOmniValidationResolverParams) => OmniValidations
 }
 
-export type OmniSimulationSwap = Swap & SwapData
+export type OmniSimulationSwap = Swap &
+  SwapData & {
+    fromTokenAmountRaw: BigNumber
+    minToTokenAmountRaw: BigNumber
+    toTokenAmountRaw: BigNumber
+  }
 
 export interface OmniValidationItem {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
