@@ -219,10 +219,10 @@ export function getOpenAaveV3PositionStateMachineServices(
         context.strategyConfig.type === 'Borrow'
           ? VaultType.Borrow
           : context.strategyConfig.type === 'Multiply'
-          ? VaultType.Multiply
-          : context.strategyConfig.type === 'Earn'
-          ? VaultType.Earn
-          : undefined
+            ? VaultType.Multiply
+            : context.strategyConfig.type === 'Earn'
+              ? VaultType.Earn
+              : undefined
 
       const proxy = context.userDpmAccount?.proxy
 

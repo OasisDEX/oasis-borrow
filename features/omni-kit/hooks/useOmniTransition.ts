@@ -37,8 +37,8 @@ export function useOmniProductTypeTransition({
     productType === OmniProductType.Borrow
       ? VaultType.Multiply
       : productType === OmniProductType.Multiply
-      ? VaultType.Borrow
-      : undefined
+        ? VaultType.Borrow
+        : undefined
 
   const transitionHandler = () => {
     const jwtToken = jwtAuthGetToken(walletAddress || '')

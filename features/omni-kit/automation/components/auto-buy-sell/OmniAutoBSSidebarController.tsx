@@ -161,8 +161,8 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const defaultToggle = isBoolean(automationFormState.useThreshold)
     ? automationFormState.useThreshold
     : resolvedTrigger && !resolvedThresholdPrice
-    ? false
-    : autoBuySellConstants.defaultToggle
+      ? false
+      : autoBuySellConstants.defaultToggle
 
   const resolveSliderDefaultUpdate = ({ value0, value1 }: { value0: number; value1: number }) => {
     if (type === AutomationFeatures.AUTO_BUY) {

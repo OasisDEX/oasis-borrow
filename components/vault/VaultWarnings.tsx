@@ -138,10 +138,10 @@ export function VaultWarnings({
                 isAutoSellEnabled && isAutoBuyEnabled
                   ? `Auto-Sell ${t('and')} Auto-Buy`
                   : isAutoSellEnabled
-                  ? 'Auto-Sell'
-                  : isAutoBuyEnabled
-                  ? 'Auto-Buy'
-                  : t('active-triggers'),
+                    ? 'Auto-Sell'
+                    : isAutoBuyEnabled
+                      ? 'Auto-Buy'
+                      : t('active-triggers'),
             }}
             components={[ConstantMultipleKBLink]}
           />

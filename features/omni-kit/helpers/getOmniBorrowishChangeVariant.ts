@@ -12,8 +12,8 @@ export const getOmniBorrowishChangeVariant = ({
     ? isOracless
       ? 'positive'
       : simulation.maxRiskRatio.loanToValue
-          .minus(simulation.riskRatio.loanToValue)
-          .gt(LTVWarningThreshold)
-      ? 'positive'
-      : 'negative'
+            .minus(simulation.riskRatio.loanToValue)
+            .gt(LTVWarningThreshold)
+        ? 'positive'
+        : 'negative'
     : 'positive'

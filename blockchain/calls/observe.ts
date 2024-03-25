@@ -24,6 +24,5 @@ export function observe<A, R>(
   )
 }
 
-export type CallObservable<C extends CallDef<any, any>> = C extends CallDef<infer A, infer R>
-  ? (a: A) => Observable<R>
-  : never
+export type CallObservable<C extends CallDef<any, any>> =
+  C extends CallDef<infer A, infer R> ? (a: A) => Observable<R> : never

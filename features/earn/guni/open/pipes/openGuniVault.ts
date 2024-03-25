@@ -254,8 +254,8 @@ export function createOpenGuniVault$(
                           change.kind === 'injectStateOverride'
                             ? change.stateToOverride.depositAmount
                             : change.kind === 'depositAmount'
-                            ? change.depositAmount
-                            : state.depositAmount
+                              ? change.depositAmount
+                              : state.depositAmount
 
                         const { leveragedAmount, flAmount } = applyCalculations({
                           ilkData,

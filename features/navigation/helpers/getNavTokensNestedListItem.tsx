@@ -61,8 +61,8 @@ export const getNavTokensNestedListItem = (
                 apyPassive === 0 && apyActive !== 0
                   ? '-active'
                   : apyPassive !== 0 && apyActive === 0
-                  ? '-passive'
-                  : ''
+                    ? '-passive'
+                    : ''
               }`
         }
         values={{
@@ -73,8 +73,8 @@ export const getNavTokensNestedListItem = (
             apyPassive === 0 && apyActive !== 0
               ? formatDecimalAsPercent(new BigNumber(apyActive))
               : apyPassive !== 0 && apyActive === 0
-              ? formatDecimalAsPercent(new BigNumber(apyPassive))
-              : undefined,
+                ? formatDecimalAsPercent(new BigNumber(apyPassive))
+                : undefined,
           product: capitalize(ProductHubProductType.Earn),
         }}
         components={{ em: <em /> }}

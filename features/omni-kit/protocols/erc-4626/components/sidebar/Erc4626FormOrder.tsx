@@ -171,38 +171,38 @@ export const Erc4626FormOrder: FC = () => {
               },
             ]
           : isFlowStateReady
-          ? oasisFee
-            ? [
-                {
-                  label: t('transaction-fee'),
-                  value: (
-                    <Flex sx={{ alignItems: 'center', columnGap: 1 }}>
-                      <Text>{formatted.oasisFee}</Text>
-                      <Text>+</Text>
-                      <OmniGasEstimation />
-                    </Flex>
-                  ),
-                  dropdownValues: [
-                    {
-                      label: t('vault-changes.oasis-fee'),
-                      value: formatted.oasisFee,
-                    },
-                    {
-                      label: t('max-gas-fee'),
-                      value: <OmniGasEstimation />,
-                    },
-                  ],
-                  isLoading,
-                },
-              ]
-            : [
-                {
-                  label: t('system.max-transaction-cost'),
-                  value: <OmniGasEstimation />,
-                  isLoading,
-                },
-              ]
-          : []),
+            ? oasisFee
+              ? [
+                  {
+                    label: t('transaction-fee'),
+                    value: (
+                      <Flex sx={{ alignItems: 'center', columnGap: 1 }}>
+                        <Text>{formatted.oasisFee}</Text>
+                        <Text>+</Text>
+                        <OmniGasEstimation />
+                      </Flex>
+                    ),
+                    dropdownValues: [
+                      {
+                        label: t('vault-changes.oasis-fee'),
+                        value: formatted.oasisFee,
+                      },
+                      {
+                        label: t('max-gas-fee'),
+                        value: <OmniGasEstimation />,
+                      },
+                    ],
+                    isLoading,
+                  },
+                ]
+              : [
+                  {
+                    label: t('system.max-transaction-cost'),
+                    value: <OmniGasEstimation />,
+                    isLoading,
+                  },
+                ]
+            : []),
       ]}
     />
   )

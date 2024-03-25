@@ -105,10 +105,10 @@ export function getAjnaPositionDetails({
           value: getIsActiveWhenLupBelowHtp({ price, lowestUtilizedPrice, highestThresholdPrice })
             ? LendingRangeType.Active
             : price.lt(highestThresholdPrice)
-            ? LendingRangeType.Unutilized
-            : price.lt(lowestUtilizedPrice)
-            ? LendingRangeType.Available
-            : LendingRangeType.Active,
+              ? LendingRangeType.Unutilized
+              : price.lt(lowestUtilizedPrice)
+                ? LendingRangeType.Available
+                : LendingRangeType.Active,
           ...(price.gte(lowestUtilizedPrice) && { accent: 'positive' }),
         },
         {
