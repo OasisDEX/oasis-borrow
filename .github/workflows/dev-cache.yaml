@@ -1,4 +1,6 @@
 name: Create modules cache (dev)
+env:
+  CONFIG_URL: ${{ secrets.CONFIG_URL }}
 
 on:
   push:
