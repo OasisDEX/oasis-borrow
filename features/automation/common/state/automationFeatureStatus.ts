@@ -37,12 +37,12 @@ export function getAutomationFeatureStatus({
   const stage = isSuccessStage
     ? 'txSuccess'
     : isProgressStage
-    ? 'txInProgress'
-    : isFailureStage
-    ? 'txFailure'
-    : feature !== AutomationFeatures.STOP_LOSS
-    ? 'editing'
-    : 'stopLossEditing'
+      ? 'txInProgress'
+      : isFailureStage
+        ? 'txFailure'
+        : feature !== AutomationFeatures.STOP_LOSS
+          ? 'editing'
+          : 'stopLossEditing'
   const isFirstSetup = triggersId.every((id) => id.isZero())
 
   return {

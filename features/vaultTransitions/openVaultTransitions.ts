@@ -55,11 +55,11 @@ export function createApplyOpenVaultTransition<
       const stage = !hasProxy
         ? 'proxyWaitingForConfirmation'
         : !hasAllowance
-        ? 'allowanceWaitingForConfirmation'
-        : state.withStopLossStage &&
-          (state.generateAmount?.gt(zero) || state.afterOutstandingDebt?.gt(zero))
-        ? 'stopLossEditing'
-        : 'txWaitingForConfirmation'
+          ? 'allowanceWaitingForConfirmation'
+          : state.withStopLossStage &&
+              (state.generateAmount?.gt(zero) || state.afterOutstandingDebt?.gt(zero))
+            ? 'stopLossEditing'
+            : 'txWaitingForConfirmation'
 
       if (canProgress) {
         return {

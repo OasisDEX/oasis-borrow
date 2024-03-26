@@ -25,14 +25,14 @@ export function OpenMultiplyVaultTitle({
           {isEditingStage
             ? title
             : isProxyStage
-            ? stage === 'proxySuccess'
-              ? t('vault-form.header.proxy-success')
-              : t('vault-form.header.proxy')
-            : isAllowanceStage
-            ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-            : stage === 'txInProgress'
-            ? t('vault-form.header.confirm-in-progress')
-            : t('vault-form.header.confirm')}
+              ? stage === 'proxySuccess'
+                ? t('vault-form.header.proxy-success')
+                : t('vault-form.header.proxy')
+              : isAllowanceStage
+                ? t('vault-form.header.allowance', { token: token.toUpperCase() })
+                : stage === 'txInProgress'
+                  ? t('vault-form.header.confirm-in-progress')
+                  : t('vault-form.header.confirm')}
         </Text>
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>

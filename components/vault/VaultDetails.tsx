@@ -39,10 +39,10 @@ export function getCollRatioColor(
   return collateralizationRatio.isZero()
     ? 'primary100'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
-    ? 'critical100'
-    : vaultWillBeAtRiskLevelWarning
-    ? 'warning100'
-    : 'success100'
+      ? 'critical100'
+      : vaultWillBeAtRiskLevelWarning
+        ? 'warning100'
+        : 'success100'
 }
 
 export function getPriceChangeColor({
@@ -51,8 +51,8 @@ export function getPriceChangeColor({
   return collateralPricePercentageChange.isZero()
     ? 'neutral80'
     : collateralPricePercentageChange.gt(zero)
-    ? 'success100'
-    : 'critical100'
+      ? 'success100'
+      : 'critical100'
 }
 
 export function getAfterPillColors(collRatioColor: CollRatioColor) {

@@ -6,5 +6,5 @@ export const getAjnaEarnDefaultAction = (isOpening: boolean, ajnaPosition: AjnaE
   ajnaPosition.collateralTokenAmount.gt(zero)
     ? OmniEarnFormAction.ClaimEarn
     : isOpening
-    ? OmniEarnFormAction.OpenEarn
-    : OmniEarnFormAction.DepositEarn
+      ? OmniEarnFormAction.OpenEarn
+      : OmniEarnFormAction.DepositEarn

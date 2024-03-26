@@ -40,8 +40,8 @@ export function ManageMultiplyVaultConfirmationStatus({
       originalEditingStage === 'adjustPosition'
         ? 'adjusting-vault-multiply'
         : otherAction === 'closeVault'
-        ? 'closing-vault-multiply'
-        : 'changing-vault-multiply'
+          ? 'closing-vault-multiply'
+          : 'changing-vault-multiply'
 
     return (
       <TxStatusCardProgress text={t(messageKey)} etherscan={etherscan!} txHash={manageTxHash!} />

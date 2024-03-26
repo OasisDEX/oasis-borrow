@@ -25,12 +25,12 @@ export function ManageVaultHeaderAllowance({
               ? t('vault-form.header.proxy-success')
               : t('vault-form.header.proxy')
             : isCollateralAllowanceStage
-            ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-            : isDaiAllowanceStage
-            ? t('vault-form.header.daiAllowance')
-            : stage === 'manageInProgress'
-            ? t('vault-form.header.modified')
-            : t('vault-form.header.review-manage')}
+              ? t('vault-form.header.allowance', { token: token.toUpperCase() })
+              : isDaiAllowanceStage
+                ? t('vault-form.header.daiAllowance')
+                : stage === 'manageInProgress'
+                  ? t('vault-form.header.modified')
+                  : t('vault-form.header.review-manage')}
         </Text>
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>

@@ -171,7 +171,7 @@ export function toGasPriceChange(gasPrice$: Observable<BigNumber>): Observable<G
         ({
           kind: FormChangeKind.gasPriceChange,
           value: gasPrice,
-        } as GasPriceChange),
+        }) as GasPriceChange,
     ),
   )
 }
@@ -185,7 +185,7 @@ export function toEtherPriceUSDChange(
         ({
           value,
           kind: FormChangeKind.etherPriceUSDChange,
-        } as EtherPriceUSDChange),
+        }) as EtherPriceUSDChange,
     ),
   )
 }
@@ -196,7 +196,7 @@ export function toAllowanceChange$(
   theAllowance$: (token: string) => Observable<boolean>,
 ): Observable<AllowanceChange> {
   return theAllowance$(token).pipe(
-    map((allowance: boolean) => ({ kind, allowance } as AllowanceChange)),
+    map((allowance: boolean) => ({ kind, allowance }) as AllowanceChange),
   )
 }
 
@@ -207,7 +207,7 @@ export function toAccountChange(account$: Observable<string | undefined>) {
         ({
           value,
           kind: FormChangeKind.accountChange,
-        } as AccountChange),
+        }) as AccountChange,
     ),
   )
 }

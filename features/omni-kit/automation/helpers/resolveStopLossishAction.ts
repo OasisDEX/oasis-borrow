@@ -12,5 +12,5 @@ export const resolveStopLossishAction = ({
   action === TriggerAction.Remove
     ? TriggerAction.Remove
     : existingSLTrigger || existingTSLTrigger
-    ? TriggerAction.Update
-    : TriggerAction.Add
+      ? TriggerAction.Update
+      : TriggerAction.Add
