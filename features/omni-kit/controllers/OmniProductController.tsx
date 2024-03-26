@@ -3,7 +3,6 @@ import type { Tickers } from 'blockchain/prices.types'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
 import {
@@ -20,6 +19,7 @@ import {
   useOmniAutomationFormReducto,
 } from 'features/omni-kit/state/automation/common'
 import type {
+  GetOmniMetadata,
   OmniFormDefaults,
   OmniProductType,
   OmniProtocolHookProps,

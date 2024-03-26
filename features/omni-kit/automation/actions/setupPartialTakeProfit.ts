@@ -1,8 +1,8 @@
 import { lambdaPriceDenomination } from 'features/aave/constants'
 import { defaultAutomationActionPromise } from 'features/omni-kit/automation/actions/common'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
-import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
+import type { AutomationMetadataValues } from 'features/omni-kit/types'
 import { setupAaveLikePartialTakeProfit, TriggerAction } from 'helpers/triggers'
 import { one } from 'helpers/zero'
 

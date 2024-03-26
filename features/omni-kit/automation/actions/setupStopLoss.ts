@@ -1,8 +1,8 @@
 import { defaultAutomationActionPromise } from 'features/omni-kit/automation/actions/common'
 import { resolveStopLossishAction } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
-import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
+import type { AutomationMetadataValues } from 'features/omni-kit/types'
 import { setupAaveLikeStopLoss } from 'helpers/triggers'
 
 export const setupStopLoss = ({

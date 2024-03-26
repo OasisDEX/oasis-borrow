@@ -1,7 +1,6 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
-import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowishChangeVariant,
@@ -23,6 +22,7 @@ import {
 } from 'features/omni-kit/protocols/aave-like/helpers'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
+import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
