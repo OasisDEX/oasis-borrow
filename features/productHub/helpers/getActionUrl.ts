@@ -33,11 +33,23 @@ export const getAaveLikeViewStrategyUrl = ({
       strategy.tokens.debt.toLocaleLowerCase() === secondaryToken?.toLocaleLowerCase() &&
       strategy.network === network,
   )
+  const featureToggles = getLocalAppConfig('features')
+
+  if (
+    featureToggles.UseOmniKitLinks &&
+    search &&
+    [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(search.protocol)
+  ) {
+    return `/${search.network.toLocaleLowerCase()}/omni/${
+      {
+        [LendingProtocol.AaveV3]: 'aave/v3',
+        [LendingProtocol.SparkV3]: 'spark',
+      }[search.protocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3]
+    }/${search.type.toLocaleLowerCase()}/${search.tokens.collateral.toLocaleLowerCase()}-${search.tokens.debt.toLocaleLowerCase()}`
+  }
 
   return !search?.urlSlug ||
-    (!bypassFeatureFlag &&
-      search?.featureToggle &&
-      !getLocalAppConfig('features')[search?.featureToggle])
+    (!bypassFeatureFlag && search?.featureToggle && !featureToggles[search?.featureToggle])
     ? '/'
     : `/${network}/${aaveLikeProduct}/${version}/${search.type.toLocaleLowerCase()}/${
         search!.urlSlug

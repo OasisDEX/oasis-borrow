@@ -3,6 +3,7 @@ import type {
   PortfolioOverviewResponse,
 } from 'components/portfolio/types/domain-types'
 import type { PortfolioPositionsReply } from 'handlers/portfolio/types'
+import { getLocalAppConfig } from 'helpers/config'
 import { useCallback, useMemo } from 'react'
 
 /**
@@ -12,6 +13,7 @@ import { useCallback, useMemo } from 'react'
  * @returns getters for portfolio data
  */
 export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
+  const { UseOmniKitLinks } = getLocalAppConfig('features')
   const fetchPortfolioGeneric = useCallback(
     async <ResponseType>(
       section: 'overview' | 'assets' | 'positions' | 'positionsCount',
@@ -20,7 +22,9 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
       let callUrl
       switch (section) {
         case 'positions':
-          callUrl = `/api/positions/${address}`
+          callUrl = UseOmniKitLinks
+            ? `/api/positions/${address}?useOmniKitLinks`
+            : `/api/positions/${address}`
           break
         case 'overview':
         case 'assets':
@@ -36,7 +40,7 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
         .catch((err) => console.error(err))
       return response
     },
-    [baseUrl, headers],
+    [baseUrl, headers, UseOmniKitLinks],
   )
 
   return useMemo(
