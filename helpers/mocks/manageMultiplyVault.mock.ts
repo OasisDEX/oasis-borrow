@@ -136,8 +136,8 @@ export function mockManageMultiplyVault$({
         ? of(daiAllowance || zero)
         : of(maxUint256)
       : _collateralAllowance$ || collateralAllowance
-      ? of(collateralAllowance || zero)
-      : of(maxUint256)
+        ? of(collateralAllowance || zero)
+        : of(maxUint256)
   }
 
   function vault$() {

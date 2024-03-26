@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { lambdaPriceDenomination } from 'features/aave/constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniCardLtvAutomationData } from 'features/omni-kit/components/details-section'
-import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
+import type { AutomationMetadataValues } from 'features/omni-kit/types'
 
 export const getOmniCardLtvAutomationParams = ({
   collateralAmount,

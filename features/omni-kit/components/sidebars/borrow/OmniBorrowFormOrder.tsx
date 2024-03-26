@@ -137,14 +137,14 @@ export function OmniBorrowFormOrder() {
               },
             ]
           : isFlowStateReady
-          ? [
-              {
-                label: t('system.max-transaction-cost'),
-                value: <OmniGasEstimation />,
-                isLoading,
-              },
-            ]
-          : []),
+            ? [
+                {
+                  label: t('system.max-transaction-cost'),
+                  value: <OmniGasEstimation />,
+                  isLoading,
+                },
+              ]
+            : []),
       ]}
     />
   )

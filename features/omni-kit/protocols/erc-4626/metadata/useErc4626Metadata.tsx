@@ -1,10 +1,5 @@
 import type { Erc4626Position } from '@oasisdex/dma-library'
 import faq from 'features/content/faqs/erc4626/earn/en'
-import type {
-  GetOmniMetadata,
-  ProductContextWithEarn,
-  SupplyMetadata,
-} from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniIsEarnFormEmpty } from 'features/omni-kit/helpers'
 import { Erc4626HeadlineApy } from 'features/omni-kit/protocols/erc-4626/components'
@@ -22,6 +17,11 @@ import {
   getErc4626EarnIsFormValid,
 } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
+import type {
+  GetOmniMetadata,
+  ProductContextWithEarn,
+  SupplyMetadata,
+} from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'

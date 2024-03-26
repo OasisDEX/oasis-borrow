@@ -118,8 +118,8 @@ export function NavigationMenuDropdownContent({
                           (selected[0] === i && selected[1] < j) || selected[0] < i
                             ? 50
                             : (selected[0] === i && selected[1] > j) || selected[0] > i
-                            ? -50
-                            : 0
+                              ? -50
+                              : 0
                         }px)`,
                       }}
                       {...(selected[0] === i && selected[1] === j && { ref })}

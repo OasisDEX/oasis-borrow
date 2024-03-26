@@ -3,7 +3,6 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
 import faqMultiply from 'features/content/faqs/morphoblue/multiply/en'
-import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowDebtMax,
@@ -22,6 +21,7 @@ import {
   morphoFlowStateFilter,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
+import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'

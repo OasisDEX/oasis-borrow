@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { defaultAutomationActionPromise } from 'features/omni-kit/automation/actions/common'
 import { resolveStopLossishAction } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
-import type { AutomationMetadataValues } from 'features/omni-kit/contexts'
 import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
+import type { AutomationMetadataValues } from 'features/omni-kit/types'
 import { setupAaveLikeTrailingStopLoss } from 'helpers/triggers'
 
 export const setupTrailingStopLoss = ({

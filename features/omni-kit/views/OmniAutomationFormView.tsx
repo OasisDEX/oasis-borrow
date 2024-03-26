@@ -7,8 +7,8 @@ import { useOmniAutomationTxHandler } from 'features/omni-kit/automation/hooks/u
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   getOmniAutomationPrimaryButtonLabelKey,
-  getOmniSidebarButtonsStatus,
-  getOmniSidebarPrimaryButtonActions,
+  getOmniAutomationSidebarButtonsStatus,
+  getOmniAutomationSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
 import { useOmniAutomationSidebarTitle } from 'features/omni-kit/hooks'
@@ -98,18 +98,15 @@ export function OmniAutomationFormView({
     isPrimaryButtonHidden,
     isPrimaryButtonLoading,
     isTextButtonHidden,
-  } = getOmniSidebarButtonsStatus({
+  } = getOmniAutomationSidebarButtonsStatus({
     currentStep,
     editingStep,
     hasErrors: !!simulationData?.errors?.length,
-    isAllowanceLoading: false,
     isFormFrozen,
     isFormValid: isOmniAutomationFormValid(state, activeUiDropdown),
     isOpening,
     isOwner,
     isSimulationLoading,
-    isTransitionInProgress: false,
-    isTransitionWaitingForApproval: false,
     isTxError,
     isTxInProgress,
     isTxStarted,
@@ -125,7 +122,7 @@ export function OmniAutomationFormView({
     shouldSwitchNetwork,
     walletAddress,
   })
-  const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
+  const primaryButtonActions = getOmniAutomationSidebarPrimaryButtonActions({
     collateralAddress,
     collateralToken,
     currentStep,
@@ -133,15 +130,11 @@ export function OmniAutomationFormView({
     isOpening,
     isOracless,
     isStepWithTransaction,
-    isTransitionAction: false,
-    isTransitionWaitingForApproval: false,
     isTxSuccess,
     network,
-    onConfirmTransition: () => null,
     onDefault: setNextStep,
     onDisconnected: connect,
     onSelectTransition: txHandler,
-    onTransition: () => null,
     onUpdated: () => {
       setCachedOrderInfoItems(undefined)
       setTxDetails(undefined)

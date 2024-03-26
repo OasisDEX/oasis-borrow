@@ -92,8 +92,8 @@ export const sendOmniTransaction$ = ({
                     const status = isSuccess
                       ? TxStatus.Success
                       : isError
-                      ? TxStatus.Error
-                      : TxStatus.WaitingForConfirmation
+                        ? TxStatus.Error
+                        : TxStatus.WaitingForConfirmation
 
                     return {
                       status,

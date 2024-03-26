@@ -8,14 +8,14 @@ import {
   setupTrailingStopLoss,
 } from 'features/omni-kit/automation/actions'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
-import type {
-  AutomationMetadataValues,
-  OmniAutomationSimulationResponse,
-} from 'features/omni-kit/contexts'
 import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
 import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
 import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
 import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
+import type {
+  AutomationMetadataValues,
+  OmniAutomationSimulationResponse,
+} from 'features/omni-kit/types'
 import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import type { LendingProtocol } from 'lendingProtocols'
 

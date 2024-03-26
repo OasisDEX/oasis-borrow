@@ -18,7 +18,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (isSupportedNetwork(networkOrProduct) && networkOrProduct === NetworkNames.ethereumMainnet) {
     return {
       props: {
-        ...(await serverSideTranslations(ctx.locale!, ['common'])),
+        ...(await serverSideTranslations(ctx.locale!, ['common', 'portfolio'])),
         id: ctx.query.vault || null,
       },
     }

@@ -3,11 +3,11 @@ import { lambdaPriceDenomination } from 'features/aave/constants'
 import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
+import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
 import type {
   OmniAutomationSimulationResponse,
   ProductContextAutomationForms,
-} from 'features/omni-kit/contexts'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
+} from 'features/omni-kit/types'
 import type {
   AutoBuyTriggers,
   AutoBuyTriggersWithDecodedParams,
@@ -135,27 +135,53 @@ export const getAaveLikeAutomationMetadataCommonValues = ({
         positionTriggers.triggers.aaveStopLossToCollateral ||
         positionTriggers.triggers.aaveStopLossToCollateralDMA ||
         positionTriggers.triggers.aaveStopLossToDebt ||
-        positionTriggers.triggers.aaveStopLossToDebtDMA
+        positionTriggers.triggers.aaveStopLossToDebtDMA ||
+        positionTriggers.triggers.sparkStopLossToCollateral ||
+        positionTriggers.triggers.sparkStopLossToCollateralDMA ||
+        positionTriggers.triggers.sparkStopLossToDebt ||
+        positionTriggers.triggers.sparkStopLossToDebtDMA
       ),
-      isTrailingStopLossEnabled: !!positionTriggers.triggers.aaveTrailingStopLossDMA,
-      isAutoSellEnabled: positionTriggers.flags.isAaveBasicSellEnabled,
-      isAutoBuyEnabled: positionTriggers.flags.isAaveBasicBuyEnabled,
-      isPartialTakeProfitEnabled: positionTriggers.flags.isAavePartialTakeProfitEnabled,
+      isTrailingStopLossEnabled: !!(
+        positionTriggers.triggers.aaveTrailingStopLossDMA ||
+        positionTriggers.triggers.sparkTrailingStopLossDMA
+      ),
+      isAutoSellEnabled: !!(
+        positionTriggers.flags.isAaveBasicSellEnabled ||
+        positionTriggers.flags.isSparkBasicSellEnabled
+      ),
+      isAutoBuyEnabled: !!(
+        positionTriggers.flags.isAaveBasicBuyEnabled ||
+        positionTriggers.flags.isSparkBasicBuyEnabled
+      ),
+      isPartialTakeProfitEnabled: !!(
+        positionTriggers.flags.isAavePartialTakeProfitEnabled ||
+        positionTriggers.flags.isSparkPartialTakeProfitEnabled
+      ),
     },
     triggers: {
       stopLoss: mapStopLossTriggers(
         positionTriggers.triggers.aaveStopLossToCollateral ||
           positionTriggers.triggers.aaveStopLossToCollateralDMA ||
           positionTriggers.triggers.aaveStopLossToDebt ||
-          positionTriggers.triggers.aaveStopLossToDebtDMA,
+          positionTriggers.triggers.aaveStopLossToDebtDMA ||
+          positionTriggers.triggers.sparkStopLossToCollateral ||
+          positionTriggers.triggers.sparkStopLossToCollateralDMA ||
+          positionTriggers.triggers.sparkStopLossToDebt ||
+          positionTriggers.triggers.sparkStopLossToDebtDMA,
       ),
       trailingStopLoss: mapTrailingStopLossTriggers(
-        positionTriggers.triggers.aaveTrailingStopLossDMA,
+        positionTriggers.triggers.aaveTrailingStopLossDMA ||
+          positionTriggers.triggers.sparkTrailingStopLossDMA,
       ),
-      autoSell: mapAutoSellTriggers(positionTriggers.triggers.aaveBasicSell),
-      autoBuy: mapAutoBuyTriggers(positionTriggers.triggers.aaveBasicBuy),
+      autoSell: mapAutoSellTriggers(
+        positionTriggers.triggers.aaveBasicSell || positionTriggers.triggers.sparkBasicSell,
+      ),
+      autoBuy: mapAutoBuyTriggers(
+        positionTriggers.triggers.aaveBasicBuy || positionTriggers.triggers.sparkBasicBuy,
+      ),
       partialTakeProfit: mapPartialTakeProfitTriggers(
-        positionTriggers.triggers.aavePartialTakeProfit,
+        positionTriggers.triggers.aavePartialTakeProfit ||
+          positionTriggers.triggers.sparkPartialTakeProfit,
       ),
     },
     simulation: simulationResponse?.simulation,

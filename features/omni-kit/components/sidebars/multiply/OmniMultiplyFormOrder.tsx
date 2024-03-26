@@ -285,36 +285,36 @@ export function OmniMultiplyFormOrder() {
               },
             ]
           : isFlowStateReady
-          ? [
-              {
-                label: t('transaction-fee'),
-                value: (
-                  <>
-                    {!oasisFee.isZero() && (
-                      <>
-                        {formatted.oasisFee}
-                        <Box sx={{ mx: '4px' }}>+</Box>
-                      </>
-                    )}
-                    <OmniGasEstimation />
-                  </>
-                ),
-                dropdownValues: !oasisFee.isZero()
-                  ? [
-                      {
-                        label: t('vault-changes.oasis-fee'),
-                        value: formatted.oasisFee,
-                      },
-                      {
-                        label: t('max-gas-fee'),
-                        value: <OmniGasEstimation />,
-                      },
-                    ]
-                  : undefined,
-                isLoading,
-              },
-            ]
-          : []),
+            ? [
+                {
+                  label: t('transaction-fee'),
+                  value: (
+                    <>
+                      {!oasisFee.isZero() && (
+                        <>
+                          {formatted.oasisFee}
+                          <Box sx={{ mx: '4px' }}>+</Box>
+                        </>
+                      )}
+                      <OmniGasEstimation />
+                    </>
+                  ),
+                  dropdownValues: !oasisFee.isZero()
+                    ? [
+                        {
+                          label: t('vault-changes.oasis-fee'),
+                          value: formatted.oasisFee,
+                        },
+                        {
+                          label: t('max-gas-fee'),
+                          value: <OmniGasEstimation />,
+                        },
+                      ]
+                    : undefined,
+                  isLoading,
+                },
+              ]
+            : []),
       ]}
     />
   )

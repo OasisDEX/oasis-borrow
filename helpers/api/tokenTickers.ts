@@ -1,4 +1,5 @@
 import axios from 'axios'
+import type { PriceServiceResponse } from 'helpers/types'
 import { getCoinbaseTickers } from 'server/services/coinbase'
 import { getCoingeckoTickers } from 'server/services/coingecko'
 import { getCoinPaprikaTickers } from 'server/services/coinPaprika'
@@ -7,7 +8,7 @@ import { getSUSDEOracleTicker } from 'server/services/susdeOracle'
 import { getUSDEOracleTicker } from 'server/services/usdeOracle'
 import { getWSTETHOracleTicker } from 'server/services/wstethOracle'
 
-export async function tokenTickers() {
+export async function tokenTickers(): Promise<PriceServiceResponse> {
   if (process.env.TOKEN_TICKERS_OVERRIDE) {
     return (await axios.get(process.env.TOKEN_TICKERS_OVERRIDE)).data
   }
