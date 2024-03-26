@@ -1,4 +1,4 @@
-import { Address, type ChainInfo, Token } from '@summerfi/sdk-common/dist/common'
+import { Address, AddressType,type ChainInfo, Token } from '@summerfi/sdk-common/dist/common'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getTokenMetaData } from 'features/exchange/exchange'
 
@@ -8,7 +8,7 @@ export function mapTokenToSdkToken(chainInfo: ChainInfo, token: string): Token {
 
   return Token.createFrom({
     symbol: tokenMeta.symbol,
-    address: Address.createFrom({ value: tokenMeta.address as `0x${string}` }),
+    address: Address.createFrom({ value: tokenMeta.address as `0x${string}`, type: AddressType.Ethereum }),
     name: tokenMeta.name,
     decimals: tokenMeta.decimals,
     chainInfo: chainInfo,

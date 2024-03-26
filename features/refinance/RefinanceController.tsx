@@ -33,7 +33,6 @@ export function RefinanceController() {
             {/* // TODO: Use Step Manager here */}
             {_user?.wallet.address} : {_chain?.chainInfo.name} : {_position?.positionId} :{' '}
             {_simulation?.targetPosition.positionId} : {liquidationPrice} :{' '}
-            {position?.riskRatio.ltv}
           </div>
         )}
       </WithLoadingIndicator>

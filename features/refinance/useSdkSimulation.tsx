@@ -1,15 +1,18 @@
 import { type Chain, makeSDK, PositionUtils, type User } from '@summerfi/sdk-client'
 import {
   Address,
+  AddressType,
   type AddressValue,
+  CurrencySymbol,
   Percentage,
   type Position,
+  Price,
   RiskRatio,
   RiskRatioType,
   Wallet,
 } from '@summerfi/sdk-common/dist/common'
 import { getChainInfoByChainId } from '@summerfi/sdk-common/dist/common/implementation/ChainFamilies'
-import type { RefinanceParameters } from '@summerfi/sdk-common/dist/orders'
+import type { IRefinanceParameters } from '@summerfi/sdk-common/dist/orders'
 import type { SimulationType } from '@summerfi/sdk-common/dist/simulation/Enums'
 import type { Simulation } from '@summerfi/sdk-common/dist/simulation/Simulation'
 import { useEffect, useState } from 'react'
@@ -37,7 +40,7 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
 
   const sdk = makeSDK({ apiURL: '/api/sdk' })
   const wallet = Wallet.createFrom({
-    address: Address.createFrom({ value: address }),
+    address: Address.createFrom({ value: address, type: AddressType.Ethereum }),
   })
 
   useEffect(() => {
@@ -65,8 +68,16 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     const ltv = PositionUtils.getLTV({
       collateralTokenAmount,
       debtTokenAmount,
-      collateralPriceInUsd: collateralPrice,
-      debtPriceInUsd: debtPrice,
+      collateralPriceInUsd: Price.createFrom({
+        value: collateralPrice,
+        baseToken: collateralTokenAmount.token,
+        quoteToken: CurrencySymbol.USD,
+      }),
+      debtPriceInUsd: Price.createFrom({
+        value: debtPrice,
+        baseToken: debtTokenAmount.token,
+        quoteToken: CurrencySymbol.USD,
+      }),
     })
     const _position: Position = {
       pool: positionPool,
@@ -81,15 +92,16 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     // TODO: grab from protocol.getPool
     const targetPool = {} as any
 
-    const refinanceParameters: RefinanceParameters = {
+    const refinanceParameters: IRefinanceParameters = {
       position: _position,
       targetPool,
-      slippage: Percentage.createFrom({ percentage: slippage }),
+      slippage: Percentage.createFrom({ value: slippage }),
     }
 
     const fetchData = async () => {
-      const _simulation =
-        await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
+      const _simulation = await sdk.simulator.refinance.simulateRefinancePosition(
+        refinanceParameters,
+      )
       setSimulation(_simulation)
     }
     void fetchData().catch((err) => {
