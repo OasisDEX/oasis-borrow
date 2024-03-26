@@ -3546,9 +3546,9 @@
       "title": "Migrate your position into Summer.fi",
       "success-title": "Your position is now accessible on Summer.fi!"
     },
-    "allowance-form":{
-        "title": "Approve Summer.fi to access your position",
-        "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website."
+    "allowance-form": {
+      "title": "Approve Summer.fi to access your position",
+      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website."
     },
     "vault-banners": {
       "automation": {
@@ -3618,5 +3618,8 @@
       "title": "Dual Engine vaults curated by Steakhouse Financial",
       "description": "Access yields offered by both blue-chip crypto and real-world asset collateral."
     }
+  },
+  "refinance": {
+    "modal-title": "Refinance {{pair}} position"
   }
 }
