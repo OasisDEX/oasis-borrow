@@ -419,17 +419,25 @@ export type StopLossTriggers =
   | AaveStopLossToCollateralDMA
   | AaveStopLossToDebt
   | AaveStopLossToDebtDMA
+  | SparkStopLossToCollateral
+  | SparkStopLossToCollateralDMA
+  | SparkStopLossToDebt
+  | SparkStopLossToDebtDMA
 
-export type TrailingStopLossTriggers = DmaAaveTrailingStopLoss
-export type AutoSellTriggers = DmaAaveBasicSell
-export type AutoBuyTriggers = DmaAaveBasicBuy
-export type PartialTakeProfitTriggers = DmaAavePartialTakeProfit
+export type TrailingStopLossTriggers = DmaAaveTrailingStopLoss | DmaSparkTrailingStopLoss
+export type AutoSellTriggers = DmaAaveBasicSell | DmaSparkBasicSell
+export type AutoBuyTriggers = DmaAaveBasicBuy | DmaSparkBasicBuy
+export type PartialTakeProfitTriggers = DmaAavePartialTakeProfit | DmaSparkPartialTakeProfit
 
 export type StopLossTriggersWithDecodedParams = (
   | AaveStopLossToCollateral
   | AaveStopLossToCollateralDMA
   | AaveStopLossToDebt
   | AaveStopLossToDebtDMA
+  | SparkStopLossToCollateral
+  | SparkStopLossToCollateralDMA
+  | SparkStopLossToDebt
+  | SparkStopLossToDebtDMA
 ) &
   WithMappedStopLossDecodedParams
 export type AutoSellTriggersWithDecodedParams = AutoSellTriggers & WithMappedAutoSellDecodedParams
