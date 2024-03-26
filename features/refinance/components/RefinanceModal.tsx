@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { Modal } from 'components/Modal'
+import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
 import { RefinanceHeader } from 'features/refinance/components/RefinanceHeader'
 import { RefinancePositionView } from 'features/refinance/components/RefinancePositionView'
 import { RefinancePositionViewType } from 'features/refinance/types'
@@ -72,7 +73,7 @@ export const RefinanceModal = () => {
               takeProfit: { enabled: false },
             }}
           />
-          <RefinancePositionView type={RefinancePositionViewType.EMPTY} />
+          <RefinanceAbout />
         </Flex>
       </Flex>
     </Modal>

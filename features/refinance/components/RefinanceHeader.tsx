@@ -3,23 +3,28 @@ import { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { ModalCloseIcon } from 'components/Modal'
 import { ProtocolLabel } from 'components/ProtocolLabel'
+import { StatefulTooltip } from 'components/Tooltip'
+import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
 import { formatAddress } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
-import { arrow_right } from 'theme/icons'
+import { arrow_right, tooltip } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Flex, Text } from 'theme-ui'
 
 interface HeaderRightSectionProps {
   walletAddress?: string
+  showAbout: boolean
 }
 
 const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress }) => {
+  const { t } = useTranslation()
+
   return (
-    <Flex sx={{ mr: 4, alignItems: 'center' }}>
+    <Flex sx={{ mr: 4, alignItems: 'center', gap: 2 }}>
       {walletAddress && (
         <Text
           as="p"
@@ -39,6 +44,34 @@ const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress }) => {
           {formatAddress(walletAddress, 6)}
         </Text>
       )}
+      <StatefulTooltip
+        containerSx={{ ml: 1 }}
+        tooltip={<RefinanceAbout withNotice={false} />}
+        tooltipSx={{
+          maxWidth: '365px',
+          px: 2,
+          py: '24px',
+          borderRadius: 'large',
+          border: 'none',
+          top: '55px',
+          right: '50px',
+        }}
+      >
+        <Flex
+          sx={{
+            alignItems: 'center',
+            gap: 2,
+            border: '1px solid #EAEAEA',
+            p: 2,
+            borderRadius: 'round',
+          }}
+        >
+          <Icon icon={tooltip} />
+          <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: 1 }}>
+            {t('refinance.about.title')}
+          </Text>
+        </Flex>
+      </StatefulTooltip>
     </Flex>
   )
 }
@@ -84,11 +117,11 @@ export const RefinanceHeader = () => {
               <ProtocolLabel network={toProtocol.network} protocol={toProtocol.protocol} />
             </>
           )}
-          {isMobile && <HeaderRightSection walletAddress={walletAddress} />}
+          {isMobile && <HeaderRightSection walletAddress={walletAddress} showAbout />}
         </Flex>
       </Flex>
-      {!isMobile && <HeaderRightSection walletAddress={walletAddress} />}
-      <ModalCloseIcon close={closeModal} sx={{ top: '20px' }} />
+      {!isMobile && <HeaderRightSection walletAddress={walletAddress} showAbout />}
+      <ModalCloseIcon close={closeModal} sx={{ top: '19px' }} />
     </Flex>
   )
 }

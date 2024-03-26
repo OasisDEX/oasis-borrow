@@ -3638,6 +3638,22 @@
       "footer": {
         "canceled-automation": "*Automations will be canceled on new position. You can set it up again once the new position is created."
       }
+    },
+    "about": {
+      "title": "About Refinance",
+      "description": "With this refinance tool you can close your position, and open a new position in one go. Moving your funds between products becomes a breeze.",
+      "list-title": "Refinance on Summer.fi",
+      "bullet-points": [
+        "Easily move your collateral and debt between protocols",
+        "Always stay in the cheapest rate",
+        "When you want more liquidity, simply move to a higher max loan to value product",
+        "Cheapest way to stay in a position"
+      ],
+      "footer": "Want know more? Visit our <1>knowledge base</1> page. Or ask more questions to our community on <2>Discord</2>.",
+      "notice": {
+        "title": "New Position",
+        "description": "It will show the position you are migrating to here"
+      }
     }
   }
 }

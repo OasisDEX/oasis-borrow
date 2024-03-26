@@ -5,22 +5,15 @@ import { InfoSection } from 'components/infoSection/InfoSection'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { TokensGroup } from 'components/TokensGroup'
-import { RefinanceAutomationSection } from 'features/refinance/components'
+import { RefinanceAutomationSection, RefinanceCardWrapper } from 'features/refinance/components'
 import { RefinancePositionViewType } from 'features/refinance/types'
 import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
 import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react'
 import React from 'react'
 import { eye } from 'theme/icons'
-import { Card, Divider, Flex, Text } from 'theme-ui'
-
-const Wrapper: FC = ({ children }) => (
-  <Card sx={{ backgroundColor: 'neutral30', flex: 1, px: '24px', py: '28px', minWidth: '300px' }}>
-    {children}
-  </Card>
-)
+import { Divider, Flex, Text } from 'theme-ui'
 
 type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
   Type extends RefinancePositionViewType.EMPTY
@@ -53,7 +46,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   const { t } = useTranslation()
   if (props.type === RefinancePositionViewType.EMPTY) {
     return (
-      <Wrapper>
+      <RefinanceCardWrapper>
         <Flex
           sx={{
             flexDirection: 'column',
@@ -71,7 +64,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
             {t('refinance.position.empty.description')}
           </Text>
         </Flex>
-      </Wrapper>
+      </RefinanceCardWrapper>
     )
   }
   const {
@@ -139,7 +132,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   ]
 
   return (
-    <Wrapper>
+    <RefinanceCardWrapper>
       <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
         <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: [3, 0] }}>
           <TokensGroup tokens={[primaryToken, secondaryToken]} forceSize={22} />
@@ -167,6 +160,6 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
           withFooter={type === RefinancePositionViewType.SIMULATION}
         />
       </Flex>
-    </Wrapper>
+    </RefinanceCardWrapper>
   )
 }
