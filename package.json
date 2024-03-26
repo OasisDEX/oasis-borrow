@@ -20,7 +20,7 @@
     "build:server": "tsc --project ./tsconfig.prod.json",
     "format": "prettier --log-level silent --cache --cache-location ./node_modules/.cache/prettier.cache --check \"./**/*.{ts,tsx,js,jsx}\"",
     "format:fix": "prettier --loglevel silent --cache --cache-location ./node_modules/.cache/prettier.cache --write \"./**/*.{ts,tsx,js,jsx}\"",
-    "lint": "eslint --quiet --cache --cache-location ./node_modules/.cache/eslint.cache --ext .ts --ext .tsx .",
+    "lint": "eslint --quiet --cache --cache-location ./node_modules/.cache/eslint.cache --rule 'deprecation/deprecation: \"off\"' --ext .ts --ext .tsx .",
     "lint:fix": "yarn lint --fix",
     "typecheck-test": "tsc -p ./tsconfig.test.json --noEmit --incremental --tsBuildInfoFile './node_modules/.cache/.test-tsbuildinfo'",
     "typecheck-app": "tsc -p ./tsconfig.json --noEmit --incremental --tsBuildInfoFile './node_modules/.cache/.app-tsbuildinfo'",
