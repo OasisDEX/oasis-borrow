@@ -65,8 +65,8 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     const ltv = PositionUtils.getLTV({
       collateralTokenAmount,
       debtTokenAmount,
-      collateralPrice,
-      debtPrice,
+      collateralPriceInUsd: collateralPrice,
+      debtPriceInUsd: debtPrice,
     })
     const _position: Position = {
       pool: positionPool,
@@ -88,9 +88,8 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     }
 
     const fetchData = async () => {
-      const _simulation = await sdk.simulator.refinance.simulateRefinancePosition(
-        refinanceParameters,
-      )
+      const _simulation =
+        await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
       setSimulation(_simulation)
     }
     void fetchData().catch((err) => {
