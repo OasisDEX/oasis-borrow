@@ -61,7 +61,8 @@ const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress }) => {
           sx={{
             alignItems: 'center',
             gap: 2,
-            border: '1px solid #EAEAEA',
+            border: '1px solid',
+            borderColor: 'neutral20',
             p: 2,
             borderRadius: 'round',
           }}
