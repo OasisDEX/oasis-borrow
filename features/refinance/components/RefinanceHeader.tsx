@@ -3,7 +3,6 @@ import { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { ModalCloseIcon } from 'components/Modal'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { TokensGroup } from 'components/TokensGroup'
 import { formatAddress } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
@@ -69,7 +68,6 @@ export const RefinanceHeader = () => {
   return (
     <Flex sx={{ justifyContent: 'space-between', mb: '24px' }}>
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: [3, 0] }}>
-        <TokensGroup tokens={[primaryToken, secondaryToken]} />
         <Text as="h2" sx={{ fontSize: 4, fontWeight: 'semiBold', ml: 2 }}>
           {t('refinance.modal-title', { pair: `${primaryToken}/${secondaryToken}` })}
           {positionId && (

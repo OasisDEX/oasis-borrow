@@ -7,7 +7,7 @@ import type { TranslateStringType } from 'helpers/translateStringType'
 import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import { arrow_right_light, question_o } from 'theme/icons'
-import { Box, Flex, Grid, Text } from 'theme-ui'
+import { Box, Flex, Grid, Text, type ThemeUIStyleObject } from 'theme-ui'
 
 export type SecondaryVariantType = 'positive' | 'negative' | 'neutral'
 
@@ -33,6 +33,7 @@ export interface ItemProps {
   isLoading?: boolean
   isHeading?: boolean
   tooltip?: string
+  itemWrapperSx?: ThemeUIStyleObject
 }
 
 function getSecondaryColor(variant: SecondaryVariantType): string {
@@ -94,6 +95,7 @@ export function Item({
   labelColorPrimary,
   tooltip,
   isHeading = false,
+  itemWrapperSx,
 }: ItemProps) {
   const [open, setOpen] = useState(false)
 
@@ -104,12 +106,14 @@ export function Item({
         fontSize: 1,
         fontWeight: 'semiBold',
         listStyle: 'none',
+        ...itemWrapperSx,
       }}
     >
       <Flex
         sx={{
           cursor: !isLoading && dropdownValues?.length ? 'pointer' : 'auto',
           justifyContent: 'space-between',
+          alignItems: 'center',
           position: 'relative',
         }}
         onClick={() => {
@@ -128,7 +132,7 @@ export function Item({
                 labelColorPrimary={labelColorPrimary}
                 isHeading={isHeading}
               />
-              {tooltip && <Icon icon={question_o} size="16px" sx={{ ml: 1, color: 'neutral80' }} />}
+              {tooltip && <Icon icon={question_o} size="16px" sx={{ ml: 1 }} color="neutral80" />}
             </StatefulTooltip>
           ) : (
             <ItemLabel label={label} labelColorPrimary={labelColorPrimary} isHeading={isHeading} />

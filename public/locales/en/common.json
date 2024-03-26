@@ -1241,6 +1241,10 @@
     "coll-locked": "Coll. Locked",
     "coll-ratio": "Coll. Ratio",
     "collateral": "Collateral",
+    "ltv-short": "LTV",
+    "liq-price-short": "Liq. Price",
+    "borrow-rate": "Borrow Rate",
+    "automations": "Automations",
     "collateral-locked": "Collateral Locked",
     "collateral-ratio": "Collateral Ratio",
     "collateralization-ratio": "Collateralization Ratio",
@@ -3620,6 +3624,20 @@
     }
   },
   "refinance": {
-    "modal-title": "Refinance {{pair}} position"
+    "modal-title": "Refinance {{pair}} position",
+    "position": {
+      "title": {
+        "current": "Current {{pair}} position #{{positionId}}",
+        "simulation": "New {{pair}} position",
+        "created": "{{pair}} position #{{positionId}}"
+      },
+      "empty": {
+        "title": "New Position",
+        "description": "It will show the position you are migrating to"
+      },
+      "footer": {
+        "canceled-automation": "*Automations will be canceled on new position. You can set it up again once the new position is created."
+      }
+    }
   }
 }
