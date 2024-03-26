@@ -140,7 +140,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           positionBanner: productContext.position.positionAuction ? (
             <AaveLiquidatedNotice isPositionController={isOwner} />
           ) : undefined,
-          overviewWithSimulation: true,
+          overviewWithSimulation: false,
         },
         featureToggles,
       } as LendingMetadata
