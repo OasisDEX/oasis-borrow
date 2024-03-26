@@ -1,3 +1,4 @@
+import type { NetworkIds } from 'blockchain/networks'
 import type { Web3Context } from 'features/web3Context'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { mapValues } from 'lodash'
@@ -21,7 +22,7 @@ const defaultParams: PipelineInput = {
     account: '0x123',
     web3: {} as Web3,
     connectionKind: 'injected',
-    chainId: 42,
+    chainId: 42 as NetworkIds,
     deactivate: () => null,
     walletLabel: 'MetaMask',
     connectionMethod: 'web3-onboard',
