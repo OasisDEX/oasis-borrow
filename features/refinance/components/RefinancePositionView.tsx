@@ -7,6 +7,7 @@ import { ProtocolLabel } from 'components/ProtocolLabel'
 import { TokensGroup } from 'components/TokensGroup'
 import { RefinanceAutomationSection } from 'features/refinance/components'
 import { RefinancePositionViewType } from 'features/refinance/types'
+import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
 import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +15,6 @@ import type { FC } from 'react'
 import React from 'react'
 import { eye } from 'theme/icons'
 import { Card, Divider, Flex, Text } from 'theme-ui'
-import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
 
 const Wrapper: FC = ({ children }) => (
   <Card sx={{ backgroundColor: 'neutral30', flex: 1, px: '24px', py: '28px', minWidth: '300px' }}>

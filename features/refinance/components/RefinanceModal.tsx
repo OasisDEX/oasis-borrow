@@ -11,12 +11,7 @@ import { Flex } from 'theme-ui'
 
 export const RefinanceModal = () => {
   const { closeModal } = useModalContext()
-  const automations = {
-    stopLoss: { enabled: true },
-    autoSell: { enabled: false },
-    autoBuy: { enabled: false },
-    takeProfit: { enabled: false },
-  }
+
   return (
     <Modal
       sx={{ maxWidth: ['auto', '1200px'], maxHeight: ['auto', '800px'], margin: '0 auto' }}
