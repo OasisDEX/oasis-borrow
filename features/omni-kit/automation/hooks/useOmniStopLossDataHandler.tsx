@@ -98,7 +98,7 @@ export const useOmniStopLossDataHandler = () => {
   const resolvedDynamicStopLossPrice = dynamicStopLossPrice
     ? (isShort ? one.div(dynamicStopLossPrice) : dynamicStopLossPrice).div(100)
     : undefined
-  
+
   const stopLossLtvContentCardCommonData = useOmniCardDataStopLossLtv({
     stopLossLtv: stopLossLevel,
     afterStopLossLtv: resolvedAfterStopLossLevel,
