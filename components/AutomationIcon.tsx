@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { auto_buy, auto_sell, stop_loss, take_profit } from 'theme/icons'
 
 const automationIconMap: Record<keyof PortfolioPosition['automations'], typeof stop_loss> = {
@@ -15,9 +15,11 @@ const automationIconMap: Record<keyof PortfolioPosition['automations'], typeof s
 export const AutomationIcon = ({
   enabled,
   type,
+  iconNotActiveBg,
 }: {
   enabled: boolean
   type: keyof PortfolioPosition['automations']
+  iconNotActiveBg?: string
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   return (
@@ -25,7 +27,7 @@ export const AutomationIcon = ({
       tooltip={tPortfolio(`automation-details.${type}`)}
       containerSx={{
         position: 'relative',
-        backgroundColor: enabled ? 'success100' : 'secondary60',
+        backgroundColor: enabled ? 'success100' : iconNotActiveBg || 'secondary60',
         borderRadius: 'ellipse',
         transition: 'background-color 200ms, color 200ms',
         ...(enabled && {
