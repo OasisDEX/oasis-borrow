@@ -14,7 +14,11 @@ export type SecondaryVariantType = 'positive' | 'negative' | 'neutral'
 export interface DropDownValue {
   label?: TranslateStringType
   value: string | ReactNode
-  change?: string
+  change?: string | ReactNode
+  secondary?: {
+    value: string
+    variant?: SecondaryVariantType
+  }
 }
 
 export interface ItemProps {
@@ -24,7 +28,7 @@ export interface ItemProps {
   value?: string | BigNumber | ReactNode
   // Select element type if you wish to render custom components within a dropdown
   dropDownElementType?: 'element' | 'default'
-  change?: string
+  change?: string | ReactNode
   secondary?: {
     value: string
     variant?: SecondaryVariantType
@@ -155,7 +159,7 @@ export function Item({
               {change && (
                 <>
                   <Icon icon={arrow_right_light} size="auto" width={10} height={7} sx={{ mx: 2 }} />
-                  {`${change}`}
+                  {React.isValidElement(change) ? change : `${change}`}
                 </>
               )}
               {secondary && (
