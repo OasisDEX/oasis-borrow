@@ -1,4 +1,4 @@
-import { type PositionId } from '@summerfi/sdk-common/dist/common'
+import { type PositionId } from '@summerfi/sdk-common'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import type { PropsWithChildren } from 'react'
 import React from 'react'

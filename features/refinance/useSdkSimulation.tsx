@@ -1,20 +1,22 @@
 import { type Chain, makeSDK, PositionUtils, type User } from '@summerfi/sdk-client'
+import type {
+  AddressValue,
+  IRefinanceParameters,
+  Position,
+  Simulation,
+  SimulationType,
+} from '@summerfi/sdk-common'
 import {
   Address,
   AddressType,
-  type AddressValue,
   CurrencySymbol,
+  getChainInfoByChainId,
   Percentage,
-  type Position,
   Price,
   RiskRatio,
   RiskRatioType,
   Wallet,
-} from '@summerfi/sdk-common/dist/common'
-import { getChainInfoByChainId } from '@summerfi/sdk-common/dist/common/implementation/ChainFamilies'
-import type { IRefinanceParameters } from '@summerfi/sdk-common/dist/orders'
-import type { SimulationType } from '@summerfi/sdk-common/dist/simulation/Enums'
-import type { Simulation } from '@summerfi/sdk-common/dist/simulation/Simulation'
+} from '@summerfi/sdk-common'
 import { useEffect, useState } from 'react'
 
 import { type RefinanceContext } from './RefinanceContext'
@@ -99,9 +101,8 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     }
 
     const fetchData = async () => {
-      const _simulation = await sdk.simulator.refinance.simulateRefinancePosition(
-        refinanceParameters,
-      )
+      const _simulation =
+        await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
       setSimulation(_simulation)
     }
     void fetchData().catch((err) => {

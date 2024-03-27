@@ -1,4 +1,4 @@
-import { Address, AddressType,type ChainInfo, Token } from '@summerfi/sdk-common/dist/common'
+import { Address, AddressType,type ChainInfo, Token } from '@summerfi/sdk-common'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getTokenMetaData } from 'features/exchange/exchange'
 

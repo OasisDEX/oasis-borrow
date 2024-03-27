@@ -1,6 +1,5 @@
-import type { AddressValue, ChainInfo, PositionId } from '@summerfi/sdk-common/dist/common'
-import { TokenAmount } from '@summerfi/sdk-common/dist/common'
-import { getChainInfoByChainId } from '@summerfi/sdk-common/dist/common/implementation/ChainFamilies'
+import type { AddressValue, ChainInfo, PositionId } from '@summerfi/sdk-common'
+import { getChainInfoByChainId, TokenAmount } from '@summerfi/sdk-common'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 
