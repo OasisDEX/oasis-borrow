@@ -1,7 +1,7 @@
-import { type PositionId } from '@summerfi/sdk-common'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
+import { type PositionId } from 'summerfi-sdk-common'
 
 import { type RefinanceContextInput, RefinanceContextProvider } from './RefinanceContext'
 
@@ -17,6 +17,7 @@ export function MakerRefinanceContext({
   chainId,
   address,
 }: PropsWithChildren<MakerRefinanceContextProps>) {
+  // return children
   const { vault, priceInfo } = generalManageVault.state
   const slippage = generalManageVault.state.slippage.toNumber()
   const positionId: PositionId = {

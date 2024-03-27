@@ -1,4 +1,4 @@
-import { ProtocolName } from '@summerfi/sdk-common'
+import { ProtocolName } from 'summerfi-sdk-common'
 import { LendingProtocol } from 'lendingProtocols'
 
 const ProtocolNameByLendingProtocol: Record<LendingProtocol, ProtocolName> = {
