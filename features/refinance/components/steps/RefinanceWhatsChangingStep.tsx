@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { RefinanceHighlightedChangeSection } from 'features/refinance/components/steps/RefinanceHighlightedChangeSection'
 import { RefinanceReviewChangesSection } from 'features/refinance/components/steps/RefinanceReviewChangesSection'
 import { RefinanceRouteSection } from 'features/refinance/components/steps/RefinanceRouteSection'
 import { RefinanceSwapSection } from 'features/refinance/components/steps/RefinanceSwapSection'
@@ -7,7 +8,6 @@ import { formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
-import { RefinanceHighlightedChangeSection } from 'features/refinance/components/steps/RefinanceHighlightedChangeSection'
 
 export const RefinanceWhatsChangingStep = () => {
   const { t } = useTranslation()

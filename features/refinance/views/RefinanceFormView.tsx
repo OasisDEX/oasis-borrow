@@ -18,8 +18,10 @@ export const RefinanceFormView: FC = ({ children }) => {
   const isPrimaryButtonDisabled = false
   const primaryButtonLabel = t('confirm')
   const sidebarTitle = t('refinance.sidebar.why-refinance.title')
+  // eslint-disable-next-line no-console
   const textButtonAction = () => console.log('click')
   const primaryButtonActions = {
+    // eslint-disable-next-line no-console
     action: () => console.log('click'),
   }
   const isExternalStep = false
