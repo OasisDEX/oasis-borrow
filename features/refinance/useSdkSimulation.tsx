@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { type Chain, makeSDK, PositionUtils, type User } from 'summerfi-sdk-client'
 import type {
   AddressValue,
@@ -17,7 +18,6 @@ import {
   RiskRatioType,
   Wallet,
 } from 'summerfi-sdk-common'
-import { useEffect, useState } from 'react'
 
 import { type RefinanceContext } from './RefinanceContext'
 

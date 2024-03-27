@@ -1,5 +1,5 @@
-import { ProtocolName } from 'summerfi-sdk-common'
 import { LendingProtocol } from 'lendingProtocols'
+import { ProtocolName } from 'summerfi-sdk-common'
 
 const ProtocolNameByLendingProtocol: Record<LendingProtocol, ProtocolName> = {
   [LendingProtocol.AaveV2]: ProtocolName.AAVEv2,

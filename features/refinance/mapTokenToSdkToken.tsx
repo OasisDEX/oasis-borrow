@@ -1,6 +1,6 @@
-import { Address, AddressType, type ChainInfo, Token } from 'summerfi-sdk-common'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getTokenMetaData } from 'features/exchange/exchange'
+import { Address, AddressType, type ChainInfo, Token } from 'summerfi-sdk-common'
 
 export function mapTokenToSdkToken(chainInfo: ChainInfo, token: string): Token {
   const contracts = getNetworkContracts(chainInfo.chainId) as any
