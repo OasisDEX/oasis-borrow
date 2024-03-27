@@ -31,7 +31,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   type,
 }) => {
   const {
-    environment: { extraTokensData, networkId, productType, settings },
+    environment: { extraTokensData, networkId, productType, settings, shouldSwitchNetwork },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -193,5 +193,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
     </Box>
   )
 
-  return children({ ...(walletAddress && tokensList.length > 1 && { swapController }) })
+  return children({
+    ...(walletAddress && !shouldSwitchNetwork && tokensList.length > 1 && { swapController }),
+  })
 }
