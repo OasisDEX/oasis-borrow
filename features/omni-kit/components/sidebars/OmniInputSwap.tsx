@@ -5,6 +5,7 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { useAccount } from 'helpers/useAccount'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import type { FC, ReactElement, ReactNode } from 'react'
 import React, { useMemo, useRef, useState } from 'react'
@@ -30,7 +31,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   type,
 }) => {
   const {
-    environment: { extraTokensData, networkId, productType, settings },
+    environment: { extraTokensData, networkId, productType, settings, shouldSwitchNetwork },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -39,6 +40,8 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
     },
   } = useOmniProductContext(productType)
 
+  const { walletAddress } = useAccount()
+
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedToken, setSelectedToken] = useState<string>(pullToken?.token ?? defaultToken)
 
@@ -46,28 +49,27 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const tokensList = useMemo(
-    () =>
-      [
-        {
-          address: defaultTokenAddress,
-          balance: defaultTokenBalance,
-          precision: defaultTokenPrecision,
-          price: defaultTokenPrice,
-          token: defaultToken,
-        },
-        ...(settings[`${type}Tokens`]?.[networkId] ?? [])
-          .filter((token) => token !== defaultToken)
-          .map((token) => ({
-            address: getNetworkContracts(networkId).tokens[token].address,
-            balance: extraTokensData[token].balance,
-            digits: getToken(token).digits,
-            precision: getToken(token).precision,
-            price: extraTokensData[token].price,
-            token,
-          })),
-      ]
+    () => [
+      {
+        address: defaultTokenAddress,
+        balance: defaultTokenBalance,
+        precision: defaultTokenPrecision,
+        price: defaultTokenPrice,
+        token: defaultToken,
+      },
+      ...(settings[`${type}Tokens`]?.[networkId] ?? [])
+        .filter((token) => token !== defaultToken)
+        .map((token) => ({
+          address: getNetworkContracts(networkId).tokens[token].address,
+          balance: extraTokensData[token].balance,
+          digits: getToken(token).digits,
+          precision: getToken(token).precision,
+          price: extraTokensData[token].price,
+          token,
+        }))
         .filter(({ balance }) => !balance.isZero())
         .sort((a, b) => b.balance.times(b.price).minus(a.balance.times(a.price)).toNumber()),
+    ],
     [
       defaultToken,
       defaultTokenAddress,
@@ -190,5 +192,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
     </Box>
   )
 
-  return children({ ...(tokensList.length > 1 && { swapController }) })
+  return children({
+    ...(walletAddress && !shouldSwitchNetwork && tokensList.length > 1 && { swapController }),
+  })
 }
