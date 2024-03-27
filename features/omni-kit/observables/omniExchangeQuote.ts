@@ -1,3 +1,4 @@
+import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ExchangeAction, ExchangeType } from 'features/exchange/exchange'
@@ -36,7 +37,7 @@ export function omniExchangeQuote$({
     getQuote$(
       quote,
       collateral,
-      exchange.address,
+      exchange.address || ADDRESS_ZERO,
       amount,
       slippage,
       action,
