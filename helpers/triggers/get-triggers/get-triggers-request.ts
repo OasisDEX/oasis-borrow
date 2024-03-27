@@ -1,4 +1,5 @@
 import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
+import { isZeroAddress } from 'helpers/isZeroAddress'
 
 import { getTriggersConfig } from './get-triggers-config'
 import type { GetTriggersParams, GetTriggersResponse } from './get-triggers-types'
@@ -7,6 +8,9 @@ export const getTriggersRequest = async ({
   dpm,
   networkId,
 }: GetTriggersParams): Promise<GetTriggersResponse> => {
+  if (dpm.proxy && isZeroAddress(dpm.proxy)) {
+    return omniPositionTriggersDataDefault
+  }
   const { url } = getTriggersConfig({ dpm, networkId })
 
   try {
