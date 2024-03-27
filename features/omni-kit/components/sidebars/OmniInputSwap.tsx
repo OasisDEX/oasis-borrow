@@ -5,6 +5,7 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { useAccount } from 'helpers/useAccount'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import type { FC, ReactElement, ReactNode } from 'react'
 import React, { useMemo, useRef, useState } from 'react'
@@ -38,6 +39,8 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
       state: { pullToken },
     },
   } = useOmniProductContext(productType)
+
+  const { walletAddress } = useAccount()
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedToken, setSelectedToken] = useState<string>(pullToken?.token ?? defaultToken)
@@ -190,5 +193,5 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
     </Box>
   )
 
-  return children({ ...(tokensList.length > 1 && { swapController }) })
+  return children({ ...(walletAddress && tokensList.length > 1 && { swapController }) })
 }
