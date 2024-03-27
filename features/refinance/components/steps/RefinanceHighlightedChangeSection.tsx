@@ -10,12 +10,23 @@ export const RefinanceHighlightedChangeSection = () => {
 
   const borrowCost = new BigNumber(0.0145)
   const afterBorrowCost = new BigNumber(0.0125)
+
+  const maxLtv = new BigNumber(0.7)
+  const afterMaxLtv = new BigNumber(0.8)
+  const maxMultiple = new BigNumber(1.2)
+  const afterMaxMultiple = new BigNumber(3.2)
+
   const option = RefinanceOptions.LOWER_COST
 
   const formatted = {
     borrowCost: formatDecimalAsPercent(borrowCost),
     afterBorrowCost: formatDecimalAsPercent(afterBorrowCost),
     borrowCostChange: formatDecimalAsPercent(borrowCost.minus(afterBorrowCost)),
+
+    maxLtv: formatDecimalAsPercent(maxLtv),
+    afterMaxLtv: formatDecimalAsPercent(afterMaxLtv),
+    maxMultiple: `${maxMultiple.toFixed(2)}x`,
+    afterMaxMultiple: `${afterMaxMultiple.toFixed(2)}x`,
   }
 
   const title = {
@@ -23,6 +34,35 @@ export const RefinanceHighlightedChangeSection = () => {
     [RefinanceOptions.HIGHER_LTV]: 'increase-to-higher-ltv',
     [RefinanceOptions.CHANGE_DIRECTION]: 'change-direction',
     [RefinanceOptions.SWITCH_TO_EARN]: 'switch-to-earn',
+  }[option]
+
+  const items = {
+    [RefinanceOptions.LOWER_COST]: [
+      {
+        label: t('system.borrow-cost'),
+        value: formatted.borrowCost,
+        change: formatted.afterBorrowCost,
+        secondary: {
+          value: formatted.borrowCostChange,
+          variant: 'positive',
+        },
+      },
+    ],
+    [RefinanceOptions.HIGHER_LTV]: [
+      {
+        label: t('max-ltv'),
+        value: formatted.maxLtv,
+        change: formatted.afterMaxLtv,
+      },
+      {
+        label: t('system.max-multiple'),
+        value: formatted.maxMultiple,
+        change: formatted.afterMaxMultiple,
+      },
+    ],
+    // designs not ready
+    [RefinanceOptions.CHANGE_DIRECTION]: [],
+    [RefinanceOptions.SWITCH_TO_EARN]: [],
   }[option]
 
   return (
