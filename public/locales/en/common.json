@@ -228,6 +228,7 @@
         "automation": "Automation",
         "borrow-rate": "Borrow rate",
         "cdp-id": "",
+        "claimable-now": "Claimable now",
         "col-ratio": "Col. ratio",
         "collateral-debt": "Collateral/Debt",
         "collateral-locked": "Collateral locked",
@@ -258,9 +259,11 @@
         "protection": "Protection",
         "protocol-network": "Protocol/Network",
         "protocol": "Protocol",
+        "rewards-earned": "Rewards earned",
         "risk-ratio": "Risk ratio",
         "status": "Status",
         "strategy": "Strategy",
+        "token": "Token",
         "tvl": "TVL",
         "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
@@ -3348,7 +3351,8 @@
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
         "market-apy": "Market APY",
         "per-1k-usd": "{{amount}} {{token}} per $1,000",
-        "vault-allocation-breakdown": "Vault allocation breakdown"
+        "vault-allocation-breakdown": "Vault allocation breakdown",
+        "vault-token-rewards": "Vault token rewards"
       },
       "earn": {
         "form-order": {

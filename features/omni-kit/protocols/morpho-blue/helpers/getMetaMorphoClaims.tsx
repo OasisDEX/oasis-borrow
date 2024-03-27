@@ -45,11 +45,8 @@ export async function getMetaMorphoClaims({ account }: GetMetaMorphoClaimsParams
       claims: response.claimsAggregated.map(
         ({ accrued, claimable, claimed, rewardToken: { address, decimals, symbol } }) => ({
           address,
-          token: symbol,
-          earned: amountFromWei(
-            new BigNumber(accrued).minus(new BigNumber(claimable)).minus(new BigNumber(claimed)),
-            decimals,
-          ),
+          token: symbol.toUpperCase(),
+          earned: amountFromWei(new BigNumber(accrued).minus(new BigNumber(claimed)), decimals),
           claimable: amountFromWei(new BigNumber(claimable), decimals),
         }),
       ),

@@ -8,7 +8,7 @@ interface GetErc4626ClaimsParams {
   rewardsType?: Erc4626RewardsType
 }
 
-interface Erc4626Claims {
+export interface Erc4626Claims {
   claims: {
     address: string
     claimable: BigNumber
