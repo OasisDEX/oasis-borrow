@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import type { SecondaryVariantType } from 'components/infoSection/Item'
 import { InfoSectionWithGradient } from 'components/InfoSectionWithGradient'
 import { RefinanceOptions } from 'features/refinance/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -44,7 +45,7 @@ export const RefinanceHighlightedChangeSection = () => {
         change: formatted.afterBorrowCost,
         secondary: {
           value: formatted.borrowCostChange,
-          variant: 'positive',
+          variant: 'positive' as SecondaryVariantType,
         },
       },
     ],
@@ -61,24 +62,24 @@ export const RefinanceHighlightedChangeSection = () => {
       },
     ],
     // designs not ready
-    [RefinanceOptions.CHANGE_DIRECTION]: [],
-    [RefinanceOptions.SWITCH_TO_EARN]: [],
+    [RefinanceOptions.CHANGE_DIRECTION]: [
+      {
+        label: 'TBD',
+        value: 'TBD',
+      },
+    ],
+    [RefinanceOptions.SWITCH_TO_EARN]: [
+      {
+        label: 'TBD',
+        value: 'TBD',
+      },
+    ],
   }[option]
 
   return (
     <InfoSectionWithGradient
       title={t(`refinance.sidebar.whats-changing.highlighted.${title}`)}
-      items={[
-        {
-          label: t('system.borrow-cost'),
-          value: formatted.borrowCost,
-          change: formatted.afterBorrowCost,
-          secondary: {
-            value: formatted.borrowCostChange,
-            variant: 'positive',
-          },
-        },
-      ]}
+      items={items}
     />
   )
 }
