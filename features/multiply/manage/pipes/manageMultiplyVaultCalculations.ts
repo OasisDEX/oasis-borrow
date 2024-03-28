@@ -54,8 +54,8 @@ function calculateAfterLockedCollateral({
   const amount = paybackAmount
     ? lockedCollateral.plus(paybackAmount)
     : generateAmount
-      ? lockedCollateral.minus(generateAmount)
-      : lockedCollateral
+    ? lockedCollateral.minus(generateAmount)
+    : lockedCollateral
 
   return amount.gte(zero) ? amount : zero
 }
@@ -79,8 +79,8 @@ function calculateAfterDebt({
   const amount = generateAmount
     ? debt.plus(generateAmount)
     : paybackAmount
-      ? debt.minus(paybackAmount)
-      : debt
+    ? debt.minus(paybackAmount)
+    : debt
 
   return amount.gte(zero) ? amount : zero
 }
@@ -335,8 +335,8 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
     swap?.status === 'SUCCESS'
       ? swap.tokenPrice
       : quote?.status === 'SUCCESS'
-        ? quote.tokenPrice
-        : undefined
+      ? quote.tokenPrice
+      : undefined
 
   const marketPriceMaxSlippage = marketPrice ? marketPrice.div(one.minus(slippage)) : undefined
 
@@ -440,8 +440,8 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
     borrowedDaiAmount.gt(zero) && depositDaiAmount.gt(zero)
       ? borrowedDaiAmount.plus(depositDaiAmount).times(one.minus(OAZO_FEE))
       : borrowedDaiAmount.gt(zero)
-        ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
-        : collateralDeltaNonClose.times(-1)
+      ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
+      : collateralDeltaNonClose.times(-1)
 
   const closeToDaiParams = getCloseToDaiParams(
     // market params
@@ -482,16 +482,16 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
         closeToDaiParams.fromTokenAmount.negated()
       : closeToCollateralParams.fromTokenAmount.negated()
     : otherAction === 'depositDai' && depositDaiAmount.gt(zero)
-      ? collateralDeltaNonClose.plus(depositDaiAmount.div(marketPrice))
-      : collateralDeltaNonClose
+    ? collateralDeltaNonClose.plus(depositDaiAmount.div(marketPrice))
+    : collateralDeltaNonClose
 
   const oazoFee = isCloseAction
     ? closeVaultTo === 'dai'
       ? closeToDaiParams.oazoFee
       : closeToCollateralParams.oazoFee
     : otherAction === 'depositDai' && depositDaiAmount.gt(zero)
-      ? oazoFeeNonClose.plus(depositDaiAmount.times(OAZO_FEE))
-      : oazoFeeNonClose
+    ? oazoFeeNonClose.plus(depositDaiAmount.times(OAZO_FEE))
+    : oazoFeeNonClose
 
   const loanFee = isCloseAction
     ? closeVaultTo === 'dai'
@@ -510,21 +510,21 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
   const afterDebt = isCloseAction
     ? zero
     : generateAmount.gt(zero) && showSliderController
-      ? debt.plus(borrowedDaiAmount.plus(generateAmount)).plus(loanFee)
-      : debt.plus(borrowedDaiAmount).plus(loanFee)
+    ? debt.plus(borrowedDaiAmount.plus(generateAmount)).plus(loanFee)
+    : debt.plus(borrowedDaiAmount).plus(loanFee)
 
   const afterLockeCollateralWhenAdjusting =
     otherAction === 'depositCollateral'
       ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
       : otherAction === 'withdrawCollateral'
-        ? collateralDelta.minus(withdrawAmount).plus(lockedCollateral)
-        : lockedCollateral.plus(collateralDelta)
+      ? collateralDelta.minus(withdrawAmount).plus(lockedCollateral)
+      : lockedCollateral.plus(collateralDelta)
 
   const afterLockedCollateral = isCloseAction
     ? zero
     : showSliderController
-      ? afterLockeCollateralWhenAdjusting
-      : lockedCollateral.plus(collateralDelta)
+    ? afterLockeCollateralWhenAdjusting
+    : lockedCollateral.plus(collateralDelta)
 
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
 
@@ -538,11 +538,11 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
     vaultHasZeroCollateral && afterDebt.isZero()
       ? zero
       : isCloseAction || afterLockedCollateralUSD.isZero()
-        ? one
-        : calculateMultiply({
-            debt: afterDebt,
-            lockedCollateralUSD: afterLockedCollateralUSD,
-          })
+      ? one
+      : calculateMultiply({
+          debt: afterDebt,
+          lockedCollateralUSD: afterLockedCollateralUSD,
+        })
 
   const afterLiquidationPrice = afterCollateralizationRatio.isZero()
     ? zero
@@ -729,8 +729,8 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
   const maxCollRatio = depositAmount.gt(zero)
     ? maxCollRatioDepositAmount
     : depositDaiAmount.gt(zero)
-      ? maxCollRatioDepositDaiAmount
-      : MAX_COLL_RATIO
+    ? maxCollRatioDepositDaiAmount
+    : MAX_COLL_RATIO
 
   const minCollRatioWithdrawAmount = roundRatioToBeDivisibleByFive(
     lockedCollateral.minus(withdrawAmount).times(currentCollateralPrice).div(debt),
@@ -748,8 +748,8 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
   const minCollRatio = withdrawAmount.gt(zero)
     ? minCollRatioWithdrawAmount
     : generateAmount.gt(zero)
-      ? minCollRatioGenerateAmount
-      : liquidationRatio
+    ? minCollRatioGenerateAmount
+    : liquidationRatio
 
   return {
     ...state,

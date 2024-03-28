@@ -1,7 +1,7 @@
 import type { OmniSupportedNetworkIds, OmniSupportedProtocols } from 'features/omni-kit/types'
 
 export enum Erc4626RewardsType {
-  MetaMorpho = 'MetaMorpho'
+  MetaMorpho = 'MetaMorpho',
 }
 
 export interface Erc4626PricePicker {

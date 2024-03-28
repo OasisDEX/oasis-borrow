@@ -52,16 +52,13 @@ async function getMakerData(
   const PotContract = PotFactory.connect(PotContractAddress, rpcProvider)
   const daiPrice = new BigNumber(getTokenPrice('DAI', tickers, 'makerHandler'))
 
-  const ilksListWithHexValues = makerProductHubProducts.reduce(
-    (acc, product) => {
-      const ilk = getIlk(product.label)
-      return {
-        ...acc,
-        [ilk]: Web3.utils.padRight(Web3.utils.stringToHex(ilk), 64),
-      }
-    },
-    {} as { [key: string]: string },
-  )
+  const ilksListWithHexValues = makerProductHubProducts.reduce((acc, product) => {
+    const ilk = getIlk(product.label)
+    return {
+      ...acc,
+      [ilk]: Web3.utils.padRight(Web3.utils.stringToHex(ilk), 64),
+    }
+  }, {} as { [key: string]: string })
 
   const vatIlkPromises = Object.keys(ilksListWithHexValues).map(async (ilk) => {
     const vatIlkData = await VatContract.ilks(ilksListWithHexValues[ilk])

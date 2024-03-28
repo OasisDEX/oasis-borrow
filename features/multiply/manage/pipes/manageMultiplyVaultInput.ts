@@ -137,8 +137,8 @@ export function applyManageVaultInput(
         state.vault.debt.isZero() && change.depositDaiAmount?.gt(zero)
           ? state.ilkData.liquidationRatio
           : change.depositDaiAmount?.gt(zero)
-            ? state.vault.collateralizationRatio
-            : undefined,
+          ? state.vault.collateralizationRatio
+          : undefined,
     }
   }
 

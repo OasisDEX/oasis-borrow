@@ -40,23 +40,23 @@ export function VaultDetailsNetValueModal({
   const lockedCollateralUSD = isCollateralLpToken
     ? vault?.lockedCollateralUSD || zero
     : vault && marketPrice
-      ? vault.lockedCollateral.times(marketPrice)
-      : zero
+    ? vault.lockedCollateral.times(marketPrice)
+    : zero
 
   const daiDebtUndercollateralizedToken = vault
     ? isCollateralLpToken
       ? vault.debt.dividedBy(oraclePrice)
       : marketPrice
-        ? vault.debt.dividedBy(marketPrice)
-        : zero
+      ? vault.debt.dividedBy(marketPrice)
+      : zero
     : zero
 
   const netValueUndercollateralizedToken = vault
     ? isCollateralLpToken
       ? netValueUSD.dividedBy(oraclePrice)
       : marketPrice
-        ? netValueUSD.dividedBy(marketPrice)
-        : zero
+      ? netValueUSD.dividedBy(marketPrice)
+      : zero
     : zero
 
   return (

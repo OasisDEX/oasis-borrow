@@ -231,39 +231,39 @@ export function AaveManageTabBar({
         ...(historyIsSupported === undefined
           ? []
           : historyIsSupported
-            ? [
-                {
-                  value: 'history',
-                  label: t('system.history'),
-                  content: (
-                    <PositionHistory
-                      collateralToken={collateralToken}
-                      historyEvents={state.context.historyEvents}
-                      quoteToken={debtToken}
-                      networkId={strategyConfig.networkId}
-                      isShort={isShortPosition({ collateralToken })}
-                    />
-                  ),
-                },
-              ]
-            : [
-                {
-                  value: 'history',
-                  label: t('system.history'),
-                  content: (
-                    <DisabledHistoryControl
-                      protocol={strategyConfig.protocol}
-                      networkName={strategyConfig.network}
-                      proxyVersion={
-                        {
-                          [ProxyType.DpmProxy]: 'DPM Proxy',
-                          [ProxyType.DsProxy]: 'DS Proxy',
-                        }[state.context.strategyConfig.proxyType]
-                      }
-                    />
-                  ),
-                },
-              ]),
+          ? [
+              {
+                value: 'history',
+                label: t('system.history'),
+                content: (
+                  <PositionHistory
+                    collateralToken={collateralToken}
+                    historyEvents={state.context.historyEvents}
+                    quoteToken={debtToken}
+                    networkId={strategyConfig.networkId}
+                    isShort={isShortPosition({ collateralToken })}
+                  />
+                ),
+              },
+            ]
+          : [
+              {
+                value: 'history',
+                label: t('system.history'),
+                content: (
+                  <DisabledHistoryControl
+                    protocol={strategyConfig.protocol}
+                    networkName={strategyConfig.network}
+                    proxyVersion={
+                      {
+                        [ProxyType.DpmProxy]: 'DPM Proxy',
+                        [ProxyType.DsProxy]: 'DS Proxy',
+                      }[state.context.strategyConfig.proxyType]
+                    }
+                  />
+                ),
+              },
+            ]),
       ]}
     />
   )

@@ -38,8 +38,8 @@ export const sendGenericTransaction$ = ({
                   receipt.status === 1
                     ? TxStatus.Success
                     : receipt.status === 0
-                      ? TxStatus.Error
-                      : TxStatus.WaitingForConfirmation
+                    ? TxStatus.Error
+                    : TxStatus.WaitingForConfirmation
 
                 return {
                   status,

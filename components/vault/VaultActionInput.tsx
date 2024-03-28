@@ -198,8 +198,8 @@ export function VaultActionInput({
                   {auxiliaryFlag && BigNumber.isBigNumber(minAuxiliaryAmount)
                     ? formatCryptoBalance(minAuxiliaryAmount)
                     : !auxiliaryFlag && BigNumber.isBigNumber(minAmount)
-                      ? formatCryptoBalance(minAmount)
-                      : null}
+                    ? formatCryptoBalance(minAmount)
+                    : null}
                 </Text>
               </>
             )}
@@ -217,8 +217,8 @@ export function VaultActionInput({
                   {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount)
                     ? formatCryptoBalance(maxAuxiliaryAmount)
                     : !auxiliaryFlag && BigNumber.isBigNumber(maxAmount)
-                      ? formatCryptoBalance(maxAmount)
-                      : null}
+                    ? formatCryptoBalance(maxAmount)
+                    : null}
                 </Text>
               </>
             )}{' '}

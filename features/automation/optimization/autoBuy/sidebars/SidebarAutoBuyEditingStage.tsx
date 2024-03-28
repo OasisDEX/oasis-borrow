@@ -275,8 +275,8 @@ export function SidebarAutoBuyEditingStage({
               maxBuyOrMinSellPrice: !toggleStatus
                 ? undefined
                 : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-                  ? zero
-                  : autoBuyTriggerData.maxBuyOrMinSellPrice,
+                ? zero
+                : autoBuyTriggerData.maxBuyOrMinSellPrice,
             })
             uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
               type: 'is-editing',

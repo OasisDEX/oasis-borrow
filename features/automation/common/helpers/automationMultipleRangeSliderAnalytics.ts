@@ -44,20 +44,17 @@ export function automationMultipleRangeSliderAnalytics({
     [AutomationFeatures.CONSTANT_MULTIPLE]: 'triggerBuyValue',
   }
 
-  useDebouncedCallback(
-    (value) => {
-      const parsedValues = JSON.parse(value)
-      trackingEvents.automation.inputChange(
-        MixpanelAutomationEventIds.MoveSlider,
-        analyticsPageMap[type],
-        MixpanelCommonAnalyticsSections.Form,
-        {
-          ...analyticsAdditionalParams,
-          [leftValueKeyMap[type]]: parsedValues.leftValue,
-          [rightValueKeyMap[type]]: parsedValues.rightValue,
-        },
-      )
-    },
-    JSON.stringify({ leftValue: leftValue.toString(), rightValue: rightValue.toString() }),
-  )
+  useDebouncedCallback((value) => {
+    const parsedValues = JSON.parse(value)
+    trackingEvents.automation.inputChange(
+      MixpanelAutomationEventIds.MoveSlider,
+      analyticsPageMap[type],
+      MixpanelCommonAnalyticsSections.Form,
+      {
+        ...analyticsAdditionalParams,
+        [leftValueKeyMap[type]]: parsedValues.leftValue,
+        [rightValueKeyMap[type]]: parsedValues.rightValue,
+      },
+    )
+  }, JSON.stringify({ leftValue: leftValue.toString(), rightValue: rightValue.toString() }))
 }

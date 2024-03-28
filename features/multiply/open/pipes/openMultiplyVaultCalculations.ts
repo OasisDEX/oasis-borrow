@@ -73,8 +73,8 @@ export function applyOpenMultiplyVaultCalculations(
     swap?.status === 'SUCCESS'
       ? swap.tokenPrice
       : quote?.status === 'SUCCESS'
-        ? quote.tokenPrice
-        : undefined
+      ? quote.tokenPrice
+      : undefined
 
   const marketPriceMaxSlippage = marketPrice ? marketPrice.div(one.minus(slippage)) : undefined
 

@@ -6,5 +6,5 @@ export const getAjnaEarnDefaultUiDropdown = (ajnaPosition: AjnaEarnPosition) =>
   ajnaPosition.collateralTokenAmount.gt(zero)
     ? OmniSidebarEarnPanel.ClaimCollateral
     : ajnaPosition.quoteTokenAmount.isZero()
-      ? OmniSidebarEarnPanel.Liquidity
-      : OmniSidebarEarnPanel.Adjust
+    ? OmniSidebarEarnPanel.Liquidity
+    : OmniSidebarEarnPanel.Adjust

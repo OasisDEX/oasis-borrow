@@ -21,8 +21,8 @@ export function defaultMutableManageMultiplyVaultState(
       vaultType === VaultType.Borrow
         ? 'otherActions'
         : hasZeroCollateral
-          ? 'otherActions'
-          : 'adjustPosition',
+        ? 'otherActions'
+        : 'adjustPosition',
     originalEditingStage: hasZeroCollateral ? 'otherActions' : 'adjustPosition',
     collateralAllowanceAmount: maxUint256,
     daiAllowanceAmount: maxUint256,

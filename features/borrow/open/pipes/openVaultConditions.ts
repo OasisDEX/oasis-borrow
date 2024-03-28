@@ -89,8 +89,8 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         currentStep: openingEmptyVault
           ? totalSteps - 1
           : withStopLossStep
-            ? totalSteps - (token === 'ETH' ? 2 : 3)
-            : totalSteps - (token === 'ETH' ? 1 : 2),
+          ? totalSteps - (token === 'ETH' ? 2 : 3)
+          : totalSteps - (token === 'ETH' ? 1 : 2),
         proxyAddress,
         withProxyStep: true,
       }

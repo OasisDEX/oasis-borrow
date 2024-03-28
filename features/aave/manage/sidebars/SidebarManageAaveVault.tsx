@@ -218,8 +218,8 @@ export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
       (isBorrow
         ? context.manageTokenInput?.manageInput2Value
         : isDeposit
-          ? context.manageTokenInput?.manageInput1Value
-          : zero) ?? zero
+        ? context.manageTokenInput?.manageInput1Value
+        : zero) ?? zero
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol).plus(
       inputCollateralAmount,
     )
@@ -250,8 +250,8 @@ export function calculateMaxCollateralAmount(context: ManageAaveContext): BigNum
       (isPayback
         ? context.manageTokenInput?.manageInput1Value
         : isWithdraw
-          ? context.manageTokenInput?.manageInput2Value
-          : zero) ?? zero
+        ? context.manageTokenInput?.manageInput2Value
+        : zero) ?? zero
     const debt = amountFromWei(position.debt.amount, position.debt.symbol).minus(inputDebtAmount)
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const minimumCollateral = debt

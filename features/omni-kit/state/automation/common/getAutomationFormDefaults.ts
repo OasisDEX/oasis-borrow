@@ -20,14 +20,14 @@ export const getAutomationFormDefaults = (
     uiDropdownProtection: isTrailingStopLossEnabled
       ? AutomationFeatures.TRAILING_STOP_LOSS
       : isStopLossEnabled
-        ? AutomationFeatures.STOP_LOSS
-        : isAutoSellEnabled
-          ? AutomationFeatures.AUTO_SELL
-          : undefined,
+      ? AutomationFeatures.STOP_LOSS
+      : isAutoSellEnabled
+      ? AutomationFeatures.AUTO_SELL
+      : undefined,
     uiDropdownOptimization: isPartialTakeProfitEnabled
       ? AutomationFeatures.PARTIAL_TAKE_PROFIT
       : isAutoBuyEnabled
-        ? AutomationFeatures.AUTO_BUY
-        : undefined,
+      ? AutomationFeatures.AUTO_BUY
+      : undefined,
   }
 }

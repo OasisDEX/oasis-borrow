@@ -10,6 +10,6 @@ export function getAutomationThatClosedVault({
   return stopLossTriggered
     ? AutomationKinds.STOP_LOSS
     : autoTakeProfitTriggered
-      ? AutomationKinds.AUTO_TAKE_PROFIT
-      : undefined
+    ? AutomationKinds.AUTO_TAKE_PROFIT
+    : undefined
 }

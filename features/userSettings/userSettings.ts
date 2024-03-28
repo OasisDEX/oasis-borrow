@@ -53,7 +53,7 @@ function saveSettings(
 ) {
   return saveUserSettings$(slippageInput)
     .pipe(
-      map(() => ({ kind: 'settingsSaved', slippageInput }) as UserSettingsChange),
+      map(() => ({ kind: 'settingsSaved', slippageInput } as UserSettingsChange)),
       startWith({ kind: 'stage', stage: 'inProgress' } as UserSettingsChange),
       catchError(() => of({ kind: 'stage', stage: 'failure' } as UserSettingsChange)),
     )

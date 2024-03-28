@@ -173,8 +173,8 @@ export function getDpmPositionDataV2$(
                 hasMultiplePositions,
               }
             : Array.isArray(positions) || !dpmProxy
-              ? null
-              : undefined,
+            ? null
+            : undefined,
         ),
       )
     }),

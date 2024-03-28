@@ -74,10 +74,10 @@ export function formatUsdValue(amount: BigNumber, decimalPlaces = 2): string {
   return amount.isZero()
     ? '$0.00'
     : absoluteAmount.lt(0.01)
-      ? `$<${amount.isNegative() ? '-' : ''}0.01`
-      : absoluteAmount.lt(million)
-        ? `$${amount.toFormat(decimalPlaces, BigNumber.ROUND_DOWN)}`
-        : `$${formatAsShorthandNumbers(amount, decimalPlaces)}`
+    ? `$<${amount.isNegative() ? '-' : ''}0.01`
+    : absoluteAmount.lt(million)
+    ? `$${amount.toFormat(decimalPlaces, BigNumber.ROUND_DOWN)}`
+    : `$${formatAsShorthandNumbers(amount, decimalPlaces)}`
 }
 
 export function formatFiatBalance(amount: BigNumber): string {

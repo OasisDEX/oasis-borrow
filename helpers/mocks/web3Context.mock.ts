@@ -46,10 +46,10 @@ export function mockWeb3Context$({
     status === 'notConnected'
       ? mockWeb3ContextNotConnected
       : status === 'connectedReadonly'
-        ? mockWeb3ContextConnectedReadonly
-        : {
-            ...mockWeb3ContextConnected,
-            ...(account && { account }),
-          },
+      ? mockWeb3ContextConnectedReadonly
+      : {
+          ...mockWeb3ContextConnected,
+          ...(account && { account }),
+        },
   )
 }

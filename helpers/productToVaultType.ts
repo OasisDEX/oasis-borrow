@@ -6,8 +6,8 @@ export function productToVaultType(
   return productType === 'Borrow'
     ? VaultType.Borrow
     : productType === 'Multiply'
-      ? VaultType.Multiply
-      : productType === 'Earn'
-        ? VaultType.Earn
-        : undefined
+    ? VaultType.Multiply
+    : productType === 'Earn'
+    ? VaultType.Earn
+    : undefined
 }

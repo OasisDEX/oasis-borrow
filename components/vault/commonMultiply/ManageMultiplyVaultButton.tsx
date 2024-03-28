@@ -16,21 +16,21 @@ export function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): 
           ? t('adjust-your-position')
           : t('enter-an-amount')
         : !state.proxyAddress
-          ? t('setup-proxy')
-          : state.insufficientCollateralAllowance
-            ? t('set-token-allowance', { token: state.vault.token })
-            : state.insufficientDaiAllowance
-              ? t('set-token-allowance', { token: 'DAI' })
-              : state.originalEditingStage === 'otherActions' && state.otherAction === 'closeVault'
-                ? t('close-vault')
-                : t('confirm')
+        ? t('setup-proxy')
+        : state.insufficientCollateralAllowance
+        ? t('set-token-allowance', { token: state.vault.token })
+        : state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
+        : state.originalEditingStage === 'otherActions' && state.otherAction === 'closeVault'
+        ? t('close-vault')
+        : t('confirm')
 
     case 'proxySuccess':
       return state.insufficientCollateralAllowance
         ? t('set-token-allowance', { token: state.vault.token })
         : state.insufficientDaiAllowance
-          ? t('set-token-allowance', { token: 'DAI' })
-          : t('continue')
+        ? t('set-token-allowance', { token: 'DAI' })
+        : t('continue')
 
     case 'collateralAllowanceSuccess':
       return state.insufficientDaiAllowance

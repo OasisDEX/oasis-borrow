@@ -24,7 +24,7 @@ export const notRequiredMethods: Pick<
   'getExecutionPrice' | 'prepareAddStopLossTriggerData'
 > = {
   getExecutionPrice: () => zero,
-  prepareAddStopLossTriggerData: () => ({}) as AutomationAddTriggerData,
+  prepareAddStopLossTriggerData: () => ({} as AutomationAddTriggerData),
 }
 
 export const notRequiredAaveTranslations: Pick<

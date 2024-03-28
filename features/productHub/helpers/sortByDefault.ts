@@ -16,8 +16,8 @@ function sortByProductValue(
           .times(asc)
           .toNumber()
       : a[param]
-        ? -1
-        : 1,
+      ? -1
+      : 1,
   )
 }
 

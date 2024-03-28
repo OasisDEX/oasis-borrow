@@ -25,10 +25,10 @@ const multiplyContext = React.createContext<ProductContextWithMultiply | undefin
 type PickProductType<T extends OmniProductType> = T extends OmniProductType.Borrow
   ? ProductContextWithBorrow
   : T extends OmniProductType.Earn
-    ? ProductContextWithEarn
-    : T extends OmniProductType.Multiply
-      ? ProductContextWithMultiply
-      : never
+  ? ProductContextWithEarn
+  : T extends OmniProductType.Multiply
+  ? ProductContextWithMultiply
+  : never
 
 export function useOmniProductContext<T extends OmniProductType>(
   productType: T,
@@ -39,8 +39,8 @@ export function useOmniProductContext<T extends OmniProductType>(
     productType === OmniProductType.Borrow
       ? useContext(borrowContext)
       : productType === OmniProductType.Earn
-        ? useContext(earnContext)
-        : useContext(multiplyContext)
+      ? useContext(earnContext)
+      : useContext(multiplyContext)
 
   if (productType !== environment.productType)
     throw new Error(

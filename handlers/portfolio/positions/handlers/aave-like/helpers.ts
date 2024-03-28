@@ -128,7 +128,9 @@ export const commonDataMapper = ({
       AAVE_V3: 'aave/v3',
       Spark: 'spark',
     }[dpm.protocol]
-  }/${positionType}/${primaryTokenSymbol.toLocaleLowerCase()}-${secondaryTokenSymbol.toLocaleLowerCase()}/${dpm.vaultId}`
+  }/${positionType}/${primaryTokenSymbol.toLocaleLowerCase()}-${secondaryTokenSymbol.toLocaleLowerCase()}/${
+    dpm.vaultId
+  }`
   const regularUrl = `/${networksById[dpm.networkId].name.toLowerCase()}/${
     {
       AAVE_V3: 'aave',

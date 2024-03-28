@@ -104,12 +104,12 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           liquidationRatio: targetPosition.category.liquidationThreshold,
         })
       : onChainPosition
-        ? calculateLiquidationPrice({
-            collateral: onChainPosition.collateral,
-            debt: onChainPosition.debt,
-            liquidationRatio: onChainPosition.category.liquidationThreshold,
-          })
-        : { liquidationPriceInDebt: zero, liquidationPriceInCollateral: zero }
+      ? calculateLiquidationPrice({
+          collateral: onChainPosition.collateral,
+          debt: onChainPosition.debt,
+          liquidationRatio: onChainPosition.category.liquidationThreshold,
+        })
+      : { liquidationPriceInDebt: zero, liquidationPriceInCollateral: zero }
 
     const { strategyConfig } = state.context
 
@@ -186,8 +186,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             return onChainPosition
               ? viewConfig.rightBoundary.formatter(value)
               : hasUserInteracted(state)
-                ? viewConfig.rightBoundary.formatter(value)
-                : '-'
+              ? viewConfig.rightBoundary.formatter(value)
+              : '-'
           }}
           rightLabel={t(viewConfig.rightBoundary.translationKey)}
           onChange={(ltv) => {

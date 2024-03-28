@@ -117,14 +117,14 @@ export const AjnaEarnFormOrderInformation: FC = () => {
               },
             ]
           : isFlowStateReady
-            ? [
-                {
-                  label: t('system.max-transaction-cost'),
-                  value: <OmniGasEstimation />,
-                  isLoading,
-                },
-              ]
-            : []),
+          ? [
+              {
+                label: t('system.max-transaction-cost'),
+                value: <OmniGasEstimation />,
+                isLoading,
+              },
+            ]
+          : []),
       ]}
     />
   )

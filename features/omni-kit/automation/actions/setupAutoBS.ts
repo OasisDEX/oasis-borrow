@@ -38,8 +38,8 @@ export const setupAutoBS = ({
     existingAutoBSTrigger && 'minSellPrice' in existingAutoBSTrigger
       ? existingAutoBSTrigger?.minSellPrice
       : existingAutoBSTrigger && 'maxBuyPrice' in existingAutoBSTrigger
-        ? existingAutoBSTrigger?.maxBuyPrice
-        : undefined
+      ? existingAutoBSTrigger?.maxBuyPrice
+      : undefined
 
   const isTriggerEnabledWithNoThreshold =
     (existingAutoBSTrigger &&
@@ -52,8 +52,8 @@ export const setupAutoBS = ({
   const usePrice = isBoolean(automationState.useThreshold)
     ? automationState.useThreshold
     : existingAutoBSTrigger
-      ? !isTriggerEnabledWithNoThreshold
-      : autoBuySellConstants.defaultToggle
+    ? !isTriggerEnabledWithNoThreshold
+    : autoBuySellConstants.defaultToggle
 
   const price = usePrice ? (statePrice || currentPrice)?.times(lambdaPriceDenomination) : undefined
 

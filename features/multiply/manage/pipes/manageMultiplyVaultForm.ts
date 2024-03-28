@@ -28,8 +28,8 @@ export function applyManageVaultForm(
     const requiredCollRatio = isDepositAction
       ? requiredCollRatioAtDeposit
       : isWithdrawAction
-        ? requiredCollRatioAtWithdraw
-        : undefined
+      ? requiredCollRatioAtWithdraw
+      : undefined
 
     return {
       ...state,

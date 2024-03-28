@@ -39,7 +39,7 @@ export function createEthersTransactionStateMachine<TParameters, TResult = unkno
         etherscanUrl: '',
         transactionParameters: {} as TParameters,
         transaction: () => Promise.resolve({} as ethers.ContractTransaction),
-        extract: () => ({}) as TResult,
+        extract: () => ({} as TResult),
       },
       schema: {
         context: {} as EthersTransactionStateMachineContext<TParameters, TResult>,

@@ -25,15 +25,15 @@ export function getTotalStepsForOpenVaultFlow({
     (!proxyAddress && !hasAllowance) || withProxyStep
       ? 5
       : !hasAllowance || withAllowanceStep
-        ? 4
-        : 3
+      ? 4
+      : 3
 
   const stepsWithoutSlAndWithOtherToken =
     (!proxyAddress && !hasAllowance) || withProxyStep
       ? 4
       : !hasAllowance || withAllowanceStep
-        ? 3
-        : 2
+      ? 3
+      : 2
 
   const stepsWithSlAndWithETH = !proxyAddress || withProxyStep ? 4 : 3
 
@@ -42,8 +42,8 @@ export function getTotalStepsForOpenVaultFlow({
   return withStopLossStep && isEthToken
     ? stepsWithSlAndWithETH
     : !withStopLossStep && isEthToken
-      ? stepsWithoutSlAndWithETH
-      : withStopLossStep && !isEthToken
-        ? stepsWithSlAndWithOtherToken
-        : stepsWithoutSlAndWithOtherToken
+    ? stepsWithoutSlAndWithETH
+    : withStopLossStep && !isEthToken
+    ? stepsWithSlAndWithOtherToken
+    : stepsWithoutSlAndWithOtherToken
 }

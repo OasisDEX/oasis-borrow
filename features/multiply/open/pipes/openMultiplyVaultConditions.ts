@@ -68,8 +68,8 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         currentStep: openingEmptyVault
           ? totalSteps - 1
           : withStopLossStage
-            ? totalSteps - (token === 'ETH' ? 2 : 3)
-            : totalSteps - (token === 'ETH' ? 1 : 2),
+          ? totalSteps - (token === 'ETH' ? 2 : 3)
+          : totalSteps - (token === 'ETH' ? 1 : 2),
         withProxyStep: true,
       }
     case 'allowanceWaitingForConfirmation':

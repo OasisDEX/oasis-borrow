@@ -73,8 +73,8 @@ export const getNavProductsPanel = ({
                       item.primaryToken === item.secondaryToken
                         ? [item.primaryToken]
                         : item.reverseTokens
-                          ? [item.secondaryToken, item.primaryToken]
-                          : [item.primaryToken, item.secondaryToken],
+                        ? [item.secondaryToken, item.primaryToken]
+                        : [item.primaryToken, item.secondaryToken],
                     position: 'global',
                   }),
                   description:
@@ -84,14 +84,14 @@ export const getNavProductsPanel = ({
                           token: item.primaryToken,
                         })
                       : item.earnStrategy === EarnStrategies.yield_loop
-                        ? t('nav.earn-on-yield-loop-strategy', {
-                            token: item.primaryToken,
-                            protocol: item.protocol.toUpperCase(),
-                          })
-                        : t('nav.earn-on-liquidity-provision-strategy', {
-                            token: item.primaryToken,
-                            protocol: item.protocol.toUpperCase(),
-                          }),
+                      ? t('nav.earn-on-yield-loop-strategy', {
+                          token: item.primaryToken,
+                          protocol: item.protocol.toUpperCase(),
+                        })
+                      : t('nav.earn-on-liquidity-provision-strategy', {
+                          token: item.primaryToken,
+                          protocol: item.protocol.toUpperCase(),
+                        }),
                   tags: [
                     [
                       item.earnStrategy === EarnStrategies.erc_4626

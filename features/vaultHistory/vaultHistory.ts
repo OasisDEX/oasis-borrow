@@ -199,7 +199,7 @@ export function getOverrideTriggers(events: VaultHistoryEvent[]) {
             removeTriggerData: [unpackTriggerDataForHistory(item)],
             eventType: 'removed',
             autoKind: item.kind,
-          }) as VaultHistoryEvent,
+          } as VaultHistoryEvent),
       ),
     ]
   }
@@ -235,36 +235,33 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
 export function mapAutomationEvents(events: VaultHistoryEvent[]) {
   const groupedByHash = groupHistoryEventsByHash(events)
 
-  const wrappedByHash = Object.keys(groupedByHash).reduce(
-    (acc, key) => {
-      const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
-      const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
-      const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
-      const overrideEvents = getOverrideTriggers(groupedByHash[key])
+  const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
+    const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
+    const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
+    const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
+    const overrideEvents = getOverrideTriggers(groupedByHash[key])
 
-      if (overrideEvents) {
-        return { ...acc, [key]: overrideEvents }
+    if (overrideEvents) {
+      return { ...acc, [key]: overrideEvents }
+    }
+
+    if (updateTriggerEvent) {
+      return { ...acc, [key]: [updateTriggerEvent] }
+    }
+
+    if (executeTriggerEvent) {
+      return {
+        ...acc,
+        [key]: [executeTriggerEvent],
       }
+    }
 
-      if (updateTriggerEvent) {
-        return { ...acc, [key]: [updateTriggerEvent] }
-      }
+    if (addOrRemoveEvent) {
+      return { ...acc, [key]: [addOrRemoveEvent] }
+    }
 
-      if (executeTriggerEvent) {
-        return {
-          ...acc,
-          [key]: [executeTriggerEvent],
-        }
-      }
-
-      if (addOrRemoveEvent) {
-        return { ...acc, [key]: [addOrRemoveEvent] }
-      }
-
-      return { ...acc, [key]: groupedByHash[key] }
-    },
-    {} as Record<string, VaultHistoryEvent[]>,
-  )
+    return { ...acc, [key]: groupedByHash[key] }
+  }, {} as Record<string, VaultHistoryEvent[]>)
 
   return flatten(Object.values(wrappedByHash))
 }

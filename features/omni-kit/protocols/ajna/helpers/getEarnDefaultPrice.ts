@@ -5,6 +5,6 @@ export const getEarnDefaultPrice = (position: AjnaEarnPosition) => {
   return position.price.gt(zero)
     ? position.price
     : !position.pool.lowestUtilizedPriceIndex.isZero()
-      ? position.pool.lowestUtilizedPrice
-      : undefined
+    ? position.pool.lowestUtilizedPrice
+    : undefined
 }
