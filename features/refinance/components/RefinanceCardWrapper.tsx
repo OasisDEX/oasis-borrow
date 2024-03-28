@@ -8,7 +8,15 @@ interface RefinanceCardWrapperProps {
 
 export const RefinanceCardWrapper: FC<RefinanceCardWrapperProps> = ({ children, sx }) => (
   <Card
-    sx={{ backgroundColor: 'neutral30', flex: 1, px: '24px', py: '28px', maxWidth: '365px', ...sx }}
+    sx={{
+      backgroundColor: 'neutral30',
+      flex: 1,
+      px: '24px',
+      py: '28px',
+      maxWidth: '365px',
+      height: 'fit-content',
+      ...sx,
+    }}
   >
     {children}
   </Card>

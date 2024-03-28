@@ -15,8 +15,8 @@ const rewriteRules = () => [
     destination: `${process.env.FUNCTIONS_API_URL}/api/migrations`,
   },
   {
-    source: '/api/sdk',
-    destination: `${process.env.FUNCTIONS_API_URL}/api/sdk`,
+    source: '/api/sdk/:path*',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/sdk/:path*`,
   },
   {
     source: '/api/morpho/:path*',

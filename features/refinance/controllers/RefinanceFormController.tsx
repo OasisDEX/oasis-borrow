@@ -1,7 +1,8 @@
 import {
+  RefinanceProductTableStep,
   // RefinanceStrategyStep,
   // RefinanceWhatsChangingStep,
-  RefinanceTransactionStep,
+  // RefinanceTransactionStep,
 } from 'features/refinance/components/steps'
 import { RefinanceFormView } from 'features/refinance/views'
 import React from 'react'
@@ -11,7 +12,8 @@ export const RefinanceFormController = () => {
     <RefinanceFormView>
       {/*<RefinanceStrategyStep />*/}
       {/*<RefinanceWhatsChangingStep />*/}
-      <RefinanceTransactionStep />
+      {/*<RefinanceTransactionStep />*/}
+      <RefinanceProductTableStep />
     </RefinanceFormView>
   )
 }

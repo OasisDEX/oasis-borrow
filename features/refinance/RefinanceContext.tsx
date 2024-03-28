@@ -1,12 +1,13 @@
 import type { PropsWithChildren } from 'react'
-import React from 'react'
-import type { AddressValue, ChainInfo, PositionId } from 'summerfi-sdk-common'
+import React, { useContext } from 'react'
+import type { AddressValue, ChainInfo, IPoolId, PositionId } from 'summerfi-sdk-common'
 import { getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
 
 import { mapTokenToSdkToken } from './mapTokenToSdkToken'
 
 export type RefinanceContextInput = {
   positionId: PositionId
+  poolId: IPoolId
   collateralTokenSymbol: string
   debtTokenSymbol: string
   collateralAmount: string
@@ -20,6 +21,7 @@ export type RefinanceContextInput = {
 
 export type RefinanceContext = {
   positionId: PositionId
+  poolId: IPoolId
   collateralTokenAmount: TokenAmount
   debtTokenAmount: TokenAmount
   collateralPrice: string
@@ -31,6 +33,15 @@ export type RefinanceContext = {
 }
 
 export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
+
+export const useRefinanceContext = () => {
+  const context = useContext(refinanceContext)
+
+  if (!context) {
+    throw new Error('RefinanceContextProvider is missing in the hierarchy')
+  }
+  return context
+}
 
 interface RefinanceContextProviderProps {
   contextInput: RefinanceContextInput
@@ -50,6 +61,7 @@ export function RefinanceContextProvider({
     tokenPrices,
     liquidationPrice,
     positionId,
+    poolId,
     slippage,
   } = contextInput
   const chainInfo = getChainInfoByChainId(chainId)
@@ -82,6 +94,7 @@ export function RefinanceContextProvider({
       debtTokenAmount,
       liquidationPrice,
       positionId,
+      poolId,
       slippage,
     }),
     [
@@ -93,6 +106,7 @@ export function RefinanceContextProvider({
       debtTokenAmount,
       liquidationPrice,
       positionId,
+      poolId,
       slippage,
     ],
   )

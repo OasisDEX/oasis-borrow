@@ -166,28 +166,28 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
               <DeferedContextProvider context={preloadAppDataContext}>
                 <MainContextProvider>
                   <DeferedContextProvider context={mainContext}>
-                    <ModalProvider>
-                      <Web3OnBoardConnectorProvider>
-                        <Web3ReactProvider {...{ getLibrary }}>
-                          <SetupWeb3Context>
-                            <SharedUIProvider>
-                              <TopBannerDynamic />
-                              <AccountContextProvider>
-                                <MigrationsProvider>
-                                  <DeferedContextProvider context={accountContext}>
+                    <Web3OnBoardConnectorProvider>
+                      <Web3ReactProvider {...{ getLibrary }}>
+                        <SetupWeb3Context>
+                          <SharedUIProvider>
+                            <TopBannerDynamic />
+                            <AccountContextProvider>
+                              <MigrationsProvider>
+                                <DeferedContextProvider context={accountContext}>
+                                  <ModalProvider>
                                     <Component {...pageProps} />
                                     <CookieBannerDynamic
                                       setValue={cookiesSetValue}
                                       value={cookiesValue}
                                     />
-                                  </DeferedContextProvider>
-                                </MigrationsProvider>
-                              </AccountContextProvider>
-                            </SharedUIProvider>
-                          </SetupWeb3Context>
-                        </Web3ReactProvider>
-                      </Web3OnBoardConnectorProvider>
-                    </ModalProvider>
+                                  </ModalProvider>
+                                </DeferedContextProvider>
+                              </MigrationsProvider>
+                            </AccountContextProvider>
+                          </SharedUIProvider>
+                        </SetupWeb3Context>
+                      </Web3ReactProvider>
+                    </Web3OnBoardConnectorProvider>
                   </DeferedContextProvider>
                 </MainContextProvider>
               </DeferedContextProvider>
