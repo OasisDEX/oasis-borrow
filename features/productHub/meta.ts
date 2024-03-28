@@ -75,7 +75,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
   BTC: {
     title: 'Bitcoin',
-    description: 'WBTC/TBTC',
+    description: 'WBTC',
     value: 'BTC',
     icon: btc_circle_color,
   },
@@ -103,6 +103,30 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'SUSDE',
     icon: getToken('SUSDE').iconCircle,
   },
+  USDT: {
+    title: 'USDT stablecoin',
+    description: 'USDT',
+    value: 'USDT',
+    icon: getToken('USDT').iconCircle,
+  },
+  MKR: {
+    title: 'MKR MakerDAO',
+    description: 'MKR',
+    value: 'MKR',
+    icon: getToken('MKR').iconCircle,
+  },
+  LINK: {
+    title: 'Chainlink LINK',
+    description: 'LINK',
+    value: 'LINK',
+    icon: getToken('LINK').iconCircle,
+  },
+  LDO: {
+    title: 'Lido LDO',
+    description: 'LDO',
+    value: 'LDO',
+    icon: getToken('LDO').iconCircle,
+  },
 }
 
 export const productHubOptionsMapBase: {
@@ -118,9 +142,13 @@ export const productHubOptionsMapBase: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      USDT: productHubTokenOptions.USDT,
       DAI: productHubTokenOptions.DAI,
-      YFI: productHubTokenOptions.YFI,
       SUSDE: productHubTokenOptions.SUSDE,
+      MKR: productHubTokenOptions.MKR,
+      LINK: productHubTokenOptions.LINK,
+      LDO: productHubTokenOptions.LDO,
+      YFI: productHubTokenOptions.YFI,
     },
   },
   multiply: {
@@ -130,9 +158,13 @@ export const productHubOptionsMapBase: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      USDT: productHubTokenOptions.USDT,
       DAI: productHubTokenOptions.DAI,
-      YFI: productHubTokenOptions.YFI,
       SUSDE: productHubTokenOptions.SUSDE,
+      MKR: productHubTokenOptions.MKR,
+      LINK: productHubTokenOptions.LINK,
+      LDO: productHubTokenOptions.LDO,
+      YFI: productHubTokenOptions.YFI,
     },
   },
   earn: {
@@ -142,8 +174,13 @@ export const productHubOptionsMapBase: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      USDT: productHubTokenOptions.USDT,
       DAI: productHubTokenOptions.DAI,
       SUSDE: productHubTokenOptions.SUSDE,
+      MKR: productHubTokenOptions.MKR,
+      LINK: productHubTokenOptions.LINK,
+      LDO: productHubTokenOptions.LDO,
+      YFI: productHubTokenOptions.YFI,
     },
   },
 }
