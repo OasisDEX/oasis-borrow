@@ -3,6 +3,10 @@ import { FlowSidebar } from 'components/FlowSidebar'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import {
+  VaultChangesInformationContainer,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
 import { ethers } from 'ethers'
 import { OmniDupePositionModal } from 'features/omni-kit/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -16,6 +20,7 @@ import {
 import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
+import { getLocalAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
@@ -98,6 +103,7 @@ export function OmniFormView({
   const { walletAddress } = useAccount()
   const { openModal } = useModalContext()
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
+  const { OmniKitDebug } = getLocalAppConfig('features')
 
   const genericSidebarTitle = useOmniSidebarTitle()
 
@@ -255,6 +261,19 @@ export function OmniFormView({
       <Grid gap={3}>
         {sidebarContent}
         {children}
+        {OmniKitDebug && resolvedId && (
+          <VaultChangesInformationContainer title="DPM debug data">
+            <VaultChangesInformationItem label="DPM ID" value={resolvedId} />
+            <VaultChangesInformationItem
+              label="Address"
+              value={
+                flowState.availableProxies.length
+                  ? flowState.availableProxies[0]
+                  : ethers.constants.AddressZero
+              }
+            />
+          </VaultChangesInformationContainer>
+        )}
       </Grid>
     ),
     primaryButton: {
