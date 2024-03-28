@@ -3,16 +3,17 @@ import React, { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
 import type {
-  IPoolId,
   IRefinanceParameters,
   Position,
   Simulation,
   SimulationType,
+  SparkPoolId,
 } from 'summerfi-sdk-common'
 import {
   Address,
   AddressType,
   CurrencySymbol,
+  EmodeType,
   getChainInfoByChainId,
   Percentage,
   Price,
@@ -32,8 +33,10 @@ export function useSdkSimulation() {
 
   const context = React.useContext(refinanceContext)
 
-  const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
+  // TODO: This should be dynamic based on the assets pair
+  const emodeType: EmodeType = EmodeType.ETHCorrelated
 
+  const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +45,7 @@ export function useSdkSimulation() {
       }
       const {
         positionId,
+        poolId,
         slippage,
         chainInfo,
         liquidationPrice: _liquidationPrice,
@@ -51,8 +55,15 @@ export function useSdkSimulation() {
         debtPrice,
         address,
       } = context
-
       setLiquidationPrice(_liquidationPrice)
+
+      const targetPoolId: SparkPoolId = {
+        protocol: {
+          name: ProtocolName.Spark,
+          chainInfo,
+        },
+        emodeType,
+      }
 
       if (address === undefined) {
         throw new Error('Wallet is not connected')
@@ -81,14 +92,8 @@ export function useSdkSimulation() {
       if (!makerProtocol) {
         throw new Error(`Protocol ${ProtocolName.Maker} is not supported`)
       }
-      const sourcePool = await makerProtocol.getPool({
-        poolId: {
-          protocol: {
-            name: ProtocolName.Maker,
-            chainInfo,
-          },
-        } as IPoolId,
-      })
+
+      const sourcePool = await makerProtocol.getPool({ poolId })
 
       const ltv = PositionUtils.getLTV({
         collateralTokenAmount,
@@ -119,13 +124,9 @@ export function useSdkSimulation() {
       if (!sparkProtocol) {
         throw new Error(`Protocol ${ProtocolName.Spark} is not supported`)
       }
+
       const targetPool = await sparkProtocol.getPool({
-        poolId: {
-          protocol: {
-            name: ProtocolName.Spark,
-            chainInfo,
-          },
-        } as IPoolId,
+        poolId: targetPoolId,
       })
 
       const refinanceParameters: IRefinanceParameters = {
@@ -141,7 +142,7 @@ export function useSdkSimulation() {
     void fetchData().catch((err) => {
       setError(err.message)
     })
-  }, [sdk, context])
+  }, [sdk, context, emodeType])
 
   return { error, user, chain, sourcePosition, simulation, liquidationPrice }
 }
