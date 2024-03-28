@@ -1,4 +1,5 @@
-export * from './getDpmPositionData'
-export * from './sendOmniTransaction'
 export * from './estimateOmniGas'
+export * from './getDpmPositionData'
 export * from './omniExchangeQuote'
+export * from './sendOmniTransaction'
+export * from './submitGenericOmniTransaction'

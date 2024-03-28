@@ -1,3 +1,4 @@
+export * from './getMetaMorphoClaims'
 export * from './getMorphoCumulatives'
 export * from './getMorphoParameters'
 export * from './getMorphoWithdrawCollateralMax'

@@ -6,6 +6,7 @@ import { Erc4626HeadlineApy } from 'features/omni-kit/protocols/erc-4626/compone
 import {
   Erc4626DetailsSectionContent,
   Erc4626DetailsSectionContentAllocation,
+  Erc4626DetailsSectionContentRewards,
   Erc4626DetailsSectionFooter,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import {
@@ -121,8 +122,8 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
           overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: (
             <>
+              <Erc4626DetailsSectionContentRewards />
               <Erc4626DetailsSectionContentAllocation />
-              {/* TODO: display rewards */}
             </>
           ),
           overviewWithSimulation: true,

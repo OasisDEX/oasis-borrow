@@ -2,7 +2,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
-import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
+import { type Erc4626Config, Erc4626RewardsType } from 'features/omni-kit/protocols/erc-4626/types'
 import type { OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -107,6 +107,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     pricePicker: morphoPricePicker,
     protocol: LendingProtocol.MorphoBlue,
     rewards: [morphoRewards, wstethRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
@@ -123,6 +124,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
     rewards: [morphoRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.PYUSD.address,
@@ -139,6 +141,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
     rewards: [morphoRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDT.address,
@@ -155,6 +158,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
     rewards: [morphoRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'MetaMorpho Lending',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address,
