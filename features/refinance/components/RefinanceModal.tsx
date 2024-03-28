@@ -14,11 +14,8 @@ export const RefinanceModal = () => {
   const { closeModal } = useModalContext()
 
   return (
-    <Modal
-      sx={{ maxWidth: ['auto', '1200px'], maxHeight: ['auto', '800px'], margin: '0 auto' }}
-      close={closeModal}
-    >
-      <Flex sx={{ flexDirection: 'column', m: 3 }}>
+    <Modal sx={{ margin: '0 auto' }} close={closeModal}>
+      <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
         <RefinanceHeader />
         {/* FOR NOW DUMMY CONTENT AND STYLING */}
         <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
@@ -49,7 +46,7 @@ export const RefinanceModal = () => {
             }}
           />
           <RefinanceFormController />
-          <RefinancePositionView type={RefinancePositionViewType.EMPTY} />
+          {/*<RefinancePositionView type={RefinancePositionViewType.EMPTY} />*/}
           {/*<RefinanceAbout />*/}
         </Flex>
       </Flex>

@@ -2,14 +2,11 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import React from 'react'
 
-import { refinanceContext } from './RefinanceContext'
+import { useRefinanceContext } from './RefinanceContext'
 import { useSdkSimulation } from './useSdkSimulation'
 
 export function RefinanceController() {
-  const context = React.useContext(refinanceContext)
-  if (context === undefined) {
-    throw new Error('RefinanceContextProvider is missing in the hierarchy')
-  }
+  const context = useRefinanceContext()
 
   // TODO: wallet not connected, add better handling
   if (context.address === undefined) {

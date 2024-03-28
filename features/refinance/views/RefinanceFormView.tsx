@@ -9,7 +9,7 @@ export const RefinanceFormView: FC = ({ children }) => {
   const { t } = useTranslation()
 
   const isPrimaryButtonLoading = false
-  const isPrimaryButtonHidden = false
+  const isPrimaryButtonHidden = true
   const isTextButtonHidden = true
 
   const suppressValidation = false
@@ -44,6 +44,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     },
     status: undefined,
     withMobilePanel: false,
+    disableMaxHeight: true,
   }
 
   return (

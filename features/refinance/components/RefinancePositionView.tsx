@@ -46,7 +46,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   const { t } = useTranslation()
   if (props.type === RefinancePositionViewType.EMPTY) {
     return (
-      <RefinanceCardWrapper>
+      <RefinanceCardWrapper sx={{ height: ['auto', '522px'] }}>
         <Flex
           sx={{
             flexDirection: 'column',

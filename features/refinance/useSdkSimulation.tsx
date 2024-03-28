@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { type Chain, makeSDK, PositionUtils, type User } from 'summerfi-sdk-client'
 import type {
   AddressValue,
@@ -40,10 +40,14 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     debtPrice,
   } = context
 
-  const sdk = makeSDK({ apiURL: '/api/sdk' })
-  const wallet = Wallet.createFrom({
-    address: Address.createFrom({ value: address, type: AddressType.Ethereum }),
-  })
+  const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
+  const wallet = useMemo(
+    () =>
+      Wallet.createFrom({
+        address: Address.createFrom({ value: address, type: AddressType.Ethereum }),
+      }),
+    [address],
+  )
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +66,7 @@ export function useSdkSimulation(context: RefinanceContext, address: AddressValu
     void fetchData().catch((err) => {
       setError(err.message)
     })
-  }, [sdk, address, wallet, chainInfo.chainId])
+  }, [sdk, wallet, chainInfo.chainId])
 
   useEffect(() => {
     // TODO: grab from protocol.getPool

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import React from 'react'
+import React, { useContext } from 'react'
 import type { AddressValue, ChainInfo, PositionId } from 'summerfi-sdk-common'
 import { getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
 
@@ -31,6 +31,15 @@ export type RefinanceContext = {
 }
 
 export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
+
+export const useRefinanceContext = () => {
+  const context = useContext(refinanceContext)
+
+  if (!context) {
+    throw new Error('RefinanceContextProvider is missing in the hierarchy')
+  }
+  return context
+}
 
 interface RefinanceContextProviderProps {
   contextInput: RefinanceContextInput

@@ -6,6 +6,9 @@ import type { FollowButtonControlProps } from 'features/follow/controllers/Follo
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
+import { RefinanceModal } from 'features/refinance/components'
+import { useAppConfig } from 'helpers/config'
+import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
@@ -26,7 +29,8 @@ export function GeneralManageLayout({
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
-
+  const { openModal } = useModalContext()
+  const { EnableRefinance: refinanceEnabled } = useAppConfig('features')
   const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
 
   const showAutomationTabs = isSupportedAutomationIlk(chainId, vault.ilk)
@@ -55,6 +59,8 @@ export function GeneralManageLayout({
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
+      {/* In general it shouldn't be here but it's here to ease development for now */}
+      {refinanceEnabled && <button onClick={() => openModal(RefinanceModal, {})}>Refinance</button>}
       <VaultNoticesView id={vault.id} />
       <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>
       <GeneralManageTabBar
