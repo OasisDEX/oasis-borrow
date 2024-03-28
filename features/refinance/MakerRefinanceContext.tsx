@@ -1,8 +1,8 @@
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
-import type { ILKType, MakerPoolId, PositionId } from 'summerfi-sdk-common'
-import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
+import type { MakerPoolId, PositionId } from 'summerfi-sdk-common'
+import { getChainInfoByChainId, ILKType, ProtocolName } from 'summerfi-sdk-common'
 
 import { type RefinanceContextInput, RefinanceContextProvider } from './RefinanceContext'
 
@@ -36,7 +36,9 @@ export function MakerRefinanceContext({
       chainInfo,
     },
     vaultId: vault.id.toString(),
-    ilkType,
+    // ilkType
+    // TODO: hardcoded as endpoint is not supporting all ilks and failing
+    ilkType: ILKType.ETH_A,
   }
   const collateralTokenSymbol = vault.token
   const debtTokenSymbol = 'DAI'
