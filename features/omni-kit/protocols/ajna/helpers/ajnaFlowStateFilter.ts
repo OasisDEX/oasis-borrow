@@ -9,8 +9,9 @@ export function ajnaFlowStateFilter({
   quoteAddress,
   protocolRaw,
   protocol,
-}: OmniFlowStateFilterParams): boolean {
-  return (
+  filterConsumed,
+}: OmniFlowStateFilterParams): Promise<boolean> {
+  const ajnaFilterValue =
     extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
     event.args.protocol === protocolRaw &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
@@ -21,5 +22,6 @@ export function ajnaFlowStateFilter({
         omniBorrowishProducts.includes(
           event.args.positionType.toLocaleLowerCase() as OmniProductType,
         )))
-  )
+
+  return Promise.resolve(filterConsumed ? !ajnaFilterValue : ajnaFilterValue)
 }

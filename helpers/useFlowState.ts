@@ -32,7 +32,7 @@ export type UseFlowStateProps = {
   amount?: BigNumber
   allowanceAmount?: BigNumber
   existingProxy?: string
-  filterConsumedProxy?: (events: CreatePositionEvent[]) => boolean
+  filterConsumedProxy?: (events: CreatePositionEvent[]) => Promise<boolean>
   onEverythingReady?: UseFlowStateCBType
   onGoBack?: UseFlowStateCBType
   onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
@@ -147,19 +147,29 @@ export function useFlowState({
         proxyId: vaultId,
         events: await getPositionCreatedEventForProxyAddress(networkId, proxy),
       })),
-    ).subscribe((userProxyEventsList) => {
-      if (onProxiesAvailable && userProxyEventsList.length > 0)
+    ).subscribe(async (userProxyEventsList) => {
+      if (onProxiesAvailable && userProxyEventsList.length > 0) {
         onProxiesAvailable(
           userProxyEventsList.flatMap(({ events }) => events),
           userProxyList,
         )
-      setAvailableProxies(
-        userProxyEventsList
-          .filter(({ events }) =>
-            events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
-          )
-          .map(({ proxyAddress }) => proxyAddress),
+      }
+      const filteredProxiesList = await Promise.all(
+        userProxyEventsList.map(async (proxyEvent) => {
+          if (proxyEvent.events.length === 0) {
+            return Promise.resolve(proxyEvent)
+          }
+          if (filterConsumedProxy) {
+            const filtered = await filterConsumedProxy(proxyEvent.events)
+            return filtered ? Promise.resolve(proxyEvent) : Promise.resolve(false)
+          }
+          return Promise.resolve(false)
+        }),
       )
+      const filteredAndSortedproxiesList = (
+        filteredProxiesList.filter(Boolean) as typeof userProxyEventsList
+      ).sort((aproxy, bproxy) => Number(aproxy.proxyId) - Number(bproxy.proxyId))
+      setAvailableProxies(filteredAndSortedproxiesList.map(({ proxyAddress }) => proxyAddress))
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()

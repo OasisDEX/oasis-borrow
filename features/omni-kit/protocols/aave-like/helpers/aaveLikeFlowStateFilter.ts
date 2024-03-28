@@ -1,15 +1,49 @@
+import { getAaveV3UserAccountData } from 'blockchain/aave-v3'
+import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
+import type { NetworkIds } from 'blockchain/networks'
+import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
+import { getSparkV3UserAccountData } from 'blockchain/spark-v3'
 import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import type { OmniFlowStateFilterParams } from 'features/omni-kit/types'
+import { LendingProtocol } from 'lendingProtocols'
 
-export function aaveLikeFlowStateFilter({
+export async function aaveLikeFlowStateFilter({
   event,
   collateralAddress,
   quoteAddress,
   protocol,
-}: OmniFlowStateFilterParams): boolean {
-  return (
+  networkId,
+  // we ignore filterConsumed because we dont want ANY positions with aave/spark debt
+  // so it doesnt matter if we're filtering all/used proxies
+  filterConsumed: _filterConsumed,
+}: OmniFlowStateFilterParams & {
+  networkId: NetworkIds
+}): Promise<boolean> {
+  // if its spark/aave we need to check that because we cant mix them
+  if (
+    (protocol === LendingProtocol.AaveV3 &&
+      extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.SparkV3) ||
+    (protocol === LendingProtocol.SparkV3 &&
+      extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.AaveV3)
+  ) {
+    return Promise.resolve(false)
+  }
+  if (
     extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase()
-  )
+  ) {
+    const userData =
+      protocol === LendingProtocol.AaveV3
+        ? await getAaveV3UserAccountData({
+            address: event.args.proxyAddress,
+            networkId: networkId as AaveV3SupportedNetwork,
+          })
+        : await getSparkV3UserAccountData({
+            address: event.args.proxyAddress,
+            networkId: networkId as SparkV3SupportedNetwork,
+          })
+    return userData.totalDebtBase.isZero()
+  }
+  return Promise.resolve(false)
 }

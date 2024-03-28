@@ -79,7 +79,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
         validations,
         handlers: {},
         filters: {
-          flowStateFilter: (event) =>
+          omniProxyFilter: ({ event, filterConsumed }) =>
             erc4626FlowStateFilter({
               collateralAddress,
               event,
@@ -87,6 +87,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
               quoteAddress,
               protocol,
               protocolRaw: `erc4626-${vaultAddress.toLowerCase()}`,
+              filterConsumed,
             }),
         },
         values: {
