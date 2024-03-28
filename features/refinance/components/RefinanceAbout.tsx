@@ -35,7 +35,7 @@ export const RefinanceAbout: FC<RefinanceAboutProps> = ({ withNotice = true }) =
   const { t } = useTranslation()
 
   return (
-    <Flex sx={{ flex: 1, flexDirection: 'column', rowGap: 3, minWidth: '300px' }}>
+    <Flex sx={{ flex: 1, flexDirection: 'column', rowGap: 3, maxWidth: '365px' }}>
       {withNotice && <NewPositionNotice />}
       <Flex sx={{ px: '24px', flexDirection: 'column', rowGap: 3 }}>
         <Text as="h3" sx={{ fontWeight: 'semiBold', fontSize: 3 }}>

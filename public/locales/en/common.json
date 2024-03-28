@@ -1247,6 +1247,14 @@
     "ltv-short": "LTV",
     "liq-price-short": "Liq. Price",
     "borrow-rate": "Borrow Rate",
+    "borrow-cost": "Borrow Cost",
+    "collateral-asset": "Collateral asset",
+    "debt-asset": "Debt asset",
+    "swap": "Swap",
+    "price-impact": "Price impact",
+    "slippage": "Slippage",
+    "fee": "Fee",
+    "route": "Route",
     "automations": "Automations",
     "collateral-locked": "Collateral Locked",
     "collateral-ratio": "Collateral Ratio",
@@ -3661,6 +3669,47 @@
       "notice": {
         "title": "New Position",
         "description": "It will show the position you are migrating to here"
+      }
+    },
+    "sidebar": {
+      "why-refinance": {
+        "title": "Why refinance",
+        "description": "Choose why you want to refinance your position and then Summer.fi will show some suitable positions for you in the next step. <1>Learn more about Refinance -></1>",
+        "list": {
+          "title": "I want to",
+          "item-1": "Switch to higher max Loan To Value",
+          "item-2": "Switch to lower my cost",
+          "item-3": "Change direction of my position (long to short)",
+          "item-4": "Switch to an Earn position"
+        }
+      },
+      "whats-changing": {
+        "title": "What's changing",
+        "description": "We are going to refinance your position. You can refinance back to your original position anytime you want, but it will cost gas and swap fees again.",
+        "highlighted": {
+          "lowering-borrowing-cost": "Lowering Borrowing Cost",
+          "increase-to-higher-ltv": "Increase to higher ltv",
+          "change-direction": "Change direction",
+          "switch-to-earn": "Switch to Earn"
+        },
+        "review-all-changes": "Review all changes",
+        "route": {
+          "title": "Your position Swap transaction",
+          "item-1": "Closing your current position",
+          "item-2": "Performing collateral and debt swaps if needed",
+          "item-3": "Opening your new position"
+        },
+        "summerfi-fee": "Summer.fi Fee"
+      },
+      "transaction": {
+        "title": {
+          "success": "It's Done!",
+          "in-progress": "Refinancing..."
+        },
+        "description": {
+          "success": "Your ETH/DAI position (<1>#{{oldId}}</1>) refinanced to new ETH/USDC position (<2>#{{newId}}</2>) successfully.",
+          "in-progress": "Refinancing your position."
+        }
       }
     }
   }
