@@ -63,7 +63,7 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
   useEffect(() => {
     if (dpmProxy)
       void getErc4626Claims({
-        account: dpmProxy,
+        account: '0x2b5469940FA577BC4082c6940ee4D8E97fda1B42',
         rewardsType,
       }).then((data) => {
         if (data.claims.length > 1) setResponse(data)

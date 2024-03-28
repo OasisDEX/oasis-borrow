@@ -1,4 +1,8 @@
+import type { MorphoCloseClaimRewardsPayload } from '@oasisdex/dma-library'
+import { Network, strategies } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 
 interface GetMetaMorphoClaimsParams {
@@ -41,6 +45,28 @@ export async function getMetaMorphoClaims({ account }: GetMetaMorphoClaimsParams
       await fetch(`/api/morpho/claims?account=${account}`)
     ).json()) as MetaMorphoClaimsApiResponse
 
+    const tx = await strategies.morphoblue.common.claimRewards(
+      response.claimable.reduce<MorphoCloseClaimRewardsPayload>(
+        (total, { claimable, proof, reward: { address }, urd }) => ({
+          urds: [...total.urds, urd],
+          rewards: [...total.rewards, address],
+          claimable: [...total.claimable, new BigNumber(claimable)],
+          proofs: [...total.proofs, proof],
+        }),
+        {
+          urds: [],
+          rewards: [],
+          claimable: [],
+          proofs: [[]],
+        },
+      ),
+      {
+        network: Network.MAINNET,
+        operationExecutor: getNetworkContracts(NetworkIds.MAINNET).operationExecutor.address,
+        provider: getRpcProvider(NetworkIds.MAINNET),
+      },
+    )
+
     return {
       claims: response.claimsAggregated.map(
         ({ accrued, claimable, claimed, rewardToken: { address, decimals, symbol } }) => ({
@@ -50,12 +76,7 @@ export async function getMetaMorphoClaims({ account }: GetMetaMorphoClaimsParams
           claimable: amountFromWei(new BigNumber(claimable), decimals),
         }),
       ),
-      payload: {
-        claimable: response.claimable.map(({ claimable }) => new BigNumber(claimable)),
-        proofs: response.claimable.map(({ proof }) => proof),
-        rewards: response.claimable.map(({ reward: { address } }) => address),
-        urds: response.claimable.map(({ urd }) => urd),
-      },
+      tx,
     }
   } catch (e) {
     return {

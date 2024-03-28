@@ -17,7 +17,7 @@ interface Erc4626VaultRewardsProps extends Erc4626Claims {
   }
 }
 
-export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, prices }) => {
+export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, prices, tx }) => {
   const { t } = useTranslation()
 
   const rows = claims.reduce<AssetsTableRowData[]>(
@@ -72,7 +72,7 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
       accordionOpenByDefault
       footer={
         <Flex sx={{ justifyContent: 'flex-end' }}>
-          <Button sx={{ px: 4 }} variant="tertiary">
+          <Button sx={{ px: 4 }} variant="tertiary" disabled={!tx || claims.length === 0}>
             {t('claim')}
           </Button>
         </Flex>

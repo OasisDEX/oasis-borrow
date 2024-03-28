@@ -1,4 +1,4 @@
-import type { MorphoCloseClaimRewardsPayload } from '@oasisdex/dma-library'
+import type { Tx } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { Erc4626RewardsType } from 'features/omni-kit/protocols/erc-4626/types'
 import { getMetaMorphoClaims } from 'features/omni-kit/protocols/morpho-blue/helpers'
@@ -15,7 +15,7 @@ export interface Erc4626Claims {
     earned: BigNumber
     token: string
   }[]
-  payload?: MorphoCloseClaimRewardsPayload
+  tx?: Tx
 }
 
 export async function getErc4626Claims({
@@ -24,7 +24,7 @@ export async function getErc4626Claims({
 }: GetErc4626ClaimsParams): Promise<Erc4626Claims> {
   switch (rewardsType) {
     case Erc4626RewardsType.MetaMorpho:
-      return getMetaMorphoClaims({ account })
+      return await getMetaMorphoClaims({ account })
     default:
       return {
         claims: [],
