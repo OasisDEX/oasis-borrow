@@ -9,6 +9,12 @@ export function getTokenGroup(token: string): string {
     case 'STYETH':
     case 'WETH':
     case 'WSTETH':
+    case 'OSETH':
+    case 'XETH':
+    case 'DETH':
+    case 'APXETH':
+    case 'WEETH':
+    case 'EZETH':
     case 'YIELDETH':
       return 'ETH'
     case 'TBTC':
@@ -18,6 +24,7 @@ export function getTokenGroup(token: string): string {
     case 'SDAI':
       return 'DAI'
     case 'USDBC':
+    case 'USDC.E':
       return 'USDC'
     default:
       return token
