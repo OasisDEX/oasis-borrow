@@ -97,11 +97,11 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'YFI',
     icon: getToken('YFI').iconCircle,
   },
-  GHO: {
-    title: 'GHO stablecoin',
-    description: 'GHO',
-    value: 'GHO',
-    icon: getToken('GHO').iconCircle,
+  SUSDE: {
+    title: 'Ethena Staked USDe',
+    description: 'SUSDE',
+    value: 'SUSDE',
+    icon: getToken('SUSDE').iconCircle,
   },
 }
 
@@ -120,7 +120,7 @@ export const productHubOptionsMapBase: {
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       YFI: productHubTokenOptions.YFI,
-      GHO: productHubTokenOptions.GHO,
+      SUSDE: productHubTokenOptions.SUSDE,
     },
   },
   multiply: {
@@ -130,9 +130,9 @@ export const productHubOptionsMapBase: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
-      YFI: productHubTokenOptions.YFI,
       DAI: productHubTokenOptions.DAI,
-      GHO: productHubTokenOptions.GHO,
+      YFI: productHubTokenOptions.YFI,
+      SUSDE: productHubTokenOptions.SUSDE,
     },
   },
   earn: {
@@ -143,7 +143,7 @@ export const productHubOptionsMapBase: {
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
-      GHO: productHubTokenOptions.GHO,
+      SUSDE: productHubTokenOptions.SUSDE,
     },
   },
 }
