@@ -14,7 +14,9 @@ import { SidebarSectionHeader } from './SidebarSectionHeader'
 export interface SidebarSectionProps
   extends Omit<SidebarSectionHeaderProps, 'onSelect'>,
     Omit<SidebarSectionContentProps, 'activePanel'>,
-    SidebarSectionFooterProps {}
+    SidebarSectionFooterProps {
+  withMobilePanel?: boolean
+}
 
 export function SidebarSection({
   title,
@@ -28,42 +30,49 @@ export function SidebarSection({
   requiredChainHexId,
   requireConnection,
   disableMaxHeight,
+  withMobilePanel = true,
 }: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
   )
 
-  return (
-    <MobileSidePanel toggleTitle={<Icon icon={edit} color="success100" />}>
-      <Card
-        sx={{
-          position: 'relative',
-          p: 0,
-          border: 'lightMuted',
+  const components = (
+    <Card
+      sx={{
+        position: 'relative',
+        p: 0,
+        border: 'lightMuted',
+      }}
+    >
+      <SidebarSectionHeader
+        title={title}
+        dropdown={dropdown}
+        headerButton={headerButton}
+        onSelect={(panel) => {
+          setActivePanel(panel)
         }}
-      >
-        <SidebarSectionHeader
-          title={title}
-          dropdown={dropdown}
-          headerButton={headerButton}
-          onSelect={(panel) => {
-            setActivePanel(panel)
-          }}
-        />
-        <SidebarSectionContent
-          content={content}
-          activePanel={activePanel}
-          disableMaxHeight={disableMaxHeight}
-        />
-        <SidebarSectionFooter
-          primaryButton={primaryButton}
-          secondaryButton={secondaryButton}
-          textButton={textButton}
-          status={status}
-          requireConnection={requireConnection}
-          requiredChainHexId={requiredChainHexId}
-        />
-      </Card>
+      />
+      <SidebarSectionContent
+        content={content}
+        activePanel={activePanel}
+        disableMaxHeight={disableMaxHeight}
+      />
+      <SidebarSectionFooter
+        primaryButton={primaryButton}
+        secondaryButton={secondaryButton}
+        textButton={textButton}
+        status={status}
+        requireConnection={requireConnection}
+        requiredChainHexId={requiredChainHexId}
+      />
+    </Card>
+  )
+
+  return withMobilePanel ? (
+    <MobileSidePanel toggleTitle={<Icon icon={edit} color="success100" />}>
+      {components}
     </MobileSidePanel>
+  ) : (
+    components
   )
 }

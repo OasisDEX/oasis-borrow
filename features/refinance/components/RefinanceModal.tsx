@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { Modal } from 'components/Modal'
-import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
 import { RefinanceHeader } from 'features/refinance/components/RefinanceHeader'
 import { RefinancePositionView } from 'features/refinance/components/RefinancePositionView'
+import { RefinanceFormController } from 'features/refinance/controllers/RefinanceFormController'
 import { RefinancePositionViewType } from 'features/refinance/types'
 import { useModalContext } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
@@ -48,32 +48,9 @@ export const RefinanceModal = () => {
               takeProfit: { enabled: false },
             }}
           />
-          <RefinancePositionView
-            type={RefinancePositionViewType.SIMULATION}
-            primaryToken="ETH"
-            secondaryToken="USDC"
-            protocolData={{
-              network: NetworkNames.ethereumMainnet,
-              protocol: LendingProtocol.SparkV3,
-            }}
-            poolData={{
-              maxLtv: new BigNumber(0.7),
-              borrowRate: new BigNumber(0.0125),
-            }}
-            positionData={{
-              ltv: new BigNumber(0.6),
-              liquidationPrice: new BigNumber(743.34),
-              collateral: new BigNumber(30),
-              debt: new BigNumber(12000),
-            }}
-            automations={{
-              stopLoss: { enabled: false },
-              autoSell: { enabled: false },
-              autoBuy: { enabled: false },
-              takeProfit: { enabled: false },
-            }}
-          />
-          <RefinanceAbout />
+          <RefinanceFormController />
+          <RefinancePositionView type={RefinancePositionViewType.EMPTY} />
+          {/*<RefinanceAbout />*/}
         </Flex>
       </Flex>
     </Modal>
