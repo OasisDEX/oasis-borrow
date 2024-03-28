@@ -6,12 +6,12 @@ export function erc4626FlowStateFilter({
   productType,
   quoteAddress,
   protocolRaw,
-}: OmniFlowStateFilterParams): boolean {
-  return (
+}: OmniFlowStateFilterParams): Promise<boolean> {
+  return Promise.resolve(
     protocolRaw !== undefined &&
-    protocolRaw.toLowerCase() === event.args.protocol.toLowerCase() &&
-    collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
-    quoteAddress.toLowerCase() === event.args.debtToken.toLowerCase() &&
-    event.args.positionType.toLowerCase() === productType.toLowerCase()
+      protocolRaw.toLowerCase() === event.args.protocol.toLowerCase() &&
+      collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
+      quoteAddress.toLowerCase() === event.args.debtToken.toLowerCase() &&
+      event.args.positionType.toLowerCase() === productType.toLowerCase(),
   )
 }

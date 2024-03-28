@@ -339,7 +339,7 @@ interface OmniFeatureToggles {
 }
 
 interface OmniFilters {
-  flowStateFilter: (event: CreatePositionEvent) => boolean
+  flowStateFilter: (event: CreatePositionEvent) => Promise<boolean>
 }
 
 interface CommonMetadata {

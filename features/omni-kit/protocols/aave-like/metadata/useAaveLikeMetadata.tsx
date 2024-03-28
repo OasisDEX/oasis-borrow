@@ -44,6 +44,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isOpening,
       quoteToken,
       isOwner,
+      networkId,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -90,6 +91,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
               productType,
               quoteAddress,
               protocol,
+              networkId,
             }),
         },
         values: {

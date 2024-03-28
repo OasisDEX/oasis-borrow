@@ -32,7 +32,7 @@ export type UseFlowStateProps = {
   amount?: BigNumber
   allowanceAmount?: BigNumber
   existingProxy?: string
-  filterConsumedProxy?: (events: CreatePositionEvent[]) => boolean
+  filterConsumedProxy?: (events: CreatePositionEvent[]) => Promise<boolean>
   onEverythingReady?: UseFlowStateCBType
   onGoBack?: UseFlowStateCBType
   onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
@@ -155,8 +155,12 @@ export function useFlowState({
         )
       setAvailableProxies(
         userProxyEventsList
-          .filter(({ events }) =>
-            events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
+          .filter(async ({ events }) =>
+            events.length === 0
+              ? true
+              : filterConsumedProxy
+                ? await filterConsumedProxy(events)
+                : false,
           )
           .map(({ proxyAddress }) => proxyAddress),
       )

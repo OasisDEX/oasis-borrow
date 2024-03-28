@@ -114,7 +114,8 @@ export function OmniFormView({
       state,
       quotePrecision,
     }),
-    filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
+    filterConsumedProxy: async (events) =>
+      events.every(async (event) => !(await flowStateFilter(event))),
     onProxiesAvailable: (events, dpmAccounts) => {
       const filteredEvents = events.filter(flowStateFilter)
 
