@@ -3358,6 +3358,10 @@
         "form-order": {
           "swapping": "Swapping",
           "total-deposit": "Total {{quoteToken}} deposit"
+        },
+        "transaction": {
+          "progress": "Claiming token rewards",
+          "success": "Token rewards were claimed"
         }
       }
     },

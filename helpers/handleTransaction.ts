@@ -14,6 +14,14 @@ export interface TxDetails {
   txError?: TxError
 }
 
+export function handleTransactionTxState<T extends TxMeta>(txState: TxState<T>) {
+  return {
+    txHash: (txState as any).txHash,
+    txStatus: txState.status,
+    txError: txState.status === TxStatus.Error ? txState.error : undefined,
+  }
+}
+
 export async function handleTransaction<T extends TxMeta>({
   ethPrice,
   networkId,
@@ -54,9 +62,7 @@ export async function handleTransaction<T extends TxMeta>({
   }
 
   setTxDetails({
-    txHash: (txState as any).txHash,
-    txStatus: txState.status,
-    txError: txState.status === TxStatus.Error ? txState.error : undefined,
+    ...handleTransactionTxState(txState),
     txCost: totalCost,
   })
 }

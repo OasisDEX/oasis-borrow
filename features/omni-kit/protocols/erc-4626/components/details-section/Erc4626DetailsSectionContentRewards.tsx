@@ -19,6 +19,7 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
       dpmProxy,
       extraTokensData,
       label,
+      networkId,
       quotePrice,
       quoteToken,
     },
@@ -63,7 +64,8 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
   useEffect(() => {
     if (dpmProxy)
       void getErc4626Claims({
-        account: '0x2b5469940FA577BC4082c6940ee4D8E97fda1B42',
+        account: dpmProxy,
+        networkId,
         rewardsType,
       }).then((data) => {
         if (data.claims.length > 1) setResponse(data)
@@ -77,7 +79,7 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
             })),
           })
       })
-  }, [dpmProxy, rewards, rewardsType])
+  }, [dpmProxy, networkId, rewards, rewardsType])
 
   return rewards.length > 0 ? (
     <>

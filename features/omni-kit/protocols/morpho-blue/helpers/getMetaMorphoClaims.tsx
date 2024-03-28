@@ -1,12 +1,15 @@
-import type { MorphoCloseClaimRewardsPayload } from '@oasisdex/dma-library'
-import { Network, strategies } from '@oasisdex/dma-library'
+import type { MorphoCloseClaimRewardsPayload, Network } from '@oasisdex/dma-library'
+import { strategies } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
+import { omniNetworkMap } from 'features/omni-kit/constants'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 
 interface GetMetaMorphoClaimsParams {
   account: string
+  networkId: OmniSupportedNetworkIds
 }
 
 interface MetaMorphoClaimsApiResponse {
@@ -39,7 +42,7 @@ interface MetaMorphoClaimsApiResponse {
   }[]
 }
 
-export async function getMetaMorphoClaims({ account }: GetMetaMorphoClaimsParams) {
+export async function getMetaMorphoClaims({ account, networkId }: GetMetaMorphoClaimsParams) {
   try {
     const response = (await (
       await fetch(`/api/morpho/claims?account=${account}`)
@@ -57,11 +60,11 @@ export async function getMetaMorphoClaims({ account }: GetMetaMorphoClaimsParams
           urds: [],
           rewards: [],
           claimable: [],
-          proofs: [[]],
+          proofs: [],
         },
       ),
       {
-        network: Network.MAINNET,
+        network: omniNetworkMap[networkId] as Network,
         operationExecutor: getNetworkContracts(NetworkIds.MAINNET).operationExecutor.address,
         provider: getRpcProvider(NetworkIds.MAINNET),
       },
