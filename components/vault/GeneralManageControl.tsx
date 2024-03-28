@@ -2,6 +2,7 @@ import type { BigNumber } from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
+import { MakerRefinanceContext } from 'features/refinance/MakerRefinanceContext'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'
@@ -21,7 +22,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
-  const { chainId } = useWalletManagement()
+  const { chainId, wallet } = useWalletManagement()
   const { MakerTenderly } = useAppConfig('features')
 
   const account = context?.status === 'connected' ? context.account : ''
@@ -44,16 +45,22 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <GeneralManageLayout
+            <MakerRefinanceContext
               generalManageVault={generalManageVault}
-              followButton={{
-                followerAddress: account,
-                vaultId: id,
-                chainId: chainId,
-                protocol: 'maker',
-              }}
               chainId={chainId}
-            />
+              address={wallet?.address}
+            >
+              <GeneralManageLayout
+                generalManageVault={generalManageVault}
+                followButton={{
+                  followerAddress: account,
+                  vaultId: id,
+                  chainId: chainId,
+                  protocol: 'maker',
+                }}
+                chainId={chainId}
+              />
+            </MakerRefinanceContext>
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>

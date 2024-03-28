@@ -122,7 +122,7 @@ export async function updateProductHubData(
     }
 
     const parsedTickers = Object.entries(tickers).reduce((acc, [key, value]) => {
-      acc[key.toLowerCase()] = new BigNumber(value)
+      acc[key.toLowerCase()] = new BigNumber(value as any)
       return acc
     }, {} as Tickers)
 
