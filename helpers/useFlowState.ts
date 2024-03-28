@@ -147,22 +147,28 @@ export function useFlowState({
         proxyId: vaultId,
         events: await getPositionCreatedEventForProxyAddress(networkId, proxy),
       })),
-    ).subscribe((userProxyEventsList) => {
+    ).subscribe(async (userProxyEventsList) => {
       if (onProxiesAvailable && userProxyEventsList.length > 0)
         onProxiesAvailable(
           userProxyEventsList.flatMap(({ events }) => events),
           userProxyList,
         )
+      const filteredProxiesList = await Promise.all(
+        userProxyEventsList.map(async (proxyEvent) => {
+          if (proxyEvent.events.length === 0) {
+            return Promise.resolve(proxyEvent)
+          }
+          if (filterConsumedProxy) {
+            const filtered = await filterConsumedProxy(proxyEvent.events)
+            return !filtered ? Promise.resolve(proxyEvent) : Promise.resolve(false)
+          }
+          return Promise.resolve(false)
+        }),
+      )
       setAvailableProxies(
-        userProxyEventsList
-          .filter(async ({ events }) =>
-            events.length === 0
-              ? true
-              : filterConsumedProxy
-                ? await filterConsumedProxy(events)
-                : false,
-          )
-          .map(({ proxyAddress }) => proxyAddress),
+        (filteredProxiesList.filter(Boolean) as typeof userProxyEventsList).map(
+          ({ proxyAddress }) => proxyAddress,
+        ),
       )
     })
     return () => {

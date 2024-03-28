@@ -17,11 +17,9 @@ export async function aaveLikeFlowStateFilter({
   networkId: NetworkIds
 }): Promise<boolean> {
   if (
-    !(
-      extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
-      collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
-      quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase()
-    )
+    extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
+    collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
+    quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase()
   ) {
     return Promise.resolve(false)
   }

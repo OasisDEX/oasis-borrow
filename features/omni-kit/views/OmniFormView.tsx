@@ -122,9 +122,8 @@ export function OmniFormView({
     }),
     filterConsumedProxy: async (events) =>
       events.every(async (event) => !(await flowStateFilter(event))),
-    onProxiesAvailable: (events, dpmAccounts) => {
-      const filteredEvents = events.filter(flowStateFilter)
-
+    onProxiesAvailable: async (events, dpmAccounts) => {
+      const filteredEvents = events.filter(async (event) => await flowStateFilter(event))
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
         openModal(OmniDupePositionModal, {
