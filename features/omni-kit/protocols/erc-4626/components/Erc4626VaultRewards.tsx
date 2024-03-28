@@ -42,53 +42,57 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
     environment: { dpmProxy, isOwner, shouldSwitchNetwork, network, networkId },
   } = useOmniGeneralContext()
 
-  const signer = context?.transactionProvider
-  const rows = claims.reduce<AssetsTableRowData[]>(
-    (sum, { claimable, earned, token }) => [
-      ...sum,
-      {
-        items: {
-          token: (
-            <AssetsTableDataCellAsset
-              asset={token}
-              icons={[token]}
-              description={getTokenGuarded(token)?.name}
-            />
-          ),
-          rewardsEarned: (
-            <>
-              {formatCryptoBalance(earned)} {token}
-              {prices[token] && (
-                <>
-                  <br />
-                  <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-                    {formatUsdValue(earned.times(prices[token]))}
-                  </Text>
-                </>
-              )}
-            </>
-          ),
-          claimableNow: (
-            <>
-              {formatCryptoBalance(claimable)} {token}
-              {prices[token] && (
-                <>
-                  <br />
-                  <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-                    {formatUsdValue(claimable.times(prices[token]))}
-                  </Text>
-                </>
-              )}
-            </>
-          ),
-        },
-      },
-    ],
-    [],
-  )
-
   const { isTxError, isTxInProgress, isTxWaitingForApproval, isTxSuccess } = getOmniTxStatuses(
     txState?.status,
+  )
+
+  const signer = context?.transactionProvider
+  const rows = useMemo(
+    () =>
+      claims.reduce<AssetsTableRowData[]>(
+        (sum, { claimable, earned, token }) => [
+          ...sum,
+          {
+            items: {
+              token: (
+                <AssetsTableDataCellAsset
+                  asset={token}
+                  icons={[token]}
+                  description={getTokenGuarded(token)?.name}
+                />
+              ),
+              rewardsEarned: (
+                <>
+                  {formatCryptoBalance(earned)} {token}
+                  {prices[token] && (
+                    <>
+                      <br />
+                      <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
+                        {formatUsdValue(earned.times(prices[token]))}
+                      </Text>
+                    </>
+                  )}
+                </>
+              ),
+              claimableNow: (
+                <>
+                  {formatCryptoBalance(claimable)} {token}
+                  {prices[token] && (
+                    <>
+                      <br />
+                      <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
+                        {formatUsdValue(claimable.times(prices[token]))}
+                      </Text>
+                    </>
+                  )}
+                </>
+              ),
+            },
+          },
+        ],
+        [],
+      ),
+    [claims, prices],
   )
 
   const txSidebarProgress = t('erc-4626.position-page.earn.transaction.progress')
