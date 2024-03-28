@@ -9,7 +9,7 @@ import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
-import { Text } from 'theme-ui'
+import { Button, Flex, Text } from 'theme-ui'
 
 interface Erc4626VaultRewardsProps extends Erc4626Claims {
   prices: {
@@ -70,6 +70,13 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
       title={t('erc-4626.position-page.common.vault-token-rewards')}
       accordion
       accordionOpenByDefault
+      footer={
+        <Flex sx={{ justifyContent: 'flex-end' }}>
+          <Button sx={{ px: 4 }} variant="tertiary">
+            {t('claim')}
+          </Button>
+        </Flex>
+      }
     />
   )
 }

@@ -2,6 +2,7 @@ import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import type BigNumber from 'bignumber.js'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { Erc4626VaultRewards } from 'features/omni-kit/protocols/erc-4626/components'
+import { Erc4626DetailsSectionContentRewardsLoadingState } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import { useErc4626CustomState } from 'features/omni-kit/protocols/erc-4626/contexts'
 import type { Erc4626Claims } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { getErc4626Claims } from 'features/omni-kit/protocols/erc-4626/helpers'
@@ -78,13 +79,15 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
       })
   }, [dpmProxy, rewards, rewardsType])
 
-  return (
+  return rewards.length > 0 ? (
     <>
       {response && response.claims.length > 0 && prices ? (
         <Erc4626VaultRewards prices={prices} {...response} />
       ) : (
-        <>Loading</>
+        <Erc4626DetailsSectionContentRewardsLoadingState />
       )}
     </>
+  ) : (
+    <></>
   )
 }
