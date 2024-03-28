@@ -125,10 +125,10 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
   const claimButtonLabel = !isConnected
     ? t('connect-wallet')
     : shouldSwitchNetwork
-    ? t('switch-network')
-    : isTxError
-    ? t('retry')
-    : t('claim')
+      ? t('switch-network')
+      : isTxError
+        ? t('retry')
+        : t('claim')
 
   return (
     <DetailsSection

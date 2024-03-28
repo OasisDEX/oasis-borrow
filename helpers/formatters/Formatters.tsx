@@ -27,10 +27,10 @@ const FormatNumber = (props: FormatNumberProps) => {
   const groups = dontGroup
     ? [formatted]
     : !match
-    ? []
-    : match[2]
-    ? [`${match[1]}${match[3]}${match[4]}`, match[5]]
-    : [`${match[1]}.0`]
+      ? []
+      : match[2]
+        ? [`${match[1]}${match[3]}${match[4]}`, match[5]]
+        : [`${match[1]}.0`]
   return (
     <span title={value.toString()} {...spanProps}>
       {value.lt(zero) ? '-' : ''}

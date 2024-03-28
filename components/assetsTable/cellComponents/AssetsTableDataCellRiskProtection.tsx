@@ -24,8 +24,8 @@ export function AssetsTableDataCellProtection({
           {level > 0
             ? t('discover.table.protection-value', { protection: level })
             : isOwner
-            ? t('discover.table.activate')
-            : t('discover.table.inactive')}
+              ? t('discover.table.activate')
+              : t('discover.table.inactive')}
         </Button>
       </AppLink>
     </>

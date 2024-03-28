@@ -367,8 +367,8 @@ export function insufficientDaiAllowanceValidator({
   const amountToValidate = paybackAmount?.gt(zero)
     ? paybackAmount
     : depositDaiAmount?.gt(zero)
-    ? depositDaiAmount
-    : zero
+      ? depositDaiAmount
+      : zero
 
   return !!(
     amountToValidate &&

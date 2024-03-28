@@ -42,10 +42,10 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
             token === collateralToken
               ? collateralPrice
               : token === quoteToken
-              ? quotePrice
-              : pricePicker?.token
-              ? estimatedPrice
-              : extraTokensData[token]?.price,
+                ? quotePrice
+                : pricePicker?.token
+                  ? estimatedPrice
+                  : extraTokensData[token]?.price,
         }),
         {},
       ),

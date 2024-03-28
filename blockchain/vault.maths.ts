@@ -86,8 +86,8 @@ export function buildPosition({
   const daiYieldFromLockedCollateralWithoutOriginationFee = availableDebt.lt(ilkDebtAvailable)
     ? availableDebt
     : ilkDebtAvailable.gt(zero)
-    ? ilkDebtAvailable
-    : zero
+      ? ilkDebtAvailable
+      : zero
 
   const daiYieldFromLockedCollateral = daiYieldFromLockedCollateralWithoutOriginationFee.div(
     originationFee.plus(1),

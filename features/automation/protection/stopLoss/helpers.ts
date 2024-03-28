@@ -162,8 +162,8 @@ export const getSavingCompareToLiquidation = ({
         collateralDuringLiquidation.times(!isCollateralActive ? afterDynamicStopLossPrice : one),
       )
     : dynamicStopLossPrice && maxToken
-    ? maxToken.minus(
-        collateralDuringLiquidation.times(!isCollateralActive ? dynamicStopLossPrice : one),
-      )
-    : undefined
+      ? maxToken.minus(
+          collateralDuringLiquidation.times(!isCollateralActive ? dynamicStopLossPrice : one),
+        )
+      : undefined
 }

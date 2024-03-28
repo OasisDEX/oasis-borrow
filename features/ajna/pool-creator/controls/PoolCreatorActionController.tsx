@@ -47,10 +47,10 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
   const primaryButtonLabel = !isConnected
     ? t('connect-wallet')
     : !isOnSupportedNetwork
-    ? t('switch-network')
-    : isTxError
-    ? t('retry')
-    : t('pool-creator.form.submit')
+      ? t('switch-network')
+      : isTxError
+        ? t('retry')
+        : t('pool-creator.form.submit')
 
   const networkName = networksById[networkId].name
 

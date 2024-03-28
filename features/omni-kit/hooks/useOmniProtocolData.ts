@@ -72,24 +72,24 @@ export function useOmniProtocolData({
               protocolRaw,
             )
           : !isOracless && productType && collateralToken && quoteToken
-          ? getStaticDpmPositionData$({
-              collateralToken,
-              collateralTokenAddress: tokensAddresses[collateralToken].address,
-              product: productType,
-              protocol,
-              quoteToken,
-              quoteTokenAddress: tokensAddresses[quoteToken].address,
-            })
-          : isOracless && identifiedTokensData && productType && collateralToken && quoteToken
-          ? getStaticDpmPositionData$({
-              collateralToken: identifiedTokensData[collateralToken].symbol,
-              collateralTokenAddress: collateralToken,
-              product: productType,
-              protocol,
-              quoteToken: identifiedTokensData[quoteToken].symbol,
-              quoteTokenAddress: quoteToken,
-            })
-          : EMPTY,
+            ? getStaticDpmPositionData$({
+                collateralToken,
+                collateralTokenAddress: tokensAddresses[collateralToken].address,
+                product: productType,
+                protocol,
+                quoteToken,
+                quoteTokenAddress: tokensAddresses[quoteToken].address,
+              })
+            : isOracless && identifiedTokensData && productType && collateralToken && quoteToken
+              ? getStaticDpmPositionData$({
+                  collateralToken: identifiedTokensData[collateralToken].symbol,
+                  collateralTokenAddress: collateralToken,
+                  product: productType,
+                  protocol,
+                  quoteToken: identifiedTokensData[quoteToken].symbol,
+                  quoteTokenAddress: quoteToken,
+                })
+              : EMPTY,
       [
         isOracless,
         positionId,
@@ -123,21 +123,21 @@ export function useOmniProtocolData({
               networkId,
             )
           : isOracless && dpmPositionData && identifiedTokensData && collateralToken && quoteToken
-          ? balancesFromAddressInfoArray$(
-              [
-                {
-                  address: collateralToken,
-                  precision: identifiedTokensData[collateralToken].precision,
-                },
-                {
-                  address: quoteToken,
-                  precision: identifiedTokensData[quoteToken].precision,
-                },
-              ],
-              walletAddress || dpmPositionData.user,
-              networkId,
-            )
-          : EMPTY,
+            ? balancesFromAddressInfoArray$(
+                [
+                  {
+                    address: collateralToken,
+                    precision: identifiedTokensData[collateralToken].precision,
+                  },
+                  {
+                    address: quoteToken,
+                    precision: identifiedTokensData[quoteToken].precision,
+                  },
+                ],
+                walletAddress || dpmPositionData.user,
+                networkId,
+              )
+            : EMPTY,
       [
         isOracless,
         dpmPositionData,
@@ -173,13 +173,13 @@ export function useOmniProtocolData({
           quotePrecision: getToken(dpmPositionData.quoteToken).precision,
         }
       : isOracless && identifiedTokensData && collateralToken && quoteToken
-      ? {
-          collateralDigits: DEFAULT_TOKEN_DIGITS,
-          collateralPrecision: identifiedTokensData[collateralToken].precision,
-          quoteDigits: DEFAULT_TOKEN_DIGITS,
-          quotePrecision: identifiedTokensData[quoteToken].precision,
-        }
-      : undefined
+        ? {
+            collateralDigits: DEFAULT_TOKEN_DIGITS,
+            collateralPrecision: identifiedTokensData[collateralToken].precision,
+            quoteDigits: DEFAULT_TOKEN_DIGITS,
+            quotePrecision: identifiedTokensData[quoteToken].precision,
+          }
+        : undefined
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
   const tokensIconsData = useMemo(() => {
@@ -189,24 +189,24 @@ export function useOmniProtocolData({
           quoteToken,
         }
       : dpmPositionData && isOracless && identifiedTokensData
-      ? {
-          collateralToken:
-            identifiedTokensData[dpmPositionData.collateralTokenAddress.toLowerCase()].source ===
-            'blockchain'
-              ? dpmPositionData.collateralTokenAddress
-              : dpmPositionData.collateralToken,
-          quoteToken:
-            identifiedTokensData[dpmPositionData.quoteTokenAddress.toLowerCase()].source ===
-            'blockchain'
-              ? dpmPositionData.quoteTokenAddress
-              : dpmPositionData.quoteToken,
-        }
-      : dpmPositionData
-      ? {
-          collateralToken: dpmPositionData.collateralToken,
-          quoteToken: dpmPositionData.quoteToken,
-        }
-      : undefined
+        ? {
+            collateralToken:
+              identifiedTokensData[dpmPositionData.collateralTokenAddress.toLowerCase()].source ===
+              'blockchain'
+                ? dpmPositionData.collateralTokenAddress
+                : dpmPositionData.collateralToken,
+            quoteToken:
+              identifiedTokensData[dpmPositionData.quoteTokenAddress.toLowerCase()].source ===
+              'blockchain'
+                ? dpmPositionData.quoteTokenAddress
+                : dpmPositionData.quoteToken,
+          }
+        : dpmPositionData
+          ? {
+              collateralToken: dpmPositionData.collateralToken,
+              quoteToken: dpmPositionData.quoteToken,
+            }
+          : undefined
   }, [identifiedTokensData, collateralToken, quoteToken, isOracless, dpmPositionData])
 
   return {

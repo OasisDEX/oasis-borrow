@@ -56,10 +56,13 @@ export function handleRewrite(request: NextRequest): NextResponse | null {
     const matches = regex.exec(request.nextUrl.pathname)
 
     if (matches) {
-      const params = names.reduce((acc, name, index) => {
-        acc[name] = matches[index + 1]
-        return acc
-      }, {} as Record<string, string>)
+      const params = names.reduce(
+        (acc, name, index) => {
+          acc[name] = matches[index + 1]
+          return acc
+        },
+        {} as Record<string, string>,
+      )
 
       const destination = constructDestination(rule.destination, params)
       const url = request.nextUrl.clone()

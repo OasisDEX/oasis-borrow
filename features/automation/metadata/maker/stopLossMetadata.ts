@@ -66,10 +66,10 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
     (autoSellTriggerData.isTriggerEnabled
       ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
       : constantMultipleTriggerData.isTriggerEnabled
-      ? constantMultipleTriggerData.sellExecutionCollRatio
-          .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
-          .div(100)
-      : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+        ? constantMultipleTriggerData.sellExecutionCollRatio
+            .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
+            .div(100)
+        : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
     )
       .multipliedBy(100)
       .toFixed(0, BigNumber.ROUND_DOWN),

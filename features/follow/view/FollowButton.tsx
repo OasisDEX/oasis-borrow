@@ -134,19 +134,19 @@ export function FollowButton({
             (isProcessing
               ? t('loading')
               : isHovering && isFollowing
-              ? t('unfollow')
-              : isFollowing
-              ? t('following')
-              : t('follow'))}
+                ? t('unfollow')
+                : isFollowing
+                  ? t('following')
+                  : t('follow'))}
 
           {t(
             isLimitReached && !isFollowing
               ? 'followed-vaults-limit'
               : isLimitReached && isFollowing && !isHovering
-              ? 'following'
-              : isLimitReached && isFollowing && isHovering
-              ? 'unfollow'
-              : '',
+                ? 'following'
+                : isLimitReached && isFollowing && isHovering
+                  ? 'unfollow'
+                  : '',
           )}
         </>
       )}

@@ -67,8 +67,8 @@ export function selectPrimaryAction(
       return activeTab === 'deposit'
         ? dsrDepositState.deposit
         : activeTab === 'withdraw'
-        ? dsrDepositState.withdraw
-        : dsrDepositState.convert
+          ? dsrDepositState.withdraw
+          : dsrDepositState.convert
   }
 }
 
