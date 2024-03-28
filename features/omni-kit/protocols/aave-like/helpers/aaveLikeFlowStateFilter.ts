@@ -13,25 +13,37 @@ export async function aaveLikeFlowStateFilter({
   quoteAddress,
   protocol,
   networkId,
+  // we ignore filterConsumed because we dont want ANY positions with aave/spark debt
+  // so it doesnt matter if we're filtering all/used proxies
+  filterConsumed: _filterConsumed,
 }: OmniFlowStateFilterParams & {
   networkId: NetworkIds
 }): Promise<boolean> {
+  // if its spark/aave we need to check that because we cant mix them
+  if (
+    (protocol === LendingProtocol.AaveV3 &&
+      extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.SparkV3) ||
+    (protocol === LendingProtocol.SparkV3 &&
+      extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.AaveV3)
+  ) {
+    return Promise.resolve(false)
+  }
   if (
     extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase()
   ) {
-    return Promise.resolve(false)
+    const userData =
+      protocol === LendingProtocol.AaveV3
+        ? await getAaveV3UserAccountData({
+            address: event.args.proxyAddress,
+            networkId: networkId as AaveV3SupportedNetwork,
+          })
+        : await getSparkV3UserAccountData({
+            address: event.args.proxyAddress,
+            networkId: networkId as SparkV3SupportedNetwork,
+          })
+    return userData.totalDebtBase.isZero()
   }
-  const userData =
-    protocol === LendingProtocol.AaveV3
-      ? await getAaveV3UserAccountData({
-          address: event.args.proxyAddress,
-          networkId: networkId as AaveV3SupportedNetwork,
-        })
-      : await getSparkV3UserAccountData({
-          address: event.args.proxyAddress,
-          networkId: networkId as SparkV3SupportedNetwork,
-        })
-  return userData.totalDebtBase.isZero()
+  return Promise.resolve(false)
 }

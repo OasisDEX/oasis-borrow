@@ -90,7 +90,7 @@ export function OmniFormView({
     dynamicMetadata: {
       elements: { sidebarContent },
       featureToggles: { suppressValidation, safetySwitch },
-      filters: { flowStateFilter },
+      filters: { omniProxyFilter },
       theme,
       validations: { isFormValid, isFormFrozen, hasErrors },
       values: { interestRate, sidebarTitle },
@@ -121,9 +121,11 @@ export function OmniFormView({
       quotePrecision,
     }),
     filterConsumedProxy: async (events) =>
-      events.every(async (event) => !(await flowStateFilter(event))),
+      (
+        await Promise.all(events.map((event) => omniProxyFilter({ event, filterConsumed: true })))
+      ).every(Boolean),
     onProxiesAvailable: async (events, dpmAccounts) => {
-      const filteredEvents = events.filter(async (event) => await flowStateFilter(event))
+      const filteredEvents = await Promise.all(events.filter((event) => omniProxyFilter({ event })))
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
         openModal(OmniDupePositionModal, {

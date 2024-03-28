@@ -148,11 +148,12 @@ export function useFlowState({
         events: await getPositionCreatedEventForProxyAddress(networkId, proxy),
       })),
     ).subscribe(async (userProxyEventsList) => {
-      if (onProxiesAvailable && userProxyEventsList.length > 0)
+      if (onProxiesAvailable && userProxyEventsList.length > 0) {
         onProxiesAvailable(
           userProxyEventsList.flatMap(({ events }) => events),
           userProxyList,
         )
+      }
       const filteredProxiesList = await Promise.all(
         userProxyEventsList.map(async (proxyEvent) => {
           if (proxyEvent.events.length === 0) {
@@ -160,16 +161,15 @@ export function useFlowState({
           }
           if (filterConsumedProxy) {
             const filtered = await filterConsumedProxy(proxyEvent.events)
-            return !filtered ? Promise.resolve(proxyEvent) : Promise.resolve(false)
+            return filtered ? Promise.resolve(proxyEvent) : Promise.resolve(false)
           }
           return Promise.resolve(false)
         }),
       )
-      setAvailableProxies(
-        (filteredProxiesList.filter(Boolean) as typeof userProxyEventsList).map(
-          ({ proxyAddress }) => proxyAddress,
-        ),
-      )
+      const filteredAndSortedproxiesList = (
+        filteredProxiesList.filter(Boolean) as typeof userProxyEventsList
+      ).sort((aproxy, bproxy) => Number(aproxy.proxyId) - Number(bproxy.proxyId))
+      setAvailableProxies(filteredAndSortedproxiesList.map(({ proxyAddress }) => proxyAddress))
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()

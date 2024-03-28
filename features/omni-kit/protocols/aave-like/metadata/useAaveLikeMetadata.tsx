@@ -28,7 +28,6 @@ import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
-import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const {
@@ -84,7 +83,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         notifications,
         validations,
         filters: {
-          flowStateFilter: (event: CreatePositionEvent) =>
+          omniProxyFilter: ({ event, filterConsumed }) =>
             aaveLikeFlowStateFilter({
               collateralAddress,
               event,
@@ -92,6 +91,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
               quoteAddress,
               protocol,
               networkId,
+              filterConsumed,
             }),
         },
         values: {
