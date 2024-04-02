@@ -1,9 +1,26 @@
-import type { PropsWithChildren } from 'react'
-import React, { useContext } from 'react'
+import type { TxStatus } from '@oasisdex/transactions'
+import { shiftOmniStep } from 'features/omni-kit/contexts'
+import { useRefinanceFormReducto } from 'features/refinance/state'
+import { RefinanceSidebarStep } from 'features/refinance/types'
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
+import React, { useContext, useState } from 'react'
 import type { AddressValue, ChainInfo, IPoolId, PositionId } from 'summerfi-sdk-common'
 import { getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
 
 import { mapTokenToSdkToken } from './mapTokenToSdkToken'
+
+interface RefinanceSteps {
+  currentStep: RefinanceSidebarStep
+  isExternalStep: boolean
+  isFlowStateReady: boolean
+  isStepWithTransaction: boolean
+  steps: RefinanceSidebarStep[]
+  txStatus?: TxStatus
+  setIsFlowStateReady: Dispatch<SetStateAction<boolean>>
+  setStep: (step: RefinanceSidebarStep) => void
+  setNextStep: () => void
+  setPrevStep: () => void
+}
 
 export type RefinanceContextInput = {
   positionId: PositionId
@@ -30,6 +47,8 @@ export type RefinanceContext = {
   slippage: number
   address?: AddressValue
   liquidationPrice: string
+  form: ReturnType<typeof useRefinanceFormReducto>
+  steps: RefinanceSteps
 }
 
 export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
@@ -84,6 +103,33 @@ export function RefinanceContextProvider({
   // TODO: validate address
   const parsedAddress = address as AddressValue
 
+  const steps = [
+    RefinanceSidebarStep.Option,
+    RefinanceSidebarStep.Strategy,
+    RefinanceSidebarStep.Dpm,
+    RefinanceSidebarStep.Changes,
+    RefinanceSidebarStep.Transaction,
+  ]
+
+  const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(steps[0])
+  const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
+
+  const setupStepManager = (): RefinanceSteps => {
+    return {
+      currentStep,
+      steps,
+      isExternalStep: currentStep === RefinanceSidebarStep.Dpm,
+      isFlowStateReady,
+      isStepWithTransaction: currentStep === RefinanceSidebarStep.Transaction,
+      setIsFlowStateReady,
+      setStep: (step) => setCurrentStep(step),
+      setNextStep: () => shiftOmniStep({ direction: 'next', currentStep, steps, setCurrentStep }),
+      setPrevStep: () => shiftOmniStep({ direction: 'prev', currentStep, steps, setCurrentStep }),
+    }
+  }
+
+  const form = useRefinanceFormReducto({})
+
   const ctx: RefinanceContext = React.useMemo(
     () => ({
       collateralPrice,
@@ -96,6 +142,8 @@ export function RefinanceContextProvider({
       positionId,
       poolId,
       slippage,
+      form,
+      steps: setupStepManager(),
     }),
     [
       collateralPrice,
@@ -108,6 +156,7 @@ export function RefinanceContextProvider({
       positionId,
       poolId,
       slippage,
+      form.state,
     ],
   )
 

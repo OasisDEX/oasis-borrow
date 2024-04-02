@@ -11,3 +11,11 @@ export enum RefinanceOptions {
   CHANGE_DIRECTION = 'changeDirection',
   SWITCH_TO_EARN = 'switchToEarn',
 }
+
+export enum RefinanceSidebarStep {
+  Option = 'option',
+  Strategy = 'strategy',
+  Dpm = 'dpm',
+  Changes = 'changes',
+  Transaction = 'transaction',
+}

@@ -3,24 +3,28 @@ import { usePreloadAppDataContext } from 'components/context/PreloadAppDataConte
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
 import { getInitialFilters, getInitialQueryString } from 'features/productHub/helpers'
 import { ALL_ASSETS } from 'features/productHub/meta'
-import type { ProductHubFilters, ProductHubQueryString, ProductHubSupportedNetworks } from 'features/productHub/types'
+import type {
+  ProductHubFilters,
+  ProductHubItem,
+  ProductHubQueryString,
+  ProductHubSupportedNetworks,
+} from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { LendingProtocol } from 'lendingProtocols'
 import { useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 
 export const RefinanceProductTableStep = () => {
   const { productHub: data } = usePreloadAppDataContext()
-  const dataParser = (_table) => _table
+  const dataParser = (_table: ProductHubItem[]) => _table
   const table = dataParser(data.table)
   const initialNetwork = [NetworkNames.ethereumMainnet] as ProductHubSupportedNetworks[]
   const initialProtocol = [LendingProtocol.AaveV3]
   const token = undefined
   const searchParams = useSearchParams()
   const initialQueryString = getInitialQueryString(searchParams)
-  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(
-    ProductHubProductType.Borrow,
-  )
+  const [selectedProduct] = useState<ProductHubProductType>(ProductHubProductType.Borrow)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(
     getInitialFilters({
       initialQueryString,
@@ -30,8 +34,13 @@ export const RefinanceProductTableStep = () => {
       token,
     }),
   )
-  const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
+  const [selectedToken] = useState<string>(token || ALL_ASSETS)
   const [queryString, setQueryString] = useState<ProductHubQueryString>(initialQueryString)
+
+  const {
+    steps: { setNextStep },
+    form: { updateState },
+  } = useRefinanceContext()
 
   return (
     <ProductHubContentController
@@ -50,7 +59,10 @@ export const RefinanceProductTableStep = () => {
         setSelectedFilters(_selectedFilters)
         setQueryString(_queryString)
       }}
-      onRowClick={(item) => console.log(item)}
+      onRowClick={(item) => {
+        updateState('strategy', item)
+        setNextStep()
+      }}
     />
   )
 }

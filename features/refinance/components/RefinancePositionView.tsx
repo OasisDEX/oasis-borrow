@@ -37,7 +37,7 @@ type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
         }
         type: Type
         automations: PortfolioPositionAutomations
-        positionId?: BigNumber
+        positionId?: string
       }
 
 export const RefinancePositionView = <Type extends RefinancePositionViewType>(
