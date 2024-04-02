@@ -48,8 +48,8 @@ export function useSdkSimulation() {
         position: {
           positionId,
           liquidationPrice: _liquidationPrice,
-          collateralTokenAmount,
-          debtTokenAmount,
+          collateralTokenData,
+          debtTokenData,
         },
         poolData: { poolId },
       } = context
@@ -94,23 +94,23 @@ export function useSdkSimulation() {
       const sourcePool = await makerProtocol.getPool({ poolId })
 
       const ltv = PositionUtils.getLTV({
-        collateralTokenAmount,
-        debtTokenAmount,
+        collateralTokenAmount: collateralTokenData,
+        debtTokenAmount: debtTokenData,
         collateralPriceInUsd: Price.createFrom({
           value: collateralPrice,
-          baseToken: collateralTokenAmount.token,
+          baseToken: collateralTokenData.token,
           quoteToken: CurrencySymbol.USD,
         }),
         debtPriceInUsd: Price.createFrom({
           value: debtPrice,
-          baseToken: debtTokenAmount.token,
+          baseToken: debtTokenData.token,
           quoteToken: CurrencySymbol.USD,
         }),
       })
       const _sourcePosition: Position = {
         pool: sourcePool,
-        collateralAmount: collateralTokenAmount,
-        debtAmount: debtTokenAmount,
+        collateralAmount: collateralTokenData,
+        debtAmount: debtTokenData,
         positionId,
         riskRatio: RiskRatio.createFrom({ ratio: ltv, type: RiskRatioType.LTV }),
       }

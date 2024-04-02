@@ -8,16 +8,16 @@ import React from 'react'
 
 export const RefinancePosition = () => {
   const {
-    position: { positionId, liquidationPrice, debtTokenAmount, collateralTokenAmount, ltv },
-    poolData: { borrowRate, maxLtv, collateralTokenSymbol, debtTokenSymbol },
+    position: { positionId, liquidationPrice, debtTokenData, collateralTokenData, ltv },
+    poolData: { borrowRate, maxLtv },
   } = useRefinanceContext()
 
   return (
     <RefinancePositionView
       type={RefinancePositionViewType.CURRENT}
       positionId={positionId.id}
-      primaryToken={collateralTokenSymbol}
-      secondaryToken={debtTokenSymbol}
+      primaryToken={collateralTokenData.token.symbol}
+      secondaryToken={debtTokenData.token.symbol}
       protocolData={{
         network: NetworkNames.ethereumMainnet,
         protocol: LendingProtocol.Maker,
@@ -29,8 +29,8 @@ export const RefinancePosition = () => {
       positionData={{
         ltv: new BigNumber(ltv.loanToValue),
         liquidationPrice: new BigNumber(liquidationPrice),
-        collateral: new BigNumber(collateralTokenAmount.amount),
-        debt: new BigNumber(debtTokenAmount.amount),
+        collateral: new BigNumber(collateralTokenData.amount),
+        debt: new BigNumber(debtTokenData.amount),
       }}
       automations={{
         stopLoss: { enabled: true },

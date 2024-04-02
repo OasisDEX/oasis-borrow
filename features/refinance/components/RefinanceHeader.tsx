@@ -83,9 +83,10 @@ export const RefinanceHeader = () => {
   const isMobile = useOnMobile()
 
   const {
-    poolData: { collateralTokenSymbol, debtTokenSymbol },
     position: {
       positionId: { id },
+      debtTokenData,
+      collateralTokenData,
     },
     environment: { address },
     form: {
@@ -95,8 +96,8 @@ export const RefinanceHeader = () => {
 
   // use refinance context to eventually get this data
   const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol, walletAddress } = {
-    primaryToken: collateralTokenSymbol,
-    secondaryToken: debtTokenSymbol,
+    primaryToken: collateralTokenData.token.symbol,
+    secondaryToken: debtTokenData.token.symbol,
     positionId: id,
     fromProtocol: {
       network: NetworkNames.ethereumMainnet,

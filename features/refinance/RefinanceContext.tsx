@@ -58,16 +58,14 @@ export type RefinanceContext = {
   }
   position: {
     positionId: PositionId
-    collateralTokenAmount: TokenAmount
-    debtTokenAmount: TokenAmount
+    collateralTokenData: TokenAmount
+    debtTokenData: TokenAmount
     liquidationPrice: string
     ltv: RiskRatio
   }
   poolData: {
     poolId: IPoolId
     borrowRate: string
-    collateralTokenSymbol: string
-    debtTokenSymbol: string
     maxLtv: RiskRatio
   }
   form: ReturnType<typeof useRefinanceFormReducto>
@@ -103,17 +101,17 @@ export function RefinanceContextProvider({
     throw new Error(`ChainId ${chainId} is not supported`)
   }
 
-  const collateralTokenAmount = TokenAmount.createFrom({
+  const collateralTokenData = TokenAmount.createFrom({
     amount: collateralAmount,
     token: mapTokenToSdkToken(chainInfo, collateralTokenSymbol),
   })
-  const debtTokenAmount = TokenAmount.createFrom({
+  const debtTokenData = TokenAmount.createFrom({
     amount: debtAmount,
     token: mapTokenToSdkToken(chainInfo, debtTokenSymbol),
   })
 
-  const collateralPrice = tokenPrices[collateralTokenAmount.token.symbol]
-  const debtPrice = tokenPrices[debtTokenAmount.token.symbol]
+  const collateralPrice = tokenPrices[collateralTokenData.token.symbol]
+  const debtPrice = tokenPrices[debtTokenData.token.symbol]
 
   // TODO: validate address
   const parsedAddress = address as AddressValue
@@ -158,8 +156,8 @@ export function RefinanceContextProvider({
         isShort,
       },
       position: {
-        collateralTokenAmount,
-        debtTokenAmount,
+        collateralTokenData,
+        debtTokenData,
         liquidationPrice,
         positionId,
         ltv,
@@ -167,8 +165,6 @@ export function RefinanceContextProvider({
       poolData: {
         poolId,
         borrowRate,
-        collateralTokenSymbol,
-        debtTokenSymbol,
         maxLtv,
       },
       form,
@@ -179,8 +175,8 @@ export function RefinanceContextProvider({
       debtPrice,
       parsedAddress,
       chainInfo,
-      collateralTokenAmount,
-      debtTokenAmount,
+      collateralTokenData,
+      debtTokenData,
       liquidationPrice,
       positionId,
       poolId,
