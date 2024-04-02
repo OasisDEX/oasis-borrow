@@ -145,7 +145,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
       ...(formatted.borrowRateChange && {
         secondary: {
           value: formatted.borrowRateChange,
-          variant: poolData.maxLtvChange?.isPositive() ? 'positive' : 'negative',
+          variant: poolData.borrowRateChange?.isPositive() ? 'positive' : 'negative',
         },
       }),
       tooltip: 'TBD',
