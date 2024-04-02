@@ -64,6 +64,7 @@ export function OmniFormView({
       quoteToken,
       settings,
       shouldSwitchNetwork,
+      positionId,
     },
     steps: {
       currentStep,
@@ -86,7 +87,7 @@ export function OmniFormView({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    position: { isSimulationLoading, resolvedId },
+    position: { isSimulationLoading, openFlowResolvedDpmId },
     dynamicMetadata: {
       elements: { sidebarContent },
       featureToggles: { suppressValidation, safetySwitch },
@@ -157,7 +158,7 @@ export function OmniFormView({
     transitionHandler,
   } = useOmniProductTypeTransition({
     action: state.action,
-    positionId: resolvedId,
+    positionId: positionId || openFlowResolvedDpmId,
     protocol,
     productType,
     tokenPair: `${collateralToken}-${quoteToken}`,
@@ -234,7 +235,7 @@ export function OmniFormView({
     quoteAddress,
     quoteToken,
     shouldSwitchNetwork,
-    resolvedId,
+    openFlowResolvedDpmId,
     walletAddress,
   })
   const textButtonAction = () => {
@@ -262,9 +263,9 @@ export function OmniFormView({
       <Grid gap={3}>
         {sidebarContent}
         {children}
-        {OmniKitDebug && resolvedId && (
+        {OmniKitDebug && openFlowResolvedDpmId && (
           <VaultChangesInformationContainer title="DPM debug data">
-            <VaultChangesInformationItem label="DPM ID" value={resolvedId} />
+            <VaultChangesInformationItem label="DPM ID" value={openFlowResolvedDpmId} />
             <VaultChangesInformationItem
               label="Address"
               value={

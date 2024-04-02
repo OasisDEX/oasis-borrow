@@ -524,7 +524,7 @@ interface ProductContextPosition<Position, Auction> {
     cached?: OmniSimulationSwap
   }
   isSimulationLoading?: boolean
-  resolvedId?: string
+  openFlowResolvedDpmId?: string
   setCachedPosition: (positionSet: OmniPositionSet<OmniGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<OmniSimulationData<OmniGenericPosition> | undefined>>
