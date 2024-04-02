@@ -15,6 +15,7 @@ export enum RefinanceOptions {
 export enum RefinanceSidebarStep {
   Option = 'option',
   Strategy = 'strategy',
+  Give = 'give',
   Dpm = 'dpm',
   Changes = 'changes',
   Transaction = 'transaction',

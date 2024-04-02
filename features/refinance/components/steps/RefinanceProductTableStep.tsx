@@ -11,6 +11,7 @@ import type {
 } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
@@ -24,7 +25,19 @@ export const RefinanceProductTableStep = () => {
   const token = undefined
   const searchParams = useSearchParams()
   const initialQueryString = getInitialQueryString(searchParams)
-  const [selectedProduct] = useState<ProductHubProductType>(ProductHubProductType.Borrow)
+
+  const {
+    steps: { setNextStep },
+    form: { updateState, state },
+  } = useRefinanceContext()
+
+  const selectedProduct = {
+    [RefinanceOptions.HIGHER_LTV]: ProductHubProductType.Multiply,
+    [RefinanceOptions.LOWER_COST]: ProductHubProductType.Borrow,
+    [RefinanceOptions.CHANGE_DIRECTION]: ProductHubProductType.Multiply,
+    [RefinanceOptions.SWITCH_TO_EARN]: ProductHubProductType.Earn,
+  }[state.refinanceOption || RefinanceOptions.LOWER_COST]
+
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(
     getInitialFilters({
       initialQueryString,
@@ -37,14 +50,9 @@ export const RefinanceProductTableStep = () => {
   const [selectedToken] = useState<string>(token || ALL_ASSETS)
   const [queryString, setQueryString] = useState<ProductHubQueryString>(initialQueryString)
 
-  const {
-    steps: { setNextStep },
-    form: { updateState },
-  } = useRefinanceContext()
-
   return (
     <ProductHubContentController
-      hiddenColumns={['action']}
+      hiddenColumns={['action', 'strategy']}
       initialNetwork={initialNetwork}
       initialProtocol={initialProtocol}
       limitRows={100}
