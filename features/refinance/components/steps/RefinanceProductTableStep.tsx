@@ -20,7 +20,7 @@ export const RefinanceProductTableStep = () => {
   const dataParser = (_table: ProductHubItem[]) => _table
   const table = dataParser(data.table)
   const initialNetwork = [NetworkNames.ethereumMainnet] as ProductHubSupportedNetworks[]
-  const initialProtocol = [LendingProtocol.AaveV3]
+  const initialProtocol = [LendingProtocol.SparkV3]
   const token = undefined
   const searchParams = useSearchParams()
   const initialQueryString = getInitialQueryString(searchParams)
