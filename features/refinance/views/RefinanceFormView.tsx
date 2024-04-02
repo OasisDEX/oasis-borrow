@@ -2,6 +2,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { FlowSidebar } from 'components/FlowSidebar'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
+import { getRefinanceSidebarTitle } from 'features/refinance/helpers'
 import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useFlowState } from 'helpers/useFlowState'
@@ -15,6 +16,9 @@ export const RefinanceFormView: FC = ({ children }) => {
   const { t } = useTranslation()
 
   const {
+    form: {
+      state: { refinanceOption },
+    },
     steps: { currentStep, isExternalStep, setStep, setNextStep, setPrevStep },
   } = useRefinanceContext()
 
@@ -30,7 +34,7 @@ export const RefinanceFormView: FC = ({ children }) => {
   const isTxInProgress = false
   const isPrimaryButtonDisabled = false
   const primaryButtonLabel = t('confirm')
-  const sidebarTitle = t('refinance.sidebar.why-refinance.title')
+  const sidebarTitle = getRefinanceSidebarTitle({ currentStep, t, option: refinanceOption })
   // eslint-disable-next-line no-console
   const textButtonAction = () => {
     if (currentStep === RefinanceSidebarStep.Changes) {

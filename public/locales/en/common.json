@@ -3693,6 +3693,15 @@
         },
         "summerfi-fee": "Summer.fi Fee"
       },
+      "refinance-option": {
+        "title-base": "Choose position to {{extension}}",
+        "title-extension": {
+          "higher-ltv": "increase your LTV",
+          "lower-cost": "lower your cost",
+          "change-direction": "change direction",
+          "switch-to-earn": "switch to earn"
+        }
+      },
       "transaction": {
         "title": {
           "success": "It's Done!",
