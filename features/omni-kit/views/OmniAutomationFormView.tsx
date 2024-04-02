@@ -68,7 +68,7 @@ export function OmniAutomationFormView({
       setSimulation,
       setCachedOrderInfoItems,
     },
-    position: { resolvedId },
+    position: { openFlowResolvedDpmId },
     dynamicMetadata: {
       featureToggles: { suppressValidation, safetySwitch },
       validations: { isFormFrozen },
@@ -147,7 +147,7 @@ export function OmniAutomationFormView({
     quoteAddress,
     quoteToken,
     shouldSwitchNetwork,
-    resolvedId,
+    openFlowResolvedDpmId,
     walletAddress,
   })
   const textButtonAction = () => {

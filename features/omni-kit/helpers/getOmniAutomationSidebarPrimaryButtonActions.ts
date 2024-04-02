@@ -24,7 +24,7 @@ interface GetOmniAutomationSidebarPrimaryButtonActionsParams {
   pseudoProtocol?: string
   quoteAddress: string
   quoteToken: string
-  resolvedId?: string
+  openFlowResolvedDpmId?: string
   shouldSwitchNetwork: boolean
   walletAddress?: string
 }
@@ -50,7 +50,7 @@ export function getOmniAutomationSidebarPrimaryButtonActions({
   pseudoProtocol,
   quoteAddress,
   quoteToken,
-  resolvedId,
+  openFlowResolvedDpmId,
   shouldSwitchNetwork,
   walletAddress,
 }: GetOmniAutomationSidebarPrimaryButtonActionsParams) {
@@ -67,7 +67,7 @@ export function getOmniAutomationSidebarPrimaryButtonActions({
           isPoolOracless: isOracless,
           label,
           networkName: network.name,
-          positionId: resolvedId,
+          positionId: openFlowResolvedDpmId,
           productType,
           protocol,
           pseudoProtocol,
