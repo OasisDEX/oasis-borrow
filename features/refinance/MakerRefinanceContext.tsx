@@ -1,5 +1,5 @@
+import { RiskRatio } from '@oasisdex/dma-library'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
-import { one } from 'helpers/zero'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { MakerPoolId, PositionId } from 'summerfi-sdk-common'
@@ -50,8 +50,14 @@ export function MakerRefinanceContext({
 
   const liquidationPrice = generalManageVault.state.vault.liquidationPrice.toString()
   const borrowRate = generalManageVault.state.ilkData.stabilityFee.toString()
-  const ltv = one.div(generalManageVault.state.vault.collateralizationRatio).toString()
-  const maxLtv = one.div(generalManageVault.state.ilkData.liquidationRatio).toString()
+  const ltv = new RiskRatio(
+    generalManageVault.state.vault.collateralizationRatio,
+    RiskRatio.TYPE.COL_RATIO,
+  )
+  const maxLtv = new RiskRatio(
+    generalManageVault.state.ilkData.liquidationRatio,
+    RiskRatio.TYPE.COL_RATIO,
+  )
 
   const ctx: RefinanceContextInput = {
     poolData: {

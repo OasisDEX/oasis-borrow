@@ -1,32 +1,41 @@
 import BigNumber from 'bignumber.js'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
 import { InfoSectionWithGradient } from 'components/InfoSectionWithGradient'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { RefinanceOptions } from 'features/refinance/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export const RefinanceHighlightedChangeSection = () => {
   const { t } = useTranslation()
 
-  const borrowCost = new BigNumber(0.0145)
-  const afterBorrowCost = new BigNumber(0.0125)
+  const {
+    poolData: { borrowRate, maxLtv },
+    form: {
+      state: { strategy, refinanceOption },
+    },
+  } = useRefinanceContext()
 
-  const maxLtv = new BigNumber(0.7)
-  const afterMaxLtv = new BigNumber(0.8)
-  const maxMultiple = new BigNumber(1.2)
-  const afterMaxMultiple = new BigNumber(3.2)
+  if (!refinanceOption) {
+    throw new Error('Refinance option not defined')
+  }
 
-  const option = RefinanceOptions.LOWER_COST
+  const borrowCost = new BigNumber(borrowRate)
+
+  const afterBorrowCost = new BigNumber(strategy?.fee || zero)
+  const afterMaxLtv = new BigNumber(strategy?.maxLtv || zero)
+  const afterMaxMultiple = new BigNumber(strategy?.maxMultiply || zero)
 
   const formatted = {
     borrowCost: formatDecimalAsPercent(borrowCost),
     afterBorrowCost: formatDecimalAsPercent(afterBorrowCost),
     borrowCostChange: formatDecimalAsPercent(borrowCost.minus(afterBorrowCost)),
 
-    maxLtv: formatDecimalAsPercent(maxLtv),
+    maxLtv: formatDecimalAsPercent(maxLtv.loanToValue),
     afterMaxLtv: formatDecimalAsPercent(afterMaxLtv),
-    maxMultiple: `${maxMultiple.toFixed(2)}x`,
+    maxMultiple: `${maxLtv.multiple.toFixed(2)}x`,
     afterMaxMultiple: `${afterMaxMultiple.toFixed(2)}x`,
   }
 
@@ -35,7 +44,7 @@ export const RefinanceHighlightedChangeSection = () => {
     [RefinanceOptions.HIGHER_LTV]: 'increase-to-higher-ltv',
     [RefinanceOptions.CHANGE_DIRECTION]: 'change-direction',
     [RefinanceOptions.SWITCH_TO_EARN]: 'switch-to-earn',
-  }[option]
+  }[refinanceOption]
 
   const items = {
     [RefinanceOptions.LOWER_COST]: [
@@ -74,7 +83,7 @@ export const RefinanceHighlightedChangeSection = () => {
         value: 'TBD',
       },
     ],
-  }[option]
+  }[refinanceOption]
 
   return (
     <InfoSectionWithGradient

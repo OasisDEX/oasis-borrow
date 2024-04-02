@@ -1,3 +1,4 @@
+import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import { shiftOmniStep } from 'features/omni-kit/contexts'
 import { useRefinanceFormReducto } from 'features/refinance/state'
@@ -28,7 +29,7 @@ export type RefinanceContextInput = {
     borrowRate: string
     collateralTokenSymbol: string
     debtTokenSymbol: string
-    maxLtv: string
+    maxLtv: RiskRatio
   }
   environment: {
     tokenPrices: Record<string, string>
@@ -41,7 +42,7 @@ export type RefinanceContextInput = {
     collateralAmount: string
     debtAmount: string
     liquidationPrice: string
-    ltv: string
+    ltv: RiskRatio
   }
 }
 
@@ -58,14 +59,14 @@ export type RefinanceContext = {
     collateralTokenAmount: TokenAmount
     debtTokenAmount: TokenAmount
     liquidationPrice: string
-    ltv: string
+    ltv: RiskRatio
   }
   poolData: {
     poolId: IPoolId
     borrowRate: string
     collateralTokenSymbol: string
     debtTokenSymbol: string
-    maxLtv: string
+    maxLtv: RiskRatio
   }
   form: ReturnType<typeof useRefinanceFormReducto>
   steps: RefinanceSteps
