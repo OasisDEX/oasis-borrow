@@ -1,6 +1,7 @@
 import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import { shiftOmniStep } from 'features/omni-kit/contexts'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
@@ -53,6 +54,7 @@ export type RefinanceContext = {
     address?: AddressValue
     chainInfo: ChainInfo
     slippage: number
+    isShort: boolean
   }
   position: {
     positionId: PositionId
@@ -143,6 +145,8 @@ export function RefinanceContextProvider({
 
   const form = useRefinanceFormReducto({})
 
+  const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
+
   const ctx: RefinanceContext = React.useMemo(
     () => ({
       environment: {
@@ -151,6 +155,7 @@ export function RefinanceContextProvider({
         address: parsedAddress,
         chainInfo,
         slippage,
+        isShort,
       },
       position: {
         collateralTokenAmount,

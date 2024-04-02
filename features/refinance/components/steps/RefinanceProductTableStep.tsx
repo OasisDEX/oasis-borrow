@@ -5,11 +5,11 @@ import { getInitialFilters, getInitialQueryString } from 'features/productHub/he
 import { ALL_ASSETS } from 'features/productHub/meta'
 import type {
   ProductHubFilters,
-  ProductHubItem,
   ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { getParsedRefinanceProductTable } from 'features/refinance/helpers'
 import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -18,8 +18,24 @@ import React, { useState } from 'react'
 
 export const RefinanceProductTableStep = () => {
   const { productHub: data } = usePreloadAppDataContext()
-  const dataParser = (_table: ProductHubItem[]) => _table
-  const table = dataParser(data.table)
+
+  const {
+    poolData: { borrowRate, maxLtv },
+
+    environment: { isShort },
+    form: {
+      state: { refinanceOption },
+    },
+  } = useRefinanceContext()
+
+  const table = getParsedRefinanceProductTable({
+    table: data.table,
+    option: refinanceOption,
+    borrowRate,
+    isShort,
+    maxLtv,
+  })
+
   const initialNetwork = [NetworkNames.ethereumMainnet] as ProductHubSupportedNetworks[]
   const initialProtocol = [LendingProtocol.SparkV3]
   const token = undefined
@@ -32,9 +48,9 @@ export const RefinanceProductTableStep = () => {
   } = useRefinanceContext()
 
   const selectedProduct = {
-    [RefinanceOptions.HIGHER_LTV]: ProductHubProductType.Multiply,
+    [RefinanceOptions.HIGHER_LTV]: ProductHubProductType.Borrow,
     [RefinanceOptions.LOWER_COST]: ProductHubProductType.Borrow,
-    [RefinanceOptions.CHANGE_DIRECTION]: ProductHubProductType.Multiply,
+    [RefinanceOptions.CHANGE_DIRECTION]: ProductHubProductType.Borrow,
     [RefinanceOptions.SWITCH_TO_EARN]: ProductHubProductType.Earn,
   }[state.refinanceOption || RefinanceOptions.LOWER_COST]
 
