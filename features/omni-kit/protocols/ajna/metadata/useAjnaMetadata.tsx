@@ -49,6 +49,7 @@ import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types
 import type {
   GetOmniMetadata,
   LendingMetadata,
+  OmniFiltersParameters,
   ProductContextWithBorrow,
   ProductContextWithEarn,
   ShouldShowDynamicLtvMetadata,
@@ -67,7 +68,6 @@ import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
@@ -156,7 +156,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const filters = {
-    flowStateFilter: (event: CreatePositionEvent) =>
+    omniProxyFilter: ({ event, filterConsumed }: OmniFiltersParameters) =>
       ajnaFlowStateFilter({
         collateralAddress,
         event,
@@ -164,6 +164,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         quoteAddress,
         protocolRaw,
         protocol,
+        filterConsumed,
       }),
   }
 

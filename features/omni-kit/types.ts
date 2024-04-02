@@ -260,6 +260,7 @@ export interface OmniFlowStateFilterParams {
   productType: OmniProductType
   protocol: LendingProtocol
   protocolRaw?: string
+  filterConsumed?: boolean
   quoteAddress: string
 }
 
@@ -338,8 +339,13 @@ interface OmniFeatureToggles {
   suppressValidation: boolean
 }
 
+export interface OmniFiltersParameters {
+  event: CreatePositionEvent
+  filterConsumed?: boolean
+}
+
 interface OmniFilters {
-  flowStateFilter: (event: CreatePositionEvent) => boolean
+  omniProxyFilter: ({ event, filterConsumed }: OmniFiltersParameters) => Promise<boolean>
 }
 
 interface CommonMetadata {
