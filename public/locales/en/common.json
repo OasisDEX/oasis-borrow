@@ -3680,7 +3680,7 @@
         "description": "We are going to refinance your position. You can refinance back to your original position anytime you want, but it will cost gas and swap fees again.",
         "highlighted": {
           "lowering-borrowing-cost": "Lowering Borrowing Cost",
-          "increase-to-higher-ltv": "Increase to higher ltv",
+          "increase-to-higher-ltv": "Increase to higher LTV",
           "change-direction": "Change direction",
           "switch-to-earn": "Switch to Earn"
         },
@@ -3692,6 +3692,15 @@
           "item-3": "Opening your new position"
         },
         "summerfi-fee": "Summer.fi Fee"
+      },
+      "refinance-option": {
+        "title-base": "Choose position to {{extension}}",
+        "title-extension": {
+          "higher-ltv": "increase your LTV",
+          "lower-cost": "lower your cost",
+          "change-direction": "change direction",
+          "switch-to-earn": "switch to earn"
+        }
       },
       "transaction": {
         "title": {

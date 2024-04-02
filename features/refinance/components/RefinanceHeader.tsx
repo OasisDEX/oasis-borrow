@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { ModalCloseIcon } from 'components/Modal'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { StatefulTooltip } from 'components/Tooltip'
 import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { formatAddress } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
@@ -55,6 +55,7 @@ const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress }) => {
           border: 'none',
           top: '55px',
           right: '50px',
+          zIndex: 3,
         }}
       >
         <Flex
@@ -81,20 +82,36 @@ export const RefinanceHeader = () => {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
 
+  const {
+    position: {
+      positionId: { id },
+      debtTokenData,
+      collateralTokenData,
+    },
+    environment: { address },
+    form: {
+      state: { strategy },
+    },
+  } = useRefinanceContext()
+
   // use refinance context to eventually get this data
   const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol, walletAddress } = {
-    primaryToken: 'ETH',
-    secondaryToken: 'USDC',
-    positionId: new BigNumber(18604), // as optional
+    primaryToken: collateralTokenData.token.symbol,
+    secondaryToken: debtTokenData.token.symbol,
+    positionId: id,
     fromProtocol: {
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Maker,
     },
-    toProtocol: {
-      network: NetworkNames.ethereumMainnet,
-      protocol: LendingProtocol.SparkV3,
-    }, // toProtocol as optional
-    walletAddress: '0xbEf4befb4F230F43905313077e3824d7386E09F8', // as optional
+    ...(strategy
+      ? {
+          toProtocol: {
+            network: strategy.network,
+            protocol: strategy.protocol,
+          },
+        }
+      : {}),
+    walletAddress: address,
   }
 
   const { closeModal } = useModalContext()

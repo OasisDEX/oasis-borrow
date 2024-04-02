@@ -1,4 +1,5 @@
 import { AppLink } from 'components/Links'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { RefinanceOptions } from 'features/refinance/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
@@ -26,6 +27,10 @@ const options = [
 
 export const RefinanceStrategyStep = () => {
   const { t } = useTranslation()
+  const {
+    form: { updateState },
+    steps: { setNextStep },
+  } = useRefinanceContext()
 
   return (
     <>
@@ -50,6 +55,10 @@ export const RefinanceStrategyStep = () => {
         <Button
           key={i}
           variant="unStyled"
+          onClick={() => {
+            updateState('refinanceOption', item.value)
+            setNextStep()
+          }}
           sx={{
             textAlign: 'left',
             px: '24px',

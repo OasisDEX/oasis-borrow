@@ -2,13 +2,18 @@ import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import type { ItemProps } from 'components/infoSection/Item'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { TokensGroup } from 'components/TokensGroup'
 import { RefinanceAutomationSection, RefinanceCardWrapper } from 'features/refinance/components'
 import { RefinancePositionViewType } from 'features/refinance/types'
 import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatLtvDecimalAsPercent,
+} from 'helpers/formatters/format'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -28,6 +33,8 @@ type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
         poolData: {
           borrowRate: BigNumber
           maxLtv: BigNumber
+          borrowRateChange?: BigNumber
+          maxLtvChange?: BigNumber
         }
         positionData: {
           ltv: BigNumber
@@ -37,7 +44,7 @@ type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
         }
         type: Type
         automations: PortfolioPositionAutomations
-        positionId?: BigNumber
+        positionId?: string
       }
 
 export const RefinancePositionView = <Type extends RefinancePositionViewType>(
@@ -46,7 +53,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   const { t } = useTranslation()
   if (props.type === RefinancePositionViewType.EMPTY) {
     return (
-      <RefinanceCardWrapper>
+      <RefinanceCardWrapper sx={{ height: ['auto', '522px'] }}>
         <Flex
           sx={{
             flexDirection: 'column',
@@ -92,7 +99,13 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
       </ItemValueWithIcon>
     ),
     maxLtv: formatLtvDecimalAsPercent(poolData.maxLtv),
+    ...(poolData.maxLtvChange && {
+      maxLtvChange: formatLtvDecimalAsPercent(poolData.maxLtvChange, { plus: true }),
+    }),
     borrowRate: formatLtvDecimalAsPercent(poolData.borrowRate),
+    ...(poolData.borrowRateChange && {
+      borrowRateChange: `${formatDecimalAsPercent(poolData.borrowRateChange, { plus: true })}`,
+    }),
   }
 
   const positionInfoSectionItems = [
@@ -114,15 +127,27 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
     },
   ]
 
-  const poolInfoSectionItems = [
+  const poolInfoSectionItems: ItemProps[] = [
     {
       label: t('max-ltv'),
       value: formatted.maxLtv,
+      ...(formatted.maxLtvChange && {
+        secondary: {
+          value: formatted.maxLtvChange,
+          variant: poolData.maxLtvChange?.isPositive() ? 'positive' : 'negative',
+        },
+      }),
       tooltip: 'TBD',
     },
     {
       label: t('system.borrow-rate'),
       value: formatted.borrowRate,
+      ...(formatted.borrowRateChange && {
+        secondary: {
+          value: formatted.borrowRateChange,
+          variant: poolData.borrowRateChange?.isPositive() ? 'negative' : 'positive',
+        },
+      }),
       tooltip: 'TBD',
     },
     {

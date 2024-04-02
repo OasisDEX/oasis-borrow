@@ -1,9 +1,11 @@
+import { RiskRatio } from '@oasisdex/dma-library'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
+import { getMakerRefinanceContextInputs } from 'features/refinance/helpers/getMakerRefinanceContextInputs'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
-import { type PositionId } from 'summerfi-sdk-common'
+import { getChainInfoByChainId } from 'summerfi-sdk-common'
 
-import { type RefinanceContextInput, RefinanceContextProvider } from './RefinanceContext'
+import { RefinanceContextProvider } from './RefinanceContext'
 
 interface MakerRefinanceContextProps {
   generalManageVault: GeneralManageVaultState
@@ -20,31 +22,37 @@ export function MakerRefinanceContext({
   // return children
   const { vault, priceInfo } = generalManageVault.state
   const slippage = generalManageVault.state.slippage.toNumber()
-  const positionId: PositionId = {
-    id: vault.id.toString(),
-  }
-  const collateralTokenSymbol = vault.token
-  const debtTokenSymbol = 'DAI'
+  const chainInfo = getChainInfoByChainId(chainId)
 
-  const tokenPrices = {
-    [collateralTokenSymbol]: priceInfo?.currentCollateralPrice.toString(),
-    [debtTokenSymbol]: '1',
+  if (!chainInfo) {
+    throw new Error(`ChainId ${chainId} is not supported`)
   }
 
   const liquidationPrice = generalManageVault.state.vault.liquidationPrice.toString()
+  const borrowRate = generalManageVault.state.ilkData.stabilityFee.toString()
+  const ltv = new RiskRatio(
+    generalManageVault.state.vault.collateralizationRatio,
+    RiskRatio.TYPE.COL_RATIO,
+  )
+  const maxLtv = new RiskRatio(
+    generalManageVault.state.ilkData.liquidationRatio,
+    RiskRatio.TYPE.COL_RATIO,
+  )
 
-  const ctx: RefinanceContextInput = {
-    positionId,
+  const ctx = getMakerRefinanceContextInputs({
     address,
     chainId,
-    slippage,
-    collateralTokenSymbol,
-    debtTokenSymbol,
     collateralAmount: vault.lockedCollateral.toString(),
+    collateralToken: vault.token,
     debtAmount: vault.debt.toString(),
-    tokenPrices,
+    id: vault.id.toString(),
+    slippage,
+    collateralPrice: priceInfo.currentCollateralPrice.toString(),
     liquidationPrice,
-  }
+    borrowRate,
+    ltv,
+    maxLtv,
+  })
 
   return <RefinanceContextProvider contextInput={ctx}>{children}</RefinanceContextProvider>
 }
