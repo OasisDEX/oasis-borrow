@@ -31,7 +31,7 @@ export const RefinanceHighlightedChangeSection = () => {
   const formatted = {
     borrowCost: formatDecimalAsPercent(borrowCost),
     afterBorrowCost: formatDecimalAsPercent(afterBorrowCost),
-    borrowCostChange: formatDecimalAsPercent(borrowCost.minus(afterBorrowCost)),
+    borrowCostChange: `-${formatDecimalAsPercent(borrowCost.minus(afterBorrowCost))}`,
 
     maxLtv: formatDecimalAsPercent(maxLtv.loanToValue),
     afterMaxLtv: formatDecimalAsPercent(afterMaxLtv),
