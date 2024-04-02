@@ -150,8 +150,6 @@ export function OmniFormView({
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })
-  console.log('debug resolvedId', resolvedId)
-  console.log('debug positionId', positionId)
   const {
     isTransitionAction,
     isTransitionInProgress,
