@@ -11,6 +11,7 @@ export const RefinanceSimulation = () => {
     form: {
       state: { strategy },
     },
+    poolData: { maxLtv: currentMaxLtv, borrowRate: currentBorrowRate },
   } = useRefinanceContext()
 
   if (currentStep === RefinanceSidebarStep.Option) {
@@ -20,6 +21,9 @@ export const RefinanceSimulation = () => {
   if (!strategy) {
     return null
   }
+
+  const maxLtv = strategy.maxLtv ? new BigNumber(strategy.maxLtv) : zero
+  const borrowRate = strategy.fee ? new BigNumber(strategy.fee) : zero
 
   return [
     RefinanceSidebarStep.Dpm,
@@ -36,8 +40,10 @@ export const RefinanceSimulation = () => {
         protocol: strategy.protocol,
       }}
       poolData={{
-        maxLtv: strategy.maxLtv ? new BigNumber(strategy.maxLtv) : zero,
-        borrowRate: strategy.fee ? new BigNumber(strategy.fee) : zero,
+        maxLtv,
+        maxLtvChange: maxLtv.minus(currentMaxLtv.loanToValue),
+        borrowRate,
+        borrowRateChange: borrowRate.minus(currentBorrowRate),
       }}
       positionData={{
         ltv: new BigNumber(0.6),
