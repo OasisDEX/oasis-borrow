@@ -59,7 +59,7 @@ export const RefinanceFormView: FC = ({ children }) => {
       ...primaryButtonActions,
     },
     textButton: {
-      label: t('back-to-editing'),
+      label: t('go-back'),
       action: textButtonAction,
       hidden: isTxInProgress || isTxSuccess || isTextButtonHidden,
     },
