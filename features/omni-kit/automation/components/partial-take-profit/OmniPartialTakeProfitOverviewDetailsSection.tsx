@@ -43,7 +43,7 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
       badge={isPartialTakeProfitEnabled}
       content={
         <DetailsSectionContentCardWrapper>
-          <OmniContentCard {...nextDynamicTriggerPriceCommonData} />
+          <OmniContentCard {...nextDynamicTriggerPriceCommonData} isLoading={isLoading} />
           <OmniContentCard {...estimatedToReceiveCommonData} isLoading={isLoading} />
           <OmniContentCard {...currentProfitAndLossCommonData} />
           <OmniContentCard {...realizedProfitCommonData} />
