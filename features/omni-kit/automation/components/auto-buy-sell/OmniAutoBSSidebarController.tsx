@@ -42,13 +42,13 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const defaultTriggerValues = useMemo(() => {
     if (type === AutomationFeatures.AUTO_BUY) {
       return {
-        triggerLtv: currentLtv.times(100).minus(5),
-        targetLtv: currentLtv.times(100),
+        triggerLtv: currentLtv.times(100),
+        targetLtv: currentLtv.times(100).plus(5),
       }
     }
     return {
-      targetLtv: currentLtv.times(100).minus(5),
-      triggerLtv: currentLtv.times(100),
+      targetLtv: currentLtv.times(100),
+      triggerLtv: currentLtv.times(100).plus(5),
     }
   }, [currentLtv])
 
