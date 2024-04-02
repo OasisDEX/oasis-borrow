@@ -23,11 +23,11 @@ export const RefinancePosition = () => {
         protocol: LendingProtocol.Maker,
       }}
       poolData={{
-        maxLtv: new BigNumber(maxLtv),
+        maxLtv: new BigNumber(maxLtv.loanToValue),
         borrowRate: new BigNumber(borrowRate),
       }}
       positionData={{
-        ltv: new BigNumber(ltv),
+        ltv: new BigNumber(ltv.loanToValue),
         liquidationPrice: new BigNumber(liquidationPrice),
         collateral: new BigNumber(collateralTokenAmount.amount),
         debt: new BigNumber(debtTokenAmount.amount),
