@@ -44,6 +44,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       quoteToken,
       isOwner,
       networkId,
+      priceFormat,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -61,6 +62,8 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
     productType,
     auction: productContext.position.positionAuction as AaveLikeHistoryEvent,
+    triggers: productContext.automation.positionTriggers,
+    priceFormat,
   })
 
   switch (productType) {
