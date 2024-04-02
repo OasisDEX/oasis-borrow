@@ -64,6 +64,7 @@ export function OmniFormView({
       quoteToken,
       settings,
       shouldSwitchNetwork,
+      positionId,
     },
     steps: {
       currentStep,
@@ -149,6 +150,8 @@ export function OmniFormView({
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })
+  console.log('debug resolvedId', resolvedId)
+  console.log('debug positionId', positionId)
   const {
     isTransitionAction,
     isTransitionInProgress,
@@ -157,7 +160,7 @@ export function OmniFormView({
     transitionHandler,
   } = useOmniProductTypeTransition({
     action: state.action,
-    positionId: resolvedId,
+    positionId: positionId || resolvedId,
     protocol,
     productType,
     tokenPair: `${collateralToken}-${quoteToken}`,
