@@ -83,13 +83,13 @@ export const RefinanceHeader = () => {
   const isMobile = useOnMobile()
 
   const {
-    poolData: { borrowRate, maxLtv, collateralTokenSymbol, debtTokenSymbol },
+    poolData: { collateralTokenSymbol, debtTokenSymbol },
     position: {
       positionId: { id },
     },
     environment: { address },
     form: {
-      state: { strategy, refinanceOption },
+      state: { strategy },
     },
   } = useRefinanceContext()
 
