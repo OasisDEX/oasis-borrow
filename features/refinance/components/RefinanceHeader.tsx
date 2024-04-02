@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { ModalCloseIcon } from 'components/Modal'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { StatefulTooltip } from 'components/Tooltip'
 import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { formatAddress } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
@@ -82,20 +82,35 @@ export const RefinanceHeader = () => {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
 
+  const {
+    poolData: { borrowRate, maxLtv, collateralTokenSymbol, debtTokenSymbol },
+    position: {
+      positionId: { id },
+    },
+    environment: { address },
+    form: {
+      state: { strategy, refinanceOption },
+    },
+  } = useRefinanceContext()
+
   // use refinance context to eventually get this data
   const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol, walletAddress } = {
-    primaryToken: 'ETH',
-    secondaryToken: 'USDC',
-    positionId: new BigNumber(18604), // as optional
+    primaryToken: collateralTokenSymbol,
+    secondaryToken: debtTokenSymbol,
+    positionId: id,
     fromProtocol: {
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Maker,
     },
-    toProtocol: {
-      network: NetworkNames.ethereumMainnet,
-      protocol: LendingProtocol.SparkV3,
-    }, // toProtocol as optional
-    walletAddress: '0xbEf4befb4F230F43905313077e3824d7386E09F8', // as optional
+    ...(strategy
+      ? {
+          toProtocol: {
+            network: strategy.network,
+            protocol: strategy.protocol,
+          },
+        }
+      : {}),
+    walletAddress: address,
   }
 
   const { closeModal } = useModalContext()

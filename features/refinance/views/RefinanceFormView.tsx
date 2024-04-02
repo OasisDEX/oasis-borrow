@@ -18,6 +18,7 @@ export const RefinanceFormView: FC = ({ children }) => {
   const {
     form: {
       state: { refinanceOption },
+      updateState,
     },
     steps: { currentStep, isExternalStep, setStep, setNextStep, setPrevStep },
   } = useRefinanceContext()
@@ -38,6 +39,7 @@ export const RefinanceFormView: FC = ({ children }) => {
   // eslint-disable-next-line no-console
   const textButtonAction = () => {
     if (currentStep === RefinanceSidebarStep.Changes) {
+      updateState('strategy', undefined)
       setStep(RefinanceSidebarStep.Strategy)
     } else {
       setPrevStep()
