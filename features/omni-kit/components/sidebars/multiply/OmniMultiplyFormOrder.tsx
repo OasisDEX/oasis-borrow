@@ -137,8 +137,8 @@ export function OmniMultiplyFormOrder() {
   const oasisFee = swapData
     ? amountFromWei(
         swapData.tokenFee,
-        swapData.collectFeeFrom === 'targetToken' ? quotePrecision : collateralPrecision,
-      ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? quotePrice : collateralPrice)
+        swapData.collectFeeFrom === 'targetToken' ? collateralPrecision : quotePrecision,
+      ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? collateralPrice : quotePrice)
     : zero
 
   const isLoading = !isTxSuccess && isSimulationLoading
