@@ -23,30 +23,50 @@ interface RefinanceSteps {
 }
 
 export type RefinanceContextInput = {
-  positionId: PositionId
-  poolId: IPoolId
-  collateralTokenSymbol: string
-  debtTokenSymbol: string
-  collateralAmount: string
-  debtAmount: string
-  chainId: number
-  slippage: number
-  tokenPrices: Record<string, string>
-  address?: string
-  liquidationPrice: string
+  poolData: {
+    poolId: IPoolId
+    borrowRate: string
+    collateralTokenSymbol: string
+    debtTokenSymbol: string
+    maxLtv: string
+  }
+  environment: {
+    tokenPrices: Record<string, string>
+    chainId: number
+    slippage: number
+    address?: string
+  }
+  position: {
+    positionId: PositionId
+    collateralAmount: string
+    debtAmount: string
+    liquidationPrice: string
+    ltv: string
+  }
 }
 
 export type RefinanceContext = {
-  positionId: PositionId
-  poolId: IPoolId
-  collateralTokenAmount: TokenAmount
-  debtTokenAmount: TokenAmount
-  collateralPrice: string
-  debtPrice: string
-  chainInfo: ChainInfo
-  slippage: number
-  address?: AddressValue
-  liquidationPrice: string
+  environment: {
+    collateralPrice: string
+    debtPrice: string
+    address?: AddressValue
+    chainInfo: ChainInfo
+    slippage: number
+  }
+  position: {
+    positionId: PositionId
+    collateralTokenAmount: TokenAmount
+    debtTokenAmount: TokenAmount
+    liquidationPrice: string
+    ltv: string
+  }
+  poolData: {
+    poolId: IPoolId
+    borrowRate: string
+    collateralTokenSymbol: string
+    debtTokenSymbol: string
+    maxLtv: string
+  }
   form: ReturnType<typeof useRefinanceFormReducto>
   steps: RefinanceSteps
 }
@@ -71,17 +91,9 @@ export function RefinanceContextProvider({
   contextInput,
 }: PropsWithChildren<RefinanceContextProviderProps>) {
   const {
-    chainId,
-    collateralTokenSymbol,
-    debtTokenSymbol,
-    collateralAmount,
-    debtAmount,
-    address,
-    tokenPrices,
-    liquidationPrice,
-    positionId,
-    poolId,
-    slippage,
+    environment: { tokenPrices, chainId, slippage, address },
+    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
+    position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
   } = contextInput
   const chainInfo = getChainInfoByChainId(chainId)
   if (!chainInfo) {
@@ -132,16 +144,27 @@ export function RefinanceContextProvider({
 
   const ctx: RefinanceContext = React.useMemo(
     () => ({
-      collateralPrice,
-      debtPrice,
-      address: parsedAddress,
-      chainInfo,
-      collateralTokenAmount,
-      debtTokenAmount,
-      liquidationPrice,
-      positionId,
-      poolId,
-      slippage,
+      environment: {
+        collateralPrice,
+        debtPrice,
+        address: parsedAddress,
+        chainInfo,
+        slippage,
+      },
+      position: {
+        collateralTokenAmount,
+        debtTokenAmount,
+        liquidationPrice,
+        positionId,
+        ltv,
+      },
+      poolData: {
+        poolId,
+        borrowRate,
+        collateralTokenSymbol,
+        debtTokenSymbol,
+        maxLtv,
+      },
       form,
       steps: setupStepManager(),
     }),

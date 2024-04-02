@@ -1,4 +1,5 @@
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
+import { one } from 'helpers/zero'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { MakerPoolId, PositionId } from 'summerfi-sdk-common'
@@ -28,7 +29,6 @@ export function MakerRefinanceContext({
   const positionId: PositionId = {
     id: vault.id.toString(),
   }
-  const ilkType = vault.ilk as ILKType
 
   const poolId: MakerPoolId = {
     protocol: {
@@ -49,19 +49,31 @@ export function MakerRefinanceContext({
   }
 
   const liquidationPrice = generalManageVault.state.vault.liquidationPrice.toString()
+  const borrowRate = generalManageVault.state.ilkData.stabilityFee.toString()
+  const ltv = one.div(generalManageVault.state.vault.collateralizationRatio).toString()
+  const maxLtv = one.div(generalManageVault.state.ilkData.liquidationRatio).toString()
 
   const ctx: RefinanceContextInput = {
-    positionId,
-    poolId,
-    address,
-    chainId,
-    slippage,
-    collateralTokenSymbol,
-    debtTokenSymbol,
-    collateralAmount: vault.lockedCollateral.toString(),
-    debtAmount: vault.debt.toString(),
-    tokenPrices,
-    liquidationPrice,
+    poolData: {
+      poolId,
+      collateralTokenSymbol,
+      debtTokenSymbol,
+      borrowRate,
+      maxLtv,
+    },
+    environment: {
+      address,
+      chainId,
+      slippage,
+      tokenPrices,
+    },
+    position: {
+      positionId,
+      collateralAmount: vault.lockedCollateral.toString(),
+      debtAmount: vault.debt.toString(),
+      liquidationPrice,
+      ltv,
+    },
   }
 
   return <RefinanceContextProvider contextInput={ctx}>{children}</RefinanceContextProvider>

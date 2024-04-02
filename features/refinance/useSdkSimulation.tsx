@@ -44,16 +44,14 @@ export function useSdkSimulation() {
         throw new Error('RefinanceContextProvider is missing in the hierarchy')
       }
       const {
-        positionId,
-        poolId,
-        slippage,
-        chainInfo,
-        liquidationPrice: _liquidationPrice,
-        collateralTokenAmount,
-        debtTokenAmount,
-        collateralPrice,
-        debtPrice,
-        address,
+        environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
+        position: {
+          positionId,
+          liquidationPrice: _liquidationPrice,
+          collateralTokenAmount,
+          debtTokenAmount,
+        },
+        poolData: { poolId },
       } = context
       setLiquidationPrice(_liquidationPrice)
 
