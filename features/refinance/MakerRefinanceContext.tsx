@@ -1,11 +1,11 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
+import { getMakerRefinanceContextInputs } from 'features/refinance/helpers/getMakerRefinanceContextInputs'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
-import type { MakerPoolId, PositionId } from 'summerfi-sdk-common'
-import { getChainInfoByChainId, ILKType, ProtocolName } from 'summerfi-sdk-common'
+import { getChainInfoByChainId } from 'summerfi-sdk-common'
 
-import { type RefinanceContextInput, RefinanceContextProvider } from './RefinanceContext'
+import { RefinanceContextProvider } from './RefinanceContext'
 
 interface MakerRefinanceContextProps {
   generalManageVault: GeneralManageVaultState
@@ -23,29 +23,9 @@ export function MakerRefinanceContext({
   const { vault, priceInfo } = generalManageVault.state
   const slippage = generalManageVault.state.slippage.toNumber()
   const chainInfo = getChainInfoByChainId(chainId)
+
   if (!chainInfo) {
     throw new Error(`ChainId ${chainId} is not supported`)
-  }
-  const positionId: PositionId = {
-    id: vault.id.toString(),
-  }
-
-  const poolId: MakerPoolId = {
-    protocol: {
-      name: ProtocolName.Maker,
-      chainInfo,
-    },
-    vaultId: vault.id.toString(),
-    // ilkType
-    // TODO: hardcoded as endpoint is not supporting all ilks and failing
-    ilkType: ILKType.ETH_A,
-  }
-  const collateralTokenSymbol = vault.token
-  const debtTokenSymbol = 'DAI'
-
-  const tokenPrices = {
-    [collateralTokenSymbol]: priceInfo?.currentCollateralPrice.toString(),
-    [debtTokenSymbol]: '1',
   }
 
   const liquidationPrice = generalManageVault.state.vault.liquidationPrice.toString()
@@ -59,28 +39,20 @@ export function MakerRefinanceContext({
     RiskRatio.TYPE.COL_RATIO,
   )
 
-  const ctx: RefinanceContextInput = {
-    poolData: {
-      poolId,
-      collateralTokenSymbol,
-      debtTokenSymbol,
-      borrowRate,
-      maxLtv,
-    },
-    environment: {
-      address,
-      chainId,
-      slippage,
-      tokenPrices,
-    },
-    position: {
-      positionId,
-      collateralAmount: vault.lockedCollateral.toString(),
-      debtAmount: vault.debt.toString(),
-      liquidationPrice,
-      ltv,
-    },
-  }
+  const ctx = getMakerRefinanceContextInputs({
+    address,
+    chainId,
+    collateralAmount: vault.lockedCollateral.toString(),
+    collateralToken: vault.token,
+    debtAmount: vault.debt.toString(),
+    id: vault.id.toString(),
+    slippage,
+    collateralPrice: priceInfo.currentCollateralPrice.toString(),
+    liquidationPrice,
+    borrowRate,
+    ltv,
+    maxLtv,
+  })
 
   return <RefinanceContextProvider contextInput={ctx}>{children}</RefinanceContextProvider>
 }
