@@ -644,10 +644,11 @@ export function setupProductContext(
       collateralPrice: BigNumber,
       quotePrice: BigNumber,
       dpmPositionData: DpmPositionData,
+      pairId: number,
       network: NetworkIds,
       tokensPrecision?: OmniTokensPrecision,
     ) =>
-      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+      `${dpmPositionData.vaultId}-${pairId}-${network}-${collateralPrice
         .decimalPlaces(2)
         .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
         tokensPrecision ?? {},

@@ -140,6 +140,7 @@ export interface OmniProtocolHookProps {
   dpmPositionData?: DpmPositionData
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number
   product?: OmniProductType
   protocol: OmniSupportedProtocols
   quoteToken: string

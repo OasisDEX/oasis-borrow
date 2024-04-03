@@ -54,7 +54,8 @@ async function getMorphoMarketData(
     return await Object.keys(markets).reduce<Promise<ProductHubHandlerResponseData>>(
       async (v, pair) => {
         const [collateralToken, quoteToken] = pair.split('-')
-        const marketId = markets[pair]
+        // TODO - look via market address
+        const marketId = markets[pair][0]
 
         const market = await MorphoBlueContract.market(marketId)
         const marketParams = await MorphoBlueContract.idToMarketParams(marketId)

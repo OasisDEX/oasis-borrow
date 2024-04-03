@@ -9,6 +9,7 @@ import { EMPTY } from 'rxjs'
 export function useMorphoData({
   dpmPositionData,
   networkId,
+  pairId,
   tokenPriceUSDData,
   tokensPrecision,
 }: OmniProtocolHookProps) {
@@ -22,6 +23,7 @@ export function useMorphoData({
               tokenPriceUSDData[dpmPositionData.collateralToken],
               tokenPriceUSDData[dpmPositionData.quoteToken],
               dpmPositionData,
+              pairId,
               networkId,
               tokensPrecision,
             )

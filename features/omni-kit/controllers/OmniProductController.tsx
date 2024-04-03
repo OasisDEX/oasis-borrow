@@ -150,10 +150,11 @@ export const OmniProductController = <Auction, History, Position>({
     dpmPositionData,
     label,
     networkId,
+    pairId,
+    protocol,
     quoteToken,
     tokenPriceUSDData,
     tokensPrecision,
-    protocol,
   })
 
   useEffect(() => {
