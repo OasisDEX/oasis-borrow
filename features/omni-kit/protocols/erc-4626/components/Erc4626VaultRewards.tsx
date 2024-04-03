@@ -94,6 +94,9 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
       ),
     [claims, prices],
   )
+  const totalClaimable = useMemo(() => {
+    return claims.reduce<BigNumber>((total, { claimable }) => total.plus(claimable), zero)
+  }, [claims])
 
   const txSidebarProgress = t('erc-4626.position-page.earn.transaction.progress')
   const txSidebarSuccess = t('erc-4626.position-page.earn.transaction.success')
@@ -118,6 +121,7 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
   const isClaimButtonDisabled =
     !isOwner ||
     !tx ||
+    totalClaimable.lte(zero) ||
     claims.length === 0 ||
     isTxInProgress ||
     isTxWaitingForApproval ||
