@@ -1,9 +1,12 @@
 import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
-import { shiftOmniStep } from 'features/omni-kit/contexts'
+import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
+import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
+import { getOmniTxStatuses, shiftOmniStep } from 'features/omni-kit/contexts'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
+import type { TxDetails } from 'helpers/handleTransaction'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
 import type { AddressValue, ChainInfo, IPoolId, PositionId } from 'summerfi-sdk-common'
@@ -70,6 +73,7 @@ export type RefinanceContext = {
     chainInfo: ChainInfo
     slippage: number
     isShort: boolean
+    gasEstimation: GasEstimationContext | undefined
   }
   position: {
     positionId: PositionId
@@ -86,6 +90,7 @@ export type RefinanceContext = {
   automations: RefinanceContextInputAutomations
   form: ReturnType<typeof useRefinanceFormReducto>
   steps: RefinanceSteps
+  tx: OmniGeneralContextTx
 }
 
 export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
@@ -137,6 +142,7 @@ export function RefinanceContextProvider({
     RefinanceSidebarStep.Option,
     RefinanceSidebarStep.Strategy,
     RefinanceSidebarStep.Dpm,
+    RefinanceSidebarStep.Give,
     RefinanceSidebarStep.Changes,
     RefinanceSidebarStep.Transaction,
   ]
@@ -144,17 +150,30 @@ export function RefinanceContextProvider({
   const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(steps[0])
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
 
+  const [txDetails, setTxDetails] = useState<TxDetails>()
+  const [gasEstimation, setGasEstimation] = useState<GasEstimationContext>()
+
   const setupStepManager = (): RefinanceSteps => {
     return {
       currentStep,
       steps,
-      isExternalStep: currentStep === RefinanceSidebarStep.Dpm,
+      isExternalStep: [RefinanceSidebarStep.Give, RefinanceSidebarStep.Dpm].includes(currentStep),
       isFlowStateReady,
       isStepWithTransaction: currentStep === RefinanceSidebarStep.Transaction,
       setIsFlowStateReady,
       setStep: (step) => setCurrentStep(step),
       setNextStep: () => shiftOmniStep({ direction: 'next', currentStep, steps, setCurrentStep }),
       setPrevStep: () => shiftOmniStep({ direction: 'prev', currentStep, steps, setCurrentStep }),
+    }
+  }
+
+  const setupTxManager = (): OmniGeneralContextTx => {
+    return {
+      ...getOmniTxStatuses(txDetails?.txStatus),
+      setTxDetails,
+      setSlippageSource: () => null,
+      setGasEstimation,
+      txDetails,
     }
   }
 
@@ -171,6 +190,7 @@ export function RefinanceContextProvider({
         chainInfo,
         slippage,
         isShort,
+        gasEstimation,
       },
       position: {
         collateralTokenData,
@@ -187,6 +207,7 @@ export function RefinanceContextProvider({
       automations,
       form,
       steps: setupStepManager(),
+      tx: setupTxManager(),
     }),
     [
       collateralPrice,
@@ -200,6 +221,7 @@ export function RefinanceContextProvider({
       poolId,
       slippage,
       form.state,
+      gasEstimation,
     ],
   )
 

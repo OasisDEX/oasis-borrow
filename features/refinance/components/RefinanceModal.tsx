@@ -1,8 +1,10 @@
 import { Modal } from 'components/Modal'
-import { RefinanceHeader } from 'features/refinance/components/RefinanceHeader'
-import { RefinancePosition } from 'features/refinance/components/RefinancePosition'
-import { RefinanceSimulation } from 'features/refinance/components/RefinanceSimulation'
-import { RefinanceFormController } from 'features/refinance/controllers/RefinanceFormController'
+import {
+  RefinanceHeader,
+  RefinancePosition,
+  RefinanceSimulation,
+} from 'features/refinance/components'
+import { RefinanceFormController } from 'features/refinance/controllers'
 import { useModalContext } from 'helpers/modalHook'
 import React from 'react'
 import { Flex } from 'theme-ui'
