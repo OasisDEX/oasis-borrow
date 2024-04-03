@@ -2,6 +2,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { FlowSidebar } from 'components/FlowSidebar'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
+import { ChangeOwnerSidebar } from 'features/refinance/controllers'
 import { getRefinanceSidebarTitle } from 'features/refinance/helpers'
 import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -75,7 +76,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     // ...(dpmProxy && { existingProxy: dpmProxy }),
     amount: zero,
     token: 'ETH',
-    filterConsumedProxy: () => false,
+    filterConsumedProxy: () => Promise.resolve(false),
     onProxiesAvailable: () => null,
     // filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
     // onProxiesAvailable: (events, dpmAccounts) => {
@@ -105,12 +106,22 @@ export const RefinanceFormView: FC = ({ children }) => {
     onGoBack: () => setStep(RefinanceSidebarStep.Strategy),
   })
 
+  const changeOwnerProps = {
+    textButtonAction: () => setStep(RefinanceSidebarStep.Strategy),
+    onEverythingReady: () => setNextStep(),
+  }
+
   return (
     <Flex sx={{ flex: 1 }}>
       {!isExternalStep ? (
         <SidebarSection {...sidebarSectionProps} />
       ) : (
-        <>{currentStep === RefinanceSidebarStep.Dpm && <FlowSidebar {...flowState} />}</>
+        <>
+          {currentStep === RefinanceSidebarStep.Dpm && <FlowSidebar {...flowState} />}
+          {currentStep === RefinanceSidebarStep.Give && (
+            <ChangeOwnerSidebar {...changeOwnerProps} />
+          )}
+        </>
       )}
     </Flex>
   )
