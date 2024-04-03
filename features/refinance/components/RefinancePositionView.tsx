@@ -20,7 +20,7 @@ import React from 'react'
 import { eye } from 'theme/icons'
 import { Divider, Flex, Text } from 'theme-ui'
 
-type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
+export type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
   Type extends RefinancePositionViewType.EMPTY
     ? { type: Type }
     : {

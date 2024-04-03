@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { RefinancePositionView } from 'features/refinance/components/RefinancePositionView'
 import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useSimulationPositionData } from 'features/refinance/simulations/getPositionData'
 import { RefinancePositionViewType, RefinanceSidebarStep } from 'features/refinance/types'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -13,6 +14,11 @@ export const RefinanceSimulation = () => {
     },
     poolData: { maxLtv: currentMaxLtv, borrowRate: currentBorrowRate },
   } = useRefinanceContext()
+
+  const positionData = useSimulationPositionData()
+  if (positionData === null) {
+    return null
+  }
 
   if (currentStep === RefinanceSidebarStep.Option) {
     return <RefinancePositionView type={RefinancePositionViewType.EMPTY} />
@@ -46,12 +52,7 @@ export const RefinanceSimulation = () => {
         borrowRate,
         borrowRateChange: borrowRate.minus(currentBorrowRate),
       }}
-      positionData={{
-        ltv: new BigNumber(0.6),
-        liquidationPrice: new BigNumber(743.34),
-        collateral: new BigNumber(30),
-        debt: new BigNumber(12000),
-      }}
+      positionData={positionData}
       automations={{
         stopLoss: { enabled: false },
         autoSell: { enabled: false },
