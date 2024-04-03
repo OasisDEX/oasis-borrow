@@ -6,7 +6,7 @@ import { mapAaveLikeProtocolSlug, mapAaveLikeProtocolVersion } from 'helpers/get
 import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { useRouter } from 'next/router'
 import type { AavePositionPageProps } from 'pages/[networkOrProduct]/aave/[version]/[...position]'
-import { type PropsWithChildren, useEffect, useState } from 'react'
+import React, { type PropsWithChildren, useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
 
 export function AaveLikeDeprecatedLinkHandler({
