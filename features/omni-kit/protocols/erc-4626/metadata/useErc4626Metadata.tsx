@@ -122,7 +122,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
           overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: (
             <>
-              <Erc4626DetailsSectionContentRewards />
+              {!isOpening && <Erc4626DetailsSectionContentRewards />}
               <Erc4626DetailsSectionContentAllocation />
             </>
           ),
