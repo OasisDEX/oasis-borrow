@@ -91,6 +91,9 @@ export function getAddresses(
   if (networkId === NetworkIds.OPTIMISMMAINNET || networkId === NetworkIds.ARBITRUMMAINNET) {
     sharedAddresses.tokens['USDC.E'] = contracts.tokens['USDC.E'].address
   }
+  if (networkId === NetworkIds.OPTIMISMMAINNET) {
+    sharedAddresses.tokens.SUSD = contracts.tokens['SUSD'].address
+  }
 
   switch (lendingProtocol) {
     case LendingProtocol.AaveV2:
