@@ -124,6 +124,7 @@ export const commonDataMapper = ({
   const omniKitUrl = `/${networksById[dpm.networkId].name.toLowerCase()}/${
     {
       AAVE_V3: 'aave/v3',
+      AAVE: 'aave/v2',
       Spark: 'spark',
     }[dpm.protocol]
   }/${positionType}/${primaryTokenSymbol.toLocaleLowerCase()}-${secondaryTokenSymbol.toLocaleLowerCase()}/${
