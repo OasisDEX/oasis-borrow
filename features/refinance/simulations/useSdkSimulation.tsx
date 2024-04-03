@@ -142,5 +142,7 @@ export function useSdkSimulation() {
     })
   }, [sdk, context, emodeType])
 
-  return { error, user, chain, sourcePosition, simulation, liquidationPrice }
+  const targetPosition = simulation?.targetPosition || null
+
+  return { error, context, chain, user, sourcePosition, targetPosition, liquidationPrice }
 }
