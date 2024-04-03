@@ -145,10 +145,14 @@ export const useOmniPartialTakeProfitDataHandler = () => {
 
   const resolvedTriggerLtv = resolvedTrigger?.decodedMappedParams.executionLtv
 
-  const startingTakeProfitPriceLong = resolvedTrigger?.decodedMappedParams.executionPrice
+  const startingTakeProfitPriceLong = resolvedTrigger?.dynamicParams?.nextProfit
+    ? new BigNumber(resolvedTrigger.dynamicParams.nextProfit.triggerPrice).div(
+        lambdaPriceDenomination,
+      )
+    : undefined
 
-  const startingTakeProfitPriceShort = resolvedTrigger?.decodedMappedParams.executionPrice
-    ? one.div(resolvedTrigger?.decodedMappedParams.executionPrice)
+  const startingTakeProfitPriceShort = startingTakeProfitPriceLong
+    ? one.div(startingTakeProfitPriceLong)
     : undefined
 
   const resolvedWithdrawalLtv =
