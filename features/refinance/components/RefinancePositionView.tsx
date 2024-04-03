@@ -36,7 +36,7 @@ export type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
           borrowRateChange?: BigNumber
           maxLtvChange?: BigNumber
         }
-        positionData: {
+        positionData?: {
           ltv: BigNumber
           collateral: BigNumber
           debt: BigNumber
@@ -86,14 +86,15 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   } = props
 
   const formatted = {
-    ltv: formatLtvDecimalAsPercent(positionData.ltv),
-    liquidationPrice: formatCryptoBalance(positionData.liquidationPrice),
-    collateral: (
+    ltv: positionData?.ltv && formatLtvDecimalAsPercent(positionData.ltv),
+    liquidationPrice:
+      positionData?.liquidationPrice && formatCryptoBalance(positionData.liquidationPrice),
+    collateral: positionData?.collateral && (
       <ItemValueWithIcon tokens={[primaryToken]}>
         {formatCryptoBalance(positionData.collateral)}
       </ItemValueWithIcon>
     ),
-    debt: (
+    debt: positionData?.debt && (
       <ItemValueWithIcon tokens={[secondaryToken]}>
         {formatCryptoBalance(positionData.debt)}
       </ItemValueWithIcon>
@@ -108,22 +109,28 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
     }),
   }
 
-  const positionInfoSectionItems = [
+  const isLoading = !positionData
+
+  const positionInfoSectionItems: ItemProps[] = [
     {
       label: t('system.ltv-short'),
       value: formatted.ltv,
+      isLoading,
     },
     {
       label: `${t('system.liq-price-short')} (${primaryToken}/${secondaryToken})`,
       value: formatted.liquidationPrice,
+      isLoading,
     },
     {
       label: t('system.collateral'),
       value: formatted.collateral,
+      isLoading,
     },
     {
       label: t('system.debt'),
       value: formatted.debt,
+      isLoading,
     },
   ]
 

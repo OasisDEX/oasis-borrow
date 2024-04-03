@@ -9,15 +9,15 @@ export const useSimulationPositionData = () => {
   const simulation = useSdkSimulation()
 
   if (simulation == null) {
-    return null
+    return undefined
   } else if (simulation.error) {
     console.error(simulation.error)
-    return null
+    return undefined
   }
 
   const { context, targetPosition, liquidationPrice } = simulation
   if (!targetPosition || !liquidationPrice || !context) {
-    return null
+    return undefined
   }
   const { collateralAmount, debtAmount } = targetPosition
   const {

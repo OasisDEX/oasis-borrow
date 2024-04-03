@@ -16,9 +16,6 @@ export const RefinanceSimulation = () => {
   } = useRefinanceContext()
 
   const positionData = useSimulationPositionData()
-  if (positionData === null) {
-    return null
-  }
 
   if (currentStep === RefinanceSidebarStep.Option) {
     return <RefinancePositionView type={RefinancePositionViewType.EMPTY} />
