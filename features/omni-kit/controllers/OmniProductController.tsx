@@ -62,6 +62,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
   isOracless?: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number,
   positionId?: string
   productType: OmniProductType
   protocol: OmniSupportedProtocols
@@ -91,6 +92,7 @@ export const OmniProductController = <Auction, History, Position>({
   isOracless = false,
   label,
   networkId,
+  pairId,
   positionId,
   productType,
   protocol,
@@ -266,6 +268,7 @@ export const OmniProductController = <Auction, History, Position>({
                       network={network}
                       networkId={networkId}
                       owner={dpmPosition.user}
+                      pairId={pairId}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}

@@ -54,6 +54,7 @@ interface OmniGeneralContextProviderProps {
   network: NetworkConfig
   networkId: OmniSupportedNetworkIds
   owner: string
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol

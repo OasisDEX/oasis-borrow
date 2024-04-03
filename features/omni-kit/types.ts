@@ -207,6 +207,7 @@ export interface OmniProductPage {
   collateralToken: string
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: OmniSupportedProtocols
