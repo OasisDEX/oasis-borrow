@@ -409,6 +409,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     ),
     multiple: castedPosition.riskRatio.multiple,
     startingTakeProfitPrice,
+    afterNextDynamicTriggerPrice,
     resolvedWithdrawalLtv,
     resolvedTriggerLtv,
     positionPriceRatio,
