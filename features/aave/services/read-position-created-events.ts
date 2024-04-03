@@ -75,7 +75,7 @@ function mapEvent(
         collateralTokenAddress: e.args.collateralToken,
         debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.debtToken),
         debtTokenAddress: e.args.debtToken,
-        protocol: extractLendingProtocolFromPositionCreatedEvent(e),
+        protocol: extractLendingProtocolFromPositionCreatedEvent(e.args.protocol),
         protocolRaw: e.args.protocol,
         chainId,
         proxyAddress: e.args.proxyAddress,
@@ -83,10 +83,8 @@ function mapEvent(
     })
 }
 
-export function extractLendingProtocolFromPositionCreatedEvent(
-  positionCreatedChainEvent: CreatePositionEvent,
-): LendingProtocol {
-  switch (positionCreatedChainEvent.args.protocol) {
+export function extractLendingProtocolFromPositionCreatedEvent(protocol: string): LendingProtocol {
+  switch (protocol) {
     case 'AAVE':
     case 'AaveV2':
       return LendingProtocol.AaveV2
@@ -107,8 +105,8 @@ export function extractLendingProtocolFromPositionCreatedEvent(
       return LendingProtocol.MorphoBlue
     default:
       // support for ERC-4626 positions that does not belong to any supported protocol
-      if (positionCreatedChainEvent.args.protocol.startsWith('erc4626')) {
-        const vaultAddress = positionCreatedChainEvent.args.protocol.replace('erc4626-', '')
+      if (protocol.startsWith('erc4626')) {
+        const vaultAddress = protocol.replace('erc4626-', '')
         const vaultProtocol = erc4626Vaults.find(
           ({ address }) => address.toLowerCase() === vaultAddress.toLowerCase(),
         )?.protocol
@@ -116,11 +114,7 @@ export function extractLendingProtocolFromPositionCreatedEvent(
         if (vaultProtocol) return vaultProtocol
       }
 
-      throw new Error(
-        `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
-          positionCreatedChainEvent,
-        )}`,
-      )
+      throw new Error(`Unrecognised protocol received from positionCreatedChainEvent: ${protocol}`)
   }
 }
 
@@ -149,7 +143,7 @@ export function mapCreatedPositionEventToPositionCreated(
     collateralTokenSymbol: getTokenSymbolBasedOnAddress(networkId, event!.args.collateralToken),
     debtTokenSymbol: getTokenSymbolBasedOnAddress(networkId, event!.args.debtToken),
     debtTokenAddress: event!.args.debtToken,
-    protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
+    protocol: extractLendingProtocolFromPositionCreatedEvent(event!.args.protocol),
     protocolRaw: event.args.protocol,
     chainId: networkId,
     proxyAddress: event!.args.proxyAddress,

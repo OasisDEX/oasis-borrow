@@ -142,7 +142,9 @@ export async function getAaveLikeStrategyConfig(
 
   const lastCreatedPosition = createdPositions
     .filter((event) =>
-      aaveLikeProtocols.includes(extractLendingProtocolFromPositionCreatedEvent(event)),
+      aaveLikeProtocols.includes(
+        extractLendingProtocolFromPositionCreatedEvent(event.args.protocol),
+      ),
     )
     .map((event) => mapCreatedPositionEventToPositionCreated(event, networkId))
     .pop()

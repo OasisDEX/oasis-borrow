@@ -12,7 +12,7 @@ export function ajnaFlowStateFilter({
   filterConsumed,
 }: OmniFlowStateFilterParams): Promise<boolean> {
   const ajnaFilterValue =
-    extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
+    extractLendingProtocolFromPositionCreatedEvent(event.args.protocol) === protocol &&
     event.args.protocol === protocolRaw &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase() &&

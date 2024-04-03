@@ -20,14 +20,16 @@ export async function aaveLikeFlowStateFilter({
   // if its spark/aave we need to check that because we cant mix them
   if (
     (protocol === LendingProtocol.AaveV3 &&
-      extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.SparkV3) ||
+      extractLendingProtocolFromPositionCreatedEvent(event.args.protocol) ===
+        LendingProtocol.SparkV3) ||
     (protocol === LendingProtocol.SparkV3 &&
-      extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.AaveV3)
+      extractLendingProtocolFromPositionCreatedEvent(event.args.protocol) ===
+        LendingProtocol.AaveV3)
   ) {
     return Promise.resolve(false)
   }
   if (
-    extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
+    extractLendingProtocolFromPositionCreatedEvent(event.args.protocol) === protocol &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase()
   ) {

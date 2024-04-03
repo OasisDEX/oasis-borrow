@@ -8,7 +8,6 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
 import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getTokenBalances$ } from 'features/shared/balanceInfo'
-import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -63,7 +62,7 @@ export function useOmniProtocolData({
       () =>
         positionId
           ? dpmPositionDataV2$(
-              getPositionIdentity(positionId),
+              Number(positionId),
               networkId,
               collateralToken,
               quoteToken,
@@ -91,13 +90,15 @@ export function useOmniProtocolData({
                 })
               : EMPTY,
       [
-        isOracless,
-        positionId,
-        networkId,
         collateralToken,
-        quoteToken,
-        productType,
         identifiedTokensData,
+        isOracless,
+        networkId,
+        positionId,
+        productType,
+        protocol,
+        protocolRaw,
+        quoteToken,
         tokensAddresses,
       ],
     ),
@@ -141,7 +142,9 @@ export function useOmniProtocolData({
       [
         isOracless,
         dpmPositionData,
+        extraTokens,
         walletAddress,
+        networkId,
         identifiedTokensData,
         collateralToken,
         quoteToken,
@@ -160,7 +163,7 @@ export function useOmniProtocolData({
               ...extraTokens,
             ])
           : EMPTY,
-      [dpmPositionData],
+      [dpmPositionData, extraTokens],
     ),
   )
 

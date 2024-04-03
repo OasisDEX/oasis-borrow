@@ -11,7 +11,7 @@ export function morphoFlowStateFilter({
   filterConsumed,
 }: OmniFlowStateFilterParams): Promise<boolean> {
   const morphoFilterValue =
-    extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
+    extractLendingProtocolFromPositionCreatedEvent(event.args.protocol) === protocol &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase() &&
     omniBorrowishProducts.includes(productType.toLocaleLowerCase() as OmniProductType) &&
