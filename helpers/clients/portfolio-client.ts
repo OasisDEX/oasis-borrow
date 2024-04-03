@@ -36,7 +36,7 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
         .catch((err) => console.error(err))
       return response
     },
-    [baseUrl, headers, UseOmniKitLinks],
+    [baseUrl, headers],
   )
 
   return useMemo(
