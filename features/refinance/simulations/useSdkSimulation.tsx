@@ -1,4 +1,5 @@
 import { refinanceContext } from 'features/refinance/RefinanceContext'
+import { EmodeType, type SparkPoolId } from 'features/refinance/types'
 import React, { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
@@ -7,13 +8,11 @@ import type {
   Position,
   Simulation,
   SimulationType,
-  SparkPoolId,
 } from 'summerfi-sdk-common'
 import {
   Address,
   AddressType,
   CurrencySymbol,
-  EmodeType,
   getChainInfoByChainId,
   Percentage,
   Price,
@@ -34,7 +33,7 @@ export function useSdkSimulation() {
   const context = React.useContext(refinanceContext)
 
   // TODO: This should be dynamic based on the assets pair
-  const emodeType: EmodeType = EmodeType.ETHCorrelated
+  const emodeType = EmodeType.ETHCorrelated
 
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 

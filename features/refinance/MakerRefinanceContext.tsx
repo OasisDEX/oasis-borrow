@@ -73,6 +73,7 @@ export function MakerRefinanceContext({
     ltv,
     maxLtv,
     automations,
+    ilkType: vault.ilk,
   })
 
   return <RefinanceContextProvider contextInput={ctx}>{children}</RefinanceContextProvider>

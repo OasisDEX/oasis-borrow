@@ -4,8 +4,9 @@ import type {
   RefinanceContextInput,
   RefinanceContextInputAutomations,
 } from 'features/refinance/RefinanceContext'
-import type { MakerPoolId, PositionId } from 'summerfi-sdk-common'
-import { getChainInfoByChainId, ILKType, ProtocolName } from 'summerfi-sdk-common'
+import type { MakerPoolId } from 'features/refinance/types'
+import type { PositionId } from 'summerfi-sdk-common'
+import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
 
 export const getMakerRefinanceContextInputs = ({
   address,
@@ -21,6 +22,7 @@ export const getMakerRefinanceContextInputs = ({
   ltv,
   maxLtv,
   automations,
+  ilkType,
 }: {
   address?: string
   chainId: NetworkIds
@@ -35,6 +37,7 @@ export const getMakerRefinanceContextInputs = ({
   ltv: RiskRatio
   maxLtv: RiskRatio
   automations: RefinanceContextInputAutomations
+  ilkType: string
 }): RefinanceContextInput => {
   const chainInfo = getChainInfoByChainId(chainId)
 
@@ -51,9 +54,7 @@ export const getMakerRefinanceContextInputs = ({
       chainInfo,
     },
     vaultId: positionId.id,
-    // ilkType
-    // TODO: hardcoded as endpoint is not supporting all ilks and failing
-    ilkType: ILKType.ETH_A,
+    ilkType: ilkType,
   }
   const collateralTokenSymbol = collateralToken
   const debtTokenSymbol = 'DAI'
