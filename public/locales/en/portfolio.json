@@ -48,7 +48,8 @@
     "autoBuy": "Auto Buy",
     "autoSell": "Auto Sell",
     "takeProfit": "Take Profit",
-    "stopLoss": "Stop-Loss"
+    "stopLoss": "Stop-Loss",
+    "constantMultiple": "Constant Multiple"
   },
   "position-details": {
     "netValue": "Net Value",

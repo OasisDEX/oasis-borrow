@@ -1,4 +1,5 @@
 import { RiskRatio } from '@oasisdex/dma-library'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import { getMakerRefinanceContextInputs } from 'features/refinance/helpers/getMakerRefinanceContextInputs'
 import type { PropsWithChildren } from 'react'
@@ -23,6 +24,7 @@ export function MakerRefinanceContext({
   const { vault, priceInfo } = generalManageVault.state
   const slippage = generalManageVault.state.slippage.toNumber()
   const chainInfo = getChainInfoByChainId(chainId)
+  const { triggerData } = useAutomationContext()
 
   if (!chainInfo) {
     throw new Error(`ChainId ${chainId} is not supported`)
@@ -39,6 +41,24 @@ export function MakerRefinanceContext({
     RiskRatio.TYPE.COL_RATIO,
   )
 
+  const automations = {
+    stopLoss: {
+      enabled: triggerData.stopLossTriggerData.isStopLossEnabled,
+    },
+    autoSell: {
+      enabled: triggerData.autoSellTriggerData.isTriggerEnabled,
+    },
+    autoBuy: {
+      enabled: triggerData.autoBuyTriggerData.isTriggerEnabled,
+    },
+    takeProfit: {
+      enabled: triggerData.autoTakeProfitTriggerData.isTriggerEnabled,
+    },
+    constantMultiple: {
+      enabled: triggerData.constantMultipleTriggerData.isTriggerEnabled,
+    },
+  }
+
   const ctx = getMakerRefinanceContextInputs({
     address,
     chainId,
@@ -52,6 +72,7 @@ export function MakerRefinanceContext({
     borrowRate,
     ltv,
     maxLtv,
+    automations,
   })
 
   return <RefinanceContextProvider contextInput={ctx}>{children}</RefinanceContextProvider>

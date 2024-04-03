@@ -1,6 +1,9 @@
 import type { RiskRatio } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
-import type { RefinanceContextInput } from 'features/refinance/RefinanceContext'
+import type {
+  RefinanceContextInput,
+  RefinanceContextInputAutomations,
+} from 'features/refinance/RefinanceContext'
 import type { MakerPoolId, PositionId } from 'summerfi-sdk-common'
 import { getChainInfoByChainId, ILKType, ProtocolName } from 'summerfi-sdk-common'
 
@@ -17,6 +20,7 @@ export const getMakerRefinanceContextInputs = ({
   liquidationPrice,
   ltv,
   maxLtv,
+  automations,
 }: {
   address?: string
   chainId: NetworkIds
@@ -30,6 +34,7 @@ export const getMakerRefinanceContextInputs = ({
   borrowRate: string
   ltv: RiskRatio
   maxLtv: RiskRatio
+  automations: RefinanceContextInputAutomations
 }): RefinanceContextInput => {
   const chainInfo = getChainInfoByChainId(chainId)
 
@@ -79,5 +84,6 @@ export const getMakerRefinanceContextInputs = ({
       liquidationPrice,
       ltv,
     },
+    automations,
   }
 }

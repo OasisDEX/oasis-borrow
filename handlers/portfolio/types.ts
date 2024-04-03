@@ -16,6 +16,7 @@ export type PortfolioPositionAutomations = {
   takeProfit?: AutomationType
   autoBuy?: AutomationType
   autoSell?: AutomationType
+  constantMultiple?: AutomationType
 }
 
 export type PortfolioPosition = {

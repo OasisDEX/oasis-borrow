@@ -24,6 +24,20 @@ interface RefinanceSteps {
   setPrevStep: () => void
 }
 
+type IsAutomationEnabled = {
+  enabled: boolean
+}
+
+export type RefinanceContextInputAutomations = {
+  stopLoss?: IsAutomationEnabled
+  trailingStopLoss?: IsAutomationEnabled
+  autoSell?: IsAutomationEnabled
+  autoBuy?: IsAutomationEnabled
+  partialTakeProfit?: IsAutomationEnabled
+  autoTakeProfit?: IsAutomationEnabled
+  constantMultiple?: IsAutomationEnabled
+}
+
 export type RefinanceContextInput = {
   poolData: {
     poolId: IPoolId
@@ -45,6 +59,7 @@ export type RefinanceContextInput = {
     liquidationPrice: string
     ltv: RiskRatio
   }
+  automations: RefinanceContextInputAutomations
 }
 
 export type RefinanceContext = {
@@ -68,6 +83,7 @@ export type RefinanceContext = {
     borrowRate: string
     maxLtv: RiskRatio
   }
+  automations: RefinanceContextInputAutomations
   form: ReturnType<typeof useRefinanceFormReducto>
   steps: RefinanceSteps
 }
@@ -95,6 +111,7 @@ export function RefinanceContextProvider({
     environment: { tokenPrices, chainId, slippage, address },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
     position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
+    automations,
   } = contextInput
   const chainInfo = getChainInfoByChainId(chainId)
   if (!chainInfo) {
@@ -167,6 +184,7 @@ export function RefinanceContextProvider({
         borrowRate,
         maxLtv,
       },
+      automations,
       form,
       steps: setupStepManager(),
     }),

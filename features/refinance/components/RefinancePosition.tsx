@@ -10,6 +10,7 @@ export const RefinancePosition = () => {
   const {
     position: { positionId, liquidationPrice, debtTokenData, collateralTokenData, ltv },
     poolData: { borrowRate, maxLtv },
+    automations,
   } = useRefinanceContext()
 
   return (
@@ -32,12 +33,7 @@ export const RefinancePosition = () => {
         collateral: new BigNumber(collateralTokenData.amount),
         debt: new BigNumber(debtTokenData.amount),
       }}
-      automations={{
-        stopLoss: { enabled: true },
-        autoSell: { enabled: false },
-        autoBuy: { enabled: false },
-        takeProfit: { enabled: false },
-      }}
+      automations={automations}
     />
   )
 }
