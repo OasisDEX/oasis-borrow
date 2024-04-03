@@ -77,7 +77,6 @@ interface CommonDataMapperParams {
   apiVaults?: Vault[]
   allOraclePrices?: AaveLikeOraclePriceData
   debug?: boolean
-  useOmniKitLinks?: boolean
 }
 
 export const commonDataMapper = ({
@@ -88,7 +87,6 @@ export const commonDataMapper = ({
   apiVaults,
   allOraclePrices,
   debug,
-  useOmniKitLinks,
 }: CommonDataMapperParams) => {
   const primaryToken = getTokenName(dpm.networkId, dpm.collateralToken)
   const secondaryToken = getTokenName(dpm.networkId, dpm.debtToken)
@@ -144,7 +142,7 @@ export const commonDataMapper = ({
       AAVE: 'v2',
     }[dpm.protocol]
   }/${dpm.vaultId}`
-  const url = useOmniKitLinks && dpm.protocol !== 'AAVE' ? omniKitUrl : regularUrl
+  const url = dpm.protocol !== 'AAVE' ? omniKitUrl : regularUrl
   return {
     commonData: {
       positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),

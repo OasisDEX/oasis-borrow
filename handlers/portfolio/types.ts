@@ -66,7 +66,6 @@ export type PortfolioPositionsHandler = ({
   prices,
   positionsCount,
   debug,
-  useOmniKitLinks,
 }: {
   address: string
   apiVaults?: Vault[]
@@ -75,7 +74,6 @@ export type PortfolioPositionsHandler = ({
   positionsCount?: boolean
   allPositionsHistory?: HistoryResponse
   debug?: boolean
-  useOmniKitLinks?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
 export type DetailsTypeCommon =
