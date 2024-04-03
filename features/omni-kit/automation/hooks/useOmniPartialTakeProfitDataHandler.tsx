@@ -2,6 +2,7 @@ import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
+import { lambdaPriceDenomination } from 'features/aave/constants'
 import {
   hasActiveStopLossFromTriggers,
   hasActiveTrailingStopLossFromTriggers,
@@ -320,10 +321,19 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     ? startingTakeProfitPriceShort
     : startingTakeProfitPriceLong
 
+  const simulatedNextDynamicTriggerPrice =
+    simulationData?.simulation && 'profits' in simulationData?.simulation
+      ? simulationData?.simulation?.profits?.[0].triggerPrice
+      : undefined
+
+  const afterNextDynamicTriggerPrice = simulatedNextDynamicTriggerPrice
+    ? new BigNumber(simulatedNextDynamicTriggerPrice).div(lambdaPriceDenomination)
+    : undefined
+
   const nextDynamicTriggerPriceCommonData = useOmniCardDataNextDynamicTriggerPrice({
     priceFormat,
     nextDynamicTriggerPrice: startingTakeProfitPrice,
-    afterNextDynamicTriggerPrice: state.price,
+    afterNextDynamicTriggerPrice,
     triggerLtv: resolvedTriggerLtv,
     modal: (
       <DetailsSectionContentSimpleModal

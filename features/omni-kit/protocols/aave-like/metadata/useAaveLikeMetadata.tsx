@@ -28,7 +28,6 @@ import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
-import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const {
@@ -44,6 +43,8 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isOpening,
       quoteToken,
       isOwner,
+      networkId,
+      priceFormat,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -61,6 +62,8 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
     productType,
     auction: productContext.position.positionAuction as AaveLikeHistoryEvent,
+    triggers: productContext.automation.positionTriggers,
+    priceFormat,
   })
 
   switch (productType) {
@@ -83,13 +86,15 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         notifications,
         validations,
         filters: {
-          flowStateFilter: (event: CreatePositionEvent) =>
+          omniProxyFilter: ({ event, filterConsumed }) =>
             aaveLikeFlowStateFilter({
               collateralAddress,
               event,
               productType,
               quoteAddress,
               protocol,
+              networkId,
+              filterConsumed,
             }),
         },
         values: {

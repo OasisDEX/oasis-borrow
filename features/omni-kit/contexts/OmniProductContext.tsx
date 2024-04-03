@@ -165,7 +165,7 @@ export function OmniProductContextProvider({
           simulation: simulation?.position,
         },
         isSimulationLoading,
-        resolvedId: positionIdFromDpmProxyData,
+        openFlowResolvedDpmId: positionIdFromDpmProxyData,
         positionAuction,
         swap: {
           current: formatSwapData({
