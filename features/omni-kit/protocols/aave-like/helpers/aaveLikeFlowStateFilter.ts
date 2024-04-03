@@ -13,9 +13,7 @@ export async function aaveLikeFlowStateFilter({
   quoteAddress,
   protocol,
   networkId,
-  // we ignore filterConsumed because we dont want ANY positions with aave/spark debt
-  // so it doesnt matter if we're filtering all/used proxies
-  filterConsumed: _filterConsumed,
+  filterConsumed,
 }: OmniFlowStateFilterParams & {
   networkId: NetworkIds
 }): Promise<boolean> {
@@ -43,7 +41,7 @@ export async function aaveLikeFlowStateFilter({
             address: event.args.proxyAddress,
             networkId: networkId as SparkV3SupportedNetwork,
           })
-    return userData.totalDebtBase.isZero()
+    return !!filterConsumed && userData.totalDebtBase.isZero()
   }
   return Promise.resolve(false)
 }

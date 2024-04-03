@@ -3,7 +3,8 @@ import { getOmniProtocolUrlMap } from 'features/omni-kit/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import type { OmniProductType } from 'features/omni-kit/types'
-import type { LendingProtocol } from 'lendingProtocols'
+import { getLocalAppConfig } from 'helpers/config'
+import { LendingProtocol } from 'lendingProtocols'
 
 interface GetOmniPositionUrlParams {
   collateralAddress?: string
@@ -32,7 +33,20 @@ export function getOmniPositionUrl({
   quoteAddress,
   quoteToken,
 }: GetOmniPositionUrlParams) {
+  const featureToggles = getLocalAppConfig('features')
   const resolvedPositionId = positionId ? `/${positionId}` : ''
+
+  if (
+    featureToggles.UseOmniKitLinks &&
+    [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol)
+  ) {
+    return `/${networkName}/omni/${
+      {
+        [LendingProtocol.AaveV3]: 'aave/v3',
+        [LendingProtocol.SparkV3]: 'spark',
+      }[protocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3]
+    }/${productType}/${collateralToken}-${quoteToken}`
+  }
 
   if (pseudoProtocol === Erc4626PseudoProtocol && label) {
     const { id } = erc4626VaultsByName[label]
