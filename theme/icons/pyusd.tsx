@@ -20,8 +20,8 @@ export const pyusd = {
           y2="25.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0071F3" />
-          <stop offset="1" stop-color="#0065D9" />
+          <stop stopColor="#0071F3" />
+          <stop offset="1" stopColor="#0065D9" />
         </linearGradient>
       </defs>
     </>
