@@ -4,8 +4,9 @@ import type { RefinanceOptions } from 'features/refinance/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface RefinanceFormState {
-  refinanceOption: RefinanceOptions | undefined
-  strategy: ProductHubItem | undefined // strip to bare minimum during clean up
+  refinanceOption?: RefinanceOptions
+  strategy?: ProductHubItem // strip to bare minimum during clean up
+  dpmProxy?: string
 }
 
 export type RefinanceFormActions = ReductoActions<RefinanceFormState, FormActionsReset>

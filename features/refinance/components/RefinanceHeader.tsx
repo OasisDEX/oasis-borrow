@@ -90,7 +90,7 @@ export const RefinanceHeader = () => {
     },
     environment: { address },
     form: {
-      state: { strategy },
+      state: { strategy, dpmProxy },
     },
   } = useRefinanceContext()
 
@@ -117,7 +117,10 @@ export const RefinanceHeader = () => {
   const { closeModal } = useModalContext()
 
   return (
-    <Flex sx={{ justifyContent: 'space-between', mb: '24px' }}>
+    <Flex
+      sx={{ justifyContent: 'space-between', mb: '24px' }}
+      onClick={() => console.log(`DPM proxy to be used: ${dpmProxy?.toLowerCase()}`)}
+    >
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: [3, 0] }}>
         <Text as="h2" sx={{ fontSize: 4, fontWeight: 'semiBold', ml: 2 }}>
           {t('refinance.modal-title', { pair: `${primaryToken}/${secondaryToken}` })}
