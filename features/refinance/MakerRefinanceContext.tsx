@@ -4,7 +4,6 @@ import type { GeneralManageVaultState } from 'features/generalManageVault/genera
 import { getMakerRefinanceContextInputs } from 'features/refinance/helpers/getMakerRefinanceContextInputs'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
-import { getChainInfoByChainId } from 'summerfi-sdk-common'
 
 import { RefinanceContextProvider } from './RefinanceContext'
 
@@ -23,12 +22,7 @@ export function MakerRefinanceContext({
   // return children
   const { vault, priceInfo } = generalManageVault.state
   const slippage = generalManageVault.state.slippage.toNumber()
-  const chainInfo = getChainInfoByChainId(chainId)
   const { triggerData } = useAutomationContext()
-
-  if (!chainInfo) {
-    throw new Error(`ChainId ${chainId} is not supported`)
-  }
 
   const liquidationPrice = generalManageVault.state.vault.liquidationPrice.toString()
   const borrowRate = generalManageVault.state.ilkData.stabilityFee.toString()

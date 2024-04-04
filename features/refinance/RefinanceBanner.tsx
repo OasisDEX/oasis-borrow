@@ -1,8 +1,7 @@
+import { RefinanceModal } from 'features/refinance/components'
 import { useModalContext } from 'helpers/modalHook'
 import React from 'react'
 import { Box, Button } from 'theme-ui'
-
-import { RefinanceModal } from './RefinanceModal'
 
 export const RefinanceBanner: React.FC<{}> = () => {
   const { openModal } = useModalContext()

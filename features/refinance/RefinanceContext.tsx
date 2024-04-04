@@ -10,7 +10,7 @@ import type { TxDetails } from 'helpers/handleTransaction'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
 import type { AddressValue, ChainInfo, IPoolId, PositionId } from 'summerfi-sdk-common'
-import { getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
+import { TokenAmount } from 'summerfi-sdk-common'
 
 import { mapTokenToSdkToken } from './mapTokenToSdkToken'
 
@@ -113,15 +113,12 @@ export function RefinanceContextProvider({
   contextInput,
 }: PropsWithChildren<RefinanceContextProviderProps>) {
   const {
-    environment: { tokenPrices, chainId, slippage, address },
+    environment: { tokenPrices, slippage, address },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
     position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
     automations,
   } = contextInput
-  const chainInfo = getChainInfoByChainId(chainId)
-  if (!chainInfo) {
-    throw new Error(`ChainId ${chainId} is not supported`)
-  }
+  const chainInfo = poolId.protocol.chainInfo
 
   const collateralTokenData = TokenAmount.createFrom({
     amount: collateralAmount,

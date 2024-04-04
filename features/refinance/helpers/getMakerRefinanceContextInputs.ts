@@ -5,8 +5,7 @@ import type {
   RefinanceContextInputAutomations,
 } from 'features/refinance/RefinanceContext'
 import type { MakerPoolId } from 'features/refinance/types'
-import type { PositionId } from 'summerfi-sdk-common'
-import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
+import { getChainInfoByChainId, PositionId, ProtocolName } from 'summerfi-sdk-common'
 
 export const getMakerRefinanceContextInputs = ({
   address,
@@ -44,9 +43,7 @@ export const getMakerRefinanceContextInputs = ({
   if (!chainInfo) {
     throw new Error(`ChainId ${chainId} is not supported`)
   }
-  const positionId: PositionId = {
-    id,
-  }
+  const positionId: PositionId = PositionId.createFrom({ id })
 
   const poolId: MakerPoolId = {
     protocol: {
