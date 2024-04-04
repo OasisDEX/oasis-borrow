@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { RefinancePositionViewProps } from 'features/refinance/components'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { useSdkSimulation } from 'features/refinance/simulations/useSdkSimulation'
 import type { RefinancePositionViewType } from 'features/refinance/types'
 import { PositionUtils } from 'summerfi-sdk-client'
@@ -7,22 +8,22 @@ import { CurrencySymbol, Price } from 'summerfi-sdk-common'
 
 export const useSimulationPositionData = () => {
   const simulation = useSdkSimulation()
+  const {
+    environment: { collateralPrice, debtPrice },
+  } = useRefinanceContext()
 
   if (simulation == null) {
     return undefined
   } else if (simulation.error) {
-    console.error(simulation.error)
+    console.error('Refinance simulation error', simulation.error)
     return undefined
   }
 
-  const { context, targetPosition, liquidationPrice } = simulation
-  if (!targetPosition || !liquidationPrice || !context) {
+  const { targetPosition, liquidationPrice } = simulation
+  if (!targetPosition || !liquidationPrice) {
     return undefined
   }
   const { collateralAmount, debtAmount } = targetPosition
-  const {
-    environment: { collateralPrice, debtPrice },
-  } = context
 
   const ltv = PositionUtils.getLTV({
     collateralTokenAmount: collateralAmount,

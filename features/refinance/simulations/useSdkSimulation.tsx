@@ -1,6 +1,6 @@
-import { refinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { EmodeType, type SparkPoolId } from 'features/refinance/types'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
 import type {
@@ -30,7 +30,16 @@ export function useSdkSimulation() {
   const [sourcePosition, setSourcePosition] = useState<null | Position>(null)
   const [simulation, setSimulation] = useState<null | Simulation<SimulationType.Refinance>>(null)
 
-  const context = React.useContext(refinanceContext)
+  const {
+    environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
+    position: {
+      positionId,
+      liquidationPrice: _liquidationPrice,
+      collateralTokenData,
+      debtTokenData,
+    },
+    poolData: { poolId },
+  } = useRefinanceContext()
 
   // TODO: This should be dynamic based on the assets pair
   const emodeType = EmodeType.ETHCorrelated
@@ -39,19 +48,6 @@ export function useSdkSimulation() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (context === undefined) {
-        throw new Error('RefinanceContextProvider is missing in the hierarchy')
-      }
-      const {
-        environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-        position: {
-          positionId,
-          liquidationPrice: _liquidationPrice,
-          collateralTokenData,
-          debtTokenData,
-        },
-        poolData: { poolId },
-      } = context
       setLiquidationPrice(_liquidationPrice)
 
       const targetPoolId: SparkPoolId = {
@@ -139,9 +135,9 @@ export function useSdkSimulation() {
     void fetchData().catch((err) => {
       setError(err.message)
     })
-  }, [sdk, context, emodeType])
+  }, [sdk, emodeType, slippage, collateralPrice, debtPrice, address])
 
   const targetPosition = simulation?.targetPosition || null
 
-  return { error, context, chain, user, sourcePosition, targetPosition, liquidationPrice }
+  return { error, chain, user, sourcePosition, targetPosition, liquidationPrice }
 }
