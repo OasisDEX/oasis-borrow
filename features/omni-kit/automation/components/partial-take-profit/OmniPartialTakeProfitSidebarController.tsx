@@ -44,6 +44,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
   } = useOmniGeneralContext()
   const {
     automation: {
+      isSimulationLoading,
       automationForms: {
         partialTakeProfit: { state: automationFormState, updateState: automationUpdateState },
       },
@@ -635,8 +636,8 @@ export const OmniPartialTakeProfitSidebarController = () => {
           t('protection.partial-take-profit-sidebar.profits-table.total-profit'),
           t('protection.partial-take-profit-sidebar.profits-table.stop-loss'),
         ]}
-        rows={parsedProfits}
-        loading={!parsedProfits}
+        rows={isSimulationLoading ? [] : parsedProfits}
+        loading={!parsedProfits || isSimulationLoading}
         wrapperSx={{
           gridGap: 1,
           backgroundColor: 'transparent',

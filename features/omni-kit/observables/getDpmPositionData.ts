@@ -43,7 +43,7 @@ const mapAaveYieldLoopToMultiply = ({
     isCorrelatedPosition(collateralToken, quoteToken) &&
     [LendingProtocol.SparkV3, LendingProtocol.AaveV3, LendingProtocol.AaveV2].includes(protocol)
   ) {
-    return 'Multiply'
+    return 'Multiply' as PositionType
   }
 
   return positionType

@@ -77,7 +77,6 @@ interface CommonDataMapperParams {
   apiVaults?: Vault[]
   allOraclePrices?: AaveLikeOraclePriceData
   debug?: boolean
-  useOmniKitLinks?: boolean
 }
 
 export const commonDataMapper = ({
@@ -88,7 +87,6 @@ export const commonDataMapper = ({
   apiVaults,
   allOraclePrices,
   debug,
-  useOmniKitLinks,
 }: CommonDataMapperParams) => {
   const primaryToken = getTokenName(dpm.networkId, dpm.collateralToken)
   const secondaryToken = getTokenName(dpm.networkId, dpm.debtToken)
@@ -123,28 +121,15 @@ export const commonDataMapper = ({
   }[dpm.protocol]
   const primaryTokenSymbol = getTokenDisplayName(primaryToken)
   const secondaryTokenSymbol = getTokenDisplayName(secondaryToken)
-  const omniKitUrl = `/${networksById[dpm.networkId].name.toLowerCase()}/omni/${
+  const omniKitUrl = `/${networksById[dpm.networkId].name.toLowerCase()}/${
     {
       AAVE_V3: 'aave/v3',
+      AAVE: 'aave/v2',
       Spark: 'spark',
     }[dpm.protocol]
   }/${positionType}/${primaryTokenSymbol.toLocaleLowerCase()}-${secondaryTokenSymbol.toLocaleLowerCase()}/${
     dpm.vaultId
   }`
-  const regularUrl = `/${networksById[dpm.networkId].name.toLowerCase()}/${
-    {
-      AAVE_V3: 'aave',
-      Spark: 'spark',
-      AAVE: 'aave',
-    }[dpm.protocol]
-  }/${
-    {
-      AAVE_V3: 'v3',
-      Spark: 'v3',
-      AAVE: 'v2',
-    }[dpm.protocol]
-  }/${dpm.vaultId}`
-  const url = useOmniKitLinks && dpm.protocol !== 'AAVE' ? omniKitUrl : regularUrl
   return {
     commonData: {
       positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
@@ -153,7 +138,7 @@ export const commonDataMapper = ({
       protocol,
       primaryToken: primaryTokenSymbol,
       secondaryToken: secondaryTokenSymbol,
-      url,
+      url: omniKitUrl,
       automations: {
         ...(dpm.positionType !== OmniProductType.Earn
           ? {

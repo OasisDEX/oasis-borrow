@@ -13,7 +13,6 @@ export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
     environment: { productType, collateralToken, quoteToken },
   } = useOmniGeneralContext()
   const {
-    automation: { isSimulationLoading },
     dynamicMetadata: {
       values: { automation },
     },
@@ -67,7 +66,6 @@ export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
             new BigNumber(deviation[0]).div(10000),
           )} - ${formatDecimalAsPercent(new BigNumber(deviation[1]).div(10000))}`
         : '-',
-      isLoading: isSimulationLoading,
     },
     {
       label: isAutoSell
@@ -76,7 +74,6 @@ export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
       value: collateralAmountAfterExecution
         ? `${formatCryptoBalance(collateralAmountAfterExecution)} ${collateralToken}`
         : '-',
-      isLoading: isSimulationLoading,
     },
     {
       label: isAutoSell
@@ -85,7 +82,6 @@ export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
       value: debtAmountAfterExecution
         ? `${formatCryptoBalance(debtAmountAfterExecution)} ${quoteToken}`
         : '-',
-      isLoading: isSimulationLoading,
     },
     {
       label: isAutoSell
@@ -94,7 +90,6 @@ export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
       value: collateralToBuyOrSellOnExecution
         ? `${formatCryptoBalance(collateralToBuyOrSellOnExecution)} ${collateralToken}`
         : '-',
-      isLoading: isSimulationLoading,
     },
-  ]
+  ] as ItemProps[]
 }

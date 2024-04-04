@@ -79,6 +79,7 @@ export const tokensMainnet = {
   STETH: contractDesc(erc20, mainnet.common.STETH),
   STYETH: contractDesc(erc20, mainnet.common.STYETH),
   SUSDE: contractDesc(erc20, mainnet.common.SUSDE),
+  SUSD: contractDesc(erc20, mainnet.common.SUSD),
   USDE: contractDesc(erc20, mainnet.common.USDE),
   TBTC: contractDesc(erc20, mainnet.common.TBTC),
   USDC: contractDesc(erc20, mainnet.common.USDC),
@@ -123,6 +124,7 @@ export const tokensMainnet = {
   CWETHV3: contractDesc(erc20, mainnet.common.CWETHV3),
   AETHWBTC: contractDesc(erc20, mainnet.common.AETHWBTC),
   AWBTC: contractDesc(erc20, mainnet.common.AWBTC),
+  ENA: contractDesc(erc20, mainnet.common.ENA),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'] as const

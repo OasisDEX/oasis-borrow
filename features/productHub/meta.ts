@@ -127,6 +127,24 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'LDO',
     icon: getToken('LDO').iconCircle,
   },
+  ENA: {
+    title: 'Ethena',
+    description: 'ENA',
+    value: 'ENA',
+    icon: getToken('ENA').iconCircle,
+  },
+  DEGEN: {
+    title: 'DEGEN',
+    description: 'DEGEN',
+    value: 'DEGEN',
+    icon: getToken('DEGEN').iconCircle,
+  },
+  SNX: {
+    title: 'Synthetix Network',
+    description: 'SNX',
+    value: 'SNX',
+    icon: getToken('SNX').iconCircle,
+  },
 }
 
 export const productHubOptionsMapBase: {
@@ -149,6 +167,9 @@ export const productHubOptionsMapBase: {
       LINK: productHubTokenOptions.LINK,
       LDO: productHubTokenOptions.LDO,
       YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
     },
   },
   multiply: {
