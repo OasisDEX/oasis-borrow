@@ -35,12 +35,8 @@ export const getAaveLikeViewStrategyUrl = ({
   )
   const featureToggles = getLocalAppConfig('features')
 
-  if (
-    featureToggles.UseOmniKitLinks &&
-    search &&
-    [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(search.protocol)
-  ) {
-    return `/${search.network.toLocaleLowerCase()}/omni/${
+  if (search && [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(search.protocol)) {
+    return `/${search.network.toLocaleLowerCase()}/${
       {
         [LendingProtocol.AaveV3]: 'aave/v3',
         [LendingProtocol.SparkV3]: 'spark',
