@@ -244,7 +244,7 @@ export function OmniGeneralContextProvider({
   }
 
   const context: OmniGeneralContext = useMemo(() => {
-    const isOwner = isOpening || owner === walletAddress
+    const isOwner = isOpening || owner.toLowerCase() === walletAddress?.toLowerCase()
 
     return {
       environment: {

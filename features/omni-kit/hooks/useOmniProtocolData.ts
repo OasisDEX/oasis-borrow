@@ -18,24 +18,26 @@ interface OmniProtocolDataProps {
   collateralToken: string
   extraTokens?: string[]
   isOracless?: boolean
+  networkId: OmniSupportedNetworkIds
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
   protocolRaw: string
   quoteToken: string
-  networkId: OmniSupportedNetworkIds
 }
 
 export function useOmniProtocolData({
   collateralToken,
   extraTokens = [],
   isOracless,
+  networkId,
+  pairId,
   positionId,
   productType,
   protocol,
   protocolRaw,
   quoteToken,
-  networkId,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
   const { gasPriceOnNetwork$ } = useMainContext()
@@ -69,6 +71,7 @@ export function useOmniProtocolData({
               productType,
               protocol,
               protocolRaw,
+              pairId,
             )
           : !isOracless && productType && collateralToken && quoteToken
             ? getStaticDpmPositionData$({

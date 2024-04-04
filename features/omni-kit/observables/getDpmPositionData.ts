@@ -3,7 +3,7 @@ import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
-import type { PositionCreated } from 'features/aave/services'
+import type { PositionFromUrl } from 'features/omni-kit/observables'
 import { getPositionsFromUrlData } from 'features/omni-kit/observables'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getApiVault } from 'features/shared/vaultApi'
@@ -51,6 +51,7 @@ const mapAaveYieldLoopToMultiply = ({
 
 const filterPositionWhenUrlParamsDefined = ({
   collateralToken,
+  pairId,
   positions,
   product,
   protocol,
@@ -58,7 +59,8 @@ const filterPositionWhenUrlParamsDefined = ({
   quoteToken,
 }: {
   collateralToken: string
-  positions?: PositionCreated[]
+  pairId: number
+  positions?: PositionFromUrl[]
   product: string
   protocol: LendingProtocol
   protocolRaw: string
@@ -82,6 +84,7 @@ const filterPositionWhenUrlParamsDefined = ({
         collateralTokenSymbol,
         debtTokenAddress,
         debtTokenSymbol,
+        pairId: positionPairId,
         positionType,
         protocol: positionProtocol,
         protocolRaw: positionProtocolRaw,
@@ -89,6 +92,7 @@ const filterPositionWhenUrlParamsDefined = ({
         return (
           positionProtocol === protocol &&
           positionProtocolRaw === protocolRaw &&
+          positionPairId === pairId &&
           [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
           [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
           ((product.toLowerCase() === 'earn' &&
@@ -107,10 +111,12 @@ export function getDpmPositionDataV2$(
   product: string,
   protocol: LendingProtocol,
   protocolRaw: string,
+  pairId: number,
 ): Observable<DpmPositionData> {
   return from(
     getPositionsFromUrlData({
       networkId,
+      pairId,
       positionId,
       protocol,
     }),
@@ -132,6 +138,7 @@ export function getDpmPositionDataV2$(
     switchMap(([{ owner, positions }]) => {
       const position = filterPositionWhenUrlParamsDefined({
         collateralToken,
+        pairId,
         positions,
         product,
         protocol,

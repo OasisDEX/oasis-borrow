@@ -135,6 +135,7 @@ export const OmniProductController = <Auction, History, Position>({
     extraTokens,
     isOracless,
     networkId,
+    pairId,
     positionId,
     productType,
     protocol,

@@ -519,6 +519,31 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMorphoVauldIdPositions: gql`
+    query getMorphoVauldIdPositions($positionId: BigInt) {
+      accounts(where: { vaultId: $positionId }) {
+        borrowPositions {
+          market {
+            id
+            collateralToken {
+              address
+              symbol
+            }
+            debtToken {
+              address
+              symbol
+            }
+          }
+        }
+        id
+        positionType
+        protocol
+        user {
+          id
+        }
+      }
+    }
+  `,
   getMorphoDpmPositions: gql`
     query getDpmPositions($dpmProxyAddress: [String!]) {
       accounts(where: { address_in: $dpmProxyAddress }) {
