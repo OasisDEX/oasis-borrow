@@ -1,7 +1,6 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { amountFromRay } from 'blockchain/utils'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
@@ -37,7 +36,7 @@ export function getMakerPositionDetails({
   daiPrice,
   debt,
   ilk,
-  // liquidationPrice,
+  liquidationPrice,
   netValue,
   primaryToken,
   type,
@@ -51,11 +50,6 @@ export function getMakerPositionDetails({
     RiskRatio.TYPE.LTV,
   )
   const maxRiskRatio = new RiskRatio(one.div(minCollRatio), RiskRatio.TYPE.LTV)
-  const liquidationPrice = collateralPriceAtRatio({
-    collateral: new BigNumber(collateral),
-    colRatio: minCollRatio,
-    vaultDebt: new BigNumber(debt),
-  })
 
   switch (type) {
     case OmniProductType.Borrow: {

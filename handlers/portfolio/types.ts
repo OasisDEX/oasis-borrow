@@ -22,9 +22,17 @@ export type PortfolioPositionAutomations = {
 export type PortfolioPosition = {
   assetLabel?: string
   availableToMigrate?: boolean
+  availableToRefinance?: boolean
   automations: PortfolioPositionAutomations
   description?: string
   details: PositionDetail[]
+  rawPositionDetails?: {
+    collateral: string
+    debt: string
+    collateralPrice: string
+    debtPrice: string
+    liquidationPrice: string
+  }
   /*
   lendingType:
     if earn, and has debt -> Yield Loop (loop)
