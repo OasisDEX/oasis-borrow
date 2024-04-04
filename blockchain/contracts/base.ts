@@ -185,6 +185,13 @@ export const baseContracts: MainnetContractsWithOptional = {
     'UNIETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_EZETHWETH),
     'SUSDE-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SUSDEDAI),
+    'DEGEN-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_DEGENUSDC),
+    'DEGEN-CUSDCV3': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_DEGENCUSDCV3),
+    'USDC-DEGEN': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_USDCDEGEN),
+    'SNX-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SNXUSDC),
+    'SNX-CUSDCV3': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SNXCUSDCV3),
+    'ENA-SDAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_ENASDAI),
+    'SDAI-ENA': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SDAIENA),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
