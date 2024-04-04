@@ -56,6 +56,7 @@ export function OmniFormView({
       label,
       network,
       networkId,
+      pairId,
       productType,
       protocol,
       pseudoProtocol,
@@ -109,6 +110,8 @@ export function OmniFormView({
   const genericSidebarTitle = useOmniSidebarTitle()
 
   const flowState = useFlowState({
+    pairId,
+    protocol,
     networkId,
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({

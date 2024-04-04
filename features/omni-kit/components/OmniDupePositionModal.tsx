@@ -2,6 +2,7 @@ import { networksById } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { getOmniPositionUrl } from 'features/omni-kit/helpers'
+import type { PositionFromUrl } from 'features/omni-kit/observables'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useModalContext } from 'helpers/modalHook'
@@ -12,13 +13,12 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import type { Theme } from 'theme-ui'
 import { Box, Button, Flex, Heading, Image, Link, Text, ThemeUIProvider } from 'theme-ui'
-import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export interface OmniDupePositionModalProps {
   collateralAddress: string
   collateralToken: string
   dpmAccounts: UserDpmAccount[]
-  events: CreatePositionEvent[]
+  events: PositionFromUrl[]
   isOracless: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
@@ -52,7 +52,7 @@ export function OmniDupePositionModal({
   const positionIds = events.map(
     (event) =>
       dpmAccounts.find(
-        (dpmAccount) => dpmAccount.proxy.toLowerCase() === event.args.proxyAddress.toLowerCase(),
+        (dpmAccount) => dpmAccount.proxy.toLowerCase() === event.proxyAddress.toLowerCase(),
       )?.vaultId as string,
   )
 

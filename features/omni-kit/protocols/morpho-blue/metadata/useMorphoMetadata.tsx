@@ -41,13 +41,14 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
   const {
     environment: {
       collateralAddress,
+      collateralPrecision,
       isOracless,
+      pairId,
       productType,
+      protocol,
       quoteAddress,
       quoteBalance,
       quotePrecision,
-      collateralPrecision,
-      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -84,10 +85,11 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             morphoFlowStateFilter({
               collateralAddress,
               event,
-              productType,
-              quoteAddress,
-              protocol,
               filterConsumed,
+              pairId,
+              productType,
+              protocol,
+              quoteAddress,
             }),
         },
         values: {

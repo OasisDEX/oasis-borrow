@@ -44,6 +44,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
       collateralAddress,
       isOpening,
       label,
+      pairId,
       productType,
       protocol,
       quoteAddress,
@@ -84,11 +85,12 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             erc4626FlowStateFilter({
               collateralAddress,
               event,
+              filterConsumed,
+              pairId,
               productType,
-              quoteAddress,
               protocol,
               protocolRaw: `erc4626-${vaultAddress.toLowerCase()}`,
-              filterConsumed,
+              quoteAddress,
             }),
         },
         values: {
