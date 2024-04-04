@@ -158,7 +158,6 @@ export const OmniProductController = <Auction, History, Position>({
   }, [dpmPositionData])
 
   const isYieldLoop = getOmniIsOmniYieldLoop({ collateralToken, pseudoProtocol, quoteToken })
-
   // Flag to determine whether full yield-loop UI experience is available for given protocol & pair
   const isYieldLoopWithData =
     !!settings.yieldLoopPairsWithData?.[networkId]?.includes(`${collateralToken}-${quoteToken}`) &&

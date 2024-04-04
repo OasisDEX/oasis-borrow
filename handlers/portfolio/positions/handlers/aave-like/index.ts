@@ -39,7 +39,6 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
   allOraclePrices,
   apiVaults,
   debug,
-  useOmniKitLinks,
 }) => {
   const positionAutomations = allPositionsAutomations
     .filter(filterAutomation(dpm))
@@ -51,7 +50,6 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     apiVaults,
     allOraclePrices,
     debug,
-    useOmniKitLinks,
   })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
@@ -126,7 +124,6 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
   allOraclePrices,
   apiVaults,
   debug,
-  useOmniKitLinks,
 }) => {
   const positionAutomations = allPositionsAutomations
     .filter(filterAutomation(dpm))
@@ -138,7 +135,6 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     apiVaults,
     allOraclePrices,
     debug,
-    useOmniKitLinks,
   })
   const [
     primaryTokenReserveConfiguration,
@@ -251,14 +247,12 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
   allPositionsHistory,
   allOraclePrices,
   debug,
-  useOmniKitLinks,
 }) => {
   const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     dpm,
     prices,
     allOraclePrices,
     debug,
-    useOmniKitLinks,
   })
   const [onChainPositionData, primaryTokenReserveData, secondaryTokenReserveData] =
     await Promise.all([
@@ -357,7 +351,6 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   positionsCount,
   debug,
-  useOmniKitLinks,
 }) => {
   const aaveLikeDpmList = dpmList.filter(({ protocol }) =>
     [aaveLikeProtocolNames.aavev3, aaveLikeProtocolNames.sparkv3].includes(protocol),
@@ -427,7 +420,6 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
         allOraclePrices,
         apiVaults,
         debug,
-        useOmniKitLinks,
       }
       switch (dpm.positionType.toLowerCase()) {
         case OmniProductType.Multiply:
