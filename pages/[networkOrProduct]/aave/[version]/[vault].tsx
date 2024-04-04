@@ -13,7 +13,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { mapAaveLikeProtocolVersion } from 'helpers/getAaveLikeStrategyUrl'
+import { mapAaveLikeProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { useObservable } from 'helpers/observableHook'
 import { safeGetAddress } from 'helpers/safeGetAddress'
 import type { AaveLendingProtocol } from 'lendingProtocols'
@@ -102,7 +102,7 @@ function WithAaveStrategy({
                 token2: _info.strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
-              url={`/aave/${mapAaveLikeProtocolVersion(_info.strategyConfig.protocol)}/${positionId}`}
+              url={`/aave/${mapAaveLikeProtocol(_info.strategyConfig.protocol)}/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
