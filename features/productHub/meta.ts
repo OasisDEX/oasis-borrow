@@ -186,6 +186,9 @@ export const productHubOptionsMapBase: {
       LINK: productHubTokenOptions.LINK,
       LDO: productHubTokenOptions.LDO,
       YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
     },
   },
   earn: {
@@ -202,6 +205,9 @@ export const productHubOptionsMapBase: {
       LINK: productHubTokenOptions.LINK,
       LDO: productHubTokenOptions.LDO,
       YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
     },
   },
 }

@@ -218,12 +218,11 @@ async function getAjnaPoolData(
                 secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
                 tooltips: {
-                  ...(isPoolNotEmpty &&
-                    isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
-                      weeklyNetApy: productHubAjnaRewardsTooltip,
-                    }),
                   ...(!isPoolNotEmpty && {
                     weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                  }),
+                  ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
+                    weeklyNetApy: productHubAjnaRewardsTooltip,
                   }),
                 },
               },
