@@ -59,7 +59,7 @@ export function AaveLikeDeprecatedLinkHandler({
         parsedProtocol,
         parsedVersion,
         type.toLocaleLowerCase(),
-        `${collateral.toLocaleLowerCase()}-${debt.toLocaleLowerCase()}`,
+        `${collateral.toLocaleUpperCase()}-${debt.toLocaleUpperCase()}`,
         deprecatedPositionId,
       ].join('/')
       setIsRedirecting(true)

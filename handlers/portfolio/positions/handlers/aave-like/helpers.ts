@@ -127,7 +127,7 @@ export const commonDataMapper = ({
       AAVE: 'aave/v2',
       Spark: 'spark',
     }[dpm.protocol]
-  }/${positionType}/${primaryTokenSymbol.toLocaleLowerCase()}-${secondaryTokenSymbol.toLocaleLowerCase()}/${
+  }/${positionType}/${primaryTokenSymbol.toLocaleUpperCase()}-${secondaryTokenSymbol.toLocaleUpperCase()}/${
     dpm.vaultId
   }`
   return {

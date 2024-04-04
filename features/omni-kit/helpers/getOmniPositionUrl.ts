@@ -40,7 +40,7 @@ export function getOmniPositionUrl({
         [LendingProtocol.AaveV3]: 'aave/v3',
         [LendingProtocol.SparkV3]: 'spark',
       }[protocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3]
-    }/${productType}/${collateralToken}-${quoteToken}`
+    }/${productType}/${collateralToken.toLocaleUpperCase()}-${quoteToken.toLocaleUpperCase()}`
   }
 
   if (pseudoProtocol === Erc4626PseudoProtocol && label) {

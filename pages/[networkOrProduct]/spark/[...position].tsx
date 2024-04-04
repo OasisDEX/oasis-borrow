@@ -55,7 +55,7 @@ function SparkPositionPage(props: SparkPositionPageProps) {
 }
 
 SparkPositionPage.seoTags = (
-  <PageSEOTags title="seo.aave.title" description="seo.aave.description" />
+  <PageSEOTags title="seo.spark.title" description="seo.spark.description" />
 )
 
 export default SparkPositionPage

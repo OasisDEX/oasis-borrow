@@ -121,16 +121,10 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     }
   }
 
-  return {
-    props: {
-      ...(
-        await getOmniServerSideProps({
-          locale,
-          protocol,
-          query,
-          settings: omniProtocolSettings[protocol],
-        })
-      ).props,
-    },
-  }
+  return getOmniServerSideProps({
+    locale,
+    protocol,
+    query,
+    settings: omniProtocolSettings[protocol],
+  })
 }
