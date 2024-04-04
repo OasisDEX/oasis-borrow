@@ -115,5 +115,12 @@
     "stop-loss": "Stop-Loss",
     "one-click-multiply": "One Click Multiply",
     "advanced-automation": "Advanced Automation"
+  },
+  "refinance": {
+    "title": "Refinance",
+    "banner": {
+      "default": "Your position #{{id}} can get refinanced",
+      "lowerLiquidationPrice": "Your position #{{id}} can get refinanced to lower your liquidation price by {{value}}"
+    }
   }
 }

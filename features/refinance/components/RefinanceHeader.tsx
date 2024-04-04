@@ -119,6 +119,7 @@ export const RefinanceHeader = () => {
   return (
     <Flex
       sx={{ justifyContent: 'space-between', mb: '24px' }}
+      // eslint-disable-next-line no-console
       onClick={() => console.log(`DPM proxy to be used: ${dpmProxy?.toLowerCase()}`)}
     >
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: [3, 0] }}>
