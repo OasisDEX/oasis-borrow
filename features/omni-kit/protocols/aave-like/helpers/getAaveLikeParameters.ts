@@ -1,3 +1,4 @@
+import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import type { AaveLikePositionV2, AaveLikeTokens, PositionType } from '@oasisdex/dma-library'
 import { AaveLikeProtocolEnum, RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
@@ -10,6 +11,7 @@ import {
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ethers } from 'ethers'
+import { getEmptyAaveLikePosition } from 'features/aave/helpers/getEmptyAaveLikePosition'
 import {
   aaveActionDepositBorrow,
   aaveActionOpenDepositBorrow,
@@ -91,14 +93,25 @@ export const getAaveLikeParameters = async ({
   const addressesConfig = getNetworkContracts(networkId)
 
   const addresses = getAddresses(networkId, protocol)
+  console.log('dpmAddress', dpmAddress, dpmAddress === ADDRESS_ZERO)
+  const currentPosition =
+    dpmAddress === ADDRESS_ZERO
+      ? getEmptyAaveLikePosition({
+          debtToken: quoteToken,
+          collateralToken,
+          collateralTokenAddress: addressesConfig.tokens[collateralToken]?.address,
+          debtTokenAddress: addressesConfig.tokens[quoteToken]?.address,
+        })
+      : await getOnChainPosition({
+          networkId,
+          proxyAddress: dpmAddress,
+          collateralToken,
+          debtToken: quoteToken,
+          protocol,
+        })
 
-  const currentPosition = await getOnChainPosition({
-    networkId,
-    proxyAddress: dpmAddress,
-    collateralToken,
-    debtToken: quoteToken,
-    protocol,
-  })
+  console.log('currentPosition', currentPosition)
+  console.log('addressesConfig', addressesConfig)
 
   const commonDependencies = {
     operationExecutor: addressesConfig.operationExecutor.address,
@@ -178,6 +191,8 @@ export const getAaveLikeParameters = async ({
         },
         dependencies: multiplyDependencies,
       }
+
+      console.log('aaveActionOpen data', data)
 
       return protocol === LendingProtocol.SparkV3
         ? sparkActionOpen(data)
