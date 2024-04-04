@@ -25,6 +25,7 @@ export type GetAaveLikePositionHandlerType = ({
   allOraclePrices,
   apiVaults,
   debug,
+  useOmniKitLinks,
 }: {
   dpm: DpmSubgraphData
   prices: TokensPricesList
@@ -33,4 +34,5 @@ export type GetAaveLikePositionHandlerType = ({
   allOraclePrices: AaveLikeOraclePriceData
   apiVaults?: Vault[]
   debug?: boolean
+  useOmniKitLinks?: boolean
 }) => Promise<PortfolioPosition>

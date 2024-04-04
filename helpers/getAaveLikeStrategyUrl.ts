@@ -12,7 +12,7 @@ type AaveVersionProps = {
   aaveLikeProduct: 'aave' | 'spark'
 }
 
-export function mapAaveLikeProtocolVersion(protocol: AaveVersionProps['protocol']) {
+export function mapAaveLikeProtocol(protocol: AaveVersionProps['protocol']) {
   return {
     [LendingProtocol.AaveV2]: 'v2',
     [LendingProtocol.AaveV3]: 'v3',
@@ -20,7 +20,7 @@ export function mapAaveLikeProtocolVersion(protocol: AaveVersionProps['protocol'
   }[protocol]
 }
 
-export function mapAaveLikeProtocolSlug(protocol: AaveVersionProps['protocol']) {
+export function mapAaveLikeUrlSlug(protocol: AaveVersionProps['protocol']) {
   return {
     [LendingProtocol.AaveV2]: 'aave',
     [LendingProtocol.AaveV3]: 'aave',
@@ -35,7 +35,7 @@ export function getAaveLikeOpenStrategyUrl({
   network,
   aaveLikeProduct,
 }: AaveVersionProps) {
-  return `/${network}/${aaveLikeProduct}/${mapAaveLikeProtocolVersion(
+  return `/${network}/${aaveLikeProduct}/${mapAaveLikeProtocol(
     protocol,
   )}/${strategyType.toLocaleLowerCase()}/${slug}`
 }
@@ -45,5 +45,5 @@ export function getAaveLikePositionUrl({
   network,
   userDpmAccount: { vaultId },
 }: Pick<AaveVersionProps, 'protocol' | 'network'> & { userDpmAccount: UserDpmAccount }) {
-  return `/${network}/${mapAaveLikeProtocolSlug(protocol)}/${mapAaveLikeProtocolVersion(protocol)}/${vaultId}`
+  return `/${network}/${mapAaveLikeUrlSlug(protocol)}/${mapAaveLikeProtocol(protocol)}/${vaultId}`
 }
