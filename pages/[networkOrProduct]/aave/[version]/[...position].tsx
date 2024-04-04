@@ -1,10 +1,13 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
+import type { NetworkNames } from 'blockchain/networks'
+import { getNetworkByName } from 'blockchain/networks'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { aaveContext, AaveContextProvider } from 'features/aave'
 import { OmniProductController } from 'features/omni-kit/controllers'
+import { AaveLikeDeprecatedLinkHandler } from 'features/omni-kit/controllers/OmniAaveLikeDeprecatedLinkHandler'
 import { aaveSeoTags } from 'features/omni-kit/protocols/aave/constants'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeData, useAaveLikeTxHandler } from 'features/omni-kit/protocols/aave-like/hooks'
@@ -17,7 +20,10 @@ import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import React from 'react'
 
-type AavePositionPageProps = OmniProductPage
+export type AavePositionPageProps = OmniProductPage & {
+  isDeprecatedUrl?: boolean
+  deprecatedPositionId?: number
+}
 
 function AavePositionPage(props: AavePositionPageProps) {
   return (
@@ -25,23 +31,25 @@ function AavePositionPage(props: AavePositionPageProps) {
       <ProductContextHandler>
         <AaveContextProvider>
           <DeferedContextProvider context={aaveContext}>
-            <OmniProductController<
-              AaveLikeHistoryEvent | undefined,
-              AaveLikeHistoryEvent[],
-              AaveLikePositionV2
-            >
-              {...props}
-              customState={({ children }) =>
-                children({
-                  useDynamicMetadata: useAaveLikeMetadata,
-                  useTxHandler: useAaveLikeTxHandler,
-                })
-              }
-              protocol={props.protocol}
-              protocolHook={useAaveLikeData}
-              seoTags={aaveSeoTags}
-              settings={omniProtocolSettings[props.protocol]}
-            />
+            <AaveLikeDeprecatedLinkHandler {...props}>
+              <OmniProductController<
+                AaveLikeHistoryEvent | undefined,
+                AaveLikeHistoryEvent[],
+                AaveLikePositionV2
+              >
+                {...props}
+                customState={({ children }) =>
+                  children({
+                    useDynamicMetadata: useAaveLikeMetadata,
+                    useTxHandler: useAaveLikeTxHandler,
+                  })
+                }
+                protocol={props.protocol}
+                protocolHook={useAaveLikeData}
+                seoTags={aaveSeoTags}
+                settings={omniProtocolSettings[props.protocol]}
+              />
+            </AaveLikeDeprecatedLinkHandler>
           </DeferedContextProvider>
         </AaveContextProvider>
       </ProductContextHandler>
@@ -54,6 +62,40 @@ AavePositionPage.seoTags = <PageSEOTags title="seo.aave.title" description="seo.
 export default AavePositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
+  // the old xstate link produces less query params
+  // query { networkOrProduct: 'arbitrum', version: 'v3', position: [ '254' ] }
+  // vs omni
+  // query {
+  //   networkOrProduct: 'arbitrum',
+  //   version: 'v3',
+  //   position: [ 'multiply', 'wbtc-usdc', '187' ]
+  // }
+  // we can use that to make a redirection (on the frontend)
+
+  if (
+    // if theres version and position, and position is a single number
+    // we're dealing with a deprecated link to a position
+    query.position &&
+    'version' in query &&
+    typeof query.version === 'string' &&
+    query.position?.length === 1 &&
+    !Number.isNaN(Number(query.position[0]))
+  ) {
+    const deprecatedPositionId = Number(query.position[0])
+    const networkId = getNetworkByName(query.networkOrProduct as unknown as NetworkNames).id
+    return {
+      props: {
+        deprecatedPositionId,
+        networkId,
+        isDeprecatedUrl: true,
+        protocol: {
+          v2: LendingProtocol.AaveV2,
+          v3: LendingProtocol.AaveV3,
+        }[query.version] as AaveLendingProtocol | undefined,
+      },
+    }
+  }
+
   if (!('version' in query && typeof query.version === 'string')) {
     console.warn('version url param not provided')
     return {

@@ -1161,6 +1161,13 @@
     "aaveProductPage": {
       "title": "{{productType}} - Summer.fi × Aave"
     },
+    "sparkProductPage": {
+      "title": "{{productType}} - Summer.fi × Spark"
+    },
+    "spark": {
+      "title": "Summer.fi × Spark",
+      "description": "Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
+    },
     "multiply": {
       "title": "Multiply - Summer.fi",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset."

@@ -28,7 +28,6 @@ export const portfolioPositionsHandler = async ({
 }: NextApiRequest): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> => {
   const address = (query.address as string).toLowerCase()
   const debug = 'debug' in query
-  const useOmniKitLinks = 'useOmniKitLinks' in query
   const positionsCount = 'positionsCount' in query
   if (portfolioCache.has(address)) {
     if (positionsCount) {
@@ -56,7 +55,6 @@ export const portfolioPositionsHandler = async ({
       prices: prices.data.tokens,
       positionsCount,
       debug,
-      useOmniKitLinks,
     }
 
     const positionsReply = await Promise.all([
