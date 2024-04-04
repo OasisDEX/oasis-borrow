@@ -201,11 +201,15 @@ async function getAjnaPoolData(
                 label,
                 network,
                 primaryToken: quoteToken,
-                ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
+                ...(secondaryTokenGroup !== quoteToken && {
+                  primaryTokenGroup: secondaryTokenGroup,
+                }),
                 product: [ProductHubProductType.Earn],
                 protocol,
                 secondaryToken: collateralToken,
-                ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
+                ...(primaryTokenGroup !== collateralToken && {
+                  secondaryTokenGroup: primaryTokenGroup,
+                }),
                 earnStrategy: EarnStrategies.liquidity_provision,
                 earnStrategyDescription: earnLPStrategy,
                 liquidity,
