@@ -1,6 +1,8 @@
 import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { amountFromRay } from 'blockchain/utils'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -43,7 +45,6 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
         cumulativeFeesUSD,
         cumulativeWithdrawnUSD,
         ilk,
-        liquidationPrice,
         normalizedDebt,
         openedAt,
         triggers,
@@ -63,8 +64,17 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           .times(collateralPrice)
           .minus(debt.times(daiPrice))
 
+        const minCollRatio = amountFromRay(new BigNumber(ilk.liquidationRatio))
+
+        const liquidationPrice = collateralPriceAtRatio({
+          collateral: new BigNumber(collateral),
+          colRatio: minCollRatio,
+          vaultDebt: new BigNumber(debt),
+        }).toString()
+
         return {
           availableToMigrate: false,
+          availableToRefinance: true,
           automations: {
             ...(type !== OmniProductType.Earn && {
               autoBuy: { enabled: false },
@@ -97,6 +107,13 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             primaryToken,
             type,
           }),
+          rawPositionDetails: {
+            collateral,
+            debt: debt.toString(),
+            collateralPrice: collateralPrice.toString(),
+            debtPrice: daiPrice.toString(),
+            liquidationPrice,
+          },
           ...(type === OmniProductType.Earn && { lendingType: 'passive' }),
           network: NetworkNames.ethereumMainnet,
           netValue: netValue.toNumber(),

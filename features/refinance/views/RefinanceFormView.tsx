@@ -37,7 +37,6 @@ export const RefinanceFormView: FC = ({ children }) => {
   const isPrimaryButtonDisabled = false
   const primaryButtonLabel = t('confirm')
   const sidebarTitle = getRefinanceSidebarTitle({ currentStep, t, option: refinanceOption })
-  // eslint-disable-next-line no-console
   const textButtonAction = () => {
     if (currentStep === RefinanceSidebarStep.Changes) {
       updateState('strategy', undefined)
@@ -102,7 +101,10 @@ export const RefinanceFormView: FC = ({ children }) => {
     //     })
     //   }
     // },
-    onEverythingReady: () => setNextStep(),
+    onEverythingReady: (data) => {
+      updateState('dpmProxy', data.availableProxies[0])
+      setNextStep()
+    },
     onGoBack: () => setStep(RefinanceSidebarStep.Strategy),
   })
 

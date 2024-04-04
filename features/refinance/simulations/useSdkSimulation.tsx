@@ -1,6 +1,6 @@
-import { refinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { EmodeType, type SparkPoolId } from 'features/refinance/types'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK } from 'summerfi-sdk-client'
 import type {
@@ -22,10 +22,14 @@ export function useSdkSimulation() {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
-  const [liquidationPrice, setLiquidationPrice] = useState<null | string>(null)
   const [sourcePosition, setSourcePosition] = useState<null | IPosition>(null)
   const [simulation, setSimulation] = useState<null | ISimulation<SimulationType.Refinance>>(null)
-  const context = React.useContext(refinanceContext)
+
+  const {
+    environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
+    position: { positionId, liquidationPrice, collateralTokenData, debtTokenData },
+    poolData: { poolId },
+  } = useRefinanceContext()
 
   // TODO: This should be dynamic based on the assets
   const emodeType = EmodeType.None
@@ -34,21 +38,6 @@ export function useSdkSimulation() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (context === undefined) {
-        throw new Error('RefinanceContextProvider is missing in the hierarchy')
-      }
-      const {
-        environment: { slippage, chainInfo, address },
-        position: {
-          positionId,
-          liquidationPrice: _liquidationPrice,
-          collateralTokenData,
-          debtTokenData,
-        },
-        poolData: { poolId },
-      } = context
-      setLiquidationPrice(_liquidationPrice)
-
       const targetPoolId: SparkPoolId = {
         protocol: {
           name: ProtocolName.Spark,
@@ -117,9 +106,21 @@ export function useSdkSimulation() {
     void fetchData().catch((err) => {
       setError(err.message)
     })
-  }, [sdk, context, emodeType])
+  }, [
+    sdk,
+    emodeType,
+    slippage,
+    collateralPrice,
+    debtPrice,
+    address,
+    chainInfo,
+    poolId,
+    positionId,
+    collateralTokenData,
+    debtTokenData,
+  ])
 
   const targetPosition = simulation?.targetPosition || null
 
-  return { error, context, chain, user, sourcePosition, targetPosition, liquidationPrice }
+  return { error, chain, user, sourcePosition, targetPosition, liquidationPrice }
 }
