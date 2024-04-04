@@ -1,4 +1,5 @@
 import { ADDRESS_ZERO } from '@oasisdex/addresses'
+import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import {
   extractLendingProtocolFromPositionCreatedEvent,
@@ -10,6 +11,7 @@ import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { LendingProtocol } from 'lendingProtocols'
+import { uniq } from 'lodash'
 
 export interface MorphoVauldIdPositionsResponse {
   accounts: {
@@ -87,6 +89,17 @@ export async function getPositionsFromUrlData({
 
   if (accounts.length > 0) {
     const account = accounts[0]
+
+    void (await identifyTokens$(
+      networkId,
+      uniq(
+        account.createEvents.flatMap(({ collateralToken, debtToken }) => [
+          collateralToken,
+          debtToken,
+        ]),
+      ),
+    ).toPromise())
+
     const data = {
       dpmAddress: account.id,
       owner: account.user.id,
