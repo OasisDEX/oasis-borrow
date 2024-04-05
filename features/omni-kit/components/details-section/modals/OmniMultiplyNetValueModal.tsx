@@ -133,28 +133,33 @@ export function OmniMultiplyNetValueModal({
             </Text>
             <Grid
               sx={{
-                gridTemplateColumns: '1fr 1fr 1fr',
+                gridTemplateColumns: '1fr 1fr',
                 gap: 2,
               }}
             >
-              <Text as="p" variant="paragraph2" sx={{ fontWeight: 'regular' }}>
-                {pnl.percentage.gte(zero) && '+'}
-                {formatDecimalAsPercent(pnl.percentage)}
-              </Text>
               <Text
                 as="p"
                 variant="paragraph2"
-                sx={{
-                  fontWeight: 'regular',
-                  borderRight: '1px solid',
-                  borderLeft: '1px solid',
-                  borderColor: 'neutral60',
-                }}
+                sx={{ fontWeight: 'regular', borderRight: '1px solid', borderColor: 'neutral60' }}
               >
                 {`${pnl.inUsd.isLessThan(zero) ? `-$${formatCryptoBalance(pnl.inUsd.abs())}` : formatCryptoBalance(pnl.inUsd)}`}
+                <Text
+                  variant="paragraph3"
+                  sx={{ m: 2, color: pnl.percentageUsd.gte(zero) ? 'success100' : 'warning100' }}
+                >
+                  ({pnl.percentageUsd.gte(zero) && '+'}
+                  {formatDecimalAsPercent(pnl.percentageUsd)})
+                </Text>
               </Text>
               <Text as="p" variant="paragraph2" sx={{ fontWeight: 'regular' }}>
                 {`${formatCryptoBalance(pnl.inToken)} ${netValue.netValueToken}`}
+                <Text
+                  variant="paragraph3"
+                  sx={{ m: 2, color: pnl.percentage.gte(zero) ? 'success100' : 'warning100' }}
+                >
+                  ({pnl.percentage.gte(zero) && '+'}
+                  {formatDecimalAsPercent(pnl.percentage)})
+                </Text>
               </Text>
             </Grid>
           </Card>
