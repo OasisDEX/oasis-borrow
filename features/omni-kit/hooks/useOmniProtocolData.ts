@@ -8,7 +8,6 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
 import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getTokenBalances$ } from 'features/shared/balanceInfo'
-import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -19,24 +18,26 @@ interface OmniProtocolDataProps {
   collateralToken: string
   extraTokens?: string[]
   isOracless?: boolean
+  networkId: OmniSupportedNetworkIds
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
   protocolRaw: string
   quoteToken: string
-  networkId: OmniSupportedNetworkIds
 }
 
 export function useOmniProtocolData({
   collateralToken,
   extraTokens = [],
   isOracless,
+  networkId,
+  pairId,
   positionId,
   productType,
   protocol,
   protocolRaw,
   quoteToken,
-  networkId,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
   const { gasPriceOnNetwork$ } = useMainContext()
@@ -63,13 +64,14 @@ export function useOmniProtocolData({
       () =>
         positionId
           ? dpmPositionDataV2$(
-              getPositionIdentity(positionId),
+              Number(positionId),
               networkId,
               collateralToken,
               quoteToken,
               productType,
               protocol,
               protocolRaw,
+              pairId,
             )
           : !isOracless && productType && collateralToken && quoteToken
             ? getStaticDpmPositionData$({
@@ -91,13 +93,15 @@ export function useOmniProtocolData({
                 })
               : EMPTY,
       [
-        isOracless,
-        positionId,
-        networkId,
         collateralToken,
-        quoteToken,
-        productType,
         identifiedTokensData,
+        isOracless,
+        networkId,
+        positionId,
+        productType,
+        protocol,
+        protocolRaw,
+        quoteToken,
         tokensAddresses,
       ],
     ),
@@ -141,7 +145,9 @@ export function useOmniProtocolData({
       [
         isOracless,
         dpmPositionData,
+        extraTokens,
         walletAddress,
+        networkId,
         identifiedTokensData,
         collateralToken,
         quoteToken,
@@ -160,7 +166,7 @@ export function useOmniProtocolData({
               ...extraTokens,
             ])
           : EMPTY,
-      [dpmPositionData],
+      [dpmPositionData, extraTokens],
     ),
   )
 

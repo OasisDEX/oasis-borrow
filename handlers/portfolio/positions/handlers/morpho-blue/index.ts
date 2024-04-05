@@ -72,6 +72,7 @@ async function getMorphoPositions({
           const {
             collateralPrice,
             networkName,
+            pairId,
             primaryToken,
             quotePrice,
             secondaryToken,
@@ -124,6 +125,7 @@ async function getMorphoPositions({
             }),
             network: networkName,
             netValue,
+            pairId,
             positionId: Number(positionId),
             primaryToken,
             protocol: LendingProtocol.MorphoBlue,

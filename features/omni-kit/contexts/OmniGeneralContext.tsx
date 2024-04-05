@@ -54,6 +54,7 @@ interface OmniGeneralContextProviderProps {
   network: NetworkConfig
   networkId: OmniSupportedNetworkIds
   owner: string
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
@@ -243,7 +244,7 @@ export function OmniGeneralContextProvider({
   }
 
   const context: OmniGeneralContext = useMemo(() => {
-    const isOwner = isOpening || owner === walletAddress
+    const isOwner = isOpening || owner.toLowerCase() === walletAddress?.toLowerCase()
 
     return {
       environment: {

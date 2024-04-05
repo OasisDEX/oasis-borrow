@@ -13,7 +13,7 @@ import type { ItemProps } from 'components/infoSection/Item'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import type { AutomationFeatures } from 'features/automation/common/types'
-import type { DpmPositionData } from 'features/omni-kit/observables'
+import type { DpmPositionData, PositionFromUrl } from 'features/omni-kit/observables'
 import type { useOmniAutomationAutoBSFormReducto } from 'features/omni-kit/state/automation/auto-bs'
 import type {
   OmniAutomationFormState,
@@ -47,7 +47,6 @@ import type { LendingProtocolLabel } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, FC, ReactNode, SetStateAction } from 'react'
 import type { Theme } from 'theme-ui'
-import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 const omniSupportedNetworkIds = [
   NetworkIds.ARBITRUMMAINNET,
@@ -140,6 +139,7 @@ export interface OmniProtocolHookProps {
   dpmPositionData?: DpmPositionData
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number
   product?: OmniProductType
   protocol: OmniSupportedProtocols
   quoteToken: string
@@ -207,6 +207,7 @@ export interface OmniProductPage {
   collateralToken: string
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: OmniSupportedProtocols
@@ -256,11 +257,12 @@ export interface OmniFormDefaults {
 
 export interface OmniFlowStateFilterParams {
   collateralAddress: string
-  event: CreatePositionEvent
+  event: PositionFromUrl
+  filterConsumed?: boolean
+  pairId: number
   productType: OmniProductType
   protocol: LendingProtocol
   protocolRaw?: string
-  filterConsumed?: boolean
   quoteAddress: string
 }
 
@@ -340,7 +342,7 @@ interface OmniFeatureToggles {
 }
 
 export interface OmniFiltersParameters {
-  event: CreatePositionEvent
+  event: PositionFromUrl
   filterConsumed?: boolean
 }
 

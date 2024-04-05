@@ -61,6 +61,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
   isOracless?: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: OmniSupportedProtocols
@@ -90,6 +91,7 @@ export const OmniProductController = <Auction, History, Position>({
   isOracless = false,
   label,
   networkId,
+  pairId,
   positionId,
   productType,
   protocol,
@@ -132,6 +134,7 @@ export const OmniProductController = <Auction, History, Position>({
     extraTokens,
     isOracless,
     networkId,
+    pairId,
     positionId,
     productType,
     protocol,
@@ -147,10 +150,11 @@ export const OmniProductController = <Auction, History, Position>({
     dpmPositionData,
     label,
     networkId,
+    pairId,
+    protocol,
     quoteToken,
     tokenPriceUSDData,
     tokensPrecision,
-    protocol,
   })
 
   useEffect(() => {
@@ -189,6 +193,7 @@ export const OmniProductController = <Auction, History, Position>({
                     collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
                     headline: label,
+                    pairId,
                     positionId,
                     productType: dpmPositionData?.product as OmniProductType,
                     protocol,
@@ -264,6 +269,7 @@ export const OmniProductController = <Auction, History, Position>({
                       network={network}
                       networkId={networkId}
                       owner={dpmPosition.user}
+                      pairId={pairId}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}

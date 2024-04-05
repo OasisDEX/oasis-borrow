@@ -608,17 +608,18 @@ export function setupProductContext(
   // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
   // only single position should be picked to be displayed
   const dpmPositionDataV2$ = memoize(
-    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$),
+    curry(getDpmPositionDataV2$),
     (
-      positionId: PositionId,
+      positionId: number,
       networkId: NetworkIds,
       collateralToken: string,
       quoteToken: string,
       product: string,
       protocol: LendingProtocol,
       protocolRaw: string,
+      pairId: number,
     ) =>
-      `${positionId.walletAddress}-${positionId.vaultId}-${networkId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}`,
+      `${positionId}-${networkId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}-${pairId}`,
   )
 
   const ajnaPosition$ = memoize(
@@ -644,10 +645,11 @@ export function setupProductContext(
       collateralPrice: BigNumber,
       quotePrice: BigNumber,
       dpmPositionData: DpmPositionData,
+      pairId: number,
       network: NetworkIds,
       tokensPrecision?: OmniTokensPrecision,
     ) =>
-      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+      `${dpmPositionData.vaultId}-${pairId}-${network}-${collateralPrice
         .decimalPlaces(2)
         .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
         tokensPrecision ?? {},

@@ -2850,7 +2850,7 @@
   },
   "omni-kit": {
     "headline": {
-      "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
+      "title": "{{collateralToken}}/{{quoteToken}}{{pairId}} {{productType}}",
       "yield-multiple": "yield multiple",
       "details": {
         "30-days-avg-apy": "30 days average APY",

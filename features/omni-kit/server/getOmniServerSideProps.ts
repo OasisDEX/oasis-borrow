@@ -70,8 +70,11 @@ export async function getOmniServerSideProps({
     }
   }
 
-  const [resolvedCollateralToken, resolvedQuoteToken] =
-    collateralToken && quoteToken ? [collateralToken, quoteToken] : pair.split('-')
+  const [paramCollateralToken, paramQuoteToken, pairId = 1] = pair.split('-')
+
+  const resolvedCollateralToken = collateralToken ?? paramCollateralToken
+  const resolvedQuoteToken = quoteToken ?? paramQuoteToken
+
   const caseSensitiveCollateralToken = isAddress(resolvedCollateralToken)
     ? resolvedCollateralToken.toLowerCase()
     : resolvedCollateralToken.toUpperCase()
@@ -82,6 +85,7 @@ export async function getOmniServerSideProps({
   const omniProductPage = {
     collateralToken: caseSensitiveCollateralToken,
     networkId,
+    pairId: Number(pairId),
     positionId,
     productType: castedProductType,
     protocol,
