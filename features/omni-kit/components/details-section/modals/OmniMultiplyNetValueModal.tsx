@@ -142,7 +142,7 @@ export function OmniMultiplyNetValueModal({
                 variant="paragraph2"
                 sx={{ fontWeight: 'regular', borderRight: '1px solid', borderColor: 'neutral60' }}
               >
-                {`${pnl.inUsd.isLessThan(zero) ? `-$${formatCryptoBalance(pnl.inUsd.abs())}` : formatCryptoBalance(pnl.inUsd)}`}
+                {`${pnl.inUsd.isLessThan(zero) ? `-$${formatCryptoBalance(pnl.inUsd.abs())}` : `$${formatCryptoBalance(pnl.inUsd)}`}`}
                 <Text
                   variant="paragraph3"
                   sx={{ m: 2, color: pnl.percentageUsd.gte(zero) ? 'success100' : 'warning100' }}
