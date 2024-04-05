@@ -93,7 +93,6 @@ export const getAaveLikeParameters = async ({
   const addressesConfig = getNetworkContracts(networkId)
 
   const addresses = getAddresses(networkId, protocol)
-  console.log('dpmAddress', dpmAddress, dpmAddress === ADDRESS_ZERO)
   const currentPosition =
     dpmAddress === ADDRESS_ZERO
       ? getEmptyAaveLikePosition({
@@ -109,9 +108,6 @@ export const getAaveLikeParameters = async ({
           debtToken: quoteToken,
           protocol,
         })
-
-  console.log('currentPosition', currentPosition)
-  console.log('addressesConfig', addressesConfig)
 
   const commonDependencies = {
     operationExecutor: addressesConfig.operationExecutor.address,
@@ -191,8 +187,6 @@ export const getAaveLikeParameters = async ({
         },
         dependencies: multiplyDependencies,
       }
-
-      console.log('aaveActionOpen data', data)
 
       return protocol === LendingProtocol.SparkV3
         ? sparkActionOpen(data)
