@@ -74,13 +74,13 @@ export function OmniMultiplyNetValueModal({
       >
         <Box as="span" />
         <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
-          {t('omni-kit.content-card.net-value-modal.modal-table-col-1')}
+          {t('omni-kit.content-card.net-value-modal.modal-table-collateral-value')}
         </Text>
         <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
-          {t('omni-kit.content-card.net-value-modal.modal-table-col-2')}
+          {t('omni-kit.content-card.net-value-modal.modal-table-usd-value')}
         </Text>
         <OmniMultiplyNetValueModalGridRow
-          label={t('omni-kit.content-card.net-value-modal.modal-table-row-1')}
+          label={t('omni-kit.content-card.net-value-modal.modal-table-net-value')}
           firstColumn={`${formatCryptoBalance(netValue.inToken)} ${netValue.netValueToken}`}
           secondColumn={formatUsdValue(netValue.inUsd)}
         />
@@ -95,21 +95,30 @@ export function OmniMultiplyNetValueModal({
         }}
       >
         <OmniMultiplyNetValueModalGridRow
-          label={t('omni-kit.content-card.net-value-modal.modal-table-row-2')}
+          label={t('omni-kit.content-card.net-value-modal.modal-table-deposits')}
           firstColumn={`${formatCryptoBalance(pnlCumulatives.deposit.inToken)} ${
             netValue.netValueToken
           }`}
           secondColumn={formatUsdValue(pnlCumulatives.deposit.inUsd)}
         />
         <OmniMultiplyNetValueModalGridRow
-          label={t('omni-kit.content-card.net-value-modal.modal-table-row-3')}
+          label={t('omni-kit.content-card.net-value-modal.modal-table-deposit-netto')}
+          firstColumn={`${formatCryptoBalance(pnlCumulatives.deposit.inToken.minus(pnlCumulatives.withdraw.inToken))} ${
+            netValue.netValueToken
+          }`}
+          secondColumn={formatUsdValue(
+            pnlCumulatives.deposit.inUsd.minus(pnlCumulatives.withdraw.inUsd),
+          )}
+        />
+        <OmniMultiplyNetValueModalGridRow
+          label={t('omni-kit.content-card.net-value-modal.modal-table-withdrawals')}
           firstColumn={`${formatCryptoBalance(pnlCumulatives.withdraw.inToken)} ${
             netValue.netValueToken
           }`}
           secondColumn={formatUsdValue(pnlCumulatives.withdraw.inUsd)}
         />
         <OmniMultiplyNetValueModalGridRow
-          label={t('omni-kit.content-card.net-value-modal.modal-table-row-4')}
+          label={t('omni-kit.content-card.net-value-modal.modal-table-gas-fees')}
           firstColumn={`${formatCryptoBalance(pnlCumulatives.fees.inToken)} ${
             netValue.netValueToken
           }`}
@@ -119,15 +128,35 @@ export function OmniMultiplyNetValueModal({
       {pnl && (
         <>
           <Card variant="vaultDetailsCardModal" sx={{ textAlign: 'center' }}>
-            <Text as="p" variant="paragraph4" sx={{ color: 'neutral80' }}>
+            <Text as="p" variant="paragraph4" sx={{ color: 'neutral80', mb: 2 }}>
               {t('omni-kit.content-card.net-value-modal.modal-value')}
             </Text>
-            <Text as="p" variant="paragraph1" sx={{ fontWeight: 'regular' }}>
-              {pnl.percentage.gte(zero) && '+'}
-              {`${formatDecimalAsPercent(pnl.percentage)} / ${formatCryptoBalance(pnl.inToken)} ${
-                netValue.netValueToken
-              }`}
-            </Text>
+            <Grid
+              sx={{
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gap: 2,
+              }}
+            >
+              <Text as="p" variant="paragraph2" sx={{ fontWeight: 'regular' }}>
+                {pnl.percentage.gte(zero) && '+'}
+                {formatDecimalAsPercent(pnl.percentage)}
+              </Text>
+              <Text
+                as="p"
+                variant="paragraph2"
+                sx={{
+                  fontWeight: 'regular',
+                  borderRight: '1px solid',
+                  borderLeft: '1px solid',
+                  borderColor: 'neutral60',
+                }}
+              >
+                {`${pnl.inUsd.isLessThan(zero) ? `-$${formatCryptoBalance(pnl.inUsd.abs())}` : formatCryptoBalance(pnl.inUsd)}`}
+              </Text>
+              <Text as="p" variant="paragraph2" sx={{ fontWeight: 'regular' }}>
+                {`${formatCryptoBalance(pnl.inToken)} ${netValue.netValueToken}`}
+              </Text>
+            </Grid>
           </Card>
 
           <Text as="p" variant="paragraph3" sx={{ fontStyle: 'italic', color: 'neutral80' }}>
