@@ -22,6 +22,7 @@ export interface OmniDupePositionModalProps {
   isOracless: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number
   productType: OmniProductType
   protocol: LendingProtocol
   pseudoProtocol?: string
@@ -39,6 +40,7 @@ export function OmniDupePositionModal({
   isOracless,
   label,
   networkId,
+  pairId,
   productType,
   protocol,
   pseudoProtocol,
@@ -68,6 +70,7 @@ export function OmniDupePositionModal({
         isPoolOracless: isOracless,
         label,
         networkName,
+        pairId,
         productType,
         protocol,
         pseudoProtocol,

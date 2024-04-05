@@ -175,6 +175,7 @@ export function usePoolCreatorData({
                   networkId: context.chainId,
                 }),
                 networkName: networksById[context.chainId].name,
+                pairId: 1,
                 protocol: LendingProtocol.Ajna,
                 quoteAddress,
                 quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,

@@ -36,6 +36,7 @@ export type PortfolioPosition = {
   netValue: number
   isOraclessAndNotEmpty?: boolean
   openDate?: number // epoch based on block height timestamp
+  pairId?: number
   positionId: number | string
   primaryToken: string
   protocol: LendingProtocol

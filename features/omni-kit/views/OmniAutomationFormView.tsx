@@ -41,6 +41,7 @@ export function OmniAutomationFormView({
       isOpening,
       isOracless,
       isOwner,
+      pairId,
       productType,
       quoteAddress,
       quoteToken,
@@ -142,6 +143,7 @@ export function OmniAutomationFormView({
       txSuccessAction && txSuccessAction()
     },
     onSwitchNetwork: () => setChain(network.hexId),
+    pairId,
     productType,
     protocol,
     quoteAddress,

@@ -43,6 +43,7 @@ export function parseRows(
       collateralToken,
       isPoolOracless: isPoolOracless({ collateralToken, quoteToken, networkId }),
       networkName,
+      pairId: 1,
       productType: product as unknown as OmniProductType,
       protocol: LendingProtocol.Ajna,
       quoteAddress,

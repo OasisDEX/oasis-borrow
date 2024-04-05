@@ -149,6 +149,7 @@ export function OmniFormView({
           isOracless,
           label,
           networkId,
+          pairId,
           productType,
           protocol,
           pseudoProtocol,
@@ -241,6 +242,7 @@ export function OmniFormView({
       txSuccessAction && txSuccessAction()
     },
     onSwitchNetwork: () => setChain(network.hexId),
+    pairId,
     productType,
     protocol,
     pseudoProtocol,

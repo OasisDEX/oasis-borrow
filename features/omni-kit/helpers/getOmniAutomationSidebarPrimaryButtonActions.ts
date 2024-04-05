@@ -19,6 +19,7 @@ interface GetOmniAutomationSidebarPrimaryButtonActionsParams {
   onSelectTransition: () => void
   onSwitchNetwork: () => void
   onUpdated: () => void
+  pairId: number
   productType: OmniProductType
   protocol: LendingProtocol
   pseudoProtocol?: string
@@ -45,6 +46,7 @@ export function getOmniAutomationSidebarPrimaryButtonActions({
   onSelectTransition,
   onSwitchNetwork,
   onUpdated,
+  pairId,
   productType,
   protocol,
   pseudoProtocol,
@@ -67,6 +69,7 @@ export function getOmniAutomationSidebarPrimaryButtonActions({
           isPoolOracless: isOracless,
           label,
           networkName: network.name,
+          pairId,
           positionId: openFlowResolvedDpmId,
           productType,
           protocol,
