@@ -48,10 +48,7 @@ export const settings: OmniProtocolSettings = {
 
 export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = {
   [NetworkIds.MAINNET]: {
-    'WSTETH-ETH': [
-      '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
-      '0xb8fc70e82bc5bb53e773626fcc6a23f7eefa036918d7ef216ecfb1950a94a85e',
-    ],
+    'WSTETH-ETH': ['0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41'],
     'WEETH-ETH': ['0x698fe98247a40c5771537b5786b2f3f9d78eb487b4ce4d75533cd0e94d88a115'],
     'WSTETH-USDC': ['0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc'],
     'ETH-USDC': [
@@ -67,8 +64,19 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'ETH-USDT': ['0xdbffac82c2dc7e8aa781bd05746530b0068d80929f23ac1628580e27810bc0c5'],
     'RETH-ETH': ['0x3c83f77bde9541f8d3d82533b19bbc1f97eb2f1098bb991728acbfbede09cc5d'],
     'EZETH-ETH': ['0x49bb2d114be9041a787432952927f6f144f05ad3e83196a7d062f374ee11d0ee'],
-    'SUSDE-DAI': ['0x1247f1c237eceae0602eab1470a5061a6dd8f734ba88c7cdc5d6109fb0026b28'],
-    'USDE-DAI': ['0x8e6aeb10c401de3279ac79b4b2ea15fc94b7d9cfc098d6c2a1ff7b2b26d9d02c'],
+    'SUSDE-DAI': [
+      '0x1247f1c237eceae0602eab1470a5061a6dd8f734ba88c7cdc5d6109fb0026b28',
+      '0x39d11026eae1c6ec02aa4c0910778664089cdd97c3fd23f68f7cd05e2e95af48',
+      '0xe475337d11be1db07f7c5a156e511f05d1844308e66e17d2ba5da0839d3b34d9',
+      '0x42dcfb38bb98767afb6e38ccf90d59d0d3f0aa216beb3a234f12850323d17536',
+    ],
+    'USDE-DAI': [
+      '0x8e6aeb10c401de3279ac79b4b2ea15fc94b7d9cfc098d6c2a1ff7b2b26d9d02c',
+      '0xdb760246f6859780f6c1b272d47a8f64710777121118e56e0cdb4b8b744a3094',
+      '0xc581c5f70bd1afa283eed57d1418c6432cbff1d862f94eaf58fdd4e46afbb67f',
+      '0xfd8493f09eb6203615221378d89f53fcd92ff4f7d62cca87eece9a2fff59e86f',
+    ],
     'SUSDE-USDT': ['0xdc5333039bcf15f1237133f74d5806675d83d9cf19cfd4cfdd9be674842651bf'],
+    'MKR-DAI': ['0x578996c3c3ac4f100c4284b5c239673b04840e07945d04b681763c7b3401997c'],
   },
 }
