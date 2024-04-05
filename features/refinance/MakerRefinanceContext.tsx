@@ -5,6 +5,13 @@ import { getMakerRefinanceContextInputs } from 'features/refinance/helpers/getMa
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 
+const replaceETHWithWETH = (symbol: string) => {
+  if (symbol === 'ETH') {
+    return 'WETH'
+  }
+  return symbol
+}
+
 import { RefinanceContextProvider } from './RefinanceContext'
 
 interface MakerRefinanceContextProps {
@@ -53,11 +60,13 @@ export function MakerRefinanceContext({
     },
   }
 
+  const collateralToken = replaceETHWithWETH(vault.token)
+
   const ctx = getMakerRefinanceContextInputs({
     address,
     chainId,
     collateralAmount: vault.lockedCollateral.toString(),
-    collateralToken: vault.token,
+    collateralToken,
     debtAmount: vault.debt.toString(),
     id: vault.id.toString(),
     slippage,
