@@ -41,11 +41,17 @@ export const getOmniNetValuePnlData = ({
         .minus(cumulatives.cumulativeDepositInQuoteToken)
         .div(cumulatives.cumulativeDepositInQuoteToken)
 
+      const pnlPercentageUsd = cumulatives?.cumulativeWithdrawUSD
+        .plus(netValueInDebtToken)
+        .minus(cumulatives.cumulativeDepositUSD)
+        .div(cumulatives.cumulativeDepositUSD)
+
       if (useDebtTokenAsPnL) {
         return {
           pnl: {
             pnlToken: debtToken,
             percentage: pnlPercentageDebt,
+            percentageUsd: pnlPercentageUsd,
             inToken: cumulatives?.cumulativeDepositInQuoteToken.times(pnlPercentageDebt ?? zero),
             inUsd: cumulatives?.cumulativeDepositInQuoteToken
               .times(pnlPercentageDebt ?? zero)
@@ -73,6 +79,7 @@ export const getOmniNetValuePnlData = ({
         pnl: {
           pnlToken: collateralToken,
           percentage: pnlPercentage,
+          percentageUsd: pnlPercentageUsd,
           inToken: cumulatives?.cumulativeDepositInCollateralToken.times(pnlPercentage ?? zero),
           inUsd: cumulatives?.cumulativeDepositInCollateralToken
             .times(pnlPercentage ?? zero)
@@ -100,10 +107,16 @@ export const getOmniNetValuePnlData = ({
         .plus(netValueInDebtToken)
         .minus(cumulatives.cumulativeDepositInQuoteToken)
         .div(cumulatives.cumulativeDepositInQuoteToken)
+
+      const pnlPercentageUsd = cumulatives?.cumulativeWithdrawUSD
+        .plus(netValueInDebtToken)
+        .minus(cumulatives.cumulativeDepositUSD)
+        .div(cumulatives.cumulativeDepositUSD)
       return {
         pnl: {
           pnlToken: debtToken,
           percentage: pnlPercentage,
+          percentageUsd: pnlPercentageUsd,
           inToken: cumulatives?.cumulativeDepositInQuoteToken.times(pnlPercentage ?? zero),
           inUsd: cumulatives?.cumulativeDepositInQuoteToken
             .times(pnlPercentage ?? zero)
