@@ -27,17 +27,19 @@ export function useAaveContext(
   protocol: AaveLendingProtocol | SparkLendingProtocol = LendingProtocol.AaveV2,
   network: NetworkNames = NetworkNames.ethereumMainnet,
 ): AaveContext {
+  // Ensure that we are able to use aave on forks where networks names have -test suffix
+  const resolvedNetwork = network.split('-')[0] as NetworkNames
   const ac = useContext(aaveContext)
   if (!ac) {
     throw new Error('AaveContext not available!')
   }
-  if (!ac[network]) {
-    throw new Error(`AaveContext for network ${network} is not available!`)
+  if (!ac[resolvedNetwork]) {
+    throw new Error(`AaveContext for network ${resolvedNetwork} is not available!`)
   }
-  const aaveContextsForNetwork = ac[network]!
+  const aaveContextsForNetwork = ac[resolvedNetwork]!
   if (!aaveContextsForNetwork[protocol]) {
     throw new Error(
-      `AaveContext for network ${network} and protocol ${protocol} is not available!}`,
+      `AaveContext for network ${resolvedNetwork} and protocol ${protocol} is not available!}`,
     )
   }
 
