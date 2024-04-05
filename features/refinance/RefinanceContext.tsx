@@ -2,19 +2,16 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
-import { getOmniTxStatuses, shiftOmniStep } from 'features/omni-kit/contexts'
-import { isShortPosition } from 'features/omni-kit/helpers'
-import { useRefinanceFormReducto } from 'features/refinance/state'
-import { RefinanceSidebarStep } from 'features/refinance/types'
-import type { TxDetails } from 'helpers/handleTransaction'
+import type { InitializeRefinanceContextData } from 'features/refinance/helpers'
+import { initializeRefinanceContext } from 'features/refinance/helpers'
+import type { useRefinanceFormReducto } from 'features/refinance/state'
+import type { RefinanceSidebarStep } from 'features/refinance/types'
+import { dummyCtxInput } from 'pages/portfolio/[address]'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
-import type { AddressValue, ChainInfo, IPoolId, PositionId } from 'summerfi-sdk-common'
-import { getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
+import type { AddressValue, ChainInfo, IPoolId, PositionId, TokenAmount } from 'summerfi-sdk-common'
 
-import { mapTokenToSdkToken } from './mapTokenToSdkToken'
-
-interface RefinanceSteps {
+export interface RefinanceSteps {
   currentStep: RefinanceSidebarStep
   isExternalStep: boolean
   isFlowStateReady: boolean
@@ -65,7 +62,7 @@ export type RefinanceContextInput = {
   automations: RefinanceContextInputAutomations
 }
 
-export type RefinanceContext = {
+export type RefinanceContextBase = {
   environment: {
     collateralPrice: string
     debtPrice: string
@@ -93,6 +90,18 @@ export type RefinanceContext = {
   tx: OmniGeneralContextTx
 }
 
+type RefinanceContexts = Record<string, RefinanceContextBase>
+
+type RefinanceInitializationCall = () => (
+  ctxDefault?: RefinanceContextBase,
+) => InitializeRefinanceContextData
+
+export type RefinanceContext = RefinanceContextBase & {
+  handleSetContext: (id: string, ctx: RefinanceInitializationCall) => void
+  handleOnClose: (id: string) => void
+  contexts: RefinanceContexts
+}
+
 export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
 
 export const useRefinanceContext = () => {
@@ -105,125 +114,44 @@ export const useRefinanceContext = () => {
 }
 
 interface RefinanceContextProviderProps {
-  contextInput: RefinanceContextInput
+  contextInput?: RefinanceContextInput
 }
 
 export function RefinanceContextProvider({
   children,
-  contextInput,
+  contextInput = dummyCtxInput,
 }: PropsWithChildren<RefinanceContextProviderProps>) {
-  const {
-    environment: { tokenPrices, chainId, slippage, address },
-    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
-    position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
-    automations,
-  } = contextInput
-  const chainInfo = getChainInfoByChainId(chainId)
-  if (!chainInfo) {
-    throw new Error(`ChainId ${chainId} is not supported`)
-  }
-
-  const collateralTokenData = TokenAmount.createFrom({
-    amount: collateralAmount,
-    token: mapTokenToSdkToken(chainInfo, collateralTokenSymbol),
+  const [contexts, setContexts] = useState<RefinanceContexts>({
+    init: initializeRefinanceContext({ contextInput }).ctx,
   })
-  const debtTokenData = TokenAmount.createFrom({
-    amount: debtAmount,
-    token: mapTokenToSdkToken(chainInfo, debtTokenSymbol),
-  })
-
-  const collateralPrice = tokenPrices[collateralTokenData.token.symbol]
-  const debtPrice = tokenPrices[debtTokenData.token.symbol]
-
-  // TODO: validate address
-  const parsedAddress = address as AddressValue
-
-  const steps = [
-    RefinanceSidebarStep.Option,
-    RefinanceSidebarStep.Strategy,
-    RefinanceSidebarStep.Dpm,
-    RefinanceSidebarStep.Give,
-    RefinanceSidebarStep.Changes,
-    RefinanceSidebarStep.Transaction,
-  ]
-
-  const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(steps[0])
-  const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
-
-  const [txDetails, setTxDetails] = useState<TxDetails>()
-  const [gasEstimation, setGasEstimation] = useState<GasEstimationContext>()
-
-  const setupStepManager = (): RefinanceSteps => {
-    return {
-      currentStep,
-      steps,
-      isExternalStep: [RefinanceSidebarStep.Give, RefinanceSidebarStep.Dpm].includes(currentStep),
-      isFlowStateReady,
-      isStepWithTransaction: currentStep === RefinanceSidebarStep.Transaction,
-      setIsFlowStateReady,
-      setStep: (step) => setCurrentStep(step),
-      setNextStep: () => shiftOmniStep({ direction: 'next', currentStep, steps, setCurrentStep }),
-      setPrevStep: () => shiftOmniStep({ direction: 'prev', currentStep, steps, setCurrentStep }),
-    }
-  }
-
-  const setupTxManager = (): OmniGeneralContextTx => {
-    return {
-      ...getOmniTxStatuses(txDetails?.txStatus),
-      setTxDetails,
-      setSlippageSource: () => null,
-      setGasEstimation,
-      txDetails,
-    }
-  }
-
-  const form = useRefinanceFormReducto({})
-
-  const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
-
-  const ctx: RefinanceContext = React.useMemo(
-    () => ({
-      environment: {
-        collateralPrice,
-        debtPrice,
-        address: parsedAddress,
-        chainInfo,
-        slippage,
-        isShort,
-        gasEstimation,
-      },
-      position: {
-        collateralTokenData,
-        debtTokenData,
-        liquidationPrice,
-        positionId,
-        ltv,
-      },
-      poolData: {
-        poolId,
-        borrowRate,
-        maxLtv,
-      },
-      automations,
-      form,
-      steps: setupStepManager(),
-      tx: setupTxManager(),
-    }),
-    [
-      collateralPrice,
-      debtPrice,
-      parsedAddress,
-      chainInfo,
-      collateralTokenData,
-      debtTokenData,
-      liquidationPrice,
-      positionId,
-      poolId,
-      slippage,
-      form.state,
-      gasEstimation,
-    ],
+  const [currentContext, setCurrentContext] = useState<string>('init')
+  const [initializator, setInitializator] = useState(
+    () => (def: RefinanceContextBase) =>
+      initializeRefinanceContext({ contextInput, defaultCtx: def }),
   )
 
-  return <refinanceContext.Provider value={ctx}>{children}</refinanceContext.Provider>
+  const { ctx, reset } = initializator(contexts[currentContext])
+
+  const handleSetContext = (id: string, init: RefinanceInitializationCall) => {
+    setInitializator(init)
+    setCurrentContext(id)
+    reset(contexts[id])
+  }
+
+  const handleOnClose = (id: string) => {
+    setContexts((prev) => ({ ...prev, [id]: ctx }))
+  }
+
+  return (
+    <refinanceContext.Provider
+      value={{
+        ...ctx,
+        handleSetContext,
+        handleOnClose,
+        contexts,
+      }}
+    >
+      {children}
+    </refinanceContext.Provider>
+  )
 }

@@ -1,9 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import type { ProductHubItem } from 'features/productHub/types'
+import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { useModalContext } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
+import { dummyCtxInput } from 'pages/portfolio/[address]'
 import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -69,6 +72,7 @@ interface RefinancePortfolioBannerProps {
 }
 
 export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ position }) => {
+  const { openModal } = useModalContext()
   const { t: tPortfolio } = useTranslation('portfolio')
   const {
     productHub: { table },
@@ -127,7 +131,22 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
       }}
     >
       {content}
-      <Button variant="textual" sx={{ p: 'unset' }} onClick={() => {}}>
+      <Button
+        variant="textual"
+        sx={{ p: 'unset' }}
+        onClick={() => {
+          openModal(RefinanceModal, {
+            contextInput: {
+              ...dummyCtxInput,
+              position: {
+                ...dummyCtxInput.position,
+                positionId: { id: position.positionId.toString() },
+              },
+            },
+            id: position.positionId.toString(),
+          })
+        }}
+      >
         {tPortfolio('refinance.title')}
       </Button>
     </Flex>

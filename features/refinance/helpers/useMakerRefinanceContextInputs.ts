@@ -1,14 +1,12 @@
 import type { RiskRatio } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
-import type {
-  RefinanceContextInput,
-  RefinanceContextInputAutomations,
-} from 'features/refinance/RefinanceContext'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import type { RefinanceContextInput } from 'features/refinance/RefinanceContext'
 import type { MakerPoolId } from 'features/refinance/types'
 import type { PositionId } from 'summerfi-sdk-common'
 import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
 
-export const getMakerRefinanceContextInputs = ({
+export const useMakerRefinanceContextInputs = ({
   address,
   chainId,
   collateralAmount,
@@ -21,7 +19,6 @@ export const getMakerRefinanceContextInputs = ({
   liquidationPrice,
   ltv,
   maxLtv,
-  automations,
   ilkType,
 }: {
   address?: string
@@ -36,9 +33,10 @@ export const getMakerRefinanceContextInputs = ({
   borrowRate: string
   ltv: RiskRatio
   maxLtv: RiskRatio
-  automations: RefinanceContextInputAutomations
   ilkType: string
 }): RefinanceContextInput => {
+  const { triggerData } = useAutomationContext()
+
   const chainInfo = getChainInfoByChainId(chainId)
 
   if (!chainInfo) {
@@ -62,6 +60,24 @@ export const getMakerRefinanceContextInputs = ({
   const tokenPrices = {
     [collateralTokenSymbol]: collateralPrice,
     [debtTokenSymbol]: '1',
+  }
+
+  const automations = {
+    stopLoss: {
+      enabled: triggerData.stopLossTriggerData.isStopLossEnabled,
+    },
+    autoSell: {
+      enabled: triggerData.autoSellTriggerData.isTriggerEnabled,
+    },
+    autoBuy: {
+      enabled: triggerData.autoBuyTriggerData.isTriggerEnabled,
+    },
+    takeProfit: {
+      enabled: triggerData.autoTakeProfitTriggerData.isTriggerEnabled,
+    },
+    constantMultiple: {
+      enabled: triggerData.constantMultipleTriggerData.isTriggerEnabled,
+    },
   }
 
   return {

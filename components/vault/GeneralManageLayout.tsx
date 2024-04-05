@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { guniFaq } from 'features/content/faqs/guni'
@@ -7,6 +8,7 @@ import type { GeneralManageVaultState } from 'features/generalManageVault/genera
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { RefinanceModal } from 'features/refinance/components'
+import { useMakerRefinanceContextInputs } from 'features/refinance/helpers/useMakerRefinanceContextInputs'
 import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
@@ -28,7 +30,7 @@ export function GeneralManageLayout({
   chainId,
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
-  const { ilkData, vault, priceInfo } = generalManageVault.state
+  const { ilkData, vault, priceInfo, account } = generalManageVault.state
   const { openModal } = useModalContext()
   const { EnableRefinance: refinanceEnabled } = useAppConfig('features')
   const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
@@ -57,10 +59,38 @@ export function GeneralManageLayout({
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
+  const contextInput = useMakerRefinanceContextInputs({
+    address: account,
+    chainId,
+    collateralAmount: vault.lockedCollateral.toString(),
+    collateralToken: vault.token,
+    debtAmount: vault.debt.toString(),
+    id: vault.id.toString(),
+    slippage: generalManageVault.state.slippage.toNumber(),
+    collateralPrice: priceInfo.currentCollateralPrice.toString(),
+    liquidationPrice: generalManageVault.state.vault.liquidationPrice.toString(),
+    borrowRate: generalManageVault.state.ilkData.stabilityFee.toString(),
+    ltv: new RiskRatio(
+      generalManageVault.state.vault.collateralizationRatio,
+      RiskRatio.TYPE.COL_RATIO,
+    ),
+    maxLtv: new RiskRatio(
+      generalManageVault.state.ilkData.liquidationRatio,
+      RiskRatio.TYPE.COL_RATIO,
+    ),
+    ilkType: vault.ilk,
+  })
+
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       {/* In general it shouldn't be here but it's here to ease development for now */}
-      {refinanceEnabled && <button onClick={() => openModal(RefinanceModal, {})}>Refinance</button>}
+      {refinanceEnabled && (
+        <button
+          onClick={() => openModal(RefinanceModal, { contextInput, id: vault.id.toString() })}
+        >
+          Refinance
+        </button>
+      )}
       <VaultNoticesView id={vault.id} />
       <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>
       <GeneralManageTabBar
