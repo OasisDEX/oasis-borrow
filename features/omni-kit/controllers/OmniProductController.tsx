@@ -61,7 +61,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
   isOracless?: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
-  pairId: number,
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: OmniSupportedProtocols
