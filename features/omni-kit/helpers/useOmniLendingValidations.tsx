@@ -42,7 +42,9 @@ export function useOmniLendingValidations({
     triggers: { stopLoss, autoSell, autoBuy },
   } = getAaveLikeAutomationMetadataCommonValues({ positionTriggers })
 
-  if (simulation && 'riskRatio' in simulation) {
+  const isCloseAction = state.uiDropdown === 'close'
+
+  if (simulation && 'riskRatio' in simulation && !isCloseAction) {
     const resolvedTriggerLtv =
       stopLoss?.decodedMappedParams.ltv || stopLoss?.decodedMappedParams.executionLtv
 
