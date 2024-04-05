@@ -38,9 +38,10 @@ export function getOmniPositionUrl({
     return `/${networkName}/${
       {
         [LendingProtocol.AaveV3]: 'aave/v3',
+        [LendingProtocol.AaveV2]: 'aave/v2',
         [LendingProtocol.SparkV3]: 'spark',
-      }[protocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3]
-    }/${productType}/${collateralToken.toLocaleUpperCase()}-${quoteToken.toLocaleUpperCase()}`
+      }[protocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3 | LendingProtocol.AaveV2]
+    }/${productType}/${collateralToken.toLocaleUpperCase()}-${quoteToken.toLocaleUpperCase()}${resolvedPositionId}`
   }
 
   if (pseudoProtocol === Erc4626PseudoProtocol && label) {
