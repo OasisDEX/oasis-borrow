@@ -1,6 +1,7 @@
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AppLink } from 'components/Links'
 import { Pill } from 'components/Pill'
+import { emptyPortfolioPositionNetValueThreshold } from 'components/portfolio/constants'
 import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions/PortfolioPositionAutomationIcons'
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
@@ -88,9 +89,11 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         },
       }}
     >
-      {position.availableToRefinance && isRefinanceEnabled && (
-        <RefinancePortfolioBanner position={position} />
-      )}
+      {position.availableToRefinance &&
+        isRefinanceEnabled &&
+        position.netValue >= emptyPortfolioPositionNetValueThreshold && (
+          <RefinancePortfolioBanner position={position} />
+        )}
       <AppLink href={position.url}>
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
           <Text
