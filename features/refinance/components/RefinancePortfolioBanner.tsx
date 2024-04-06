@@ -1,10 +1,15 @@
+import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { networkNameToIdMap } from 'blockchain/networks'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import type { ProductHubItem } from 'features/productHub/types'
 import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
+import { useObservable } from 'helpers/observableHook'
 import { LendingProtocol } from 'lendingProtocols'
 import { dummyCtxInput } from 'pages/portfolio/[address]'
 import type { FC } from 'react'
@@ -72,6 +77,10 @@ interface RefinancePortfolioBannerProps {
 }
 
 export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ position }) => {
+  const { userSettings$ } = useAccountContext()
+  const [userSettingsData] = useObservable(userSettings$)
+  const { wallet } = useWalletManagement()
+
   const { openModal } = useModalContext()
   const { t: tPortfolio } = useTranslation('portfolio')
   const {
@@ -82,12 +91,17 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     return null
   }
 
-  const { rawPositionDetails } = position
-
-  const collateral = new BigNumber(rawPositionDetails.collateral)
-  const debt = new BigNumber(rawPositionDetails.debt)
-  const debtPrice = new BigNumber(rawPositionDetails.debtPrice)
-  const liquidationPrice = new BigNumber(rawPositionDetails.liquidationPrice)
+  const {
+    borrowRate,
+    maxLtv,
+    ltv,
+    poolId,
+    collateral,
+    collateralPrice,
+    debt,
+    debtPrice,
+    liquidationPrice,
+  } = position.rawPositionDetails
 
   const refinanceToProtocols = {
     [LendingProtocol.Maker]: [LendingProtocol.SparkV3],
@@ -101,11 +115,11 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
   const content = {
     [LendingProtocol.Maker]: (
       <LowerLiquidationPrice
-        liquidationPrice={liquidationPrice}
-        debtPrice={debtPrice}
-        debt={debt}
+        liquidationPrice={new BigNumber(liquidationPrice)}
+        debtPrice={new BigNumber(debtPrice)}
+        debt={new BigNumber(debt)}
         positionId={position.positionId}
-        collateral={collateral}
+        collateral={new BigNumber(collateral)}
         refinanceToProtocols={refinanceToProtocols}
         table={table}
       />
@@ -135,13 +149,39 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
         variant="textual"
         sx={{ p: 'unset' }}
         onClick={() => {
+          if (!position.rawPositionDetails || !userSettingsData) {
+            console.error('Raw position details not defined')
+            return
+          }
+
           openModal(RefinanceModal, {
             contextInput: {
               ...dummyCtxInput,
-              position: {
-                ...dummyCtxInput.position,
-                positionId: { id: position.positionId.toString() },
+              poolData: {
+                ...dummyCtxInput.poolData,
+                borrowRate: borrowRate,
+                collateralTokenSymbol: position.primaryToken,
+                debtTokenSymbol: position.secondaryToken,
+                maxLtv: new RiskRatio(new BigNumber(maxLtv), RiskRatio.TYPE.LTV),
+                poolId: poolId,
               },
+              environment: {
+                tokenPrices: {
+                  [position.primaryToken]: collateralPrice,
+                  [position.secondaryToken]: debtPrice,
+                },
+                chainId: networkNameToIdMap[position.network],
+                slippage: userSettingsData.slippage.toNumber(),
+                address: wallet?.address,
+              },
+              position: {
+                positionId: { id: position.positionId.toString() },
+                collateralAmount: collateral,
+                debtAmount: debt,
+                liquidationPrice: liquidationPrice,
+                ltv: new RiskRatio(new BigNumber(ltv), RiskRatio.TYPE.LTV),
+              },
+              automations: position.automations,
             },
             id: position.positionId.toString(),
           })

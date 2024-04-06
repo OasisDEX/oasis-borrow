@@ -1,4 +1,7 @@
+import { RiskRatio } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import { Announcement } from 'components/Announcement'
+import { ProductContextProvider } from 'components/context/ProductContextProvider'
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioNonOwnerNotice } from 'components/portfolio/PortfolioNonOwnerNotice'
@@ -8,10 +11,13 @@ import { PortfolioPositionsView } from 'components/portfolio/positions/Portfolio
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
 import { MigrationsContext } from 'features/migrations/context'
+import type { RefinanceContextInput } from 'features/refinance/RefinanceContext'
+import { RefinanceContextProvider } from 'features/refinance/RefinanceContext'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
 import { useAppConfig } from 'helpers/config'
+import { ModalProvider } from 'helpers/modalHook'
 import { useAccount } from 'helpers/useAccount'
 import { useRedirect } from 'helpers/useRedirect'
 import { LendingProtocol } from 'lendingProtocols'
@@ -21,14 +27,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useContext, useEffect } from 'react'
 import { getAwsInfraHeader, getAwsInfraUrl } from 'server/helpers'
 import { Box } from 'theme-ui'
-import {
-  RefinanceContextInput,
-  RefinanceContextProvider,
-} from 'features/refinance/RefinanceContext'
-import { RiskRatio } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { ModalProvider } from 'helpers/modalHook'
-import { ProductContextProvider } from 'components/context/ProductContextProvider'
 
 type PortfolioViewProps = {
   address: string

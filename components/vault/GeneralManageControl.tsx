@@ -23,7 +23,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
-  const { chainId, wallet } = useWalletManagement()
+  const { chainId } = useWalletManagement()
   const { MakerTenderly } = useAppConfig('features')
 
   const account = context?.status === 'connected' ? context.account : ''
