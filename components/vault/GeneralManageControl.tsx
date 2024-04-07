@@ -2,7 +2,7 @@ import type { BigNumber } from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
-import { RefinanceContextProvider } from 'features/refinance/RefinanceContext'
+import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'
@@ -46,7 +46,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <RefinanceContextProvider>
+            <RefinanceGeneralContextProvider>
               {/*TODO we should use ModalProvider here
                 We need to refactor it so it accepts reactNode as modal content
               */}
@@ -62,7 +62,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
                   chainId={chainId}
                 />
               </ModalProvider>
-            </RefinanceContextProvider>
+            </RefinanceGeneralContextProvider>
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>

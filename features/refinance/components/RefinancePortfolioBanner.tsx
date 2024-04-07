@@ -5,13 +5,13 @@ import { useAccountContext } from 'components/context/AccountContextProvider'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import type { ProductHubItem } from 'features/productHub/types'
 import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
+import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { LendingProtocol } from 'lendingProtocols'
-import { dummyCtxInput } from 'pages/portfolio/[address]'
 import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -87,6 +87,8 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     productHub: { table },
   } = usePreloadAppDataContext()
 
+  const refinanceGeneralContext = useRefinanceGeneralContext()
+
   if (!position.rawPositionDetails) {
     return null
   }
@@ -131,6 +133,13 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     [LendingProtocol.MorphoBlue]: null,
   }[position.protocol]
 
+  const contextId =
+    `${position.positionId}${position.primaryToken}${position.secondaryToken}`.toLowerCase()
+
+  const isDisabled =
+    refinanceGeneralContext?.ctx?.environment?.contextId !== contextId &&
+    !!refinanceGeneralContext?.ctx?.tx?.txDetails
+
   return content ? (
     <Flex
       sx={{
@@ -148,6 +157,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
       <Button
         variant="textual"
         sx={{ p: 'unset' }}
+        disabled={isDisabled}
         onClick={() => {
           if (!position.rawPositionDetails || !userSettingsData) {
             console.error('Raw position details not defined')
@@ -156,9 +166,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
 
           openModal(RefinanceModal, {
             contextInput: {
-              ...dummyCtxInput,
               poolData: {
-                ...dummyCtxInput.poolData,
                 borrowRate: borrowRate,
                 collateralTokenSymbol: position.primaryToken,
                 debtTokenSymbol: position.secondaryToken,
@@ -182,8 +190,8 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
                 ltv: new RiskRatio(new BigNumber(ltv), RiskRatio.TYPE.LTV),
               },
               automations: position.automations,
+              contextId,
             },
-            id: position.positionId.toString(),
           })
         }}
       >

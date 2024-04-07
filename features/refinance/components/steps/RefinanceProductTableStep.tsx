@@ -9,8 +9,8 @@ import type {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { getParsedRefinanceProductTable } from 'features/refinance/helpers'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
 import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { useSearchParams } from 'next/navigation'

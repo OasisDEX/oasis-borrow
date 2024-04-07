@@ -85,11 +85,7 @@ export function GeneralManageLayout({
     <Grid gap={0} sx={{ width: '100%' }}>
       {/* In general it shouldn't be here but it's here to ease development for now */}
       {refinanceEnabled && (
-        <button
-          onClick={() => openModal(RefinanceModal, { contextInput, id: vault.id.toString() })}
-        >
-          Refinance
-        </button>
+        <button onClick={() => openModal(RefinanceModal, { contextInput })}>Refinance</button>
       )}
       <VaultNoticesView id={vault.id} />
       <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>

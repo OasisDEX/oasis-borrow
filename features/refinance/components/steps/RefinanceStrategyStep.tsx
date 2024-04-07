@@ -1,5 +1,5 @@
 import { AppLink } from 'components/Links'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinanceOptions } from 'features/refinance/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'

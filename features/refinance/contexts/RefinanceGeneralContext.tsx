@@ -2,12 +2,10 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
-import type { InitializeRefinanceContextData } from 'features/refinance/helpers'
 import { initializeRefinanceContext } from 'features/refinance/helpers'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
-import { dummyCtxInput } from 'pages/portfolio/[address]'
-import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
+import type { Dispatch, FC, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
 import type { AddressValue, ChainInfo, IPoolId, PositionId, TokenAmount } from 'summerfi-sdk-common'
 
@@ -60,10 +58,12 @@ export type RefinanceContextInput = {
     ltv: RiskRatio
   }
   automations: RefinanceContextInputAutomations
+  contextId: string
 }
 
 export type RefinanceContextBase = {
   environment: {
+    contextId: string
     collateralPrice: string
     debtPrice: string
     address?: AddressValue
@@ -92,66 +92,57 @@ export type RefinanceContextBase = {
 
 type RefinanceContexts = Record<string, RefinanceContextBase>
 
-type RefinanceInitializationCall = () => (
-  ctxDefault?: RefinanceContextBase,
-) => InitializeRefinanceContextData
-
-export type RefinanceContext = RefinanceContextBase & {
-  handleSetContext: (id: string, ctx: RefinanceInitializationCall) => void
+export type RefinanceGeneralContext = {
+  ctx?: RefinanceContextBase
+  handleSetContext: (ctx: RefinanceContextInput) => void
   handleOnClose: (id: string) => void
-  contexts: RefinanceContexts
 }
 
-export const refinanceContext = React.createContext<RefinanceContext | undefined>(undefined)
+export const refinanceGeneralContext = React.createContext<RefinanceGeneralContext | undefined>(
+  undefined,
+)
 
-export const useRefinanceContext = () => {
-  const context = useContext(refinanceContext)
+export const useRefinanceGeneralContext = () => {
+  const context = useContext(refinanceGeneralContext)
 
   if (!context) {
-    throw new Error('RefinanceContextProvider is missing in the hierarchy')
+    throw new Error('RefinanceGeneralContextProvider is missing in the hierarchy')
   }
   return context
 }
 
-interface RefinanceContextProviderProps {
-  contextInput?: RefinanceContextInput
-}
+export const RefinanceGeneralContextProvider: FC = ({ children }) => {
+  const [contexts, setContexts] = useState<RefinanceContexts>({})
+  const [currentContext, setCurrentContext] = useState<string>('')
+  const [contextInput, setContextInput] = useState<RefinanceContextInput | undefined>(undefined)
 
-export function RefinanceContextProvider({
-  children,
-  contextInput = dummyCtxInput,
-}: PropsWithChildren<RefinanceContextProviderProps>) {
-  const [contexts, setContexts] = useState<RefinanceContexts>({
-    init: initializeRefinanceContext({ contextInput }).ctx,
+  const { ctx, reset } = initializeRefinanceContext({
+    contextInput: contextInput,
+    defaultCtx: contexts[currentContext],
   })
-  const [currentContext, setCurrentContext] = useState<string>('init')
-  const [initializator, setInitializator] = useState(
-    () => (def: RefinanceContextBase) =>
-      initializeRefinanceContext({ contextInput, defaultCtx: def }),
-  )
 
-  const { ctx, reset } = initializator(contexts[currentContext])
-
-  const handleSetContext = (id: string, init: RefinanceInitializationCall) => {
-    setInitializator(init)
-    setCurrentContext(id)
-    reset(contexts[id])
+  const handleSetContext = (init: RefinanceContextInput) => {
+    setContextInput(init)
+    setCurrentContext(init.contextId)
+    reset(contexts[init.contextId])
   }
 
   const handleOnClose = (id: string) => {
-    setContexts((prev) => ({ ...prev, [id]: ctx }))
+    if (ctx) {
+      setContexts((prev) => ({ ...prev, [id]: ctx }))
+    }
   }
 
   return (
-    <refinanceContext.Provider
+    <refinanceGeneralContext.Provider
       value={{
-        ...ctx,
+        ctx,
         handleSetContext,
         handleOnClose,
-        contexts,
+        // contexts,
       }}
     >
       {children}
-    </refinanceContext.Provider>
+    </refinanceGeneralContext.Provider>
   )
 }

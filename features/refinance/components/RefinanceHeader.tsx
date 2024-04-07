@@ -4,7 +4,7 @@ import { ModalCloseIcon } from 'components/Modal'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { StatefulTooltip } from 'components/Tooltip'
 import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { formatAddress } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -85,6 +85,8 @@ export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
 
+  const ctx = useRefinanceContext()
+
   const {
     position: {
       positionId: { id },
@@ -95,7 +97,7 @@ export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
     form: {
       state: { strategy, dpmProxy },
     },
-  } = useRefinanceContext()
+  } = ctx
 
   // use refinance context to eventually get this data
   const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol, walletAddress } = {

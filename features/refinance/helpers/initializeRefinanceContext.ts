@@ -5,30 +5,63 @@ import {
   shiftOmniStep,
 } from 'features/omni-kit/contexts'
 import { isShortPosition } from 'features/omni-kit/helpers'
-import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import type {
   RefinanceContextBase,
   RefinanceContextInput,
   RefinanceSteps,
-} from 'features/refinance/RefinanceContext'
+} from 'features/refinance/contexts/RefinanceGeneralContext'
+import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import type { TxDetails } from 'helpers/handleTransaction'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { type AddressValue, getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
 
-export type InitializeRefinanceContextData = {
-  ctx: RefinanceContextBase
-  reset: (resetData: RefinanceContextBase) => void
-}
+const steps = [
+  RefinanceSidebarStep.Option,
+  RefinanceSidebarStep.Strategy,
+  RefinanceSidebarStep.Dpm,
+  RefinanceSidebarStep.Give,
+  RefinanceSidebarStep.Changes,
+  RefinanceSidebarStep.Transaction,
+]
 
 export const initializeRefinanceContext = ({
   contextInput,
   defaultCtx,
 }: {
-  contextInput: RefinanceContextInput
+  contextInput?: RefinanceContextInput
   defaultCtx?: RefinanceContextBase
 }) => {
+  const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
+    defaultCtx?.steps.currentStep || steps[0],
+  )
+  const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(
+    defaultCtx?.steps.isFlowStateReady || false,
+  )
+
+  const [txDetails, setTxDetails] = useState<TxDetails | undefined>(defaultCtx?.tx.txDetails)
+  const [gasEstimation, setGasEstimation] = useState<GasEstimationContext | undefined>(
+    defaultCtx?.environment.gasEstimation,
+  )
+
+  const form = useRefinanceFormReducto({})
+
+  const reset = (resetData: RefinanceContextBase) => {
+    setCurrentStep(resetData?.steps.currentStep || steps[0])
+    setIsFlowStateReady(resetData?.steps.isFlowStateReady || false)
+    setTxDetails(resetData?.tx.txDetails)
+    setGasEstimation(resetData?.environment.gasEstimation)
+
+    form.updateState('refinanceOption', resetData?.form.state.refinanceOption)
+    form.updateState('strategy', resetData?.form.state.strategy)
+    form.updateState('dpmProxy', resetData?.form.state.dpmProxy)
+  }
+
+  if (!contextInput) {
+    return { ctx: undefined, reset }
+  }
+
   const {
     environment: { tokenPrices, chainId, slippage, address },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
@@ -57,40 +90,6 @@ export const initializeRefinanceContext = ({
   // TODO: validate address
   const parsedAddress = address as AddressValue
 
-  const steps = [
-    RefinanceSidebarStep.Option,
-    RefinanceSidebarStep.Strategy,
-    RefinanceSidebarStep.Dpm,
-    RefinanceSidebarStep.Give,
-    RefinanceSidebarStep.Changes,
-    RefinanceSidebarStep.Transaction,
-  ]
-
-  const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
-    defaultCtx?.steps.currentStep || steps[0],
-  )
-  const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(
-    defaultCtx?.steps.isFlowStateReady || false,
-  )
-
-  const [txDetails, setTxDetails] = useState<TxDetails | undefined>(defaultCtx?.tx.txDetails)
-  const [gasEstimation, setGasEstimation] = useState<GasEstimationContext | undefined>(
-    defaultCtx?.environment.gasEstimation,
-  )
-
-  const form = useRefinanceFormReducto({})
-
-  const reset = (resetData: RefinanceContextBase) => {
-    setCurrentStep(resetData?.steps.currentStep || steps[0])
-    setIsFlowStateReady(resetData?.steps.isFlowStateReady || false)
-    setTxDetails(resetData?.tx.txDetails)
-    setGasEstimation(resetData?.environment.gasEstimation)
-
-    form.updateState('refinanceOption', resetData?.form.state.refinanceOption)
-    form.updateState('strategy', resetData?.form.state.strategy)
-    form.updateState('dpmProxy', resetData?.form.state.dpmProxy)
-  }
-
   const setupStepManager = (): RefinanceSteps => {
     return {
       currentStep,
@@ -117,49 +116,79 @@ export const initializeRefinanceContext = ({
 
   const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
 
-  const ctx: RefinanceContextBase = useMemo(
-    () => ({
-      environment: {
-        collateralPrice,
-        debtPrice,
-        address: parsedAddress,
-        chainInfo,
-        slippage,
-        isShort,
-        gasEstimation,
-      },
-      position: {
-        collateralTokenData,
-        debtTokenData,
-        liquidationPrice,
-        positionId,
-        ltv,
-      },
-      poolData: {
-        poolId,
-        borrowRate,
-        maxLtv,
-      },
-      automations,
-      form,
-      steps: setupStepManager(),
-      tx: setupTxManager(),
-    }),
-    [
+  // const ctx: RefinanceContextBase = useMemo(
+  //   () => ({
+  //     environment: {
+  //       contextId: contextInput.contextId,
+  //       collateralPrice,
+  //       debtPrice,
+  //       address: parsedAddress,
+  //       chainInfo,
+  //       slippage,
+  //       isShort,
+  //       gasEstimation,
+  //     },
+  //     position: {
+  //       collateralTokenData,
+  //       debtTokenData,
+  //       liquidationPrice,
+  //       positionId,
+  //       ltv,
+  //     },
+  //     poolData: {
+  //       poolId,
+  //       borrowRate,
+  //       maxLtv,
+  //     },
+  //     automations,
+  //     form,
+  //     steps: setupStepManager(),
+  //     tx: setupTxManager(),
+  //   }),
+  //   [
+  //     collateralPrice,
+  //     debtPrice,
+  //     parsedAddress,
+  //     chainInfo,
+  //     collateralTokenData,
+  //     debtTokenData,
+  //     liquidationPrice,
+  //     positionId,
+  //     poolId,
+  //     slippage,
+  //     form.state,
+  //     gasEstimation,
+  //   ],
+  // )
+
+  const ctx = {
+    environment: {
+      contextId: contextInput.contextId,
       collateralPrice,
       debtPrice,
-      parsedAddress,
+      address: parsedAddress,
       chainInfo,
+      slippage,
+      isShort,
+      gasEstimation,
+    },
+    position: {
       collateralTokenData,
       debtTokenData,
       liquidationPrice,
       positionId,
+      ltv,
+    },
+    poolData: {
       poolId,
-      slippage,
-      form.state,
-      gasEstimation,
-    ],
-  )
+      borrowRate,
+      maxLtv,
+    },
+    automations,
+    form,
+    steps: setupStepManager(),
+    tx: setupTxManager(),
+  }
 
   return { ctx, reset }
 }

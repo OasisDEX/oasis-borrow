@@ -4,7 +4,7 @@ import {
   RefinanceTransactionStep,
   RefinanceWhatsChangingStep,
 } from 'features/refinance/components/steps'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { RefinanceFormView } from 'features/refinance/views'
 import React from 'react'

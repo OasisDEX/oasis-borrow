@@ -4,13 +4,11 @@ import {
   RefinancePosition,
   RefinanceSimulation,
 } from 'features/refinance/components'
+import { RefinanceContextProvider } from 'features/refinance/contexts'
+import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { RefinanceFormController } from 'features/refinance/controllers'
-import { initializeRefinanceContext } from 'features/refinance/helpers'
-import type {
-  RefinanceContextBase,
-  RefinanceContextInput,
-} from 'features/refinance/RefinanceContext'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useModalContext } from 'helpers/modalHook'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
@@ -18,38 +16,38 @@ import { Flex } from 'theme-ui'
 
 interface RefinanceModalProps {
   contextInput: RefinanceContextInput
-  id: string
 }
 
-export const RefinanceModal: FC<RefinanceModalProps> = ({ contextInput, id }) => {
+export const RefinanceModal: FC<RefinanceModalProps> = ({ contextInput }) => {
   const { closeModal } = useModalContext()
 
-  const { handleSetContext, handleOnClose, contexts, ...rest } = useRefinanceContext()
-
-  const init = () => (defaultCtx?: RefinanceContextBase) =>
-    initializeRefinanceContext({ contextInput, defaultCtx })
+  const { handleSetContext, handleOnClose, ctx } = useRefinanceGeneralContext()
 
   useMemo(() => {
-    handleSetContext(id, init)
+    handleSetContext(contextInput)
   }, [])
 
   const onClose = () => {
-    handleOnClose(id)
+    handleOnClose(contextInput.contextId)
     closeModal()
   }
 
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose}>
-      {rest && (
-        <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
-          <RefinanceHeader onClose={onClose} />
-          <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
-            <RefinancePosition />
-            <RefinanceFormController />
-            <RefinanceSimulation />
-          </Flex>
-        </Flex>
-      )}
+      <WithLoadingIndicator value={[ctx]} customLoader={<>'LOADING'</>}>
+        {([_ctx]) => (
+          <RefinanceContextProvider ctx={_ctx}>
+            <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
+              <RefinanceHeader onClose={onClose} />
+              <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
+                <RefinancePosition />
+                <RefinanceFormController />
+                <RefinanceSimulation />
+              </Flex>
+            </Flex>
+          </RefinanceContextProvider>
+        )}
+      </WithLoadingIndicator>
     </Modal>
   )
 }

@@ -1,5 +1,3 @@
-import { RiskRatio } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import { Announcement } from 'components/Announcement'
 import { ProductContextProvider } from 'components/context/ProductContextProvider'
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
@@ -11,8 +9,7 @@ import { PortfolioPositionsView } from 'components/portfolio/positions/Portfolio
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
 import { MigrationsContext } from 'features/migrations/context'
-import type { RefinanceContextInput } from 'features/refinance/RefinanceContext'
-import { RefinanceContextProvider } from 'features/refinance/RefinanceContext'
+import { RefinanceGeneralContextProvider } from 'features/refinance/contexts/RefinanceGeneralContext'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
@@ -67,37 +64,6 @@ export async function getServerSideProps(
   }
 }
 
-// TODO check if there is a way to avoid passing dummy input
-export const dummyCtxInput: RefinanceContextInput = {
-  poolData: {
-    // @ts-ignore
-    poolId: '0x0',
-    borrowRate: '0.1',
-    collateralTokenSymbol: 'ETH',
-    debtTokenSymbol: 'DAI',
-    maxLtv: new RiskRatio(new BigNumber(0.85), RiskRatio.TYPE.LTV),
-  },
-  environment: {
-    tokenPrices: {
-      ETH: '3000',
-      DAI: '1',
-    },
-    chainId: 1,
-    slippage: 0.002,
-    address: '0x0',
-  },
-  position: {
-    positionId: {
-      id: '12312',
-    },
-    collateralAmount: '3',
-    debtAmount: '2000',
-    liquidationPrice: '2500',
-    ltv: new RiskRatio(new BigNumber(0.65), RiskRatio.TYPE.LTV),
-  },
-  automations: {},
-}
-
 export default function PortfolioView(props: PortfolioViewProps) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
@@ -139,7 +105,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
 
   return address ? (
     <ProductContextProvider>
-      <RefinanceContextProvider>
+      <RefinanceGeneralContextProvider>
         <ModalProvider>
           <PortfolioLayout>
             <Box sx={{ width: '100%' }}>
@@ -204,7 +170,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
             </Box>
           </PortfolioLayout>
         </ModalProvider>
-      </RefinanceContextProvider>
+      </RefinanceGeneralContextProvider>
     </ProductContextProvider>
   ) : null
 }
