@@ -99,7 +99,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
   SUSDE: {
     title: 'Ethena Staked USDe',
-    description: 'SUSDE',
+    description: 'SUSDE/USDE',
     value: 'SUSDE',
     icon: getToken('SUSDE').iconCircle,
   },
