@@ -116,51 +116,6 @@ export const initializeRefinanceContext = ({
 
   const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
 
-  // const ctx: RefinanceContextBase = useMemo(
-  //   () => ({
-  //     environment: {
-  //       contextId: contextInput.contextId,
-  //       collateralPrice,
-  //       debtPrice,
-  //       address: parsedAddress,
-  //       chainInfo,
-  //       slippage,
-  //       isShort,
-  //       gasEstimation,
-  //     },
-  //     position: {
-  //       collateralTokenData,
-  //       debtTokenData,
-  //       liquidationPrice,
-  //       positionId,
-  //       ltv,
-  //     },
-  //     poolData: {
-  //       poolId,
-  //       borrowRate,
-  //       maxLtv,
-  //     },
-  //     automations,
-  //     form,
-  //     steps: setupStepManager(),
-  //     tx: setupTxManager(),
-  //   }),
-  //   [
-  //     collateralPrice,
-  //     debtPrice,
-  //     parsedAddress,
-  //     chainInfo,
-  //     collateralTokenData,
-  //     debtTokenData,
-  //     liquidationPrice,
-  //     positionId,
-  //     poolId,
-  //     slippage,
-  //     form.state,
-  //     gasEstimation,
-  //   ],
-  // )
-
   const ctx = {
     environment: {
       contextId: contextInput.contextId,
