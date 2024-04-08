@@ -1,7 +1,8 @@
-import type { RiskRatio } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
+import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { getRefinancePortfolioContextInput } from 'features/refinance/helpers'
 import type { MakerPoolId } from 'features/refinance/types'
 import type { PositionId } from 'summerfi-sdk-common'
 import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
@@ -31,8 +32,8 @@ export const useMakerRefinanceContextInputs = ({
   collateralPrice: string
   liquidationPrice: string
   borrowRate: string
-  ltv: RiskRatio
-  maxLtv: RiskRatio
+  ltv: string
+  maxLtv: string
   ilkType: string
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
@@ -57,11 +58,6 @@ export const useMakerRefinanceContextInputs = ({
   const collateralTokenSymbol = collateralToken
   const debtTokenSymbol = 'DAI'
 
-  const tokenPrices = {
-    [collateralTokenSymbol]: collateralPrice,
-    [debtTokenSymbol]: '1',
-  }
-
   const automations = {
     stopLoss: {
       enabled: triggerData.stopLossTriggerData.isStopLossEnabled,
@@ -80,28 +76,25 @@ export const useMakerRefinanceContextInputs = ({
     },
   }
 
-  return {
-    poolData: {
-      poolId,
-      collateralTokenSymbol,
-      debtTokenSymbol,
-      borrowRate,
-      maxLtv,
-    },
-    environment: {
-      address,
-      chainId,
-      slippage,
-      tokenPrices,
-    },
-    position: {
-      positionId,
-      collateralAmount,
-      debtAmount,
-      liquidationPrice,
-      ltv,
-    },
+  const network = getNetworkById(chainId).name
+
+  return getRefinancePortfolioContextInput({
+    borrowRate,
+    primaryToken: collateralTokenSymbol,
+    secondaryToken: debtTokenSymbol,
+    collateralPrice,
+    debtPrice: '1',
+    poolId,
+    network,
+    address,
+    slippage,
+    collateral: collateralAmount,
+    debt: debtAmount,
+    positionId: id,
+    liquidationPrice,
+    ltv,
+    maxLtv,
     automations,
     contextId: id,
-  }
+  })
 }

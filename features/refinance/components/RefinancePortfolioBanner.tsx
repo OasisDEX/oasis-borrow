@@ -1,11 +1,10 @@
-import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { networkNameToIdMap } from 'blockchain/networks'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import type { ProductHubItem } from 'features/productHub/types'
 import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { getRefinancePortfolioContextInput } from 'features/refinance/helpers'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -92,6 +91,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
   if (!position.rawPositionDetails) {
     return null
   }
+  const { network, primaryToken, secondaryToken, positionId, automations } = position
 
   const {
     borrowRate,
@@ -165,33 +165,25 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
           }
 
           openModal(RefinanceModal, {
-            contextInput: {
-              poolData: {
-                borrowRate: borrowRate,
-                collateralTokenSymbol: position.primaryToken,
-                debtTokenSymbol: position.secondaryToken,
-                maxLtv: new RiskRatio(new BigNumber(maxLtv), RiskRatio.TYPE.LTV),
-                poolId: poolId,
-              },
-              environment: {
-                tokenPrices: {
-                  [position.primaryToken]: collateralPrice,
-                  [position.secondaryToken]: debtPrice,
-                },
-                chainId: networkNameToIdMap[position.network],
-                slippage: userSettingsData.slippage.toNumber(),
-                address: wallet?.address,
-              },
-              position: {
-                positionId: { id: position.positionId.toString() },
-                collateralAmount: collateral,
-                debtAmount: debt,
-                liquidationPrice: liquidationPrice,
-                ltv: new RiskRatio(new BigNumber(ltv), RiskRatio.TYPE.LTV),
-              },
-              automations: position.automations,
+            contextInput: getRefinancePortfolioContextInput({
+              borrowRate,
+              primaryToken,
+              secondaryToken,
+              collateralPrice,
+              debtPrice,
+              poolId,
+              network,
+              address: wallet?.address,
+              slippage: userSettingsData.slippage.toNumber(),
+              collateral,
+              debt,
+              positionId,
+              liquidationPrice,
+              ltv,
+              maxLtv,
+              automations,
               contextId,
-            },
+            }),
           })
         }}
       >

@@ -73,11 +73,11 @@ export function GeneralManageLayout({
     ltv: new RiskRatio(
       generalManageVault.state.vault.collateralizationRatio,
       RiskRatio.TYPE.COL_RATIO,
-    ),
+    ).loanToValue.toString(),
     maxLtv: new RiskRatio(
       generalManageVault.state.ilkData.liquidationRatio,
       RiskRatio.TYPE.COL_RATIO,
-    ),
+    ).loanToValue.toString(),
     ilkType: vault.ilk,
   })
 
