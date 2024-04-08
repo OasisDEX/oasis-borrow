@@ -459,6 +459,29 @@ export const theme = themeTypeSafe({
         outline: 'none',
       },
     },
+    primaryInverted: {
+      variant: 'text.paragraph1',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'primary100',
+      border: '1px solid',
+      borderColor: 'neutral20',
+      bg: 'white',
+      transition: 'background 200ms',
+      '&:hover, &:focus-visible': {
+        bg: 'secondary100',
+      },
+      '&:disabled': {
+        opacity: '0.5',
+        pointerEvents: 'none',
+        cursor: 'not-allowed',
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+    },
     outline: {
       variant: 'text.paragraph2',
       cursor: 'pointer',

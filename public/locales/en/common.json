@@ -673,6 +673,10 @@
           "primary": "Your funds, your choice: ",
           "secondary": "put your capital to work while staying in full control, with no exceptions",
           "cta": "Know more about security"
+        },
+        "refinance": {
+          "title": "Move seamlessly between protocols with SummerFi refinance tool",
+          "cta": "Refinance"
         }
       },
       "image-labels": {
