@@ -26,7 +26,7 @@ const steps = [
   RefinanceSidebarStep.Transaction,
 ]
 
-export const initializeRefinanceContext = ({
+export const useInitializeRefinanceContext = ({
   contextInput,
   defaultCtx,
 }: {

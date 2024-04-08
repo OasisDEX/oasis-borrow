@@ -2,7 +2,7 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
-import { initializeRefinanceContext } from 'features/refinance/helpers'
+import { useInitializeRefinanceContext } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
 import type { Dispatch, FC, SetStateAction } from 'react'
@@ -116,7 +116,7 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
   const [currentContext, setCurrentContext] = useState<string>('')
   const [contextInput, setContextInput] = useState<RefinanceContextInput | undefined>(undefined)
 
-  const { ctx, reset } = initializeRefinanceContext({
+  const { ctx, reset } = useInitializeRefinanceContext({
     contextInput: contextInput,
     defaultCtx: contexts[currentContext],
   })

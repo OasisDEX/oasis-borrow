@@ -8,7 +8,7 @@ import type { GeneralManageVaultState } from 'features/generalManageVault/genera
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { RefinanceModal } from 'features/refinance/components'
-import { useMakerRefinanceContextInputs } from 'features/refinance/helpers/useMakerRefinanceContextInputs'
+import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
 import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
