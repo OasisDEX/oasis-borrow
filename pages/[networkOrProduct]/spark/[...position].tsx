@@ -18,6 +18,7 @@ import type { OmniProductPage } from 'features/omni-kit/types'
 import type { SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 type SparkPositionPageProps = OmniProductPage
@@ -81,6 +82,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     const networkId = getNetworkByName(query.networkOrProduct as unknown as NetworkNames).id
     return {
       props: {
+        ...(await serverSideTranslations(locale || 'en', ['common'])),
         deprecatedPositionId,
         networkId,
         isDeprecatedUrl: true,
