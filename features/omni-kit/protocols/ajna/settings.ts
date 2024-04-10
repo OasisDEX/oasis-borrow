@@ -52,7 +52,17 @@ export const settings: OmniProtocolSettings = {
       'ENA',
     ],
     [NetworkIds.GOERLI]: [],
-    [NetworkIds.BASEMAINNET]: ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH', 'SNX', 'DEGEN'],
+    [NetworkIds.BASEMAINNET]: [
+      'CBETH',
+      'ETH',
+      'USDC',
+      'USDBC',
+      'WSTETH',
+      'SNX',
+      'DEGEN',
+      'AERO',
+      'PRIME',
+    ],
     [NetworkIds.ARBITRUMMAINNET]: [
       'CBETH',
       'DAI',
