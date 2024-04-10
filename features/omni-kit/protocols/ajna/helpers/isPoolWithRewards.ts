@@ -35,6 +35,8 @@ const poolsWithRewardsBase = [
   'DEGEN-USDC',
   'USDC-DEGEN',
   'SNX-USDC',
+  'AERO-USDC',
+  'PRIME-USDC',
 ]
 const poolsWithRewardsArbitrum: string[] = []
 const poolsWithRewardsOptimism: string[] = []
