@@ -8,7 +8,7 @@ export const RefinanceBanner: React.FC<{}> = () => {
 
   return (
     <Button variant="bean" sx={{ fontSize: 2 }} onClick={() => openModal(RefinanceModal, {})}>
-      <Box sx={{ width: '100%' }}>Refinance POC 👷‍♂️</Box>
+      <Box sx={{ width: '100%' }}>Get Started</Box>
     </Button>
   )
 }

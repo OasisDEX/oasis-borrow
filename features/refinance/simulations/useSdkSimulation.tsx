@@ -60,7 +60,7 @@ export function useSdkSimulation() {
       setChain(_chain)
 
       const _user = await sdk.users.getUser({
-        chainInfo: _chain,
+        chainInfo,
         walletAddress: wallet.address,
       })
       setUser(_user)
