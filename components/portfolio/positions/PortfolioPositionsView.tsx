@@ -3,6 +3,7 @@ import type { GenericSelectOption } from 'components/GenericSelect'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
+import { emptyPortfolioPositionNetValueThreshold } from 'components/portfolio/constants'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
 import { PortfolioPositionBlockLoadingState } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
 import { PortfolioPositionFeatured } from 'components/portfolio/positions/PortfolioPositionFeatured'
@@ -43,7 +44,9 @@ type PortfolioPositionsViewFiltersType = {
 const filterEmptyPosition =
   (isFilterOn: boolean = false) =>
   ({ netValue, isOraclessAndNotEmpty }: PortfolioPosition) => {
-    return isFilterOn || netValue >= 0.01 || isOraclessAndNotEmpty
+    return (
+      isFilterOn || netValue >= emptyPortfolioPositionNetValueThreshold || isOraclessAndNotEmpty
+    )
   }
 
 export const PortfolioPositionsView = ({

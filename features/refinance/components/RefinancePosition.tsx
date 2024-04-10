@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { RefinancePositionView } from 'features/refinance/components/RefinancePositionView'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinancePositionViewType } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'

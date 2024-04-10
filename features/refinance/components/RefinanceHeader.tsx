@@ -4,9 +4,8 @@ import { ModalCloseIcon } from 'components/Modal'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { StatefulTooltip } from 'components/Tooltip'
 import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { formatAddress } from 'helpers/formatters/format'
-import { useModalContext } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -78,9 +77,15 @@ const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress }) => {
   )
 }
 
-export const RefinanceHeader = () => {
+interface RefinanceHeaderProps {
+  onClose: () => void
+}
+
+export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
+
+  const ctx = useRefinanceContext()
 
   const {
     position: {
@@ -92,7 +97,7 @@ export const RefinanceHeader = () => {
     form: {
       state: { strategy, dpmProxy },
     },
-  } = useRefinanceContext()
+  } = ctx
 
   // use refinance context to eventually get this data
   const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol, walletAddress } = {
@@ -113,8 +118,6 @@ export const RefinanceHeader = () => {
       : {}),
     walletAddress: address,
   }
-
-  const { closeModal } = useModalContext()
 
   return (
     <Flex
@@ -143,7 +146,7 @@ export const RefinanceHeader = () => {
         </Flex>
       </Flex>
       {!isMobile && <HeaderRightSection walletAddress={walletAddress} showAbout />}
-      <ModalCloseIcon close={closeModal} sx={{ top: '19px' }} />
+      <ModalCloseIcon close={onClose} sx={{ top: '19px' }} />
     </Flex>
   )
 }

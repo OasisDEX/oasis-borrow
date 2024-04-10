@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { RefinancePositionViewProps } from 'features/refinance/components'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { useSdkSimulation } from 'features/refinance/simulations/useSdkSimulation'
 import type { RefinancePositionViewType } from 'features/refinance/types'
 import { PositionUtils } from 'summerfi-sdk-client'

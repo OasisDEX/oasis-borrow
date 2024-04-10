@@ -2,7 +2,7 @@ import type { BigNumber } from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
-import { MakerRefinanceContext } from 'features/refinance/MakerRefinanceContext'
+import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'
@@ -23,7 +23,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
-  const { chainId, wallet } = useWalletManagement()
+  const { chainId } = useWalletManagement()
   const { MakerTenderly } = useAppConfig('features')
 
   const account = context?.status === 'connected' ? context.account : ''
@@ -46,11 +46,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <MakerRefinanceContext
-              generalManageVault={generalManageVault}
-              chainId={chainId}
-              address={wallet?.address}
-            >
+            <RefinanceGeneralContextProvider>
               {/*TODO we should use ModalProvider here
                 We need to refactor it so it accepts reactNode as modal content
               */}
@@ -66,7 +62,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
                   chainId={chainId}
                 />
               </ModalProvider>
-            </MakerRefinanceContext>
+            </RefinanceGeneralContextProvider>
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>
