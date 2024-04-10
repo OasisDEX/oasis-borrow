@@ -19,7 +19,7 @@ import {
 } from 'theme/icons'
 import { FeaturesEnum } from 'types/config'
 
-export const MIN_LIQUIDITY = 10000
+export const MIN_LIQUIDITY = 3000
 
 export const ALL_ASSETS = 'all assets'
 
