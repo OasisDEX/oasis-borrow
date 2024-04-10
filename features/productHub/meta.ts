@@ -145,6 +145,18 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'SNX',
     icon: getToken('SNX').iconCircle,
   },
+  AERO: {
+    title: 'Aerodrome',
+    description: 'AERO',
+    value: 'AERO',
+    icon: getToken('AERO').iconCircle,
+  },
+  PRIME: {
+    title: 'Prime',
+    description: 'PRIME',
+    value: 'PRIME',
+    icon: getToken('PRIME').iconCircle,
+  },
 }
 
 export const productHubOptionsMapBase: {
@@ -170,6 +182,8 @@ export const productHubOptionsMapBase: {
       DEGEN: productHubTokenOptions.DEGEN,
       ENA: productHubTokenOptions.ENA,
       SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
   multiply: {
@@ -189,6 +203,8 @@ export const productHubOptionsMapBase: {
       DEGEN: productHubTokenOptions.DEGEN,
       ENA: productHubTokenOptions.ENA,
       SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
   earn: {
@@ -208,6 +224,8 @@ export const productHubOptionsMapBase: {
       DEGEN: productHubTokenOptions.DEGEN,
       ENA: productHubTokenOptions.ENA,
       SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
 }
