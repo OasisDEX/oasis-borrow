@@ -19,9 +19,9 @@ import { EthersTransactionStateMachine, TransactionStateMachine } from 'features
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import { ProfitsSimulationMapped, TriggerTransaction } from "../../../helpers/lambda/triggers";
-import { MigrateAaveContext } from "../manage/state/migrateAaveStateMachine";
 import { AaveLikeCumulativeData } from "features/omni-kit/protocols/aave-like/history/types";
+import { ProfitsSimulationMapped, TriggerTransaction } from "helpers/lambda/triggers";
+import { MigrateAaveContext } from "features/aave/manage/state/migrateAaveStateMachine";
 
 export type UserInput = {
   riskRatio?: IRiskRatio
