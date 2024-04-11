@@ -96,6 +96,7 @@ export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'networ
     product: [ProductHubProductType.Earn],
     primaryToken: 'DAI',
     secondaryToken: 'DAI',
+    depositToken: 'DAI',
     protocol: LendingProtocol.Maker,
     label: 'DSR',
     managementType: 'passive',

@@ -1,264 +1,136 @@
 import { isTestnetNetworkId, NetworkIds } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
-import { Toggle } from 'components/Toggle'
-import { parseQueryString } from 'features/productHub/helpers'
+import { getTokensFilterOptions } from 'features/productHub/helpers'
 import {
-  ALL_ASSETS,
   productHubNetworkFilter,
   productHubProtocolFilter,
-  productHubStrategyFilter,
   productHubTestNetworkFilter,
 } from 'features/productHub/meta'
 import type {
   ProductHubFilters,
   ProductHubItem,
-  ProductHubMultiplyStrategyType,
-  ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
-import { uniq } from 'lodash'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Flex, Text } from 'theme-ui'
 
 export interface ProductHubFiltersParams {
   data: ProductHubItem[]
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
   networkId?: NetworkIds
-  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
-  queryString: ProductHubQueryString
+  onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
-  selectedToken: string
 }
 
 export const useProductHubFilters = ({
   data,
-  initialNetwork,
-  initialProtocol,
+  // initialNetwork,
+  // initialProtocol,
   networkId,
   onChange,
-  queryString,
   selectedFilters,
-  selectedToken,
 }: ProductHubFiltersParams) => {
   const { t } = useTranslation()
 
   const isTestnet = isTestnetNetworkId(networkId ?? NetworkIds.MAINNET)
-  const debtTokens = useMemo(
-    () =>
-      uniq(data.map((item) => item.secondaryToken))
-        .sort()
-        .map((item) => ({
-          label: item,
-          value: item,
-          token: item,
-        })),
+
+  const collateralTokens = useMemo(
+    () => getTokensFilterOptions({ data, key: 'primaryToken' }),
     [data],
   )
-  const secondaryTokens = useMemo(
-    () =>
-      uniq(
-        data.flatMap((item) => [
-          ...([ALL_ASSETS, item.primaryToken, item.primaryTokenGroup].includes(selectedToken)
-            ? [item.secondaryToken]
-            : []),
-          ...([ALL_ASSETS, item.secondaryToken, item.secondaryTokenGroup].includes(selectedToken)
-            ? [item.primaryToken]
-            : []),
-        ]),
-      )
-        .sort()
-        .map((item) => ({
-          label: item,
-          value: item,
-          token: item,
-        })),
-    [data, selectedToken],
-  )
+  const debtTokens = useMemo(() => getTokensFilterOptions({ data, key: 'secondaryToken' }), [data])
+  const depositTokens = useMemo(() => getTokensFilterOptions({ data, key: 'depositToken' }), [data])
 
+  const collateralTokenFilterLabel = t('product-hub.filters.collateral-tokens')
+  const debtTokenFilterLabel = t('product-hub.filters.debt-tokens')
+  const depositTokenFilterLabel = t('product-hub.filters.deposit-tokens')
+  const networkFilterLabel = t('product-hub.filters.networks')
+  const protocolFilterLabel = t('product-hub.filters.protocols')
+
+  const collateralTokenFilter = useMemo(
+    () => (
+      <GenericMultiselect
+        label={collateralTokenFilterLabel}
+        options={collateralTokens}
+        onChange={(value) => {
+          onChange({
+            ...selectedFilters,
+            primaryToken: value,
+          })
+        }}
+      />
+    ),
+    [collateralTokenFilterLabel, collateralTokens, onChange, selectedFilters],
+  )
   const debtTokenFilter = useMemo(
     () => (
       <GenericMultiselect
-        initialValues={queryString.debtToken}
-        label={t('product-hub.filters.debt-tokens')}
+        label={debtTokenFilterLabel}
         options={debtTokens}
         onChange={(value) => {
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: { ...selectedFilters.and, secondaryToken: value },
-            },
-            parseQueryString({
-              key: 'debtToken',
-              maxLength: debtTokens.length,
-              queryString,
-              value,
-            }),
-          )
+          onChange({
+            ...selectedFilters,
+            secondaryToken: value,
+          })
         }}
       />
     ),
-    [debtTokens, queryString, selectedFilters],
+    [debtTokenFilterLabel, debtTokens, onChange, selectedFilters],
   )
-  const secondaryTokenFilter = useMemo(
+  const depositTokenFilter = useMemo(
     () => (
       <GenericMultiselect
-        initialValues={queryString.secondaryToken}
-        label={t('product-hub.filters.secondary-tokens')}
-        options={secondaryTokens}
+        label={depositTokenFilterLabel}
+        options={depositTokens}
         onChange={(value) => {
-          onChange(
-            {
-              or:
-                selectedToken === ALL_ASSETS
-                  ? [{ primaryToken: value }, { secondaryToken: value }]
-                  : [
-                      { primaryTokenGroup: [selectedToken], secondaryToken: value },
-                      { primaryToken: [selectedToken], secondaryToken: value },
-                      { primaryToken: value, secondaryToken: [selectedToken] },
-                      { primaryToken: value, secondaryTokenGroup: [selectedToken] },
-                    ],
-              and: selectedFilters.and,
-            },
-            parseQueryString({
-              key: 'secondaryToken',
-              maxLength: secondaryTokens.length,
-              queryString,
-              value,
-            }),
-          )
+          onChange({
+            ...selectedFilters,
+            depositToken: value,
+          })
         }}
       />
     ),
-    [queryString, secondaryTokens, selectedFilters, selectedToken],
-  )
-  const multiplyStrategyFilter = useMemo(
-    () => (
-      <GenericMultiselect
-        initialValues={queryString.strategy}
-        label={t('product-hub.filters.strategies')}
-        options={productHubStrategyFilter}
-        onChange={(value) => {
-          const multiplyStrategyType = value as ProductHubMultiplyStrategyType[]
-
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: {
-                ...selectedFilters.and,
-                multiplyStrategyType,
-              },
-            },
-            parseQueryString({
-              key: 'strategy',
-              maxLength: productHubStrategyFilter.length,
-              queryString,
-              value: multiplyStrategyType,
-            }),
-          )
-        }}
-      />
-    ),
-    [queryString, selectedFilters],
+    [depositTokenFilterLabel, depositTokens, onChange, selectedFilters],
   )
   const networkFilter = useMemo(
     () => (
       <GenericMultiselect
-        initialValues={queryString.network || initialNetwork}
-        label={t('product-hub.filters.networks')}
+        label={networkFilterLabel}
         options={isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter}
         onChange={(value) => {
-          const network = value as ProductHubSupportedNetworks[]
-
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: {
-                ...selectedFilters.and,
-                network,
-              },
-            },
-            parseQueryString({
-              key: 'network',
-              maxLength: (isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter).length,
-              queryString,
-              value: network,
-            }),
-          )
+          onChange({
+            ...selectedFilters,
+            network: value as ProductHubSupportedNetworks[],
+          })
         }}
       />
     ),
-    [initialNetwork, isTestnet, queryString, selectedFilters],
+    [isTestnet, networkFilterLabel, onChange, selectedFilters],
   )
   const protocolFilter = useMemo(
     () => (
       <GenericMultiselect
-        initialValues={queryString.protocol || initialProtocol}
-        label={t('product-hub.filters.protocols')}
+        label={protocolFilterLabel}
         options={productHubProtocolFilter}
         fitContents
         onChange={(value) => {
-          const protocol = value as LendingProtocol[]
-
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: {
-                ...selectedFilters.and,
-                protocol,
-              },
-            },
-            parseQueryString({
-              key: 'protocol',
-              maxLength: productHubProtocolFilter.length,
-              queryString,
-              value: protocol,
-            }),
-          )
+          onChange({
+            ...selectedFilters,
+            protocol: value as LendingProtocol[],
+          })
         }}
       />
     ),
-    [initialProtocol, queryString, selectedFilters],
-  )
-  const rewardsFilter = useMemo(
-    () => (
-      <Flex sx={{ columnGap: 2 }}>
-        <Text variant="boldParagraph3">Rewards only</Text>
-        <Toggle
-          isChecked={queryString.rewardsOnly?.[0] ?? false}
-          onChange={(checked) => {
-            delete selectedFilters.and.hasRewards
-
-            onChange(
-              {
-                or: selectedFilters.or,
-                and: {
-                  ...selectedFilters.and,
-                  ...(checked && { hasRewards: [true] }),
-                },
-              },
-              parseQueryString({
-                key: 'rewardsOnly',
-                maxLength: 2,
-                queryString,
-                value: [checked],
-              }),
-            )
-          }}
-        />
-      </Flex>
-    ),
-    [initialProtocol, queryString, selectedFilters],
+    [onChange, protocolFilterLabel, selectedFilters],
   )
 
   return {
+    collateralTokenFilter,
     debtTokenFilter,
-    multiplyStrategyFilter,
+    depositTokenFilter,
     networkFilter,
     protocolFilter,
-    rewardsFilter,
-    secondaryTokenFilter,
   }
 }

@@ -57,6 +57,7 @@ async function getErc4626VaultData({
           protocol,
           secondaryToken: token.symbol,
           ...(tokenGroup !== token.symbol && { secondaryTokenGroup: tokenGroup }),
+          depositToken: token.symbol,
           earnStrategy: EarnStrategies.erc_4626,
           earnStrategyDescription: strategy ?? name,
           managementType: 'passive',

@@ -86,7 +86,7 @@ function GenericMultiselectItem({
         display: 'flex',
         alignItems: 'center',
         py: isClearing ? '18px' : '12px',
-        pr: 2,
+        pr: 3,
         pl: hasCheckbox ? '44px' : 2,
         fontSize: 3,
         fontWeight: 'regular',

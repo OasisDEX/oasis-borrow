@@ -117,6 +117,7 @@ const earnProducts = aaveSeed
       primaryTokenGroup: getTokenGroup(strategy.collateral.toUpperCase()),
       secondaryToken: strategy.debt.toUpperCase(),
       secondaryTokenGroup: getTokenGroup(strategy.debt.toUpperCase()),
+      depositToken: strategy.collateral.toUpperCase(),
       label: `${strategy.collateral.toUpperCase()}/${strategy.debt.toUpperCase()}`,
       network: NetworkNames.arbitrumMainnet,
       protocol: LendingProtocol.AaveV3,

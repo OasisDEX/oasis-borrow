@@ -1,6 +1,6 @@
 import { EarnStrategies } from '@prisma/client'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
@@ -12,13 +12,11 @@ import type {
   ProductHubFilters,
   ProductHubItem,
   ProductHubProductType,
-  ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
-import type { FC } from 'react'
-import React, { useMemo } from 'react'
+import React, { type FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
   hiddenColumns?: ProductHubColumnKey[]
@@ -26,13 +24,11 @@ interface ProductHubContentControllerProps {
   initialProtocol?: LendingProtocol[]
   limitRows?: number
   networkId?: NetworkIds
-  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
+  onChange: (selectedFilters: ProductHubFilters) => void
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
-  queryString: ProductHubQueryString
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
-  selectedToken: string
   tableData: ProductHubItem[]
 }
 
@@ -45,23 +41,16 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   onRowClick,
   perPage,
-  queryString,
   selectedFilters,
   selectedProduct,
-  selectedToken,
   tableData,
 }) => {
   const {
     AjnaBase: ajnaBaseEnabled,
-    AjnaPoolFinder: ajnaPoolFinderEnabled,
     AjnaSafetySwitch: ajnaSafetySwitchOn,
-    MorphoBlue: morphoBlueEnabled,
     Erc4626Vaults: erc4626VaultsEnabled,
+    MorphoBlue: morphoBlueEnabled,
   } = useAppConfig('features')
-
-  const ajnaOraclessPoolPairsKeys = Object.keys(
-    getNetworkContracts(NetworkIds.MAINNET, networkId).ajnaOraclessPoolPairs,
-  )
 
   const banner = useProductHubBanner({
     filters: selectedFilters,
@@ -70,31 +59,28 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter(({ earnStrategy, label, network, protocol }) => {
+      tableData.filter(({ earnStrategy, network, protocol }) => {
         const isAjna = protocol === LendingProtocol.Ajna
         const isMorpho = protocol === LendingProtocol.MorphoBlue
         const isErc4626 = earnStrategy === EarnStrategies.erc_4626
 
-        const unalailableChecksList = [
+        const unavailableChecksList = [
           // these checks predicate that the pool/strategy is UNAVAILABLE
           isAjna && ajnaSafetySwitchOn,
-          isAjna &&
-            !ajnaPoolFinderEnabled &&
-            ajnaOraclessPoolPairsKeys.includes(label.replace('/', '-')),
           isAjna && network === NetworkNames.baseMainnet && !ajnaBaseEnabled,
           isMorpho && !morphoBlueEnabled,
           isErc4626 && !erc4626VaultsEnabled,
         ]
-        if (unalailableChecksList.some((check) => !!check)) {
+        if (unavailableChecksList.some((check) => !!check)) {
           return false
         }
         return true
       }),
-    [tableData, ajnaSafetySwitchOn, ajnaPoolFinderEnabled, ajnaOraclessPoolPairsKeys],
+    [tableData, ajnaSafetySwitchOn, ajnaBaseEnabled, morphoBlueEnabled, erc4626VaultsEnabled],
   )
   const dataMatchedByNL = useMemo(
-    () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),
-    [selectedProduct, selectedToken, dataMatchedToFeatureFlags],
+    () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct),
+    [selectedProduct, dataMatchedToFeatureFlags],
   )
   const dataMatchedByFilters = useMemo(
     () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
@@ -124,10 +110,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         initialProtocol={initialProtocol}
         networkId={networkId}
         onChange={onChange}
-        queryString={queryString}
         selectedFilters={selectedFilters}
         selectedProduct={selectedProduct}
-        selectedToken={selectedToken}
       />
       <ProductHubTableController
         banner={banner}

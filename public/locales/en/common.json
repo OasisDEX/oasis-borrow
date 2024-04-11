@@ -3458,9 +3458,9 @@
       "short": "Short only"
     },
     "filters": {
+      "collateral-tokens": "Collateral Tokens",
       "debt-tokens": "Debt Tokens",
-      "secondary-tokens": "Secondary Tokens",
-      "strategies": "Strategies",
+      "deposit-tokens": "Deposit Tokens",
       "networks": "Networks",
       "protocols": "Protocols"
     },

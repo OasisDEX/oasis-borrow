@@ -99,21 +99,13 @@ export type ProductHubPromoCards = {
 export interface ProductHubData {
   table: ProductHubItem[]
 }
-
-export interface ProductHubFiltersCriteria {
+export interface ProductHubFilters {
+  depositToken?: ProductHubTokenType[]
+  hasRewards?: ProductHubRewardsType[]
   network?: ProductHubSupportedNetworks[]
   primaryToken?: ProductHubTokenType[]
-  primaryTokenGroup?: ProductHubTokenType[]
   protocol?: LendingProtocol[]
   secondaryToken?: ProductHubTokenType[]
-  secondaryTokenGroup?: ProductHubTokenType[]
-  multiplyStrategyType?: ProductHubMultiplyStrategyType[]
-  hasRewards?: ProductHubRewardsType[]
-}
-
-export interface ProductHubFilters {
-  or: ProductHubFiltersCriteria[]
-  and: ProductHubFiltersCriteria
 }
 
 export interface ProductHubQueryString {

@@ -18,9 +18,7 @@ interface ProductHubBannerProps {
 }
 
 export const useProductHubBanner = ({
-  filters: {
-    and: { protocol },
-  },
+  filters: { protocol },
   product,
 }: ProductHubBannerProps): ActionBannerProps | undefined => {
   const {

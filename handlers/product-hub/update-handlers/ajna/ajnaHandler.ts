@@ -210,6 +210,7 @@ async function getAjnaPoolData(
                 ...(primaryTokenGroup !== collateralToken && {
                   secondaryTokenGroup: primaryTokenGroup,
                 }),
+                depositToken: quoteToken,
                 earnStrategy: EarnStrategies.liquidity_provision,
                 earnStrategyDescription: earnLPStrategy,
                 liquidity,
