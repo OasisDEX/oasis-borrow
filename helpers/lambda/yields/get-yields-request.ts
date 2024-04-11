@@ -2,12 +2,11 @@ import { getYieldsConfig } from './get-yields-config'
 import type { GetYieldsParams, GetYieldsResponse } from './get-yields-types'
 
 export const getYieldsRequest = async (params: GetYieldsParams): Promise<GetYieldsResponse> => {
-  const { url, body } = getYieldsConfig(params)
+  const { url } = getYieldsConfig(params)
 
   try {
     const response = await fetch(url, {
-      method: 'POST',
-      body,
+      method: 'GET',
     })
     return (await response.json()) as GetYieldsResponse
   } catch (e) {

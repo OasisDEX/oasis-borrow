@@ -9,12 +9,8 @@ export const getYieldsConfig = ({
   quoteToken,
   collateralToken,
 }: GetYieldsParams) => {
+  const ltvQuery = ltv.times(lambdaPercentageDenomination).toFixed(4).toString()
   return {
-    url: `/api/yields/${network}/${protocol}`,
-    body: JSON.stringify({
-      ltv: ltv.times(lambdaPercentageDenomination).toFixed(4).toString(),
-      quoteToken,
-      collateralToken,
-    }),
+    url: `/api/yields/${network}/${protocol}/${quoteToken}-${collateralToken}/${ltvQuery}`,
   }
 }
