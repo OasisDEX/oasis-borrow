@@ -28,13 +28,13 @@ export const MorphoDetailsSectionContent: FC = () => {
     environment: {
       collateralPrice,
       collateralToken,
+      isOpening,
       isShort,
+      isYieldLoop,
       priceFormat,
       productType,
       quotePrice,
       quoteToken,
-      isOpening,
-      isYieldLoop,
     },
   } = useOmniGeneralContext()
   const {

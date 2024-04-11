@@ -19,7 +19,7 @@ import {
 } from 'theme/icons'
 import { FeaturesEnum } from 'types/config'
 
-export const MIN_LIQUIDITY = 10000
+export const MIN_LIQUIDITY = 3000
 
 export const ALL_ASSETS = 'all assets'
 
@@ -99,7 +99,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
   SUSDE: {
     title: 'Ethena Staked USDe',
-    description: 'SUSDE',
+    description: 'SUSDE/USDE',
     value: 'SUSDE',
     icon: getToken('SUSDE').iconCircle,
   },
@@ -127,6 +127,36 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'LDO',
     icon: getToken('LDO').iconCircle,
   },
+  ENA: {
+    title: 'Ethena',
+    description: 'ENA',
+    value: 'ENA',
+    icon: getToken('ENA').iconCircle,
+  },
+  DEGEN: {
+    title: 'DEGEN',
+    description: 'DEGEN',
+    value: 'DEGEN',
+    icon: getToken('DEGEN').iconCircle,
+  },
+  SNX: {
+    title: 'Synthetix Network',
+    description: 'SNX',
+    value: 'SNX',
+    icon: getToken('SNX').iconCircle,
+  },
+  AERO: {
+    title: 'Aerodrome',
+    description: 'AERO',
+    value: 'AERO',
+    icon: getToken('AERO').iconCircle,
+  },
+  PRIME: {
+    title: 'Prime',
+    description: 'PRIME',
+    value: 'PRIME',
+    icon: getToken('PRIME').iconCircle,
+  },
 }
 
 export const productHubOptionsMapBase: {
@@ -149,6 +179,11 @@ export const productHubOptionsMapBase: {
       LINK: productHubTokenOptions.LINK,
       LDO: productHubTokenOptions.LDO,
       YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
   multiply: {
@@ -165,6 +200,11 @@ export const productHubOptionsMapBase: {
       LINK: productHubTokenOptions.LINK,
       LDO: productHubTokenOptions.LDO,
       YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
   earn: {
@@ -181,6 +221,11 @@ export const productHubOptionsMapBase: {
       LINK: productHubTokenOptions.LINK,
       LDO: productHubTokenOptions.LDO,
       YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
 }

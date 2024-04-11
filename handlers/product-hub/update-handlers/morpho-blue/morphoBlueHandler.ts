@@ -40,21 +40,21 @@ async function getMorphoMarketData(
     rpcProvider,
   )
 
-  const markets = morphoMarkets[networkId] ?? {}
-  const prices = uniq(
-    Object.keys(markets)
-      .map((pair) => pair.split('-'))
-      .flat(),
-  ).reduce<Tickers>(
+  const networkMarkets = morphoMarkets[networkId] ?? {}
+  const markets = Object.keys(networkMarkets).flatMap((pair) =>
+    networkMarkets[pair].map((marketId) => ({ pair, marketId })),
+  )
+  const prices = uniq(markets.flatMap(({ pair }) => pair.split('-'))).reduce<Tickers>(
     (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
     {},
   )
 
   try {
-    return await Object.keys(markets).reduce<Promise<ProductHubHandlerResponseData>>(
-      async (v, pair) => {
+    return await markets.reduce<Promise<ProductHubHandlerResponseData>>(
+      async (v, { marketId, pair }) => {
         const [collateralToken, quoteToken] = pair.split('-')
-        const marketId = markets[pair]
+        const pairId =
+          networkMarkets[pair].length > 1 ? `-${networkMarkets[pair].indexOf(marketId) + 1}` : ''
 
         const market = await MorphoBlueContract.market(marketId)
         const marketParams = await MorphoBlueContract.idToMarketParams(marketId)
@@ -71,7 +71,7 @@ async function getMorphoMarketData(
 
         const quotePrice = prices[quoteToken]
 
-        const label = `${collateralToken}/${quoteToken}`
+        const label = `${collateralToken}/${quoteToken}${pairId}`
         const network = networksById[networkId].name as ProductHubSupportedNetworks
         const protocol = LendingProtocol.MorphoBlue
         const maxLtv = new BigNumber(marketParams.lltv.toString())

@@ -17,6 +17,9 @@ export function getTokenGroup(token: string): string {
     case 'EZETH':
     case 'YIELDETH':
       return 'ETH'
+    case 'SUSDE':
+    case 'USDE':
+      return 'SUSDE'
     case 'TBTC':
     case 'WBTC':
     case 'YIELDBTC':

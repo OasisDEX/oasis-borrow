@@ -5,11 +5,12 @@ import { isOmniSupportedNetworkId } from 'features/omni-kit/helpers'
 import { omniProtocolSettings } from 'features/omni-kit/settings'
 import type {
   OmniProductPage,
-  OmniProductType,
   OmniProtocolSettings,
   OmniSupportedProtocols,
 } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import type { ParsedUrlQuery } from 'querystring'
@@ -47,7 +48,14 @@ export async function getOmniServerSideProps({
 }: OmniServerSideProps) {
   const networkId = getNetworkByName(query.networkOrProduct as unknown as NetworkNames).id
   const [productType, pair, positionId] = query.position as string[]
-  const castedProductType = productType as OmniProductType
+  let castedProductType = productType as OmniProductType
+  if (
+    [LendingProtocol.AaveV2, LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol)
+  ) {
+    // on aave-like we dont want to display the earn UI, we use multiply UI for this
+    castedProductType =
+      productType === OmniProductType.Earn ? OmniProductType.Multiply : castedProductType
+  }
 
   if (
     !isOmniSupportedNetworkId(networkId, omniProtocolSettings[protocol].supportedNetworkIds) ||
@@ -62,8 +70,11 @@ export async function getOmniServerSideProps({
     }
   }
 
-  const [resolvedCollateralToken, resolvedQuoteToken] =
-    collateralToken && quoteToken ? [collateralToken, quoteToken] : pair.split('-')
+  const [paramCollateralToken, paramQuoteToken, pairId = 1] = pair.split('-')
+
+  const resolvedCollateralToken = collateralToken ?? paramCollateralToken
+  const resolvedQuoteToken = quoteToken ?? paramQuoteToken
+
   const caseSensitiveCollateralToken = isAddress(resolvedCollateralToken)
     ? resolvedCollateralToken.toLowerCase()
     : resolvedCollateralToken.toUpperCase()
@@ -74,6 +85,7 @@ export async function getOmniServerSideProps({
   const omniProductPage = {
     collateralToken: caseSensitiveCollateralToken,
     networkId,
+    pairId: Number(pairId),
     positionId,
     productType: castedProductType,
     protocol,

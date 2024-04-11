@@ -6,6 +6,20 @@ import { gql } from 'graphql-request'
  * Record of subgraphs for different features.
  */
 export const subgraphsRecord: SubgraphsRecord = {
+  SummerDpm: {
+    [NetworkIds.MAINNET]: 'summer-dpm',
+    [NetworkIds.HARDHAT]: 'summer-dpm',
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: 'summer-dpm-arbitrum',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.BASEMAINNET]: 'summer-dpm-base',
+    [NetworkIds.BASEGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: 'summer-dpm-optimism',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
   Ajna: {
     [NetworkIds.MAINNET]: 'summer-ajna-v2',
     [NetworkIds.HARDHAT]: 'summer-ajna-v2',
@@ -93,6 +107,22 @@ export const subgraphsRecord: SubgraphsRecord = {
 }
 
 export const subgraphMethodsRecord: SubgraphMethodsRecord = {
+  getUserCreateEvents: gql`
+    query getUserCreateEvents($positionId: BigInt) {
+      accounts(where: { vaultId: $positionId }) {
+        createEvents {
+          collateralToken
+          debtToken
+          positionType
+          protocol
+        }
+        id
+        user {
+          id
+        }
+      }
+    }
+  `,
   getAjnaPositionAggregatedData: gql`
     query getAccount($dpmProxyAddress: ID!, $collateralAddress: String!, $quoteAddress: String!) {
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
@@ -485,6 +515,31 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           id
           decodedData
           decodedDataNames
+        }
+      }
+    }
+  `,
+  getMorphoVauldIdPositions: gql`
+    query getMorphoVauldIdPositions($positionId: BigInt) {
+      accounts(where: { vaultId: $positionId }) {
+        borrowPositions {
+          market {
+            id
+            collateralToken {
+              address
+              symbol
+            }
+            debtToken {
+              address
+              symbol
+            }
+          }
+        }
+        id
+        positionType
+        protocol
+        user {
+          id
         }
       }
     }

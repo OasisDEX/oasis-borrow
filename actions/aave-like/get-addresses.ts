@@ -77,6 +77,10 @@ export function getAddresses(
       SDAI: contracts.tokens['SDAI'].address,
       LUSD: contracts.tokens['LUSD'].address,
       FRAX: contracts.tokens['FRAX'].address,
+      MKR: contracts.tokens['MKR']?.address,
+      LINK: contracts.tokens['LINK']?.address,
+      RPL: contracts.tokens['RPL']?.address,
+      LDO: contracts.tokens['LDO']?.address,
     } as AaveLikeStrategyAddresses['tokens'],
     chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
     operationExecutor: contracts.operationExecutor.address,
@@ -90,6 +94,9 @@ export function getAddresses(
 
   if (networkId === NetworkIds.OPTIMISMMAINNET || networkId === NetworkIds.ARBITRUMMAINNET) {
     sharedAddresses.tokens['USDC.E'] = contracts.tokens['USDC.E'].address
+  }
+  if (networkId === NetworkIds.OPTIMISMMAINNET) {
+    sharedAddresses.tokens.SUSD = contracts.tokens['SUSD'].address
   }
 
   switch (lendingProtocol) {

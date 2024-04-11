@@ -6,6 +6,7 @@ import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
+import { shouldShowPairId } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { RefinancePortfolioBanner } from 'features/refinance/components'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
@@ -50,11 +51,20 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
   const { t: tPortfolio } = useTranslation('portfolio')
   const { EnableRefinance: isRefinanceEnabled } = useAppConfig('features')
 
+  const resolvedPairId = shouldShowPairId({
+    collateralToken: position.primaryToken,
+    networkName: position.network,
+    protocol: position.protocol,
+    quoteToken: position.secondaryToken,
+  })
+    ? `-${position.pairId}`
+    : ''
+
   const asset =
     position?.assetLabel ??
     (position.primaryToken === position.secondaryToken
       ? position.primaryToken
-      : `${position.primaryToken}/${position.secondaryToken}`)
+      : `${position.primaryToken}/${position.secondaryToken}${resolvedPairId}`)
   const icons =
     position.primaryToken === position.secondaryToken
       ? [position.primaryToken]

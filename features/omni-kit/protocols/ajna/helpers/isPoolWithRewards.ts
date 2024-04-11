@@ -25,8 +25,19 @@ const poolsWithRewardsEthereum = [
   'YFI-DAI',
   'MKR-DAI',
   'SUSDE-DAI',
+  'ENA-SDAI',
+  'SDAI-ENA',
 ]
-const poolsWithRewardsBase = ['CBETH-ETH', 'ETH-USDC', 'WSTETH-ETH']
+const poolsWithRewardsBase = [
+  'CBETH-ETH',
+  'ETH-USDC',
+  'WSTETH-ETH',
+  'DEGEN-USDC',
+  'USDC-DEGEN',
+  'SNX-USDC',
+  'AERO-USDC',
+  'PRIME-USDC',
+]
 const poolsWithRewardsArbitrum: string[] = []
 const poolsWithRewardsOptimism: string[] = []
 

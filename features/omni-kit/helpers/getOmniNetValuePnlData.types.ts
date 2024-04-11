@@ -27,6 +27,7 @@ export interface OmniNetValuePnlDataReturnType {
   pnl?: {
     pnlToken: string
     percentage: BigNumber
+    percentageUsd: BigNumber
     inToken: BigNumber
     inUsd: BigNumber
   }

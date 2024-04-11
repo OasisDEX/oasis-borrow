@@ -1,21 +1,22 @@
-import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import { omniBorrowishProducts } from 'features/omni-kit/constants'
 import type { OmniFlowStateFilterParams, OmniProductType } from 'features/omni-kit/types'
 
 export function morphoFlowStateFilter({
   collateralAddress,
   event,
-  productType,
-  quoteAddress,
-  protocol,
   filterConsumed,
+  pairId,
+  productType,
+  protocol,
+  quoteAddress,
 }: OmniFlowStateFilterParams): Promise<boolean> {
   const morphoFilterValue =
-    extractLendingProtocolFromPositionCreatedEvent(event) === protocol &&
-    collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
-    quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase() &&
+    event.protocol === protocol &&
+    event.pairId === pairId &&
+    collateralAddress.toLowerCase() === event.collateralTokenAddress.toLowerCase() &&
+    quoteAddress.toLocaleLowerCase() === event.debtTokenAddress.toLowerCase() &&
     omniBorrowishProducts.includes(productType.toLocaleLowerCase() as OmniProductType) &&
-    omniBorrowishProducts.includes(event.args.positionType.toLocaleLowerCase() as OmniProductType)
+    omniBorrowishProducts.includes(event.positionType.toLocaleLowerCase() as OmniProductType)
 
   return Promise.resolve(filterConsumed ? !morphoFilterValue : morphoFilterValue)
 }

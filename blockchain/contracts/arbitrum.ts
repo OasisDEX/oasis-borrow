@@ -190,6 +190,13 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'UNIETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_EZETHWETH),
     'SUSDE-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SUSDEDAI),
+    'DEGEN-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_DEGENUSDC),
+    'USDC-DEGEN': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_USDCDEGEN),
+    'SNX-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SNXUSDC),
+    'ENA-SDAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ENASDAI),
+    'SDAI-ENA': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SDAIENA),
+    'AERO-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_AEROUSDC),
+    'PRIME-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_PRIMEUSDC),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),

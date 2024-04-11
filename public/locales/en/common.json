@@ -228,6 +228,7 @@
         "automation": "Automation",
         "borrow-rate": "Borrow rate",
         "cdp-id": "",
+        "claimable-now": "Claimable now",
         "col-ratio": "Col. ratio",
         "collateral-debt": "Collateral/Debt",
         "collateral-locked": "Collateral locked",
@@ -258,9 +259,11 @@
         "protection": "Protection",
         "protocol-network": "Protocol/Network",
         "protocol": "Protocol",
+        "rewards-earned": "Rewards earned",
         "risk-ratio": "Risk ratio",
         "status": "Status",
         "strategy": "Strategy",
+        "token": "Token",
         "tvl": "TVL",
         "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
@@ -1161,6 +1164,13 @@
     },
     "aaveProductPage": {
       "title": "{{productType}} - Summer.fi × Aave"
+    },
+    "sparkProductPage": {
+      "title": "{{productType}} - Summer.fi × Spark"
+    },
+    "spark": {
+      "title": "Summer.fi × Spark",
+      "description": "Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
     },
     "multiply": {
       "title": "Multiply - Summer.fi",
@@ -2844,7 +2854,7 @@
   },
   "omni-kit": {
     "headline": {
-      "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
+      "title": "{{collateralToken}}/{{quoteToken}}{{pairId}} {{productType}}",
       "yield-multiple": "yield multiple",
       "details": {
         "30-days-avg-apy": "30 days average APY",
@@ -2975,12 +2985,13 @@
       "net-value-modal": {
         "modal-title": "Net Value & Profit and Loss",
         "modal-description": "The current net value is calculated based on the market price of <strong>${{netValueTokenPrice}}</strong>",
-        "modal-table-col-1": "Collateral Value",
-        "modal-table-col-2": "$ Value",
-        "modal-table-row-1": "Net Value",
-        "modal-table-row-2": "Deposits",
-        "modal-table-row-3": "Withdrawals",
-        "modal-table-row-4": "Gas Fees Spent",
+        "modal-table-collateral-value": "Collateral Value",
+        "modal-table-usd-value": "$ Value",
+        "modal-table-net-value": "Net Value",
+        "modal-table-deposits": "Deposits",
+        "modal-table-deposit-netto": "Net deposits",
+        "modal-table-withdrawals": "Withdrawals",
+        "modal-table-gas-fees": "Gas Fees Spent",
         "modal-value": "Profit & Loss",
         "modal-footnote-1": "P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction. Gas fees are not taken into account for the PnL."
@@ -3360,12 +3371,17 @@
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
         "market-apy": "Market APY",
         "per-1k-usd": "{{amount}} {{token}} per $1,000",
-        "vault-allocation-breakdown": "Vault allocation breakdown"
+        "vault-allocation-breakdown": "Vault allocation breakdown",
+        "vault-token-rewards": "Vault token rewards"
       },
       "earn": {
         "form-order": {
           "swapping": "Swapping",
           "total-deposit": "Total {{quoteToken}} deposit"
+        },
+        "transaction": {
+          "progress": "Claiming token rewards",
+          "success": "Token rewards were claimed"
         }
       }
     },

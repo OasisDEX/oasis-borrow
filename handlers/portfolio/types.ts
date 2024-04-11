@@ -50,6 +50,7 @@ export type PortfolioPosition = {
   netValue: number
   isOraclessAndNotEmpty?: boolean
   openDate?: number // epoch based on block height timestamp
+  pairId?: number
   positionId: number | string
   primaryToken: string
   protocol: LendingProtocol
@@ -80,7 +81,6 @@ export type PortfolioPositionsHandler = ({
   prices,
   positionsCount,
   debug,
-  useOmniKitLinks,
 }: {
   address: string
   apiVaults?: Vault[]
@@ -89,7 +89,6 @@ export type PortfolioPositionsHandler = ({
   positionsCount?: boolean
   allPositionsHistory?: HistoryResponse
   debug?: boolean
-  useOmniKitLinks?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
 export type DetailsTypeCommon =

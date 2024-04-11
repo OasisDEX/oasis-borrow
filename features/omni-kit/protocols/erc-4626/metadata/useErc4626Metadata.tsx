@@ -6,6 +6,7 @@ import { Erc4626HeadlineApy } from 'features/omni-kit/protocols/erc-4626/compone
 import {
   Erc4626DetailsSectionContent,
   Erc4626DetailsSectionContentAllocation,
+  Erc4626DetailsSectionContentRewards,
   Erc4626DetailsSectionFooter,
 } from 'features/omni-kit/protocols/erc-4626/components/details-section'
 import {
@@ -43,6 +44,7 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
       collateralAddress,
       isOpening,
       label,
+      pairId,
       productType,
       protocol,
       quoteAddress,
@@ -83,11 +85,12 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
             erc4626FlowStateFilter({
               collateralAddress,
               event,
+              filterConsumed,
+              pairId,
               productType,
-              quoteAddress,
               protocol,
               protocolRaw: `erc4626-${vaultAddress.toLowerCase()}`,
-              filterConsumed,
+              quoteAddress,
             }),
         },
         values: {
@@ -122,8 +125,8 @@ export const useErc4626Metadata: GetOmniMetadata = (productContext) => {
           overviewFooter: <Erc4626DetailsSectionFooter />,
           overviewBanner: (
             <>
+              {!isOpening && <Erc4626DetailsSectionContentRewards />}
               <Erc4626DetailsSectionContentAllocation />
-              {/* TODO: display rewards */}
             </>
           ),
           overviewWithSimulation: true,

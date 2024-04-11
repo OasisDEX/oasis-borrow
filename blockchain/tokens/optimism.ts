@@ -22,6 +22,7 @@ export const tokensOptimism = {
   RETH: contractDesc(erc20, optimism.common.RETH),
   RENBTC: contractDesc(erc20, optimism.common.RENBTC),
   SDAI: contractDesc(erc20, optimism.common.SDAI),
+  SUSD: contractDesc(erc20, optimism.common.SUSD),
   STETH: contractDesc(erc20, optimism.common.STETH),
   STYETH: contractDesc(erc20, optimism.common.STYETH),
   TBTC: contractDesc(erc20, optimism.common.TBTC),

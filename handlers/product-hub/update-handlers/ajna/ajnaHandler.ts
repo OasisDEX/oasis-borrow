@@ -201,11 +201,15 @@ async function getAjnaPoolData(
                 label,
                 network,
                 primaryToken: quoteToken,
-                ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
+                ...(secondaryTokenGroup !== quoteToken && {
+                  primaryTokenGroup: secondaryTokenGroup,
+                }),
                 product: [ProductHubProductType.Earn],
                 protocol,
                 secondaryToken: collateralToken,
-                ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
+                ...(primaryTokenGroup !== collateralToken && {
+                  secondaryTokenGroup: primaryTokenGroup,
+                }),
                 earnStrategy: EarnStrategies.liquidity_provision,
                 earnStrategyDescription: earnLPStrategy,
                 liquidity,
@@ -218,12 +222,11 @@ async function getAjnaPoolData(
                 secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
                 tooltips: {
-                  ...(isPoolNotEmpty &&
-                    isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
-                      weeklyNetApy: productHubAjnaRewardsTooltip,
-                    }),
                   ...(!isPoolNotEmpty && {
                     weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                  }),
+                  ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
+                    weeklyNetApy: productHubAjnaRewardsTooltip,
                   }),
                 },
               },

@@ -21,13 +21,12 @@ import {
 import type {
   GetOmniMetadata,
   OmniFormDefaults,
-  OmniProductType,
   OmniProtocolHookProps,
   OmniProtocolSettings,
   OmniSupportedNetworkIds,
   OmniSupportedProtocols,
 } from 'features/omni-kit/types'
-import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
+import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -62,6 +61,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
   isOracless?: boolean
   label?: string
   networkId: OmniSupportedNetworkIds
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: OmniSupportedProtocols
@@ -91,6 +91,7 @@ export const OmniProductController = <Auction, History, Position>({
   isOracless = false,
   label,
   networkId,
+  pairId,
   positionId,
   productType,
   protocol,
@@ -133,6 +134,7 @@ export const OmniProductController = <Auction, History, Position>({
     extraTokens,
     isOracless,
     networkId,
+    pairId,
     positionId,
     productType,
     protocol,
@@ -148,10 +150,11 @@ export const OmniProductController = <Auction, History, Position>({
     dpmPositionData,
     label,
     networkId,
+    pairId,
+    protocol,
     quoteToken,
     tokenPriceUSDData,
     tokensPrecision,
-    protocol,
   })
 
   useEffect(() => {
@@ -159,11 +162,10 @@ export const OmniProductController = <Auction, History, Position>({
   }, [dpmPositionData])
 
   const isYieldLoop = getOmniIsOmniYieldLoop({ collateralToken, pseudoProtocol, quoteToken })
-
   // Flag to determine whether full yield-loop UI experience is available for given protocol & pair
-  const isYieldLoopWithData = !!settings.yieldLoopPairsWithData?.[networkId]?.includes(
-    `${collateralToken}-${quoteToken}`,
-  )
+  const isYieldLoopWithData =
+    !!settings.yieldLoopPairsWithData?.[networkId]?.includes(`${collateralToken}-${quoteToken}`) &&
+    dpmPositionData?.product === OmniProductType.Multiply
 
   return (
     <WithConnection>
@@ -191,6 +193,7 @@ export const OmniProductController = <Auction, History, Position>({
                     collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
                     headline: label,
+                    pairId,
                     positionId,
                     productType: dpmPositionData?.product as OmniProductType,
                     protocol,
@@ -266,6 +269,7 @@ export const OmniProductController = <Auction, History, Position>({
                       network={network}
                       networkId={networkId}
                       owner={dpmPosition.user}
+                      pairId={pairId}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
