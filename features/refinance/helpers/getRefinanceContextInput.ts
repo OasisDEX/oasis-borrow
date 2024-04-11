@@ -8,7 +8,7 @@ import type {
 } from 'features/refinance/contexts'
 import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
 
-export const getRefinancePortfolioContextInput = ({
+export const getRefinanceContextInput = ({
   borrowRate,
   primaryToken,
   secondaryToken,

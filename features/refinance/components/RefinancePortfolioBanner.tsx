@@ -4,7 +4,7 @@ import { usePreloadAppDataContext } from 'components/context/PreloadAppDataConte
 import type { ProductHubItem } from 'features/productHub/types'
 import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
-import { getRefinancePortfolioContextInput } from 'features/refinance/helpers'
+import { getRefinanceContextInput } from 'features/refinance/helpers'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -165,7 +165,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
           }
 
           openModal(RefinanceModal, {
-            contextInput: getRefinancePortfolioContextInput({
+            contextInput: getRefinanceContextInput({
               borrowRate,
               primaryToken,
               secondaryToken,
