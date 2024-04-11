@@ -2,6 +2,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { SimulateTitle } from 'components/SimulateTitle'
+import { OmniDetailSectionErc20Claims } from 'features/omni-kit/components/details-section/OmniDetailSectionErc20Claims'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniInPositionAmount } from 'features/omni-kit/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -49,6 +50,7 @@ export function OmniOverviewController() {
         }
       />
       {overviewBanner}
+      <OmniDetailSectionErc20Claims />
     </Grid>
   )
 }
