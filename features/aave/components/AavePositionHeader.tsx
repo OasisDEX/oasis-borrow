@@ -6,9 +6,9 @@ import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'
-import { useAaveEarnYields } from 'features/aave/hooks'
 import type { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/types'
 import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -63,27 +63,27 @@ function AavePositionHeader({
   aaveTVL,
   minimumRiskRatio,
 }: {
-  maxRisk?: IRiskRatio
+  maxRisk: IRiskRatio
   strategy: IStrategyConfig
   aaveTVL?: PreparedAaveTotalValueLocked
   minimumRiskRatio: IRiskRatio
 }) {
   const { t } = useTranslation()
 
-  const isSparkProtocol = strategy.protocol === LendingProtocol.SparkV3
-
-  const minYields = useAaveEarnYields(
-    !isSparkProtocol ? minimumRiskRatio : undefined,
-    strategy.protocol,
-    strategy.network,
-    ['7Days'],
-  )
-  const maxYields = useAaveEarnYields(
-    !isSparkProtocol ? maxRisk || minimumRiskRatio : undefined,
-    strategy.protocol,
-    strategy.network,
-    ['7Days', '7DaysOffset', '90Days', '90DaysOffset'],
-  )
+  const minYields = useOmniEarnYields({
+    collateralToken: strategy.tokens.collateral,
+    quoteToken: strategy.tokens.debt,
+    ltv: minimumRiskRatio.loanToValue,
+    network: strategy.network,
+    protocol: strategy.protocol,
+  })
+  const maxYields = useOmniEarnYields({
+    collateralToken: strategy.tokens.collateral,
+    quoteToken: strategy.tokens.debt,
+    ltv: maxRisk.loanToValue,
+    network: strategy.network,
+    protocol: strategy.protocol,
+  })
 
   const headlineDetails = []
   if (minYields && maxYields) {

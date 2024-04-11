@@ -1,7 +1,7 @@
 import { AutomationFeatures } from 'features/automation/common/types'
 import { getAaveLikeAutomationMetadataCommonValues } from 'features/omni-kit/protocols/aave-like/helpers'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common/automationFormReducto.types'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 
 export const getAutomationFormDefaults = (
   positionTriggers: GetTriggersResponse,

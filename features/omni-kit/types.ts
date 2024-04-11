@@ -41,7 +41,7 @@ import type {
   SetupTrailingStopLossResponse,
   StopLossTriggersWithDecodedParams,
   TrailingStopLossTriggersWithDecodedParams,
-} from 'helpers/triggers'
+} from 'helpers/lambda/triggers'
 import type { TxError } from 'helpers/types'
 import type { LendingProtocolLabel } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'

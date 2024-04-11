@@ -33,7 +33,7 @@ import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAs
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { useAccount } from 'helpers/useAccount'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'

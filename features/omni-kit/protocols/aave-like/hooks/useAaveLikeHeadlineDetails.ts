@@ -1,14 +1,15 @@
 import type { IRiskRatio } from '@oasisdex/dma-library'
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { useAaveEarnYields, useAaveTvl } from 'features/aave/hooks'
+import { useAaveTvl } from 'features/aave/hooks'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { useOmniYieldLoopHeadline } from 'features/omni-kit/hooks'
-import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
+import { isAaveLikeLendingProtocol } from 'lendingProtocols'
 
 export const useAaveLikeHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: IRiskRatio }) => {
   const {
-    environment: { protocol, isYieldLoopWithData, isOpening, network },
+    environment: { protocol, isYieldLoopWithData, isOpening, network, quoteToken, collateralToken },
   } = useOmniGeneralContext()
 
   if (!(isYieldLoopWithData && isOpening)) {
@@ -19,21 +20,22 @@ export const useAaveLikeHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: IRi
     throw Error('Given protocol is not aave-like')
   }
 
-  const isSparkProtocol = protocol === LendingProtocol.SparkV3
   const minRiskRatio = new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE)
 
-  const minYields = useAaveEarnYields(
-    !isSparkProtocol ? minRiskRatio : undefined,
+  const minYields = useOmniEarnYields({
+    quoteToken,
+    collateralToken,
+    ltv: minRiskRatio.loanToValue,
+    network: network.name,
     protocol,
-    network.name,
-    ['7Days'],
-  )
-  const maxYields = useAaveEarnYields(
-    !isSparkProtocol ? maxRiskRatio : undefined,
+  })
+  const maxYields = useOmniEarnYields({
+    quoteToken,
+    collateralToken,
+    ltv: maxRiskRatio.loanToValue,
+    network: network.name,
     protocol,
-    network.name,
-    ['7Days', '7DaysOffset', '90Days', '90DaysOffset'],
-  )
+  })
 
   const tvlData = useAaveTvl(protocol, network.name)
 

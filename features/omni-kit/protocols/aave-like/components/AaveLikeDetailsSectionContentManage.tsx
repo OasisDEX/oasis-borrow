@@ -1,6 +1,5 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
-import { useAaveEarnYields } from 'features/aave/hooks'
 import { getOmniCardLtvAutomationParams } from 'features/omni-kit/automation/helpers'
 import {
   OmniCardDataCollateralDepositedModal,
@@ -22,11 +21,11 @@ import {
   mapBorrowCumulativesToOmniCumulatives,
 } from 'features/omni-kit/helpers'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one } from 'helpers/zero'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import type { FC } from 'react'
 import React from 'react'
@@ -66,12 +65,13 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
         amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
         token: collateralToken,
         getYields: () =>
-          useAaveEarnYields(
-            castedPosition.riskRatio,
-            protocol as AaveLikeLendingProtocol,
-            network.name,
-            ['7Days'],
-          ),
+          useOmniEarnYields({
+            quoteToken,
+            collateralToken,
+            ltv: castedPosition.riskRatio.loanToValue,
+            network: network.name,
+            protocol,
+          }),
       })
     : undefined
 

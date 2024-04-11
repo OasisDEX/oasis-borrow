@@ -31,7 +31,7 @@ import {
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { nbsp } from 'helpers/nbsp'
-import { TriggerAction } from 'helpers/triggers'
+import { TriggerAction } from 'helpers/lambda/triggers'
 import { hundred, one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'

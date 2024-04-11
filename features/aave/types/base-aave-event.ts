@@ -15,7 +15,7 @@ import { AutomationAddTriggerData } from 'features/automation/common/txDefinitio
 import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
 import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
-import { ProfitsSimulationMapped, TriggerTransaction } from "../../../helpers/triggers";
+import { ProfitsSimulationMapped, TriggerTransaction } from "../../../helpers/lambda/triggers";
 
 type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }

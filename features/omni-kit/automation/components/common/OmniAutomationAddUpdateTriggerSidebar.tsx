@@ -9,7 +9,7 @@ import { OmniAutomationCancelNotice } from 'features/omni-kit/automation/compone
 import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components/common/OmniAutomationFromOrder'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { TriggerAction } from 'helpers/triggers'
+import { TriggerAction } from 'helpers/lambda/triggers'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'

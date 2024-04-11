@@ -109,6 +109,7 @@ export const settingsV3: OmniProtocolSettings = {
   },
   yieldLoopPairsWithData: {
     [NetworkIds.MAINNET]: ['WSTETH-ETH'],
+    [NetworkIds.BASEMAINNET]: ['CBETH-ETH'],
   },
   availableAutomations: {
     [NetworkIds.MAINNET]: availableAaveV3Automations,

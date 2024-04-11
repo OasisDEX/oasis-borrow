@@ -4,7 +4,7 @@ import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { nbsp } from 'helpers/nbsp'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { bell } from 'theme/icons'
 
 export function getAaveLikeNotifications({

@@ -1,6 +1,4 @@
 import { RiskRatio } from '@oasisdex/dma-library'
-import { defaultYieldFields } from 'features/aave/components'
-import { useAaveEarnYields } from 'features/aave/hooks'
 import { OmniOpenYieldLoopSimulation } from 'features/omni-kit/components/details-section'
 import {
   omniDefaultOverviewSimulationDeposit,
@@ -8,14 +6,14 @@ import {
 } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import type { OmniProductType } from 'features/omni-kit/types'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 
 export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
   const {
-    environment: { productType, quoteToken, protocol, network },
+    environment: { productType, quoteToken, collateralToken, protocol, network },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -31,27 +29,26 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
     [depositAmount],
   )
 
-  // It's simplified version of whole aave-like default risk ratio config
-  const defaultRiskRatio = new RiskRatio(
-    position.maxRiskRatio.loanToValue.minus(omniYieldLoopMaxRiskLtvDefaultOffset),
-    RiskRatio.TYPE.LTV,
-  )
-
-  const riskRatio = useMemo(
-    () => simulation?.riskRatio || defaultRiskRatio,
-    [defaultRiskRatio, simulation],
-  )
+  const riskRatio = useMemo(() => {
+    // It's simplified version of whole aave-like default risk ratio config
+    const defaultRiskRatio = new RiskRatio(
+      position.maxRiskRatio.loanToValue.minus(omniYieldLoopMaxRiskLtvDefaultOffset),
+      RiskRatio.TYPE.LTV,
+    )
+    return simulation?.riskRatio || defaultRiskRatio
+  }, [position.maxRiskRatio.loanToValue, simulation?.riskRatio])
 
   const simulations = useOmniSimulationYields({
     amount,
     token: quoteToken,
     getYields: () =>
-      useAaveEarnYields(
-        riskRatio,
-        protocol as AaveLikeLendingProtocol,
-        network.name,
-        defaultYieldFields,
-      ),
+      useOmniEarnYields({
+        quoteToken,
+        collateralToken,
+        ltv: riskRatio.loanToValue,
+        network: network.name,
+        protocol,
+      }),
   })
 
   return <OmniOpenYieldLoopSimulation simulations={simulations} />
