@@ -8,10 +8,10 @@ import { AppLayout } from 'components/layouts/AppLayout'
 import { aaveContext, AaveContextProvider } from 'features/aave'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { AaveLikeDeprecatedLinkHandler } from 'features/omni-kit/controllers/OmniAaveLikeDeprecatedLinkHandler'
-import { aaveSeoTags } from 'features/omni-kit/protocols/aave/constants'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeData, useAaveLikeTxHandler } from 'features/omni-kit/protocols/aave-like/hooks'
 import { useAaveLikeMetadata } from 'features/omni-kit/protocols/aave-like/metadata'
+import { sparkSeoTags } from 'features/omni-kit/protocols/spark/actions/constants'
 import { settings } from 'features/omni-kit/protocols/spark/settings'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
@@ -44,7 +44,7 @@ function SparkPositionPage(props: SparkPositionPageProps) {
                 }
                 protocol={props.protocol}
                 protocolHook={useAaveLikeData}
-                seoTags={aaveSeoTags}
+                seoTags={sparkSeoTags}
                 settings={settings}
               />
             </AaveLikeDeprecatedLinkHandler>
