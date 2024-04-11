@@ -150,7 +150,7 @@ function ModalWrapper({
     return () => {
       document.body.removeEventListener('click', curriedOverflowClickHandler)
     }
-  }, [])
+  }, [close])
 
   return (
     <Box

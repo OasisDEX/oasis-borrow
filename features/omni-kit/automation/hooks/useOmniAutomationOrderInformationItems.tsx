@@ -35,6 +35,11 @@ export const useOmniAutomationOrderInformationItems = (): {
 
   const isLoading = !isTxSuccess && isSimulationLoading
 
+  const decorateIsLoading = (loading?: boolean) => (item: ItemProps) => ({
+    ...item,
+    isLoading: !!loading,
+  })
+
   const estimationItem = {
     label: t('max-gas-fee'),
     value: <OmniGasEstimation />,
@@ -59,14 +64,14 @@ export const useOmniAutomationOrderInformationItems = (): {
     case AutomationFeatures.STOP_LOSS: {
       const stopLossItems = useOmniStopLossOrderInformationItems()
       return {
-        items: stopLossItems,
+        items: stopLossItems.map(decorateIsLoading(isLoading)),
         gasItem,
       }
     }
     case AutomationFeatures.TRAILING_STOP_LOSS: {
       const trailingStopLossItems = useOmniTrailingStopLossOrderInformationItems()
       return {
-        items: trailingStopLossItems,
+        items: trailingStopLossItems.map(decorateIsLoading(isLoading)),
         gasItem,
       }
     }
@@ -74,14 +79,14 @@ export const useOmniAutomationOrderInformationItems = (): {
     case AutomationFeatures.AUTO_SELL: {
       const autoBSItems = useOmniAutoBSOrderInformationItems()
       return {
-        items: autoBSItems,
+        items: autoBSItems.map(decorateIsLoading(isLoading)),
         gasItem,
       }
     }
     case AutomationFeatures.PARTIAL_TAKE_PROFIT:
       const partialTakeProfitItems = useOmniPartialTakeProfitOrderInformationItems()
       return {
-        items: partialTakeProfitItems,
+        items: partialTakeProfitItems.map(decorateIsLoading(isLoading)),
         gasItem,
       }
 

@@ -56,6 +56,7 @@ export function OmniFormView({
       label,
       network,
       networkId,
+      pairId,
       productType,
       protocol,
       pseudoProtocol,
@@ -109,6 +110,8 @@ export function OmniFormView({
   const genericSidebarTitle = useOmniSidebarTitle()
 
   const flowState = useFlowState({
+    pairId,
+    protocol,
     networkId,
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
@@ -121,12 +124,21 @@ export function OmniFormView({
       state,
       quotePrecision,
     }),
-    filterConsumedProxy: async (events) =>
-      (
-        await Promise.all(events.map((event) => omniProxyFilter({ event, filterConsumed: true })))
-      ).every(Boolean),
+    filterConsumedProxy: async (events) => {
+      // leaving this all separate as its easier for debugging
+      const filterConsumedProxiesPromisesList = events.map((event) =>
+        omniProxyFilter({ event, filterConsumed: true }),
+      )
+      const filteredConsumedProxies = await Promise.all(filterConsumedProxiesPromisesList)
+      return filteredConsumedProxies.every(Boolean)
+    },
     onProxiesAvailable: async (events, dpmAccounts) => {
-      const filteredEvents = await Promise.all(events.filter((event) => omniProxyFilter({ event })))
+      const filteredEventsBooleanMap = await Promise.all(
+        events.map((event) => omniProxyFilter({ event })),
+      )
+      const filteredEvents = events.filter(
+        (_event, eventIndex) => filteredEventsBooleanMap[eventIndex],
+      )
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
         openModal(OmniDupePositionModal, {
@@ -137,6 +149,7 @@ export function OmniFormView({
           isOracless,
           label,
           networkId,
+          pairId,
           productType,
           protocol,
           pseudoProtocol,
@@ -229,6 +242,7 @@ export function OmniFormView({
       txSuccessAction && txSuccessAction()
     },
     onSwitchNetwork: () => setChain(network.hexId),
+    pairId,
     productType,
     protocol,
     pseudoProtocol,

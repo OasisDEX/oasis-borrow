@@ -1,3 +1,4 @@
+import type { ItemProps } from 'components/infoSection/Item'
 import { useOmniStopLossDataHandler } from 'features/omni-kit/automation/hooks/useOmniStopLossDataHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -35,5 +36,5 @@ export const useOmniStopLossOrderInformationItems = () => {
         ? `${formatCryptoBalance(savingCompareToLiquidation)} ${closeToToken}`
         : '-',
     },
-  ]
+  ] as ItemProps[]
 }

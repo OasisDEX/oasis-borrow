@@ -1,4 +1,4 @@
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { EmodeType, type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'

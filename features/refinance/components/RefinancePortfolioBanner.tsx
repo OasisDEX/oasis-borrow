@@ -1,8 +1,15 @@
 import BigNumber from 'bignumber.js'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import type { ProductHubItem } from 'features/productHub/types'
+import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
+import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { getRefinancePortfolioContextInput } from 'features/refinance/helpers'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { useModalContext } from 'helpers/modalHook'
+import { useObservable } from 'helpers/observableHook'
 import { LendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'
 import React from 'react'
@@ -69,21 +76,34 @@ interface RefinancePortfolioBannerProps {
 }
 
 export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ position }) => {
+  const { userSettings$ } = useAccountContext()
+  const [userSettingsData] = useObservable(userSettings$)
+  const { wallet } = useWalletManagement()
+
+  const { openModal } = useModalContext()
   const { t: tPortfolio } = useTranslation('portfolio')
   const {
     productHub: { table },
   } = usePreloadAppDataContext()
 
+  const refinanceGeneralContext = useRefinanceGeneralContext()
+
   if (!position.rawPositionDetails) {
     return null
   }
+  const { network, primaryToken, secondaryToken, positionId, automations } = position
 
-  const { rawPositionDetails } = position
-
-  const collateral = new BigNumber(rawPositionDetails.collateral)
-  const debt = new BigNumber(rawPositionDetails.debt)
-  const debtPrice = new BigNumber(rawPositionDetails.debtPrice)
-  const liquidationPrice = new BigNumber(rawPositionDetails.liquidationPrice)
+  const {
+    borrowRate,
+    maxLtv,
+    ltv,
+    poolId,
+    collateral,
+    collateralPrice,
+    debt,
+    debtPrice,
+    liquidationPrice,
+  } = position.rawPositionDetails
 
   const refinanceToProtocols = {
     [LendingProtocol.Maker]: [LendingProtocol.SparkV3],
@@ -97,11 +117,11 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
   const content = {
     [LendingProtocol.Maker]: (
       <LowerLiquidationPrice
-        liquidationPrice={liquidationPrice}
-        debtPrice={debtPrice}
-        debt={debt}
+        liquidationPrice={new BigNumber(liquidationPrice)}
+        debtPrice={new BigNumber(debtPrice)}
+        debt={new BigNumber(debt)}
         positionId={position.positionId}
-        collateral={collateral}
+        collateral={new BigNumber(collateral)}
         refinanceToProtocols={refinanceToProtocols}
         table={table}
       />
@@ -112,6 +132,13 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     [LendingProtocol.SparkV3]: null,
     [LendingProtocol.MorphoBlue]: null,
   }[position.protocol]
+
+  const contextId =
+    `${position.positionId}${position.primaryToken}${position.secondaryToken}`.toLowerCase()
+
+  const isDisabled =
+    refinanceGeneralContext?.ctx?.environment?.contextId !== contextId &&
+    !!refinanceGeneralContext?.ctx?.tx?.txDetails
 
   return content ? (
     <Flex
@@ -127,7 +154,39 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
       }}
     >
       {content}
-      <Button variant="textual" sx={{ p: 'unset' }} onClick={() => {}}>
+      <Button
+        variant="textual"
+        sx={{ p: 'unset' }}
+        disabled={isDisabled}
+        onClick={() => {
+          if (!position.rawPositionDetails || !userSettingsData) {
+            console.error('Raw position details not defined')
+            return
+          }
+
+          openModal(RefinanceModal, {
+            contextInput: getRefinancePortfolioContextInput({
+              borrowRate,
+              primaryToken,
+              secondaryToken,
+              collateralPrice,
+              debtPrice,
+              poolId,
+              network,
+              address: wallet?.address,
+              slippage: userSettingsData.slippage.toNumber(),
+              collateral,
+              debt,
+              positionId,
+              liquidationPrice,
+              ltv,
+              maxLtv,
+              automations,
+              contextId,
+            }),
+          })
+        }}
+      >
         {tPortfolio('refinance.title')}
       </Button>
     </Flex>

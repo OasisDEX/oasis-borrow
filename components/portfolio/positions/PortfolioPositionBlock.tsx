@@ -1,10 +1,12 @@
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AppLink } from 'components/Links'
 import { Pill } from 'components/Pill'
+import { emptyPortfolioPositionNetValueThreshold } from 'components/portfolio/constants'
 import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions/PortfolioPositionAutomationIcons'
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
+import { shouldShowPairId } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { RefinancePortfolioBanner } from 'features/refinance/components'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
@@ -49,11 +51,20 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
   const { t: tPortfolio } = useTranslation('portfolio')
   const { EnableRefinance: isRefinanceEnabled } = useAppConfig('features')
 
+  const resolvedPairId = shouldShowPairId({
+    collateralToken: position.primaryToken,
+    networkName: position.network,
+    protocol: position.protocol,
+    quoteToken: position.secondaryToken,
+  })
+    ? `-${position.pairId}`
+    : ''
+
   const asset =
     position?.assetLabel ??
     (position.primaryToken === position.secondaryToken
       ? position.primaryToken
-      : `${position.primaryToken}/${position.secondaryToken}`)
+      : `${position.primaryToken}/${position.secondaryToken}${resolvedPairId}`)
   const icons =
     position.primaryToken === position.secondaryToken
       ? [position.primaryToken]
@@ -88,9 +99,11 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         },
       }}
     >
-      {position.availableToRefinance && isRefinanceEnabled && (
-        <RefinancePortfolioBanner position={position} />
-      )}
+      {position.availableToRefinance &&
+        isRefinanceEnabled &&
+        position.netValue >= emptyPortfolioPositionNetValueThreshold && (
+          <RefinancePortfolioBanner position={position} />
+        )}
       <AppLink href={position.url}>
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
           <Text

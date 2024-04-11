@@ -1,3 +1,4 @@
+import type { ItemProps } from 'components/infoSection/Item'
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks/useOmniPartialTakeProfitDataHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -13,14 +14,19 @@ export const useOmniPartialTakeProfitOrderInformationItems = () => {
     automation: { automationForms },
   } = useOmniProductContext(productType)
 
-  const { afterResolvedEstimatedToReceive, resolveToToken } = useOmniPartialTakeProfitDataHandler()
+  const {
+    afterResolvedEstimatedToReceive,
+    resolveToToken,
+    startingTakeProfitPrice,
+    afterNextDynamicTriggerPrice,
+  } = useOmniPartialTakeProfitDataHandler()
+
+  const nextTriggerPrice = afterNextDynamicTriggerPrice || startingTakeProfitPrice
 
   return [
     {
       label: t('partial-take-profit.next-trigger-price'),
-      value: automationForms.partialTakeProfit.state.price
-        ? `${formatCryptoBalance(automationForms.partialTakeProfit.state.price)} ${priceFormat}`
-        : '-',
+      value: nextTriggerPrice ? `${formatCryptoBalance(nextTriggerPrice)} ${priceFormat}` : '-',
     },
     {
       label: t('partial-take-profit.next-realized-profit'),
@@ -50,5 +56,5 @@ export const useOmniPartialTakeProfitOrderInformationItems = () => {
           },
         ]
       : []),
-  ]
+  ] as ItemProps[]
 }

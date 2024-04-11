@@ -3,15 +3,16 @@ import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { arrow_right } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Button, Text } from 'theme-ui'
+import { Button, Flex, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {
   primaryText: string
-  secondaryText: string
+  secondaryText?: string
   maxWidth?: string
   ctaOnClick?: () => void
   ctaLabel?: TranslateStringType
   sx?: ThemeUIStyleObject
+  buttonVariant?: string
 }
 
 export const HomepageHeadline = ({
@@ -21,18 +22,21 @@ export const HomepageHeadline = ({
   ctaLabel,
   maxWidth = '700px',
   sx,
+  buttonVariant = 'primary',
 }: HomePageHeadlineProps) => {
   return (
-    <Box sx={{ maxWidth, ...sx }}>
+    <Flex sx={{ flexDirection: 'column', maxWidth, ...sx }}>
       <Text variant="header3" sx={{ color: 'primary100' }}>
         {primaryText}
-        <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>
-          {secondaryText}
-        </Text>
+        {secondaryText && (
+          <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>
+            {secondaryText}
+          </Text>
+        )}
       </Text>
       {ctaOnClick && ctaLabel && (
         <Button
-          variant="primary"
+          variant={buttonVariant}
           sx={{
             mt: 3,
             py: 2,
@@ -41,6 +45,7 @@ export const HomepageHeadline = ({
             '&:hover svg': {
               transform: 'translateX(10px)',
             },
+            width: 'fit-content',
           }}
           onClick={ctaOnClick}
         >
@@ -52,6 +57,6 @@ export const HomepageHeadline = ({
           />
         </Button>
       )}
-    </Box>
+    </Flex>
   )
 }

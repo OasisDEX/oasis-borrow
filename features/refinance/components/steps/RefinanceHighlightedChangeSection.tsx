@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
 import { InfoSectionWithGradient } from 'components/InfoSectionWithGradient'
-import { useRefinanceContext } from 'features/refinance/RefinanceContext'
+import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinanceOptions } from 'features/refinance/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'

@@ -1,9 +1,9 @@
 import type { NetworkNames } from 'blockchain/networks'
-import { getOmniProtocolUrlMap } from 'features/omni-kit/helpers'
+import { getOmniProtocolUrlMap, shouldShowPairId } from 'features/omni-kit/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import type { OmniProductType } from 'features/omni-kit/types'
-import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 interface GetOmniPositionUrlParams {
   collateralAddress?: string
@@ -11,6 +11,7 @@ interface GetOmniPositionUrlParams {
   isPoolOracless?: boolean
   label?: string
   networkName: NetworkNames
+  pairId: number
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
@@ -25,6 +26,7 @@ export function getOmniPositionUrl({
   isPoolOracless,
   label,
   networkName,
+  pairId,
   positionId,
   productType,
   protocol,
@@ -32,7 +34,20 @@ export function getOmniPositionUrl({
   quoteAddress,
   quoteToken,
 }: GetOmniPositionUrlParams) {
+  const resolvedPairId = shouldShowPairId({ collateralToken, networkName, protocol, quoteToken })
+    ? `-${pairId}`
+    : ''
   const resolvedPositionId = positionId ? `/${positionId}` : ''
+
+  if ([LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol)) {
+    return `/${networkName}/${
+      {
+        [LendingProtocol.AaveV3]: 'aave/v3',
+        [LendingProtocol.AaveV2]: 'aave/v2',
+        [LendingProtocol.SparkV3]: 'spark',
+      }[protocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3 | LendingProtocol.AaveV2]
+    }/${productType}/${collateralToken.toLocaleUpperCase()}-${quoteToken.toLocaleUpperCase()}${resolvedPositionId}`
+  }
 
   if (pseudoProtocol === Erc4626PseudoProtocol && label) {
     const { id } = erc4626VaultsByName[label]
@@ -46,7 +61,7 @@ export function getOmniPositionUrl({
       )}/${productType}/${collateralAddress}-${quoteAddress}`
     : `/${networkName}/${getOmniProtocolUrlMap(
         protocol,
-      )}/${productType}/${collateralToken}-${quoteToken}`
+      )}/${productType}/${collateralToken}-${quoteToken}${resolvedPairId}`
 
   return `${productUrl}${resolvedPositionId}`
 }

@@ -5,6 +5,10 @@ import type {
   SearchAjnaPoolFilters,
   SearchAjnaPoolResponse,
 } from 'features/ajna/pool-finder/helpers'
+import type {
+  MorphoVauldIdPositionsResponse,
+  UserCreateEventsResponse,
+} from 'features/omni-kit/observables'
 import type { AjnaPoolDataResponse } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaPoolsDataResponse } from 'features/omni-kit/protocols/ajna/helpers/getAjnaPoolsData'
 import type {
@@ -27,6 +31,9 @@ import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/ha
 import type { Erc4626InterestRatesResponse } from 'handlers/product-hub/update-handlers/erc-4626/erc4626Handler'
 
 export type Subgraphs = {
+  SummerDpm: {
+    getUserCreateEvents: { positionId: number }
+  }
   Ajna: {
     getAjnaEarnPositionData: { dpmProxyAddress: string; poolAddress: string }
     getAjnaPositionAggregatedData: {
@@ -51,6 +58,7 @@ export type Subgraphs = {
     getMakerDiscoverPositions: { walletAddress: string }
   }
   Morpho: {
+    getMorphoVauldIdPositions: { positionId: number }
     getMorphoDpmPositions: { dpmProxyAddress: string[] }
     getMorphoPositionAggregatedData: {
       dpmProxyAddress: string
@@ -77,6 +85,9 @@ export type SubgraphBaseResponse<R> = {
 }
 
 export type SubgraphsResponses = {
+  SummerDpm: {
+    getUserCreateEvents: SubgraphBaseResponse<UserCreateEventsResponse>
+  }
   Ajna: {
     getAjnaPositionAggregatedData: SubgraphBaseResponse<{
       auctions: {
@@ -139,6 +150,7 @@ export type SubgraphsResponses = {
     getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
   }
   Morpho: {
+    getMorphoVauldIdPositions: SubgraphBaseResponse<MorphoVauldIdPositionsResponse>
     getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
     getMorphoPositionAggregatedData: SubgraphBaseResponse<{
       summerEvents: PositionHistoryResponse[]
@@ -180,8 +192,9 @@ export type SubgraphsRecord = {
   }
 }
 export type SubgraphMethodsRecord = {
-  [key in keyof (Subgraphs['Aave'] &
+  [key in keyof (Subgraphs['SummerDpm'] &
     Subgraphs['Ajna'] &
+    Subgraphs['Aave'] &
     Subgraphs['Discover'] &
     Subgraphs['Morpho'] &
     Subgraphs['Erc4626'] &

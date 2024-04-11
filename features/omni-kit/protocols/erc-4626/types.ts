@@ -1,5 +1,9 @@
 import type { OmniSupportedNetworkIds, OmniSupportedProtocols } from 'features/omni-kit/types'
 
+export enum Erc4626RewardsType {
+  MetaMorpho = 'MetaMorpho',
+}
+
 export interface Erc4626PricePicker {
   marketCap?: number
   prices: number[]
@@ -28,6 +32,7 @@ export interface Erc4626Config {
     label?: string
     token: string
   }[]
+  rewardsType?: Erc4626RewardsType
   strategy: string
   token: Erc4626Token
 }

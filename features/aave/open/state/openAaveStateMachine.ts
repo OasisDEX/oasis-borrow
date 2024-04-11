@@ -52,7 +52,7 @@ import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
 import { getLocalAppConfig } from 'helpers/config'
 import type { AutomationTxData } from 'helpers/context/types'
-import { mapAaveLikeProtocol, mapAaveLikeUrlSlug } from 'helpers/getAaveLikeStrategyUrl'
+import { mapAaveLikeProtocolSlug, mapAaveLikeProtocolVersion } from 'helpers/getAaveLikeStrategyUrl'
 import { zero } from 'helpers/zero'
 import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, send, sendTo, spawn } from 'xstate'
@@ -829,14 +829,14 @@ export function createOpenAaveStateMachine(
           const contextConnected = context.web3Context as any as ContextConnected | undefined
 
           const address = shouldUseDpmProxy
-            ? `/${context.strategyConfig.network}/${mapAaveLikeUrlSlug(
+            ? `/${context.strategyConfig.network}/${mapAaveLikeProtocolSlug(
                 context.strategyConfig.protocol,
-              )}/${mapAaveLikeProtocol(context.strategyConfig.protocol)}/${
+              )}/${mapAaveLikeProtocolVersion(context.strategyConfig.protocol)}/${
                 context.userDpmAccount?.vaultId
               }`
-            : `/${context.strategyConfig.network}/${mapAaveLikeUrlSlug(
+            : `/${context.strategyConfig.network}/${mapAaveLikeProtocolSlug(
                 context.strategyConfig.protocol,
-              )}/${mapAaveLikeProtocol(context.strategyConfig.protocol)}/${
+              )}/${mapAaveLikeProtocolVersion(context.strategyConfig.protocol)}/${
                 contextConnected?.account
               }`
 

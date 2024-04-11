@@ -47,8 +47,14 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       dpmProxy,
       isOpening,
       isOracless,
+      isOwner,
       isShort,
+      isYieldLoop,
+      isYieldLoopWithData,
+      network,
+      networkId,
       owner,
+      pairId,
       positionId,
       priceFormat,
       productType,
@@ -56,10 +62,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       quoteIcon,
       quotePrice,
       quoteToken,
-      network,
-      networkId,
-      isYieldLoopWithData,
-      isYieldLoop,
       settings,
     },
     tx: { isTxInProgress },
@@ -98,7 +100,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
 
   return (
     <Container variant="vaultPageContainerStatic">
-      {contextIsLoaded && owner !== walletAddress && !isOpening && (
+      {contextIsLoaded && !isOwner && !isOpening && (
         <Box sx={{ mb: 4 }}>
           <VaultOwnershipBanner controller={owner} account={walletAddress} />
         </Box>
@@ -112,6 +114,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           headline,
           isYieldLoopWithData,
           networkName: network.name,
+          pairId,
           positionId,
           productType,
           protocol,
