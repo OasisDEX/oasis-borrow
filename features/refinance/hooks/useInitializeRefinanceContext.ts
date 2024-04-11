@@ -10,6 +10,7 @@ import type {
   RefinanceContextInput,
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { getRefinanceFlowStateFilter } from 'features/refinance/helpers'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -63,8 +64,8 @@ export const useInitializeRefinanceContext = ({
   }
 
   const {
-    environment: { tokenPrices, chainId, slippage, address },
-    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
+    environment: { tokenPrices, chainId, slippage, address, protocol, productType },
+    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
     position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
     automations,
   } = contextInput
@@ -116,7 +117,16 @@ export const useInitializeRefinanceContext = ({
 
   const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
 
-  const ctx = {
+  const ctx: RefinanceContextBase = {
+    metadata: {
+      flowStateFilter: ({ event, filterConsumed }) =>
+        getRefinanceFlowStateFilter({
+          event,
+          filterConsumed,
+          currentProductType: productType,
+          formState: form.state,
+        }),
+    },
     environment: {
       contextId: contextInput.contextId,
       collateralPrice,
@@ -126,6 +136,7 @@ export const useInitializeRefinanceContext = ({
       slippage,
       isShort,
       gasEstimation,
+      protocol,
     },
     position: {
       collateralTokenData,
@@ -136,6 +147,7 @@ export const useInitializeRefinanceContext = ({
     },
     poolData: {
       poolId,
+      pairId,
       borrowRate,
       maxLtv,
     },

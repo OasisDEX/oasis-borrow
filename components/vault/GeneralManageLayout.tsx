@@ -7,6 +7,7 @@ import type { FollowButtonControlProps } from 'features/follow/controllers/Follo
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { RefinanceModal } from 'features/refinance/components'
 import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
 import { useAppConfig } from 'helpers/config'
@@ -79,11 +80,12 @@ export function GeneralManageLayout({
       RiskRatio.TYPE.COL_RATIO,
     ).loanToValue.toString(),
     ilkType: vault.ilk,
+    productType: generalManageVault.type as unknown as OmniProductType,
   })
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      {/* In general it shouldn't be here but it's here to ease development for now */}
+      {/* In general, it shouldn't be here, but it's here to ease development for now */}
       {refinanceEnabled && (
         <button onClick={() => openModal(RefinanceModal, { contextInput })}>Refinance</button>
       )}

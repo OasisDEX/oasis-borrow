@@ -1,0 +1,34 @@
+import { FlowSidebar } from 'components/FlowSidebar'
+import { getOmniFilterConsumedProxy } from 'features/omni-kit/helpers'
+import { useRefinanceContext } from 'features/refinance/contexts'
+import { RefinanceSidebarStep } from 'features/refinance/types'
+import { useFlowState } from 'helpers/useFlowState'
+import { zero } from 'helpers/zero'
+import React from 'react'
+
+export const RefinanceFlowSidebarController = () => {
+  const {
+    metadata: { flowStateFilter },
+    environment: { chainInfo, protocol },
+    form: { updateState },
+    poolData: { pairId },
+    steps: { setStep, setNextStep },
+  } = useRefinanceContext()
+
+  const flowState = useFlowState({
+    pairId,
+    protocol,
+    networkId: chainInfo.chainId,
+    amount: zero,
+    token: 'ETH',
+    filterConsumedProxy: async (events) => getOmniFilterConsumedProxy(events, flowStateFilter),
+    onProxiesAvailable: () => null,
+    onEverythingReady: (data) => {
+      updateState('dpmProxy', data.availableProxies[0])
+      setNextStep()
+    },
+    onGoBack: () => setStep(RefinanceSidebarStep.Strategy),
+  })
+
+  return <FlowSidebar {...flowState} />
+}

@@ -17,6 +17,7 @@ interface GetOmniSidebarButtonsStatusParams {
   editingStep: OmniSidebarEditingStep | OmniSidebarAutomationEditingStep
   hasErrors: boolean
   isAllowanceLoading: boolean
+  isFlowSidebarUiLoading: boolean
   isFormFrozen: boolean
   isFormValid: boolean
   isOpening: boolean
@@ -39,6 +40,7 @@ export function getOmniSidebarButtonsStatus({
   editingStep,
   hasErrors,
   isAllowanceLoading,
+  isFlowSidebarUiLoading,
   isFormFrozen,
   isFormValid,
   isOpening,
@@ -61,6 +63,7 @@ export function getOmniSidebarButtonsStatus({
       hasErrors ||
       isFormFrozen ||
       isAllowanceLoading ||
+      (isFlowSidebarUiLoading && currentStep !== OmniSidebarStep.Risk) ||
       isSimulationLoading ||
       isTxInProgress ||
       isTxWaitingForApproval ||
@@ -70,6 +73,7 @@ export function getOmniSidebarButtonsStatus({
     !!walletAddress &&
     !shouldSwitchNetwork &&
     (isAllowanceLoading ||
+      (isFlowSidebarUiLoading && currentStep !== OmniSidebarStep.Risk) ||
       isSimulationLoading ||
       isTxInProgress ||
       isTxWaitingForApproval ||

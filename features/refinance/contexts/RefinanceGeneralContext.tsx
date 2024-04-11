@@ -2,9 +2,11 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
+import type { OmniFiltersParameters, OmniProductType } from 'features/omni-kit/types'
 import { useInitializeRefinanceContext } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
+import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, FC, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
 import type { AddressValue, ChainInfo, IPoolId, PositionId, TokenAmount } from 'summerfi-sdk-common'
@@ -43,11 +45,14 @@ export type RefinanceContextInput = {
     collateralTokenSymbol: string
     debtTokenSymbol: string
     maxLtv: RiskRatio
+    pairId: number
   }
   environment: {
     tokenPrices: Record<string, string>
     chainId: number
     slippage: number
+    protocol: LendingProtocol
+    productType: OmniProductType
     address?: string
   }
   position: {
@@ -70,6 +75,7 @@ export type RefinanceContextBase = {
     chainInfo: ChainInfo
     slippage: number
     isShort: boolean
+    protocol: LendingProtocol
     gasEstimation: GasEstimationContext | undefined
   }
   position: {
@@ -83,6 +89,10 @@ export type RefinanceContextBase = {
     poolId: IPoolId
     borrowRate: string
     maxLtv: RiskRatio
+    pairId: number
+  }
+  metadata: {
+    flowStateFilter: (params: OmniFiltersParameters) => Promise<boolean>
   }
   automations: RefinanceContextInputAutomations
   form: ReturnType<typeof useRefinanceFormReducto>
@@ -139,7 +149,6 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
         ctx,
         handleSetContext,
         handleOnClose,
-        // contexts,
       }}
     >
       {children}

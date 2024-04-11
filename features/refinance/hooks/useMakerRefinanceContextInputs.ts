@@ -1,9 +1,11 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinancePortfolioContextInput } from 'features/refinance/helpers'
 import type { MakerPoolId } from 'features/refinance/types'
+import { LendingProtocol } from 'lendingProtocols'
 import type { PositionId } from 'summerfi-sdk-common'
 import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
 
@@ -21,6 +23,7 @@ export const useMakerRefinanceContextInputs = ({
   ltv,
   maxLtv,
   ilkType,
+  productType,
 }: {
   address?: string
   chainId: NetworkIds
@@ -35,6 +38,7 @@ export const useMakerRefinanceContextInputs = ({
   ltv: string
   maxLtv: string
   ilkType: string
+  productType: OmniProductType
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 
@@ -85,6 +89,7 @@ export const useMakerRefinanceContextInputs = ({
     collateralPrice,
     debtPrice: '1',
     poolId,
+    pairId: 1,
     network,
     address,
     slippage,
@@ -96,5 +101,7 @@ export const useMakerRefinanceContextInputs = ({
     maxLtv,
     automations,
     contextId: id,
+    protocol: LendingProtocol.Maker,
+    productType,
   })
 }

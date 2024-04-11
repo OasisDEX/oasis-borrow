@@ -2,11 +2,13 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { networkNameToIdMap } from 'blockchain/networks'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type {
   RefinanceContextInput,
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
 import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export const getRefinancePortfolioContextInput = ({
   borrowRate,
@@ -15,6 +17,7 @@ export const getRefinancePortfolioContextInput = ({
   collateralPrice,
   debtPrice,
   poolId,
+  pairId,
   network,
   address,
   slippage,
@@ -26,6 +29,8 @@ export const getRefinancePortfolioContextInput = ({
   automations,
   contextId,
   positionId,
+  protocol,
+  productType,
 }: {
   borrowRate: string
   primaryToken: string
@@ -33,6 +38,7 @@ export const getRefinancePortfolioContextInput = ({
   collateralPrice: string
   debtPrice: string
   poolId: MakerPoolId | SparkPoolId
+  pairId: number
   network: NetworkNames
   address?: string
   slippage: number
@@ -44,14 +50,17 @@ export const getRefinancePortfolioContextInput = ({
   automations: RefinanceContextInputAutomations
   contextId: string
   positionId: string | number
+  protocol: LendingProtocol
+  productType: OmniProductType
 }): RefinanceContextInput => {
   return {
     poolData: {
-      borrowRate: borrowRate,
+      borrowRate,
       collateralTokenSymbol: primaryToken,
       debtTokenSymbol: secondaryToken,
       maxLtv: new RiskRatio(new BigNumber(maxLtv), RiskRatio.TYPE.LTV),
-      poolId: poolId,
+      poolId,
+      pairId,
     },
     environment: {
       tokenPrices: {
@@ -61,6 +70,8 @@ export const getRefinancePortfolioContextInput = ({
       chainId: networkNameToIdMap[network],
       slippage,
       address,
+      protocol,
+      productType,
     },
     position: {
       positionId: { id: positionId.toString() },

@@ -1,13 +1,9 @@
-import { NetworkIds } from 'blockchain/networks'
-import { FlowSidebar } from 'components/FlowSidebar'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { ChangeOwnerSidebar } from 'features/refinance/controllers'
+import { ChangeOwnerSidebar, RefinanceFlowSidebarController } from 'features/refinance/controllers'
 import { getRefinanceSidebarTitle } from 'features/refinance/helpers'
 import { RefinanceSidebarStep } from 'features/refinance/types'
-import { useFlowState } from 'helpers/useFlowState'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -70,44 +66,6 @@ export const RefinanceFormView: FC = ({ children }) => {
     disableMaxHeight: currentStep === RefinanceSidebarStep.Strategy,
   }
 
-  const flowState = useFlowState({
-    networkId: NetworkIds.MAINNET,
-    // ...(dpmProxy && { existingProxy: dpmProxy }),
-    amount: zero,
-    token: 'ETH',
-    filterConsumedProxy: () => Promise.resolve(false),
-    onProxiesAvailable: () => null,
-    // filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
-    // onProxiesAvailable: (events, dpmAccounts) => {
-    //   const filteredEvents = events.filter(flowStateFilter)
-    //
-    //   if (!hasDupePosition && filteredEvents.length) {
-    //     setHasDupePosition(true)
-    //     openModal(OmniDupePositionModal, {
-    //       collateralAddress,
-    //       collateralToken,
-    //       dpmAccounts,
-    //       events: filteredEvents,
-    //       isOracless,
-    //       label,
-    //       networkId,
-    //       productType,
-    //       protocol,
-    //       pseudoProtocol,
-    //       quoteAddress,
-    //       quoteToken,
-    //       theme,
-    //       walletAddress,
-    //     })
-    //   }
-    // },
-    onEverythingReady: (data) => {
-      updateState('dpmProxy', data.availableProxies[0])
-      setNextStep()
-    },
-    onGoBack: () => setStep(RefinanceSidebarStep.Strategy),
-  })
-
   const changeOwnerProps = {
     textButtonAction: () => setStep(RefinanceSidebarStep.Strategy),
     onEverythingReady: () => setNextStep(),
@@ -119,7 +77,7 @@ export const RefinanceFormView: FC = ({ children }) => {
         <SidebarSection {...sidebarSectionProps} />
       ) : (
         <>
-          {currentStep === RefinanceSidebarStep.Dpm && <FlowSidebar {...flowState} />}
+          {currentStep === RefinanceSidebarStep.Dpm && <RefinanceFlowSidebarController />}
           {currentStep === RefinanceSidebarStep.Give && (
             <ChangeOwnerSidebar {...changeOwnerProps} />
           )}
