@@ -18,19 +18,21 @@ export const ProductHubIntro: FC<ProductHubIntroProps> = ({ selectedProduct }) =
   return (
     <Text
       as="p"
-      variant="paragraph2"
+      variant="paragraph1"
       sx={{
         mx: 'auto',
         mt: '24px',
       }}
     >
-      {t(`product-hub.intro.${selectedProduct}`)}{' '}
+      {t(`product-hub.intro.${selectedProduct}`)}
+      <br />
+      {t('product-hub.intro.read-more')}{' '}
       <AppLink href={productHubLinksMap[selectedProduct]} sx={{ pr: 3 }}>
         <WithArrow
-          variant="paragraph2"
+          variant="paragraph1"
           sx={{
             display: 'inline-block',
-            fontSize: 3,
+            fontSize: 4,
             color: 'interactive100',
             fontWeight: 'regular',
           }}

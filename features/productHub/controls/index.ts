@@ -1,4 +1,4 @@
 export * from './ProductHubFiltersController'
-export * from './ProductHubNaturalLanguageSelectorController'
+export * from './ProductHubProductTypeSelectorController'
 export * from './ProductHubPromoCardsController'
 export * from './ProductHubTableController'

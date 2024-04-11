@@ -3394,15 +3394,11 @@
         "earn": "with "
       }
     },
-    "select": {
-      "borrow": "Borrow against your favorite crypto assets",
-      "multiply": "Increase your exposure to any crypto asset",
-      "earn": "Earn long term yields to compound your crypto capital"
-    },
     "intro": {
-      "borrow": "Easily borrow stablecoins or other crypto-assets against your collateral. Read more about",
-      "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset. Read more about",
-      "earn": "Earn long term yields to compound your crypto capital. Read more about"
+      "borrow": "Easily borrow stablecoins or other crypto-assets against your collateral.",
+      "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset.",
+      "earn": "Earn long term yields to compound your crypto capital.",
+      "read-more": "Read more about"
     },
     "featured": "Featured",
     "promo-cards": {

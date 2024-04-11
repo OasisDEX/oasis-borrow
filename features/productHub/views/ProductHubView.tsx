@@ -4,7 +4,7 @@ import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubLoadingState } from 'features/productHub/components/ProductHubLoadingState'
 import { ProductHubViewAll } from 'features/productHub/components/ProductHubViewAll'
 import {
-  ProductHubNaturalLanguageSelectorController,
+  ProductHubProductTypeSelectorController,
   ProductHubPromoCardsController,
 } from 'features/productHub/controls'
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
@@ -37,10 +37,9 @@ interface ProductHubViewProps {
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
   headerGradient?: [string, string, ...string[]]
   hiddenColumns?: ProductHubColumnKey[]
-  hiddenNLS?: boolean
+  hiddenProductTypeSelector?: boolean
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
-  intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
@@ -56,10 +55,9 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   dataParser = (_table) => _table,
   headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
   hiddenColumns,
-  hiddenNLS = false,
+  hiddenProductTypeSelector = false,
   initialNetwork,
   initialProtocol,
-  intro,
   limitRows,
   onRowClick,
   perPage,
@@ -122,22 +120,20 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         id="product-hub"
         sx={{
           position: 'relative',
-          mt: [3, null, '48px'],
-          scrollMarginTop: '48px',
+          mt: [3, null, 4],
+          scrollMarginTop: 4,
           zIndex: 3,
         }}
       >
-        {!hiddenNLS && (
+        {!hiddenProductTypeSelector && (
           <Box
             sx={{ position: 'relative', mb: [3, null, '48px'], textAlign: 'center', zIndex: '3' }}
           >
-            <ProductHubNaturalLanguageSelectorController
+            <ProductHubProductTypeSelectorController
               gradient={headerGradient}
-              product={product}
-              token={token}
-              onChange={(_selectedProduct, _selectedToken) => {
+              onChange={(_selectedProduct) => {
                 setSelectedProduct(_selectedProduct)
-                setSelectedToken(_selectedToken)
+                setSelectedToken(ALL_ASSETS)
                 setSelectedFilters(
                   getInitialFilters({
                     initialQueryString,
@@ -149,12 +145,9 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 )
                 setQueryString(getStrippedQueryString({ queryString }))
               }}
+              defaultProduct={product}
             />
-            {intro ? (
-              intro(selectedProduct, selectedToken)
-            ) : (
-              <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
-            )}
+            <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
           </Box>
         )}
         <WithLoadingIndicator

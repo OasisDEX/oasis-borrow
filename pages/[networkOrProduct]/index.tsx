@@ -24,6 +24,7 @@ function ProductHubPage({ product }: ProductHubPageProps) {
           <ProductHubView
             product={product}
             promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
+            promoCardsPosition="none"
             url="/"
           />
         </AnimatedWrapper>
