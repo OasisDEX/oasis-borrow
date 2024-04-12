@@ -37,6 +37,7 @@ export type PortfolioPosition = {
     maxLtv: string
     borrowRate: string
     poolId: MakerPoolId | SparkPoolId
+    pairId: number
   }
   /*
   lendingType:

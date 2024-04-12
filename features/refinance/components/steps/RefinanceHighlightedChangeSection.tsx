@@ -13,6 +13,7 @@ export const RefinanceHighlightedChangeSection = () => {
 
   const {
     poolData: { borrowRate, maxLtv },
+    position: { isShort },
     form: {
       state: { strategy, refinanceOption },
     },
@@ -87,7 +88,9 @@ export const RefinanceHighlightedChangeSection = () => {
 
   return (
     <InfoSectionWithGradient
-      title={t(`refinance.sidebar.whats-changing.highlighted.${title}`)}
+      title={t(`refinance.sidebar.whats-changing.highlighted.${title}`, {
+        value: isShort ? 'Long' : 'Short',
+      })}
       items={items}
     />
   )

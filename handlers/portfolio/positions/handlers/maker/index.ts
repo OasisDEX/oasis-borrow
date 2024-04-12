@@ -145,6 +145,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             maxLtv: maxRiskRatio.loanToValue.toString(),
             borrowRate: borrowRate.toString(),
             poolId,
+            pairId: 1,
           },
           ...(type === OmniProductType.Earn && { lendingType: 'passive' }),
           network: NetworkNames.ethereumMainnet,

@@ -10,6 +10,7 @@ import type {
   RefinanceContextInput,
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/refinance/helpers'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -64,8 +65,16 @@ export const useInitializeRefinanceContext = ({
 
   const {
     environment: { tokenPrices, chainId, slippage, address },
-    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
-    position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
+    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
+    position: {
+      collateralAmount,
+      debtAmount,
+      liquidationPrice,
+      positionId,
+      ltv,
+      protocol,
+      productType,
+    },
     automations,
   } = contextInput
 
@@ -116,7 +125,17 @@ export const useInitializeRefinanceContext = ({
 
   const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
 
-  const ctx = {
+  const ctx: RefinanceContextBase = {
+    metadata: {
+      flowStateFilter: ({ event, filterConsumed }) =>
+        getRefinanceFlowStateFilter({
+          event,
+          filterConsumed,
+          currentProductType: productType,
+          formState: form.state,
+        }),
+      validations: getRefinanceValidations({ state: form.state }),
+    },
     environment: {
       contextId: contextInput.contextId,
       collateralPrice,
@@ -124,8 +143,8 @@ export const useInitializeRefinanceContext = ({
       address: parsedAddress,
       chainInfo,
       slippage,
-      isShort,
       gasEstimation,
+      protocol,
     },
     position: {
       collateralTokenData,
@@ -133,9 +152,12 @@ export const useInitializeRefinanceContext = ({
       liquidationPrice,
       positionId,
       ltv,
+      productType,
+      isShort,
     },
     poolData: {
       poolId,
+      pairId,
       borrowRate,
       maxLtv,
     },
