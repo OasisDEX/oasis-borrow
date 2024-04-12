@@ -3367,8 +3367,7 @@
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
         "market-apy": "Market APY",
         "per-1k-usd": "{{amount}} {{token}} per $1,000",
-        "vault-allocation-breakdown": "Vault allocation breakdown",
-        "vault-token-rewards": "Vault token rewards"
+        "vault-allocation-breakdown": "Vault allocation breakdown"
       },
       "earn": {
         "form-order": {
@@ -3717,5 +3716,8 @@
         }
       }
     }
+  },
+  "vault-token-rewards": {
+    "title": "Vault token rewards"
   }
 }
