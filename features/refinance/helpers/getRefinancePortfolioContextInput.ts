@@ -70,10 +70,10 @@ export const getRefinancePortfolioContextInput = ({
       chainId: networkNameToIdMap[network],
       slippage,
       address,
-      protocol,
-      productType,
     },
     position: {
+      productType,
+      protocol,
       positionId: { id: positionId.toString() },
       collateralAmount: collateral,
       debtAmount: debt,

@@ -55,8 +55,6 @@ export type RefinanceContextInput = {
     tokenPrices: Record<string, string>
     chainId: number
     slippage: number
-    protocol: LendingProtocol
-    productType: OmniProductType
     address?: string
   }
   position: {
@@ -65,6 +63,8 @@ export type RefinanceContextInput = {
     debtAmount: string
     liquidationPrice: string
     ltv: RiskRatio
+    protocol: LendingProtocol
+    productType: OmniProductType
   }
   automations: RefinanceContextInputAutomations
   contextId: string

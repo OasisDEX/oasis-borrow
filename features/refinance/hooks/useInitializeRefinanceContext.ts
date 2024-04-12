@@ -64,9 +64,17 @@ export const useInitializeRefinanceContext = ({
   }
 
   const {
-    environment: { tokenPrices, chainId, slippage, address, protocol, productType },
+    environment: { tokenPrices, chainId, slippage, address },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
-    position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
+    position: {
+      collateralAmount,
+      debtAmount,
+      liquidationPrice,
+      positionId,
+      ltv,
+      protocol,
+      productType,
+    },
     automations,
   } = contextInput
 
