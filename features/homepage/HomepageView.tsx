@@ -4,7 +4,6 @@ import { InfoCard } from 'components/InfoCard'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -73,7 +72,6 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export function HomepageView() {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
   const { t } = useTranslation()
   const { data: oasisStats } = useOasisStats()
 
@@ -169,7 +167,6 @@ export function HomepageView() {
       <Box sx={{ mt: 7 }}>
         <ProductHubView
           product={ProductHubProductType.Earn}
-          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
           limitRows={10}
         />
       </Box>

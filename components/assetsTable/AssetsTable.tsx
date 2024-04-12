@@ -77,7 +77,10 @@ export function AssetsTable({
 
   const bannerRows = Math.min(paginatedRows.length - 1, 9)
 
-  useEffect(() => setPage(1), [rows])
+  useEffect(() => {
+    setPage(1)
+    setSortingSettings(undefined)
+  }, [rows])
   useEffect(() => {
     if ((container.current?.getBoundingClientRect().top ?? 0) < 0) scrollTo('assets-table')()
   }, [page])

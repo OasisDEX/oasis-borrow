@@ -26,6 +26,7 @@ function ProductHubPage({ product }: ProductHubPageProps) {
             promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
             promoCardsPosition="none"
             url="/"
+            perPage={20}
           />
         </AnimatedWrapper>
       </WithConnection>
