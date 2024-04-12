@@ -2,21 +2,19 @@ import { usePreloadAppDataContext } from 'components/context/PreloadAppDataConte
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubLoadingState } from 'features/productHub/components/ProductHubLoadingState'
 import { ProductHubViewAll } from 'features/productHub/components/ProductHubViewAll'
-import {
-  ProductHubProductTypeSelectorController,
-} from 'features/productHub/controls'
+import { ProductHubProductTypeSelectorController } from 'features/productHub/controls'
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
+import { parseQueryString } from 'features/productHub/helpers'
 import { useProductHubRouter } from 'features/productHub/hooks'
 import type {
   ProductHubColumnKey,
   ProductHubFilters,
   ProductHubItem,
   ProductHubProductType,
-  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import type { LendingProtocol } from 'lendingProtocols'
+import { useSearchParams } from 'next/navigation'
 import type { FC } from 'react'
 import React, { Fragment, useState } from 'react'
 import { Box } from 'theme-ui'
@@ -26,8 +24,7 @@ interface ProductHubViewProps {
   headerGradient?: [string, string, ...string[]]
   hiddenColumns?: ProductHubColumnKey[]
   hiddenProductTypeSelector?: boolean
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
+  initialFilters?: ProductHubFilters
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
@@ -40,8 +37,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
   hiddenColumns,
   hiddenProductTypeSelector = false,
-  // initialNetwork,
-  // initialProtocol,
+  initialFilters = {},
   limitRows,
   onRowClick,
   perPage,
@@ -52,9 +48,13 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const table = dataParser(data.table)
 
   const { connecting, wallet } = useWalletManagement()
+  const searchParams = useSearchParams()
 
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
-  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>({})
+  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>({
+    ...initialFilters,
+    ...parseQueryString({ searchParams }),
+  })
 
   useProductHubRouter({ selectedFilters, selectedProduct, url })
 
