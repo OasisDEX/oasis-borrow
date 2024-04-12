@@ -1,6 +1,6 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { omniProductTypeToSDKType } from 'features/refinance/helpers/omniProductTypeToSDKType'
-import { EmodeType, type SparkPoolId } from 'features/refinance/types'
+import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
+import { type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK } from 'summerfi-sdk-client'
@@ -17,10 +17,11 @@ import {
   Percentage,
   Position,
   ProtocolName,
-  Token,
   TokenAmount,
   Wallet,
 } from 'summerfi-sdk-common'
+
+import { getEmode } from './getEmode'
 
 export function useSdkSimulation() {
   const [error, setError] = useState<null | string>(null)
@@ -31,18 +32,17 @@ export function useSdkSimulation() {
 
   const {
     environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: { positionId, liquidationPrice, collateralTokenData, debtTokenData, type },
+    position: { positionId, liquidationPrice, collateralTokenData, debtTokenData, positionType },
     poolData: { poolId },
     form: {
-      state: { strategy, refinanceOption },
+      state: { strategy },
     },
   } = useRefinanceContext()
 
-  // TODO: This should be dynamic based on the strategy, add helper
-  const emodeType = EmodeType.None
+  const emodeType = getEmode(collateralTokenData, debtTokenData)
 
-  if (!type) {
-    throw new Error('Unsupported position type: ' + type)
+  if (!positionType) {
+    throw new Error('Unsupported position type.')
   }
   if (!strategy) {
     throw new Error('Strategy is not defined')
@@ -93,7 +93,7 @@ export function useSdkSimulation() {
         pool: sourcePool,
         collateralAmount: collateralTokenData,
         debtAmount: debtTokenData,
-        type,
+        type: positionType,
       })
       setSourcePosition(_sourcePosition)
 
@@ -108,22 +108,18 @@ export function useSdkSimulation() {
         poolId: targetPoolId,
       })
 
-      const targetPositionType = omniProductTypeToSDKType(strategy.product.map)
-      if (!targetPositionType) {
-        throw new Error(`Unsupported strategy product: ${strategy?.product}`)
-      }
       const _targetPosition = Position.createFrom({
         positionId: { id: 'newEmptyPositionFromPool' },
         pool: targetPool,
         collateralAmount: TokenAmount.createFrom({
           amount: '0',
-          token: Token.createFrom({ symbol: strategy?.primaryToken }),
+          token: mapTokenToSdkToken(chainInfo, strategy.primaryToken),
         }),
         debtAmount: TokenAmount.createFrom({
           amount: '0',
-          token: Token.createFrom({ symbol: strategy?.secondaryToken }),
+          token: mapTokenToSdkToken(chainInfo, strategy.secondaryToken),
         }),
-        type: targetPositionType,
+        type: positionType,
       })
 
       const refinanceParameters: IRefinanceParameters = {
@@ -151,7 +147,7 @@ export function useSdkSimulation() {
     positionId,
     collateralTokenData,
     debtTokenData,
-    type,
+    positionType,
     strategy?.product,
     strategy?.primaryToken,
     strategy?.secondaryToken,

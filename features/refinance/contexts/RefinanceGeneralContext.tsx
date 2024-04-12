@@ -66,8 +66,8 @@ export type RefinanceContextInput = {
     debtAmount: string
     liquidationPrice: string
     ltv: RiskRatio
-    type: PositionType | undefined
-    protocol: LendingProtocol
+    positionType: PositionType | undefined
+    lendingProtocol: LendingProtocol
   }
   automations: RefinanceContextInputAutomations
   contextId: string
@@ -89,8 +89,9 @@ export type RefinanceContextBase = {
     debtTokenData: TokenAmount
     liquidationPrice: string
     ltv: RiskRatio
-    type: PositionType | undefined
+    positionType: PositionType
     isShort: boolean
+    lendingProtocol: LendingProtocol
   }
   poolData: {
     poolId: IPoolId

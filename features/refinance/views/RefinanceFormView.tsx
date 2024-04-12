@@ -6,6 +6,7 @@ import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { ChangeOwnerSidebar, RefinanceFlowSidebarController } from 'features/refinance/controllers'
 import { getRefinanceNewProductType, getRefinanceSidebarTitle } from 'features/refinance/helpers'
+import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -22,9 +23,8 @@ export const RefinanceFormView: FC = ({ children }) => {
     },
     environment: {
       chainInfo: { chainId },
-      protocol,
     },
-    position: { collateralTokenData, debtTokenData, productType: currentType },
+    position: { collateralTokenData, debtTokenData, positionType, lendingProtocol },
     tx: { isTxSuccess, isTxInProgress, txDetails },
     form: {
       state: { refinanceOption },
@@ -57,6 +57,11 @@ export const RefinanceFormView: FC = ({ children }) => {
     action: () => console.log('click'),
   }
 
+  if (!positionType) {
+    throw new Error('Unsupported position type')
+  }
+  const currentType = positionTypeToOmniProductType(positionType)
+
   const productType = refinanceOption
     ? getRefinanceNewProductType({ currentType, refinanceOption })
     : currentType
@@ -76,7 +81,7 @@ export const RefinanceFormView: FC = ({ children }) => {
         collateralToken: collateralTokenData.token,
         quoteToken: debtTokenData.token,
         productType,
-        protocol: LendingProtocolLabel[protocol],
+        protocol: LendingProtocolLabel[lendingProtocol],
       },
     ),
     txDetails,

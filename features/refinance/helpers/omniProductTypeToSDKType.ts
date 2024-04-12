@@ -1,14 +1,14 @@
-import type { OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubProductType } from 'features/productHub/types'
 import { PositionType } from 'summerfi-sdk-common'
 
 export const omniProductTypeToSDKType = (
-  vaultType: OmniProductType | ProductHubProductType | undefined,
+  type: OmniProductType | ProductHubProductType,
 ): PositionType | undefined => {
-  switch (vaultType) {
-    case 'borrow':
+  switch (type) {
+    case OmniProductType.Borrow:
       return PositionType.Borrow
-    case 'multiply':
+    case OmniProductType.Multiply:
       return PositionType.Multiply
     default:
       return undefined

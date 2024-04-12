@@ -192,7 +192,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
               maxLtv,
               automations,
               contextId,
-              positionType: omniProductTypeToSDKType(position.type),
+              positionType: omniProductTypeToSDKType(productType),
               pairId,
             }),
           })
