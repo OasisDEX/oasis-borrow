@@ -6,7 +6,7 @@ import type { FC } from 'react'
 import React from 'react'
 import { Box, Button, Flex } from 'theme-ui'
 
-export const Erc4626DetailsSectionContentRewardsLoadingState: FC = () => {
+export const OmniDetailsSectionContentRewardsLoadingState: FC = () => {
   const { t } = useTranslation()
 
   return (
@@ -45,7 +45,7 @@ export const Erc4626DetailsSectionContentRewardsLoadingState: FC = () => {
           verticalAlign="top"
         />
       }
-      title={t('erc-4626.position-page.common.vault-token-rewards')}
+      title={t('vault-token-rewards.title')}
       footer={
         <Flex sx={{ justifyContent: 'flex-end' }}>
           <Button sx={{ px: 4 }} variant="tertiary" disabled>
