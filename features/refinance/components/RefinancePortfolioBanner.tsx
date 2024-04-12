@@ -191,7 +191,6 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
               maxLtv,
               automations,
               contextId,
-              protocol,
               productType,
               pairId,
             }),

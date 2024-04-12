@@ -8,7 +8,8 @@ import type {
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
 import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
-import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
+import { ProtocolName } from 'summerfi-sdk-common'
 
 export const getRefinancePortfolioContextInput = ({
   borrowRate,
@@ -29,7 +30,6 @@ export const getRefinancePortfolioContextInput = ({
   automations,
   contextId,
   positionId,
-  protocol,
   productType,
 }: {
   borrowRate: string
@@ -50,9 +50,17 @@ export const getRefinancePortfolioContextInput = ({
   automations: RefinanceContextInputAutomations
   contextId: string
   positionId: string | number
-  protocol: LendingProtocol
   productType: OmniProductType
 }): RefinanceContextInput => {
+  const protocol = {
+    [ProtocolName.Spark]: LendingProtocol.SparkV3,
+    [ProtocolName.Maker]: LendingProtocol.Maker,
+    [ProtocolName.AAVEv2]: LendingProtocol.AaveV2,
+    [ProtocolName.AAVEv3]: LendingProtocol.AaveV3,
+    [ProtocolName.Ajna]: LendingProtocol.Ajna,
+    [ProtocolName.MorphoBlue]: LendingProtocol.MorphoBlue,
+  }[poolId.protocol.name]
+
   return {
     poolData: {
       borrowRate,
