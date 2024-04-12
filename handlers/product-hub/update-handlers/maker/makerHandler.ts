@@ -1,4 +1,4 @@
-// import { ProductHubProductType } from 'features/productHub/types'
+// import { OmniProductType } from 'features/productHub/types'
 
 import { RiskRatio } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'

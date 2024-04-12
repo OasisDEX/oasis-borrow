@@ -11,8 +11,8 @@ import {
   getSparkV3ReserveData,
 } from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
+import { OmniProductType } from 'features/omni-kit/types'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
-import { ProductHubProductType } from 'features/productHub/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
@@ -109,7 +109,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   }
   // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
+    product.includes(OmniProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
     const networkId = networkNameToIdMap[product.network as SparkV3Networks]

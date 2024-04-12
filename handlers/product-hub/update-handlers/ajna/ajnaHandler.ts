@@ -15,15 +15,15 @@ import {
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import { OmniProductType } from 'features/omni-kit/types'
 import {
+  productHubAjnaEmptyPoolMaxLtvTooltip,
+  productHubAjnaEmptyPoolMaxMultipleTooltip,
+  productHubAjnaEmptyPoolWeeklyApyTooltip,
+  productHubAjnaOraclessLtvTooltip,
   productHubAjnaRewardsTooltip,
-  productHubEmptyPoolMaxLtvTooltip,
-  productHubEmptyPoolMaxMultipleTooltip,
-  productHubEmptyPoolWeeklyApyTooltip,
-  productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
 import type { ProductHubSupportedNetworks } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import type {
   ProductHubHandlerResponse,
@@ -151,9 +151,9 @@ async function getAjnaPoolData(
                 primaryToken: collateralToken,
                 ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
                 product: [
-                  ProductHubProductType.Borrow,
-                  ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
-                  // ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
+                  OmniProductType.Borrow,
+                  ...(isWithMultiply ? [OmniProductType.Multiply] : []),
+                  // ...(isYieldLoop && isWithMultiply ? [OmniProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,
@@ -186,14 +186,14 @@ async function getAjnaPoolData(
                   }),
                   ...(!isOracless &&
                     !isPoolNotEmpty && {
-                      maxLtv: productHubEmptyPoolMaxLtvTooltip,
-                      maxMultiply: productHubEmptyPoolMaxMultipleTooltip,
+                      maxLtv: productHubAjnaEmptyPoolMaxLtvTooltip,
+                      maxMultiply: productHubAjnaEmptyPoolMaxMultipleTooltip,
                     }),
                   ...(!isPoolNotEmpty && {
-                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                    weeklyNetApy: productHubAjnaEmptyPoolWeeklyApyTooltip,
                   }),
                   ...(isOracless && {
-                    maxLtv: productHubOraclessLtvTooltip,
+                    maxLtv: productHubAjnaOraclessLtvTooltip,
                   }),
                 },
               },
@@ -204,7 +204,7 @@ async function getAjnaPoolData(
                 ...(secondaryTokenGroup !== quoteToken && {
                   primaryTokenGroup: secondaryTokenGroup,
                 }),
-                product: [ProductHubProductType.Earn],
+                product: [OmniProductType.Earn],
                 protocol,
                 secondaryToken: collateralToken,
                 ...(primaryTokenGroup !== collateralToken && {
@@ -224,7 +224,7 @@ async function getAjnaPoolData(
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
                 tooltips: {
                   ...(!isPoolNotEmpty && {
-                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                    weeklyNetApy: productHubAjnaEmptyPoolWeeklyApyTooltip,
                   }),
                   ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
                     weeklyNetApy: productHubAjnaRewardsTooltip,

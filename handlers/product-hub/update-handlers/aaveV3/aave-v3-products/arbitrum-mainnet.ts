@@ -1,6 +1,7 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
-import { type ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import { type ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import type { AaveProductHubItemSeed } from 'handlers/product-hub/update-handlers/aaveV3/aave-v3-products/types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -96,7 +97,7 @@ const borrowProducts = aaveSeed
   .filter((strategy) => strategy.types.includes('borrow'))
   .map((strategy): ProductHubItemWithoutAddress => {
     return {
-      product: [ProductHubProductType.Borrow],
+      product: [OmniProductType.Borrow],
       primaryToken: strategy.collateral.toUpperCase(),
       primaryTokenGroup: getTokenGroup(strategy.collateral.toUpperCase()),
       secondaryToken: strategy.debt.toUpperCase(),
@@ -112,7 +113,7 @@ const earnProducts = aaveSeed
   .filter((strategy) => strategy.types.includes('earn'))
   .map((strategy): ProductHubItemWithoutAddress => {
     return {
-      product: [ProductHubProductType.Earn],
+      product: [OmniProductType.Earn],
       primaryToken: strategy.collateral.toUpperCase(),
       primaryTokenGroup: getTokenGroup(strategy.collateral.toUpperCase()),
       secondaryToken: strategy.debt.toUpperCase(),
@@ -131,7 +132,7 @@ const multiplyProducts = aaveSeed
   .filter((strategy) => strategy.types.includes('multiply'))
   .map((strategy): ProductHubItemWithoutAddress => {
     return {
-      product: [ProductHubProductType.Multiply],
+      product: [OmniProductType.Multiply],
       primaryToken: strategy.collateral.toUpperCase(),
       primaryTokenGroup: getTokenGroup(strategy.collateral.toUpperCase()),
       secondaryToken: strategy.debt.toUpperCase(),

@@ -6,10 +6,7 @@ import { Skeleton } from 'components/Skeleton'
 import useEmblaCarousel from 'embla-carousel-react'
 import { getGenericPromoCard } from 'features/productHub/helpers'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
-import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
-import { useAppConfig } from 'helpers/config'
-import { LendingProtocol } from 'lendingProtocols'
-import { shuffle, uniq } from 'lodash'
+import { shuffle } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { chevron_left, chevron_right } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
@@ -27,8 +24,6 @@ export const PortfolioPositionFeatured = ({
   const {
     productHub: { table },
   } = usePreloadAppDataContext()
-  const { AjnaSafetySwitch } = useAppConfig('features')
-
   const isMobile = useOnMobile()
   const slidesToDisplay = isMobile ? 1 : 2
   const [emblaRef, emblaApi] = useEmblaCarousel({ slidesToScroll: slidesToDisplay })
@@ -36,57 +31,14 @@ export const PortfolioPositionFeatured = ({
   const [amount, setAmount] = useState<number>(slidesToDisplay)
   const [canScrollPrev, setCanScrollPrev] = useState<boolean>(false)
   const [canScrollNext, setCanScrollNext] = useState<boolean>(true)
-  const promoCardsData =
-    PROMO_CARD_COLLECTIONS_PARSERS[AjnaSafetySwitch ? 'Home' : 'HomeWithAjna'](table)
 
   const slides = useMemo(() => {
     if (!!assets && !!positions) {
-      const matchingCards = shuffle(
-        uniq(
-          [
-            ...Object.keys(promoCardsData)
-              .map((key) => promoCardsData[key as keyof typeof promoCardsData])
-              .flatMap(({ default: _default, tokens }) => [
-                ..._default,
-                ...Object.keys(tokens).flatMap((key) => tokens[key]),
-              ]),
-          ]
-            // filter out promo cards that aren't token
-            .filter(({ tokens }) => !!tokens),
-        )
-          // filter out promo cards of products that user already has
-          .filter(
-            ({ protocol, tokens }) =>
-              !positions.find(
-                ({ network, primaryToken, protocol: _protocol, secondaryToken }) =>
-                  network === protocol?.network &&
-                  _protocol === protocol.protocol &&
-                  (tokens?.join('') === `${primaryToken}${secondaryToken}` ||
-                    (tokens?.length === 1 && tokens[0] === primaryToken)),
-              ),
-          )
-          // filter out promo cards of products using assets that user doesn't have
-          .filter(
-            ({ protocol, tokens }) =>
-              !!assets.find(
-                ({ network, symbol }) =>
-                  network === protocol?.network && tokens?.includes(symbol.toUpperCase()),
-              ),
-          ),
-      )
-
-      if (matchingCards.length) return matchingCards
-      else
-        return shuffle(
-          table.filter(
-            ({ protocol }) =>
-              !AjnaSafetySwitch || (AjnaSafetySwitch && protocol !== LendingProtocol.Ajna),
-          ),
-        )
-          .slice(0, 2)
-          .map((product) => getGenericPromoCard({ product }))
+      return shuffle(table)
+        .slice(0, 10)
+        .map((product) => getGenericPromoCard({ product }))
     } else return undefined
-  }, [assets?.length, positions?.length])
+  }, [assets, positions, table])
 
   function updateSliderUI() {
     if (slides && emblaApi) {

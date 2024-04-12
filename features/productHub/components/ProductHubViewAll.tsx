@@ -1,14 +1,14 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import type { OmniProductType } from 'features/omni-kit/types'
+import type { ParsedUrlQueryInput } from 'querystring'
 import React, { type FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'theme-ui'
 
 interface ProductHubViewAllProps {
-  query: {
-    [key: string]: string
-  }
-  selectedProduct: string
+  selectedProduct: OmniProductType
+  query: ParsedUrlQueryInput
 }
 
 export const ProductHubViewAll: FC<ProductHubViewAllProps> = ({ query, selectedProduct }) => {

@@ -1,16 +1,20 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
-import { ProductHubLoadingState } from 'features/productHub/components/ProductHubLoadingState'
-import { ProductHubViewAll } from 'features/productHub/components/ProductHubViewAll'
-import { ProductHubProductTypeSelectorController } from 'features/productHub/controls'
-import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
+import type { OmniProductType } from 'features/omni-kit/types'
+import {
+  ProductHubIntro,
+  ProductHubLoadingState,
+  ProductHubViewAll,
+} from 'features/productHub/components/'
+import {
+  ProductHubContentController,
+  ProductHubProductTypeSelectorController,
+} from 'features/productHub/controls'
 import { parseQueryString } from 'features/productHub/helpers'
 import { useProductHubRouter } from 'features/productHub/hooks'
 import type {
   ProductHubColumnKey,
   ProductHubFilters,
   ProductHubItem,
-  ProductHubProductType,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -28,13 +32,13 @@ interface ProductHubViewProps {
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
-  product: ProductHubProductType
+  product: OmniProductType
   url?: string
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
   dataParser = (_table) => _table,
-  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
+  headerGradient = ['#007da3', '#e7a77f', '#e97047'],
   hiddenColumns,
   hiddenProductTypeSelector = false,
   initialFilters = {},
@@ -50,13 +54,13 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const { connecting, wallet } = useWalletManagement()
   const searchParams = useSearchParams()
 
-  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
+  const [selectedProduct, setSelectedProduct] = useState<OmniProductType>(product)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>({
     ...initialFilters,
     ...parseQueryString({ searchParams }),
   })
 
-  useProductHubRouter({ selectedFilters, selectedProduct, url })
+  const { query } = useProductHubRouter({ selectedFilters, selectedProduct, url })
 
   return (
     <Fragment key={product}>
@@ -110,7 +114,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 onRowClick={onRowClick}
               />
               {limitRows && limitRows > 0 && (
-                <ProductHubViewAll query={{}} selectedProduct={selectedProduct} />
+                <ProductHubViewAll query={query} selectedProduct={selectedProduct} />
               )}
             </>
           )}

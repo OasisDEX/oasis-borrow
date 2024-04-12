@@ -1,7 +1,7 @@
 import type { ActionBannerProps } from 'components/ActionBanner'
 import { useMigrationBannerMeta } from 'features/migrations/useMigrationBannerMeta'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubFilters } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -14,12 +14,12 @@ import poolFinderIcon from 'public/static/img/product_hub_banners/pool-finder.sv
 
 interface ProductHubBannerProps {
   filters: ProductHubFilters
-  product: ProductHubProductType
+  selectedProduct: OmniProductType
 }
 
 export const useProductHubBanner = ({
   filters: { protocol },
-  product,
+  selectedProduct,
 }: ProductHubBannerProps): ActionBannerProps | undefined => {
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
@@ -49,17 +49,17 @@ export const useProductHubBanner = ({
   if (
     !ajnaSafetySwitchOn &&
     ajnaPoolFinderEnabled &&
-    product !== ProductHubProductType.Multiply &&
-    (protocol === undefined || protocol.value?.includes(LendingProtocol.Ajna))
+    selectedProduct !== OmniProductType.Multiply &&
+    (protocol === undefined || protocol?.includes(LendingProtocol.Ajna))
   ) {
     return {
       title: t('product-hub.banners.pool-finder.title'),
       children: t('product-hub.banners.pool-finder.description', {
-        product: startCase(product),
+        product: startCase(selectedProduct),
       }),
       cta: {
         label: t('product-hub.banners.pool-finder.cta'),
-        url: `${INTERNAL_LINKS.ajnaPoolFinder}/${product}`,
+        url: `${INTERNAL_LINKS.ajnaPoolFinder}/${selectedProduct}`,
       },
       image: staticFilesRuntimeUrl(poolFinderIcon),
     }

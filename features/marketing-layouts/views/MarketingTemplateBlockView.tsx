@@ -1,6 +1,4 @@
 import { ComparisonTable } from 'components/ComparisonTable'
-import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import { Icon } from 'components/Icon'
 import { SimpleCarousel } from 'components/SimpleCarousel'
 import {
   MarketingTemplateBanner,
@@ -15,14 +13,10 @@ import type {
   MarketingTemplateProductFinderBlocks,
 } from 'features/marketing-layouts/types'
 import { MarketingTemplateBlocks } from 'features/marketing-layouts/types'
-import { ProductHubPromoCardsList } from 'features/productHub/components/ProductHubPromoCardsList'
-import { getGenericPromoCard } from 'features/productHub/helpers'
 import { ProductHubView } from 'features/productHub/views'
 import { getGradientColor } from 'helpers/getGradientColor'
-import { useTranslation } from 'next-i18next'
 import { type FC, Fragment } from 'react'
 import React from 'react'
-import { sparks } from 'theme/icons'
 import { Box, Flex, Grid } from 'theme-ui'
 
 type MarketingTemplateBlockViewProps = MarketingTemplateProductFinderBlocks & {
@@ -37,11 +31,6 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
   title,
   type,
 }) => {
-  const { t } = useTranslation()
-  const {
-    productHub: { table },
-  } = usePreloadAppDataContext()
-
   const { foreground } = palette
 
   switch (type) {
@@ -116,37 +105,9 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
       return (
         <Flex sx={{ flexDirection: 'column' }}>
           {content.map((productFinder, i) => {
-            const promoCards = table
-              .filter((product) =>
-                productFinder.promoCards.some(
-                  (filters) =>
-                    product.network === filters.network &&
-                    product.protocol === filters.protocol &&
-                    product.product.includes(filters.product) &&
-                    product.primaryToken.toLowerCase() === filters.primaryToken.toLowerCase() &&
-                    product.secondaryToken.toLowerCase() === filters.secondaryToken.toLowerCase(),
-                ),
-              )
-              .map((product) => getGenericPromoCard({ product }))
-
             return (
               <Fragment key={i}>
-                <ProductHubView
-                  headerGradient={foreground}
-                  promoCardsCollection="Home"
-                  promoCardsPosition="none"
-                  limitRows={10}
-                  {...productFinder}
-                />
-                <ProductHubPromoCardsList
-                  heading={
-                    <>
-                      <Icon icon={sparks} color={foreground[0]} size={18} sx={{ mr: 2 }} />
-                      {t('product-hub.featured')}
-                    </>
-                  }
-                  promoCards={promoCards}
-                />
+                <ProductHubView headerGradient={foreground} limitRows={10} {...productFinder} />
               </Fragment>
             )
           })}

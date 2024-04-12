@@ -1,12 +1,12 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
-import { useProductHubFilters } from 'features/productHub/hooks/useProductHubFilters'
+import { OmniProductType } from 'features/omni-kit/types'
+import { useProductHubFilters } from 'features/productHub/hooks'
 import type {
   ProductHubFilters,
   ProductHubItem,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import React, { type FC } from 'react'
 
@@ -17,7 +17,7 @@ interface ProductHubFiltersControllerProps {
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductHubProductType
+  selectedProduct: OmniProductType
 }
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
@@ -48,7 +48,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
     <AssetsFiltersContainer
       key={selectedProduct}
       filters={[
-        ...(selectedProduct === ProductHubProductType.Earn
+        ...(selectedProduct === OmniProductType.Earn
           ? [depositTokenFilter]
           : [collateralTokenFilter, debtTokenFilter]),
         protocolFilter,

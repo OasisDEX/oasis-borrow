@@ -1,18 +1,12 @@
 import type { NetworkNames } from 'blockchain/networks'
 import type { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip.types'
-import type { PromoCardProps } from 'components/PromoCard.types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
 import type { EarnStrategies } from '.prisma/client'
 
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
 export type ProductHubManagementType = 'active' | 'passive'
-
-export enum ProductHubProductType {
-  Borrow = 'borrow',
-  Multiply = 'multiply',
-  Earn = 'earn',
-}
 
 export type ProductHubTokenType = string
 export type ProductHubRewardsType = boolean
@@ -46,7 +40,7 @@ export interface ProductHubItemBasics {
   primaryToken: ProductHubTokenType
   primaryTokenAddress: ProductHubTokenType
   primaryTokenGroup?: ProductHubTokenType
-  product: ProductHubProductType[]
+  product: OmniProductType[]
   protocol: LendingProtocol
   secondaryToken: ProductHubTokenType
   secondaryTokenAddress: ProductHubTokenType
@@ -88,15 +82,6 @@ export type ProductHubItemWithFlattenTooltip = Omit<ProductHubItem, 'tooltips'> 
   tooltips: string
 }
 
-export type ProductHubPromoCards = {
-  [key in ProductHubProductType]: {
-    default: PromoCardProps[]
-    tokens: {
-      [key: string]: PromoCardProps[]
-    }
-  }
-}
-
 export interface ProductHubData {
   table: ProductHubItem[]
 }
@@ -104,19 +89,15 @@ export interface ProductHubFilters {
   [key: string]: string[]
 }
 
-export interface ProductHubQueryString {
-  debtToken?: ProductHubTokenType[]
-  network?: ProductHubSupportedNetworks[]
-  protocol?: LendingProtocol[]
-  rewardsOnly?: ProductHubRewardsType[]
-  secondaryToken?: ProductHubTokenType[]
-  strategy?: ProductHubMultiplyStrategyType[]
-}
-
-export interface ProductFinderPromoCardFilters {
+export interface ProductHubPromoCardFilters {
+  label?: string
   network: ProductHubSupportedNetworks
   primaryToken: string
-  product: ProductHubProductType
+  product: OmniProductType
   protocol: LendingProtocol
   secondaryToken: ProductHubTokenType
+}
+
+export type ProductHubFeaturedProducts = {
+  [key in OmniProductType]?: ProductHubPromoCardFilters[]
 }

@@ -5,9 +5,10 @@ import {
   MarketingTemplatePalette,
 } from 'features/marketing-layouts/types'
 import { LandingPageRawBlocks } from 'contentful/types'
-import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
+import { ProductHubSupportedNetworks } from 'features/productHub/types'
 import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 import { NetworkLabelType } from 'blockchain/networks'
+import { OmniProductType } from 'features/omni-kit/types'
 
 export interface LandingPageRawBlocksItems {
   sys: {
@@ -148,7 +149,7 @@ export interface ProductFinderRawResponse {
   name: string
   token: string
   product: {
-    slug: ProductHubProductType
+    slug: OmniProductType
     name: string
   }
   initialProtocolCollection: {

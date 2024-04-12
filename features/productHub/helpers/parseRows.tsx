@@ -4,9 +4,9 @@ import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { getActionUrl, parseProduct } from 'features/productHub/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
+import { getGenericPositionUrl, parseProduct } from 'features/productHub/helpers'
 import type { ProductHubColumnKey, ProductHubItem } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { omit, upperFirst } from 'lodash'
 import React from 'react'
 
@@ -14,7 +14,7 @@ interface ParseRowsParams {
   hiddenColumns?: ProductHubColumnKey[]
   networkId?: NetworkIds
   onRowClick?: (row: ProductHubItem) => void
-  product: ProductHubProductType
+  product: OmniProductType
   rows: ProductHubItem[]
 }
 
@@ -37,16 +37,16 @@ export function parseRows({
       tooltips,
     } = row
     const icons = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
-    const asset = product === ProductHubProductType.Earn ? depositToken || primaryToken : label
+    const asset = product === OmniProductType.Earn ? depositToken ?? primaryToken : label
 
     if (reverseTokens) icons.reverse()
 
-    const url = getActionUrl({ ...row, networkId: networkId, product: [product] })
-    const urlDisabled = url === '/'
+    const url = getGenericPositionUrl({ ...row, networkId: networkId, product: [product] })
+    const isUrlDisabled = url === '/'
 
     const items = omit(
       {
-        [product === ProductHubProductType.Earn ? 'depositToken' : 'collateralDebt']: (
+        [product === OmniProductType.Earn ? 'depositToken' : 'collateralDebt']: (
           <AssetsTableDataCellAsset
             asset={asset}
             icons={icons}
@@ -64,9 +64,9 @@ export function parseRows({
         ),
         action: (
           <AssetsTableDataCellAction
-            cta={urlDisabled ? 'Coming soon' : upperFirst(product)}
+            cta={isUrlDisabled ? 'Coming soon' : upperFirst(product)}
             link={url}
-            disabled={urlDisabled}
+            disabled={isUrlDisabled}
           />
         ),
       },

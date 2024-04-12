@@ -1,7 +1,7 @@
 import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type {
-  ProductFinderPromoCardFilters,
-  ProductHubProductType,
+  ProductHubPromoCardFilters,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -31,15 +31,15 @@ export interface MarketingTemplateBlock {
 }
 
 export type MarketingProductFinderPromoCards = [
-  ProductFinderPromoCardFilters,
-  ProductFinderPromoCardFilters,
-  ProductFinderPromoCardFilters,
+  ProductHubPromoCardFilters,
+  ProductHubPromoCardFilters,
+  ProductHubPromoCardFilters,
 ]
 
 interface MarketingTemplateProductFinderProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
-  product: ProductHubProductType
+  product: OmniProductType
   promoCards: MarketingProductFinderPromoCards
   token?: string
 }

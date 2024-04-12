@@ -1,37 +1,36 @@
 import BigNumber from 'bignumber.js'
-import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import { getGenericPositionUrl } from 'features/productHub/helpers'
+import { featuredProducts } from 'features/productHub/meta'
+import type { ProductHubItem } from 'features/productHub/types'
+import { zero } from 'helpers/zero'
 
-export const getProductEarnNavItems = (
-  promoCards: ProductHubPromoCards,
-  productHub: ProductHubItem[],
-) => {
-  const data: (ProductHubItem & { url?: string })[] = []
-
-  promoCards.earn.default.forEach((promoCard) => {
-    const foundItem = productHub.find(
-      (item) =>
-        (!item.reverseTokens
-          ? item.primaryToken === promoCard.tokens?.[0] &&
-            item.secondaryToken === (promoCard.tokens?.[1] || promoCard.tokens?.[0])
-          : item.primaryToken === promoCard.tokens?.[1] &&
-            item.secondaryToken === (promoCard.tokens?.[0] || promoCard.tokens?.[1])) &&
-        item.network === promoCard.protocol?.network &&
-        item.protocol === promoCard.protocol.protocol &&
-        item.product.includes(ProductHubProductType.Earn),
+export const getProductEarnNavItems = (productHub: ProductHubItem[]) => {
+  return productHub
+    .filter((product) =>
+      featuredProducts.earn?.some(
+        (featured) =>
+          (featured.label ? featured.label === product.label : true) &&
+          product.primaryToken === featured.primaryToken &&
+          product.secondaryToken === featured.secondaryToken &&
+          product.protocol === featured.protocol &&
+          product.network === featured.network &&
+          product.product.includes(OmniProductType.Earn),
+      ),
     )
-    if (foundItem) data.push({ ...foundItem, url: promoCard.link?.href })
-  })
-
-  return data.map((item) => ({
-    weeklyNetApy: item.weeklyNetApy ? new BigNumber(item.weeklyNetApy) : undefined,
-    primaryToken: item.primaryToken,
-    secondaryToken: item.secondaryToken,
-    protocol: item.protocol,
-    network: item.network,
-    earnStrategy: item.earnStrategy,
-    earnStrategyDescription: item.earnStrategyDescription,
-    reverseTokens: item.reverseTokens,
-    url: item.url,
-  }))
+    .map((product) => ({
+      weeklyNetApy: product.weeklyNetApy ? new BigNumber(product.weeklyNetApy) : undefined,
+      primaryToken: product.primaryToken,
+      secondaryToken: product.secondaryToken,
+      protocol: product.protocol,
+      network: product.network,
+      earnStrategy: product.earnStrategy,
+      earnStrategyDescription: product.earnStrategyDescription,
+      reverseTokens: product.reverseTokens,
+      url: getGenericPositionUrl({
+        ...product,
+        product: [OmniProductType.Earn],
+      }),
+    }))
+    .sort((a, b) => b.weeklyNetApy?.minus(a.weeklyNetApy ?? zero).toNumber() ?? 0)
 }

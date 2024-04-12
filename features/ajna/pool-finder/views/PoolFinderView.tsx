@@ -11,8 +11,8 @@ import {
 import { parsePoolResponse, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
 import type { OraclessPoolResult, PoolFinderFormState } from 'features/ajna/pool-finder/types'
 import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
-import type { ProductHubProductType } from 'features/productHub/types'
 import { useAppConfig } from 'helpers/config'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -25,7 +25,7 @@ import { combineLatest } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
 
 interface PoolFinderViewProps {
-  product: ProductHubProductType
+  product: OmniProductType
 }
 
 export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
@@ -41,7 +41,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
     ),
   )
 
-  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
+  const [selectedProduct, setSelectedProduct] = useState<OmniProductType>(product)
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
   const [resultsKey, setResultsKey] = useState<string>('')
   const [addresses, setAddresses] = useState<PoolFinderFormState>({

@@ -11,7 +11,8 @@ import { isShortPosition } from 'features/omni-kit/helpers'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { morphoMarkets, settings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { ProductHubProductType, type ProductHubSupportedNetworks } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import { type ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import type {
   ProductHubHandlerResponse,
@@ -107,8 +108,8 @@ async function getMorphoMarketData(
               primaryToken: collateralToken,
               ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
               product: [
-                ProductHubProductType.Borrow,
-                ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
+                OmniProductType.Borrow,
+                ...(isWithMultiply ? [OmniProductType.Multiply] : []),
               ],
               protocol,
               secondaryToken: quoteToken,

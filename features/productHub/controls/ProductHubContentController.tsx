@@ -2,16 +2,22 @@ import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
-import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
-import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
-import { filterByProductType, filterByUserFilters, parseRows } from 'features/productHub/helpers'
-import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
-import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
+import type { OmniProductType } from 'features/omni-kit/types'
+import {
+  ProductHubFiltersController,
+  ProductHubTableController,
+} from 'features/productHub/controls'
+import {
+  filterByProductType,
+  filterByUserFilters,
+  parseRows,
+  sortByDefault,
+} from 'features/productHub/helpers'
+import { useProductHubBanner } from 'features/productHub/hooks'
 import type {
   ProductHubColumnKey,
   ProductHubFilters,
   ProductHubItem,
-  ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useAppConfig } from 'helpers/config'
@@ -28,7 +34,7 @@ interface ProductHubContentControllerProps {
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductHubProductType
+  selectedProduct: OmniProductType
   tableData: ProductHubItem[]
 }
 
@@ -54,7 +60,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const banner = useProductHubBanner({
     filters: selectedFilters,
-    product: selectedProduct,
+    selectedProduct: selectedProduct,
   })
 
   const dataFilteredByFeatureFlags = useMemo(

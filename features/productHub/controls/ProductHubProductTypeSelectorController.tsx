@@ -1,24 +1,24 @@
 import { Tabs } from 'components/Tabs'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { upperFirst } from 'lodash'
 import type { FC } from 'react'
 import React from 'react'
 import { Text } from 'theme-ui'
 
 interface ProductHubProductTypeSelectorControllerProps {
-  defaultProduct: ProductHubProductType
+  defaultProduct: OmniProductType
   gradient: [string, string, ...string[]]
-  onChange: (product: ProductHubProductType) => void
+  onChange: (product: OmniProductType) => void
 }
 
 export const ProductHubProductTypeSelectorController: FC<
   ProductHubProductTypeSelectorControllerProps
 > = ({ gradient, onChange, defaultProduct }) => {
   return (
-    <Tabs<ProductHubProductType>
+    <Tabs<OmniProductType>
       defaultId={defaultProduct}
       gap={5}
-      items={Object.values(ProductHubProductType).map((productType) => ({
+      items={Object.values(OmniProductType).map((productType) => ({
         content: (isSelected) => (
           <Text
             variant="header2"

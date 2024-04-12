@@ -1,31 +1,31 @@
-import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import { getGenericPositionUrl } from 'features/productHub/helpers'
+import { featuredProducts } from 'features/productHub/meta'
+import type { ProductHubItem } from 'features/productHub/types'
 
-export const getProductMultiplyNavItems = (
-  promoCards: ProductHubPromoCards,
-  productHub: ProductHubItem[],
-) => {
-  const data: (ProductHubItem & { url?: string })[] = []
-
-  promoCards.multiply.default.forEach((promoCard) => {
-    const foundItem = productHub.find(
-      (item) =>
-        item.primaryToken === promoCard.tokens?.[0] &&
-        item.secondaryToken === promoCard.tokens?.[1] &&
-        item.network === promoCard.protocol?.network &&
-        item.protocol === promoCard.protocol.protocol &&
-        item.product.includes(ProductHubProductType.Multiply),
+export const getProductMultiplyNavItems = (productHub: ProductHubItem[]) => {
+  return productHub
+    .filter((product) =>
+      featuredProducts.multiply?.some(
+        (featured) =>
+          (featured.label ? featured.label === product.label : true) &&
+          product.primaryToken === featured.primaryToken &&
+          product.secondaryToken === featured.secondaryToken &&
+          product.protocol === featured.protocol &&
+          product.network === featured.network &&
+          product.product.includes(OmniProductType.Multiply),
+      ),
     )
-
-    if (foundItem) data.push({ ...foundItem, url: promoCard.link?.href })
-  })
-
-  return data.map((item) => ({
-    maxMultiply: item.maxMultiply ? Number(item.maxMultiply) : undefined,
-    collateralToken: item.primaryToken,
-    debtToken: item.secondaryToken,
-    protocol: item.protocol,
-    network: item.network,
-    url: item.url,
-  }))
+    .map((product) => ({
+      maxMultiply: product.maxMultiply ? Number(product.maxMultiply) : undefined,
+      collateralToken: product.primaryToken,
+      debtToken: product.secondaryToken,
+      protocol: product.protocol,
+      network: product.network,
+      url: getGenericPositionUrl({
+        ...product,
+        product: [OmniProductType.Multiply],
+      }),
+    }))
+    .sort((a, b) => (b.maxMultiply ?? 0) - (a.maxMultiply ?? 0))
 }

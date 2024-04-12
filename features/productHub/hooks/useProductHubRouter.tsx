@@ -1,11 +1,12 @@
-import type { ProductHubFilters, ProductHubProductType } from 'features/productHub/types'
+import type { OmniProductType } from 'features/omni-kit/types'
+import type { ProductHubFilters } from 'features/productHub/types'
 import { useRouter } from 'next/router'
 import type { ParsedUrlQueryInput } from 'querystring'
 import { useEffect, useMemo } from 'react'
 
 interface UseProductHubRouterProps {
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductHubProductType
+  selectedProduct: OmniProductType
   url?: string
 }
 
@@ -20,7 +21,9 @@ export const useProductHubRouter = ({
     return Object.entries(selectedFilters).reduce<ParsedUrlQueryInput>(
       (total, [key, value]) => ({
         ...total,
-        [key]: value.join(','),
+        ...(value.length && {
+          [key]: value.join(','),
+        }),
       }),
       {},
     )
@@ -30,4 +33,8 @@ export const useProductHubRouter = ({
     if (url)
       void replace({ pathname: `${url}${selectedProduct}`, query }, undefined, { shallow: true })
   }, [query, selectedProduct, url])
+
+  return {
+    query,
+  }
 }

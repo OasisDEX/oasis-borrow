@@ -4,8 +4,8 @@ import { strategies as aaveStrategyList } from 'features/aave'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubItem } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -27,7 +27,7 @@ export const getAaveLikeViewStrategyUrl = ({
     (strategy) =>
       product
         ?.map((prod) => prod.toLocaleLowerCase())
-        ?.includes(strategy.type.toLocaleLowerCase() as ProductHubProductType) &&
+        ?.includes(strategy.type.toLocaleLowerCase() as OmniProductType) &&
       strategy.protocol === protocol &&
       strategy.tokens.collateral.toLocaleLowerCase() === primaryToken?.toLocaleLowerCase() &&
       strategy.tokens.debt.toLocaleLowerCase() === secondaryToken?.toLocaleLowerCase() &&
@@ -58,7 +58,7 @@ export const getAaveLikeViewStrategyUrl = ({
       }`
 }
 
-export function getActionUrl({
+export function getGenericPositionUrl({
   bypassFeatureFlag = false,
   networkId,
   earnStrategy,
@@ -79,7 +79,7 @@ export function getActionUrl({
 
   switch (protocol) {
     case LendingProtocol.Ajna:
-      const isEarnProduct = product[0] === ProductHubProductType.Earn
+      const isEarnProduct = product[0] === OmniProductType.Earn
       const collateralToken = isEarnProduct ? secondaryToken : primaryToken
       const collateralAddress = isEarnProduct ? secondaryTokenAddress : primaryTokenAddress
       const quoteToken = isEarnProduct ? primaryToken : secondaryToken
@@ -91,7 +91,7 @@ export function getActionUrl({
       })
       const productInUrl =
         isEarnProduct && earnStrategy === EarnStrategies.yield_loop
-          ? ProductHubProductType.Multiply
+          ? OmniProductType.Multiply
           : product
       const tokensInUrl = isOracless
         ? `${collateralAddress}-${quoteAddress}`
@@ -123,7 +123,7 @@ export function getActionUrl({
     case LendingProtocol.Maker:
       if (label === 'DSR') return '/earn/dsr/'
 
-      const openUrl = product.includes(ProductHubProductType.Multiply) ? 'open-multiply' : 'open'
+      const openUrl = product.includes(OmniProductType.Multiply) ? 'open-multiply' : 'open'
       const ilkInUrl = label.split('/').length ? label.split('/')[0] : label
 
       return `/vaults/${openUrl}/${ilkInUrl}`

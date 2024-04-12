@@ -72,8 +72,8 @@ export type OmniGenericPosition = LendingPosition | SupplyPosition
 
 export enum OmniProductType {
   Borrow = 'borrow',
-  Earn = 'earn',
   Multiply = 'multiply',
+  Earn = 'earn',
 }
 
 export type OmniProductBorrowishType = OmniProductType.Borrow | OmniProductType.Multiply

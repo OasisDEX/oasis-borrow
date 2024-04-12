@@ -1,14 +1,13 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { productHubLinksMap } from 'features/productHub/meta'
-import type { ProductHubProductType } from 'features/productHub/types'
-import type { FC } from 'react'
-import React from 'react'
+import React, { type FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
 interface ProductHubIntroProps {
-  selectedProduct: ProductHubProductType
+  selectedProduct: OmniProductType
 }
 
 export const ProductHubIntro: FC<ProductHubIntroProps> = ({ selectedProduct }) => {

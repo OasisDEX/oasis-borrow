@@ -3,13 +3,13 @@ import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaPoolFinderController } from 'features/ajna/pool-finder/controls'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { FeaturesEnum } from 'types/config'
 
-function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
+function AjnaPoolFinderPage({ product }: { product: OmniProductType }) {
   return (
     <AjnaLayout>
       <PageSEOTags
@@ -33,7 +33,7 @@ export default AjnaPoolFinderPage
 export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   const paths =
     locales?.flatMap((locale) =>
-      [ProductHubProductType.Borrow, ProductHubProductType.Earn].map((product) => ({
+      [OmniProductType.Borrow, OmniProductType.Earn].map((product) => ({
         params: { product },
         locale,
       })),
@@ -46,7 +46,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const product = params?.product as ProductHubProductType
+  const product = params?.product as OmniProductType
 
   return {
     props: {

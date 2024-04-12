@@ -8,7 +8,7 @@ import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
@@ -113,7 +113,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
   // getting the APYs
   const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
+    product.includes(OmniProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
     const tokensReserveData = await memoizedTokensData(product.network as AaveV3Networks, tickers)
