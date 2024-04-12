@@ -88,7 +88,7 @@ export function GeneralManageLayout({
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      {/* In general it shouldn't be here but it's here to ease development for now */}
+      {/* In general, it shouldn't be here, but it's here to ease development for now */}
       {refinanceEnabled && (
         <button onClick={() => openModal(RefinanceModal, { contextInput })}>Refinance</button>
       )}

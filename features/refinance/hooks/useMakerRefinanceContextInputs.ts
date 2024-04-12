@@ -89,6 +89,7 @@ export const useMakerRefinanceContextInputs = ({
     collateralPrice,
     debtPrice: '1',
     poolId,
+    pairId: 1,
     network,
     address,
     slippage,

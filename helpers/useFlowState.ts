@@ -65,6 +65,7 @@ export function useFlowState({
   )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [isUiDataLoading, setUiDataLoading] = useState<boolean>(true) // needed to be able to show skeleton when dpm data is being loaded
   const { dpmAccountStateMachine, allowanceStateMachine, allowanceForAccountEthers$ } =
     useProductContext()
   const { context$, connectedContext$ } = useMainContext()
@@ -191,6 +192,7 @@ export function useFlowState({
     if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
     if (!token || !amount || new BigNumber(amount || NaN).isNaN()) {
       setLoading(false)
+      setUiDataLoading(false)
       setAllowanceReady(false)
     }
   }, [token, isProxyReady, walletAddress, amount])
@@ -200,6 +202,7 @@ export function useFlowState({
     if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
     if (token === 'ETH') {
       setLoading(false)
+      setUiDataLoading(false)
       setAllowanceReady(true)
       return
     }
@@ -207,6 +210,7 @@ export function useFlowState({
       (allowanceData) => {
         if (allowanceData && allowanceMachineSubscription) {
           setLoading(false)
+          setUiDataLoading(false)
           if (allowanceData.gt(zero) && allowanceData.gte(amount!)) {
             setAsUserAction(false)
             setAllowanceReady(true)
@@ -274,6 +278,7 @@ export function useFlowState({
     isWalletConnected,
     isAllowanceReady,
     isLoading, // just for the allowance loading state
+    isUiDataLoading,
     isEverythingReady: isAllowanceReady, // just for convenience, allowance is always the last step
     asUserAction,
     onEverythingReady,

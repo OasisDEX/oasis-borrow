@@ -10,6 +10,8 @@ import type {
   RefinanceContextInput,
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/refinance/helpers'
+import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -67,8 +69,16 @@ export const useInitializeRefinanceContext = ({
 
   const {
     environment: { tokenPrices, slippage, address },
-    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
-    position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv, type: type },
+    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
+    position: {
+      collateralAmount,
+      debtAmount,
+      liquidationPrice,
+      positionId,
+      ltv,
+      positionType: type,
+      lendingProtocol,
+    },
     automations,
   } = contextInput
 
@@ -86,7 +96,6 @@ export const useInitializeRefinanceContext = ({
   const collateralPrice = tokenPrices[collateralTokenData.token.symbol]
   const debtPrice = tokenPrices[debtTokenData.token.symbol]
 
-  // TODO: validate address
   const parsedAddress = address as AddressValue
 
   const setupStepManager = (): RefinanceSteps => {
@@ -114,8 +123,22 @@ export const useInitializeRefinanceContext = ({
   }
 
   const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
+  if (!type) {
+    throw new Error('Unsupported position type')
+  }
+  const currentProductType = positionTypeToOmniProductType(type)
 
   const ctx: RefinanceContextBase = {
+    metadata: {
+      flowStateFilter: ({ event, filterConsumed }) =>
+        getRefinanceFlowStateFilter({
+          event,
+          filterConsumed,
+          currentProductType,
+          formState: form.state,
+        }),
+      validations: getRefinanceValidations({ state: form.state }),
+    },
     environment: {
       contextId: contextInput.contextId,
       collateralPrice,
@@ -123,7 +146,6 @@ export const useInitializeRefinanceContext = ({
       address: parsedAddress,
       chainInfo,
       slippage,
-      isShort,
       gasEstimation,
     },
     position: {
@@ -132,10 +154,13 @@ export const useInitializeRefinanceContext = ({
       liquidationPrice,
       positionId,
       ltv,
-      type,
+      positionType: type,
+      isShort,
+      lendingProtocol,
     },
     poolData: {
       poolId,
+      pairId,
       borrowRate,
       maxLtv,
     },

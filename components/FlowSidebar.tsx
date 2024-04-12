@@ -1,5 +1,6 @@
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import { Skeleton } from 'components/Skeleton'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -12,7 +13,7 @@ import type {
 } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo } from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Card, Grid, Text } from 'theme-ui'
 
 import type { SidebarSectionProps } from './sidebar/SidebarSection'
 import { SidebarSection } from './sidebar/SidebarSection'
@@ -79,6 +80,7 @@ export function FlowSidebar({
   availableProxies,
   asUserAction,
   onEverythingReady,
+  isUiDataLoading,
 }: CreateDPMAccountViewProps) {
   const [dpmState, dpmSend] = useActor(internals.dpmMachine)
   const [allowanceState] = useActor(internals.allowanceMachine)
@@ -119,6 +121,26 @@ export function FlowSidebar({
   if (!isWalletConnected) {
     return <NoConnectionStateView noConnectionContent={noConnectionContent} />
   }
+
+  if (isUiDataLoading) {
+    return (
+      <Card
+        sx={{
+          position: 'relative',
+          py: '28px',
+          px: '24px',
+          border: 'lightMuted',
+          flex: 1,
+        }}
+      >
+        <Skeleton sx={{ mb: 4 }} />
+        <Skeleton height="200px" width="100%" sx={{ mb: 3 }} />
+        <Skeleton height="150px" width="100%" sx={{ mb: 4 }} />
+        <Skeleton height="53px" />
+      </Card>
+    )
+  }
+
   if (!isProxyReady && !isAllowanceReady) {
     switch (true) {
       case dpmState.matches('idle'):

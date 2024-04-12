@@ -7,7 +7,9 @@ import type {
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
 import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
+import { LendingProtocol } from 'lendingProtocols'
 import type { PositionType } from 'summerfi-sdk-common'
+import { ProtocolName } from 'summerfi-sdk-common'
 
 export const getRefinanceContextInput = ({
   borrowRate,
@@ -16,6 +18,7 @@ export const getRefinanceContextInput = ({
   collateralPrice,
   debtPrice,
   poolId,
+  pairId,
   network,
   address,
   slippage,
@@ -35,6 +38,7 @@ export const getRefinanceContextInput = ({
   collateralPrice: string
   debtPrice: string
   poolId: MakerPoolId | SparkPoolId
+  pairId: number
   network: NetworkNames
   address?: string
   slippage: number
@@ -48,13 +52,23 @@ export const getRefinanceContextInput = ({
   positionId: string | number
   positionType: PositionType | undefined
 }): RefinanceContextInput => {
+  const protocol = {
+    [ProtocolName.Spark]: LendingProtocol.SparkV3,
+    [ProtocolName.Maker]: LendingProtocol.Maker,
+    [ProtocolName.AAVEv2]: LendingProtocol.AaveV2,
+    [ProtocolName.AAVEv3]: LendingProtocol.AaveV3,
+    [ProtocolName.Ajna]: LendingProtocol.Ajna,
+    [ProtocolName.MorphoBlue]: LendingProtocol.MorphoBlue,
+  }[poolId.protocol.name]
+
   return {
     poolData: {
-      borrowRate: borrowRate,
+      borrowRate,
       collateralTokenSymbol: primaryToken,
       debtTokenSymbol: secondaryToken,
       maxLtv: new RiskRatio(new BigNumber(maxLtv), RiskRatio.TYPE.LTV),
-      poolId: poolId,
+      poolId,
+      pairId,
     },
     environment: {
       tokenPrices: {
@@ -66,6 +80,7 @@ export const getRefinanceContextInput = ({
       address,
     },
     position: {
+      protocol,
       positionId: { id: positionId.toString() },
       collateralAmount: collateral,
       debtAmount: debt,

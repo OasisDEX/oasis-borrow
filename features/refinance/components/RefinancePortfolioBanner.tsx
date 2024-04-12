@@ -92,13 +92,22 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
   if (!position.rawPositionDetails) {
     return null
   }
-  const { network, primaryToken, secondaryToken, positionId, automations } = position
+  const {
+    network,
+    primaryToken,
+    secondaryToken,
+    positionId,
+    automations,
+    protocol,
+    type: productType,
+  } = position
 
   const {
     borrowRate,
     maxLtv,
     ltv,
     poolId,
+    pairId,
     collateral,
     collateralPrice,
     debt,
@@ -113,7 +122,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     [LendingProtocol.AaveV2]: [],
     [LendingProtocol.SparkV3]: [],
     [LendingProtocol.MorphoBlue]: [],
-  }[position.protocol]
+  }[protocol]
 
   const content = {
     [LendingProtocol.Maker]: (
@@ -121,7 +130,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
         liquidationPrice={new BigNumber(liquidationPrice)}
         debtPrice={new BigNumber(debtPrice)}
         debt={new BigNumber(debt)}
-        positionId={position.positionId}
+        positionId={positionId}
         collateral={new BigNumber(collateral)}
         refinanceToProtocols={refinanceToProtocols}
         table={table}
@@ -132,10 +141,9 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     [LendingProtocol.AaveV2]: null,
     [LendingProtocol.SparkV3]: null,
     [LendingProtocol.MorphoBlue]: null,
-  }[position.protocol]
+  }[protocol]
 
-  const contextId =
-    `${position.positionId}${position.primaryToken}${position.secondaryToken}`.toLowerCase()
+  const contextId = `${positionId}${primaryToken}${secondaryToken}`.toLowerCase()
 
   const isDisabled =
     refinanceGeneralContext?.ctx?.environment?.contextId !== contextId &&
@@ -160,7 +168,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
         sx={{ p: 'unset' }}
         disabled={isDisabled}
         onClick={() => {
-          if (!position.rawPositionDetails || !userSettingsData) {
+          if (!position.rawPositionDetails || !userSettingsData || !productType) {
             console.error('Raw position details not defined')
             return
           }
@@ -185,6 +193,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
               automations,
               contextId,
               positionType: omniProductTypeToSDKType(position.type),
+              pairId,
             }),
           })
         }}

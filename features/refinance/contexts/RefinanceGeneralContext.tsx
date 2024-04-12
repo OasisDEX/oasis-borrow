@@ -2,9 +2,11 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
+import type { OmniFiltersParameters, OmniValidations } from 'features/omni-kit/types'
 import { useInitializeRefinanceContext } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
+import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, FC, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
 import type {
@@ -50,6 +52,7 @@ export type RefinanceContextInput = {
     collateralTokenSymbol: string
     debtTokenSymbol: string
     maxLtv: RiskRatio
+    pairId: number
   }
   environment: {
     tokenPrices: Record<string, string>
@@ -64,6 +67,7 @@ export type RefinanceContextInput = {
     liquidationPrice: string
     ltv: RiskRatio
     type: PositionType | undefined
+    protocol: LendingProtocol
   }
   automations: RefinanceContextInputAutomations
   contextId: string
@@ -77,7 +81,6 @@ export type RefinanceContextBase = {
     address?: AddressValue
     chainInfo: ChainInfo
     slippage: number
-    isShort: boolean
     gasEstimation: GasEstimationContext | undefined
   }
   position: {
@@ -87,11 +90,17 @@ export type RefinanceContextBase = {
     liquidationPrice: string
     ltv: RiskRatio
     type: PositionType | undefined
+    isShort: boolean
   }
   poolData: {
     poolId: IPoolId
     borrowRate: string
     maxLtv: RiskRatio
+    pairId: number
+  }
+  metadata: {
+    flowStateFilter: (params: OmniFiltersParameters) => Promise<boolean>
+    validations: OmniValidations
   }
   automations: RefinanceContextInputAutomations
   form: ReturnType<typeof useRefinanceFormReducto>
@@ -148,7 +157,6 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
         ctx,
         handleSetContext,
         handleOnClose,
-        // contexts,
       }}
     >
       {children}

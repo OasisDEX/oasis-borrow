@@ -4,6 +4,7 @@ export const refinanceFormReset = {
   refinanceOption: undefined,
   strategy: undefined,
   dpmProxy: undefined,
+  hasSimilarPosition: undefined,
 }
 
 export const refinanceFormDefault: RefinanceFormState = {

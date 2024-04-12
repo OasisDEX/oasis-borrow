@@ -21,8 +21,7 @@ export const RefinanceProductTableStep = () => {
 
   const {
     poolData: { borrowRate, maxLtv },
-
-    environment: { isShort },
+    position: { isShort },
     form: {
       state: { refinanceOption },
     },
