@@ -1,13 +1,15 @@
 import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
+import { type NetworkConfig, networkSetById } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
+import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import {
   extractLendingProtocolFromPositionCreatedEvent,
+  getPositionCreatedEventForProxyAddress,
   type PositionCreated,
   type PositionType,
 } from 'features/aave/services'
 import { getMorphoPositionWithPairId } from 'features/omni-kit/protocols/morpho-blue/helpers'
-import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { LendingProtocol } from 'lendingProtocols'
@@ -37,19 +39,21 @@ export interface MorphoVauldIdPositionsResponse {
   }[]
 }
 
-export interface UserCreateEventsResponse {
-  accounts: {
-    createEvents: {
-      collateralToken: string
-      debtToken: string
-      positionType: string
-      protocol: string
-    }[]
-    id: string
-    user: {
-      id: string
-    }
+export interface AccountWithCreateEvents {
+  createEvents: {
+    collateralToken: string
+    debtToken: string
+    positionType: string
+    protocol: string
   }[]
+  id: string
+  user: {
+    id: string
+  }
+}
+
+export interface UserCreateEventsResponse {
+  accounts: AccountWithCreateEvents[]
 }
 
 export interface PositionFromUrl extends PositionCreated {
@@ -57,10 +61,16 @@ export interface PositionFromUrl extends PositionCreated {
 }
 
 interface GetPositionFromUrlDataParams {
-  networkId: OmniSupportedNetworkIds
+  networkId: number
   pairId: number
   positionId: number
   protocol: LendingProtocol
+  network?: NetworkConfig
+}
+
+interface GetAccountByPositionIdParams {
+  networkId: number
+  positionId: number
 }
 
 interface GetPositionFromUrlDataResponse {
@@ -79,13 +89,12 @@ export async function getPositionsFromUrlData({
   networkId,
   pairId,
   positionId,
-  protocol,
+  protocol
 }: GetPositionFromUrlDataParams): Promise<GetPositionFromUrlDataResponse> {
-  const {
-    response: { accounts },
-  } = (await loadSubgraph('SummerDpm', 'getUserCreateEvents', networkId, {
-    positionId,
-  })) as SubgraphsResponses['SummerDpm']['getUserCreateEvents']
+
+  const accounts = await getAccounts({ networkId, positionId })
+
+  if (!accounts) return emptyResponse
 
   if (accounts.length > 0) {
     const account = accounts[0]
@@ -147,4 +156,48 @@ export async function getPositionsFromUrlData({
         return data
     }
   } else return emptyResponse
+}
+
+/**
+ * Retrieves accounts based on the network and position ID.
+ * 
+ * @dev if the network is a custom fork, the accounts are retrieved from the blochchain events.
+ * Otherwise, the accounts are retrieved from the subgraph.
+ * @param network - The network configuration.
+ * @param positionId - The position ID.
+ * @returns An array of accounts or null if the accounts cannot be retrieved.
+ */
+async function getAccounts({ networkId,
+  positionId }: GetAccountByPositionIdParams
+) {
+  const network = networkSetById[networkId]
+  if (network && network.isCustomFork) {
+    const dpm = await getUserDpmProxy(positionId, network.id)
+    if (!dpm) return null
+
+    const createEvents = await getPositionCreatedEventForProxyAddress(network.id, dpm.proxy);
+    if (createEvents.length === 0) return null
+
+    return [
+      {
+        createEvents: createEvents.map((e) => ({
+          collateralToken: e.args.collateralToken,
+          debtToken: e.args.debtToken,
+          positionType: e.args.positionType,
+          protocol: e.args.protocol,
+        })),
+        id: dpm.proxy,
+        user: {
+          id: dpm.user,
+        },
+      },
+    ]
+
+  } else {
+    const response = (await loadSubgraph('SummerDpm', 'getUserCreateEvents', networkId, {
+      positionId,
+    })) as SubgraphsResponses['SummerDpm']['getUserCreateEvents']
+    if (!response.success) return null
+    return response.response.accounts
+  }
 }
