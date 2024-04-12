@@ -1,19 +1,17 @@
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
 import { TokensGroup } from 'components/TokensGroup'
 import { useAppConfig } from 'helpers/config'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { type ReactNode,useEffect, useRef, useState } from 'react'
 import { checkmark, clear_selection } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Image, Text } from 'theme-ui'
 import type { FeaturesEnum } from 'types/config'
-
-import { Icon } from './Icon'
-import type { IconProps } from './Icon.types'
 
 export interface GenericMultiselectOption {
   icon?: IconProps['icon']
@@ -193,11 +191,12 @@ export function GenericMultiselect({
         const selected = options.filter((item) => item.value === values[0])[0]
         return (
           <>
-            {(selected.icon || selected.image) && (
+            {(selected.icon || selected.image || selected.token) && (
               <GenericMultiselectIcon
-                label={selected.label}
                 icon={selected.icon}
                 image={selected.image}
+                label={selected.label}
+                token={selected.token}
               />
             )}
             {selected.label}

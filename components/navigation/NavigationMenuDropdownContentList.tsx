@@ -1,6 +1,4 @@
-import type {
-  NavigationMenuPanelList,
-} from 'components/navigation/Navigation.types'
+import type { NavigationMenuPanelList } from 'components/navigation/Navigation.types'
 import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
 import { WithArrow } from 'components/WithArrow'
 import React from 'react'
