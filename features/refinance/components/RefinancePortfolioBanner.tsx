@@ -5,6 +5,7 @@ import type { ProductHubItem } from 'features/productHub/types'
 import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
+import { omniProductTypeToSDKType } from 'features/refinance/helpers/omniProductTypeToSDKType'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -153,7 +154,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
         flexWrap: 'wrap',
       }}
     >
-      {content}
+      z{content}
       <Button
         variant="textual"
         sx={{ p: 'unset' }}
@@ -183,6 +184,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
               maxLtv,
               automations,
               contextId,
+              positionType: omniProductTypeToSDKType(position.type),
             }),
           })
         }}

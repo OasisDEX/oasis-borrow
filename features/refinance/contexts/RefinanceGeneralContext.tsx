@@ -7,7 +7,14 @@ import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
 import type { Dispatch, FC, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
-import type { AddressValue, ChainInfo, IPoolId, PositionId, TokenAmount } from 'summerfi-sdk-common'
+import type {
+  AddressValue,
+  ChainInfo,
+  IPoolId,
+  PositionId,
+  PositionType,
+  TokenAmount,
+} from 'summerfi-sdk-common'
 
 export interface RefinanceSteps {
   currentStep: RefinanceSidebarStep
@@ -56,6 +63,7 @@ export type RefinanceContextInput = {
     debtAmount: string
     liquidationPrice: string
     ltv: RiskRatio
+    type: PositionType | undefined
   }
   automations: RefinanceContextInputAutomations
   contextId: string
@@ -78,6 +86,7 @@ export type RefinanceContextBase = {
     debtTokenData: TokenAmount
     liquidationPrice: string
     ltv: RiskRatio
+    type: PositionType | undefined
   }
   poolData: {
     poolId: IPoolId

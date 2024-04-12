@@ -4,7 +4,12 @@ import { useAutomationContext } from 'components/context/AutomationContextProvid
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
 import type { MakerPoolId } from 'features/refinance/types'
-import { getChainInfoByChainId, PositionId, ProtocolName } from 'summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  PositionId,
+  type PositionType,
+  ProtocolName,
+} from 'summerfi-sdk-common'
 
 export const useMakerRefinanceContextInputs = ({
   address,
@@ -20,6 +25,7 @@ export const useMakerRefinanceContextInputs = ({
   ltv,
   maxLtv,
   ilkType,
+  positionType: type,
 }: {
   address?: string
   chainId: NetworkIds
@@ -34,6 +40,7 @@ export const useMakerRefinanceContextInputs = ({
   ltv: string
   maxLtv: string
   ilkType: string
+  positionType: PositionType | undefined
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 
@@ -93,5 +100,6 @@ export const useMakerRefinanceContextInputs = ({
     maxLtv,
     automations,
     contextId: id,
+    positionType: type,
   })
 }

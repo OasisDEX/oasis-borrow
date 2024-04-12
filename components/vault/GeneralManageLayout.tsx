@@ -9,6 +9,7 @@ import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { RefinanceModal } from 'features/refinance/components'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
+import { vaultTypeToSDKType } from 'features/refinance/helpers/vaultTypeToSDKType'
 import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
 import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
@@ -82,6 +83,7 @@ export function GeneralManageLayout({
       RiskRatio.TYPE.COL_RATIO,
     ).loanToValue.toString(),
     ilkType: vault.ilk,
+    positionType: vaultTypeToSDKType(generalManageVault.type),
   })
 
   return (

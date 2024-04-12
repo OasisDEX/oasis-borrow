@@ -15,7 +15,7 @@ import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useState } from 'react'
-import { type AddressValue, getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
+import { type AddressValue, TokenAmount } from 'summerfi-sdk-common'
 
 const steps = [
   RefinanceSidebarStep.Option,
@@ -32,7 +32,10 @@ export const useInitializeRefinanceContext = ({
 }: {
   contextInput?: RefinanceContextInput
   defaultCtx?: RefinanceContextBase
-}) => {
+}): {
+  ctx: RefinanceContextBase | undefined
+  reset: (resetData: RefinanceContextBase) => void
+} => {
   const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
     defaultCtx?.steps.currentStep || steps[0],
   )
@@ -65,7 +68,7 @@ export const useInitializeRefinanceContext = ({
   const {
     environment: { tokenPrices, slippage, address },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv },
-    position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv },
+    position: { collateralAmount, debtAmount, liquidationPrice, positionId, ltv, type: type },
     automations,
   } = contextInput
 
@@ -112,7 +115,7 @@ export const useInitializeRefinanceContext = ({
 
   const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
 
-  const ctx = {
+  const ctx: RefinanceContextBase = {
     environment: {
       contextId: contextInput.contextId,
       collateralPrice,
@@ -129,6 +132,7 @@ export const useInitializeRefinanceContext = ({
       liquidationPrice,
       positionId,
       ltv,
+      type,
     },
     poolData: {
       poolId,

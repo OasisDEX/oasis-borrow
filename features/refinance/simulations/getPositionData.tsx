@@ -19,11 +19,11 @@ export const useSimulationPositionData = () => {
     return undefined
   }
 
-  const { targetPosition, liquidationPrice } = simulation
-  if (!targetPosition || !liquidationPrice) {
+  const { simulatedPosition, liquidationPrice } = simulation
+  if (!simulatedPosition || !liquidationPrice) {
     return undefined
   }
-  const { collateralAmount, debtAmount } = targetPosition
+  const { collateralAmount, debtAmount } = simulatedPosition
 
   const ltv = PositionUtils.getLTV({
     collateralTokenAmount: collateralAmount,
@@ -45,8 +45,8 @@ export const useSimulationPositionData = () => {
     | RefinancePositionViewProps<RefinancePositionViewType.SIMULATION>['positionData'] = {
     ltv: new BigNumber(ltv.toString()).dividedBy(100),
     liquidationPrice: new BigNumber(liquidationPrice),
-    collateral: new BigNumber(targetPosition.collateralAmount.amount),
-    debt: new BigNumber(targetPosition.debtAmount.amount),
+    collateral: new BigNumber(simulatedPosition.collateralAmount.amount),
+    debt: new BigNumber(simulatedPosition.debtAmount.amount),
   }
 
   return positionData

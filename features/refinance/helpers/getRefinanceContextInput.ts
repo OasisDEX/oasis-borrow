@@ -7,6 +7,7 @@ import type {
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
 import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
+import type { PositionType } from 'summerfi-sdk-common'
 
 export const getRefinanceContextInput = ({
   borrowRate,
@@ -26,6 +27,7 @@ export const getRefinanceContextInput = ({
   automations,
   contextId,
   positionId,
+  positionType,
 }: {
   borrowRate: string
   primaryToken: string
@@ -44,6 +46,7 @@ export const getRefinanceContextInput = ({
   automations: RefinanceContextInputAutomations
   contextId: string
   positionId: string | number
+  positionType: PositionType | undefined
 }): RefinanceContextInput => {
   return {
     poolData: {
@@ -68,6 +71,7 @@ export const getRefinanceContextInput = ({
       debtAmount: debt,
       liquidationPrice: liquidationPrice,
       ltv: new RiskRatio(new BigNumber(ltv), RiskRatio.TYPE.LTV),
+      type: positionType,
     },
     automations: automations,
     contextId,
