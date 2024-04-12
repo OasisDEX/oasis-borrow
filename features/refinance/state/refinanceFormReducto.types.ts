@@ -7,6 +7,7 @@ export interface RefinanceFormState {
   refinanceOption?: RefinanceOptions
   strategy?: ProductHubItem // strip to bare minimum during clean up
   dpmProxy?: string
+  hasSimilarPosition?: boolean
 }
 
 export type RefinanceFormActions = ReductoActions<RefinanceFormState, FormActionsReset>

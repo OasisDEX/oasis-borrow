@@ -22,7 +22,15 @@ export const RefinanceFlowSidebarController = () => {
     amount: zero,
     token: 'ETH',
     filterConsumedProxy: async (events) => getOmniFilterConsumedProxy(events, flowStateFilter),
-    onProxiesAvailable: () => null,
+    onProxiesAvailable: async (events) => {
+      const filteredEventsBooleanMap = await Promise.all(
+        events.map((event) => flowStateFilter({ event })),
+      )
+      const filteredEvents = events.filter(
+        (_event, eventIndex) => filteredEventsBooleanMap[eventIndex],
+      )
+      updateState('hasSimilarPosition', !!filteredEvents.length)
+    },
     onEverythingReady: (data) => {
       updateState('dpmProxy', data.availableProxies[0])
       setNextStep()

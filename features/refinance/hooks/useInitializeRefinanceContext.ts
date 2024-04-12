@@ -10,7 +10,7 @@ import type {
   RefinanceContextInput,
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
-import { getRefinanceFlowStateFilter } from 'features/refinance/helpers'
+import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/refinance/helpers'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -126,6 +126,7 @@ export const useInitializeRefinanceContext = ({
           currentProductType: productType,
           formState: form.state,
         }),
+      validations: getRefinanceValidations({ state: form.state }),
     },
     environment: {
       contextId: contextInput.contextId,

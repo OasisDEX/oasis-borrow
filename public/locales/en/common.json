@@ -3732,6 +3732,9 @@
           "in-progress": "Refinancing your position."
         }
       }
+    },
+    "validations": {
+      "similar-position": "You already have similar {{collateralToken}}/{{quoteToken}} position on {{protocol}}. You can check it in the portfolio."
     }
   }
 }
