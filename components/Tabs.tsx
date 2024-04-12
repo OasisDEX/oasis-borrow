@@ -25,7 +25,7 @@ export function Tabs<T>({
   sx,
   underlineGradient,
   underlinePadding = 0,
-  underlineSize = 2,
+  underlineSize = '2px',
 }: TabsProps<T>) {
   const ref = useRef<HTMLDivElement>(null)
   const [underlineWidth, setUnderlineWidth] = useState<number>(0)

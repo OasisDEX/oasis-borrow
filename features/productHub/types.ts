@@ -89,6 +89,15 @@ export interface ProductHubFilters {
   [key: string]: string[]
 }
 
+export interface ProductHubCategory {
+  icon: string
+  id: string
+}
+
+export type ProductHubCategories = {
+  [key in OmniProductType]: ProductHubCategory[]
+}
+
 export interface ProductHubPromoCardFilters {
   label?: string
   network: ProductHubSupportedNetworks

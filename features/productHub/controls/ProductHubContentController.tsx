@@ -4,6 +4,7 @@ import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import type { OmniProductType } from 'features/omni-kit/types'
 import {
+  ProductHubCategorySelectorController,
   ProductHubFiltersController,
   ProductHubTableController,
 } from 'features/productHub/controls'
@@ -109,21 +110,28 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   )
 
   return (
-    <AssetsTableContainer>
-      <ProductHubFiltersController
-        data={dataFilteredByProductType}
-        initialNetwork={initialNetwork}
-        initialProtocol={initialProtocol}
-        networkId={networkId}
+    <>
+      <ProductHubCategorySelectorController
         onChange={onChange}
         selectedFilters={selectedFilters}
         selectedProduct={selectedProduct}
       />
-      <ProductHubTableController
-        banner={banner}
-        perPage={perPage}
-        rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
-      />
-    </AssetsTableContainer>
+      <AssetsTableContainer>
+        <ProductHubFiltersController
+          data={dataFilteredByProductType}
+          initialNetwork={initialNetwork}
+          initialProtocol={initialProtocol}
+          networkId={networkId}
+          onChange={onChange}
+          selectedFilters={selectedFilters}
+          selectedProduct={selectedProduct}
+        />
+        <ProductHubTableController
+          banner={banner}
+          perPage={perPage}
+          rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
+        />
+      </AssetsTableContainer>
+    </>
   )
 }

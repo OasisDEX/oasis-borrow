@@ -1,3 +1,4 @@
+export * from './ProductHubCategorySelectorController'
 export * from './ProductHubContentController'
 export * from './ProductHubFiltersController'
 export * from './ProductHubProductTypeSelectorController'

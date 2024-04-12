@@ -2,7 +2,11 @@ import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/netwo
 import type { GenericMultiselectOption } from 'components/GenericMultiselect'
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { ProductHubFeaturedProducts } from 'features/productHub/types'
+import type {
+  ProductHubCategories,
+  ProductHubCategory,
+  ProductHubFeaturedProducts,
+} from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
@@ -123,8 +127,43 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
   },
 ]
 
+export const productHubCategoryAll: ProductHubCategory = {
+  icon: 'doc',
+  id: 'all',
+}
+const productHubCategoryTokenFarming: ProductHubCategory = {
+  icon: 'plant',
+  id: 'token-farming',
+}
+const productHubCategoryStakingRewards: ProductHubCategory = {
+  icon: 'sparks_empty',
+  id: 'staking-rewards',
+}
+const productHubCategoryRestaking: ProductHubCategory = {
+  icon: 'relock',
+  id: 'restaking',
+}
+
+export const productHubCategories: ProductHubCategories = {
+  [OmniProductType.Borrow]: [
+    productHubCategoryTokenFarming,
+    productHubCategoryStakingRewards,
+    productHubCategoryRestaking,
+  ],
+  [OmniProductType.Multiply]: [
+    productHubCategoryTokenFarming,
+    productHubCategoryStakingRewards,
+    productHubCategoryRestaking,
+  ],
+  [OmniProductType.Earn]: [
+    productHubCategoryTokenFarming,
+    productHubCategoryStakingRewards,
+    productHubCategoryRestaking,
+  ],
+}
+
 export const featuredProducts: ProductHubFeaturedProducts = {
-  multiply: [
+  [OmniProductType.Multiply]: [
     {
       primaryToken: 'WSTETH',
       secondaryToken: 'USDC',
@@ -148,7 +187,7 @@ export const featuredProducts: ProductHubFeaturedProducts = {
       product: OmniProductType.Multiply,
     },
   ],
-  earn: [
+  [OmniProductType.Earn]: [
     {
       primaryToken: 'USDC',
       secondaryToken: 'USDC',

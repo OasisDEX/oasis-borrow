@@ -3456,6 +3456,12 @@
       "passive": "Passive",
       "short": "Short only"
     },
+    "categories": {
+      "all": "All categories",
+      "restaking": "Restaking",
+      "staking-rewards": "Staking rewards",
+      "token-farming": "Token farming"
+    },
     "filters": {
       "collateral-tokens": "Collateral Tokens",
       "debt-tokens": "Debt Tokens",
