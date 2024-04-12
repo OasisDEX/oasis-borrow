@@ -4,6 +4,7 @@ import { getTokensFilterOptions } from 'features/productHub/helpers'
 import {
   productHubNetworkFilter,
   productHubProtocolFilter,
+  productHubStrategyFilter,
   productHubTestNetworkFilter,
 } from 'features/productHub/meta'
 import type {
@@ -46,18 +47,20 @@ export const useProductHubFilters = ({
   const collateralTokenFilterLabel = t('product-hub.filters.collateral-tokens')
   const debtTokenFilterLabel = t('product-hub.filters.debt-tokens')
   const depositTokenFilterLabel = t('product-hub.filters.deposit-tokens')
+  const strategiesFilterLabel = t('product-hub.filters.strategies')
   const networkFilterLabel = t('product-hub.filters.networks')
   const protocolFilterLabel = t('product-hub.filters.protocols')
 
   const collateralTokenFilter = useMemo(
     () => (
       <GenericMultiselect
+        initialValues={selectedFilters['collateral-token'] ?? []}
         label={collateralTokenFilterLabel}
         options={collateralTokens}
         onChange={(value) => {
           onChange({
             ...selectedFilters,
-            primaryToken: value,
+            'collateral-token': value,
           })
         }}
       />
@@ -72,7 +75,7 @@ export const useProductHubFilters = ({
         onChange={(value) => {
           onChange({
             ...selectedFilters,
-            secondaryToken: value,
+            'debt-token': value,
           })
         }}
       />
@@ -87,12 +90,42 @@ export const useProductHubFilters = ({
         onChange={(value) => {
           onChange({
             ...selectedFilters,
-            depositToken: value,
+            'deposit-token': value,
           })
         }}
       />
     ),
     [depositTokenFilterLabel, depositTokens, onChange, selectedFilters],
+  )
+  const multiplyStrategyFilter = useMemo(
+    () => (
+      <GenericMultiselect
+        label={strategiesFilterLabel}
+        options={productHubStrategyFilter}
+        onChange={(value) => {
+          onChange({
+            ...selectedFilters,
+            strategy: value,
+          })
+        }}
+      />
+    ),
+    [onChange, selectedFilters, strategiesFilterLabel],
+  )
+  const protocolFilter = useMemo(
+    () => (
+      <GenericMultiselect
+        label={protocolFilterLabel}
+        options={productHubProtocolFilter}
+        onChange={(value) => {
+          onChange({
+            ...selectedFilters,
+            protocol: value,
+          })
+        }}
+      />
+    ),
+    [onChange, protocolFilterLabel, selectedFilters],
   )
   const networkFilter = useMemo(
     () => (
@@ -102,34 +135,19 @@ export const useProductHubFilters = ({
         onChange={(value) => {
           onChange({
             ...selectedFilters,
-            network: value as ProductHubSupportedNetworks[],
+            network: value,
           })
         }}
       />
     ),
     [isTestnet, networkFilterLabel, onChange, selectedFilters],
   )
-  const protocolFilter = useMemo(
-    () => (
-      <GenericMultiselect
-        label={protocolFilterLabel}
-        options={productHubProtocolFilter}
-        fitContents
-        onChange={(value) => {
-          onChange({
-            ...selectedFilters,
-            protocol: value as LendingProtocol[],
-          })
-        }}
-      />
-    ),
-    [onChange, protocolFilterLabel, selectedFilters],
-  )
 
   return {
     collateralTokenFilter,
     debtTokenFilter,
     depositTokenFilter,
+    multiplyStrategyFilter,
     networkFilter,
     protocolFilter,
   }

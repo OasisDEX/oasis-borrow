@@ -38,7 +38,7 @@ export function AssetsFiltersContainer({
         <Box
           sx={{
             flex: ['1', '1 45%', '1'],
-            maxWidth: ['none', null, null, '205px'],
+            maxWidth: ['none', null, null, '255px'],
             '&:last-of-type': {
               ml: [0, null, null, 'auto'],
             },

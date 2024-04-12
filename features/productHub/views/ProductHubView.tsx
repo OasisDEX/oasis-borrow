@@ -11,9 +11,9 @@ import type {
   ProductHubColumnKey,
   ProductHubFilters,
   ProductHubItem,
-  ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import type { PromoCardsCollection } from 'handlers/product-hub/types'
@@ -83,6 +83,16 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               gradient={headerGradient}
               onChange={(_selectedProduct) => {
                 setSelectedProduct(_selectedProduct)
+                setSelectedFilters((_selectedFilters) => {
+                  if (_selectedProduct === ProductHubProductType.Earn) {
+                    delete _selectedFilters['collateral-token']
+                    delete _selectedFilters['debt-token']
+                  } else {
+                    delete _selectedFilters['deposit-token']
+                  }
+
+                  return _selectedFilters
+                })
               }}
               defaultProduct={product}
             />

@@ -4,7 +4,7 @@ import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
-import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
+import { filterByProductType, filterByUserFilters, parseRows } from 'features/productHub/helpers'
 import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
 import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
 import type {
@@ -57,7 +57,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     product: selectedProduct,
   })
 
-  const dataMatchedToFeatureFlags = useMemo(
+  const dataFilteredByFeatureFlags = useMemo(
     () =>
       tableData.filter(({ earnStrategy, network, protocol }) => {
         const isAjna = protocol === LendingProtocol.Ajna
@@ -78,17 +78,17 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
       }),
     [tableData, ajnaSafetySwitchOn, ajnaBaseEnabled, morphoBlueEnabled, erc4626VaultsEnabled],
   )
-  const dataMatchedByNL = useMemo(
-    () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct),
-    [selectedProduct, dataMatchedToFeatureFlags],
+  const dataFilteredByProductType = useMemo(
+    () => filterByProductType(dataFilteredByFeatureFlags, selectedProduct),
+    [selectedProduct, dataFilteredByFeatureFlags],
   )
-  const dataMatchedByFilters = useMemo(
-    () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
-    [dataMatchedByNL, selectedFilters],
+  const dataFilteredByUserFilters = useMemo(
+    () => filterByUserFilters(dataFilteredByProductType, selectedFilters),
+    [dataFilteredByProductType, selectedFilters],
   )
   const dataSortedByDefault = useMemo(
-    () => sortByDefault(dataMatchedByFilters, selectedProduct),
-    [dataMatchedByFilters, selectedProduct],
+    () => sortByDefault(dataFilteredByUserFilters, selectedProduct),
+    [dataFilteredByUserFilters, selectedProduct],
   )
   const rows = useMemo(
     () =>
@@ -99,13 +99,13 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         product: selectedProduct,
         rows: dataSortedByDefault,
       }),
-    [dataSortedByDefault, selectedProduct],
+    [dataSortedByDefault, hiddenColumns, networkId, onRowClick, selectedProduct],
   )
 
   return (
     <AssetsTableContainer>
       <ProductHubFiltersController
-        data={dataMatchedByNL}
+        data={dataFilteredByProductType}
         initialNetwork={initialNetwork}
         initialProtocol={initialProtocol}
         networkId={networkId}

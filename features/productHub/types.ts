@@ -77,7 +77,8 @@ export interface ProductHubItemTooltips {
   }
 }
 
-export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
+export type ProductHubItemData = ProductHubItemBasics & ProductHubItemDetails
+export type ProductHubItem = ProductHubItemData & ProductHubItemTooltips
 export type ProductHubItemWithoutAddress = Omit<
   ProductHubItem,
   'primaryTokenAddress' | 'secondaryTokenAddress'
@@ -100,12 +101,7 @@ export interface ProductHubData {
   table: ProductHubItem[]
 }
 export interface ProductHubFilters {
-  depositToken?: ProductHubTokenType[]
-  hasRewards?: ProductHubRewardsType[]
-  network?: ProductHubSupportedNetworks[]
-  primaryToken?: ProductHubTokenType[]
-  protocol?: LendingProtocol[]
-  secondaryToken?: ProductHubTokenType[]
+  [key: string]: string[]
 }
 
 export interface ProductHubQueryString {

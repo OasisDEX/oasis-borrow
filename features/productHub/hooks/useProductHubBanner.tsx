@@ -50,7 +50,7 @@ export const useProductHubBanner = ({
     !ajnaSafetySwitchOn &&
     ajnaPoolFinderEnabled &&
     product !== ProductHubProductType.Multiply &&
-    (protocol === undefined || protocol?.includes(LendingProtocol.Ajna))
+    (protocol === undefined || protocol.value?.includes(LendingProtocol.Ajna))
   ) {
     return {
       title: t('product-hub.banners.pool-finder.title'),

@@ -176,7 +176,7 @@ export function GenericMultiselect({
   )
 
   useEffect(() => {
-    if (didMountRef.current) onChange(values.length ? values : options.map((item) => item.value))
+    if (didMountRef.current) onChange(values)
     else didMountRef.current = true
   }, [values])
 

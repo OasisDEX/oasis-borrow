@@ -6,11 +6,9 @@ import type {
   ProductHubItem,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
-import {
-  ProductHubProductType } from 'features/productHub/types';
+import { ProductHubProductType } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
-import type { FC } from 'react'
-import React from 'react'
+import React, { type FC } from 'react'
 
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
@@ -31,8 +29,6 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
   selectedFilters,
   selectedProduct,
 }) => {
-  // const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
-
   const {
     collateralTokenFilter,
     debtTokenFilter,
