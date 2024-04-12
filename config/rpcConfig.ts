@@ -6,7 +6,7 @@ import { infuraProjectId } from './runtimeConfig'
 function getRpc(network: NetworkNames): string {
   let rpcUrl: string
   try {
-    rpcUrl = `${window?.location.origin}/api/rpc?network=${network}&clientId=${clientId}`
+    rpcUrl = `${window?.location.origin}/api/rpcGateway?network=${network}&clientId=${clientId}`
   } catch (error) {
     rpcUrl = `https://${network}.infura.io/v3/${infuraProjectId}`
   }
