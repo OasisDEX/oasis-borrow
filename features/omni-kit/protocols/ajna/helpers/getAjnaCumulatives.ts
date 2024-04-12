@@ -14,11 +14,15 @@ export const getAjnaCumulatives: (
       poolAddress: poolAddress.toLowerCase(),
     })) as SubgraphsResponses['Ajna']['getAjnaCumulatives']
 
-    const mappedOmniLendingCumulatives = response.account?.borrowPositions[0] ? mapOmniLendingCumulatives(response.account?.borrowPositions[0]) : defaultLendingCumulatives
-    const mappedOmniEarnCumulatives = response.account?.earnPositions[0] ? mapOmniEarnCumulatives(response.account?.earnPositions[0]) : defaultEarnCumulatives
+    const mappedOmniLendingCumulatives = response.account?.borrowPositions[0]
+      ? mapOmniLendingCumulatives(response.account?.borrowPositions[0])
+      : defaultLendingCumulatives
+    const mappedOmniEarnCumulatives = response.account?.earnPositions[0]
+      ? mapOmniEarnCumulatives(response.account?.earnPositions[0])
+      : defaultEarnCumulatives
 
     return {
       ...mappedOmniLendingCumulatives,
-      ...mappedOmniEarnCumulatives
+      ...mappedOmniEarnCumulatives,
     }
   }
