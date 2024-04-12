@@ -157,7 +157,7 @@ export async function createDisapproveTransaction({
   return await contract.approve(spender, 0)
 }
 
-export async function encodeTransferProxyAction({
+export async function encodeTransferToOwnerProxyAction({
   networkId,
   token,
   amount,

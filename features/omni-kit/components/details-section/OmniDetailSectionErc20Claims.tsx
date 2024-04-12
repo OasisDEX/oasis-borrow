@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import { encodeTransferProxyAction, tokenBalance } from 'blockchain/better-calls/erc20'
+import { encodeTransferToOwnerProxyAction, tokenBalance } from 'blockchain/better-calls/erc20'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniTxData } from 'features/omni-kit/hooks'
@@ -34,7 +34,12 @@ const OmniDetailSectionErc20ClaimsInternal: FC = () => {
         tokenBalance({ token, account: dpmProxy, networkId: networkId })
           .then((balance) => {
             if (balance.gt(zero)) {
-              encodeTransferProxyAction({ token, networkId, amount: balance, dpmAccount: dpmProxy })
+              encodeTransferToOwnerProxyAction({
+                token,
+                networkId,
+                amount: balance,
+                dpmAccount: dpmProxy,
+              })
                 .then((tx) => {
                   dispatchClaim({ token, claimable: balance, tx })
                 })
