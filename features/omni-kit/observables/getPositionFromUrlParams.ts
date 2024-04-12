@@ -89,9 +89,8 @@ export async function getPositionsFromUrlData({
   networkId,
   pairId,
   positionId,
-  protocol
+  protocol,
 }: GetPositionFromUrlDataParams): Promise<GetPositionFromUrlDataResponse> {
-
   const accounts = await getAccounts({ networkId, positionId })
 
   if (!accounts) return emptyResponse
@@ -160,22 +159,20 @@ export async function getPositionsFromUrlData({
 
 /**
  * Retrieves accounts based on the network and position ID.
- * 
+ *
  * @dev if the network is a custom fork, the accounts are retrieved from the blochchain events.
  * Otherwise, the accounts are retrieved from the subgraph.
- * @param network - The network configuration.
+ * @param networkId - The network chain Id.
  * @param positionId - The position ID.
  * @returns An array of accounts or null if the accounts cannot be retrieved.
  */
-async function getAccounts({ networkId,
-  positionId }: GetAccountByPositionIdParams
-) {
+async function getAccounts({ networkId, positionId }: GetAccountByPositionIdParams) {
   const network = networkSetById[networkId]
   if (network && network.isCustomFork) {
     const dpm = await getUserDpmProxy(positionId, network.id)
     if (!dpm) return null
 
-    const createEvents = await getPositionCreatedEventForProxyAddress(network.id, dpm.proxy);
+    const createEvents = await getPositionCreatedEventForProxyAddress(network.id, dpm.proxy)
     if (createEvents.length === 0) return null
 
     return [
@@ -192,7 +189,6 @@ async function getAccounts({ networkId,
         },
       },
     ]
-
   } else {
     const response = (await loadSubgraph('SummerDpm', 'getUserCreateEvents', networkId, {
       positionId,
