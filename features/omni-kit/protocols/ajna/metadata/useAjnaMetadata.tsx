@@ -5,14 +5,6 @@ import { PillAccordion } from 'components/PillAccordion'
 import faqBorrow from 'features/content/faqs/ajna/borrow/en'
 import faqEarn from 'features/content/faqs/ajna/earn/en'
 import faqMultiply from 'features/content/faqs/ajna/multiply/en'
-import type {
-  GetOmniMetadata,
-  LendingMetadata,
-  ProductContextWithBorrow,
-  ProductContextWithEarn,
-  ShouldShowDynamicLtvMetadata,
-  SupplyMetadata,
-} from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowDebtMax,
@@ -54,6 +46,15 @@ import type {
   AjnaPositionAuction,
 } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import type {
+  GetOmniMetadata,
+  LendingMetadata,
+  OmniFiltersParameters,
+  ProductContextWithBorrow,
+  ProductContextWithEarn,
+  ShouldShowDynamicLtvMetadata,
+  SupplyMetadata,
+} from 'features/omni-kit/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { useAppConfig } from 'helpers/config'
@@ -67,7 +68,6 @@ import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
@@ -83,27 +83,28 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     environment: {
       collateralAddress,
       collateralIcon,
+      collateralPrecision,
       collateralPrice,
       collateralToken,
-      collateralPrecision,
       isOpening,
       isOracless,
       isOwner,
       isProxyWithManyPositions,
       isShort,
+      isYieldLoop,
       networkId,
       owner,
+      pairId,
       priceFormat,
       productType,
+      protocol,
+      protocolRaw,
       quoteAddress,
       quoteBalance,
       quoteDigits,
       quotePrecision,
       quotePrice,
       quoteToken,
-      protocolRaw,
-      protocol,
-      isYieldLoop,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -156,14 +157,16 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const filters = {
-    flowStateFilter: (event: CreatePositionEvent) =>
+    omniProxyFilter: ({ event, filterConsumed }: OmniFiltersParameters) =>
       ajnaFlowStateFilter({
         collateralAddress,
         event,
+        filterConsumed,
+        pairId,
         productType,
-        quoteAddress,
-        protocolRaw,
         protocol,
+        protocolRaw,
+        quoteAddress,
       }),
   }
 
@@ -386,8 +389,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             },
             {
               label: t('omni-kit.headline.details.7-days-avg-apy'),
-              value: earnPosition.poolApy.per7d
-                ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
+              value: earnPosition.historicalApy.sevenDayAverage
+                ? formatDecimalAsPercent(earnPosition.historicalApy.sevenDayAverage)
                 : notAvailable,
             },
           ],
@@ -415,6 +418,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ],
           earnWithdrawMax: availableToWithdraw,
           earnAfterWithdrawMax: afterAvailableToWithdraw,
+          withAdjust: true,
         },
         elements: {
           faq: faqEarn,

@@ -15,19 +15,19 @@ import * as setupAaveV2ContextModule from './setup-aave-v2-context'
 
 jest.mock('./setup-aave-v2-context', () => {
   return {
-    setupAaveV2Context: jest.fn(() => ({} as AaveContext)),
+    setupAaveV2Context: jest.fn(() => ({}) as AaveContext),
   }
 })
 
 jest.mock('./setup-aave-v3-context', () => {
   return {
-    setupAaveV3Context: jest.fn(() => ({} as AaveContext)),
+    setupAaveV3Context: jest.fn(() => ({}) as AaveContext),
   }
 })
 
 jest.mock('./setup-spark-v3-context', () => {
   return {
-    setupSparkV3Context: jest.fn(() => ({} as AaveContext)),
+    setupSparkV3Context: jest.fn(() => ({}) as AaveContext),
   }
 })
 

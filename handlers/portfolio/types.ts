@@ -19,6 +19,7 @@ export type PortfolioPositionAutomations = {
 }
 
 export type PortfolioPosition = {
+  assetLabel?: string
   availableToMigrate?: boolean
   automations: PortfolioPositionAutomations
   description?: string
@@ -35,6 +36,7 @@ export type PortfolioPosition = {
   netValue: number
   isOraclessAndNotEmpty?: boolean
   openDate?: number // epoch based on block height timestamp
+  pairId?: number
   positionId: number | string
   primaryToken: string
   protocol: LendingProtocol

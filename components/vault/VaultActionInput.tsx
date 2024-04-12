@@ -6,7 +6,7 @@ import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/form
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import { one, zero } from 'helpers/zero'
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, ReactNode } from 'react'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { exchange, minus, plus } from 'theme/icons'
@@ -78,6 +78,8 @@ interface VaultActionInputProps {
 
   hasError: boolean
   collapsed?: boolean
+
+  swapController?: ReactNode
 }
 
 export function VaultActionInput({
@@ -117,6 +119,8 @@ export function VaultActionInput({
 
   hasError,
   collapsed,
+
+  swapController,
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
   const [toggleStatus, setToggleStatus] = useState<boolean>(defaultToggle)
@@ -194,8 +198,8 @@ export function VaultActionInput({
                   {auxiliaryFlag && BigNumber.isBigNumber(minAuxiliaryAmount)
                     ? formatCryptoBalance(minAuxiliaryAmount)
                     : !auxiliaryFlag && BigNumber.isBigNumber(minAmount)
-                    ? formatCryptoBalance(minAmount)
-                    : null}
+                      ? formatCryptoBalance(minAmount)
+                      : null}
                 </Text>
               </>
             )}
@@ -213,8 +217,8 @@ export function VaultActionInput({
                   {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount)
                     ? formatCryptoBalance(maxAuxiliaryAmount)
                     : !auxiliaryFlag && BigNumber.isBigNumber(maxAmount)
-                    ? formatCryptoBalance(maxAmount)
-                    : null}
+                      ? formatCryptoBalance(maxAmount)
+                      : null}
                 </Text>
               </>
             )}{' '}
@@ -241,6 +245,7 @@ export function VaultActionInput({
       <Grid
         columns={hasAuxiliary ? '5fr 1fr' : 'auto'}
         sx={{
+          pl: swapController ? 5 : 0,
           border: '1px solid',
           borderRadius: 'medium',
           alignItems: 'center',
@@ -258,6 +263,7 @@ export function VaultActionInput({
             }),
         }}
       >
+        {swapController}
         <Grid gap={0}>
           {!auxiliaryFlag ? (
             <BigNumberInput

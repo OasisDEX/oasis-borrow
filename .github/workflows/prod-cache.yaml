@@ -1,4 +1,6 @@
 name: Create modules cache (main)
+env:
+  CONFIG_URL: ${{ secrets.CONFIG_URL }}
 
 on:
   push:
@@ -16,10 +18,10 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
 
-      - name: Use Node.js 18.12
+      - name: Use Node.js 18.19.1
         uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 18.19.1
 
       - name: Generate Cache Key
         id: key
@@ -40,10 +42,10 @@ jobs:
     if: ${{ !needs.search.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 18.12
+      - name: Use Node.js 18.19.1
         uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 18.19.1
       - name: Check cache
         uses: actions/cache@v3
         id: yarn-cache
@@ -53,6 +55,15 @@ jobs:
       - name: Install packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
+      - name: Create lint cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn lint --quiet
+      - name: Create prettier cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn format
+      - name: Create typescript cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn typecheck
   cleanup:
     name: Cleanup old caches
     needs: [search]

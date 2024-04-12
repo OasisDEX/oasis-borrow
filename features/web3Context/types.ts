@@ -6,16 +6,6 @@ import type Web3 from 'web3'
 
 export type ConnectionKind = 'injected' | 'network'
 
-export function isConnectable(
-  web3Context: Web3Context | undefined,
-): web3Context is ConnectableWeb3Context {
-  return (
-    web3Context?.status === 'notConnected' ||
-    web3Context?.status === 'connectedReadonly' ||
-    web3Context?.status === 'error'
-  )
-}
-
 interface Connectable {
   connect: (connector: AbstractConnector, connectionKind: ConnectionKind) => Promise<boolean>
 }
@@ -61,11 +51,6 @@ export interface Web3ContextError extends Connectable {
   error: Error
   deactivate: () => void
 }
-
-export type ConnectableWeb3Context =
-  | Web3ContextNotConnected
-  | Web3ContextConnectedReadonly
-  | Web3ContextError
 
 export type Web3Context =
   | Web3ContextNotConnected

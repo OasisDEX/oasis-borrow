@@ -23,10 +23,6 @@ import type {
   StopLossFormChangeAction,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import type {
-  NotificationChange,
-  NotificationChangeAction,
-} from 'features/deprecated/notifications/notificationChange'
-import type {
   FollowedVaultsLimitReachedChange,
   FollowedVaultsLimitReachedChangeAction,
 } from 'features/follow/common/followedVaultsLimitReached'
@@ -44,7 +40,6 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
-  | NotificationChange
   | TxPayloadChange
   | AutoTakeProfitFormChange
   | FollowedVaultsLimitReachedChange
@@ -57,7 +52,6 @@ export type LegalUiChanges = {
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
   ConstantMultipleChangeAction: ConstantMultipleChangeAction
-  NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
   AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
   FollowedVaultsLimitReachedChangeAction: FollowedVaultsLimitReachedChangeAction

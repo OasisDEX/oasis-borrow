@@ -1,14 +1,15 @@
 import BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
+import type { PositionFromUrl } from 'features/omni-kit/observables'
+import { getPositionsFromUrlData } from 'features/omni-kit/observables'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
+import type { LendingProtocol } from 'lendingProtocols'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
-import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 import { allDefined } from './allDefined'
 import { callBackIfDefined } from './callBackIfDefined'
@@ -29,27 +30,31 @@ export type UseFlowStateCBParamsType = {
 export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 
 export type UseFlowStateProps = {
-  amount?: BigNumber
   allowanceAmount?: BigNumber
+  amount?: BigNumber
   existingProxy?: string
-  filterConsumedProxy?: (events: CreatePositionEvent[]) => boolean
+  filterConsumedProxy?: (events: PositionFromUrl[]) => Promise<boolean>
+  networkId: OmniSupportedNetworkIds
   onEverythingReady?: UseFlowStateCBType
   onGoBack?: UseFlowStateCBType
-  onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
+  onProxiesAvailable?: (events: PositionFromUrl[], dpmAccounts: UserDpmAccount[]) => void
+  pairId: number
+  protocol: LendingProtocol
   token?: string
-  networkId: NetworkIds
 }
 
 export function useFlowState({
-  amount,
   allowanceAmount,
+  amount,
   existingProxy,
   filterConsumedProxy,
+  networkId,
   onEverythingReady,
   onGoBack,
   onProxiesAvailable,
+  pairId,
+  protocol,
   token,
-  networkId,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
@@ -145,21 +150,36 @@ export function useFlowState({
       userProxyList.map(async ({ vaultId, proxy }) => ({
         proxyAddress: proxy,
         proxyId: vaultId,
-        events: await getPositionCreatedEventForProxyAddress(networkId, proxy),
+        events: await getPositionsFromUrlData({
+          networkId,
+          pairId,
+          positionId: Number(vaultId),
+          protocol,
+        }),
       })),
-    ).subscribe((userProxyEventsList) => {
-      if (onProxiesAvailable && userProxyEventsList.length > 0)
+    ).subscribe(async (userProxyEventsList) => {
+      if (onProxiesAvailable && userProxyEventsList.length > 0) {
         onProxiesAvailable(
-          userProxyEventsList.flatMap(({ events }) => events),
+          userProxyEventsList.flatMap(({ events: { positions } }) => positions),
           userProxyList,
         )
-      setAvailableProxies(
-        userProxyEventsList
-          .filter(({ events }) =>
-            events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
-          )
-          .map(({ proxyAddress }) => proxyAddress),
+      }
+      const filteredProxiesList = await Promise.all(
+        userProxyEventsList.map(async (proxyEvent) => {
+          if (proxyEvent.events.positions.length === 0) {
+            return Promise.resolve(proxyEvent)
+          }
+          if (filterConsumedProxy) {
+            const filtered = await filterConsumedProxy(proxyEvent.events.positions)
+            return filtered ? Promise.resolve(proxyEvent) : Promise.resolve(false)
+          }
+          return Promise.resolve(false)
+        }),
       )
+      const filteredAndSortedproxiesList = (
+        filteredProxiesList.filter(Boolean) as typeof userProxyEventsList
+      ).sort((aproxy, bproxy) => Number(aproxy.proxyId) - Number(bproxy.proxyId))
+      setAvailableProxies(filteredAndSortedproxiesList.map(({ proxyAddress }) => proxyAddress))
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()

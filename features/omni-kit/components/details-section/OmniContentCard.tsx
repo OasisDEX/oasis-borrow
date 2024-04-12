@@ -8,9 +8,10 @@ import { Icon } from 'components/Icon'
 import type { IconProps } from 'components/Icon.types'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React, { type ReactNode } from 'react'
-import type { Theme } from 'theme-ui'
+import { Flex, Image, type Theme } from 'theme-ui'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export interface OmniContentCardTranslation {
@@ -38,6 +39,7 @@ export interface OmniContentCardExtra {
   icon?: IconProps['icon']
   iconColor?: string
   iconPosition?: 'before' | 'after'
+  iconImage?: string
   isLoading?: boolean
   isValueLoading?: boolean
   modal?: ReactNode
@@ -75,6 +77,7 @@ export function OmniContentCard({
   icon,
   iconColor = 'interactive100',
   iconPosition = 'before',
+  iconImage,
   isLoading,
   modal,
   title,
@@ -136,13 +139,51 @@ export function OmniContentCard({
     </>
   )
 
+  const valueImage = (
+    <>
+      {iconImage && (
+        <Flex
+          as="span"
+          sx={{
+            position: 'relative',
+            top: '2px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '24px',
+            height: '24px',
+            mt: '-2px',
+            mr: iconPosition === 'before' ? 1 : 0,
+            ml: iconPosition === 'after' ? 1 : 0,
+            border: '1px solid',
+            borderColor: 'neutral20',
+            borderRadius: 'ellipse',
+            bg: 'neutral10',
+          }}
+        >
+          <Image src={staticFilesRuntimeUrl(iconImage)} sx={{ width: '14px', height: '14px' }} />
+        </Flex>
+      )}
+    </>
+  )
+
   const contentCardSettings: ContentCardProps = {
     title: getContentCardValue(title, t),
     value: !isValueLoading ? (
       <>
-        {iconPosition === 'before' && valueIcon}
+        {iconPosition === 'before' && (
+          <>
+            {valueIcon}
+            {valueImage}
+          </>
+        )}
         {value && getContentCardValue(value, t)}
-        {iconPosition === 'after' && valueIcon}
+        {iconPosition === 'after' && (
+          <>
+            {valueIcon}
+            {valueImage}
+          </>
+        )}
       </>
     ) : (
       <Skeleton width="150px" height="38px" sx={{ mt: '5px', borderRadius: 'mediumLarge' }} />

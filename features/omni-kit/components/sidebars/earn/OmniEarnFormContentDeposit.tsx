@@ -1,4 +1,5 @@
 import { OmniFormContentSummary, OmniFormFieldDeposit } from 'features/omni-kit/components/sidebars'
+import { OmniInputSwap } from 'features/omni-kit/components/sidebars/OmniInputSwap'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
@@ -6,33 +7,49 @@ import React from 'react'
 export function OmniEarnFormContentDeposit() {
   const {
     environment: {
-      quotePrice,
-      quoteToken,
+      quoteAddress,
       quoteBalance,
       quoteDigits,
       quotePrecision,
+      quotePrice,
+      quoteToken,
       shouldSwitchNetwork,
     },
   } = useOmniGeneralContext()
   const {
-    form: { dispatch },
+    form: {
+      dispatch,
+      state: { pullToken },
+    },
     dynamicMetadata: {
-      validations: { isFormValid },
       elements: { extraEarnInputDeposit, earnFormOrder },
+      validations: { isFormValid },
     },
   } = useOmniProductContext(OmniProductType.Earn)
 
   return (
     <>
-      <OmniFormFieldDeposit
-        dispatchAmount={dispatch}
-        resetOnClear
-        token={quoteToken}
-        tokenPrice={quotePrice}
-        tokenDigits={quoteDigits}
-        tokenPrecision={quotePrecision}
-        {...(!shouldSwitchNetwork && { maxAmount: quoteBalance })}
-      />
+      <OmniInputSwap
+        defaultToken={quoteToken}
+        defaultTokenBalance={quoteBalance}
+        defaultTokenPrice={quotePrice}
+        defaultTokenAddress={quoteAddress}
+        defaultTokenPrecision={quotePrecision}
+        type="pull"
+      >
+        {({ swapController }) => (
+          <OmniFormFieldDeposit
+            dispatchAmount={dispatch}
+            resetOnClear
+            swapController={swapController}
+            token={pullToken?.token ?? quoteToken}
+            tokenDigits={pullToken?.digits ?? quoteDigits}
+            tokenPrecision={pullToken?.precision ?? quotePrecision}
+            tokenPrice={pullToken?.price ?? quotePrice}
+            {...(!shouldSwitchNetwork && { maxAmount: pullToken?.balance ?? quoteBalance })}
+          />
+        )}
+      </OmniInputSwap>
       {extraEarnInputDeposit}
       {isFormValid && <OmniFormContentSummary>{earnFormOrder}</OmniFormContentSummary>}
     </>

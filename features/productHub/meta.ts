@@ -19,7 +19,7 @@ import {
 } from 'theme/icons'
 import { FeaturesEnum } from 'types/config'
 
-export const MIN_LIQUIDITY = 10000
+export const MIN_LIQUIDITY = 3000
 
 export const ALL_ASSETS = 'all assets'
 
@@ -75,7 +75,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
   BTC: {
     title: 'Bitcoin',
-    description: 'WBTC/TBTC',
+    description: 'WBTC',
     value: 'BTC',
     icon: btc_circle_color,
   },
@@ -97,11 +97,65 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'YFI',
     icon: getToken('YFI').iconCircle,
   },
-  GHO: {
-    title: 'GHO stablecoin',
-    description: 'GHO',
-    value: 'GHO',
-    icon: getToken('GHO').iconCircle,
+  SUSDE: {
+    title: 'Ethena Staked USDe',
+    description: 'SUSDE/USDE',
+    value: 'SUSDE',
+    icon: getToken('SUSDE').iconCircle,
+  },
+  USDT: {
+    title: 'USDT stablecoin',
+    description: 'USDT',
+    value: 'USDT',
+    icon: getToken('USDT').iconCircle,
+  },
+  MKR: {
+    title: 'MKR MakerDAO',
+    description: 'MKR',
+    value: 'MKR',
+    icon: getToken('MKR').iconCircle,
+  },
+  LINK: {
+    title: 'Chainlink LINK',
+    description: 'LINK',
+    value: 'LINK',
+    icon: getToken('LINK').iconCircle,
+  },
+  LDO: {
+    title: 'Lido LDO',
+    description: 'LDO',
+    value: 'LDO',
+    icon: getToken('LDO').iconCircle,
+  },
+  ENA: {
+    title: 'Ethena',
+    description: 'ENA',
+    value: 'ENA',
+    icon: getToken('ENA').iconCircle,
+  },
+  DEGEN: {
+    title: 'DEGEN',
+    description: 'DEGEN',
+    value: 'DEGEN',
+    icon: getToken('DEGEN').iconCircle,
+  },
+  SNX: {
+    title: 'Synthetix Network',
+    description: 'SNX',
+    value: 'SNX',
+    icon: getToken('SNX').iconCircle,
+  },
+  AERO: {
+    title: 'Aerodrome',
+    description: 'AERO',
+    value: 'AERO',
+    icon: getToken('AERO').iconCircle,
+  },
+  PRIME: {
+    title: 'Prime',
+    description: 'PRIME',
+    value: 'PRIME',
+    icon: getToken('PRIME').iconCircle,
   },
 }
 
@@ -118,9 +172,18 @@ export const productHubOptionsMapBase: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      USDT: productHubTokenOptions.USDT,
       DAI: productHubTokenOptions.DAI,
+      SUSDE: productHubTokenOptions.SUSDE,
+      MKR: productHubTokenOptions.MKR,
+      LINK: productHubTokenOptions.LINK,
+      LDO: productHubTokenOptions.LDO,
       YFI: productHubTokenOptions.YFI,
-      GHO: productHubTokenOptions.GHO,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
   multiply: {
@@ -130,9 +193,18 @@ export const productHubOptionsMapBase: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
-      YFI: productHubTokenOptions.YFI,
+      USDT: productHubTokenOptions.USDT,
       DAI: productHubTokenOptions.DAI,
-      GHO: productHubTokenOptions.GHO,
+      SUSDE: productHubTokenOptions.SUSDE,
+      MKR: productHubTokenOptions.MKR,
+      LINK: productHubTokenOptions.LINK,
+      LDO: productHubTokenOptions.LDO,
+      YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
   earn: {
@@ -142,8 +214,18 @@ export const productHubOptionsMapBase: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      USDT: productHubTokenOptions.USDT,
       DAI: productHubTokenOptions.DAI,
-      GHO: productHubTokenOptions.GHO,
+      SUSDE: productHubTokenOptions.SUSDE,
+      MKR: productHubTokenOptions.MKR,
+      LINK: productHubTokenOptions.LINK,
+      LDO: productHubTokenOptions.LDO,
+      YFI: productHubTokenOptions.YFI,
+      DEGEN: productHubTokenOptions.DEGEN,
+      ENA: productHubTokenOptions.ENA,
+      SNX: productHubTokenOptions.SNX,
+      AERO: productHubTokenOptions.AERO,
+      PRIME: productHubTokenOptions.PRIME,
     },
   },
 }

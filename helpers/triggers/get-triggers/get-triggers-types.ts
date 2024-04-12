@@ -1,3 +1,4 @@
+import type BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 
@@ -256,6 +257,26 @@ export type DmaSparkTrailingStopLoss = {
   }
 }
 
+type ProfitType = {
+  balance: string
+  token: {
+    decimals: number
+    symbol: string
+    address: string
+  }
+}
+
+type NextProfitDynamicParam = {
+  triggerPrice: string
+  stopLossDynamicPrice: string
+  realizedProfitInCollateral: ProfitType
+  realizedProfitInDebt: ProfitType
+  totalProfitInCollateral: ProfitType
+  totalProfitInDebt: ProfitType
+  fee: ProfitType
+  totalFee: ProfitType
+}
+
 export type DmaAavePartialTakeProfit = {
   triggerTypeName: 'DmaAavePartialTakeProfit'
   triggerType: bigint
@@ -272,6 +293,9 @@ export type DmaAavePartialTakeProfit = {
     targetLtv: string
     triggerType: string
     withdrawToDebt: 'true' | 'false'
+  }
+  dynamicParams?: {
+    nextProfit?: NextProfitDynamicParam
   }
 }
 
@@ -292,6 +316,9 @@ export type DmaSparkPartialTakeProfit = {
     deviation: string
     closeToCollateral: string
     withdrawToDebt: 'true' | 'false'
+  }
+  dynamicParams?: {
+    nextProfit?: NextProfitDynamicParam
   }
 }
 
@@ -348,3 +375,75 @@ export type GetTriggersResponse = {
   triggersCount: number
   additionalData?: Record<string, unknown>
 }
+
+type WithMappedStopLossDecodedParams = {
+  decodedMappedParams: {
+    executionLtv?: BigNumber
+    ltv?: BigNumber
+  }
+}
+
+type WithMappedTrailingStopLossDecodedParams = {
+  decodedMappedParams: {
+    trailingDistance: BigNumber
+  }
+}
+
+type WithMappedAutoSellDecodedParams = {
+  decodedMappedParams: {
+    minSellPrice?: BigNumber
+    executionLtv: BigNumber
+    targetLtv: BigNumber
+    maxBaseFeeInGwei: BigNumber
+  }
+}
+type WithMappedAutoBuyDecodedParams = {
+  decodedMappedParams: {
+    maxBuyPrice?: BigNumber
+    executionLtv: BigNumber
+    targetLtv: BigNumber
+    maxBaseFeeInGwei: BigNumber
+  }
+}
+type WithMappedPartialTakeProfitDecodedParams = {
+  decodedMappedParams: {
+    executionPrice: BigNumber
+    executionLtv: BigNumber
+    ltvStep: BigNumber
+  }
+}
+
+// Types below to be extended when new triggers types will be available on other protocols
+export type StopLossTriggers =
+  | AaveStopLossToCollateral
+  | AaveStopLossToCollateralDMA
+  | AaveStopLossToDebt
+  | AaveStopLossToDebtDMA
+  | SparkStopLossToCollateral
+  | SparkStopLossToCollateralDMA
+  | SparkStopLossToDebt
+  | SparkStopLossToDebtDMA
+
+export type TrailingStopLossTriggers = DmaAaveTrailingStopLoss | DmaSparkTrailingStopLoss
+export type AutoSellTriggers = DmaAaveBasicSell | DmaSparkBasicSell
+export type AutoBuyTriggers = DmaAaveBasicBuy | DmaSparkBasicBuy
+export type PartialTakeProfitTriggers = DmaAavePartialTakeProfit | DmaSparkPartialTakeProfit
+
+export type StopLossTriggersWithDecodedParams = (
+  | AaveStopLossToCollateral
+  | AaveStopLossToCollateralDMA
+  | AaveStopLossToDebt
+  | AaveStopLossToDebtDMA
+  | SparkStopLossToCollateral
+  | SparkStopLossToCollateralDMA
+  | SparkStopLossToDebt
+  | SparkStopLossToDebtDMA
+) &
+  WithMappedStopLossDecodedParams
+export type AutoSellTriggersWithDecodedParams = AutoSellTriggers & WithMappedAutoSellDecodedParams
+export type AutoBuyTriggersWithDecodedParams = AutoBuyTriggers & WithMappedAutoBuyDecodedParams
+export type TrailingStopLossTriggersWithDecodedParams = TrailingStopLossTriggers &
+  WithMappedTrailingStopLossDecodedParams
+
+export type PartialTakeProfitTriggersWithDecodedParams = PartialTakeProfitTriggers &
+  WithMappedPartialTakeProfitDecodedParams

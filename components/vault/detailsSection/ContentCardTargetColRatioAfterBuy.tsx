@@ -39,8 +39,8 @@ export function ContentCardTargetColRatioAfterBuy({
     threshold: !threshold
       ? undefined
       : threshold.isEqualTo(maxUint256)
-      ? t('unlimited')
-      : `$${formatAmount(threshold, 'USD')}`,
+        ? t('unlimited')
+        : `$${formatAmount(threshold, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {

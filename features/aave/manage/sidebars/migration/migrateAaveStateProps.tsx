@@ -8,4 +8,5 @@ export interface MigrateAaveStateProps {
   readonly state: StateFrom<MigrateAaveStateMachine>
   readonly send: Sender<MigrateAaveEvent>
   isLoading: () => boolean
+  isLocked: (state: StateFrom<MigrateAaveStateMachine>) => boolean
 }

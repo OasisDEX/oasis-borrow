@@ -2,6 +2,7 @@ import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/networks'
 import { getOmniPositionUrl } from 'features/omni-kit/helpers'
+import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { MorphoDpmPositionsMarket } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
@@ -27,7 +28,7 @@ interface GetMorphoPositionInfoParams {
 export function getMorphoPositionInfo({
   apiVaults,
   dpmList,
-  market: { collateralToken, debtToken },
+  market: { collateralToken, debtToken, id: marketId },
   networkId,
   positionId,
   prices,
@@ -39,6 +40,8 @@ export function getMorphoPositionInfo({
   const collateralPrice = new BigNumber(prices[collateralToken.symbol.toUpperCase()])
   const quotePrice = new BigNumber(prices[debtToken.symbol.toUpperCase()])
   const networkName = networksById[networkId].name
+  const networkMarkets = morphoMarkets[networkId] ?? {}
+  const pairId = networkMarkets[`${primaryToken}-${secondaryToken}`].indexOf(marketId) + 1
 
   const defaultType = getDefaultBorrowishPositionType({
     collateralTokenAddress: collateralToken.address,
@@ -58,6 +61,7 @@ export function getMorphoPositionInfo({
   const url = getOmniPositionUrl({
     collateralToken: primaryToken,
     networkName,
+    pairId,
     positionId,
     productType: type,
     protocol: LendingProtocol.MorphoBlue,
@@ -67,6 +71,7 @@ export function getMorphoPositionInfo({
   return {
     collateralPrice,
     networkName,
+    pairId,
     primaryToken,
     quotePrice,
     secondaryToken,

@@ -1,18 +1,17 @@
 import type { PositionType } from '@oasisdex/dma-library'
 import { isCorrelatedPosition } from '@oasisdex/dma-library'
+import { identifyTokens$ } from 'blockchain/identifyTokens'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
-import type { AddressesRelatedWithPosition } from 'features/aave/helpers'
-import type { PositionCreated } from 'features/aave/services'
-import { readPositionCreatedEvents$ } from 'features/aave/services'
-import type { PositionId } from 'features/aave/types'
+import type { PositionFromUrl } from 'features/omni-kit/observables'
+import { getPositionsFromUrlData } from 'features/omni-kit/observables'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
-import { isEqual } from 'lodash'
+import { isEqual, uniq } from 'lodash'
 import type { Observable } from 'rxjs'
-import { combineLatest, EMPTY, of } from 'rxjs'
+import { combineLatest, EMPTY, from, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 export interface DpmPositionData extends UserDpmAccount {
@@ -44,7 +43,7 @@ const mapAaveYieldLoopToMultiply = ({
     isCorrelatedPosition(collateralToken, quoteToken) &&
     [LendingProtocol.SparkV3, LendingProtocol.AaveV3, LendingProtocol.AaveV2].includes(protocol)
   ) {
-    return 'Multiply'
+    return 'Multiply' as PositionType
   }
 
   return positionType
@@ -52,19 +51,19 @@ const mapAaveYieldLoopToMultiply = ({
 
 const filterPositionWhenUrlParamsDefined = ({
   collateralToken,
+  pairId,
   positions,
   product,
   protocol,
   protocolRaw,
-  proxy,
   quoteToken,
 }: {
   collateralToken: string
-  positions?: PositionCreated[]
+  pairId: number
+  positions?: PositionFromUrl[]
   product: string
   protocol: LendingProtocol
   protocolRaw: string
-  proxy: string
   quoteToken: string
 }) =>
   positions
@@ -85,15 +84,15 @@ const filterPositionWhenUrlParamsDefined = ({
         collateralTokenSymbol,
         debtTokenAddress,
         debtTokenSymbol,
+        pairId: positionPairId,
         positionType,
         protocol: positionProtocol,
         protocolRaw: positionProtocolRaw,
-        proxyAddress,
       }) => {
         return (
           positionProtocol === protocol &&
           positionProtocolRaw === protocolRaw &&
-          proxyAddress.toLowerCase() === proxy.toLowerCase() &&
+          positionPairId === pairId &&
           [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
           [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
           ((product.toLowerCase() === 'earn' &&
@@ -105,62 +104,65 @@ const filterPositionWhenUrlParamsDefined = ({
     )
 
 export function getDpmPositionDataV2$(
-  proxiesForPosition$: (
-    positionId: PositionId,
-    networkId: OmniSupportedNetworkIds,
-  ) => Observable<AddressesRelatedWithPosition>,
-  positionId: PositionId,
+  positionId: number,
   networkId: OmniSupportedNetworkIds,
   collateralToken: string,
   quoteToken: string,
   product: string,
   protocol: LendingProtocol,
   protocolRaw: string,
+  pairId: number,
 ): Observable<DpmPositionData> {
-  return proxiesForPosition$(positionId, networkId).pipe(
-    switchMap(({ dpmProxy }) =>
+  return from(
+    getPositionsFromUrlData({
+      networkId,
+      pairId,
+      positionId,
+      protocol,
+    }),
+  ).pipe(
+    switchMap(({ dpmAddress, owner, positions }) =>
       combineLatest(
-        of(dpmProxy),
-        dpmProxy ? readPositionCreatedEvents$(dpmProxy.user, networkId) : of(undefined),
+        of({ dpmAddress, owner, positions }),
+        identifyTokens$(
+          networkId,
+          uniq(
+            positions.flatMap(({ collateralTokenSymbol, debtTokenSymbol }) => [
+              collateralTokenSymbol,
+              debtTokenSymbol,
+            ]),
+          ),
+        ),
       ),
     ),
-    switchMap(([dpmProxy, positions]) => {
-      const hasMultiplePositions = Boolean(
-        positions &&
-          positions.filter(
-            (item) => item.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase(),
-          ).length > 1,
-      )
-
-      const proxyPosition = filterPositionWhenUrlParamsDefined({
+    switchMap(([{ owner, positions }]) => {
+      const position = filterPositionWhenUrlParamsDefined({
         collateralToken,
+        pairId,
         positions,
         product,
         protocol,
         protocolRaw,
-        proxy: dpmProxy?.proxy ?? ethers.constants.AddressZero,
         quoteToken,
       })
 
       return combineLatest(
-        of(dpmProxy),
-        of(positions),
-        of(proxyPosition),
-        dpmProxy && proxyPosition && networkId
+        position && networkId
           ? getApiVault({
-              vaultId: Number(dpmProxy.vaultId),
-              owner: dpmProxy.user,
-              protocol: proxyPosition.protocol,
+              vaultId: Number(positionId),
+              owner,
+              protocol,
               chainId: networkId,
-              tokenPair: `${proxyPosition.collateralTokenSymbol}-${proxyPosition.debtTokenSymbol}`,
+              tokenPair: `${position.collateralTokenSymbol}-${position.debtTokenSymbol}`,
             })
           : of(undefined),
-        of(hasMultiplePositions),
       ).pipe(
-        map(([dpmProxy, positions, position, vaultsFromApi, hasMultiplePositions]) =>
-          dpmProxy && position
+        map(([vaultsFromApi]) =>
+          position
             ? {
-                ...dpmProxy,
+                proxy: position.proxyAddress,
+                user: owner,
+                vaultId: positionId,
                 collateralToken: position.collateralTokenSymbol,
                 collateralTokenAddress: position.collateralTokenAddress,
                 product: (position.positionType === 'Earn'
@@ -170,11 +172,11 @@ export function getDpmPositionDataV2$(
                 protocol: position.protocol,
                 quoteToken: position.debtTokenSymbol,
                 quoteTokenAddress: position.debtTokenAddress,
-                hasMultiplePositions,
+                hasMultiplePositions: positions.length > 1,
               }
-            : Array.isArray(positions) || !dpmProxy
-            ? null
-            : undefined,
+            : Array.isArray(positions)
+              ? null
+              : undefined,
         ),
       )
     }),

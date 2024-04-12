@@ -41,15 +41,19 @@ export const getOmniNetValuePnlData = ({
         .minus(cumulatives.cumulativeDepositInQuoteToken)
         .div(cumulatives.cumulativeDepositInQuoteToken)
 
+      const pnlPercentageUsd = cumulatives?.cumulativeWithdrawUSD
+        .plus(netValue.inUsd)
+        .minus(cumulatives.cumulativeDepositUSD)
+        .div(cumulatives.cumulativeDepositUSD)
+
       if (useDebtTokenAsPnL) {
         return {
           pnl: {
             pnlToken: debtToken,
             percentage: pnlPercentageDebt,
+            percentageUsd: pnlPercentageUsd,
             inToken: cumulatives?.cumulativeDepositInQuoteToken.times(pnlPercentageDebt ?? zero),
-            inUsd: cumulatives?.cumulativeDepositInQuoteToken
-              .times(pnlPercentageDebt ?? zero)
-              .times(debtTokenPrice),
+            inUsd: cumulatives?.cumulativeDepositUSD.times(pnlPercentageUsd ?? zero),
           },
           netValue,
           pnlCumulatives: {
@@ -73,10 +77,9 @@ export const getOmniNetValuePnlData = ({
         pnl: {
           pnlToken: collateralToken,
           percentage: pnlPercentage,
+          percentageUsd: pnlPercentageUsd,
           inToken: cumulatives?.cumulativeDepositInCollateralToken.times(pnlPercentage ?? zero),
-          inUsd: cumulatives?.cumulativeDepositInCollateralToken
-            .times(pnlPercentage ?? zero)
-            .times(collateralTokenPrice),
+          inUsd: cumulatives?.cumulativeDepositUSD.times(pnlPercentageUsd ?? zero),
         },
         netValue,
         pnlCumulatives: {
@@ -100,14 +103,18 @@ export const getOmniNetValuePnlData = ({
         .plus(netValueInDebtToken)
         .minus(cumulatives.cumulativeDepositInQuoteToken)
         .div(cumulatives.cumulativeDepositInQuoteToken)
+
+      const pnlPercentageUsd = cumulatives?.cumulativeWithdrawUSD
+        .plus(netValue.inUsd)
+        .minus(cumulatives.cumulativeDepositUSD)
+        .div(cumulatives.cumulativeDepositUSD)
       return {
         pnl: {
           pnlToken: debtToken,
           percentage: pnlPercentage,
+          percentageUsd: pnlPercentageUsd,
           inToken: cumulatives?.cumulativeDepositInQuoteToken.times(pnlPercentage ?? zero),
-          inUsd: cumulatives?.cumulativeDepositInQuoteToken
-            .times(pnlPercentage ?? zero)
-            .times(debtTokenPrice),
+          inUsd: cumulatives?.cumulativeDepositUSD.times(pnlPercentageUsd ?? zero),
         },
         netValue,
         pnlCumulatives: {

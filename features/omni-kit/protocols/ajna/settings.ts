@@ -48,9 +48,21 @@ export const settings: OmniProtocolSettings = {
       'OP',
       'MEVETH',
       'XETH',
+      'SUSDE',
+      'ENA',
     ],
     [NetworkIds.GOERLI]: [],
-    [NetworkIds.BASEMAINNET]: ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH'],
+    [NetworkIds.BASEMAINNET]: [
+      'CBETH',
+      'ETH',
+      'USDC',
+      'USDBC',
+      'WSTETH',
+      'SNX',
+      'DEGEN',
+      'AERO',
+      'PRIME',
+    ],
     [NetworkIds.ARBITRUMMAINNET]: [
       'CBETH',
       'DAI',
@@ -66,6 +78,7 @@ export const settings: OmniProtocolSettings = {
       'OP',
       'MEVETH',
       'XETH',
+      'SUSDE',
     ],
     [NetworkIds.OPTIMISMMAINNET]: [
       'CBETH',
@@ -82,6 +95,7 @@ export const settings: OmniProtocolSettings = {
       'OP',
       'MEVETH',
       'XETH',
+      'SUSDE',
     ],
   },
   steps: {
@@ -97,5 +111,11 @@ export const settings: OmniProtocolSettings = {
       setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],
       manage: omniSidebarManageBorrowishSteps,
     },
+  },
+  availableAutomations: {
+    [NetworkIds.MAINNET]: [],
+    [NetworkIds.ARBITRUMMAINNET]: [],
+    [NetworkIds.BASEMAINNET]: [],
+    [NetworkIds.OPTIMISMMAINNET]: [],
   },
 }

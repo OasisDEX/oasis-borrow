@@ -5,6 +5,7 @@ import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
+import { shouldShowPairId } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { getLocalAppConfig } from 'helpers/config'
@@ -47,10 +48,20 @@ const getMigrationGradientsPerProtocol = (
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
+  const resolvedPairId = shouldShowPairId({
+    collateralToken: position.primaryToken,
+    networkName: position.network,
+    protocol: position.protocol,
+    quoteToken: position.secondaryToken,
+  })
+    ? `-${position.pairId}`
+    : ''
+
   const asset =
-    position.primaryToken === position.secondaryToken
+    position?.assetLabel ??
+    (position.primaryToken === position.secondaryToken
       ? position.primaryToken
-      : `${position.primaryToken}/${position.secondaryToken}`
+      : `${position.primaryToken}/${position.secondaryToken}${resolvedPairId}`)
   const icons =
     position.primaryToken === position.secondaryToken
       ? [position.primaryToken]

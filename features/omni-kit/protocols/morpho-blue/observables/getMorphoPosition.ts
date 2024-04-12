@@ -19,18 +19,21 @@ export function getMorphoPosition$(
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   { collateralToken, protocol, proxy, quoteToken }: DpmPositionData,
+  pairId: number,
   networkId: OmniSupportedNetworkIds,
   tokensPrecision: OmniTokensPrecision,
 ): Observable<MorphoBluePosition> {
   return combineLatest(iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined))).pipe(
     switchMap(async () => {
-      if (protocol.toLowerCase() !== LendingProtocol.MorphoBlue) return null
+      const marketId = morphoMarkets[networkId]?.[`${collateralToken}-${quoteToken}`][pairId - 1]
+
+      if (protocol.toLowerCase() !== LendingProtocol.MorphoBlue || !marketId) return null
 
       return await views.morpho.getPosition(
         {
           collateralPrecision: tokensPrecision?.collateralPrecision ?? DEFAULT_TOKEN_DIGITS,
           collateralPriceUSD: collateralPrice,
-          marketId: morphoMarkets[networkId]?.[`${collateralToken}-${quoteToken}`] as string,
+          marketId,
           proxyAddress: proxy,
           quotePrecision: tokensPrecision?.quotePrecision ?? DEFAULT_TOKEN_DIGITS,
           quotePriceUSD: quotePrice,

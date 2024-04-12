@@ -1,4 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
+import { shouldShowPairId } from 'features/omni-kit/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import { uniq, upperFirst } from 'lodash'
@@ -11,6 +12,7 @@ interface OmniHeadlinePropsParams {
   headline?: string
   isYieldLoopWithData?: boolean
   networkName: NetworkNames
+  pairId: number
   positionId?: string
   productType?: OmniProductType
   protocol: LendingProtocol
@@ -25,6 +27,7 @@ export function getOmniHeadlineProps({
   headline,
   isYieldLoopWithData,
   networkName,
+  pairId,
   positionId,
   productType,
   protocol,
@@ -33,22 +36,35 @@ export function getOmniHeadlineProps({
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
+  const resolvedPositionId = positionId ? ` #${positionId}` : ''
+  const resolvedPairId =
+    collateralToken &&
+    quoteToken &&
+    shouldShowPairId({
+      collateralToken,
+      networkName,
+      protocol,
+      quoteToken,
+    })
+      ? `-${pairId}`
+      : ''
   const resolvedProductType = isYieldLoopWithData
     ? t('omni-kit.headline.yield-multiple')
     : upperFirst(productType)
+
   const title =
     headline ??
     t('omni-kit.headline.title', {
       collateralToken,
       productType: resolvedProductType,
       quoteToken,
+      pairId: resolvedPairId,
     })
-  const id = positionId ? ` #${positionId}` : ''
 
   return {
     ...(collateralToken && quoteToken && collateralIcon && quoteIcon
       ? {
-          header: `${title}${id}`,
+          header: `${title}${resolvedPositionId}`,
           tokens: uniq([collateralIcon, quoteIcon]),
           protocol: {
             network: networkName,

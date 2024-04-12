@@ -3,6 +3,7 @@ import { normalizeValue } from '@oasisdex/dma-library'
 import {
   OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,
+  OmniCardDataLtvModal,
   OmniCardDataPositionDebtModal,
   OmniContentCard,
   useOmniCardDataBuyingPower,
@@ -17,7 +18,6 @@ import {
   mapBorrowCumulativesToOmniCumulatives,
 } from 'features/omni-kit/helpers'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
-import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
@@ -28,13 +28,13 @@ export const MorphoDetailsSectionContent: FC = () => {
     environment: {
       collateralPrice,
       collateralToken,
+      isOpening,
       isShort,
+      isYieldLoop,
       priceFormat,
       productType,
       quotePrice,
       quoteToken,
-      isOpening,
-      isYieldLoop,
     },
   } = useOmniGeneralContext()
   const {
@@ -86,7 +86,7 @@ export const MorphoDetailsSectionContent: FC = () => {
     ltv: castedPosition.riskRatio.loanToValue,
     maxLtv: castedPosition.maxRiskRatio.loanToValue,
     modal: (
-      <MorphoCardDataLtvModal
+      <OmniCardDataLtvModal
         ltv={castedPosition.riskRatio.loanToValue}
         maxLtv={castedPosition.maxRiskRatio.loanToValue}
       />

@@ -119,27 +119,26 @@ export const commonDataMapper = ({
     Spark: emptyAutomations,
     AAVE_V3: emptyAutomations,
   }[dpm.protocol]
+  const primaryTokenSymbol = getTokenDisplayName(primaryToken)
+  const secondaryTokenSymbol = getTokenDisplayName(secondaryToken)
+  const omniKitUrl = `/${networksById[dpm.networkId].name.toLowerCase()}/${
+    {
+      AAVE_V3: 'aave/v3',
+      AAVE: 'aave/v2',
+      Spark: 'spark',
+    }[dpm.protocol]
+  }/${positionType}/${primaryTokenSymbol.toLocaleUpperCase()}-${secondaryTokenSymbol.toLocaleUpperCase()}/${
+    dpm.vaultId
+  }`
   return {
     commonData: {
       positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
       type: positionType,
       network: networksById[dpm.networkId].name,
       protocol,
-      primaryToken: getTokenDisplayName(primaryToken),
-      secondaryToken: getTokenDisplayName(secondaryToken),
-      url: `/${networksById[dpm.networkId].name.toLowerCase()}/${
-        {
-          AAVE_V3: 'aave',
-          Spark: 'spark',
-          AAVE: 'aave',
-        }[dpm.protocol]
-      }/${
-        {
-          AAVE_V3: 'v3',
-          Spark: 'v3',
-          AAVE: 'v2',
-        }[dpm.protocol]
-      }/${dpm.vaultId}`,
+      primaryToken: primaryTokenSymbol,
+      secondaryToken: secondaryTokenSymbol,
+      url: omniKitUrl,
       automations: {
         ...(dpm.positionType !== OmniProductType.Earn
           ? {

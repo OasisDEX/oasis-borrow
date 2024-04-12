@@ -27,6 +27,12 @@ export function useOmniEarnFormReducto({ ...rest }: Partial<OmniEarnFormState>) 
             ...state,
             withdrawAmountMax: action.withdrawAmountMax,
           }
+        case 'update-swap-token':
+          return {
+            ...state,
+            pullToken: action.pullToken,
+            returnToken: action.returnToken,
+          }
         case 'update-dpm':
           return {
             ...state,

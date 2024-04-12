@@ -50,7 +50,7 @@ export const sidebarAutomationFeatureCopyMap = {
   [AutomationFeatures.AUTO_SELL]: 'auto-sell.title',
   [AutomationFeatures.CONSTANT_MULTIPLE]: 'constant-multiple.title',
   [AutomationFeatures.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
-  [AutomationFeatures.TRAILING_STOP_LOSS]: 'n/a',
+  [AutomationFeatures.TRAILING_STOP_LOSS]: 'protection.trailing-stop-loss',
   [AutomationFeatures.PARTIAL_TAKE_PROFIT]: 'partial-take-profit.title',
 }
 

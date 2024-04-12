@@ -8,7 +8,6 @@ export type {
   Web3ContextConnectedReadonly,
   Web3ContextConnecting,
   Web3ContextError,
-  Web3ContextNotConnected,
 } from './types'
 export { createWeb3Context$ } from './web3-context'
 export type { BalanceOfMethod } from './web3-context'

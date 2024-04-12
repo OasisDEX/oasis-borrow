@@ -11,7 +11,7 @@ import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import type { MigrateAaveStateProps } from './migrateAaveStateProps'
 
-export function MigrateStateView({ state, send, isLoading }: MigrateAaveStateProps) {
+export function MigrateStateView({ state, send, isLoading, isLocked }: MigrateAaveStateProps) {
   const { t } = useTranslation()
 
   const { protocol, tokens } = state.context.strategyConfig
@@ -60,7 +60,7 @@ export function MigrateStateView({ state, send, isLoading }: MigrateAaveStatePro
     ),
     primaryButton: {
       isLoading: isLoading(),
-      disabled: isLoading() || !state.can('NEXT_STEP'),
+      disabled: isLoading() || isLocked(state) || !state.can('NEXT_STEP'),
       label: t('migrate.start-tx'),
       action: () => send('NEXT_STEP'),
     },

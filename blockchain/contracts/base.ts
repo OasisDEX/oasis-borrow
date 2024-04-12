@@ -27,6 +27,7 @@ import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
 import * as dssProxyActionsCharter from 'blockchain/abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
+import * as erc20proxyActions from 'blockchain/abi/erc20-proxy-actions.json'
 import * as exchange from 'blockchain/abi/exchange.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
 import * as lidoCrvLiquidityFarmingReward from 'blockchain/abi/lido-crv-liquidity-farming-reward.json'
@@ -183,13 +184,20 @@ export const baseContracts: MainnetContractsWithOptional = {
     'DETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_DETHWETH),
     'UNIETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_UNIETHWETH),
     'EZETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_EZETHWETH),
+    'SUSDE-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SUSDEDAI),
+    'DEGEN-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_DEGENUSDC),
+    'USDC-DEGEN': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_USDCDEGEN),
+    'SNX-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SNXUSDC),
+    'ENA-SDAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_ENASDAI),
+    'SDAI-ENA': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SDAIENA),
+    'AERO-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_AEROUSDC),
+    'PRIME-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_PRIMEUSDC),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
     'MWSTETHWPUNKS20-WSTETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_MWSTETHWPUNKS20WSTETH),
     'MWSTETHWPUNKS40-WSTETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_MWSTETHWPUNKS40WSTETH),
     'APXETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_APXETHETH),
-    'SUSDE-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SUSDEDAI),
     'MPETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_CSETHWETH),
   },
@@ -215,4 +223,7 @@ export const baseContracts: MainnetContractsWithOptional = {
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, base.common.SdaiOracle),
   WSTETHOracle: contractDesc(ajnaPoolInfo, base.common.WSTETHOracle),
+  SUSDEOracle: contractDesc(ajnaPoolInfo, base.common.SUSDEOracle),
+  USDEOracle: contractDesc(ajnaPoolInfo, base.common.USDEOracle),
+  erc20ProxyActions: contractDesc(erc20proxyActions, base.mpa.core.ERC20ProxyActions),
 }

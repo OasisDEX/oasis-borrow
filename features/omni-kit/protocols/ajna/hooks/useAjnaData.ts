@@ -45,8 +45,8 @@ export function useAjnaData({
               dpmPositionData.quoteTokenAddress,
             )
           : isOracless && dpmPositionData && tokenPriceUSDData
-          ? ajnaPosition$(one, one, dpmPositionData, networkId, collateralToken, quoteToken)
-          : EMPTY,
+            ? ajnaPosition$(one, one, dpmPositionData, networkId, collateralToken, quoteToken)
+            : EMPTY,
       [dpmPositionData, isOracless, tokenPriceUSDData],
     ),
   )

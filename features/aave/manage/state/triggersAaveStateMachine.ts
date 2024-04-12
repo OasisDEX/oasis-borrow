@@ -9,7 +9,6 @@ import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { ActorRefFrom, StateFrom } from 'xstate'
 import { actions, createMachine } from 'xstate'
@@ -178,7 +177,7 @@ export const hasActiveStopLossFromTriggers = ({
   protocol,
 }: {
   triggers: GetTriggersResponse['triggers']
-  protocol: AaveLikeLendingProtocol
+  protocol: LendingProtocol
 }) => {
   const {
     aaveStopLossToCollateral,
@@ -208,6 +207,7 @@ export const hasActiveStopLossFromTriggers = ({
     case LendingProtocol.AaveV2:
       return false
   }
+  return false
 }
 
 export const hasActiveStopLossFromContext = ({
@@ -249,7 +249,7 @@ export const hasActiveTrailingStopLossFromTriggers = ({
   protocol,
 }: {
   triggers: GetTriggersResponse['triggers']
-  protocol: AaveLikeLendingProtocol
+  protocol: LendingProtocol
 }) => {
   const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = triggers
   switch (protocol) {
@@ -260,6 +260,7 @@ export const hasActiveTrailingStopLossFromTriggers = ({
     case LendingProtocol.AaveV2:
       return false
   }
+  return false
 }
 
 export const hasActiveTrailingStopLossFromContext = ({

@@ -3,6 +3,10 @@ import { FlowSidebar } from 'components/FlowSidebar'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import {
+  VaultChangesInformationContainer,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
 import { ethers } from 'ethers'
 import { OmniDupePositionModal } from 'features/omni-kit/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -16,6 +20,7 @@ import {
 import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
+import { getLocalAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
@@ -44,18 +49,23 @@ export function OmniFormView({
       collateralAddress,
       collateralToken,
       dpmProxy,
+      entryToken,
       isOpening,
       isOracless,
       isOwner,
-      productType,
-      quoteAddress,
-      quoteToken,
-      protocol,
-      shouldSwitchNetwork,
+      label,
       network,
       networkId,
+      pairId,
+      productType,
+      protocol,
+      pseudoProtocol,
+      quoteAddress,
       quotePrecision,
-      entryToken,
+      quoteToken,
+      settings,
+      shouldSwitchNetwork,
+      positionId,
     },
     steps: {
       currentStep,
@@ -78,11 +88,11 @@ export function OmniFormView({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    position: { isSimulationLoading, resolvedId },
+    position: { isSimulationLoading, openFlowResolvedDpmId },
     dynamicMetadata: {
       elements: { sidebarContent },
       featureToggles: { suppressValidation, safetySwitch },
-      filters: { flowStateFilter },
+      filters: { omniProxyFilter },
       theme,
       validations: { isFormValid, isFormFrozen, hasErrors },
       values: { interestRate, sidebarTitle },
@@ -95,10 +105,13 @@ export function OmniFormView({
   const { walletAddress } = useAccount()
   const { openModal } = useModalContext()
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
+  const { OmniKitDebug } = getLocalAppConfig('features')
 
   const genericSidebarTitle = useOmniSidebarTitle()
 
   const flowState = useFlowState({
+    pairId,
+    protocol,
     networkId,
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
@@ -111,10 +124,21 @@ export function OmniFormView({
       state,
       quotePrecision,
     }),
-    filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
-    onProxiesAvailable: (events, dpmAccounts) => {
-      const filteredEvents = events.filter(flowStateFilter)
-
+    filterConsumedProxy: async (events) => {
+      // leaving this all separate as its easier for debugging
+      const filterConsumedProxiesPromisesList = events.map((event) =>
+        omniProxyFilter({ event, filterConsumed: true }),
+      )
+      const filteredConsumedProxies = await Promise.all(filterConsumedProxiesPromisesList)
+      return filteredConsumedProxies.every(Boolean)
+    },
+    onProxiesAvailable: async (events, dpmAccounts) => {
+      const filteredEventsBooleanMap = await Promise.all(
+        events.map((event) => omniProxyFilter({ event })),
+      )
+      const filteredEvents = events.filter(
+        (_event, eventIndex) => filteredEventsBooleanMap[eventIndex],
+      )
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
         openModal(OmniDupePositionModal, {
@@ -123,9 +147,12 @@ export function OmniFormView({
           dpmAccounts,
           events: filteredEvents,
           isOracless,
+          label,
           networkId,
+          pairId,
           productType,
           protocol,
+          pseudoProtocol,
           quoteAddress,
           quoteToken,
           theme,
@@ -144,7 +171,7 @@ export function OmniFormView({
     transitionHandler,
   } = useOmniProductTypeTransition({
     action: state.action,
-    positionId: resolvedId,
+    positionId: positionId || openFlowResolvedDpmId,
     protocol,
     productType,
     tokenPair: `${collateralToken}-${quoteToken}`,
@@ -199,6 +226,7 @@ export function OmniFormView({
     isTransitionAction,
     isTransitionWaitingForApproval,
     isTxSuccess,
+    label,
     network,
     onConfirmTransition: transitionHandler,
     onDefault: setNextStep,
@@ -214,12 +242,14 @@ export function OmniFormView({
       txSuccessAction && txSuccessAction()
     },
     onSwitchNetwork: () => setChain(network.hexId),
+    pairId,
     productType,
     protocol,
+    pseudoProtocol,
     quoteAddress,
     quoteToken,
     shouldSwitchNetwork,
-    resolvedId,
+    openFlowResolvedDpmId,
     walletAddress,
   })
   const textButtonAction = () => {
@@ -247,6 +277,19 @@ export function OmniFormView({
       <Grid gap={3}>
         {sidebarContent}
         {children}
+        {OmniKitDebug && openFlowResolvedDpmId && (
+          <VaultChangesInformationContainer title="DPM debug data">
+            <VaultChangesInformationItem label="DPM ID" value={openFlowResolvedDpmId} />
+            <VaultChangesInformationItem
+              label="Address"
+              value={
+                flowState.availableProxies.length
+                  ? flowState.availableProxies[0]
+                  : ethers.constants.AddressZero
+              }
+            />
+          </VaultChangesInformationContainer>
+        )}
       </Grid>
     ),
     primaryButton: {
@@ -263,6 +306,7 @@ export function OmniFormView({
       hidden: isTextButtonHidden,
     },
     status,
+    disableMaxHeight: !!(settings.pullTokens?.[networkId] || settings.returnTokens?.[networkId]),
   }
 
   useEffect(() => {

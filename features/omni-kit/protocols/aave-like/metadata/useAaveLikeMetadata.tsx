@@ -1,6 +1,6 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
+import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowishChangeVariant,
@@ -14,6 +14,7 @@ import {
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
   aaveLikeFlowStateFilter,
+  getAaveLikeAutomationMetadataValues,
   getAaveLikeBanner,
   getAaveLikeFaq,
   getAaveLikeFeatureToggle,
@@ -21,29 +22,35 @@ import {
 } from 'features/omni-kit/protocols/aave-like/helpers'
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import { useAaveLikeHeadlineDetails } from 'features/omni-kit/protocols/aave-like/hooks'
+import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
+import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
-import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const {
     environment: {
-      collateralToken,
       collateralAddress,
+      collateralToken,
+      isOpening,
       isOracless,
+      isOwner,
+      isYieldLoopWithData,
+      networkId,
+      pairId,
+      priceFormat,
       productType,
+      protocol,
       quoteAddress,
       quoteBalance,
-      protocol,
-      isYieldLoopWithData,
-      isOpening,
       quoteToken,
     },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+  const [hash] = useHash()
 
   const featureToggles = getAaveLikeFeatureToggle(protocol)
 
@@ -56,6 +63,8 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
     productType,
     auction: productContext.position.positionAuction as AaveLikeHistoryEvent,
+    triggers: productContext.automation.positionTriggers,
+    priceFormat,
   })
 
   switch (productType) {
@@ -78,13 +87,16 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         notifications,
         validations,
         filters: {
-          flowStateFilter: (event: CreatePositionEvent) =>
+          omniProxyFilter: ({ event, filterConsumed }) =>
             aaveLikeFlowStateFilter({
               collateralAddress,
               event,
+              filterConsumed,
+              networkId,
+              pairId,
               productType,
-              quoteAddress,
               protocol,
+              quoteAddress,
             }),
         },
         values: {
@@ -113,6 +125,13 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
+          automation: getAaveLikeAutomationMetadataValues({
+            positionTriggers: productContext.automation.positionTriggers,
+            simulationResponse: productContext.automation.simulationData,
+            commonFormState: productContext.automation.commonForm.state,
+            automationForms: productContext.automation.automationForms,
+            hash,
+          }),
         },
         elements: {
           faq: getAaveLikeFaq({ productType, isYieldLoopWithData, protocol }),
@@ -125,7 +144,10 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             quoteToken,
             isOpening,
           }),
-          overviewWithSimulation: true,
+          positionBanner: productContext.position.positionAuction ? (
+            <AaveLiquidatedNotice isPositionController={isOwner} />
+          ) : undefined,
+          overviewWithSimulation: isYieldLoopWithData,
         },
         featureToggles,
       } as LendingMetadata

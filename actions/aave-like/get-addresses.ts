@@ -13,7 +13,7 @@ import { LendingProtocol } from 'lendingProtocols'
 export function getAddresses(
   networkId: NetworkIds,
   lendingProtocol: AaveLikeLendingProtocol,
-): AaveLikeStrategyAddresses & { swapAddress: string } {
+): AaveLikeStrategyAddresses & { swapAddress: string; erc20ProxyActions: string } {
   const contracts = getNetworkContracts(networkId)
   // Spark V3 is mainnet only right now
   const contractProperties =
@@ -29,6 +29,7 @@ export function getAddresses(
           'sparkV3Pool',
           'sparkV3Oracle',
           'sparkV3PoolDataProvider',
+          'erc20ProxyActions',
         ]
       : [
           'aaveV3Pool',
@@ -38,6 +39,7 @@ export function getAddresses(
           'aaveV2PriceOracle',
           'aaveV2ProtocolDataProvider',
           'aaveV3Oracle',
+          'erc20ProxyActions',
         ]
   ensureContractsExist(networkId, contracts, contractProperties)
   ensureGivenTokensExist(networkId, contracts, [
@@ -77,10 +79,15 @@ export function getAddresses(
       LUSD: contracts.tokens['LUSD'].address,
       FRAX: contracts.tokens['FRAX'].address,
       WEETH: contracts.tokens['WEETH'].address,
+      MKR: contracts.tokens['MKR']?.address,
+      LINK: contracts.tokens['LINK']?.address,
+      RPL: contracts.tokens['RPL']?.address,
+      LDO: contracts.tokens['LDO']?.address,
     } as AaveLikeStrategyAddresses['tokens'],
     chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
     operationExecutor: contracts.operationExecutor.address,
     swapAddress: contracts.swapAddress,
+    erc20ProxyActions: contracts.erc20ProxyActions.address,
   }
 
   if (networkId === NetworkIds.BASEMAINNET) {
@@ -89,6 +96,9 @@ export function getAddresses(
 
   if (networkId === NetworkIds.OPTIMISMMAINNET || networkId === NetworkIds.ARBITRUMMAINNET) {
     sharedAddresses.tokens['USDC.E'] = contracts.tokens['USDC.E'].address
+  }
+  if (networkId === NetworkIds.OPTIMISMMAINNET) {
+    sharedAddresses.tokens.SUSD = contracts.tokens['SUSD'].address
   }
 
   switch (lendingProtocol) {

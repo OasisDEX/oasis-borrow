@@ -15,7 +15,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { mapAaveLikeProtocol } from 'helpers/getAaveLikeStrategyUrl'
+import { mapAaveLikeProtocolVersion } from 'helpers/getAaveLikeStrategyUrl'
 import { useObservable } from 'helpers/observableHook'
 import { safeGetAddress } from 'helpers/safeGetAddress'
 import { checkIfSpark, type SparkLendingProtocol } from 'lendingProtocols'
@@ -57,7 +57,7 @@ function WithSparkStrategy({
   protocol,
   network,
 }: {
-  positionId: PositionId
+  positionId: Required<Pick<PositionId, 'positionAddress' | 'external'>>
   protocol: SparkLendingProtocol
   network: NetworkNames
 }) {
@@ -90,9 +90,10 @@ function WithSparkStrategy({
     )
   }
 
-  const _updateStrategyConfig = updateStrategyConfig
-    ? updateStrategyConfig(positionId, network)
-    : undefined
+  const _updateStrategyConfig =
+    updateStrategyConfig && info?.positionId
+      ? updateStrategyConfig(info?.positionId, network)
+      : undefined
   return (
     <WithErrorHandler error={[infoError]}>
       <WithLoadingIndicator value={[info]} customLoader={<VaultContainerSpinner />}>
@@ -113,7 +114,7 @@ function WithSparkStrategy({
                 token2: _info.strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
-              url={`/aave/${mapAaveLikeProtocol(_info.strategyConfig.protocol)}/${positionId}`}
+              url={`/aave/${mapAaveLikeProtocolVersion(_info.strategyConfig.protocol)}/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
@@ -140,10 +141,11 @@ function Position({
 }) {
   const { replace } = useRouter()
 
-  const walletAddress: string | undefined = safeGetAddress(address)
+  const positionAddress: string | undefined = safeGetAddress(address)
 
-  if (walletAddress === undefined) {
+  if (positionAddress === undefined) {
     void replace(INTERNAL_LINKS.notFound)
+    return <></>
   }
 
   return (
@@ -154,7 +156,10 @@ function Position({
             <WithConnection>
               <WithTermsOfService>
                 <WithSparkStrategy
-                  positionId={{ walletAddress: address, vaultId: undefined, external: true }}
+                  positionId={{
+                    positionAddress: positionAddress,
+                    external: true,
+                  }}
                   protocol={protocol}
                   network={network}
                 />

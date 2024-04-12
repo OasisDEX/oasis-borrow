@@ -1,259 +1,22 @@
-import type { LendingPosition, Strategy, SupplyPosition, SwapData } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
-import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniValidations } from 'features/omni-kit/helpers'
+import { useOmniInitialization } from 'features/omni-kit/hooks'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
 import type {
-  OmniAutomationFormState,
-  useOmniAutomationFormReducto,
-} from 'features/omni-kit/state/automation'
-import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
-import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
-import type {
-  OmniMultiplyFormState,
-  useOmniMultiplyFormReducto,
-} from 'features/omni-kit/state/multiply'
-import type {
-  OmniGenericPosition,
+  OmniPositionSet,
   OmniSimulationCommon,
-  OmniValidations,
+  OmniSimulationSwap,
+  ProductContextWithBorrow,
+  ProductContextWithEarn,
+  ProductContextWithMultiply,
+  ProductDetailsContextProviderProps,
 } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
-import type {
-  GetTriggersResponse,
-  SetupBasicAutoResponse,
-  SetupBasicStopLossResponse,
-  SetupPartialTakeProfitResponse,
-  SetupTrailingStopLossResponse,
-  TriggersApiError,
-  TriggersApiWarning,
-  TriggerTransaction,
-} from 'helpers/triggers'
 import { useAccount } from 'helpers/useAccount'
-import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
-import React, { useContext, useMemo, useState } from 'react'
-import type { Theme } from 'theme-ui'
-import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
-
-interface OmniFeatureToggles {
-  safetySwitch: boolean
-  suppressValidation: boolean
-}
-
-interface OmniFilters {
-  flowStateFilter: (event: CreatePositionEvent) => boolean
-}
-
-interface CommonMetadata {
-  featureToggles: OmniFeatureToggles
-  filters: OmniFilters
-  notifications: DetailsSectionNotificationItem[]
-  validations: OmniValidations
-}
-
-export interface OmniLendingMetadataHandlers {}
-
-export interface OmniSupplyMetadataHandlers {
-  txSuccessEarnHandler: () => void
-  customReset?: () => void
-}
-
-interface CommonMetadataValues {
-  footerColumns: number
-  headline?: string
-  headlineDetails?: HeadlineDetailsProp[]
-  isHeadlineDetailsLoading?: boolean
-  interestRate: BigNumber
-  isFormEmpty: boolean
-  sidebarTitle?: string
-}
-interface CommonMetadataElements {
-  faq: ReactNode
-  overviewBanner?: ReactNode
-  overviewContent: ReactNode
-  overviewFooter: ReactNode
-  overviewWithSimulation?: boolean
-  sidebarContent?: ReactNode
-  riskSidebar?: ReactNode
-}
-
-export type ShouldShowDynamicLtvMetadata = (params: { includeCache: boolean }) => boolean
-
-export type LendingMetadata = CommonMetadata & {
-  handlers?: OmniLendingMetadataHandlers
-  values: CommonMetadataValues & {
-    afterAvailableToBorrow: BigNumber | undefined
-    afterBuyingPower: BigNumber | undefined
-    afterPositionDebt: BigNumber | undefined
-    changeVariant: 'positive' | 'negative'
-    withdrawMax: BigNumber
-    debtMax: BigNumber
-    debtMin: BigNumber
-    paybackMax: BigNumber
-    shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
-    maxSliderAsMaxLtv?: boolean
-  }
-  elements: CommonMetadataElements & {
-    highlighterOrderInformation?: ReactNode
-  }
-  theme?: Theme
-}
-
-export type SupplyMetadata = CommonMetadata & {
-  handlers: OmniSupplyMetadataHandlers
-  values: CommonMetadataValues & {
-    earnWithdrawMax: BigNumber
-    extraDropdownItems?: SidebarSectionHeaderSelectItem[]
-    earnAfterWithdrawMax?: BigNumber
-  }
-  elements: CommonMetadataElements & {
-    earnExtraUiDropdownContent?: ReactNode
-    earnFormOrder: ReactNode
-    earnFormOrderAsElement: FC
-    extraEarnInput?: ReactNode
-    extraEarnInputDeposit?: ReactNode
-    extraEarnInputWithdraw?: ReactNode
-  }
-  theme?: Theme
-}
-
-export type OmniMetadataParams =
-  | Omit<ProductContextWithBorrow, 'dynamicMetadata'>
-  | Omit<ProductContextWithEarn, 'dynamicMetadata'>
-  | Omit<ProductContextWithMultiply, 'dynamicMetadata'>
-
-export type GetOmniMetadata = (_: OmniMetadataParams) => LendingMetadata | SupplyMetadata
-
-interface WithAutomation {
-  automationFormReducto: typeof useOmniAutomationFormReducto
-  automationFormDefaults: Partial<OmniAutomationFormState>
-  positionTriggers: GetTriggersResponse
-}
-
-interface ProductContextProviderPropsWithBorrow extends WithAutomation {
-  formDefaults: Partial<OmniBorrowFormState>
-  formReducto: typeof useOmniBorrowFormReducto
-  getDynamicMetadata: GetOmniMetadata
-  position: LendingPosition
-  positionAuction: unknown
-  positionHistory: PositionHistoryEvent[]
-  productType: OmniProductType.Borrow
-}
-
-interface ProductContextProviderPropsWithEarn extends WithAutomation {
-  formDefaults: Partial<OmniEarnFormState>
-  formReducto: typeof useOmniEarnFormReducto
-  getDynamicMetadata: GetOmniMetadata
-  position: SupplyPosition
-  positionAuction: unknown
-  positionHistory: PositionHistoryEvent[]
-  productType: OmniProductType.Earn
-}
-
-interface ProductContextProviderPropsWithMultiply extends WithAutomation {
-  formDefaults: Partial<OmniMultiplyFormState>
-  formReducto: typeof useOmniMultiplyFormReducto
-  getDynamicMetadata: GetOmniMetadata
-  position: LendingPosition
-  positionAuction: unknown
-  positionHistory: PositionHistoryEvent[]
-  productType: OmniProductType.Multiply
-}
-
-type ProductDetailsContextProviderProps =
-  | ProductContextProviderPropsWithBorrow
-  | ProductContextProviderPropsWithEarn
-  | ProductContextProviderPropsWithMultiply
-
-interface PositionSet<Position> {
-  position: Position
-  simulation?: Position
-}
-
-interface OmniValidationMessage {
-  name: string
-  data?: { [key: string]: string | number }
-}
-
-export type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
-  errors: OmniValidationMessage[]
-  warnings: OmniValidationMessage[]
-  notices: OmniValidationMessage[]
-  successes: OmniValidationMessage[]
-}
-
-interface ProductContextPosition<Position, Auction> {
-  cachedPosition?: PositionSet<Position>
-  currentPosition: PositionSet<Position>
-  swap?: {
-    current?: SwapData
-    cached?: SwapData
-  }
-  isSimulationLoading?: boolean
-  resolvedId?: string
-  setCachedPosition: (positionSet: PositionSet<OmniGenericPosition>) => void
-  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<OmniSimulationData<OmniGenericPosition> | undefined>>
-  setCachedSwap: (swap: SwapData) => void
-  positionAuction: Auction
-  history: PositionHistoryEvent[]
-  simulationCommon: OmniSimulationCommon
-}
-
-interface OmniAutomationSimulationData {
-  encodedTriggerData?: string
-  simulation?:
-    | SetupBasicAutoResponse
-    | SetupBasicStopLossResponse
-    | SetupTrailingStopLossResponse
-    | SetupPartialTakeProfitResponse
-  errors?: TriggersApiError[]
-  warnings?: TriggersApiWarning[]
-  transaction?: TriggerTransaction
-}
-
-interface ProductContextAutomation {
-  positionTriggers: GetTriggersResponse
-  automationForm: ReturnType<typeof useOmniAutomationFormReducto>
-  simulationData?: OmniAutomationSimulationData
-  isSimulationLoading?: boolean
-  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<OmniAutomationSimulationData | undefined>>
-}
-
-interface GenericProductContext<Position, Form, Auction, Metadata> {
-  form: Form
-  position: ProductContextPosition<Position, Auction>
-  dynamicMetadata: Metadata
-  automation: ProductContextAutomation
-}
-
-export type ProductContextWithBorrow = GenericProductContext<
-  LendingPosition,
-  ReturnType<typeof useOmniBorrowFormReducto>,
-  unknown,
-  LendingMetadata
->
-
-export type ProductContextWithEarn = GenericProductContext<
-  SupplyPosition,
-  ReturnType<typeof useOmniEarnFormReducto>,
-  unknown,
-  SupplyMetadata
->
-
-export type ProductContextWithMultiply = GenericProductContext<
-  LendingPosition,
-  ReturnType<typeof useOmniMultiplyFormReducto>,
-  unknown,
-  LendingMetadata
->
+import type { PropsWithChildren } from 'react'
+import React, { useContext, useMemo } from 'react'
 
 const borrowContext = React.createContext<ProductContextWithBorrow | undefined>(undefined)
 const earnContext = React.createContext<ProductContextWithEarn | undefined>(undefined)
@@ -262,10 +25,10 @@ const multiplyContext = React.createContext<ProductContextWithMultiply | undefin
 type PickProductType<T extends OmniProductType> = T extends OmniProductType.Borrow
   ? ProductContextWithBorrow
   : T extends OmniProductType.Earn
-  ? ProductContextWithEarn
-  : T extends OmniProductType.Multiply
-  ? ProductContextWithMultiply
-  : never
+    ? ProductContextWithEarn
+    : T extends OmniProductType.Multiply
+      ? ProductContextWithMultiply
+      : never
 
 export function useOmniProductContext<T extends OmniProductType>(
   productType: T,
@@ -276,8 +39,8 @@ export function useOmniProductContext<T extends OmniProductType>(
     productType === OmniProductType.Borrow
       ? useContext(borrowContext)
       : productType === OmniProductType.Earn
-      ? useContext(earnContext)
-      : useContext(multiplyContext)
+        ? useContext(earnContext)
+        : useContext(multiplyContext)
 
   if (productType !== environment.productType)
     throw new Error(
@@ -308,15 +71,15 @@ export function OmniProductContextProvider({
       collateralBalance,
       collateralPrecision,
       collateralToken,
+      entryToken,
       ethBalance,
       ethPrice,
+      gasEstimation,
+      isOpening,
+      protocol,
       quoteBalance,
       quotePrecision,
       quoteToken,
-      isOpening,
-      gasEstimation,
-      entryToken,
-      protocol,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -324,24 +87,34 @@ export function OmniProductContextProvider({
   // @ts-ignore
   // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
   const form = formReducto(formDefaults)
+
   const automationForm = automationFormReducto(automationFormDefaults)
+  const {
+    automationForms,
+    cachedPosition,
+    setCachedPosition,
+    cachedSwap,
+    setCachedSwap,
+    simulation,
+    setSimulation,
+    isSimulationLoading,
+    setIsLoadingSimulation,
+    automationSimulationData,
+    setAutomationSimulationData,
+    isAutomationSimulationLoading,
+    setAutomationIsLoadingSimulation,
+    cachedAutomationOrderInfoItems,
+    setCachedAutomationOrderInfoItems,
+  } = useOmniInitialization<typeof position>({
+    positionTriggers,
+  })
+
   const { state } = form
   const { state: automationState } = automationForm
 
   const [positionIdFromDpmProxyData] = useObservable(
     useMemo(() => positionIdFromDpmProxy$(state.dpmAddress), [state.dpmAddress]),
   )
-
-  // TODO these could be potentially generalized within single hook
-  const [cachedPosition, setCachedPosition] = useState<PositionSet<typeof position>>()
-  const [cachedSwap, setCachedSwap] = useState<SwapData>()
-  const [simulation, setSimulation] = useState<OmniSimulationData<typeof position>>()
-  const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
-  // TODO these could be potentially generalized within single hook
-
-  const [automationSimulationData, setAutomationSimulationData] =
-    useState<OmniAutomationSimulationData>()
-  const [isAutomationSimulationLoading, setAutomationIsLoadingSimulation] = useState(false)
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
@@ -368,33 +141,35 @@ export function OmniProductContextProvider({
             gasEstimationUsd: gasEstimation?.usdValue,
             isOpening,
             position,
+            simulation: simulation?.position,
             productType,
+            protocol,
             quoteBalance,
             quoteToken,
-            protocol,
             simulationErrors: simulation?.errors as OmniSimulationCommon['errors'],
-            simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
             simulationNotices: simulation?.notices as OmniSimulationCommon['notices'],
             simulationSuccesses: simulation?.successes as OmniSimulationCommon['successes'],
+            simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
+            positionTriggers,
             state,
           }),
         },
-        setCachedPosition: (positionSet: PositionSet<typeof position>) =>
+        setCachedPosition: (positionSet: OmniPositionSet<typeof position>) =>
           setCachedPosition(positionSet),
         setIsLoadingSimulation,
         setSimulation,
-        setCachedSwap: (swap: SwapData) => setCachedSwap(swap),
+        setCachedSwap: (swap: OmniSimulationSwap) => setCachedSwap(swap),
         cachedPosition,
         currentPosition: {
           position,
           simulation: simulation?.position,
         },
         isSimulationLoading,
-        resolvedId: positionIdFromDpmProxyData,
+        openFlowResolvedDpmId: positionIdFromDpmProxyData,
         positionAuction,
         swap: {
           current: formatSwapData({
-            swapData: simulation?.swaps[0],
+            swapData: simulation?.swaps[0] as OmniSimulationSwap | undefined,
             fromTokenPrecision,
             toTokenPrecision,
           }),
@@ -404,11 +179,14 @@ export function OmniProductContextProvider({
       },
       automation: {
         positionTriggers,
-        automationForm,
+        automationForms,
+        commonForm: automationForm,
         simulationData: automationSimulationData,
         isSimulationLoading: isAutomationSimulationLoading,
         setIsLoadingSimulation: setAutomationIsLoadingSimulation,
         setSimulation: setAutomationSimulationData,
+        cachedOrderInfoItems: cachedAutomationOrderInfoItems,
+        setCachedOrderInfoItems: setCachedAutomationOrderInfoItems,
       },
     }
   }, [
@@ -429,6 +207,7 @@ export function OmniProductContextProvider({
     cachedSwap,
     positionTriggers,
     automationState,
+    automationForms,
     automationSimulationData,
     isAutomationSimulationLoading,
   ])

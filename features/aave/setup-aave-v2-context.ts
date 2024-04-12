@@ -178,7 +178,6 @@ export function setupAaveV2Context(
     migrateAaveStateMachineServices,
     migrateAaveMachine,
     dpmAccountStateMachine,
-    allowanceStateMachine,
   )
 
   const aaveManageStateMachine = getManageAaveStateMachine(

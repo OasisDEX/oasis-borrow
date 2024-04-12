@@ -5,38 +5,42 @@ import type {
   FormActionsUpdateDpm,
   FormActionsUpdateGenerate,
   FormActionsUpdateGenerateMax,
+  FormActionsUpdateLoanToValue,
   FormActionsUpdatePayback,
   FormActionsUpdatePaybackMax,
+  FormActionsUpdateSwapToken,
   FormActionsUpdateWithdraw,
   FormActionsUpdateWithdrawMax,
-  UpdateLoanToValue,
 } from 'features/omni-kit/state'
 import type {
   OmniCloseTo,
   OmniMultiplyFormAction,
   OmniMultiplyPanel,
   OmniProductType,
+  OmniSwapToken,
 } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniMultiplyFormState {
   productType: OmniProductType.Multiply
   action?: OmniMultiplyFormAction
-  dpmAddress: string
+  closeTo: OmniCloseTo
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  dpmAddress: string
   generateAmount?: BigNumber
-  generateAmountUSD?: BigNumber
   generateAmountMax?: boolean
-  paybackAmount?: BigNumber
-  paybackAmountUSD?: BigNumber
-  paybackAmountMax: boolean
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  withdrawAmountMax: boolean
+  generateAmountUSD?: BigNumber
   loanToValue?: BigNumber
-  closeTo: OmniCloseTo
+  paybackAmount?: BigNumber
+  paybackAmountMax: boolean
+  paybackAmountUSD?: BigNumber
+  pullToken?: OmniSwapToken
+  returnToken?: OmniSwapToken
   uiDropdown: OmniMultiplyPanel
+  withdrawAmount?: BigNumber
+  withdrawAmountMax: boolean
+  withdrawAmountUSD?: BigNumber
   uiPill: Exclude<
     OmniMultiplyFormAction,
     | OmniMultiplyFormAction.AdjustMultiply
@@ -55,7 +59,8 @@ export type OmniMultiplyFormActions = ReductoActions<
   | FormActionsUpdatePaybackMax
   | FormActionsUpdateWithdraw
   | FormActionsUpdateWithdrawMax
+  | FormActionsUpdateLoanToValue
+  | FormActionsUpdateSwapToken
   | FormActionsUpdateDpm
   | FormActionsReset
-  | UpdateLoanToValue
 >

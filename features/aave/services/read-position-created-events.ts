@@ -5,6 +5,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import { getRpcProvidersForLogs } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { userDpmProxies$ } from 'blockchain/userDpmProxies'
+import { erc4626Vaults } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -74,7 +75,7 @@ function mapEvent(
         collateralTokenAddress: e.args.collateralToken,
         debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.debtToken),
         debtTokenAddress: e.args.debtToken,
-        protocol: extractLendingProtocolFromPositionCreatedEvent(e),
+        protocol: extractLendingProtocolFromPositionCreatedEvent(e.args.protocol),
         protocolRaw: e.args.protocol,
         chainId,
         proxyAddress: e.args.proxyAddress,
@@ -82,10 +83,8 @@ function mapEvent(
     })
 }
 
-export function extractLendingProtocolFromPositionCreatedEvent(
-  positionCreatedChainEvent: CreatePositionEvent,
-): LendingProtocol {
-  switch (positionCreatedChainEvent.args.protocol) {
+export function extractLendingProtocolFromPositionCreatedEvent(protocol: string): LendingProtocol {
+  switch (protocol) {
     case 'AAVE':
     case 'AaveV2':
       return LendingProtocol.AaveV2
@@ -105,11 +104,17 @@ export function extractLendingProtocolFromPositionCreatedEvent(
     case 'MorphoBlue':
       return LendingProtocol.MorphoBlue
     default:
-      throw new Error(
-        `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
-          positionCreatedChainEvent,
-        )}`,
-      )
+      // support for ERC-4626 positions that does not belong to any supported protocol
+      if (protocol.startsWith('erc4626')) {
+        const vaultAddress = protocol.replace('erc4626-', '')
+        const vaultProtocol = erc4626Vaults.find(
+          ({ address }) => address.toLowerCase() === vaultAddress.toLowerCase(),
+        )?.protocol
+
+        if (vaultProtocol) return vaultProtocol
+      }
+
+      throw new Error(`Unrecognised protocol received from positionCreatedChainEvent: ${protocol}`)
   }
 }
 
@@ -138,7 +143,7 @@ export function mapCreatedPositionEventToPositionCreated(
     collateralTokenSymbol: getTokenSymbolBasedOnAddress(networkId, event!.args.collateralToken),
     debtTokenSymbol: getTokenSymbolBasedOnAddress(networkId, event!.args.debtToken),
     debtTokenAddress: event!.args.debtToken,
-    protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
+    protocol: extractLendingProtocolFromPositionCreatedEvent(event!.args.protocol),
     protocolRaw: event.args.protocol,
     chainId: networkId,
     proxyAddress: event!.args.proxyAddress,

@@ -11,6 +11,7 @@ interface SidebarAccordionProps {
   openTitle?: string
   afterTitleComponent?: ReactNode
   additionalDescriptionComponent?: ReactNode
+  isDisabled?: boolean
 }
 
 export function SidebarAccordion({
@@ -20,11 +21,12 @@ export function SidebarAccordion({
   title,
   afterTitleComponent = null,
   additionalDescriptionComponent = null,
+  isDisabled = false,
 }: PropsWithChildren<SidebarAccordionProps>) {
   const [isOpen, toggleIsOpen] = useToggle(openByDefault)
 
   return (
-    <Box>
+    <Box sx={{ pointerEvents: isDisabled ? 'none' : 'initial', opacity: isDisabled ? 0.4 : 1 }}>
       <Flex
         sx={{ flexDirection: 'row', alignItems: 'center', mb: 3, cursor: 'pointer' }}
         onClick={toggleIsOpen}

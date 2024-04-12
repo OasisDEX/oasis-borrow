@@ -5,13 +5,14 @@ import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 
 const automationQuery = gql`
   query automationTriggers($proxyAddresses: [String]) {
-    triggers(where: { account_in: $proxyAddresses, removedBlock: null, executedBlock: null }) {
+    triggers(where: { account_in: $proxyAddresses, removedBlock: null }) {
       id
       account
       commandAddress
       triggerData
       triggerType
       owner
+      executedBlock
     }
   }
 `
@@ -23,14 +24,15 @@ type AutomationQueryResponse = {
     commandAddress: string
     triggerData: string
     triggerType: string
+    executedBlock: string
     owner: string
   }[]
 }
 
 type AutomationSupportedNetworks =
   | NetworkIds.MAINNET
-  // | NetworkIds.ARBITRUMMAINNET
-  // | NetworkIds.OPTIMISMMAINNET
+  | NetworkIds.ARBITRUMMAINNET
+  | NetworkIds.OPTIMISMMAINNET
   | NetworkIds.BASEMAINNET
 export type AutomationResponse = {
   networkId: AutomationSupportedNetworks
@@ -40,6 +42,7 @@ export type AutomationResponse = {
     commandAddress: string
     triggerData: string
     triggerType: string
+    executedBlock: string
     owner: string
   }
 }[]

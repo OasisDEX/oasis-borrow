@@ -1,11 +1,22 @@
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20.constants'
-import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
+import {
+  ensureContractsExist,
+  ensureGivenTokensExist,
+  ensureTokensExist,
+  getNetworkContracts,
+} from 'blockchain/contracts'
+import type { NetworkIds } from 'blockchain/networks'
 import { getRpcProvider, networkSetById } from 'blockchain/networks'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
+import type { OmniTxData } from 'features/omni-kit/hooks'
 import { safeGetAddress } from 'helpers/safeGetAddress'
-import { Erc20__factory } from 'types/ethers-contracts'
+import {
+  AccountImplementation__factory,
+  Erc20__factory,
+  Erc20ProxyActions__factory,
+} from 'types/ethers-contracts'
 
 import type { BaseCallParameters, BaseTransactionParameters } from './utils'
 
@@ -144,4 +155,48 @@ export async function createDisapproveTransaction({
 
   const contract = Erc20__factory.connect(tokens[token].address, signer)
   return await contract.approve(spender, 0)
+}
+
+export async function encodeTransferToOwnerProxyAction({
+  networkId,
+  token,
+  amount,
+  dpmAccount,
+}: {
+  networkId: NetworkIds
+  amount: BigNumber
+  token: string
+  dpmAccount: string
+}): Promise<OmniTxData> {
+  const contracts = getNetworkContracts(networkId)
+
+  ensureContractsExist(networkId, contracts, ['erc20ProxyActions'])
+  ensureGivenTokensExist(networkId, contracts, [token])
+
+  const { erc20ProxyActions, tokens } = contracts
+
+  const tokenAddress = tokens[token].address
+
+  const proxyActionContract = Erc20ProxyActions__factory.connect(
+    erc20ProxyActions.address,
+    getRpcProvider(networkId),
+  )
+
+  const dpmContract = AccountImplementation__factory.connect(dpmAccount, getRpcProvider(networkId))
+
+  const owner = await dpmContract.owner()
+
+  const amountInWei = amountToWei(amount, token).toFixed()
+
+  const encodeFunctionData = proxyActionContract.interface.encodeFunctionData('transfer', [
+    tokenAddress,
+    owner,
+    ethers.BigNumber.from(amountInWei),
+  ])
+
+  return {
+    to: erc20ProxyActions.address,
+    data: encodeFunctionData,
+    value: '0',
+  }
 }

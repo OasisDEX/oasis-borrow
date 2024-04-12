@@ -68,16 +68,16 @@ export function formatCryptoBalance(amount: BigNumber): string {
   return formatAsShorthandNumbers(amount, 2)
 }
 
-export function formatUsdValue(amount: BigNumber): string {
+export function formatUsdValue(amount: BigNumber, decimalPlaces = 2): string {
   const absoluteAmount = amount.absoluteValue()
 
   return amount.isZero()
     ? '$0.00'
     : absoluteAmount.lt(0.01)
-    ? `$<${amount.isNegative() ? '-' : ''}0.01`
-    : absoluteAmount.lt(million)
-    ? `$${amount.toFormat(2, BigNumber.ROUND_DOWN)}`
-    : `$${formatAsShorthandNumbers(amount, 2)}`
+      ? `$<${amount.isNegative() ? '-' : ''}0.01`
+      : absoluteAmount.lt(million)
+        ? `$${amount.toFormat(decimalPlaces, BigNumber.ROUND_DOWN)}`
+        : `$${formatAsShorthandNumbers(amount, decimalPlaces)}`
 }
 
 export function formatFiatBalance(amount: BigNumber): string {
@@ -152,6 +152,31 @@ export function formatDecimalAsPercent(
     roundMode,
     noPercentSign,
   })
+}
+
+export function formatLtvDecimalAsPercent(
+  number: BigNumber,
+  {
+    precision = 2,
+    plus = false,
+    roundMode = BigNumber.ROUND_DOWN,
+    noPercentSign = false,
+  }: FormatPercentOptions = {},
+) {
+  const ltvHighestUiValue = new BigNumber(1.1)
+  const value = number.gt(ltvHighestUiValue) ? ltvHighestUiValue : number
+  const percentageValue = formatPercent(value.times(100), {
+    precision,
+    plus,
+    roundMode,
+    noPercentSign,
+  })
+
+  if (number.gt(ltvHighestUiValue)) {
+    return `>${percentageValue}`
+  }
+
+  return percentageValue
 }
 
 export function formatDateTime(time: Date, showMs?: boolean): string {

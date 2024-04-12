@@ -56,6 +56,8 @@ import type { DpmPositionData } from 'features/omni-kit/observables'
 import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
 import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave-like/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
+import { getErc4626Position$ } from 'features/omni-kit/protocols/erc-4626/observables'
+import type { Erc4626Token } from 'features/omni-kit/protocols/erc-4626/types'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniTokensPrecision } from 'features/omni-kit/types'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
@@ -606,17 +608,18 @@ export function setupProductContext(
   // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
   // only single position should be picked to be displayed
   const dpmPositionDataV2$ = memoize(
-    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$),
+    curry(getDpmPositionDataV2$),
     (
-      positionId: PositionId,
+      positionId: number,
       networkId: NetworkIds,
       collateralToken: string,
       quoteToken: string,
       product: string,
       protocol: LendingProtocol,
       protocolRaw: string,
+      pairId: number,
     ) =>
-      `${positionId.walletAddress}-${positionId.vaultId}-${networkId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}`,
+      `${positionId}-${networkId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}-${pairId}`,
   )
 
   const ajnaPosition$ = memoize(
@@ -642,14 +645,29 @@ export function setupProductContext(
       collateralPrice: BigNumber,
       quotePrice: BigNumber,
       dpmPositionData: DpmPositionData,
+      pairId: number,
       network: NetworkIds,
       tokensPrecision?: OmniTokensPrecision,
     ) =>
-      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+      `${dpmPositionData.vaultId}-${pairId}-${network}-${collateralPrice
         .decimalPlaces(2)
         .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
         tokensPrecision ?? {},
       ).join('-')}`,
+  )
+
+  const erc4626Position$ = memoize(
+    curry(getErc4626Position$)(onEveryBlock$),
+    (
+      quotePrice: BigNumber,
+      vaultAddress: string,
+      dpmPositionData: DpmPositionData,
+      token: Erc4626Token,
+      network: NetworkIds,
+    ) =>
+      `${dpmPositionData.vaultId}-${network}-${vaultAddress}-${JSON.stringify(token)}-${quotePrice
+        .decimalPlaces(2)
+        .toString()}`,
   )
 
   const aaveLikePosition$ = memoize(
@@ -668,6 +686,7 @@ export function setupProductContext(
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
+    aaveLikePosition$,
     // aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
     aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
     addGasEstimation$,
@@ -688,6 +707,7 @@ export function setupProductContext(
     dpmPositionDataV2$,
     dsr$,
     dsrDeposit$,
+    erc4626Position$,
     exchangeQuote$,
     gasEstimation$,
     generalManageVault$,
@@ -696,7 +716,6 @@ export function setupProductContext(
     manageGuniVault$,
     manageMultiplyVault$,
     morphoPosition$,
-    aaveLikePosition$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,
@@ -714,5 +733,6 @@ export function setupProductContext(
     vaultHistory$,
     yields$,
     yieldsChange$,
+    onEveryBlock$,
   }
 }

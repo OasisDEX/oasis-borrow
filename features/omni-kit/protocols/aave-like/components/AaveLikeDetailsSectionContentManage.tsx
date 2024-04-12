@@ -1,9 +1,11 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { useAaveEarnYields } from 'features/aave/hooks'
+import { getOmniCardLtvAutomationParams } from 'features/omni-kit/automation/helpers'
 import {
   OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,
+  OmniCardDataLtvModal,
   OmniCardDataPositionDebtModal,
   OmniContentCard,
   useOmniCardDataBuyingPower,
@@ -21,7 +23,6 @@ import {
 } from 'features/omni-kit/helpers'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
-import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one } from 'helpers/zero'
@@ -54,7 +55,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
       currentPosition: { position, simulation },
     },
     dynamicMetadata: {
-      values: { changeVariant },
+      values: { changeVariant, automation },
     },
   } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
@@ -113,14 +114,22 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
     ),
   })
 
+  const automationLtvCardData = getOmniCardLtvAutomationParams({
+    collateralAmount: castedPosition.collateralAmount,
+    debtAmount: castedPosition.debtAmount,
+    automationMetadata: automation,
+  })
+
   const ltvContentCardCommonData = useOmniCardDataLtv({
     afterLtv: simulation?.riskRatio.loanToValue,
     ltv: castedPosition.riskRatio.loanToValue,
     maxLtv: castedPosition.category.liquidationThreshold,
+    automation: automationLtvCardData,
     modal: (
-      <MorphoCardDataLtvModal
+      <OmniCardDataLtvModal
         ltv={castedPosition.riskRatio.loanToValue}
         maxLtv={castedPosition.category.liquidationThreshold}
+        automation={automationLtvCardData}
       />
     ),
   })

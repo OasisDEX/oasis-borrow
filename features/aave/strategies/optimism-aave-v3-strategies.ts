@@ -74,6 +74,56 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'USDC',
+    debt: 'SUSD',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'USDC.E',
+    debt: 'SUSD',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'WSTETH',
     debt: 'USDC',
     strategyType: StrategyType.Long,

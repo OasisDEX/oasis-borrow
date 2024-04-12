@@ -23,8 +23,8 @@ export const xeth = {
           y2="10.9005"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#D81C5C" />
-          <stop offset="1" stop-color="#ED4036" />
+          <stop stopColor="#D81C5C" />
+          <stop offset="1" stopColor="#ED4036" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_14480_4436"
@@ -34,8 +34,8 @@ export const xeth = {
           y2="21.1054"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#D81C5C" />
-          <stop offset="1" stop-color="#ED4036" />
+          <stop stopColor="#D81C5C" />
+          <stop offset="1" stopColor="#ED4036" />
         </linearGradient>
       </defs>
     </>

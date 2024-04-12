@@ -1,8 +1,8 @@
 import { mapSimulationValidation } from 'features/omni-kit/components'
 import {
   getOmniCommonValidations,
-  getOmniLendingValidations,
   isOmniFormValid,
+  useOmniLendingValidations,
 } from 'features/omni-kit/helpers'
 import type {
   GetOmniValidationResolverParams,
@@ -21,50 +21,54 @@ export const getOmniValidations =
     gasEstimationUsd,
     isOpening,
     position,
+    simulation,
     productType,
+    protocol,
     quoteBalance,
     quoteToken,
-    protocol,
     simulationErrors = [],
     simulationNotices = [],
     simulationSuccesses = [],
     simulationWarnings = [],
+    positionTriggers,
     state,
     txError,
   }: GetOmniValidationsParams) =>
   ({
-    safetySwitchOn,
-    isFormFrozen,
     customErrors = [],
-    customWarnings = [],
     customNotices = [],
     customSuccesses = [],
+    customWarnings = [],
     earnIsFormValid = false,
+    isFormFrozen,
     protocolLabel,
+    safetySwitchOn,
   }: GetOmniValidationResolverParams): OmniValidations => {
     const isEarnProduct = productType === OmniProductType.Earn
     const token = isEarnProduct ? quoteToken : collateralToken
 
     const commonValidations = getOmniCommonValidations({
+      collateralBalance,
       collateralToken,
+      ethBalance,
+      ethPrice,
+      gasEstimationUsd,
+      productType,
+      quoteBalance,
       quoteToken,
       state,
       txError,
-      productType,
-      ethBalance,
-      collateralBalance,
-      quoteBalance,
-      ethPrice,
-      gasEstimationUsd,
     })
 
-    const lendingValidations = getOmniLendingValidations({
-      safetySwitchOn,
+    const lendingValidations = useOmniLendingValidations({
       isOpening,
       position,
-      state,
-      quoteBalance,
+      simulation,
       protocolLabel,
+      quoteBalance,
+      safetySwitchOn,
+      positionTriggers,
+      state,
     })
 
     const errors = [
@@ -72,12 +76,12 @@ export const getOmniValidations =
       ...commonValidations.localErrors,
       ...lendingValidations.localErrors,
       ...mapSimulationValidation({
-        items: simulationErrors,
         collateralToken,
-        quoteToken,
-        token,
+        items: simulationErrors,
         productType,
         protocol,
+        quoteToken,
+        token,
       }),
     ]
 
@@ -86,44 +90,44 @@ export const getOmniValidations =
       ...commonValidations.localWarnings,
       ...lendingValidations.localWarnings,
       ...mapSimulationValidation({
-        items: simulationWarnings,
         collateralToken,
-        quoteToken,
-        token,
+        items: simulationWarnings,
         productType,
         protocol,
+        quoteToken,
+        token,
       }),
     ]
     const notices = [
       ...customNotices,
       ...mapSimulationValidation({
-        items: simulationNotices,
         collateralToken,
-        quoteToken,
-        token,
+        items: simulationNotices,
         productType,
         protocol,
+        quoteToken,
+        token,
       }),
     ]
     const successes = [
       ...customSuccesses,
       ...mapSimulationValidation({
-        items: simulationSuccesses,
         collateralToken,
-        quoteToken,
-        token,
+        items: simulationSuccesses,
         productType,
         protocol,
+        quoteToken,
+        token,
       }),
     ]
 
     return {
-      isFormValid: isOmniFormValid({ currentStep, productType, state, earnIsFormValid }),
+      errors,
       hasErrors: errors.length > 0,
       isFormFrozen,
-      errors,
-      warnings: errors.length > 0 ? [] : warnings,
+      isFormValid: isOmniFormValid({ currentStep, productType, state, earnIsFormValid }),
       notices,
       successes,
+      warnings: errors.length > 0 ? [] : warnings,
     }
   }

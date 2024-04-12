@@ -156,8 +156,8 @@ export function TabBar({
               tag={section.tag}
               variant={variant}
               onClick={() => {
-                section.callback && section.callback()
                 setHash(section.value)
+                section.callback && section.callback()
               }}
             />
           ))}

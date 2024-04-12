@@ -21,6 +21,7 @@ export const tokensBase = {
   STYETH: contractDesc(erc20, base.common.STYETH),
   TBTC: contractDesc(erc20, base.common.TBTC),
   USDC: contractDesc(erc20, base.common.USDC),
+  USDE: contractDesc(erc20, base.common.USDE),
   USDBC: contractDesc(erc20, base.common.USDBC),
   USDT: contractDesc(erc20, base.common.USDT),
   USDP: contractDesc(erc20, base.common.PAXUSD),
@@ -30,4 +31,9 @@ export const tokensBase = {
   WSTETH: contractDesc(erc20, base.common.WSTETH),
   YIELDBTC: contractDesc(erc20, base.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, base.common.YIELDETH),
+  DEGEN: contractDesc(erc20, base.common.DEGEN),
+  CUSDCV3: contractDesc(erc20, base.common.CUSDCV3),
+  SNX: contractDesc(erc20, base.common.SNX),
+  AERO: contractDesc(erc20, base.common.AERO),
+  PRIME: contractDesc(erc20, base.common.PRIME),
 } as Record<string, ContractDesc>

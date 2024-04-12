@@ -1,5 +1,5 @@
 import type { NetworkConfig } from 'blockchain/networks'
-import { getOmniProtocolUrlMap } from 'features/omni-kit/helpers'
+import { getOmniPositionUrl } from 'features/omni-kit/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -14,6 +14,7 @@ interface GetOmniSidebarPrimaryButtonActionsParams {
   isTransitionAction: boolean
   isTransitionWaitingForApproval: boolean
   isTxSuccess: boolean
+  label?: string
   network: NetworkConfig
   onConfirmTransition: () => void
   onDefault: () => void
@@ -22,11 +23,13 @@ interface GetOmniSidebarPrimaryButtonActionsParams {
   onSwitchNetwork: () => void
   onTransition: () => void
   onUpdated: () => void
+  pairId: number
   productType: OmniProductType
   protocol: LendingProtocol
+  pseudoProtocol?: string
   quoteAddress: string
   quoteToken: string
-  resolvedId?: string
+  openFlowResolvedDpmId?: string
   shouldSwitchNetwork: boolean
   walletAddress?: string
 }
@@ -42,6 +45,7 @@ export function getOmniSidebarPrimaryButtonActions({
   isTransitionAction,
   isTransitionWaitingForApproval,
   isTxSuccess,
+  label,
   network,
   onConfirmTransition,
   onDefault,
@@ -50,11 +54,13 @@ export function getOmniSidebarPrimaryButtonActions({
   onSwitchNetwork,
   onTransition,
   onUpdated,
+  pairId,
   productType,
   protocol,
+  pseudoProtocol,
   quoteAddress,
   quoteToken,
-  resolvedId,
+  openFlowResolvedDpmId,
   shouldSwitchNetwork,
   walletAddress,
 }: GetOmniSidebarPrimaryButtonActionsParams) {
@@ -64,13 +70,21 @@ export function getOmniSidebarPrimaryButtonActions({
     case shouldSwitchNetwork && currentStep === editingStep:
       return { action: onSwitchNetwork }
     case isTxSuccess && isOpening:
-      const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
-      const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
-
       return {
-        url: `/${network.name}/${getOmniProtocolUrlMap(
+        url: getOmniPositionUrl({
+          collateralAddress,
+          collateralToken,
+          isPoolOracless: isOracless,
+          label,
+          networkName: network.name,
+          pairId,
+          positionId: openFlowResolvedDpmId,
+          productType,
           protocol,
-        )}/${productType}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
+          pseudoProtocol,
+          quoteAddress,
+          quoteToken: quoteToken,
+        }),
       }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }

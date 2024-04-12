@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { ethNullAddress } from 'blockchain/networks'
 import { ActionPills } from 'components/ActionPills'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -40,28 +41,47 @@ type AavePartialTakeProfitManageDetailsProps = {
 }
 
 const reduceHistoryEvents = (events: AavePartialTakeProfitManageDetailsProps['historyEvents']) => {
+  const eventsDefault = {
+    collateralToken: zero,
+    debtToken: zero,
+  } as const
   return (
     events
       // example: "AutomationExecuted-DmaAavePartialTakeProfitV2"
       .filter(({ kind }) => kind?.includes('PartialTakeProfit'))
       .filter(({ kind }) => kind?.includes('AutomationExecuted'))
-      .reduce(
-        (acc, event) => {
-          return {
-            debtRealized: (acc.debtRealized || zero).plus(event.debtDelta?.abs() || zero),
-            collateralRealized: (acc.collateralRealized || zero).plus(
-              event.collateralDelta?.abs() || zero,
-            ),
+      .reduce((acc, event) => {
+        if (!event.withdrawTransfers?.length) {
+          return acc
+        }
+        const newTransfersRealized = { ...acc }
+        event.withdrawTransfers?.forEach((transfer) => {
+          if (!transfer.amount.isZero() && event.collateralAddress && event.debtAddress) {
+            const collateralTokenAddress =
+              event.collateralToken === 'WETH'
+                ? ethNullAddress.toLocaleLowerCase()
+                : event.collateralAddress.toLocaleLowerCase()
+            const debtTokenAddress =
+              event.debtToken === 'WETH'
+                ? ethNullAddress.toLocaleLowerCase()
+                : event.debtAddress.toLocaleLowerCase()
+            const isCollateralTokenTransfer =
+              transfer.token.toLocaleLowerCase() === collateralTokenAddress
+            const isDebtTokenTransfer = transfer.token.toLocaleLowerCase() === debtTokenAddress
+            if (isCollateralTokenTransfer) {
+              newTransfersRealized.collateralToken = newTransfersRealized.collateralToken.plus(
+                new BigNumber(transfer.amount),
+              )
+            }
+            if (isDebtTokenTransfer) {
+              newTransfersRealized.debtToken = newTransfersRealized.debtToken.plus(
+                new BigNumber(transfer.amount),
+              )
+            }
           }
-        },
-        {
-          debtRealized: zero,
-          collateralRealized: zero,
-        },
-      ) as {
-      debtRealized: BigNumber
-      collateralRealized: BigNumber
-    }
+        })
+        return newTransfersRealized
+      }, eventsDefault) as Record<'debtToken' | 'collateralToken', BigNumber>
   )
 }
 
@@ -97,15 +117,13 @@ export const AavePartialTakeProfitManageDetails = ({
   }, [historyEvents])
 
   const realizedProfitValue = formatAmount(
-    partialTakeProfitToken === 'debt'
-      ? realizedProfit.debtRealized
-      : realizedProfit.collateralRealized,
+    partialTakeProfitToken === 'debt' ? realizedProfit.debtToken : realizedProfit.collateralToken,
     partialTakeProfitTokenData.symbol,
   )
   const realizedProfitSecondValue = `${formatAmount(
     partialTakeProfitToken === 'collateral'
-      ? realizedProfit.debtRealized
-      : realizedProfit.collateralRealized,
+      ? realizedProfit.debtToken
+      : realizedProfit.collateralToken,
     partialTakeProfitSecondTokenData.symbol,
   )} ${partialTakeProfitSecondTokenData.symbol}`
   const nextTriggerProfit = partialTakeProfitProfits ? partialTakeProfitProfits[0] : undefined

@@ -68,6 +68,9 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
 const offset = 14 * 24 * 60 * 60 * 1000 // 14 days
 
 async function checkIfRisky(address: string) {
+  if (process.env.NODE_ENV !== 'production' && process.env.USE_TRM_API === '0') {
+    return true
+  }
   try {
     const trmData = await getTrmRisk(address)
 
@@ -86,6 +89,7 @@ async function checkIfRisky(address: string) {
       .includes(true)
   } catch (ex) {
     console.error(`TRM_LOG ${address} check failed`)
+    console.error(ex)
     throw ex
   }
 }
