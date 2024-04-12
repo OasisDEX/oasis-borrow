@@ -145,6 +145,7 @@ export const useInitializeRefinanceContext = ({
       liquidationPrice,
       positionId,
       ltv,
+      productType,
     },
     poolData: {
       poolId,

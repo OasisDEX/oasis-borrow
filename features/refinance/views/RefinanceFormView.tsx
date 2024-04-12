@@ -1,9 +1,13 @@
+import { getNetworkContracts } from 'blockchain/contracts'
+import type { NetworkIds } from 'blockchain/networks'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
+import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { ChangeOwnerSidebar, RefinanceFlowSidebarController } from 'features/refinance/controllers'
-import { getRefinanceSidebarTitle } from 'features/refinance/helpers'
+import { getRefinanceNewProductType, getRefinanceSidebarTitle } from 'features/refinance/helpers'
 import { RefinanceSidebarStep } from 'features/refinance/types'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -13,6 +17,15 @@ export const RefinanceFormView: FC = ({ children }) => {
   const { t } = useTranslation()
 
   const {
+    metadata: {
+      validations: { hasErrors },
+    },
+    environment: {
+      chainInfo: { chainId },
+      protocol,
+    },
+    position: { collateralTokenData, debtTokenData, productType: currentType },
+    tx: { isTxSuccess, isTxInProgress, txDetails },
     form: {
       state: { refinanceOption },
       updateState,
@@ -20,7 +33,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     steps: { currentStep, isExternalStep, setStep, setNextStep, setPrevStep },
   } = useRefinanceContext()
 
-  const isPrimaryButtonLoading = false
+  const isPrimaryButtonLoading = isTxInProgress
   const isPrimaryButtonHidden = [
     RefinanceSidebarStep.Option,
     RefinanceSidebarStep.Strategy,
@@ -28,9 +41,7 @@ export const RefinanceFormView: FC = ({ children }) => {
   const isTextButtonHidden = currentStep === RefinanceSidebarStep.Option
 
   const suppressValidation = false
-  const isTxSuccess = false
-  const isTxInProgress = false
-  const isPrimaryButtonDisabled = false
+  const isPrimaryButtonDisabled = hasErrors
   const primaryButtonLabel = t('confirm')
   const sidebarTitle = getRefinanceSidebarTitle({ currentStep, t, option: refinanceOption })
   const textButtonAction = () => {
@@ -45,6 +56,32 @@ export const RefinanceFormView: FC = ({ children }) => {
     // eslint-disable-next-line no-console
     action: () => console.log('click'),
   }
+
+  const productType = refinanceOption
+    ? getRefinanceNewProductType({ currentType, refinanceOption })
+    : currentType
+
+  const contracts = getNetworkContracts(chainId as NetworkIds)
+
+  const status = getOmniSidebarTransactionStatus({
+    etherscan: contracts && 'etherscan' in contracts ? contracts.etherscan.url : undefined,
+    etherscanName: contracts && 'etherscan' in contracts ? contracts.etherscan.name : undefined,
+    isTxInProgress,
+    isTxSuccess,
+    text: t(
+      isTxSuccess
+        ? `omni-kit.form.transaction.success-${'open'}`
+        : `omni-kit.form.transaction.progress-${'open'}`,
+      {
+        collateralToken: collateralTokenData.token,
+        quoteToken: debtTokenData.token,
+        productType,
+        protocol: LendingProtocolLabel[protocol],
+      },
+    ),
+    txDetails,
+  })
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: sidebarTitle,
     content: <Grid gap={3}>{children}</Grid>,
@@ -61,7 +98,7 @@ export const RefinanceFormView: FC = ({ children }) => {
       action: textButtonAction,
       hidden: isTxInProgress || isTxSuccess || isTextButtonHidden,
     },
-    status: undefined,
+    status,
     withMobilePanel: false,
     disableMaxHeight: currentStep === RefinanceSidebarStep.Strategy,
   }

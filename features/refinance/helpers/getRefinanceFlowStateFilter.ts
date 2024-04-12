@@ -4,10 +4,13 @@ import { aaveLikeFlowStateFilter } from 'features/omni-kit/protocols/aave-like/h
 import { ajnaFlowStateFilter } from 'features/omni-kit/protocols/ajna/helpers'
 import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
 import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
-import type { OmniFiltersParameters, OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { OmniProductType } from 'features/omni-kit/types'
+import type {
+  OmniFiltersParameters,
+  OmniProductType,
+  OmniSupportedNetworkIds,
+} from 'features/omni-kit/types'
+import { getRefinanceNewProductType } from 'features/refinance/helpers'
 import type { RefinanceFormState } from 'features/refinance/state/refinanceFormReducto.types'
-import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const getRefinanceFlowStateFilter = ({
@@ -28,12 +31,10 @@ export const getRefinanceFlowStateFilter = ({
 
   const networkId = networkNameToIdMap[network]
 
-  const productType = {
-    [RefinanceOptions.CHANGE_DIRECTION]: currentProductType,
-    [RefinanceOptions.HIGHER_LTV]: currentProductType,
-    [RefinanceOptions.LOWER_COST]: currentProductType,
-    [RefinanceOptions.SWITCH_TO_EARN]: OmniProductType.Earn,
-  }[formState.refinanceOption]
+  const productType = getRefinanceNewProductType({
+    currentType: currentProductType,
+    refinanceOption: formState.refinanceOption,
+  })
 
   const collateralAddress = primaryTokenAddress
   const quoteAddress = secondaryTokenAddress

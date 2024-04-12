@@ -88,6 +88,7 @@ export type RefinanceContextBase = {
     debtTokenData: TokenAmount
     liquidationPrice: string
     ltv: RiskRatio
+    productType: OmniProductType
   }
   poolData: {
     poolId: IPoolId
