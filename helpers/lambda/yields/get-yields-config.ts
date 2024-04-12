@@ -11,6 +11,6 @@ export const getYieldsConfig = ({
 }: GetYieldsParams) => {
   const ltvQuery = ltv.times(lambdaPercentageDenomination).toFixed(4).toString()
   return {
-    url: `/api/yields/${network}/${protocol}/${quoteToken}-${collateralToken}/${ltvQuery}`,
+    url: `/api/apy/${network}/${protocol}/${quoteToken}-${collateralToken}/${ltvQuery}`,
   }
 }
