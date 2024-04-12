@@ -78,7 +78,6 @@ export type RefinanceContextBase = {
     address?: AddressValue
     chainInfo: ChainInfo
     slippage: number
-    isShort: boolean
     protocol: LendingProtocol
     gasEstimation: GasEstimationContext | undefined
   }
@@ -89,6 +88,7 @@ export type RefinanceContextBase = {
     liquidationPrice: string
     ltv: RiskRatio
     productType: OmniProductType
+    isShort: boolean
   }
   poolData: {
     poolId: IPoolId

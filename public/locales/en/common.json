@@ -3691,7 +3691,7 @@
           "title": "I want to",
           "item-1": "Switch to higher max Loan To Value",
           "item-2": "Switch to lower my cost",
-          "item-3": "Change direction of my position (long to short)",
+          "item-3": "Change direction of my position",
           "item-4": "Switch to an Earn position"
         }
       },
@@ -3701,8 +3701,8 @@
         "highlighted": {
           "lowering-borrowing-cost": "Lowering Borrowing Cost",
           "increase-to-higher-ltv": "Increase to higher LTV",
-          "change-direction": "Change direction",
-          "switch-to-earn": "Switch to Earn"
+          "change-direction": "Switching to {{value}}",
+          "switch-to-earn": "Opening Earn Position"
         },
         "review-all-changes": "Review all changes",
         "route": {

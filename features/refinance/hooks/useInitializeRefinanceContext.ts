@@ -135,7 +135,6 @@ export const useInitializeRefinanceContext = ({
       address: parsedAddress,
       chainInfo,
       slippage,
-      isShort,
       gasEstimation,
       protocol,
     },
@@ -146,6 +145,7 @@ export const useInitializeRefinanceContext = ({
       positionId,
       ltv,
       productType,
+      isShort,
     },
     poolData: {
       poolId,
