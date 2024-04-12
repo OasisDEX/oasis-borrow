@@ -58,7 +58,7 @@ export function AssetsTable({
 }: AssetsTableProps) {
   const [page, setPage] = useState<number>(1)
   const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
-  const rowKeys = Object.keys(rows[0].items)
+  const rowKeys = Object.keys(rows[0]?.items ?? [])
   const totalPages = useMemo(
     () => (perPage ? Math.ceil(rows.length / perPage) : 1),
     [rows, perPage],
