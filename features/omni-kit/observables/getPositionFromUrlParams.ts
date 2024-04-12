@@ -181,14 +181,14 @@ async function getAccounts({ networkId,
     return [
       {
         createEvents: createEvents.map((e) => ({
-          collateralToken: e.args.collateralToken,
-          debtToken: e.args.debtToken,
-          positionType: e.args.positionType,
+          collateralToken: e.args.collateralToken.toLowerCase(),
+          debtToken: e.args.debtToken.toLowerCase(),
+          positionType: e.args.positionType.toLowerCase(),
           protocol: e.args.protocol,
         })),
-        id: dpm.proxy,
+        id: dpm.proxy.toLowerCase(),
         user: {
-          id: dpm.user,
+          id: dpm.user.toLowerCase(),
         },
       },
     ]
