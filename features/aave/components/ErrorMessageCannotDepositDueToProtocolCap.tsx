@@ -1,7 +1,6 @@
 import { amountFromWei } from 'blockchain/utils'
 import { MessageCard } from 'components/MessageCard'
 import type { BaseAaveContext } from 'features/aave/types'
-import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -30,14 +29,16 @@ export function ErrorMessageCannotDepositDueToProtocolCap({
 
   const messages: string[] = []
 
-  if (targetPositionCollateral.gt(maxSupply)) {
-    messages.push(
-      t('aave.errors.deposit-amount-exceeds-supply-cap', {
-        cap: formatCryptoBalance(maxSupply),
-        token: collateralToken,
-      }),
-    )
-  }
+  // === WARNING ===
+  // Temporarily commented out
+  // if (targetPositionCollateral.gt(maxSupply)) {
+  //   messages.push(
+  //     t('aave.errors.deposit-amount-exceeds-supply-cap', {
+  //       cap: formatCryptoBalance(maxSupply),
+  //       token: collateralToken,
+  //     }),
+  //   )
+  // }
 
   return <MessageCard messages={messages} type={'error'} withBullet={false} />
 }
