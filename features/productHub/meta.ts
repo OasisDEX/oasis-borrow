@@ -2,11 +2,7 @@ import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/netwo
 import type { GenericMultiselectOption } from 'components/GenericMultiselect'
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { OmniProductType } from 'features/omni-kit/types'
-import type {
-  ProductHubCategories,
-  ProductHubFeaturedProducts,
-  ProductHubTags,
-} from 'features/productHub/types'
+import type { ProductHubCategories, ProductHubTags } from 'features/productHub/types'
 import { ProductHubCategory, ProductHubTag } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
@@ -190,55 +186,5 @@ export const productHubTags: ProductHubTags = {
     ProductHubTag.Longevity,
     ProductHubTag.Gt1BTvl,
     ProductHubTag.BluechipAssets,
-  ],
-}
-
-export const featuredProducts: ProductHubFeaturedProducts = {
-  [OmniProductType.Multiply]: [
-    {
-      primaryToken: 'WSTETH',
-      secondaryToken: 'USDC',
-      protocol: LendingProtocol.Ajna,
-      network: NetworkNames.ethereumMainnet,
-      product: OmniProductType.Multiply,
-    },
-    {
-      primaryToken: 'WBTC',
-      secondaryToken: 'USDC',
-      protocol: LendingProtocol.AaveV3,
-      network: NetworkNames.optimismMainnet,
-      product: OmniProductType.Multiply,
-    },
-    {
-      label: 'ETH-B/DAI',
-      primaryToken: 'ETH',
-      secondaryToken: 'DAI',
-      protocol: LendingProtocol.Maker,
-      network: NetworkNames.ethereumMainnet,
-      product: OmniProductType.Multiply,
-    },
-  ],
-  [OmniProductType.Earn]: [
-    {
-      primaryToken: 'USDC',
-      secondaryToken: 'USDC',
-      protocol: LendingProtocol.MorphoBlue,
-      network: NetworkNames.ethereumMainnet,
-      product: OmniProductType.Earn,
-    },
-    {
-      primaryToken: 'DAI',
-      secondaryToken: 'DAI',
-      protocol: LendingProtocol.Maker,
-      network: NetworkNames.ethereumMainnet,
-      product: OmniProductType.Earn,
-    },
-    {
-      primaryToken: 'WSTETH',
-      secondaryToken: 'ETH',
-      protocol: LendingProtocol.AaveV3,
-      network: NetworkNames.ethereumMainnet,
-      product: OmniProductType.Earn,
-    },
   ],
 }

@@ -1,23 +1,16 @@
 import BigNumber from 'bignumber.js'
+import { featuredEarnNavigationProducts } from 'features/navigation/meta'
 import { OmniProductType } from 'features/omni-kit/types'
-import { getGenericPositionUrl } from 'features/productHub/helpers'
-import { featuredProducts } from 'features/productHub/meta'
+import { filterFeaturedProducts, getGenericPositionUrl } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import { zero } from 'helpers/zero'
 
 export const getProductEarnNavItems = (productHub: ProductHubItem[]) => {
-  return productHub
-    .filter((product) =>
-      featuredProducts.earn?.some(
-        (featured) =>
-          (featured.label ? featured.label === product.label : true) &&
-          product.primaryToken === featured.primaryToken &&
-          product.secondaryToken === featured.secondaryToken &&
-          product.protocol === featured.protocol &&
-          product.network === featured.network &&
-          product.product.includes(OmniProductType.Earn),
-      ),
-    )
+  return filterFeaturedProducts({
+    filters: featuredEarnNavigationProducts,
+    productType: OmniProductType.Earn,
+    rows: productHub,
+  })
     .map((product) => ({
       weeklyNetApy: product.weeklyNetApy ? new BigNumber(product.weeklyNetApy) : undefined,
       primaryToken: product.primaryToken,

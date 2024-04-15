@@ -1,21 +1,14 @@
+import { featuredMultiplyNavigationProducts } from 'features/navigation/meta'
 import { OmniProductType } from 'features/omni-kit/types'
-import { getGenericPositionUrl } from 'features/productHub/helpers'
-import { featuredProducts } from 'features/productHub/meta'
+import { filterFeaturedProducts, getGenericPositionUrl } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 
 export const getProductMultiplyNavItems = (productHub: ProductHubItem[]) => {
-  return productHub
-    .filter((product) =>
-      featuredProducts.multiply?.some(
-        (featured) =>
-          (featured.label ? featured.label === product.label : true) &&
-          product.primaryToken === featured.primaryToken &&
-          product.secondaryToken === featured.secondaryToken &&
-          product.protocol === featured.protocol &&
-          product.network === featured.network &&
-          product.product.includes(OmniProductType.Multiply),
-      ),
-    )
+  return filterFeaturedProducts({
+    filters: featuredMultiplyNavigationProducts,
+    productType: OmniProductType.Multiply,
+    rows: productHub,
+  })
     .map((product) => ({
       maxMultiply: product.maxMultiply ? Number(product.maxMultiply) : undefined,
       collateralToken: product.primaryToken,
