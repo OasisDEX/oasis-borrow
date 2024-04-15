@@ -6,7 +6,7 @@ import { ProductHubCategory, type ProductHubFilters } from 'features/productHub/
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
-import { doc, plant, relock, sparks_empty } from 'theme/icons'
+import { doc, plant, relock, sparks_empty, yield_loop } from 'theme/icons'
 import { Flex } from 'theme-ui'
 
 interface ProductHubCategoryControllerProps {
@@ -16,15 +16,18 @@ interface ProductHubCategoryControllerProps {
 }
 
 const iconsMap = {
-  sparks_empty,
-  relock,
-  plant,
   doc,
+  plant,
+  relock,
+  sparks_empty,
+  yield_loop,
 }
 
-export const ProductHubCategoryController: FC<
-  ProductHubCategoryControllerProps
-> = ({ onChange, selectedFilters, selectedProduct }) => {
+export const ProductHubCategoryController: FC<ProductHubCategoryControllerProps> = ({
+  onChange,
+  selectedFilters,
+  selectedProduct,
+}) => {
   const { t } = useTranslation()
 
   return (

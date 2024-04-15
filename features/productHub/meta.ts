@@ -143,7 +143,7 @@ const productHubCategoryRestaking = {
   id: ProductHubCategory.Restaking,
 }
 const productHubCategoryYieldLoops = {
-  icon: '',
+  icon: 'yield_loop',
   id: ProductHubCategory.YieldLoops,
 }
 

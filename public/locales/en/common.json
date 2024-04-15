@@ -3487,6 +3487,8 @@
       "deposit-tokens": "Deposit Tokens",
       "networks": "Networks",
       "protocols": "Protocols",
+      "eth-variants": "ETH variants",
+      "stablecoins": "Stablecoins",
       "strategies": "Strategies"
     },
     "tags": {

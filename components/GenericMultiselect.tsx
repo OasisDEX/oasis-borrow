@@ -6,30 +6,36 @@ import { useAppConfig } from 'helpers/config'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
+import { isEqual, keyBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { type ReactNode, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { checkmark, clear_selection } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Flex, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Image, Text } from 'theme-ui'
 import type { FeaturesEnum } from 'types/config'
 
 export interface GenericMultiselectOption {
+  featureFlag?: FeaturesEnum
   icon?: IconProps['icon']
   image?: string
   label: string
   token?: string
   value: string
-  featureFlag?: FeaturesEnum
 }
 
 export interface GenericMultiselectProps {
+  fitContents?: boolean
   icon?: IconProps['icon']
   initialValues?: string[]
   label: string
-  options: GenericMultiselectOption[]
   onChange: (value: string[]) => void
+  options: GenericMultiselectOption[]
+  optionGroups?: {
+    id: string
+    key: string
+    options: string[]
+  }[]
   sx?: ThemeUIStyleObject
-  fitContents?: boolean
 }
 
 function GenericMultiselectIcon({
@@ -65,9 +71,9 @@ function GenericMultiselectItem({
   isClearing = false,
   isDisabled = false,
   isSelected = false,
-  token,
   label,
   onClick,
+  token,
   value,
 }: {
   hasCheckbox?: boolean
@@ -89,7 +95,7 @@ function GenericMultiselectItem({
         fontSize: 3,
         fontWeight: 'regular',
         color: isDisabled ? 'neutral80' : 'primary100',
-        borderRadius: 'medium',
+        borderRadius: isClearing ? 'none' : 'medium',
         transition: 'color 200ms, background-color 200ms',
         cursor: isDisabled ? 'default' : 'pointer',
         whiteSpace: 'nowrap',
@@ -152,13 +158,14 @@ function GenericMultiselectItem({
 }
 
 export function GenericMultiselect({
+  fitContents = false,
   icon,
   initialValues = [],
   label,
-  options,
   onChange,
+  options,
+  optionGroups,
   sx,
-  fitContents = false,
 }: GenericMultiselectProps) {
   const { t } = useTranslation()
 
@@ -173,12 +180,11 @@ export function GenericMultiselect({
     option.featureFlag ? features[option.featureFlag] : true,
   )
 
-  useEffect(() => {
-    if (didMountRef.current) onChange(values)
-    else didMountRef.current = true
-  }, [values])
+  const matchingOptionsGroup = useMemo(() => {
+    return optionGroups?.filter(({ options: _options }) => isEqual(_options, values))?.[0]?.id
+  }, [optionGroups, values])
 
-  function getSelectLabel(): ReactNode {
+  const selectLabel = useMemo(() => {
     switch (values.length) {
       case 0:
         return (
@@ -203,14 +209,23 @@ export function GenericMultiselect({
           </>
         )
       default:
-        return (
+        return optionGroups && matchingOptionsGroup ? (
+          <>
+            {t('all')} {t(keyBy(optionGroups, 'id')[matchingOptionsGroup].key)}
+          </>
+        ) : (
           <>
             {icon && <Icon icon={icon} size={32} sx={{ flexShrink: 0, mr: '12px' }} />}
             {t('selected')} {label.toLowerCase()}: {values.length}
           </>
         )
     }
-  }
+  }, [icon, label, matchingOptionsGroup, optionGroups, options, values])
+
+  useEffect(() => {
+    if (didMountRef.current) onChange(values)
+    else didMountRef.current = true
+  }, [values])
 
   return (
     <Box sx={{ position: 'relative', userSelect: 'none', ...sx }} ref={outsideRef}>
@@ -245,7 +260,7 @@ export function GenericMultiselect({
             textOverflow: 'ellipsis',
           }}
         >
-          {getSelectLabel()}
+          {selectLabel}
           <ExpandableArrow
             size={12}
             direction={isOpen ? 'up' : 'down'}
@@ -291,6 +306,7 @@ export function GenericMultiselect({
               scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
                 ? 2
                 : 0,
+            overflowX: 'hidden',
             overflowY: 'auto',
             '&::-webkit-scrollbar': {
               width: '6px',
@@ -320,6 +336,32 @@ export function GenericMultiselect({
             }}
             value=""
           />
+          {optionGroups && optionGroups.length > 0 && (
+            <Flex as="li" sx={{ columnGap: 1, my: 2 }}>
+              {optionGroups.map(({ id, key, options: _options }) => (
+                <Button
+                  variant="tag"
+                  sx={{
+                    flexShrink: 0,
+                    px: 3,
+                    ...(matchingOptionsGroup === id && {
+                      '&, &:hover': {
+                        color: 'neutral10',
+                        bg: 'interactive100',
+                        borderColor: 'interactive100',
+                      },
+                    }),
+                  }}
+                  onClick={() => {
+                    if (matchingOptionsGroup === id) setValues([])
+                    else setValues(_options)
+                  }}
+                >
+                  {t(key)}
+                </Button>
+              ))}
+            </Flex>
+          )}
           {options.map((option, index) =>
             optionsFeatureFlagsArray[index] ? (
               <GenericMultiselectItem
