@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
 import { OmniProductType } from 'features/omni-kit/types'
+import { featuredProducts } from 'features/productHub/meta'
 import { ProductHubView } from 'features/productHub/views'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
@@ -165,7 +166,12 @@ export function HomepageView() {
       </Grid>
       <WhyOasisStats oasisStats={oasisStats} />
       <Box sx={{ mt: 7 }}>
-        <ProductHubView product={OmniProductType.Earn} limitRows={10} />
+        <ProductHubView
+          featured={featuredProducts}
+          highlighted={featuredProducts}
+          limitRows={10}
+          product={OmniProductType.Earn}
+        />
       </Box>
       <Box
         sx={{
