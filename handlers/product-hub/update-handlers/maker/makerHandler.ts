@@ -38,7 +38,7 @@ const bigNumberify = (val: BigNumberish) => new BigNumber(val.toString())
 const getIlk = (label: string) => (['DSR'].includes(label) ? label : label.split('/')[0])
 
 async function getMakerData(
-  networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
+  networkId: NetworkIds.MAINNET,
   tickers: Tickers,
 ): ProductHubHandlerResponse {
   const rpcProvider = getRpcProvider(networkId)
@@ -158,10 +158,7 @@ async function getMakerData(
 }
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
-  return Promise.all([
-    getMakerData(NetworkIds.MAINNET, tickers),
-    getMakerData(NetworkIds.GOERLI, tickers),
-  ]).then((responses) => {
+  return Promise.all([getMakerData(NetworkIds.MAINNET, tickers)]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {
         return {

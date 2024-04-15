@@ -36,7 +36,6 @@ import { uniq } from 'lodash'
 async function getAjnaPoolData(
   networkId:
     | NetworkIds.MAINNET
-    | NetworkIds.GOERLI
     | NetworkIds.BASEMAINNET
     | NetworkIds.ARBITRUMMAINNET
     | NetworkIds.OPTIMISMMAINNET,
@@ -245,7 +244,6 @@ async function getAjnaPoolData(
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   return Promise.all([
     getAjnaPoolData(NetworkIds.MAINNET, tickers),
-    getAjnaPoolData(NetworkIds.GOERLI, tickers),
     getAjnaPoolData(NetworkIds.BASEMAINNET, tickers),
     getAjnaPoolData(NetworkIds.ARBITRUMMAINNET, tickers),
     getAjnaPoolData(NetworkIds.OPTIMISMMAINNET, tickers),
