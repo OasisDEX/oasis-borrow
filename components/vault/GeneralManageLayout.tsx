@@ -86,6 +86,8 @@ export function GeneralManageLayout({
     positionType: vaultTypeToSDKType(generalManageVault.type),
   })
 
+  generalManageVault.state.refinanceContextInput = contextInput
+
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       {/* In general, it shouldn't be here, but it's here to ease development for now */}
