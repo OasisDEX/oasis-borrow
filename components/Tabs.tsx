@@ -5,6 +5,7 @@ import { Box, Flex, type ThemeUIStyleObject } from 'theme-ui'
 
 interface TabsProps<T> {
   defaultId: T
+  dependency?: unknown[]
   gap?: string | number
   items: {
     content: (isSelected: boolean) => ReactNode
@@ -19,6 +20,7 @@ interface TabsProps<T> {
 
 export function Tabs<T>({
   defaultId,
+  dependency = [],
   gap = 4,
   items,
   onClick,
@@ -31,27 +33,27 @@ export function Tabs<T>({
   const [underlineWidth, setUnderlineWidth] = useState<number>(0)
   const [underlineX, setUnderlineX] = useState<number>(0)
   const [selectedId, setSelectedId] = useState<T>(defaultId)
-  const [storedDefaultId] = useState<T>(defaultId)
 
   useEffect(() => {
     if (ref.current) {
       setUnderlineWidth(ref.current.offsetWidth)
       setUnderlineX(ref.current.offsetLeft)
     }
-  }, [ref])
+  }, [dependency, ref, selectedId])
+  useEffect(() => {
+    setSelectedId(defaultId)
+  }, [defaultId])
 
   return (
     <Flex sx={{ position: 'relative', pb: underlinePadding, ...sx }}>
       <Flex as="ul" sx={{ m: 0, p: 0, listStyle: 'none', columnGap: gap }}>
         {items.map(({ content, id }) => (
           <Box
-            {...(id === storedDefaultId && { ref })}
+            {...(id === selectedId && { ref })}
             as="li"
-            onClick={(e) => {
+            onClick={() => {
               onClick(id)
               setSelectedId(id)
-              setUnderlineWidth(e.currentTarget.offsetWidth)
-              setUnderlineX(e.currentTarget.offsetLeft)
             }}
             sx={{ position: 'relative', cursor: 'pointer' }}
           >

@@ -2,10 +2,10 @@ import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/netwo
 import type { GenericMultiselectOption } from 'components/GenericMultiselect'
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { OmniProductType } from 'features/omni-kit/types'
-import type {
-  ProductHubCategories,
+import {
+  type ProductHubCategories,
   ProductHubCategory,
-  ProductHubFeaturedProducts,
+  type ProductHubFeaturedProducts,
 } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
@@ -21,8 +21,6 @@ import {
 import { FeaturesEnum } from 'types/config'
 
 export const MIN_LIQUIDITY = 3000
-
-export const ALL_ASSETS = 'all assets'
 
 export const productHubLinksMap: { [key in OmniProductType]: string } = {
   borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
@@ -127,21 +125,25 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
   },
 ]
 
-export const productHubCategoryAll: ProductHubCategory = {
+export const productHubCategoryAll = {
   icon: 'doc',
-  id: 'all',
+  id: ProductHubCategory.All,
 }
-const productHubCategoryTokenFarming: ProductHubCategory = {
+const productHubCategoryTokenFarming = {
   icon: 'plant',
-  id: 'token-farming',
+  id: ProductHubCategory.TokenFarming,
 }
-const productHubCategoryStakingRewards: ProductHubCategory = {
+const productHubCategoryStakingRewards = {
   icon: 'sparks_empty',
-  id: 'staking-rewards',
+  id: ProductHubCategory.StakingRewards,
 }
-const productHubCategoryRestaking: ProductHubCategory = {
+const productHubCategoryRestaking = {
   icon: 'relock',
-  id: 'restaking',
+  id: ProductHubCategory.Restaking,
+}
+const productHubCategoryYieldLoops = {
+  icon: '',
+  id: ProductHubCategory.YieldLoops,
 }
 
 export const productHubCategories: ProductHubCategories = {
@@ -157,7 +159,7 @@ export const productHubCategories: ProductHubCategories = {
   ],
   [OmniProductType.Earn]: [
     productHubCategoryTokenFarming,
-    productHubCategoryStakingRewards,
+    productHubCategoryYieldLoops,
     productHubCategoryRestaking,
   ],
 }

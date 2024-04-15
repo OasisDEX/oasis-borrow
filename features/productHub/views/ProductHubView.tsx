@@ -74,17 +74,17 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         }}
       >
         {!hiddenProductTypeSelector && (
-          <Box
-            sx={{ position: 'relative', mb: [3, null, 5], textAlign: 'center', zIndex: '3' }}
-          >
+          <Box sx={{ position: 'relative', mb: [3, null, 5], textAlign: 'center', zIndex: '3' }}>
             <ProductHubProductTypeSelectorController
               gradient={headerGradient}
               onChange={(_selectedProduct) => {
                 setSelectedProduct(_selectedProduct)
                 setSelectedFilters((_selectedFilters) => {
+                  delete _selectedFilters['category']
                   delete _selectedFilters['collateral-token']
                   delete _selectedFilters['debt-token']
                   delete _selectedFilters['deposit-token']
+                  delete _selectedFilters['tags']
 
                   return _selectedFilters
                 })

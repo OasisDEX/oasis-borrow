@@ -1,0 +1,41 @@
+import {
+  TOKENS_STABLE_GROUPS,
+  TOKENS_WITH_RESTAKING,
+  TOKENS_WITH_STAKING_REWARDS,
+} from 'features/productHub/tokenGroups'
+import type { ProductHubItem } from 'features/productHub/types'
+import { ProductHubCategory } from 'features/productHub/types'
+import { getTokenGroup } from 'handlers/product-hub/helpers'
+
+interface FilterByCategoryParams {
+  category: ProductHubCategory
+  primaryToken: string
+  row: ProductHubItem
+  secondaryToken: string
+}
+
+export function filterByCategory({
+  category,
+  primaryToken,
+  row,
+  secondaryToken,
+}: FilterByCategoryParams) {
+  switch (category) {
+    case ProductHubCategory.All:
+      return true
+    case ProductHubCategory.TokenFarming:
+      return row.hasRewards
+    case ProductHubCategory.StakingRewards:
+      return TOKENS_WITH_STAKING_REWARDS.includes(primaryToken)
+    case ProductHubCategory.Restaking:
+      return TOKENS_WITH_RESTAKING.includes(primaryToken)
+    case ProductHubCategory.YieldLoops:
+      return (
+        primaryToken !== secondaryToken &&
+        ((!TOKENS_STABLE_GROUPS.includes(getTokenGroup(primaryToken)) &&
+          !TOKENS_STABLE_GROUPS.includes(getTokenGroup(secondaryToken))) ||
+          (TOKENS_STABLE_GROUPS.includes(getTokenGroup(primaryToken)) &&
+            TOKENS_STABLE_GROUPS.includes(getTokenGroup(secondaryToken))))
+      )
+  }
+}

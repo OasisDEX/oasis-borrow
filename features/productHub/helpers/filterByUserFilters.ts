@@ -1,4 +1,9 @@
-import type { ProductHubFilters, ProductHubItem } from 'features/productHub/types'
+import { filterByCategory } from 'features/productHub/helpers'
+import type {
+  ProductHubCategory,
+  ProductHubFilters,
+  ProductHubItem,
+} from 'features/productHub/types'
 
 export function filterByUserFilters(
   rows: ProductHubItem[],
@@ -9,11 +14,21 @@ export function filterByUserFilters(
       const value = filters[k]
 
       if (value.length) {
+        const primaryToken = row.reverseTokens ? row.secondaryToken : row.primaryToken
+        const secondaryToken = row.reverseTokens ? row.primaryToken : row.secondaryToken
+
         switch (k) {
+          case 'category':
+            return filterByCategory({
+              category: filters[k][0] as ProductHubCategory,
+              primaryToken,
+              row,
+              secondaryToken,
+            })
           case 'collateral-token':
-            return value.includes(row.reverseTokens ? row.secondaryToken : row.primaryToken)
+            return value.includes(primaryToken)
           case 'debt-token':
-            return value.includes(row.reverseTokens ? row.primaryToken : row.secondaryToken)
+            return value.includes(secondaryToken)
           case 'deposit-token':
             return row.depositToken && value.includes(row.depositToken)
           case 'protocol':

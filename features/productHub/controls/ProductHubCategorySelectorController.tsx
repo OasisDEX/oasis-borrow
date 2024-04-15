@@ -2,7 +2,7 @@ import { Icon } from 'components/Icon'
 import { Tabs } from 'components/Tabs'
 import type { OmniProductType } from 'features/omni-kit/types'
 import { productHubCategories, productHubCategoryAll } from 'features/productHub/meta'
-import type { ProductHubFilters } from 'features/productHub/types'
+import { ProductHubCategory, type ProductHubFilters } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -29,7 +29,8 @@ export const ProductHubCategorySelectorController: FC<
 
   return (
     <Tabs<string>
-      defaultId={'all'}
+      defaultId={selectedFilters.category?.[0] ?? ProductHubCategory.All}
+      dependency={[selectedProduct]}
       items={[productHubCategoryAll, ...productHubCategories[selectedProduct]].map(
         ({ icon, id }) => ({
           content: (isSelected) => (

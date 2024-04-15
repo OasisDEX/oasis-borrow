@@ -8,9 +8,6 @@ import type { EarnStrategies } from '.prisma/client'
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
 export type ProductHubManagementType = 'active' | 'passive'
 
-export type ProductHubTokenType = string
-export type ProductHubRewardsType = boolean
-
 export type ProductHubSupportedNetworks =
   | NetworkNames.ethereumMainnet
   | NetworkNames.ethereumGoerli
@@ -20,6 +17,14 @@ export type ProductHubSupportedNetworks =
   | NetworkNames.optimismGoerli
   | NetworkNames.baseMainnet
   | NetworkNames.baseGoerli
+
+export enum ProductHubCategory {
+  All = 'all',
+  Restaking = 'restaking',
+  StakingRewards = 'staking-rewards',
+  TokenFarming = 'token-farming',
+  YieldLoops = 'yield-loops',
+}
 
 export type ProductHubColumnKey =
   | '7DayNetApy'
@@ -37,14 +42,14 @@ export type ProductHubColumnKey =
 export interface ProductHubItemBasics {
   label: string
   network: ProductHubSupportedNetworks
-  primaryToken: ProductHubTokenType
-  primaryTokenAddress: ProductHubTokenType
-  primaryTokenGroup?: ProductHubTokenType
+  primaryToken: string
+  primaryTokenAddress: string
+  primaryTokenGroup?: string
   product: OmniProductType[]
   protocol: LendingProtocol
-  secondaryToken: ProductHubTokenType
-  secondaryTokenAddress: ProductHubTokenType
-  secondaryTokenGroup?: ProductHubTokenType
+  secondaryToken: string
+  secondaryTokenAddress: string
+  secondaryTokenGroup?: string
 }
 
 export interface ProductHubItemDetails {
@@ -89,13 +94,11 @@ export interface ProductHubFilters {
   [key: string]: string[]
 }
 
-export interface ProductHubCategory {
-  icon: string
-  id: string
-}
-
 export type ProductHubCategories = {
-  [key in OmniProductType]: ProductHubCategory[]
+  [key in OmniProductType]: {
+    icon: string
+    id: ProductHubCategory
+  }[]
 }
 
 export interface ProductHubPromoCardFilters {
@@ -104,7 +107,7 @@ export interface ProductHubPromoCardFilters {
   primaryToken: string
   product: OmniProductType
   protocol: LendingProtocol
-  secondaryToken: ProductHubTokenType
+  secondaryToken: string
 }
 
 export type ProductHubFeaturedProducts = {

@@ -3478,7 +3478,8 @@
       "all": "All categories",
       "restaking": "Restaking",
       "staking-rewards": "Staking rewards",
-      "token-farming": "Token farming"
+      "token-farming": "Token farming",
+      "yield-loops": "Yield Loops"
     },
     "filters": {
       "collateral-tokens": "Collateral Tokens",
