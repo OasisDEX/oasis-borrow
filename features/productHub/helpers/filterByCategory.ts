@@ -2,23 +2,26 @@ import {
   TOKENS_STABLE_GROUPS,
   TOKENS_WITH_RESTAKING,
   TOKENS_WITH_STAKING_REWARDS,
-} from 'features/productHub/tokenGroups'
+} from 'features/productHub/filterGroups'
 import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubCategory } from 'features/productHub/types'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
 
 interface FilterByCategoryParams {
   category: ProductHubCategory
   primaryToken: string
+  primaryTokenGroup: string
   row: ProductHubItem
   secondaryToken: string
+  secondaryTokenGroup: string
 }
 
 export function filterByCategory({
   category,
   primaryToken,
+  primaryTokenGroup,
   row,
   secondaryToken,
+  secondaryTokenGroup,
 }: FilterByCategoryParams) {
   switch (category) {
     case ProductHubCategory.All:
@@ -32,10 +35,10 @@ export function filterByCategory({
     case ProductHubCategory.YieldLoops:
       return (
         primaryToken !== secondaryToken &&
-        ((!TOKENS_STABLE_GROUPS.includes(getTokenGroup(primaryToken)) &&
-          !TOKENS_STABLE_GROUPS.includes(getTokenGroup(secondaryToken))) ||
-          (TOKENS_STABLE_GROUPS.includes(getTokenGroup(primaryToken)) &&
-            TOKENS_STABLE_GROUPS.includes(getTokenGroup(secondaryToken))))
+        ((!TOKENS_STABLE_GROUPS.includes(primaryTokenGroup) &&
+          !TOKENS_STABLE_GROUPS.includes(secondaryTokenGroup)) ||
+          (TOKENS_STABLE_GROUPS.includes(primaryTokenGroup) &&
+            TOKENS_STABLE_GROUPS.includes(secondaryTokenGroup)))
       )
   }
 }

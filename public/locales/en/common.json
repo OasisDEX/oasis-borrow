@@ -3491,12 +3491,16 @@
     },
     "tags": {
       "bluechip-assets": "Bluechip Assets",
+      "easiest-to-manage": "Easiest To Manage",
+      "eth-derivative-yield-loops": "ETH Derivative Yield Loops",
       "gt-1b-tvl": ">1B TVL",
       "isolated-pairs": "Isolated Pairs",
+      "longevity": "Longevity",
       "lower-cost": "Lower Cost",
       "memecoins": "Memecoins",
+      "more-capital-efficient": "More Capital Efficient",
       "non-stablecoin-collateral": "Non-Stablecoin Collateral",
-      "longevity": "Longevity"
+      "stablecoins": "Stablecoins"
     },
     "banners": {
       "pool-finder": {

@@ -167,7 +167,6 @@ export const productHubCategories: ProductHubCategories = {
 
 export const productHubTags: ProductHubTags = {
   [OmniProductType.Borrow]: [
-    ProductHubTag.LowerCost,
     ProductHubTag.NonStablecoinCollateral,
     ProductHubTag.Longevity,
     ProductHubTag.Gt1BTvl,
@@ -175,8 +174,23 @@ export const productHubTags: ProductHubTags = {
     ProductHubTag.BluechipAssets,
     ProductHubTag.Memecoins,
   ],
-  [OmniProductType.Multiply]: [],
-  [OmniProductType.Earn]: [],
+  [OmniProductType.Multiply]: [
+    ProductHubTag.Stablecoins,
+    ProductHubTag.EthDerivativeYieldLoops,
+    ProductHubTag.Longevity,
+    ProductHubTag.Gt1BTvl,
+    ProductHubTag.IsolatedPairs,
+    ProductHubTag.BluechipAssets,
+    ProductHubTag.Memecoins,
+  ],
+  [OmniProductType.Earn]: [
+    ProductHubTag.Stablecoins,
+    ProductHubTag.EthDerivativeYieldLoops,
+    ProductHubTag.EasiestToManage,
+    ProductHubTag.Longevity,
+    ProductHubTag.Gt1BTvl,
+    ProductHubTag.BluechipAssets,
+  ],
 }
 
 export const featuredProducts: ProductHubFeaturedProducts = {

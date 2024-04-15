@@ -28,12 +28,14 @@ export enum ProductHubCategory {
 
 export enum ProductHubTag {
   BluechipAssets = 'bluechip-assets',
+  EasiestToManage = 'easiest-to-manage',
+  EthDerivativeYieldLoops = 'eth-derivative-yield-loops',
   Gt1BTvl = 'gt-1b-tvl',
   IsolatedPairs = 'isolated-pairs',
   Longevity = 'longevity',
-  LowerCost = 'lower-cost',
   Memecoins = 'memecoins',
   NonStablecoinCollateral = 'non-stablecoin-collateral',
+  Stablecoins = 'stablecoins',
 }
 
 export type ProductHubColumnKey =

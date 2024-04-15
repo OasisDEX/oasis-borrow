@@ -1,5 +1,6 @@
 export * from './filterByCategory'
 export * from './filterByProductType'
+export * from './filterByTags'
 export * from './filterByUserFilters'
 export * from './getGenericPositionUrl'
 export * from './getGenericPromoCard'
