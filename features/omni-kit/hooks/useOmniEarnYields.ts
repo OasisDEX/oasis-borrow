@@ -1,15 +1,25 @@
-import type { GetYieldsParams, GetYieldsResponse } from 'helpers/lambda/yields'
+import BigNumber from 'bignumber.js'
+import type { GetYieldsParams, GetYieldsResponseMapped } from 'helpers/lambda/yields'
 import { getYieldsRequest } from 'helpers/lambda/yields'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
-export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponse | undefined {
-  const [omniYields, setOmniYields] = useState<GetYieldsResponse>()
+export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponseMapped | undefined {
+  const [omniYields, setOmniYields] = useState<GetYieldsResponseMapped>()
+  const memoizedGetYieldsRequest = useMemo(() => getYieldsRequest, [])
+
   useDebouncedEffect(
     () => {
-      getYieldsRequest(params)
+      memoizedGetYieldsRequest(params)
         .then((yieldsResponse) => {
-          setOmniYields(yieldsResponse)
+          if (yieldsResponse?.results) {
+            setOmniYields({
+              apy: new BigNumber(yieldsResponse.results.apy),
+              apy7d: new BigNumber(yieldsResponse.results.apy7d),
+              apy30d: new BigNumber(yieldsResponse.results.apy30d),
+              apy90d: new BigNumber(yieldsResponse.results.apy90d),
+            })
+          }
         })
         .catch((e) => {
           setOmniYields(undefined)

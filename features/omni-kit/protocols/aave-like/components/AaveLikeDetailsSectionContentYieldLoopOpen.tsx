@@ -13,7 +13,7 @@ import React, { useMemo } from 'react'
 
 export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
   const {
-    environment: { productType, quoteToken, collateralToken, protocol, network },
+    environment: { productType, quoteToken, quoteAddress, collateralAddress, protocol, network },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -43,11 +43,13 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
     token: quoteToken,
     getYields: () =>
       useOmniEarnYields({
-        quoteToken,
-        collateralToken,
+        actionSource: 'AaveLikeDetailsSectionContentYieldLoopOpen',
+        quoteTokenAddress: quoteAddress,
+        collateralTokenAddress: collateralAddress,
         ltv: riskRatio.loanToValue,
-        network: network.name,
+        networkId: network.id,
         protocol,
+        referenceDate: new Date(),
       }),
   })
 

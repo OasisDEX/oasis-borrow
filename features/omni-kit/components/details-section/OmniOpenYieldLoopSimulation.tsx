@@ -1,12 +1,15 @@
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { mapSimulation } from 'features/aave/components'
-import type { SimulationYields } from 'features/aave/hooks'
+import type { CalculateSimulationResult } from 'features/aave/open/services'
+import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
+export type OmniSimulationYields = CalculateSimulationResult & { yields: GetYieldsResponseMapped }
+
 interface OmniOpenYieldLoopSimulationProps {
-  simulations: SimulationYields | undefined
+  simulations: OmniSimulationYields | undefined
 }
 
 export const OmniOpenYieldLoopSimulation: FC<OmniOpenYieldLoopSimulationProps> = ({

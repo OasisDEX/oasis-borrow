@@ -2,65 +2,52 @@ import type BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import type { AaveTotalValueLocked } from 'features/aave/aave-context'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
 import { zero } from 'helpers/zero'
-import type { AaveLikeYieldsResponse } from 'lendingProtocols/aave-like-common'
-import { has7daysYield, has90daysYield } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 
 export const useOmniYieldLoopHeadline = ({
   minYields,
   maxYields,
+  maxYieldsOffset,
   tvlData,
 }: {
-  minYields: AaveLikeYieldsResponse | undefined
-  maxYields: AaveLikeYieldsResponse | undefined
+  minYields: GetYieldsResponseMapped | undefined
+  maxYields: GetYieldsResponseMapped | undefined
+  maxYieldsOffset: GetYieldsResponseMapped | undefined
   tvlData: AaveTotalValueLocked | undefined
 }) => {
   const { t } = useTranslation()
 
   const headlineDetails = []
-  if (minYields && maxYields) {
+  if (minYields && maxYields && maxYieldsOffset) {
     const formatYield = (yieldVal: BigNumber) =>
       formatPercent(yieldVal, {
         precision: 2,
       })
+    const yield7DaysMin = minYields.apy7d ?? zero
+    const yield7DaysMax = maxYields.apy7d ?? zero
 
-    if (has7daysYield(minYields, false) && has7daysYield(maxYields)) {
-      const yield7DaysMin = minYields.annualisedYield7days ?? zero
-      const yield7DaysMax = maxYields.annualisedYield7days ?? zero
+    const yield7DaysDiff = maxYields.apy7d.minus(maxYieldsOffset.apy7d)
 
-      const yield7DaysDiff = maxYields.annualisedYield7days.minus(
-        maxYields.annualisedYield7daysOffset,
-      )
-
-      headlineDetails.push({
-        label: t('open-earn.aave.product-header.current-yield'),
-        value: `${formatYield(yield7DaysMin).toString()} - ${formatYield(
-          yield7DaysMax,
-        ).toString()}`,
-        sub: formatPercent(yield7DaysDiff, {
-          precision: 2,
-          plus: true,
-        }),
-        subColor: getPriceChangeColor({
-          collateralPricePercentageChange: yield7DaysDiff,
-        }),
-      })
-    } else {
-      headlineDetails.push({
-        label: t('open-earn.aave.product-header.current-yield'),
-        value: `n/a`,
-      })
-    }
+    headlineDetails.push({
+      label: t('open-earn.aave.product-header.current-yield'),
+      value: `${formatYield(yield7DaysMin).toString()} - ${formatYield(yield7DaysMax).toString()}`,
+      sub: formatPercent(yield7DaysDiff, {
+        precision: 2,
+        plus: true,
+      }),
+      subColor: getPriceChangeColor({
+        collateralPricePercentageChange: yield7DaysDiff,
+      }),
+    })
   }
 
-  if (maxYields && has90daysYield(maxYields)) {
-    const yield90DaysDiff = maxYields.annualisedYield90daysOffset.minus(
-      maxYields.annualisedYield90days,
-    )
+  if (maxYields && maxYieldsOffset) {
+    const yield90DaysDiff = maxYieldsOffset.apy90d.minus(maxYields.apy90d)
     headlineDetails.push({
       label: t('open-earn.aave.product-header.90-day-avg-yield'),
-      value: formatPercent(maxYields.annualisedYield90days, {
+      value: formatPercent(maxYields.apy90d, {
         precision: 2,
       }),
       sub: formatPercent(yield90DaysDiff, {

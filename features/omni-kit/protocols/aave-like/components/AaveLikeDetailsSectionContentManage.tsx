@@ -35,11 +35,13 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
     environment: {
       collateralPrice,
       collateralToken,
+      collateralAddress,
       isShort,
       priceFormat,
       productType,
       quotePrice,
       quoteToken,
+      quoteAddress,
       isOpening,
       isYieldLoopWithData,
       isYieldLoop,
@@ -66,11 +68,13 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
         token: collateralToken,
         getYields: () =>
           useOmniEarnYields({
-            quoteToken,
-            collateralToken,
+            actionSource: 'AaveLikeDetailsSectionContentManage',
+            quoteTokenAddress: quoteAddress,
+            collateralTokenAddress: collateralAddress,
             ltv: castedPosition.riskRatio.loanToValue,
-            network: network.name,
+            networkId: network.id,
             protocol,
+            referenceDate: new Date(),
           }),
       })
     : undefined

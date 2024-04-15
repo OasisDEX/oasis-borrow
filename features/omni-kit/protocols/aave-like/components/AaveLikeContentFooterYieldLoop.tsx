@@ -7,7 +7,7 @@ import React, { useMemo } from 'react'
 
 export function AaveLikeContentFooterYieldLoop() {
   const {
-    environment: { protocol, network, quoteToken, collateralToken },
+    environment: { protocol, network, quoteAddress, collateralAddress },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -29,11 +29,13 @@ export function AaveLikeContentFooterYieldLoop() {
     <OmniOpenYieldLoopFooter
       getYields={() =>
         useOmniEarnYields({
-          quoteToken,
-          collateralToken,
+          actionSource: 'AaveLikeContentFooterYieldLoop',
+          quoteTokenAddress: quoteAddress,
+          collateralTokenAddress: collateralAddress,
           ltv: riskRatio.loanToValue,
-          network: network.name,
+          networkId: network.id,
           protocol,
+          referenceDate: new Date(),
         })
       }
     />
