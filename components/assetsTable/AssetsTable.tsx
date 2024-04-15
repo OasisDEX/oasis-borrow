@@ -354,8 +354,28 @@ export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDa
         textAlign: 'right',
         whiteSpace: 'nowrap',
         verticalAlign,
+        ...(row.featured && {
+          bg: '#fdf4f0',
+          borderTop: '1px solid',
+          borderBottom: '1px solid',
+          borderColor: '#f7ccbd',
+        }),
         '&:first-of-type': {
           textAlign: 'left',
+          borderTopLeftRadius: 'medium',
+          borderBottomLeftRadius: 'medium',
+          ...(row.featured && {
+            borderLeft: '1px solid',
+            borderColor: '#f7ccbd',
+          }),
+        },
+        '&:last-of-type': {
+          borderTopRightRadius: 'medium',
+          borderBottomRightRadius: 'medium',
+          ...(row.featured && {
+            borderRight: '1px solid',
+            borderColor: '#f7ccbd',
+          }),
         },
       }}
     >

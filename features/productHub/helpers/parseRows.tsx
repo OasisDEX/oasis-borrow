@@ -3,6 +3,7 @@ import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
+import { BrandTag } from 'components/BrandTag'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { OmniProductType } from 'features/omni-kit/types'
 import { getGenericPositionUrl, parseProduct } from 'features/productHub/helpers'
@@ -25,7 +26,7 @@ export function parseRows({
   product,
   rows,
 }: ParseRowsParams): AssetsTableRowData[] {
-  return rows.map((row) => {
+  return rows.map((row, i) => {
     const {
       depositToken,
       label,
@@ -47,13 +48,18 @@ export function parseRows({
     const items = omit(
       {
         [product === OmniProductType.Earn ? 'depositToken' : 'collateralDebt']: (
-          <AssetsTableDataCellAsset
-            asset={asset}
-            icons={icons}
-            {...(tooltips?.asset && {
-              addon: <AssetsTableTooltip {...tooltips.asset} />,
-            })}
-          />
+          <>
+            <AssetsTableDataCellAsset
+              asset={asset}
+              icons={icons}
+              addon={
+                <>
+                  {i === 2 && <BrandTag sx={{ ml: 2 }}>Featured</BrandTag>}
+                  {tooltips?.asset && <AssetsTableTooltip {...tooltips.asset} />}
+                </>
+              }
+            />
+          </>
         ),
         ...parseProduct(row, product),
         protocolNetwork: (
@@ -75,6 +81,7 @@ export function parseRows({
 
     return {
       items,
+      featured: i === 2,
       ...(onRowClick && {
         onClick: () => onRowClick(row),
       }),

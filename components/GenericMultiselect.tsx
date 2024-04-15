@@ -340,6 +340,7 @@ export function GenericMultiselect({
             <Flex as="li" sx={{ columnGap: 1, my: 2 }}>
               {optionGroups.map(({ id, key, options: _options }) => (
                 <Button
+                  key={id}
                   variant="tag"
                   sx={{
                     flexShrink: 0,

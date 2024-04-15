@@ -26,6 +26,7 @@ export interface AssetsTableRowItems {
 }
 export interface AssetsTableRowData {
   items: AssetsTableRowItems
+  featured?: boolean
   onClick?: () => void
 }
 
