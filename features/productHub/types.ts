@@ -26,6 +26,16 @@ export enum ProductHubCategory {
   YieldLoops = 'yield-loops',
 }
 
+export enum ProductHubTag {
+  BluechipAssets = 'bluechip-assets',
+  Gt1BTvl = 'gt-1b-tvl',
+  IsolatedPairs = 'isolated-pairs',
+  Longevity = 'longevity',
+  LowerCost = 'lower-cost',
+  Memecoins = 'memecoins',
+  NonStablecoinCollateral = 'non-stablecoin-collateral',
+}
+
 export type ProductHubColumnKey =
   | '7DayNetApy'
   | 'action'
@@ -99,6 +109,10 @@ export type ProductHubCategories = {
     icon: string
     id: ProductHubCategory
   }[]
+}
+
+export type ProductHubTags = {
+  [key in OmniProductType]: ProductHubTag[]
 }
 
 export interface ProductHubPromoCardFilters {

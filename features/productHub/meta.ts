@@ -2,11 +2,12 @@ import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/netwo
 import type { GenericMultiselectOption } from 'components/GenericMultiselect'
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { OmniProductType } from 'features/omni-kit/types'
-import {
-  type ProductHubCategories,
-  ProductHubCategory,
-  type ProductHubFeaturedProducts,
+import type {
+  ProductHubCategories,
+  ProductHubFeaturedProducts,
+  ProductHubTags,
 } from 'features/productHub/types'
+import { ProductHubCategory, ProductHubTag } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
@@ -162,6 +163,20 @@ export const productHubCategories: ProductHubCategories = {
     productHubCategoryYieldLoops,
     productHubCategoryRestaking,
   ],
+}
+
+export const productHubTags: ProductHubTags = {
+  [OmniProductType.Borrow]: [
+    ProductHubTag.LowerCost,
+    ProductHubTag.NonStablecoinCollateral,
+    ProductHubTag.Longevity,
+    ProductHubTag.Gt1BTvl,
+    ProductHubTag.IsolatedPairs,
+    ProductHubTag.BluechipAssets,
+    ProductHubTag.Memecoins,
+  ],
+  [OmniProductType.Multiply]: [],
+  [OmniProductType.Earn]: [],
 }
 
 export const featuredProducts: ProductHubFeaturedProducts = {

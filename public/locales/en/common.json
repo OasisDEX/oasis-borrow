@@ -3489,6 +3489,15 @@
       "protocols": "Protocols",
       "strategies": "Strategies"
     },
+    "tags": {
+      "bluechip-assets": "Bluechip Assets",
+      "gt-1b-tvl": ">1B TVL",
+      "isolated-pairs": "Isolated Pairs",
+      "lower-cost": "Lower Cost",
+      "memecoins": "Memecoins",
+      "non-stablecoin-collateral": "Non-Stablecoin Collateral",
+      "longevity": "Longevity"
+    },
     "banners": {
       "pool-finder": {
         "title": "Looking for a custom pool?",

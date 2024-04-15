@@ -9,7 +9,7 @@ import React from 'react'
 import { doc, plant, relock, sparks_empty } from 'theme/icons'
 import { Flex } from 'theme-ui'
 
-interface ProductHubCategorySelectorControllerProps {
+interface ProductHubCategoryControllerProps {
   selectedFilters: ProductHubFilters
   selectedProduct: OmniProductType
   onChange: (selectedFilters: ProductHubFilters) => void
@@ -22,8 +22,8 @@ const iconsMap = {
   doc,
 }
 
-export const ProductHubCategorySelectorController: FC<
-  ProductHubCategorySelectorControllerProps
+export const ProductHubCategoryController: FC<
+  ProductHubCategoryControllerProps
 > = ({ onChange, selectedFilters, selectedProduct }) => {
   const { t } = useTranslation()
 

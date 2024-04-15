@@ -10,6 +10,7 @@ interface AssetsFiltersContainerProps {
 }
 
 export function AssetsFiltersContainer({
+  children,
   filters,
   isSticky = false,
 }: PropsWithChildren<AssetsFiltersContainerProps>) {
@@ -47,6 +48,7 @@ export function AssetsFiltersContainer({
           {filter}
         </Box>
       ))}
+      {children}
     </Flex>
   )
 }

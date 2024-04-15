@@ -7,7 +7,7 @@ import {
 } from 'features/productHub/components/'
 import {
   ProductHubContentController,
-  ProductHubProductTypeSelectorController,
+  ProductHubProductTypeController,
 } from 'features/productHub/controls'
 import { parseQueryString } from 'features/productHub/helpers'
 import { useProductHubRouter } from 'features/productHub/hooks'
@@ -75,7 +75,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
       >
         {!hiddenProductTypeSelector && (
           <Box sx={{ position: 'relative', mb: [3, null, 5], textAlign: 'center', zIndex: '3' }}>
-            <ProductHubProductTypeSelectorController
+            <ProductHubProductTypeController
               gradient={headerGradient}
               onChange={(_selectedProduct) => {
                 setSelectedProduct(_selectedProduct)

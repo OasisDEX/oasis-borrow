@@ -4,9 +4,10 @@ import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import type { OmniProductType } from 'features/omni-kit/types'
 import {
-  ProductHubCategorySelectorController,
+  ProductHubCategoryController,
   ProductHubFiltersController,
   ProductHubTableController,
+  ProductHubTagsController,
 } from 'features/productHub/controls'
 import {
   filterByProductType,
@@ -111,7 +112,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   return (
     <>
-      <ProductHubCategorySelectorController
+      <ProductHubCategoryController
         onChange={onChange}
         selectedFilters={selectedFilters}
         selectedProduct={selectedProduct}
@@ -122,6 +123,11 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           initialNetwork={initialNetwork}
           initialProtocol={initialProtocol}
           networkId={networkId}
+          onChange={onChange}
+          selectedFilters={selectedFilters}
+          selectedProduct={selectedProduct}
+        />
+        <ProductHubTagsController
           onChange={onChange}
           selectedFilters={selectedFilters}
           selectedProduct={selectedProduct}

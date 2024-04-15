@@ -5,14 +5,14 @@ import type { FC } from 'react'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-interface ProductHubProductTypeSelectorControllerProps {
+interface ProductHubProductTypeControllerProps {
   defaultProduct: OmniProductType
   gradient: [string, string, ...string[]]
   onChange: (product: OmniProductType) => void
 }
 
-export const ProductHubProductTypeSelectorController: FC<
-  ProductHubProductTypeSelectorControllerProps
+export const ProductHubProductTypeController: FC<
+  ProductHubProductTypeControllerProps
 > = ({ gradient, onChange, defaultProduct }) => {
   return (
     <Tabs<OmniProductType>
