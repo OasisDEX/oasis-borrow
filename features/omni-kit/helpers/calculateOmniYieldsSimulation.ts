@@ -60,6 +60,14 @@ export function calculateOmniYieldsSimulation({
         token,
         days: 90,
       }),
+    previous1Year:
+      yields.apy &&
+      getSimulation({
+        amount,
+        annualizedYield: yields.apy,
+        token,
+        days: 365,
+      }),
   }
 }
 
