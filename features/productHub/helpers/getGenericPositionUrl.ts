@@ -1,5 +1,6 @@
 import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
+import dayjs from 'dayjs'
 import { strategies as aaveStrategyList } from 'features/aave'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
@@ -71,6 +72,13 @@ export function getGenericPositionUrl({
   secondaryToken,
   secondaryTokenAddress,
 }: ProductHubItem & { bypassFeatureFlag?: boolean; networkId?: NetworkIds }): string {
+  if (
+    primaryToken === 'WEETH' &&
+    protocol === LendingProtocol.AaveV3 &&
+    !dayjs().isAfter(dayjs.unix(1713099600)) // time when WEETH gets live, whole check to be removed some time after
+  ) {
+    return '/'
+  }
   if (earnStrategy === EarnStrategies.erc_4626) {
     const { id } = erc4626VaultsByName[label]
 

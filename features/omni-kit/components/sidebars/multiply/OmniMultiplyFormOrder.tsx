@@ -134,12 +134,22 @@ export function OmniMultiplyFormOrder() {
       ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice).div(100)
       : undefined
 
-  const oasisFee = swapData
-    ? amountFromWei(
+  let oasisFee = zero
+  if (swapData) {
+    const feeToken =
+      swapData?.collectFeeFrom === 'targetToken' ? swapData.targetToken : swapData.sourceToken
+
+    if (feeToken && 'symbol' in feeToken && 'precision' in feeToken) {
+      const price = feeToken.symbol === collateralToken ? collateralPrice : quotePrice
+
+      oasisFee = amountFromWei(swapData.tokenFee, feeToken.precision).multipliedBy(price)
+    } else {
+      oasisFee = amountFromWei(
         swapData.tokenFee,
         swapData.collectFeeFrom === 'targetToken' ? collateralPrecision : quotePrecision,
       ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? collateralPrice : quotePrice)
-    : zero
+    }
+  }
 
   const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {

@@ -50,6 +50,15 @@ export const productHubSparkRewardsTooltip: ProductHubTooltipType = {
   icon: 'sparks',
 }
 
+export const productHubWeETHRewardsTooltip: ProductHubTooltipType = {
+  content: {
+    description: {
+      key: 'aave-like.product-hub-tooltips.double-etherfi-points',
+    },
+  },
+  icon: 'sparks',
+}
+
 export const productHubAjnaEmptyPoolMaxLtvTooltip: ProductHubTooltipType = {
   content: {
     description: {

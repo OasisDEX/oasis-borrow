@@ -1,8 +1,8 @@
-import { amountFromWei } from 'blockchain/utils'
+// import { amountFromWei } from 'blockchain/utils'
 import { MessageCard } from 'components/MessageCard'
 import type { BaseAaveContext } from 'features/aave/types'
-import { formatCryptoBalance } from 'helpers/formatters/format'
-import { useTranslation } from 'next-i18next'
+// import { formatCryptoBalance } from 'helpers/formatters/format'
+// import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function ErrorMessageCannotDepositDueToProtocolCap({
@@ -11,7 +11,7 @@ export function ErrorMessageCannotDepositDueToProtocolCap({
   context: BaseAaveContext
 }) {
   const { transition, reserveData } = context
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   if (
     !transition ||
     !transition.simulation ||
@@ -21,23 +21,26 @@ export function ErrorMessageCannotDepositDueToProtocolCap({
     return <></>
   }
 
-  const maxSupply = reserveData.collateral.availableToSupply
-  const collateralToken = transition.simulation.position.collateral.symbol
-  const targetPositionCollateral = amountFromWei(
-    transition.simulation.delta.collateral,
-    collateralToken,
-  )
+  // const maxSupply = reserveData.collateral.availableToSupply
+  // const collateralToken = transition.simulation.position.collateral.symbol
+  // const targetPositionCollateral = amountFromWei(
+  //   transition.simulation.delta.collateral,
+  //   collateralToken,
+  // )
 
   const messages: string[] = []
 
-  if (targetPositionCollateral.gt(maxSupply)) {
-    messages.push(
-      t('aave.errors.deposit-amount-exceeds-supply-cap', {
-        cap: formatCryptoBalance(maxSupply),
-        token: collateralToken,
-      }),
-    )
-  }
+  // === WARNING ===
+  // Temporarily skipped because was causing issues during bear market
+  // And incorrectly blocking withdrawal/payback actions for users
+  // if (targetPositionCollateral.gt(maxSupply)) {
+  //   messages.push(
+  //     t('aave.errors.deposit-amount-exceeds-supply-cap', {
+  //       cap: formatCryptoBalance(maxSupply),
+  //       token: collateralToken,
+  //     }),
+  //   )
+  // }
 
   return <MessageCard messages={messages} type={'error'} withBullet={false} />
 }
