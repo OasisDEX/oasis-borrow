@@ -117,7 +117,7 @@ export type ProductHubTags = {
   [key in OmniProductType]: ProductHubTag[]
 }
 
-export interface ProductHubPromoCardFilters {
+export interface ProductHubFeaturedFilters {
   label?: string
   network: ProductHubSupportedNetworks
   primaryToken: string
@@ -127,5 +127,5 @@ export interface ProductHubPromoCardFilters {
 }
 
 export type ProductHubFeaturedProducts = {
-  [key in OmniProductType]?: ProductHubPromoCardFilters[]
+  [key in OmniProductType]?: ProductHubFeaturedFilters[]
 }

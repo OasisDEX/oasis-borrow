@@ -6,13 +6,23 @@ import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { BrandTag } from 'components/BrandTag'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { OmniProductType } from 'features/omni-kit/types'
-import { getGenericPositionUrl, parseProduct } from 'features/productHub/helpers'
-import type { ProductHubColumnKey, ProductHubItem } from 'features/productHub/types'
+import {
+  filterFeaturedProducts,
+  getGenericPositionUrl,
+  parseProduct,
+} from 'features/productHub/helpers'
+import type {
+  ProductHubColumnKey,
+  ProductHubFeaturedFilters,
+  ProductHubItem,
+} from 'features/productHub/types'
 import { omit, upperFirst } from 'lodash'
 import React from 'react'
 
 interface ParseRowsParams {
+  featured?: ProductHubFeaturedFilters[]
   hiddenColumns?: ProductHubColumnKey[]
+  highlighted?: ProductHubFeaturedFilters[]
   networkId?: NetworkIds
   onRowClick?: (row: ProductHubItem) => void
   product: OmniProductType
@@ -20,13 +30,18 @@ interface ParseRowsParams {
 }
 
 export function parseRows({
+  featured = [],
   hiddenColumns,
+  highlighted = [],
   networkId,
   onRowClick,
   product,
   rows,
 }: ParseRowsParams): AssetsTableRowData[] {
-  return rows.map((row, i) => {
+  const featuredRows = filterFeaturedProducts({ filters: featured, rows })
+  const highlightedRows = filterFeaturedProducts({ filters: highlighted, rows })
+
+  return rows.map((row) => {
     const {
       depositToken,
       label,
@@ -45,6 +60,9 @@ export function parseRows({
     const url = getGenericPositionUrl({ ...row, networkId: networkId, product: [product] })
     const isUrlDisabled = url === '/'
 
+    const isFeatured = featuredRows.includes(row)
+    const isHighlighted = highlightedRows.includes(row)
+
     const items = omit(
       {
         [product === OmniProductType.Earn ? 'depositToken' : 'collateralDebt']: (
@@ -54,7 +72,7 @@ export function parseRows({
               icons={icons}
               addon={
                 <>
-                  {i === 2 && <BrandTag sx={{ ml: 2 }}>Featured</BrandTag>}
+                  {isFeatured && <BrandTag sx={{ ml: 2 }}>Featured</BrandTag>}
                   {tooltips?.asset && <AssetsTableTooltip {...tooltips.asset} />}
                 </>
               }
@@ -81,7 +99,7 @@ export function parseRows({
 
     return {
       items,
-      featured: i === 2,
+      isHighlighted,
       ...(onRowClick && {
         onClick: () => onRowClick(row),
       }),

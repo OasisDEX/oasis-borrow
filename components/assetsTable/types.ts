@@ -25,8 +25,8 @@ export interface AssetsTableRowItems {
   [key: string]: AssetsTableCell
 }
 export interface AssetsTableRowData {
+  isHighlighted?: boolean
   items: AssetsTableRowItems
-  featured?: boolean
   onClick?: () => void
 }
 

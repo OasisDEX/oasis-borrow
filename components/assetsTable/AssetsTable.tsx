@@ -354,7 +354,7 @@ export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDa
         textAlign: 'right',
         whiteSpace: 'nowrap',
         verticalAlign,
-        ...(row.featured && {
+        ...(row.isHighlighted && {
           bg: '#fdf4f0',
           borderTop: '1px solid',
           borderBottom: '1px solid',
@@ -364,7 +364,7 @@ export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDa
           textAlign: 'left',
           borderTopLeftRadius: 'medium',
           borderBottomLeftRadius: 'medium',
-          ...(row.featured && {
+          ...(row.isHighlighted && {
             borderLeft: '1px solid',
             borderColor: '#f7ccbd',
           }),
@@ -372,7 +372,7 @@ export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDa
         '&:last-of-type': {
           borderTopRightRadius: 'medium',
           borderBottomRightRadius: 'medium',
-          ...(row.featured && {
+          ...(row.isHighlighted && {
             borderRight: '1px solid',
             borderColor: '#f7ccbd',
           }),

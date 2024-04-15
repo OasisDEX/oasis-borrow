@@ -1,26 +1,20 @@
-import type { OmniProductType } from 'features/omni-kit/types'
-import type { ProductHubItem, ProductHubPromoCardFilters } from 'features/productHub/types'
+import type { ProductHubItem, ProductHubFeaturedFilters } from 'features/productHub/types'
 
 interface FilterFeaturedProductsParams {
-  filters: ProductHubPromoCardFilters[]
-  productType: OmniProductType
+  filters: ProductHubFeaturedFilters[]
   rows: ProductHubItem[]
 }
 
-export function filterFeaturedProducts({
-  filters,
-  productType,
-  rows,
-}: FilterFeaturedProductsParams) {
-  return rows.filter((product) =>
+export function filterFeaturedProducts({ filters, rows }: FilterFeaturedProductsParams) {
+  return rows.filter((row) =>
     filters.some(
       (featured) =>
-        (featured.label ? featured.label === product.label : true) &&
-        product.primaryToken === featured.primaryToken &&
-        product.secondaryToken === featured.secondaryToken &&
-        product.protocol === featured.protocol &&
-        product.network === featured.network &&
-        product.product.includes(productType),
+        (featured.label ? featured.label === row.label : true) &&
+        row.primaryToken === featured.primaryToken &&
+        row.secondaryToken === featured.secondaryToken &&
+        row.protocol === featured.protocol &&
+        row.network === featured.network &&
+        row.product.includes(featured.product),
     ),
   )
 }

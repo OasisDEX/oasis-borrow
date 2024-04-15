@@ -2,6 +2,7 @@ import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OmniProductType } from 'features/omni-kit/types'
+import { featuredProducts } from 'features/productHub/meta'
 import { ProductHubView } from 'features/productHub/views'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import type { GetStaticPaths, GetStaticProps } from 'next'
@@ -19,7 +20,13 @@ function ProductHubPage({ product }: ProductHubPageProps) {
     <AppLayout>
       <WithConnection>
         <AnimatedWrapper sx={{ mb: 5 }}>
-          <ProductHubView product={product} url="/" perPage={20} />
+          <ProductHubView
+            featured={featuredProducts}
+            highlighted={featuredProducts}
+            perPage={20}
+            product={product}
+            url="/"
+          />
         </AnimatedWrapper>
       </WithConnection>
     </AppLayout>

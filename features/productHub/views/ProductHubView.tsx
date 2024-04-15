@@ -13,6 +13,7 @@ import { parseQueryString } from 'features/productHub/helpers'
 import { useProductHubRouter } from 'features/productHub/hooks'
 import type {
   ProductHubColumnKey,
+  ProductHubFeaturedFilters,
   ProductHubFilters,
   ProductHubItem,
 } from 'features/productHub/types'
@@ -25,9 +26,11 @@ import { Box } from 'theme-ui'
 
 interface ProductHubViewProps {
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
+  featured?: ProductHubFeaturedFilters[]
   headerGradient?: [string, string, ...string[]]
   hiddenColumns?: ProductHubColumnKey[]
   hiddenProductTypeSelector?: boolean
+  highlighted?: ProductHubFeaturedFilters[]
   initialFilters?: ProductHubFilters
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
@@ -38,9 +41,11 @@ interface ProductHubViewProps {
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
   dataParser = (_table) => _table,
+  featured,
   headerGradient = ['#007da3', '#e7a77f', '#e97047'],
   hiddenColumns,
   hiddenProductTypeSelector = false,
+  highlighted,
   initialFilters = {},
   limitRows,
   onRowClick,
@@ -101,7 +106,9 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           {() => (
             <>
               <ProductHubContentController
+                featured={featured}
                 hiddenColumns={hiddenColumns}
+                highlighted={highlighted}
                 limitRows={limitRows}
                 networkId={wallet?.chainId}
                 perPage={perPage}

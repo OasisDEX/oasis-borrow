@@ -8,7 +8,6 @@ import { zero } from 'helpers/zero'
 export const getProductEarnNavItems = (productHub: ProductHubItem[]) => {
   return filterFeaturedProducts({
     filters: featuredEarnNavigationProducts,
-    productType: OmniProductType.Earn,
     rows: productHub,
   })
     .map((product) => ({

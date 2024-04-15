@@ -2,7 +2,7 @@ import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/netwo
 import type { GenericMultiselectOption } from 'components/GenericMultiselect'
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { ProductHubCategories, ProductHubTags } from 'features/productHub/types'
+import type { ProductHubCategories, ProductHubFeaturedFilters, ProductHubTags } from 'features/productHub/types'
 import { ProductHubCategory, ProductHubTag } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
@@ -188,3 +188,13 @@ export const productHubTags: ProductHubTags = {
     ProductHubTag.BluechipAssets,
   ],
 }
+
+export const featuredProducts: ProductHubFeaturedFilters[] = [
+  {
+    primaryToken: 'USDC',
+    secondaryToken: 'USDC',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+  },
+]

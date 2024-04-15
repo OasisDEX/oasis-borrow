@@ -18,6 +18,7 @@ import {
 import { useProductHubBanner } from 'features/productHub/hooks'
 import type {
   ProductHubColumnKey,
+  ProductHubFeaturedFilters,
   ProductHubFilters,
   ProductHubItem,
   ProductHubSupportedNetworks,
@@ -27,7 +28,9 @@ import { LendingProtocol } from 'lendingProtocols'
 import React, { type FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
+  featured?: ProductHubFeaturedFilters[]
   hiddenColumns?: ProductHubColumnKey[]
+  highlighted?: ProductHubFeaturedFilters[]
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
   limitRows?: number
@@ -41,7 +44,9 @@ interface ProductHubContentControllerProps {
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
+  featured,
   hiddenColumns,
+  highlighted,
   initialNetwork = [],
   initialProtocol = [],
   limitRows,
@@ -101,13 +106,15 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   const rows = useMemo(
     () =>
       parseRows({
+        featured,
         hiddenColumns,
+        highlighted,
         networkId,
         onRowClick,
         product: selectedProduct,
         rows: dataSortedByDefault,
       }),
-    [dataSortedByDefault, hiddenColumns, networkId, onRowClick, selectedProduct],
+    [dataSortedByDefault, featured, hiddenColumns, networkId, onRowClick, selectedProduct],
   )
 
   return (

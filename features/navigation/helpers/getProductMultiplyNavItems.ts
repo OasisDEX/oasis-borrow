@@ -6,7 +6,6 @@ import type { ProductHubItem } from 'features/productHub/types'
 export const getProductMultiplyNavItems = (productHub: ProductHubItem[]) => {
   return filterFeaturedProducts({
     filters: featuredMultiplyNavigationProducts,
-    productType: OmniProductType.Multiply,
     rows: productHub,
   })
     .map((product) => ({

@@ -1,9 +1,9 @@
 import { NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { ProductHubPromoCardFilters } from 'features/productHub/types'
+import type { ProductHubFeaturedFilters } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const featuredMultiplyNavigationProducts: ProductHubPromoCardFilters[] = [
+export const featuredMultiplyNavigationProducts: ProductHubFeaturedFilters[] = [
   {
     primaryToken: 'WSTETH',
     secondaryToken: 'USDC',
@@ -28,7 +28,7 @@ export const featuredMultiplyNavigationProducts: ProductHubPromoCardFilters[] = 
   },
 ]
 
-export const featuredEarnNavigationProducts: ProductHubPromoCardFilters[] = [
+export const featuredEarnNavigationProducts: ProductHubFeaturedFilters[] = [
   {
     primaryToken: 'USDC',
     secondaryToken: 'USDC',
