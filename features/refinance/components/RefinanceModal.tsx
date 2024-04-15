@@ -10,16 +10,20 @@ import { useRefinanceGeneralContext } from 'features/refinance/contexts/Refinanc
 import { RefinanceFormController } from 'features/refinance/controllers'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useModalContext } from 'helpers/modalHook'
+import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
-import { Flex } from 'theme-ui'
+import { useOnMobile } from 'theme/useBreakpointIndex'
+import { Flex, Text } from 'theme-ui'
 
 interface RefinanceModalProps {
   contextInput: RefinanceContextInput
 }
 
 export const RefinanceModal: FC<RefinanceModalProps> = ({ contextInput }) => {
+  const { t } = useTranslation()
   const { closeModal } = useModalContext()
+  const isMobile = useOnMobile()
 
   const { handleSetContext, handleOnClose, ctx } = useRefinanceGeneralContext()
 
@@ -39,11 +43,15 @@ export const RefinanceModal: FC<RefinanceModalProps> = ({ contextInput }) => {
           <RefinanceContextProvider ctx={_ctx}>
             <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
               <RefinanceHeader onClose={onClose} />
-              <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
-                <RefinancePosition />
-                <RefinanceFormController />
-                <RefinanceSimulation />
-              </Flex>
+              {isMobile ? (
+                <Text variant="paragraph2">{t('refinance.mobile-not-available')}</Text>
+              ) : (
+                <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
+                  <RefinancePosition />
+                  <RefinanceFormController />
+                  <RefinanceSimulation />
+                </Flex>
+              )}
             </Flex>
           </RefinanceContextProvider>
         )}

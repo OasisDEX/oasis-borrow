@@ -16,10 +16,10 @@ import { Flex, Text } from 'theme-ui'
 
 interface HeaderRightSectionProps {
   walletAddress?: string
-  showAbout: boolean
+  showAbout?: boolean
 }
 
-const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress }) => {
+const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress, showAbout }) => {
   const { t } = useTranslation()
 
   return (
@@ -43,36 +43,38 @@ const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress }) => {
           {formatAddress(walletAddress, 6)}
         </Text>
       )}
-      <StatefulTooltip
-        containerSx={{ ml: 1 }}
-        tooltip={<RefinanceAbout withNotice={false} />}
-        tooltipSx={{
-          maxWidth: '365px',
-          px: 2,
-          py: '24px',
-          borderRadius: 'large',
-          border: 'none',
-          top: '55px',
-          right: '50px',
-          zIndex: 3,
-        }}
-      >
-        <Flex
-          sx={{
-            alignItems: 'center',
-            gap: 2,
-            border: '1px solid',
-            borderColor: 'neutral20',
-            p: 2,
-            borderRadius: 'round',
+      {showAbout && (
+        <StatefulTooltip
+          containerSx={{ ml: 1 }}
+          tooltip={<RefinanceAbout withNotice={false} />}
+          tooltipSx={{
+            maxWidth: '365px',
+            px: 2,
+            py: '24px',
+            borderRadius: 'large',
+            border: 'none',
+            top: '55px',
+            right: '50px',
+            zIndex: 3,
           }}
         >
-          <Icon icon={tooltip} />
-          <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: 1 }}>
-            {t('refinance.about.title')}
-          </Text>
-        </Flex>
-      </StatefulTooltip>
+          <Flex
+            sx={{
+              alignItems: 'center',
+              gap: 2,
+              border: '1px solid',
+              borderColor: 'neutral20',
+              p: 2,
+              borderRadius: 'round',
+            }}
+          >
+            <Icon icon={tooltip} />
+            <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: 1 }}>
+              {t('refinance.about.title')}
+            </Text>
+          </Flex>
+        </StatefulTooltip>
+      )}
     </Flex>
   )
 }
@@ -142,7 +144,7 @@ export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
               <ProtocolLabel network={toProtocol.network} protocol={toProtocol.protocol} />
             </>
           )}
-          {isMobile && <HeaderRightSection walletAddress={walletAddress} showAbout />}
+          {isMobile && <HeaderRightSection />}
         </Flex>
       </Flex>
       {!isMobile && <HeaderRightSection walletAddress={walletAddress} showAbout />}
