@@ -8,7 +8,6 @@ import type { GeneralManageVaultState } from 'features/generalManageVault/genera
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { RefinanceModal } from 'features/refinance/components'
-import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { vaultTypeToSDKType } from 'features/refinance/helpers/vaultTypeToSDKType'
 import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
 import { useAppConfig } from 'helpers/config'
@@ -61,7 +60,7 @@ export function GeneralManageLayout({
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
-  const collateralToken = replaceETHWithWETH(vault.token)
+  const collateralToken = vault.token
 
   const contextInput = useMakerRefinanceContextInputs({
     address: account,

@@ -93,8 +93,8 @@ export const useInitializeRefinanceContext = ({
     token: mapTokenToSdkToken(chainInfo, debtTokenSymbol),
   })
 
-  const collateralPrice = tokenPrices[collateralTokenData.token.symbol]
-  const debtPrice = tokenPrices[debtTokenData.token.symbol]
+  const collateralPrice = tokenPrices[collateralTokenSymbol]
+  const debtPrice = tokenPrices[debtTokenSymbol]
 
   const parsedAddress = address as AddressValue
 

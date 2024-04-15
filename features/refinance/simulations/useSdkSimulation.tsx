@@ -1,4 +1,5 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
@@ -38,19 +39,16 @@ export function useSdkSimulation() {
       state: { strategy },
     },
   } = useRefinanceContext()
-
-  if (!positionType) {
-    throw new Error('Unsupported position type.')
-  }
-  if (!strategy) {
-    throw new Error('Strategy is not defined')
-  }
-
-  const emodeType = getEmode(collateralTokenData, debtTokenData)
-
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
+    if (!strategy) {
+      return
+    }
+    if (!positionType) {
+      throw new Error('Unsupported position type.')
+    }
+    const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
       const targetPoolId: SparkPoolId = {
         protocol: {
@@ -91,8 +89,8 @@ export function useSdkSimulation() {
       const _sourcePosition = Position.createFrom({
         positionId,
         pool: sourcePool,
-        collateralAmount: collateralTokenData,
-        debtAmount: debtTokenData,
+        collateralAmount: replaceETHWithWETH(collateralTokenData),
+        debtAmount: replaceETHWithWETH(debtTokenData),
         type: positionType,
       })
       setSourcePosition(_sourcePosition)
@@ -111,14 +109,18 @@ export function useSdkSimulation() {
       const _targetPosition = Position.createFrom({
         positionId: { id: 'newEmptyPositionFromPool' },
         pool: targetPool,
-        collateralAmount: TokenAmount.createFrom({
-          amount: '0',
-          token: mapTokenToSdkToken(chainInfo, strategy.primaryToken),
-        }),
-        debtAmount: TokenAmount.createFrom({
-          amount: '0',
-          token: mapTokenToSdkToken(chainInfo, strategy.secondaryToken),
-        }),
+        collateralAmount: replaceETHWithWETH(
+          TokenAmount.createFrom({
+            amount: '0',
+            token: mapTokenToSdkToken(chainInfo, strategy.primaryToken),
+          }),
+        ),
+        debtAmount: replaceETHWithWETH(
+          TokenAmount.createFrom({
+            amount: '0',
+            token: mapTokenToSdkToken(chainInfo, strategy.secondaryToken),
+          }),
+        ),
         type: positionType,
       })
 
@@ -137,7 +139,7 @@ export function useSdkSimulation() {
     })
   }, [
     sdk,
-    emodeType,
+    strategy,
     slippage,
     collateralPrice,
     debtPrice,

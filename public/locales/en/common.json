@@ -3738,7 +3738,7 @@
     },
     "mobile-not-available": "Refinance is not available on mobile. Please use desktop to Refinance your position.",
     "banner": {
-      "header": "Refinance",
+      "title": "Refinance",
       "description": "Refinance your position to a new one in one go. Move your funds between products becomes a breeze.",
       "button": "Get Started"
     }
