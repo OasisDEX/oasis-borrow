@@ -9,7 +9,7 @@ import {
   TOKENS_STABLE_GROUPS,
 } from 'features/productHub/filterGroups'
 import type { ProductHubItem } from 'features/productHub/types'
-import { ProductHubTag, ProductHubManagementType } from 'features/productHub/types'
+import { ProductHubTag } from 'features/productHub/types'
 
 interface FilterByTagsTags {
   tags: ProductHubTag[]
