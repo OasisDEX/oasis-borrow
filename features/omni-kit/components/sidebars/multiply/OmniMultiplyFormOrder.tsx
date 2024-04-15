@@ -139,7 +139,7 @@ export function OmniMultiplyFormOrder() {
     const feeToken =
       swapData?.collectFeeFrom === 'targetToken' ? swapData.targetToken : swapData.sourceToken
 
-    if ('symbol' in feeToken && 'precision' in feeToken) {
+    if (feeToken && 'symbol' in feeToken && 'precision' in feeToken) {
       const price = feeToken.symbol === collateralToken ? collateralPrice : quotePrice
 
       oasisFee = amountFromWei(swapData.tokenFee, feeToken.precision).multipliedBy(price)
