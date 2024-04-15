@@ -1,6 +1,7 @@
 import { Modal } from 'components/Modal'
 import {
   RefinanceHeader,
+  RefinanceModalSkeleton,
   RefinancePosition,
   RefinanceSimulation,
 } from 'features/refinance/components'
@@ -38,7 +39,10 @@ export const RefinanceModal: FC<RefinanceModalProps> = ({ contextInput }) => {
 
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose}>
-      <WithLoadingIndicator value={[ctx]} customLoader={<>'LOADING'</>}>
+      <WithLoadingIndicator
+        value={[ctx]}
+        customLoader={<RefinanceModalSkeleton onClose={onClose} />}
+      >
         {([_ctx]) => (
           <RefinanceContextProvider ctx={_ctx}>
             <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>

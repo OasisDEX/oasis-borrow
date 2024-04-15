@@ -1,6 +1,6 @@
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
-import { Skeleton } from 'components/Skeleton'
+import { FlowSidebarSkeleton } from 'components/FlowSidebarSkeleton'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -13,7 +13,7 @@ import type {
 } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo } from 'react'
-import { Card, Grid, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import type { SidebarSectionProps } from './sidebar/SidebarSection'
 import { SidebarSection } from './sidebar/SidebarSection'
@@ -123,22 +123,7 @@ export function FlowSidebar({
   }
 
   if (isUiDataLoading) {
-    return (
-      <Card
-        sx={{
-          position: 'relative',
-          py: '28px',
-          px: '24px',
-          border: 'lightMuted',
-          flex: 1,
-        }}
-      >
-        <Skeleton sx={{ mb: 4 }} />
-        <Skeleton height="200px" width="100%" sx={{ mb: 3 }} />
-        <Skeleton height="150px" width="100%" sx={{ mb: 4 }} />
-        <Skeleton height="53px" />
-      </Card>
-    )
+    return <FlowSidebarSkeleton />
   }
 
   if (!isProxyReady && !isAllowanceReady) {
