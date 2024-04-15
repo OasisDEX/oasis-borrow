@@ -39,14 +39,14 @@ export function useSdkSimulation() {
     },
   } = useRefinanceContext()
 
-  const emodeType = getEmode(collateralTokenData, debtTokenData)
-
   if (!positionType) {
     throw new Error('Unsupported position type.')
   }
   if (!strategy) {
     throw new Error('Strategy is not defined')
   }
+
+  const emodeType = getEmode(collateralTokenData, debtTokenData)
 
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
