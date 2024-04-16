@@ -19,13 +19,9 @@ export async function aaveLikeFlowStateFilter({
   networkId: NetworkIds
   positionTriggers?: GetTriggersResponse
 }): Promise<boolean> {
-  const positionTriggersBooleanList =
-    positionTriggers?.triggers &&
-    Object.keys(positionTriggers.triggers).map(
-      (trigger) => positionTriggers.triggers[trigger as keyof GetTriggersResponse['triggers']],
-    )
-
-  if (positionTriggersBooleanList?.some((trigger) => trigger)) {
+  // if theres triggers we should not allow
+  // the user to open a new position with this DPM
+  if (positionTriggers?.triggersCount && positionTriggers.triggersCount !== 0) {
     return Promise.resolve(false)
   }
 
