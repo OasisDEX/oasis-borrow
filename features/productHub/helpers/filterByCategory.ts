@@ -1,5 +1,4 @@
 import {
-  TOKENS_STABLE_GROUPS,
   TOKENS_WITH_RESTAKING,
   TOKENS_WITH_STAKING_REWARDS,
 } from 'features/productHub/filterGroups'
@@ -15,14 +14,7 @@ interface FilterByCategoryParams {
   secondaryTokenGroup: string
 }
 
-export function filterByCategory({
-  category,
-  primaryToken,
-  primaryTokenGroup,
-  row,
-  secondaryToken,
-  secondaryTokenGroup,
-}: FilterByCategoryParams) {
+export function filterByCategory({ category, primaryToken, row }: FilterByCategoryParams) {
   switch (category) {
     case ProductHubCategory.All:
       return true
@@ -33,12 +25,7 @@ export function filterByCategory({
     case ProductHubCategory.Restaking:
       return TOKENS_WITH_RESTAKING.includes(primaryToken)
     case ProductHubCategory.YieldLoops:
-      return (
-        primaryToken !== secondaryToken &&
-        ((!TOKENS_STABLE_GROUPS.includes(primaryTokenGroup) &&
-          !TOKENS_STABLE_GROUPS.includes(secondaryTokenGroup)) ||
-          (TOKENS_STABLE_GROUPS.includes(primaryTokenGroup) &&
-            TOKENS_STABLE_GROUPS.includes(secondaryTokenGroup)))
-      )
+      // TODO: use method that Marcin provides
+      return false
   }
 }
