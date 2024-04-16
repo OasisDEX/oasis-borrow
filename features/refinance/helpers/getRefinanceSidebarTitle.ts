@@ -29,7 +29,7 @@ export const getRefinanceSidebarTitle = ({
         extension: t(`refinance.sidebar.refinance-option.title-extension.${extension}`),
       })
     case RefinanceSidebarStep.Give:
-      return t('migrate.allowance-form.title')
+      return t('migrate.allowance-form.title-short')
     case RefinanceSidebarStep.Changes:
       return t('refinance.sidebar.whats-changing.title')
     default:

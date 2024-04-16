@@ -81,7 +81,9 @@ export function FlowSidebar({
   asUserAction,
   onEverythingReady,
   isUiDataLoading,
+  step,
 }: CreateDPMAccountViewProps) {
+  const { t } = useTranslation()
   const [dpmState, dpmSend] = useActor(internals.dpmMachine)
   const [allowanceState] = useActor(internals.allowanceMachine)
   const allowanceConsidered = !!token && token !== 'ETH' && amount
@@ -123,7 +125,7 @@ export function FlowSidebar({
   }
 
   if (isUiDataLoading) {
-    return <FlowSidebarSkeleton />
+    return <FlowSidebarSkeleton step={step} title={t('dpm.create-flow.welcome-screen.header')} />
   }
 
   if (!isProxyReady && !isAllowanceReady) {
@@ -137,6 +139,7 @@ export function FlowSidebar({
             state={dpmState}
             send={dpmSend}
             backButtonOnFirstStep="back-to-editing"
+            step={step}
           />
         )
       default:
@@ -154,6 +157,7 @@ export function FlowSidebar({
             allowanceMachine={internals.allowanceMachine}
             isLoading={isLoading}
             backButtonOnFirstStep="back-to-editing"
+            step={step}
           />
         )
       default:

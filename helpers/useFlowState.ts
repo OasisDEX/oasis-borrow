@@ -44,6 +44,7 @@ export type UseFlowStateProps = {
   pairId: number
   protocol: LendingProtocol
   token?: string
+  step?: string
 }
 
 export function useFlowState({
@@ -58,6 +59,7 @@ export function useFlowState({
   pairId,
   protocol,
   token,
+  step,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
@@ -294,5 +296,6 @@ export function useFlowState({
     asUserAction,
     onEverythingReady,
     onGoBack,
+    step,
   }
 }

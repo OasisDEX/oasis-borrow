@@ -25,6 +25,7 @@ interface AllowanceViewProps {
   steps?: [number, number]
   isLoading?: boolean
   backButtonOnFirstStep?: boolean | string
+  step?: string
 }
 
 interface AllowanceViewStateProps {
@@ -33,6 +34,7 @@ interface AllowanceViewStateProps {
   steps?: [number, number]
   isLoading?: boolean
   backButtonOnFirstStep?: boolean | string
+  step?: string
 }
 
 function AllowanceInfoStateViewContent({
@@ -123,6 +125,7 @@ function AllowanceInfoStateView({
   steps,
   isLoading,
   backButtonOnFirstStep,
+  step,
 }: AllowanceViewStateProps) {
   const { t } = useTranslation()
 
@@ -144,6 +147,7 @@ function AllowanceInfoStateView({
           label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
         }
       : undefined,
+    step,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
@@ -173,7 +177,7 @@ function AllowanceInProgressStateViewContent({ state }: Pick<AllowanceViewStateP
   )
 }
 
-function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps) {
+function AllowanceInProgressStateView({ state, steps, step }: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const { token } = state.context
   const [transactionState] = useActor(state.context.refTransactionMachine!)
@@ -196,12 +200,13 @@ function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps)
         txHash: txHash!,
       },
     ],
+    step,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStateProps) {
+function AllowanceSuccessStateView({ state, send, steps, step }: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const [transactionState] = useActor(state.context.refTransactionMachine!)
   const { token, minimumAmount, allowanceType, amount, customDecimals } = state.context
@@ -242,12 +247,18 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
         txHash: txHash!,
       },
     ],
+    step,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function AllowanceRetryStateView({ state, send, backButtonOnFirstStep }: AllowanceViewStateProps) {
+function AllowanceRetryStateView({
+  state,
+  send,
+  backButtonOnFirstStep,
+  step,
+}: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const { token, minimumAmount, allowanceType, amount, customDecimals } = state.context
 
@@ -281,6 +292,7 @@ function AllowanceRetryStateView({ state, send, backButtonOnFirstStep }: Allowan
       label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
       action: () => send('BACK'),
     },
+    step,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
@@ -291,6 +303,7 @@ export function AllowanceView({
   steps,
   isLoading,
   backButtonOnFirstStep,
+  step,
 }: AllowanceViewProps) {
   const [state, send] = useActor(allowanceMachine)
 
@@ -303,6 +316,7 @@ export function AllowanceView({
           steps={steps}
           isLoading={isLoading}
           backButtonOnFirstStep={backButtonOnFirstStep}
+          step={step}
         />
       )
     case state.matches('txFailure'):
@@ -312,13 +326,14 @@ export function AllowanceView({
           send={send}
           steps={steps}
           backButtonOnFirstStep={backButtonOnFirstStep}
+          step={step}
         />
       )
     case state.matches('txInProgress'):
     case state.matches('txInProgressEthers'):
-      return <AllowanceInProgressStateView state={state} send={send} steps={steps} />
+      return <AllowanceInProgressStateView state={state} send={send} steps={steps} step={step} />
     case state.matches('txSuccess'):
-      return <AllowanceSuccessStateView state={state} send={send} steps={steps} />
+      return <AllowanceSuccessStateView state={state} send={send} steps={steps} step={step} />
     default:
       return <></>
   }

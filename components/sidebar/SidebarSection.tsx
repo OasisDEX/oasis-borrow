@@ -33,6 +33,8 @@ export function SidebarSection({
   disableMaxHeight,
   withMobilePanel = true,
   cardSx,
+  headerBackButton,
+  step,
 }: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
@@ -54,6 +56,8 @@ export function SidebarSection({
         onSelect={(panel) => {
           setActivePanel(panel)
         }}
+        headerBackButton={headerBackButton}
+        step={step}
       />
       <SidebarSectionContent
         content={content}

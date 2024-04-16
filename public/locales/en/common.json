@@ -3580,6 +3580,7 @@
     },
     "allowance-form": {
       "title": "Approve Summer.fi to access your position",
+      "title-short": "Approve permission",
       "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website.",
       "status": {
         "in-progress": "Giving Summer.fi permission to access your position.",

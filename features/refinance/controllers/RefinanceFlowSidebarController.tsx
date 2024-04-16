@@ -36,6 +36,7 @@ export const RefinanceFlowSidebarController = () => {
       setNextStep()
     },
     onGoBack: () => setStep(RefinanceSidebarStep.Strategy),
+    step: '3/5',
   })
 
   return <FlowSidebar {...flowState} />

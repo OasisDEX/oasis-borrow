@@ -12,6 +12,7 @@ import {
   getRefinanceSidebarPrimaryButtonActions,
   getRefinanceSidebarTitle,
   getRefinanceStatusCopy,
+  getRefinanceStepCounter,
 } from 'features/refinance/helpers'
 import { getRefinanceSidebarButtonsStatus } from 'features/refinance/helpers/getRefinanceSidebarButtonStatus'
 import { useRefinanceTxHandler } from 'features/refinance/hooks'
@@ -166,17 +167,17 @@ export const RefinanceFormView: FC = ({ children }) => {
       withoutNextLink: true,
       ...primaryButtonActions,
     },
-    textButton: {
-      label: t('go-back'),
-      action: textButtonAction,
-      hidden: isTextButtonHidden,
-    },
     status,
     withMobilePanel: false,
     disableMaxHeight: currentStep === RefinanceSidebarStep.Strategy,
     cardSx: {
       height: 'fit-content',
     },
+    headerBackButton: {
+      action: textButtonAction,
+      hidden: isTextButtonHidden,
+    },
+    step: getRefinanceStepCounter({ currentStep }),
   }
 
   return (
