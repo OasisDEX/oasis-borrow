@@ -9,9 +9,9 @@ import { useToggle } from 'helpers/useToggle'
 import { isEqual, keyBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { checkmark, clear_selection } from 'theme/icons'
+import { checkmark, clear_selection, searchIcon } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Button, Flex, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Image, Input, Text } from 'theme-ui'
 import type { FeaturesEnum } from 'types/config'
 
 export interface GenericMultiselectOption {
@@ -36,6 +36,7 @@ export interface GenericMultiselectProps {
     options: string[]
   }[]
   sx?: ThemeUIStyleObject
+  withSearch?: boolean
 }
 
 function GenericMultiselectIcon({
@@ -163,22 +164,20 @@ export function GenericMultiselect({
   initialValues = [],
   label,
   onChange,
-  options,
   optionGroups,
+  options,
   sx,
+  withSearch,
 }: GenericMultiselectProps) {
   const { t } = useTranslation()
 
   const didMountRef = useRef(false)
   const [values, setValues] = useState<string[]>(initialValues)
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
+  const [search, setSearch] = useState<string>('')
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)
   const features = useAppConfig('features')
-
-  const optionsFeatureFlagsArray = options.map((option) =>
-    option.featureFlag ? features[option.featureFlag] : true,
-  )
 
   const matchingOptionsGroup = useMemo(() => {
     return optionGroups?.filter(({ options: _options }) => isEqual(_options, values))?.[0]?.id
@@ -221,6 +220,16 @@ export function GenericMultiselect({
         )
     }
   }, [icon, label, matchingOptionsGroup, optionGroups, options, values])
+
+  const filteredOptions = useMemo(
+    () =>
+      options
+        .filter(({ featureFlag }) => (featureFlag !== undefined ? features[featureFlag] : true))
+        .filter(({ label: _label }) =>
+          search.length ? _label.toLowerCase().includes(search.toLowerCase()) : true,
+        ),
+    [features, options, search],
+  )
 
   useEffect(() => {
     if (didMountRef.current) onChange(values)
@@ -302,12 +311,9 @@ export function GenericMultiselect({
             rowGap: 2,
             maxHeight: fitContents ? 'auto' : '342px',
             pl: 0,
-            pr:
-              scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
-                ? 2
-                : 0,
+            pr: 2,
             overflowX: 'hidden',
-            overflowY: 'auto',
+            overflowY: 'scroll',
             '&::-webkit-scrollbar': {
               width: '6px',
               borderRadius: 'large',
@@ -317,10 +323,7 @@ export function GenericMultiselect({
               borderRadius: 'large',
             },
             '&::-webkit-scrollbar-track': {
-              backgroundColor:
-                scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
-                  ? 'secondary60'
-                  : 'transparent',
+              backgroundColor: 'secondary60',
               borderRadius: 'large',
             },
           }}
@@ -336,8 +339,40 @@ export function GenericMultiselect({
             }}
             value=""
           />
+          {withSearch && (
+            <Box as="li" sx={{ position: 'relative', color: 'neutral80' }}>
+              <Icon
+                icon={searchIcon}
+                size="24px"
+                sx={{ position: 'absolute', top: 3, left: 3, pointerEvens: 'none' }}
+              />
+              <Input
+                type="text"
+                autoComplete="off"
+                placeholder={`${t('search')} ${label.toLowerCase()}`}
+                value={search}
+                variant="text.paragraph3"
+                onChange={(e) => setSearch(e.target.value)}
+                sx={{
+                  height: '46px',
+                  p: 2,
+                  pl: '44px',
+                  color: 'primary100',
+                  border: '1px solid',
+                  borderColor: 'neutral20',
+                  borderRadius: 'medium',
+                  '&:focus': {
+                    outline: 'none',
+                  },
+                  '::placeholder': {
+                    color: 'primary30',
+                  },
+                }}
+              />
+            </Box>
+          )}
           {optionGroups && optionGroups.length > 0 && (
-            <Flex as="li" sx={{ columnGap: 1, my: 2 }}>
+            <Flex as="li" sx={{ columnGap: 1 }}>
               {optionGroups.map(({ id, key, options: _options }) => (
                 <Button
                   key={id}
@@ -345,6 +380,7 @@ export function GenericMultiselect({
                   sx={{
                     flexShrink: 0,
                     px: 3,
+                    whiteSpace: 'nowrap',
                     ...(matchingOptionsGroup === id && {
                       '&, &:hover': {
                         color: 'neutral10',
@@ -358,21 +394,19 @@ export function GenericMultiselect({
                     else setValues(_options)
                   }}
                 >
-                  {t(key)}
+                  {t(key)} ({_options.length})
                 </Button>
               ))}
             </Flex>
           )}
-          {options.map((option, index) =>
-            optionsFeatureFlagsArray[index] ? (
-              <GenericMultiselectItem
-                isSelected={values.includes(option.value)}
-                key={option.value}
-                onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
-                {...option}
-              />
-            ) : null,
-          )}
+          {filteredOptions.map((option) => (
+            <GenericMultiselectItem
+              key={option.value}
+              isSelected={values.includes(option.value)}
+              onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
+              {...option}
+            />
+          ))}
         </Flex>
       </Box>
     </Box>

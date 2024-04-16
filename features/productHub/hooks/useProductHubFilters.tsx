@@ -119,6 +119,7 @@ export const useProductHubFilters = ({
             'collateral-token': value,
           })
         }}
+        withSearch
       />
     ),
     [
@@ -149,6 +150,7 @@ export const useProductHubFilters = ({
             'debt-token': value,
           })
         }}
+        withSearch
       />
     ),
     [debtTokenFilterLabel, debtTokens, selectedFilters, stableDebtTokens],
@@ -177,6 +179,7 @@ export const useProductHubFilters = ({
             'deposit-token': value,
           })
         }}
+        withSearch
       />
     ),
     [depositTokenFilterLabel, depositTokens, selectedFilters],

@@ -1227,6 +1227,7 @@
     "max": "Max transaction cost"
   },
   "notice": "Notice",
+  "search": "Search",
   "soon": "Soon",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
