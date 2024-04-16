@@ -125,7 +125,12 @@ export function FlowSidebar({
   }
 
   if (isUiDataLoading) {
-    return <FlowSidebarSkeleton step={step} title={t('dpm.create-flow.welcome-screen.header')} />
+    return (
+      <FlowSidebarSkeleton
+        step={step}
+        title={t('dpm.create-flow.welcome-screen.searching-header')}
+      />
+    )
   }
 
   if (!isProxyReady && !isAllowanceReady) {
