@@ -2,7 +2,11 @@ import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/netwo
 import type { GenericMultiselectOption } from 'components/GenericMultiselect'
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { ProductHubCategories, ProductHubFeaturedFilters, ProductHubTags } from 'features/productHub/types'
+import type {
+  ProductHubCategories,
+  ProductHubFeaturedFilters,
+  ProductHubTags,
+} from 'features/productHub/types'
 import { ProductHubCategory, ProductHubTag } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
@@ -198,3 +202,24 @@ export const featuredProducts: ProductHubFeaturedFilters[] = [
     product: OmniProductType.Earn,
   },
 ]
+
+export const productHubHelp = {
+  [OmniProductType.Borrow]: [
+    { translationKey: 'how-to-choose-a-protocol', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'selecting-the-right-pair', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'protocol-tradeoffs', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'faq', link: EXTERNAL_LINKS.BLOG.MAIN },
+  ],
+  [OmniProductType.Multiply]: [
+    { translationKey: 'how-to-choose-a-protocol', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'selecting-the-right-pair', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'protocol-tradeoffs', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'faq', link: EXTERNAL_LINKS.BLOG.MAIN },
+  ],
+  [OmniProductType.Earn]: [
+    { translationKey: 'how-to-choose-a-protocol', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'selecting-the-right-pair', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'protocol-tradeoffs', link: EXTERNAL_LINKS.BLOG.MAIN },
+    { translationKey: 'faq', link: EXTERNAL_LINKS.BLOG.MAIN },
+  ],
+}

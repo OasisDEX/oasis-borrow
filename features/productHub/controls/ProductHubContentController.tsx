@@ -21,7 +21,6 @@ import type {
   ProductHubFeaturedFilters,
   ProductHubFilters,
   ProductHubItem,
-  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
@@ -30,9 +29,8 @@ import React, { type FC, useMemo } from 'react'
 interface ProductHubContentControllerProps {
   featured?: ProductHubFeaturedFilters[]
   hiddenColumns?: ProductHubColumnKey[]
+  hiddenHelp?: boolean
   highlighted?: ProductHubFeaturedFilters[]
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
   limitRows?: number
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
@@ -46,9 +44,8 @@ interface ProductHubContentControllerProps {
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
   featured,
   hiddenColumns,
+  hiddenHelp,
   highlighted,
-  initialNetwork = [],
-  initialProtocol = [],
   limitRows,
   networkId,
   onChange,
@@ -127,8 +124,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
       <AssetsTableContainer>
         <ProductHubFiltersController
           data={dataFilteredByProductType}
-          initialNetwork={initialNetwork}
-          initialProtocol={initialProtocol}
+          hiddenHelp={hiddenHelp}
           networkId={networkId}
           onChange={onChange}
           selectedFilters={selectedFilters}

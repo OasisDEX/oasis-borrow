@@ -1,19 +1,17 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { OmniProductType } from 'features/omni-kit/types'
+import { ProductHubHelp } from 'features/productHub/components'
 import { useProductHubFilters } from 'features/productHub/hooks'
 import type {
   ProductHubFilters,
   ProductHubItem,
-  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
-import type { LendingProtocol } from 'lendingProtocols'
 import React, { type FC } from 'react'
 
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
+  hiddenHelp?: boolean
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
@@ -22,8 +20,7 @@ interface ProductHubFiltersControllerProps {
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
   data,
-  initialNetwork = [],
-  initialProtocol = [],
+  hiddenHelp,
   networkId,
   onChange,
   selectedFilters,
@@ -39,8 +36,6 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
     data,
     onChange,
     selectedFilters,
-    initialNetwork,
-    initialProtocol,
     networkId,
   })
 
@@ -54,6 +49,8 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         protocolFilter,
         networkFilter,
       ]}
-    />
+    >
+      {!hiddenHelp && <ProductHubHelp selectedProduct={selectedProduct} />}
+    </AssetsFiltersContainer>
   )
 }

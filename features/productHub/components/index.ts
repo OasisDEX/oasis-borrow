@@ -1,4 +1,5 @@
 export * from './ProductHubAutomations'
+export * from './ProductHubHelp'
 export * from './ProductHubIntro'
 export * from './ProductHubLoadingState'
 export * from './ProductHubViewAll'

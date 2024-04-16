@@ -10,18 +10,14 @@ import {
 import type {
   ProductHubFilters,
   ProductHubItem,
-  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
-import type { LendingProtocol } from 'lendingProtocols'
 import { intersectionWith } from 'lodash'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export interface ProductHubFiltersParams {
   data: ProductHubItem[]
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters

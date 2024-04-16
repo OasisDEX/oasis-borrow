@@ -29,6 +29,7 @@ interface ProductHubViewProps {
   featured?: ProductHubFeaturedFilters[]
   headerGradient?: [string, string, ...string[]]
   hiddenColumns?: ProductHubColumnKey[]
+  hiddenHelp?: boolean
   hiddenProductTypeSelector?: boolean
   highlighted?: ProductHubFeaturedFilters[]
   initialFilters?: ProductHubFilters
@@ -44,6 +45,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   featured,
   headerGradient = ['#007da3', '#e7a77f', '#e97047'],
   hiddenColumns,
+  hiddenHelp,
   hiddenProductTypeSelector = false,
   highlighted,
   initialFilters = {},
@@ -108,6 +110,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               <ProductHubContentController
                 featured={featured}
                 hiddenColumns={hiddenColumns}
+                hiddenHelp={hiddenHelp}
                 highlighted={highlighted}
                 limitRows={limitRows}
                 networkId={wallet?.chainId}

@@ -35,19 +35,28 @@ export function AssetsFiltersContainer({
         zIndex: 2,
       }}
     >
-      {filters.map((filter) => (
-        <Box
-          sx={{
-            flex: ['1', '1 45%', '1'],
-            maxWidth: ['none', null, null, '255px'],
-            '&:last-of-type': {
-              ml: [0, null, null, 'auto'],
-            },
-          }}
-        >
-          {filter}
-        </Box>
-      ))}
+      <Flex
+        sx={{
+          flexDirection: ['column', 'row'],
+          flexWrap: ['wrap', null, 'nowrap'],
+          gap: '12px',
+          flexGrow: 1,
+        }}
+      >
+        {filters.map((filter) => (
+          <Box
+            sx={{
+              flex: ['1', '1 45%', '1'],
+              maxWidth: ['none', null, null, '255px'],
+              '&:last-of-type': {
+                ml: [0, null, null, 'auto'],
+              },
+            }}
+          >
+            {filter}
+          </Box>
+        ))}
+      </Flex>
       {children}
     </Flex>
   )

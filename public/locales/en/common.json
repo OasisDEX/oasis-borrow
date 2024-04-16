@@ -411,6 +411,7 @@
   "from:": "From",
   "full": "Full",
   "heads-up": "Heads up! It can take up to 30 seconds for your Position to update.",
+  "help": "Help",
   "history": {
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
@@ -3523,6 +3524,12 @@
         "description": "Migrate to Summer.fi for benefits like stop loss, one click multiply and automated management.",
         "cta": "View Positions ->"
       }
+    },
+    "help": {
+      "faq": "FAQ",
+      "how-to-choose-a-protocol": "How to choose a protocol",
+      "protocol-tradeoffs": "Protocol tradeoffs",
+      "selecting-the-right-pair": "Selecting the right pair"
     }
   },
   "navigation-network": {
