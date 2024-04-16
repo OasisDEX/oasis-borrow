@@ -14,6 +14,7 @@ import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/r
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
+import { useAppConfig } from 'helpers/config'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useState } from 'react'
 import { type AddressValue, getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
@@ -34,6 +35,8 @@ export const useInitializeRefinanceContext = ({
   contextInput?: RefinanceContextInput
   defaultCtx?: RefinanceContextBase
 }) => {
+  const { RefinanceSafetySwitch: isSafetySwitchEnabled } = useAppConfig('features')
+
   const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
     defaultCtx?.steps.currentStep || steps[0],
   )
@@ -56,7 +59,7 @@ export const useInitializeRefinanceContext = ({
 
     form.updateState('refinanceOption', resetData?.form.state.refinanceOption)
     form.updateState('strategy', resetData?.form.state.strategy)
-    form.updateState('dpmProxy', resetData?.form.state.dpmProxy)
+    form.updateState('dpm', resetData?.form.state.dpm)
   }
 
   if (!contextInput) {
@@ -64,7 +67,7 @@ export const useInitializeRefinanceContext = ({
   }
 
   const {
-    environment: { tokenPrices, chainId, slippage, address },
+    environment: { tokenPrices, chainId, slippage, address, isOwner },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
     position: {
       collateralAmount,
@@ -95,6 +98,7 @@ export const useInitializeRefinanceContext = ({
 
   const collateralPrice = tokenPrices[collateralTokenData.token.symbol]
   const debtPrice = tokenPrices[debtTokenData.token.symbol]
+  const ethPrice = tokenPrices['ETH']
 
   // TODO: validate address
   const parsedAddress = address as AddressValue
@@ -103,9 +107,11 @@ export const useInitializeRefinanceContext = ({
     return {
       currentStep,
       steps,
-      isExternalStep: [RefinanceSidebarStep.Give, RefinanceSidebarStep.Dpm].includes(currentStep),
+      isExternalStep: [RefinanceSidebarStep.Dpm].includes(currentStep),
       isFlowStateReady,
-      isStepWithTransaction: currentStep === RefinanceSidebarStep.Transaction,
+      isStepWithTransaction: [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(
+        currentStep,
+      ),
       setIsFlowStateReady,
       setStep: (step) => setCurrentStep(step),
       setNextStep: () => shiftOmniStep({ direction: 'next', currentStep, steps, setCurrentStep }),
@@ -135,16 +141,19 @@ export const useInitializeRefinanceContext = ({
           formState: form.state,
         }),
       validations: getRefinanceValidations({ state: form.state }),
+      safetySwitch: isSafetySwitchEnabled,
     },
     environment: {
       contextId: contextInput.contextId,
       collateralPrice,
       debtPrice,
+      ethPrice,
       address: parsedAddress,
       chainInfo,
       slippage,
       gasEstimation,
       protocol,
+      isOwner,
     },
     position: {
       collateralTokenData,

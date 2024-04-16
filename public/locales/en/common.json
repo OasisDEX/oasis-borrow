@@ -3580,7 +3580,11 @@
     },
     "allowance-form": {
       "title": "Approve Summer.fi to access your position",
-      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website."
+      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website.",
+      "status": {
+        "in-progress": "Giving Summer.fi permission to access your position.",
+        "success": "All required permissions has been set."
+      }
     },
     "vault-banners": {
       "automation": {
@@ -3722,6 +3726,7 @@
           "switch-to-earn": "switch to earn"
         }
       },
+      "give": {},
       "transaction": {
         "title": {
           "success": "It's Done!",

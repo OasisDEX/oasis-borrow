@@ -69,6 +69,7 @@ export function GeneralManageLayout({
     id: vault.id.toString(),
     slippage: generalManageVault.state.slippage.toNumber(),
     collateralPrice: priceInfo.currentCollateralPrice.toString(),
+    ethPrice: priceInfo.currentEthPrice.toString(), // this should be from market, not oracle
     liquidationPrice: generalManageVault.state.vault.liquidationPrice.toString(),
     borrowRate: generalManageVault.state.ilkData.stabilityFee.toString(),
     ltv: new RiskRatio(
@@ -81,6 +82,9 @@ export function GeneralManageLayout({
     ).loanToValue.toString(),
     ilkType: vault.ilk,
     productType: generalManageVault.type as unknown as OmniProductType,
+    isOwner:
+      generalManageVault.state.vault.controller?.toLowerCase() ===
+      generalManageVault.state.account?.toLowerCase(),
   })
 
   return (

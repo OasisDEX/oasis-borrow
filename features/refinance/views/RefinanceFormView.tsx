@@ -1,13 +1,25 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
+import { getNetworkById, getNetworkByName } from 'blockchain/networks'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { ChangeOwnerSidebar, RefinanceFlowSidebarController } from 'features/refinance/controllers'
-import { getRefinanceNewProductType, getRefinanceSidebarTitle } from 'features/refinance/helpers'
+import { RefinanceFlowSidebarController } from 'features/refinance/controllers'
+import {
+  getRefinanceNewProductType,
+  getRefinancePrimaryButtonLabelKey,
+  getRefinanceSidebarPrimaryButtonActions,
+  getRefinanceSidebarTitle,
+  getRefinanceStatusCopy,
+} from 'features/refinance/helpers'
+import { getRefinanceSidebarButtonsStatus } from 'features/refinance/helpers/getRefinanceSidebarButtonStatus'
+import { useRefinanceTxHandler } from 'features/refinance/hooks'
 import { RefinanceSidebarStep } from 'features/refinance/types'
-import { LendingProtocolLabel } from 'lendingProtocols'
+import { useConnection } from 'features/web3OnBoard/useConnection'
+import { useAppConfig } from 'helpers/config'
+import { getPairIdFromLabel } from 'helpers/getPairIdFromLabel'
+import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -15,51 +27,114 @@ import { Flex, Grid } from 'theme-ui'
 
 export const RefinanceFormView: FC = ({ children }) => {
   const { t } = useTranslation()
+  const { connect, setChain } = useConnection()
+  const { walletAddress, chainId: walletChainId } = useAccount()
+  const { RefinanceSuppressValidation: suppressValidation } = useAppConfig('features')
 
   const {
     metadata: {
       validations: { hasErrors },
+      safetySwitch,
     },
     environment: {
       chainInfo: { chainId },
-      protocol,
+      protocol: currentProtocol,
+      isOwner,
     },
     position: { collateralTokenData, debtTokenData, productType: currentType },
-    tx: { isTxSuccess, isTxInProgress, txDetails },
+    tx: { isTxSuccess, isTxInProgress, txDetails, setTxDetails, isTxWaitingForApproval, isTxError },
     form: {
-      state: { refinanceOption },
+      state: { refinanceOption, strategy, dpm },
       updateState,
     },
-    steps: { currentStep, isExternalStep, setStep, setNextStep, setPrevStep },
+    steps: {
+      currentStep,
+      isExternalStep,
+      isStepWithTransaction,
+      setStep,
+      setNextStep,
+      setPrevStep,
+    },
   } = useRefinanceContext()
 
-  const isPrimaryButtonLoading = isTxInProgress
-  const isPrimaryButtonHidden = [
-    RefinanceSidebarStep.Option,
-    RefinanceSidebarStep.Strategy,
-  ].includes(currentStep)
-  const isTextButtonHidden = currentStep === RefinanceSidebarStep.Option
+  const txHandler = useRefinanceTxHandler()
 
-  const suppressValidation = false
-  const isPrimaryButtonDisabled = hasErrors
-  const primaryButtonLabel = t('confirm')
+  const shouldSwitchNetwork = chainId !== walletChainId
+
+  const primaryButtonLabel = getRefinancePrimaryButtonLabelKey({
+    currentStep,
+    isTxSuccess,
+    isTxError,
+    walletAddress,
+    shouldSwitchNetwork,
+  })
   const sidebarTitle = getRefinanceSidebarTitle({ currentStep, t, option: refinanceOption })
+
   const textButtonAction = () => {
-    if (currentStep === RefinanceSidebarStep.Changes) {
+    if ([RefinanceSidebarStep.Changes, RefinanceSidebarStep.Give].includes(currentStep)) {
       updateState('strategy', undefined)
+      setTxDetails(undefined)
       setStep(RefinanceSidebarStep.Strategy)
     } else {
       setPrevStep()
     }
   }
-  const primaryButtonActions = {
-    // eslint-disable-next-line no-console
-    action: () => console.log('click'),
-  }
+
+  const {
+    isPrimaryButtonLoading,
+    isPrimaryButtonDisabled,
+    isPrimaryButtonHidden,
+    isTextButtonHidden,
+  } = getRefinanceSidebarButtonsStatus({
+    currentStep,
+    hasErrors,
+    isOwner,
+    isSimulationLoading: false, // to potentially use loading state from simulation hook
+    isTxInProgress,
+    isTxSuccess,
+    isTxWaitingForApproval,
+    safetySwitch,
+    shouldSwitchNetwork,
+    walletAddress,
+    suppressValidation,
+  })
 
   const productType = refinanceOption
     ? getRefinanceNewProductType({ currentType, refinanceOption })
     : currentType
+
+  const currentNetwork = getNetworkById(chainId)
+  const network = getNetworkByName(strategy?.network || currentNetwork.name)
+  const protocol = strategy?.protocol || currentProtocol
+
+  const primaryButtonActions = getRefinanceSidebarPrimaryButtonActions({
+    collateralAddress: strategy?.primaryTokenAddress || collateralTokenData.token.address.value,
+    collateralToken: strategy?.primaryToken || collateralTokenData.token.symbol,
+    currentStep,
+    editingStep: RefinanceSidebarStep.Option,
+    isStepWithTransaction,
+    isTxSuccess,
+    label: strategy?.label,
+    network,
+    onDefault: setNextStep,
+    onDisconnected: connect,
+    onSelectTransition: txHandler,
+    onUpdated: () => {
+      if (currentStep === RefinanceSidebarStep.Give) {
+        setTxDetails(undefined)
+        setNextStep()
+      }
+    },
+    onSwitchNetwork: () => setChain(`0x${chainId}`),
+    pairId: getPairIdFromLabel(strategy?.label),
+    productType,
+    protocol,
+    quoteAddress: strategy?.secondaryTokenAddress || debtTokenData.token.address.value,
+    quoteToken: strategy?.secondaryToken || debtTokenData.token.symbol,
+    shouldSwitchNetwork,
+    openFlowResolvedDpmId: dpm?.id,
+    walletAddress,
+  })
 
   const contracts = getNetworkContracts(chainId as NetworkIds)
 
@@ -68,17 +143,15 @@ export const RefinanceFormView: FC = ({ children }) => {
     etherscanName: contracts && 'etherscan' in contracts ? contracts.etherscan.name : undefined,
     isTxInProgress,
     isTxSuccess,
-    text: t(
-      isTxSuccess
-        ? `omni-kit.form.transaction.success-${'open'}`
-        : `omni-kit.form.transaction.progress-${'open'}`,
-      {
-        collateralToken: collateralTokenData.token,
-        quoteToken: debtTokenData.token,
-        productType,
-        protocol: LendingProtocolLabel[protocol],
-      },
-    ),
+    text: getRefinanceStatusCopy({
+      currentStep,
+      protocol,
+      collateralToken: collateralTokenData.token.symbol,
+      quoteToken: debtTokenData.token.symbol,
+      productType,
+      isTxSuccess,
+      t,
+    }),
     txDetails,
   })
 
@@ -87,7 +160,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
       label: t(primaryButtonLabel),
-      disabled: suppressValidation || isTxSuccess ? false : isPrimaryButtonDisabled,
+      disabled: isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
       withoutNextLink: true,
@@ -96,16 +169,14 @@ export const RefinanceFormView: FC = ({ children }) => {
     textButton: {
       label: t('go-back'),
       action: textButtonAction,
-      hidden: isTxInProgress || isTxSuccess || isTextButtonHidden,
+      hidden: isTextButtonHidden,
     },
     status,
     withMobilePanel: false,
     disableMaxHeight: currentStep === RefinanceSidebarStep.Strategy,
-  }
-
-  const changeOwnerProps = {
-    textButtonAction: () => setStep(RefinanceSidebarStep.Strategy),
-    onEverythingReady: () => setNextStep(),
+    cardSx: {
+      height: 'fit-content',
+    },
   }
 
   return (
@@ -113,12 +184,7 @@ export const RefinanceFormView: FC = ({ children }) => {
       {!isExternalStep ? (
         <SidebarSection {...sidebarSectionProps} />
       ) : (
-        <>
-          {currentStep === RefinanceSidebarStep.Dpm && <RefinanceFlowSidebarController />}
-          {currentStep === RefinanceSidebarStep.Give && (
-            <ChangeOwnerSidebar {...changeOwnerProps} />
-          )}
-        </>
+        <>{currentStep === RefinanceSidebarStep.Dpm && <RefinanceFlowSidebarController />}</>
       )}
     </Flex>
   )

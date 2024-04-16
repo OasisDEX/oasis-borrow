@@ -17,6 +17,7 @@ export const getRefinancePortfolioContextInput = ({
   secondaryToken,
   collateralPrice,
   debtPrice,
+  ethPrice,
   poolId,
   pairId,
   network,
@@ -31,12 +32,14 @@ export const getRefinancePortfolioContextInput = ({
   contextId,
   positionId,
   productType,
+  isOwner,
 }: {
   borrowRate: string
   primaryToken: string
   secondaryToken: string
   collateralPrice: string
   debtPrice: string
+  ethPrice: string
   poolId: MakerPoolId | SparkPoolId
   pairId: number
   network: NetworkNames
@@ -51,6 +54,7 @@ export const getRefinancePortfolioContextInput = ({
   contextId: string
   positionId: string | number
   productType: OmniProductType
+  isOwner: boolean
 }): RefinanceContextInput => {
   const protocol = {
     [ProtocolName.Spark]: LendingProtocol.SparkV3,
@@ -74,10 +78,12 @@ export const getRefinancePortfolioContextInput = ({
       tokenPrices: {
         [primaryToken]: collateralPrice,
         [secondaryToken]: debtPrice,
+        ETH: ethPrice,
       },
       chainId: networkNameToIdMap[network],
       slippage,
       address,
+      isOwner,
     },
     position: {
       productType,

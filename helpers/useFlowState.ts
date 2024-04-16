@@ -32,7 +32,10 @@ export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 export type UseFlowStateProps = {
   allowanceAmount?: BigNumber
   amount?: BigNumber
-  existingProxy?: string
+  existingProxy?: {
+    address: string
+    id: string
+  }
   filterConsumedProxy?: (events: PositionFromUrl[]) => Promise<boolean>
   networkId: OmniSupportedNetworkIds
   onEverythingReady?: UseFlowStateCBType
@@ -60,7 +63,7 @@ export function useFlowState({
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
-  const [availableProxies, setAvailableProxies] = useState<string[]>(
+  const [availableProxies, setAvailableProxies] = useState<{ address: string; id: string }[]>(
     existingProxy ? [existingProxy] : [],
   )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
@@ -98,7 +101,7 @@ export function useFlowState({
     error: undefined,
   }
 
-  const spender = availableProxies[0] // probably needs further thoguht
+  const spender = availableProxies[0]?.address // probably needs further thoguht
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
@@ -120,11 +123,14 @@ export function useFlowState({
       if (
         value === 'txSuccess' &&
         context.result?.proxy &&
-        !availableProxies?.includes(context.result?.proxy) &&
+        !availableProxies?.find((item) => item.address === context.result?.proxy) &&
         event.type === 'CONTINUE'
       ) {
         setAsUserAction(true)
-        setAvailableProxies([...(availableProxies || []), context.result.proxy])
+        setAvailableProxies([
+          ...(availableProxies || []),
+          { address: context.result.proxy, id: context.result.vaultId },
+        ])
       }
     })
     return () => {
@@ -180,7 +186,12 @@ export function useFlowState({
       const filteredAndSortedproxiesList = (
         filteredProxiesList.filter(Boolean) as typeof userProxyEventsList
       ).sort((aproxy, bproxy) => Number(aproxy.proxyId) - Number(bproxy.proxyId))
-      setAvailableProxies(filteredAndSortedproxiesList.map(({ proxyAddress }) => proxyAddress))
+      setAvailableProxies(
+        filteredAndSortedproxiesList.map(({ proxyAddress, proxyId }) => ({
+          address: proxyAddress,
+          id: proxyId,
+        })),
+      )
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()
@@ -199,7 +210,7 @@ export function useFlowState({
 
   // allowance machine
   useEffect(() => {
-    if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
+    if (!isProxyReady || !spender || !allDefined(walletAddress, amount, token)) return
     if (token === 'ETH') {
       setLoading(false)
       setUiDataLoading(false)

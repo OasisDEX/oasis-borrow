@@ -32,6 +32,7 @@ export type PortfolioPosition = {
     debt: string
     collateralPrice: string
     debtPrice: string
+    ethPrice: string
     liquidationPrice: string
     ltv: string
     maxLtv: string

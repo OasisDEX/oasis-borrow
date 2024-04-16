@@ -95,14 +95,13 @@ export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
       debtTokenData,
       collateralTokenData,
     },
-    environment: { address },
     form: {
-      state: { strategy, dpmProxy },
+      state: { strategy, dpm },
     },
   } = ctx
 
   // use refinance context to eventually get this data
-  const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol, walletAddress } = {
+  const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol } = {
     primaryToken: collateralTokenData.token.symbol,
     secondaryToken: debtTokenData.token.symbol,
     positionId: id,
@@ -118,14 +117,17 @@ export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
           },
         }
       : {}),
-    walletAddress: address,
   }
 
   return (
     <Flex
       sx={{ justifyContent: 'space-between', mb: '24px' }}
-      // eslint-disable-next-line no-console
-      onClick={() => console.log(`DPM proxy to be used: ${dpmProxy?.toLowerCase()}`)}
+      onClick={() =>
+        // eslint-disable-next-line no-console
+        console.log(
+          `DPM proxy to be used: ${dpm?.address?.toLowerCase()}. Id: ${dpm?.id?.toLowerCase()}`,
+        )
+      }
     >
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: [3, 0] }}>
         <Text as="h2" sx={{ fontSize: 4, fontWeight: 'semiBold', ml: 2 }}>
@@ -147,7 +149,7 @@ export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
           {isMobile && <HeaderRightSection />}
         </Flex>
       </Flex>
-      {!isMobile && <HeaderRightSection walletAddress={walletAddress} showAbout />}
+      {!isMobile && <HeaderRightSection showAbout />}
       <ModalCloseIcon close={onClose} sx={{ top: '19px' }} />
     </Flex>
   )

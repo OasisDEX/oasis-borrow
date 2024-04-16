@@ -114,7 +114,7 @@ export function OmniFormView({
     pairId,
     protocol,
     networkId,
-    ...(dpmProxy && { existingProxy: dpmProxy }),
+    ...(dpmProxy && positionId && { existingProxy: { address: dpmProxy, id: positionId } }),
     ...getOmniFlowStateConfig({
       protocol,
       collateralToken,
@@ -308,7 +308,7 @@ export function OmniFormView({
     dispatch({
       type: 'update-dpm',
       dpmAddress: flowState.availableProxies.length
-        ? flowState.availableProxies[0]
+        ? flowState.availableProxies[0].address
         : ethers.constants.AddressZero,
     })
   }, [flowState.availableProxies])

@@ -32,7 +32,7 @@ export const RefinanceFlowSidebarController = () => {
       updateState('hasSimilarPosition', !!filteredEvents.length)
     },
     onEverythingReady: (data) => {
-      updateState('dpmProxy', data.availableProxies[0])
+      updateState('dpm', data.availableProxies[0])
       setNextStep()
     },
     onGoBack: () => setStep(RefinanceSidebarStep.Strategy),

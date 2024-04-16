@@ -56,6 +56,7 @@ export type RefinanceContextInput = {
     chainId: number
     slippage: number
     address?: string
+    isOwner: boolean
   }
   position: {
     positionId: PositionId
@@ -75,11 +76,13 @@ export type RefinanceContextBase = {
     contextId: string
     collateralPrice: string
     debtPrice: string
+    ethPrice: string
     address?: AddressValue
     chainInfo: ChainInfo
     slippage: number
     protocol: LendingProtocol
     gasEstimation: GasEstimationContext | undefined
+    isOwner: boolean
   }
   position: {
     positionId: PositionId
@@ -99,6 +102,7 @@ export type RefinanceContextBase = {
   metadata: {
     flowStateFilter: (params: OmniFiltersParameters) => Promise<boolean>
     validations: OmniValidations
+    safetySwitch: boolean
   }
   automations: RefinanceContextInputAutomations
   form: ReturnType<typeof useRefinanceFormReducto>
