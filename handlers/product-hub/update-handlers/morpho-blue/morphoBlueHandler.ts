@@ -13,7 +13,7 @@ import { morphoMarkets, settings } from 'features/omni-kit/protocols/morpho-blue
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { type ProductHubSupportedNetworks } from 'features/productHub/types'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
+import { getTokenGroup, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
 import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
@@ -122,6 +122,10 @@ async function getMorphoMarketData(
               secondaryTokenAddress,
               multiplyStrategy,
               multiplyStrategyType,
+              automationFeatures: mapOmniToProductHubAutomations({
+                networkId,
+                omniAutomations: settings.availableAutomations,
+              }),
             },
           ],
           warnings: [],

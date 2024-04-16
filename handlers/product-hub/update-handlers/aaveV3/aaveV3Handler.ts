@@ -3,14 +3,16 @@ import BigNumber from 'bignumber.js'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
 import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, networksByName } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
+import { settingsV3 } from 'features/omni-kit/protocols/aave/settings'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types';
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
-import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
+import { aaveLikeAprToApy, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -174,6 +176,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards: product.hasRewards ?? false,
+          automationFeatures: mapOmniToProductHubAutomations({
+            networkId: networksByName[product.network].id as OmniSupportedNetworkIds,
+            omniAutomations: settingsV3.availableAutomations,
+          }),
         }
       }),
       warnings: [],

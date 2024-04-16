@@ -14,7 +14,7 @@ import {
   isPoolSupportingMultiply,
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import { settings as ajnaSettings, settings } from 'features/omni-kit/protocols/ajna/settings'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
   productHubAjnaEmptyPoolMaxLtvTooltip,
@@ -24,7 +24,7 @@ import {
   productHubAjnaRewardsTooltip,
 } from 'features/productHub/content'
 import type { ProductHubSupportedNetworks } from 'features/productHub/types'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
+import { getTokenGroup, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
 import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
@@ -176,6 +176,10 @@ async function getAjnaPoolData(
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
+                automationFeatures: mapOmniToProductHubAutomations({
+                  networkId,
+                  omniAutomations: settings.availableAutomations,
+                }),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
                     fee: productHubAjnaRewardsTooltip,

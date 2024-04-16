@@ -15,6 +15,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { getRandomString } from 'helpers/getRandomString'
 import { scrollTo } from 'helpers/scrollTo'
 import { kebabCase } from 'lodash'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { question_o } from 'theme/icons'
@@ -111,7 +112,7 @@ export function AssetsTable({
         as="table"
         sx={{
           width: '100%',
-          borderSpacing: paddless ? '0' : '0 8px',
+          borderSpacing: paddless ? '0' : '0 4px',
         }}
       >
         <Box
@@ -291,14 +292,13 @@ export function AssetsTableHeaderCell({
 }
 
 export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableDataRowProps) {
+  const { push } = useRouter()
   const ref = useRef<HTMLDivElement>(null)
-  const [hasUndisabledButton, setHasUndisabledButton] = useState<boolean>(false)
 
-  useEffect(() => {
-    setHasUndisabledButton(
-      ref.current?.querySelector('.table-action-button:not(:disabled') !== null,
-    )
-  }, [ref])
+  const hasUndisabledButton = useMemo(
+    () => ref.current?.querySelector('.table-action-button:not(:disabled') !== null,
+    [ref],
+  )
 
   return (
     <Box
@@ -308,7 +308,7 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
         position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
-        ...((row.onClick || hasUndisabledButton) && {
+        ...((row.onClick || row.link || hasUndisabledButton) && {
           cursor: 'pointer',
           '&:hover': {
             boxShadow: 'buttonMenu',
@@ -324,13 +324,18 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
               role: 'button',
               onClick: row.onClick,
             }
-          : hasUndisabledButton && {
-              role: 'link',
-              onClick: () => {
-                if (ref.current && ref.current.querySelector('.table-action-button'))
-                  (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
-              },
-            }),
+          : row.link
+            ? {
+                role: 'link',
+                onClick: () => void push(row.link as string),
+              }
+            : hasUndisabledButton && {
+                role: 'link',
+                onClick: () => {
+                  if (ref.current && ref.current.querySelector('.table-action-button'))
+                    (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
+                },
+              }),
       }}
     >
       {rowKeys.map((label, i) => (

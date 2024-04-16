@@ -1,47 +1,45 @@
 import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { auto_buy, auto_sell, stop_loss, take_profit } from 'theme/icons'
+import { auto_buy, auto_sell, constant_multiple, stop_loss, take_profit } from 'theme/icons'
 
-const automationIconMap: Record<keyof PortfolioPosition['automations'], typeof stop_loss> = {
+interface AutomationIconProps {
+  enabled: boolean
+  iconNotActiveBg?: string
+  type: keyof PortfolioPosition['automations']
+}
+
+const automationIconMap: Record<keyof PortfolioPosition['automations'], IconProps['icon']> = {
   autoBuy: auto_buy,
   autoSell: auto_sell,
-  takeProfit: take_profit,
+  constantMultiple: constant_multiple,
   stopLoss: stop_loss,
+  takeProfit: take_profit,
 }
 
 export const AutomationIcon = ({
   enabled,
-  type,
   iconNotActiveBg,
-}: {
-  enabled: boolean
-  type: keyof PortfolioPosition['automations']
-  iconNotActiveBg?: string
-}) => {
-  const { t: tPortfolio } = useTranslation('portfolio')
+  type,
+}: AutomationIconProps) => {
+  const { t } = useTranslation()
+
   return (
     <StatefulTooltip
-      tooltip={tPortfolio(`automation-details.${type}`)}
+      tooltip={t(`product-hub.automation-details.${type}`)}
       containerSx={{
         position: 'relative',
-        backgroundColor: enabled ? 'success100' : iconNotActiveBg || 'secondary60',
+        p: '6px',
+        backgroundColor: enabled ? 'success10' : iconNotActiveBg ?? 'secondary60',
         borderRadius: 'ellipse',
-        transition: 'background-color 200ms, color 200ms',
-        ...(enabled && {
-          '&:hover': {
-            backgroundColor: 'success10',
-            '& path': {
-              color: 'success100',
-            },
-          },
-        }),
+        color: enabled ? 'success100' : 'primary60',
       }}
       tooltipSx={{
-        bottom: '100%',
-        mb: 1,
+        top: '100%',
+        mt: 1,
         fontSize: 1,
         textAlign: 'left',
         border: 'none',
@@ -50,18 +48,7 @@ export const AutomationIcon = ({
         whiteSpace: 'nowrap',
       }}
     >
-      <Icon
-        icon={automationIconMap[type]}
-        size="34px"
-        sx={{
-          display: 'block',
-          p: 2,
-          '& path': {
-            transition: 'color 200ms',
-            color: enabled ? 'white' : 'primary60',
-          },
-        }}
-      />
+      <Icon icon={automationIconMap[type]} size="24px" sx={{ display: 'block' }} />
     </StatefulTooltip>
   )
 }

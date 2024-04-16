@@ -2,6 +2,7 @@
 
 import { RiskRatio } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
+import { AutomationFeature } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
@@ -149,6 +150,13 @@ async function getMakerData(
             maxMultiply: maxMultiple.toString(),
             maxLtv: maxLtv.toString(),
             hasRewards: false,
+            automationFeatures: [
+              AutomationFeature.stopLoss,
+              AutomationFeature.autoBuy,
+              AutomationFeature.autoSell,
+              AutomationFeature.takeProfit,
+              AutomationFeature.constantMultiple,
+            ],
           }
         })
         .filter(Boolean) as ProductHubItem[],

@@ -3504,6 +3504,13 @@
       "non-stablecoin-collateral": "Non-Stablecoin Collateral",
       "stablecoins": "Stablecoins"
     },
+    "automation-details": {
+      "autoBuy": "Auto Buy",
+      "autoSell": "Auto Sell",
+      "constantMultiple": "Constant Multiple",
+      "stopLoss": "Stop-Loss",
+      "takeProfit": "Take Profit"
+    },
     "banners": {
       "pool-finder": {
         "title": "Looking for a custom pool?",

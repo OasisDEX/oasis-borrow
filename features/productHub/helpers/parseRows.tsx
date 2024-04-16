@@ -1,5 +1,4 @@
 import type { NetworkIds } from 'blockchain/networks'
-import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
@@ -16,7 +15,7 @@ import type {
   ProductHubFeaturedFilters,
   ProductHubItem,
 } from 'features/productHub/types'
-import { omit, upperFirst } from 'lodash'
+import { omit } from 'lodash'
 import React from 'react'
 
 interface ParseRowsParams {
@@ -86,13 +85,6 @@ export function parseRows({
             protocol={protocol}
           />
         ),
-        action: (
-          <AssetsTableDataCellAction
-            cta={isUrlDisabled ? 'Coming soon' : upperFirst(product)}
-            link={url}
-            disabled={isUrlDisabled}
-          />
-        ),
       },
       hiddenColumns ?? [],
     )
@@ -100,6 +92,7 @@ export function parseRows({
     return {
       items,
       isHighlighted,
+      ...(!isUrlDisabled && { link: url }),
       ...(onRowClick && {
         onClick: () => onRowClick(row),
       }),

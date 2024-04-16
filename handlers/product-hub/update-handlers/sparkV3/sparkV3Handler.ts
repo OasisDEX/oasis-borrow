@@ -1,7 +1,7 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, networksByName } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
@@ -11,9 +11,11 @@ import {
   getSparkV3ReserveData,
 } from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
+import { settings } from 'features/omni-kit/protocols/spark/settings'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types';
 import { OmniProductType } from 'features/omni-kit/types'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
-import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
+import { aaveLikeAprToApy, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -181,6 +183,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
           hasRewards,
+          automationFeatures: mapOmniToProductHubAutomations({
+            networkId: networksByName[product.network].id as OmniSupportedNetworkIds,
+            omniAutomations: settings.availableAutomations,
+          }),
         }
       }),
       warnings: [],

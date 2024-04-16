@@ -1,3 +1,4 @@
+import type { AutomationFeature } from '@prisma/client';
 import type { NetworkNames } from 'blockchain/networks'
 import type { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip.types'
 import type { OmniProductType } from 'features/omni-kit/types'
@@ -65,6 +66,7 @@ export interface ProductHubItemBasics {
 }
 
 export interface ProductHubItemDetails {
+  automationFeatures?: AutomationFeature[]
   depositToken?: string
   earnStrategy?: EarnStrategies
   earnStrategyDescription?: string

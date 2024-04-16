@@ -27,6 +27,7 @@ export interface AssetsTableRowItems {
 export interface AssetsTableRowData {
   isHighlighted?: boolean
   items: AssetsTableRowItems
+  link?: string
   onClick?: () => void
 }
 
