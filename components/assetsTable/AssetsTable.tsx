@@ -1,5 +1,6 @@
 import { ActionBanner } from 'components/ActionBanner'
 import { AssetsTablePagination } from 'components/assetsTable/AssetsTablePagination'
+import { AssetsTableSeparator } from 'components/assetsTable/AssetsTableSeparator'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import { sortRows } from 'components/assetsTable/helpers/sortRows'
 import type {
@@ -54,6 +55,7 @@ export function AssetsTable({
   paddless,
   perPage,
   rows,
+  separator,
   tooltips = [],
   verticalAlign,
 }: AssetsTableProps) {
@@ -168,6 +170,15 @@ export function AssetsTable({
                   </td>
                 </tr>
               )}
+              {separator &&
+                (page - 1) * (perPage ?? 0) + i + 1 === separator.index &&
+                sortingSettings === undefined && (
+                  <tr>
+                    <td colSpan={Object.keys(row.items).length}>
+                      <AssetsTableSeparator text={separator.text} />
+                    </td>
+                  </tr>
+                )}
             </Fragment>
           ))}
         </Box>

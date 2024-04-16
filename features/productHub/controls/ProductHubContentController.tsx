@@ -2,6 +2,7 @@ import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
+import type { AssetsTableSeparator } from 'components/assetsTable/types'
 import type { OmniProductType } from 'features/omni-kit/types'
 import {
   ProductHubCategoryController,
@@ -38,6 +39,7 @@ interface ProductHubContentControllerProps {
   perPage?: number
   selectedFilters: ProductHubFilters
   selectedProduct: OmniProductType
+  separator?: AssetsTableSeparator
   tableData: ProductHubItem[]
 }
 
@@ -53,6 +55,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   perPage,
   selectedFilters,
   selectedProduct,
+  separator,
   tableData,
 }) => {
   const {
@@ -139,6 +142,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           banner={banner}
           perPage={perPage}
           rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
+          separator={separator}
         />
       </AssetsTableContainer>
     </>

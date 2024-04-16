@@ -1,3 +1,4 @@
+import type { AssetsTableSeparator } from 'components/assetsTable/types'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import type { OmniProductType } from 'features/omni-kit/types'
 import {
@@ -37,6 +38,7 @@ interface ProductHubViewProps {
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
   product: OmniProductType
+  separator?: AssetsTableSeparator
   url?: string
 }
 
@@ -53,6 +55,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   onRowClick,
   perPage,
   product,
+  separator,
   url,
 }) => {
   const { productHub: data } = usePreloadAppDataContext()
@@ -117,6 +120,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 perPage={perPage}
                 selectedFilters={selectedFilters}
                 selectedProduct={selectedProduct}
+                separator={separator}
                 tableData={table}
                 onChange={(_selectedFilters) => {
                   setSelectedFilters(_selectedFilters)

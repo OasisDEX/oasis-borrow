@@ -20,6 +20,10 @@ export interface AssetsTableSortableCell {
 }
 
 export type AssetsTableCell = AssetsTableCellContent | AssetsTableSortableCell
+export interface AssetsTableSeparator {
+  index: number
+  text?: string
+}
 
 export interface AssetsTableRowItems {
   [key: string]: AssetsTableCell
@@ -39,6 +43,7 @@ export interface AssetsTableProps {
   paddless?: boolean
   perPage?: number
   rows: AssetsTableRowData[]
+  separator?: AssetsTableSeparator
   tooltips?: string[]
   verticalAlign?: string
 }
