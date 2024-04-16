@@ -77,10 +77,7 @@ export const getOmniValidations =
       ...lendingValidations.localErrors,
       ...mapSimulationValidation({
         collateralToken,
-        items: simulationErrors.filter(
-          ({ name }) =>
-            !['deposit-amount-exceeds-supply-cap', 'debt-amount-exceeds-borrow-cap'].includes(name),
-        ),
+        items: simulationErrors,
         productType,
         protocol,
         quoteToken,
