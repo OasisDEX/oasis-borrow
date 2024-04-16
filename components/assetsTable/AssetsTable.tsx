@@ -60,33 +60,62 @@ export function AssetsTable({
   verticalAlign,
 }: AssetsTableProps) {
   const [page, setPage] = useState<number>(1)
+  const [rowsWithStickied, setRowsWithStickied] = useState<AssetsTableRowData[]>([])
+  const [rowsWithoutStickied, setRowsWithoutStickied] = useState<AssetsTableRowData[]>([])
   const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
-  const rowKeys = Object.keys(rows[0]?.items ?? [])
-  const totalPages = useMemo(
-    () => (perPage ? Math.ceil(rows.length / perPage) : 1),
-    [rows, perPage],
-  )
+  const [rowKeys, setRowKeys] = useState<string[]>([])
   const container = useRef<HTMLDivElement>(null)
 
-  const sortedRows = useMemo(
-    () => (sortingSettings ? sortRows({ rows, sortingSettings }) : rows),
-    [sortingSettings, rows],
-  )
-
-  const paginatedRows = useMemo(
-    () => (perPage ? sortedRows.slice((page - 1) * perPage, page * perPage) : sortedRows),
-    [page, perPage, sortedRows],
-  )
-
-  const bannerRows = Math.min(paginatedRows.length - 1, 9)
-
   useEffect(() => {
+    const [_rowsWithStickied, _rowsWithoutStickied] = rows.reduce<
+      [AssetsTableRowData[], AssetsTableRowData[]]
+    >(
+      ([withStickied, withoutStickied], current) => [
+        [...withStickied, ...(current.isStickied ? [current] : [])],
+        [...withoutStickied, ...(!current.isStickied ? [current] : [])],
+      ],
+      [[], []],
+    )
+
     setPage(1)
+    setRowKeys(Object.keys(rows[0]?.items ?? []))
+    setRowsWithStickied(_rowsWithStickied)
+    setRowsWithoutStickied(_rowsWithoutStickied)
     setSortingSettings(undefined)
   }, [rows])
   useEffect(() => {
     if ((container.current?.getBoundingClientRect().top ?? 0) < 0) scrollTo('assets-table')()
   }, [page])
+
+  const resolvedPerPage = useMemo(
+    () => (perPage ? perPage - rowsWithStickied.length : perPage),
+    [perPage, rowsWithStickied.length],
+  )
+
+  const totalPages = useMemo(
+    () => (resolvedPerPage ? Math.ceil(rowsWithoutStickied.length / resolvedPerPage) : 1),
+    [resolvedPerPage, rowsWithoutStickied.length],
+  )
+
+  const sortedRows = useMemo(
+    () =>
+      sortingSettings
+        ? sortRows({ rows: rowsWithoutStickied, sortingSettings })
+        : rowsWithoutStickied,
+    [sortingSettings, rowsWithoutStickied],
+  )
+
+  const paginatedRows = useMemo(
+    () => [
+      ...rowsWithStickied,
+      ...(resolvedPerPage
+        ? sortedRows.slice((page - 1) * resolvedPerPage, page * resolvedPerPage)
+        : sortedRows),
+    ],
+    [page, resolvedPerPage, rowsWithStickied, sortedRows],
+  )
+
+  const bannerRows = Math.min(paginatedRows.length - 1, 9)
 
   function onSortHandler(label: string) {
     setPage(1)
@@ -114,7 +143,7 @@ export function AssetsTable({
         as="table"
         sx={{
           width: '100%',
-          borderSpacing: paddless ? '0' : '0 4px',
+          borderSpacing: paddless ? '0' : '0 8px',
         }}
       >
         <Box
@@ -130,11 +159,11 @@ export function AssetsTable({
           <tr>
             {rowKeys.map((label, i) => (
               <AssetsTableHeaderCell
-                key={getRowKey(i, rows[0])}
+                key={getRowKey(i, paginatedRows[0])}
                 first={i === 0}
                 headerTranslationProps={headerTranslationProps}
                 isSortable={
-                  (rows[0].items[label] as AssetsTableSortableCell).sortable !== undefined
+                  (paginatedRows[0].items[label] as AssetsTableSortableCell).sortable !== undefined
                 }
                 isSticky={isSticky}
                 label={label}
@@ -171,7 +200,7 @@ export function AssetsTable({
                 </tr>
               )}
               {separator &&
-                (page - 1) * (perPage ?? 0) + i + 1 === separator.index &&
+                (page - 1) * (resolvedPerPage ?? 0) + i + 1 === separator.index &&
                 sortingSettings === undefined && (
                   <tr>
                     <td colSpan={Object.keys(row.items).length}>
@@ -183,7 +212,7 @@ export function AssetsTable({
           ))}
         </Box>
       </Box>
-      {perPage && totalPages > 1 && (
+      {resolvedPerPage && totalPages > 1 && (
         <AssetsTablePagination
           onNextPage={() => setPage(Math.min(totalPages, page + 1))}
           onPrevPage={() => setPage(Math.max(1, page - 1))}
@@ -395,7 +424,7 @@ export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDa
         },
       }}
     >
-      {(row.items[label] as AssetsTableSortableCell).value || row.items[label]}
+      {(row.items[label] as AssetsTableSortableCell)?.value ?? row.items[label]}
     </Box>
   )
 }

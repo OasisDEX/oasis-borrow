@@ -30,6 +30,7 @@ export interface AssetsTableRowItems {
 }
 export interface AssetsTableRowData {
   isHighlighted?: boolean
+  isStickied?: boolean
   items: AssetsTableRowItems
   link?: string
   onClick?: () => void

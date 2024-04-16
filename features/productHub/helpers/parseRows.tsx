@@ -26,6 +26,7 @@ interface ParseRowsParams {
   onRowClick?: (row: ProductHubItem) => void
   product: OmniProductType
   rows: ProductHubItem[]
+  stickied?: ProductHubFeaturedFilters[]
 }
 
 export function parseRows({
@@ -36,9 +37,11 @@ export function parseRows({
   onRowClick,
   product,
   rows,
+  stickied = [],
 }: ParseRowsParams): AssetsTableRowData[] {
   const featuredRows = filterFeaturedProducts({ filters: featured, rows })
   const highlightedRows = filterFeaturedProducts({ filters: highlighted, rows })
+  const stickiedRows = filterFeaturedProducts({ filters: stickied, rows })
 
   return rows.map((row) => {
     const {
@@ -61,6 +64,7 @@ export function parseRows({
 
     const isFeatured = featuredRows.includes(row)
     const isHighlighted = highlightedRows.includes(row)
+    const isStickied = stickiedRows.includes(row)
 
     const items = omit(
       {
@@ -92,6 +96,7 @@ export function parseRows({
     return {
       items,
       isHighlighted,
+      isStickied,
       ...(!isUrlDisabled && { link: url }),
       ...(onRowClick && {
         onClick: () => onRowClick(row),

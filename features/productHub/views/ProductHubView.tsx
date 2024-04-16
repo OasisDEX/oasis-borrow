@@ -39,6 +39,7 @@ interface ProductHubViewProps {
   perPage?: number
   product: OmniProductType
   separator?: AssetsTableSeparator
+  stickied?: ProductHubFeaturedFilters[]
   url?: string
 }
 
@@ -56,6 +57,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   perPage,
   product,
   separator,
+  stickied,
   url,
 }) => {
   const { productHub: data } = usePreloadAppDataContext()
@@ -117,15 +119,14 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 highlighted={highlighted}
                 limitRows={limitRows}
                 networkId={wallet?.chainId}
+                onChange={(_selectedFilters) => setSelectedFilters(_selectedFilters)}
+                onRowClick={onRowClick}
                 perPage={perPage}
                 selectedFilters={selectedFilters}
                 selectedProduct={selectedProduct}
                 separator={separator}
+                stickied={stickied}
                 tableData={table}
-                onChange={(_selectedFilters) => {
-                  setSelectedFilters(_selectedFilters)
-                }}
-                onRowClick={onRowClick}
               />
               {limitRows && limitRows > 0 && (
                 <ProductHubViewAll query={query} selectedProduct={selectedProduct} />

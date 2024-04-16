@@ -40,6 +40,7 @@ interface ProductHubContentControllerProps {
   selectedFilters: ProductHubFilters
   selectedProduct: OmniProductType
   separator?: AssetsTableSeparator
+  stickied?: ProductHubFeaturedFilters[]
   tableData: ProductHubItem[]
 }
 
@@ -56,6 +57,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedFilters,
   selectedProduct,
   separator,
+  stickied,
   tableData,
 }) => {
   const {
@@ -96,8 +98,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [selectedProduct, dataFilteredByFeatureFlags],
   )
   const dataFilteredByUserFilters = useMemo(
-    () => filterByUserFilters(dataFilteredByProductType, selectedFilters),
-    [dataFilteredByProductType, selectedFilters],
+    () => filterByUserFilters(dataFilteredByProductType, selectedFilters, stickied),
+    [dataFilteredByProductType, selectedFilters, stickied],
   )
   const dataSortedByDefault = useMemo(
     () => sortByDefault(dataFilteredByUserFilters, selectedProduct),
@@ -113,8 +115,18 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         onRowClick,
         product: selectedProduct,
         rows: dataSortedByDefault,
+        stickied,
       }),
-    [dataSortedByDefault, featured, hiddenColumns, networkId, onRowClick, selectedProduct],
+    [
+      dataSortedByDefault,
+      featured,
+      hiddenColumns,
+      highlighted,
+      networkId,
+      onRowClick,
+      selectedProduct,
+      stickied,
+    ],
   )
 
   return (
