@@ -3527,9 +3527,11 @@
     },
     "help": {
       "faq": "FAQ",
-      "how-to-choose-a-protocol": "How to choose a protocol",
+      "how-to-choose-the-right-protocol": "How to choose the right protocol",
       "protocol-tradeoffs": "Protocol tradeoffs",
-      "selecting-the-right-pair": "Selecting the right pair"
+      "selecting-the-right-pair": "Selecting the right pair",
+      "selecting-the-right-position-type": "Selecting the right position type",
+      "understanding-yield-loops": "Understanding Yield Loops"
     }
   },
   "navigation-network": {

@@ -205,21 +205,57 @@ export const featuredProducts: ProductHubFeaturedFilters[] = [
 
 export const productHubHelp = {
   [OmniProductType.Borrow]: [
-    { translationKey: 'how-to-choose-a-protocol', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'selecting-the-right-pair', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'protocol-tradeoffs', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'faq', link: EXTERNAL_LINKS.BLOG.MAIN },
+    {
+      translationKey: 'how-to-choose-the-right-protocol',
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
+    },
+    {
+      translationKey: 'selecting-the-right-pair',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_PAIR,
+    },
+    {
+      translationKey: 'protocol-tradeoffs',
+      link: EXTERNAL_LINKS.BLOG.PROTOCOL_TRADEOFFS,
+    },
+    {
+      translationKey: 'faq',
+      link: EXTERNAL_LINKS.DOCS.FAQ,
+    },
   ],
   [OmniProductType.Multiply]: [
-    { translationKey: 'how-to-choose-a-protocol', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'selecting-the-right-pair', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'protocol-tradeoffs', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'faq', link: EXTERNAL_LINKS.BLOG.MAIN },
+    {
+      translationKey: 'how-to-choose-the-right-protocol',
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
+    },
+    {
+      translationKey: 'selecting-the-right-position-type',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_POSITION_TYPE,
+    },
+    {
+      translationKey: 'protocol-tradeoffs',
+      link: EXTERNAL_LINKS.BLOG.PROTOCOL_TRADEOFFS,
+    },
+    {
+      translationKey: 'faq',
+      link: EXTERNAL_LINKS.DOCS.FAQ,
+    },
   ],
   [OmniProductType.Earn]: [
-    { translationKey: 'how-to-choose-a-protocol', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'selecting-the-right-pair', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'protocol-tradeoffs', link: EXTERNAL_LINKS.BLOG.MAIN },
-    { translationKey: 'faq', link: EXTERNAL_LINKS.BLOG.MAIN },
+    {
+      translationKey: 'how-to-choose-the-right-protocol',
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
+    },
+    {
+      translationKey: 'selecting-the-right-position-type',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_POSITION_TYPE,
+    },
+    {
+      translationKey: 'understanding-yield-loops',
+      link: EXTERNAL_LINKS.BLOG.UNDERSTANDING_YIELD_LOOPS,
+    },
+    {
+      translationKey: 'faq',
+      link: EXTERNAL_LINKS.DOCS.FAQ,
+    },
   ],
 }
