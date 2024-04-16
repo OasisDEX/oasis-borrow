@@ -162,7 +162,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
         flexWrap: 'wrap',
       }}
     >
-      z{content}
+      {content}
       <Button
         variant="textual"
         sx={{ p: 'unset' }}
