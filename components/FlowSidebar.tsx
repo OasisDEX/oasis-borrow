@@ -82,6 +82,7 @@ export function FlowSidebar({
   onEverythingReady,
   isUiDataLoading,
   step,
+  useHeaderBackBtn,
 }: CreateDPMAccountViewProps) {
   const { t } = useTranslation()
   const [dpmState, dpmSend] = useActor(internals.dpmMachine)
@@ -145,6 +146,7 @@ export function FlowSidebar({
             send={dpmSend}
             backButtonOnFirstStep="back-to-editing"
             step={step}
+            useHeaderBackBtn={useHeaderBackBtn}
           />
         )
       default:
@@ -162,6 +164,7 @@ export function FlowSidebar({
             allowanceMachine={internals.allowanceMachine}
             isLoading={isLoading}
             backButtonOnFirstStep="back-to-editing"
+            useHeaderBackBtn={useHeaderBackBtn}
             step={step}
           />
         )

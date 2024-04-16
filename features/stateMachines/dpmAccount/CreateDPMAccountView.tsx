@@ -31,6 +31,7 @@ interface InternalViewsProps {
   send: Sender<DPMAccountStateMachineEvents>
   backButtonOnFirstStep?: boolean | string
   step?: string
+  useHeaderBackBtn?: boolean
 }
 
 function buttonInfoSettings({
@@ -49,8 +50,23 @@ function buttonInfoSettings({
   }
 }
 
-function InfoStateView({ state, send, backButtonOnFirstStep, step }: InternalViewsProps) {
+function InfoStateView({
+  state,
+  send,
+  backButtonOnFirstStep,
+  step,
+  useHeaderBackBtn,
+}: InternalViewsProps) {
   const { t } = useTranslation()
+
+  const secondaryBtn = backButtonOnFirstStep
+    ? {
+        action: () => {
+          send('GO_BACK')
+        },
+        label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
+      }
+    : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('dpm.create-flow.welcome-screen.header'),
@@ -92,14 +108,7 @@ function InfoStateView({ state, send, backButtonOnFirstStep, step }: InternalVie
       disabled: false,
       ...buttonInfoSettings({ state, send }),
     },
-    textButton: backButtonOnFirstStep
-      ? {
-          action: () => {
-            send('GO_BACK')
-          },
-          label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
-        }
-      : undefined,
+    ...(useHeaderBackBtn ? { headerBackButton: secondaryBtn } : { textButton: secondaryBtn }),
     step,
   }
 
@@ -204,6 +213,7 @@ export function CreateDPMAccountViewConsumed({
   send,
   backButtonOnFirstStep,
   step,
+  useHeaderBackBtn,
 }: InternalViewsProps) {
   // proxy component so I can use the below ones outside of the normal xstate flow
   switch (true) {
@@ -215,6 +225,7 @@ export function CreateDPMAccountViewConsumed({
           send={send}
           backButtonOnFirstStep={backButtonOnFirstStep}
           step={step}
+          useHeaderBackBtn={useHeaderBackBtn}
         />
       )
     case state.matches('txInProgress'):

@@ -46,6 +46,7 @@ export function SidebarSection({
         position: 'relative',
         p: 0,
         border: 'lightMuted',
+        width: '100%',
         ...cardSx,
       }}
     >

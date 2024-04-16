@@ -5,6 +5,7 @@ import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useFlowState } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 import React from 'react'
+import { Box } from 'theme-ui'
 
 export const RefinanceFlowSidebarController = () => {
   const {
@@ -37,7 +38,12 @@ export const RefinanceFlowSidebarController = () => {
     },
     onGoBack: () => setStep(RefinanceSidebarStep.Strategy),
     step: '3/5',
+    useHeaderBackBtn: true,
   })
 
-  return <FlowSidebar {...flowState} />
+  return (
+    <Box sx={{ width: '100%' }}>
+      <FlowSidebar {...flowState} />
+    </Box>
+  )
 }

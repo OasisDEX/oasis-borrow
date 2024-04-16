@@ -16,7 +16,7 @@ export interface SidebarSectionHeaderButton {
 
 export interface SidebarSectionHeaderBackButtonProps {
   action: () => void
-  hidden: boolean
+  hidden?: boolean
 }
 
 export interface SidebarSectionHeaderDropdown {

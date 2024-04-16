@@ -45,6 +45,7 @@ export type UseFlowStateProps = {
   protocol: LendingProtocol
   token?: string
   step?: string
+  useHeaderBackBtn?: boolean
 }
 
 export function useFlowState({
@@ -60,6 +61,7 @@ export function useFlowState({
   protocol,
   token,
   step,
+  useHeaderBackBtn,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
@@ -297,5 +299,6 @@ export function useFlowState({
     onEverythingReady,
     onGoBack,
     step,
+    useHeaderBackBtn,
   }
 }

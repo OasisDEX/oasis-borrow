@@ -26,6 +26,7 @@ interface AllowanceViewProps {
   isLoading?: boolean
   backButtonOnFirstStep?: boolean | string
   step?: string
+  useHeaderBackBtn?: boolean
 }
 
 interface AllowanceViewStateProps {
@@ -35,6 +36,7 @@ interface AllowanceViewStateProps {
   isLoading?: boolean
   backButtonOnFirstStep?: boolean | string
   step?: string
+  useHeaderBackBtn?: boolean
 }
 
 function AllowanceInfoStateViewContent({
@@ -126,8 +128,18 @@ function AllowanceInfoStateView({
   isLoading,
   backButtonOnFirstStep,
   step,
+  useHeaderBackBtn,
 }: AllowanceViewStateProps) {
   const { t } = useTranslation()
+
+  const secondaryBtn = backButtonOnFirstStep
+    ? {
+        action: () => {
+          send('BACK')
+        },
+        label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
+      }
+    : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
@@ -139,14 +151,7 @@ function AllowanceInfoStateView({
       label: t('approve-allowance'),
       action: () => send('NEXT_STEP'),
     },
-    textButton: backButtonOnFirstStep
-      ? {
-          action: () => {
-            send('BACK')
-          },
-          label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
-        }
-      : undefined,
+    ...(useHeaderBackBtn ? { headerBackButton: secondaryBtn } : { textButton: secondaryBtn }),
     step,
   }
 
@@ -258,6 +263,7 @@ function AllowanceRetryStateView({
   send,
   backButtonOnFirstStep,
   step,
+  useHeaderBackBtn,
 }: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const { token, minimumAmount, allowanceType, amount, customDecimals } = state.context
@@ -272,6 +278,11 @@ function AllowanceRetryStateView({
   const allowanceAmountInfo = isUnlimited
     ? t('unlimited-allowance')
     : `${formatCryptoBalance(isMinimum ? humanReadableMinimumAmount : amount || zero)} ${token}`
+
+  const secondaryBtn = {
+    label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
+    action: () => send('BACK'),
+  }
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
@@ -288,10 +299,7 @@ function AllowanceRetryStateView({
       label: t('retry-allowance-approval'),
       action: () => send('RETRY'),
     },
-    textButton: {
-      label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
-      action: () => send('BACK'),
-    },
+    ...(useHeaderBackBtn ? { headerBackButton: secondaryBtn } : { textButton: secondaryBtn }),
     step,
   }
 
@@ -304,6 +312,7 @@ export function AllowanceView({
   isLoading,
   backButtonOnFirstStep,
   step,
+  useHeaderBackBtn,
 }: AllowanceViewProps) {
   const [state, send] = useActor(allowanceMachine)
 
@@ -317,6 +326,7 @@ export function AllowanceView({
           isLoading={isLoading}
           backButtonOnFirstStep={backButtonOnFirstStep}
           step={step}
+          useHeaderBackBtn={useHeaderBackBtn}
         />
       )
     case state.matches('txFailure'):
@@ -327,6 +337,7 @@ export function AllowanceView({
           steps={steps}
           backButtonOnFirstStep={backButtonOnFirstStep}
           step={step}
+          useHeaderBackBtn={useHeaderBackBtn}
         />
       )
     case state.matches('txInProgress'):
