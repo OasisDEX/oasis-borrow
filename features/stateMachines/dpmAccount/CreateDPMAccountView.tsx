@@ -30,6 +30,8 @@ interface InternalViewsProps {
   state: StateFrom<DPMAccountStateMachine>
   send: Sender<DPMAccountStateMachineEvents>
   backButtonOnFirstStep?: boolean | string
+  step?: string
+  useHeaderBackBtn?: boolean
 }
 
 function buttonInfoSettings({
@@ -48,8 +50,23 @@ function buttonInfoSettings({
   }
 }
 
-function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProps) {
+function InfoStateView({
+  state,
+  send,
+  backButtonOnFirstStep,
+  step,
+  useHeaderBackBtn,
+}: InternalViewsProps) {
   const { t } = useTranslation()
+
+  const secondaryBtn = backButtonOnFirstStep
+    ? {
+        action: () => {
+          send('GO_BACK')
+        },
+        label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
+      }
+    : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('dpm.create-flow.welcome-screen.header'),
@@ -91,20 +108,14 @@ function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProp
       disabled: false,
       ...buttonInfoSettings({ state, send }),
     },
-    textButton: backButtonOnFirstStep
-      ? {
-          action: () => {
-            send('GO_BACK')
-          },
-          label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
-        }
-      : undefined,
+    ...(useHeaderBackBtn ? { headerBackButton: secondaryBtn } : { textButton: secondaryBtn }),
+    step,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function InProgressView({ state }: InternalViewsProps) {
+function InProgressView({ state, step }: InternalViewsProps) {
   const { t } = useTranslation()
   const [transactionState] = useActor(state.context.refTransactionMachine!)
   const { txHash, etherscanUrl } = transactionState.context
@@ -142,11 +153,12 @@ function InProgressView({ state }: InternalViewsProps) {
         txHash: txHash!,
       },
     ],
+    step,
   }
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function SuccessStateView({ send, state }: InternalViewsProps) {
+function SuccessStateView({ send, state, step }: InternalViewsProps) {
   const { t } = useTranslation()
   const [transactionState] = useActor(state.context.refTransactionMachine!)
   const { txHash, etherscanUrl } = transactionState.context
@@ -185,6 +197,7 @@ function SuccessStateView({ send, state }: InternalViewsProps) {
         txHash: txHash!,
       },
     ],
+    step,
   }
   return <SidebarSection {...sidebarSectionProps} />
 }
@@ -199,19 +212,27 @@ export function CreateDPMAccountViewConsumed({
   state,
   send,
   backButtonOnFirstStep,
+  step,
+  useHeaderBackBtn,
 }: InternalViewsProps) {
   // proxy component so I can use the below ones outside of the normal xstate flow
   switch (true) {
     case state.matches('idle'):
     case state.matches('txFailure'):
       return (
-        <InfoStateView state={state} send={send} backButtonOnFirstStep={backButtonOnFirstStep} />
+        <InfoStateView
+          state={state}
+          send={send}
+          backButtonOnFirstStep={backButtonOnFirstStep}
+          step={step}
+          useHeaderBackBtn={useHeaderBackBtn}
+        />
       )
     case state.matches('txInProgress'):
     case state.matches('txInProgressEthers'):
-      return <InProgressView state={state} send={send} />
+      return <InProgressView state={state} send={send} step={step} />
     case state.matches('txSuccess'):
-      return <SuccessStateView state={state} send={send} />
+      return <SuccessStateView state={state} send={send} step={step} />
     default:
       return <></>
   }

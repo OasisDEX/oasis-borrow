@@ -140,6 +140,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             debt: debt.toString(),
             collateralPrice: collateralPrice.toString(),
             debtPrice: daiPrice.toString(),
+            ethPrice: prices['ETH'].toString(),
             liquidationPrice,
             ltv: riskRatio.loanToValue.toString(),
             maxLtv: maxRiskRatio.loanToValue.toString(),

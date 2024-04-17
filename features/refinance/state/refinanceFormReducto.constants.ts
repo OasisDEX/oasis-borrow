@@ -3,7 +3,7 @@ import type { RefinanceFormState } from 'features/refinance/state/refinanceFormR
 export const refinanceFormReset = {
   refinanceOption: undefined,
   strategy: undefined,
-  dpmProxy: undefined,
+  dpm: undefined,
   hasSimilarPosition: undefined,
 }
 

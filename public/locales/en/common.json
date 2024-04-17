@@ -158,6 +158,7 @@
     "create-flow": {
       "welcome-screen": {
         "header": "Create your Smart DeFi account",
+        "searching-header": "Looking for Smart DeFi account...",
         "create-button": "Create Smart DeFi account",
         "paragraph": "In order to open a position on Summer.fi, you need a Smart DeFi Account. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>.",
         "retry-create-button": "Retry Create Smart DeFi account",
@@ -3580,7 +3581,12 @@
     },
     "allowance-form": {
       "title": "Approve Summer.fi to access your position",
-      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website."
+      "title-short": "Approve permission",
+      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website.",
+      "status": {
+        "in-progress": "Giving Summer.fi permission to access your position.",
+        "success": "All required permissions has been set."
+      }
     },
     "vault-banners": {
       "automation": {
@@ -3722,6 +3728,7 @@
           "switch-to-earn": "switch to earn"
         }
       },
+      "give": {},
       "transaction": {
         "title": {
           "success": "It's Done!",

@@ -20,12 +20,14 @@ export const useMakerRefinanceContextInputs = ({
   id,
   slippage,
   collateralPrice,
+  ethPrice,
   borrowRate,
   liquidationPrice,
   ltv,
   maxLtv,
   ilkType,
   positionType: type,
+  isOwner,
 }: {
   address?: string
   chainId: NetworkIds
@@ -35,11 +37,13 @@ export const useMakerRefinanceContextInputs = ({
   id: string
   slippage: number
   collateralPrice: string
+  ethPrice: string
   liquidationPrice: string
   borrowRate: string
   ltv: string
   maxLtv: string
   ilkType: string
+  isOwner: boolean
   positionType: PositionType
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
@@ -88,6 +92,7 @@ export const useMakerRefinanceContextInputs = ({
     secondaryToken: debtTokenSymbol,
     collateralPrice,
     debtPrice: '1',
+    ethPrice,
     poolId,
     pairId: 1,
     network,
@@ -102,5 +107,6 @@ export const useMakerRefinanceContextInputs = ({
     automations,
     contextId: id,
     positionType: type,
+    isOwner,
   })
 }

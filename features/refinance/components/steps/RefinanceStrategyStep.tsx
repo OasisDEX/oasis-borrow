@@ -72,6 +72,10 @@ export const RefinanceStrategyStep = () => {
             backgroundColor: 'unset',
             margin: 'unset',
             color: 'primary100',
+            '&:hover': {
+              borderColor: 'interactive100',
+              boxShadow: '0px 0px 6px 0px rgba(87, 92, 254, 0.7)',
+            },
           }}
         >
           {t(item.label)}

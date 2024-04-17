@@ -12,6 +12,7 @@ import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { LendingProtocol } from 'lendingProtocols'
+import { useParams } from 'next/navigation'
 import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -81,6 +82,8 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
   const [userSettingsData] = useObservable(userSettings$)
   const { wallet } = useWalletManagement()
 
+  const { address: portfolioAddress } = useParams<{ address: string }>()
+
   const { openModal } = useModalContext()
   const { t: tPortfolio } = useTranslation('portfolio')
   const {
@@ -113,6 +116,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     debt,
     debtPrice,
     liquidationPrice,
+    ethPrice,
   } = position.rawPositionDetails
 
   const refinanceToProtocols = {
@@ -180,6 +184,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
               secondaryToken,
               collateralPrice,
               debtPrice,
+              ethPrice,
               poolId,
               network,
               address: wallet?.address,
@@ -194,6 +199,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
               contextId,
               positionType: omniProductTypeToSDKType(productType),
               pairId,
+              isOwner: wallet?.address.toLowerCase() === portfolioAddress?.toLowerCase(),
             }),
           })
         }}

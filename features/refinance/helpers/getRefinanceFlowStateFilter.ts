@@ -11,6 +11,7 @@ import type {
 } from 'features/omni-kit/types'
 import { getRefinanceNewProductType } from 'features/refinance/helpers'
 import type { RefinanceFormState } from 'features/refinance/state/refinanceFormReducto.types'
+import { getPairIdFromLabel } from 'helpers/getPairIdFromLabel'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const getRefinanceFlowStateFilter = ({
@@ -39,7 +40,7 @@ export const getRefinanceFlowStateFilter = ({
   const collateralAddress = primaryTokenAddress
   const quoteAddress = secondaryTokenAddress
 
-  const pairId = Number(label.split('-')[1] || 1)
+  const pairId = getPairIdFromLabel(label)
 
   switch (protocol) {
     case LendingProtocol.AaveV2:

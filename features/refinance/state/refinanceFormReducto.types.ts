@@ -6,7 +6,10 @@ import type { ReductoActions } from 'helpers/useReducto'
 export interface RefinanceFormState {
   refinanceOption?: RefinanceOptions
   strategy?: ProductHubItem // strip to bare minimum during clean up
-  dpmProxy?: string
+  dpm?: {
+    address: string
+    id: string
+  }
   hasSimilarPosition?: boolean
 }
 

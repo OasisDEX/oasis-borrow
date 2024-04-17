@@ -2,7 +2,7 @@ import { Icon } from 'components/Icon'
 import { MobileSidePanel } from 'components/Modal'
 import React, { useState } from 'react'
 import { edit } from 'theme/icons'
-import { Card } from 'theme-ui'
+import { Card, type ThemeUIStyleObject } from 'theme-ui'
 
 import type { SidebarSectionContentProps } from './SidebarSectionContent'
 import { SidebarSectionContent } from './SidebarSectionContent'
@@ -16,6 +16,7 @@ export interface SidebarSectionProps
     Omit<SidebarSectionContentProps, 'activePanel'>,
     SidebarSectionFooterProps {
   withMobilePanel?: boolean
+  cardSx?: ThemeUIStyleObject
 }
 
 export function SidebarSection({
@@ -31,6 +32,9 @@ export function SidebarSection({
   requireConnection,
   disableMaxHeight,
   withMobilePanel = true,
+  cardSx,
+  headerBackButton,
+  step,
 }: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
@@ -42,6 +46,8 @@ export function SidebarSection({
         position: 'relative',
         p: 0,
         border: 'lightMuted',
+        width: '100%',
+        ...cardSx,
       }}
     >
       <SidebarSectionHeader
@@ -51,6 +57,8 @@ export function SidebarSection({
         onSelect={(panel) => {
           setActivePanel(panel)
         }}
+        headerBackButton={headerBackButton}
+        step={step}
       />
       <SidebarSectionContent
         content={content}

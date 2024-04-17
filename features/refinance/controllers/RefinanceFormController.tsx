@@ -1,4 +1,5 @@
 import {
+  RefinanceGiveStep,
   RefinanceProductTableStep,
   RefinanceStrategyStep,
   RefinanceTransactionStep,
@@ -18,6 +19,7 @@ export const RefinanceFormController = () => {
     <RefinanceFormView>
       {currentStep === RefinanceSidebarStep.Option && <RefinanceStrategyStep />}
       {currentStep === RefinanceSidebarStep.Strategy && <RefinanceProductTableStep />}
+      {currentStep === RefinanceSidebarStep.Give && <RefinanceGiveStep />}
       {currentStep === RefinanceSidebarStep.Changes && <RefinanceWhatsChangingStep />}
       {currentStep === RefinanceSidebarStep.Transaction && <RefinanceTransactionStep />}
     </RefinanceFormView>
