@@ -13,6 +13,7 @@ interface GetMorphoPositionWithPairIdParams {
   pairId: number
 }
 
+// DO NOT USE UNTIL ISSUE WITH CONDITION BELOW WILL BE FIXED
 export function getMorphoPositionWithPairId({
   networkId,
   position,
@@ -29,6 +30,9 @@ export function getMorphoPositionWithPairId({
             ]?.indexOf(
               response.accounts?.[0]?.borrowPositions.find(
                 ({ market: { collateralToken, debtToken } }) =>
+                  // this condition is not enough to pick up the correct market id
+                  // it fails when user has 2 or more positions with the same pair but on different market
+                  // since find method resolves with first matching item
                   collateralToken.address === position.collateralTokenAddress &&
                   debtToken.address === position.debtTokenAddress,
               )?.market.id ?? ADDRESS_ZERO,
