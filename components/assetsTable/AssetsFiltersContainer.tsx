@@ -19,11 +19,13 @@ export function AssetsFiltersContainer({
   return (
     <Flex
       sx={{
+        position: 'relative',
         ...(!isSmallerScreen && {
           position: isSticky ? 'sticky' : 'relative',
           top: 0,
         }),
-        flexDirection: ['column', 'row'],
+        alignItems: ['stretch', null, 'flex-start'],
+        flexDirection: ['column', null, 'row'],
         flexWrap: ['wrap', null, 'nowrap'],
         gap: '12px',
         py: 3,
@@ -37,8 +39,8 @@ export function AssetsFiltersContainer({
     >
       <Flex
         sx={{
-          flexDirection: ['column', 'row'],
-          flexWrap: ['wrap', null, 'nowrap'],
+          flexDirection: ['column', null, 'row'],
+          flexWrap: ['wrap', null, null, 'nowrap'],
           gap: '12px',
           flexGrow: 1,
         }}

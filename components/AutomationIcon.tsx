@@ -25,11 +25,11 @@ export const AutomationIcon = ({
   iconNotActiveBg,
   type,
 }: AutomationIconProps) => {
-  const { t } = useTranslation()
+  const { t: tPortfolio } = useTranslation('portfolio')
 
   return (
     <StatefulTooltip
-      tooltip={t(`product-hub.automation-details.${type}`)}
+    tooltip={tPortfolio(`automation-details.${type}`)}
       containerSx={{
         position: 'relative',
         p: '6px',

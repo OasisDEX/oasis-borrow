@@ -1045,6 +1045,7 @@
   "one-of-some": "{{one}} of {{some}}",
   "onramp-leave-message": "By clicking buy, you will leave Summer.fi and be redirected to a third party website where you will complete the buy process.",
   "open-new-vault": "Open new Vault",
+  "open-position": "Open position",
   "open-vault": {
     "title": "Open Vault",
     "simulate": "Simulate"

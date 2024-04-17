@@ -92,7 +92,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         }}
       >
         {!hiddenProductTypeSelector && (
-          <Box sx={{ position: 'relative', mb: [3, null, 5], textAlign: 'center', zIndex: '3' }}>
+          <Box sx={{ position: 'relative', mb: 5, textAlign: 'center', zIndex: '3' }}>
             <ProductHubProductTypeController
               gradient={headerGradient}
               onChange={(_selectedProduct) => {

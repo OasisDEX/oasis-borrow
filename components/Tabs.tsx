@@ -45,8 +45,24 @@ export function Tabs<T>({
   }, [defaultId])
 
   return (
-    <Flex sx={{ position: 'relative', pb: underlinePadding, ...sx }}>
-      <Flex as="ul" sx={{ m: 0, p: 0, listStyle: 'none', columnGap: gap }}>
+    <Flex
+      sx={{
+        position: 'relative',
+        pb: underlinePadding,
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        ...sx,
+      }}
+    >
+      <Flex
+        as="ul"
+        sx={{
+          m: 0,
+          p: 0,
+          listStyle: 'none',
+          columnGap: [4, gap],
+        }}
+      >
         {items.map(({ content, id }) => (
           <Box
             {...(id === selectedId && { ref })}
@@ -55,7 +71,7 @@ export function Tabs<T>({
               onClick(id)
               setSelectedId(id)
             }}
-            sx={{ position: 'relative', cursor: 'pointer' }}
+            sx={{ flexShrink: '0', position: 'relative', cursor: 'pointer' }}
           >
             {content(id === selectedId)}
           </Box>

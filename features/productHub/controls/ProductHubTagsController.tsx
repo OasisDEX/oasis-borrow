@@ -24,7 +24,8 @@ export const ProductHubTagsController: FC<ProductHubTagsControllerProps> = ({
       as="ul"
       sx={{
         position: 'relative',
-        columnGap: 2,
+        flexWrap: 'wrap',
+        gap: 2,
         m: 0,
         px: 0,
         py: 3,

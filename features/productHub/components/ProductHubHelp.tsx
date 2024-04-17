@@ -1,3 +1,4 @@
+import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import type { OmniProductType } from 'features/omni-kit/types'
@@ -27,6 +28,7 @@ export const ProductHubHelp: FC<ProductHubHelpProps> = ({ selectedProduct }) => 
           display: 'flex',
           alignItems: 'center',
           columnGap: 1,
+          width: ['100%', null, 'auto'],
           height: '56px',
           px: 3,
           border: '1px solid',
@@ -43,6 +45,19 @@ export const ProductHubHelp: FC<ProductHubHelpProps> = ({ selectedProduct }) => 
       >
         <Icon icon={question_o} size="20px" />
         <Text variant="paragraph3">{t('help')}</Text>
+        <ExpandableArrow
+          size={12}
+          direction={isOpen ? 'up' : 'down'}
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: '18px',
+            bottom: 0,
+            display: ['block', null, 'none'],
+            mr: '1px',
+            my: 'auto',
+          }}
+        />
       </Button>
       <Flex
         as="ul"
@@ -52,6 +67,7 @@ export const ProductHubHelp: FC<ProductHubHelpProps> = ({ selectedProduct }) => 
           right: 0,
           flexDirection: 'column',
           rowGap: 3,
+          width: ['100%', null, 'auto'],
           m: 0,
           mt: 1,
           p: 3,
