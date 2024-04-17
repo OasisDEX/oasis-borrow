@@ -36,14 +36,14 @@ export const RefinanceFlowSidebarController = () => {
     onEverythingReady: (data) => {
       // Check if owner is already dpm and use it as dpm for refinance, if not fallback to first available dpm
       const dpm =
-        data.availableProxies.find((item) => item.address.toLowerCase() === owner.toLowerCase()) ||
+        data.availableProxies.find((item) => item.address.toLowerCase() === owner) ||
         data.availableProxies[0]
 
       updateState('dpm', dpm)
 
       // If position owner is dpm that will be used for refinance
       // skip to refinance tx
-      if (dpm.address === owner) {
+      if (dpm.address.toLowerCase() === owner) {
         setStep(RefinanceSidebarStep.Changes)
       } else {
         setNextStep()
