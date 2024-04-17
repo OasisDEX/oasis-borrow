@@ -39,6 +39,7 @@ export const useRefinanceTxHandler = () => {
     setGasEstimation(undefined)
   }, [currentStep])
 
+  // TODO for give tx it should be dsproxy, for refinance tx it should be dpm proxy
   const proxyAddress = '0x6C7eD10997873b59c2B2D9449d9106fE1dD85784' || dpm?.address
 
   useEffect(() => {
