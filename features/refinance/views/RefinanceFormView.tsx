@@ -19,7 +19,6 @@ import { positionTypeToOmniProductType } from 'features/refinance/helpers/positi
 import { useRefinanceTxHandler } from 'features/refinance/hooks'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
-import { useAppConfig } from 'helpers/config'
 import { getPairIdFromLabel } from 'helpers/getPairIdFromLabel'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -31,12 +30,12 @@ export const RefinanceFormView: FC = ({ children }) => {
   const { t } = useTranslation()
   const { connect, setChain } = useConnection()
   const { walletAddress, chainId: walletChainId } = useAccount()
-  const { RefinanceSuppressValidation: suppressValidation } = useAppConfig('features')
 
   const {
     metadata: {
       validations: { hasErrors },
       safetySwitch,
+      suppressValidation,
     },
     environment: {
       chainInfo: { chainId },

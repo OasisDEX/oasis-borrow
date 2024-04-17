@@ -106,6 +106,7 @@ export type RefinanceContextBase = {
     flowStateFilter: (params: OmniFiltersParameters) => Promise<boolean>
     validations: OmniValidations
     safetySwitch: boolean
+    suppressValidation: boolean
   }
   automations: RefinanceContextInputAutomations
   form: ReturnType<typeof useRefinanceFormReducto>

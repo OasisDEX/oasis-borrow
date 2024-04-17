@@ -39,7 +39,10 @@ export const useInitializeRefinanceContext = ({
   ctx: RefinanceContextBase | undefined
   reset: (resetData: RefinanceContextBase) => void
 } => {
-  const { RefinanceSafetySwitch: isSafetySwitchEnabled } = useAppConfig('features')
+  const {
+    RefinanceSafetySwitch: isSafetySwitchEnabled,
+    RefinanceSuppressValidation: isSuppressValidationEnabled,
+  } = useAppConfig('features')
   const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
     defaultCtx?.steps.currentStep || steps[0],
   )
@@ -144,6 +147,7 @@ export const useInitializeRefinanceContext = ({
         }),
       validations: getRefinanceValidations({ state: form.state }),
       safetySwitch: isSafetySwitchEnabled,
+      suppressValidation: isSuppressValidationEnabled,
     },
     environment: {
       contextId: contextInput.contextId,
