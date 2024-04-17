@@ -2,16 +2,16 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { networkNameToIdMap } from 'blockchain/networks'
-import type { OmniProductType } from 'features/omni-kit/types'
 import type {
   RefinanceContextInput,
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
 import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
-import { LendingProtocol } from 'lendingProtocols'
-import { ProtocolName } from 'summerfi-sdk-common'
+import type { PositionType } from 'summerfi-sdk-common'
 
-export const getRefinancePortfolioContextInput = ({
+import { protocolNameToLendingProtocol } from './protocolNameToLendingProtocol'
+
+export const getRefinanceContextInput = ({
   borrowRate,
   primaryToken,
   secondaryToken,
@@ -31,7 +31,7 @@ export const getRefinancePortfolioContextInput = ({
   automations,
   contextId,
   positionId,
-  productType,
+  positionType,
   isOwner,
 }: {
   borrowRate: string
@@ -53,17 +53,10 @@ export const getRefinancePortfolioContextInput = ({
   automations: RefinanceContextInputAutomations
   contextId: string
   positionId: string | number
-  productType: OmniProductType
   isOwner: boolean
+  positionType: PositionType
 }): RefinanceContextInput => {
-  const protocol = {
-    [ProtocolName.Spark]: LendingProtocol.SparkV3,
-    [ProtocolName.Maker]: LendingProtocol.Maker,
-    [ProtocolName.AAVEv2]: LendingProtocol.AaveV2,
-    [ProtocolName.AAVEv3]: LendingProtocol.AaveV3,
-    [ProtocolName.Ajna]: LendingProtocol.Ajna,
-    [ProtocolName.MorphoBlue]: LendingProtocol.MorphoBlue,
-  }[poolId.protocol.name]
+  const lendingProtocol = protocolNameToLendingProtocol(poolId.protocol.name)
 
   return {
     poolData: {
@@ -86,13 +79,13 @@ export const getRefinancePortfolioContextInput = ({
       isOwner,
     },
     position: {
-      productType,
-      protocol,
+      lendingProtocol,
       positionId: { id: positionId.toString() },
       collateralAmount: collateral,
       debtAmount: debt,
       liquidationPrice: liquidationPrice,
       ltv: new RiskRatio(new BigNumber(ltv), RiskRatio.TYPE.LTV),
+      positionType,
     },
     automations: automations,
     contextId,

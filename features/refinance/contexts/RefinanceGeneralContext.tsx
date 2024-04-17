@@ -2,18 +2,21 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
-import type {
-  OmniFiltersParameters,
-  OmniProductType,
-  OmniValidations,
-} from 'features/omni-kit/types'
+import type { OmniFiltersParameters, OmniValidations } from 'features/omni-kit/types'
 import { useInitializeRefinanceContext } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, FC, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
-import type { AddressValue, ChainInfo, IPoolId, PositionId, TokenAmount } from 'summerfi-sdk-common'
+import type {
+  AddressValue,
+  ChainInfo,
+  IPoolId,
+  PositionId,
+  PositionType,
+  TokenAmount,
+} from 'summerfi-sdk-common'
 
 export interface RefinanceSteps {
   currentStep: RefinanceSidebarStep
@@ -64,8 +67,8 @@ export type RefinanceContextInput = {
     debtAmount: string
     liquidationPrice: string
     ltv: RiskRatio
-    protocol: LendingProtocol
-    productType: OmniProductType
+    positionType: PositionType
+    lendingProtocol: LendingProtocol
   }
   automations: RefinanceContextInputAutomations
   contextId: string
@@ -80,7 +83,6 @@ export type RefinanceContextBase = {
     address?: AddressValue
     chainInfo: ChainInfo
     slippage: number
-    protocol: LendingProtocol
     gasEstimation: GasEstimationContext | undefined
     isOwner: boolean
   }
@@ -90,8 +92,9 @@ export type RefinanceContextBase = {
     debtTokenData: TokenAmount
     liquidationPrice: string
     ltv: RiskRatio
-    productType: OmniProductType
+    positionType: PositionType
     isShort: boolean
+    lendingProtocol: LendingProtocol
   }
   poolData: {
     poolId: IPoolId

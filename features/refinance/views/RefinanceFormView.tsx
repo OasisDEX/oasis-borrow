@@ -16,6 +16,7 @@ import {
 } from 'features/refinance/helpers'
 import { getRefinanceSidebarButtonsStatus } from 'features/refinance/helpers/getRefinanceSidebarButtonStatus'
 import { useRefinanceTxHandler } from 'features/refinance/hooks'
+import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
@@ -39,10 +40,9 @@ export const RefinanceFormView: FC = ({ children }) => {
     },
     environment: {
       chainInfo: { chainId },
-      protocol: currentProtocol,
       isOwner,
     },
-    position: { collateralTokenData, debtTokenData, productType: currentType },
+    position: { collateralTokenData, debtTokenData, positionType, lendingProtocol },
     tx: { isTxSuccess, isTxInProgress, txDetails, setTxDetails, isTxWaitingForApproval, isTxError },
     form: {
       state: { refinanceOption, strategy, dpm },
@@ -100,6 +100,11 @@ export const RefinanceFormView: FC = ({ children }) => {
     suppressValidation,
   })
 
+  if (!positionType) {
+    throw new Error('Unsupported position type')
+  }
+  const currentType = positionTypeToOmniProductType(positionType)
+
   const productType = refinanceOption
     ? getRefinanceNewProductType({ currentType, refinanceOption })
     : currentType
@@ -146,7 +151,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     isTxSuccess,
     text: getRefinanceStatusCopy({
       currentStep,
-      protocol,
+      protocol: lendingProtocol,
       collateralToken: collateralTokenData.token.symbol,
       quoteToken: debtTokenData.token.symbol,
       productType,

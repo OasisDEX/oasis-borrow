@@ -1,12 +1,15 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
-import type { OmniProductType } from 'features/omni-kit/types'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
-import { getRefinancePortfolioContextInput } from 'features/refinance/helpers'
+import { getRefinanceContextInput } from 'features/refinance/helpers'
 import type { MakerPoolId } from 'features/refinance/types'
-import type { PositionId } from 'summerfi-sdk-common'
-import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  PositionId,
+  type PositionType,
+  ProtocolName,
+} from 'summerfi-sdk-common'
 
 export const useMakerRefinanceContextInputs = ({
   address,
@@ -23,7 +26,7 @@ export const useMakerRefinanceContextInputs = ({
   ltv,
   maxLtv,
   ilkType,
-  productType,
+  positionType: type,
   isOwner,
 }: {
   address?: string
@@ -40,8 +43,8 @@ export const useMakerRefinanceContextInputs = ({
   ltv: string
   maxLtv: string
   ilkType: string
-  productType: OmniProductType
   isOwner: boolean
+  positionType: PositionType
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 
@@ -50,9 +53,7 @@ export const useMakerRefinanceContextInputs = ({
   if (!chainInfo) {
     throw new Error(`ChainId ${chainId} is not supported`)
   }
-  const positionId: PositionId = {
-    id,
-  }
+  const positionId: PositionId = PositionId.createFrom({ id })
 
   const poolId: MakerPoolId = {
     protocol: {
@@ -85,7 +86,7 @@ export const useMakerRefinanceContextInputs = ({
 
   const network = getNetworkById(chainId).name
 
-  return getRefinancePortfolioContextInput({
+  return getRefinanceContextInput({
     borrowRate,
     primaryToken: collateralTokenSymbol,
     secondaryToken: debtTokenSymbol,
@@ -105,7 +106,7 @@ export const useMakerRefinanceContextInputs = ({
     maxLtv,
     automations,
     contextId: id,
-    productType,
+    positionType: type,
     isOwner,
   })
 }

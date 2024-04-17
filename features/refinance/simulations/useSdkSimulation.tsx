@@ -1,55 +1,55 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { EmodeType, type SparkPoolId } from 'features/refinance/types'
+import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
+import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
+import { type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
-import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
+import { makeSDK } from 'summerfi-sdk-client'
 import type {
+  ILendingPool,
+  IPosition,
   IRefinanceParameters,
-  Position,
-  Simulation,
+  ISimulation,
   SimulationType,
 } from 'summerfi-sdk-common'
 import {
   Address,
   AddressType,
-  CurrencySymbol,
-  getChainInfoByChainId,
   Percentage,
-  Price,
+  Position,
   ProtocolName,
-  RiskRatio,
-  RiskRatioType,
+  TokenAmount,
   Wallet,
 } from 'summerfi-sdk-common'
+
+import { getEmode } from './getEmode'
 
 export function useSdkSimulation() {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
-  const [liquidationPrice, setLiquidationPrice] = useState<null | string>(null)
-  const [sourcePosition, setSourcePosition] = useState<null | Position>(null)
-  const [simulation, setSimulation] = useState<null | Simulation<SimulationType.Refinance>>(null)
+  const [sourcePosition, setSourcePosition] = useState<null | IPosition>(null)
+  const [simulation, setSimulation] = useState<null | ISimulation<SimulationType.Refinance>>(null)
 
   const {
     environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: {
-      positionId,
-      liquidationPrice: _liquidationPrice,
-      collateralTokenData,
-      debtTokenData,
-    },
+    position: { positionId, liquidationPrice, collateralTokenData, debtTokenData, positionType },
     poolData: { poolId },
+    form: {
+      state: { strategy },
+    },
   } = useRefinanceContext()
-
-  // TODO: This should be dynamic based on the assets pair
-  const emodeType = EmodeType.ETHCorrelated
-
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
+    if (!strategy) {
+      return
+    }
+    if (!positionType) {
+      throw new Error('Unsupported position type.')
+    }
+    const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
-      setLiquidationPrice(_liquidationPrice)
-
       const targetPoolId: SparkPoolId = {
         protocol: {
           name: ProtocolName.Spark,
@@ -64,51 +64,35 @@ export function useSdkSimulation() {
       const wallet = Wallet.createFrom({
         address: Address.createFrom({ value: address, type: AddressType.Ethereum }),
       })
-      const fetchedChain = await sdk.chains.getChain({
-        chainInfo: getChainInfoByChainId(chainInfo.chainId),
-      })
-      setChain(fetchedChain)
-
-      const fetchedUser = await sdk.users.getUser({
-        chainInfo: fetchedChain,
-        walletAddress: wallet.address,
-      })
-      setUser(fetchedUser)
 
       const _chain: Chain | undefined = await sdk.chains.getChain({ chainInfo })
       if (!_chain) {
-        throw new Error(`ChainId ${chainInfo.chainId} is not supported`)
+        throw new Error(`ChainId ${chainInfo.chainId} is not found`)
       }
+      setChain(_chain)
+
+      const _user = await sdk.users.getUser({
+        chainInfo,
+        walletAddress: wallet.address,
+      })
+      setUser(_user)
+
       const makerProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
         name: ProtocolName.Maker,
       })
       if (!makerProtocol) {
-        throw new Error(`Protocol ${ProtocolName.Maker} is not supported`)
+        throw new Error(`Protocol ${ProtocolName.Maker} is not found`)
       }
 
       const sourcePool = await makerProtocol.getPool({ poolId })
 
-      const ltv = PositionUtils.getLTV({
-        collateralTokenAmount: collateralTokenData,
-        debtTokenAmount: debtTokenData,
-        collateralPriceInUsd: Price.createFrom({
-          value: collateralPrice,
-          baseToken: collateralTokenData.token,
-          quoteToken: CurrencySymbol.USD,
-        }),
-        debtPriceInUsd: Price.createFrom({
-          value: debtPrice,
-          baseToken: debtTokenData.token,
-          quoteToken: CurrencySymbol.USD,
-        }),
-      })
-      const _sourcePosition: Position = {
-        pool: sourcePool,
-        collateralAmount: collateralTokenData,
-        debtAmount: debtTokenData,
+      const _sourcePosition = Position.createFrom({
         positionId,
-        riskRatio: RiskRatio.createFrom({ ratio: ltv, type: RiskRatioType.LTV }),
-      }
+        pool: sourcePool,
+        collateralAmount: replaceETHWithWETH(collateralTokenData),
+        debtAmount: replaceETHWithWETH(debtTokenData),
+        type: positionType,
+      })
       setSourcePosition(_sourcePosition)
 
       const sparkProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
@@ -118,13 +102,31 @@ export function useSdkSimulation() {
         throw new Error(`Protocol ${ProtocolName.Spark} is not supported`)
       }
 
-      const targetPool = await sparkProtocol.getPool({
+      const targetPool: ILendingPool = await sparkProtocol.getPool({
         poolId: targetPoolId,
       })
 
+      const _targetPosition = Position.createFrom({
+        positionId: { id: 'newEmptyPositionFromPool' },
+        pool: targetPool,
+        collateralAmount: replaceETHWithWETH(
+          TokenAmount.createFrom({
+            amount: '0',
+            token: mapTokenToSdkToken(chainInfo, strategy.primaryToken),
+          }),
+        ),
+        debtAmount: replaceETHWithWETH(
+          TokenAmount.createFrom({
+            amount: '0',
+            token: mapTokenToSdkToken(chainInfo, strategy.secondaryToken),
+          }),
+        ),
+        type: positionType,
+      })
+
       const refinanceParameters: IRefinanceParameters = {
-        position: _sourcePosition,
-        targetPool,
+        sourcePosition: _sourcePosition,
+        targetPosition: _targetPosition,
         slippage: Percentage.createFrom({ value: slippage }),
       }
 
@@ -135,9 +137,25 @@ export function useSdkSimulation() {
     void fetchData().catch((err) => {
       setError(err.message)
     })
-  }, [sdk, emodeType, slippage, collateralPrice, debtPrice, address])
+  }, [
+    sdk,
+    strategy,
+    slippage,
+    collateralPrice,
+    debtPrice,
+    address,
+    chainInfo,
+    poolId,
+    positionId,
+    collateralTokenData,
+    debtTokenData,
+    positionType,
+    strategy?.product,
+    strategy?.primaryToken,
+    strategy?.secondaryToken,
+  ])
 
-  const targetPosition = simulation?.targetPosition || null
+  const simulatedPosition = simulation?.targetPosition || null
 
-  return { error, chain, user, sourcePosition, targetPosition, liquidationPrice }
+  return { error, chain, user, sourcePosition, simulatedPosition, liquidationPrice }
 }

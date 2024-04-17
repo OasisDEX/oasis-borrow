@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { RefinancePositionView } from 'features/refinance/components/RefinancePositionView'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { useSimulationPositionData } from 'features/refinance/simulations/getPositionData'
+import { useSimulationPositionData } from 'features/refinance/simulations/useSimulationPositionData'
 import { RefinancePositionViewType, RefinanceSidebarStep } from 'features/refinance/types'
 import { zero } from 'helpers/zero'
 import React from 'react'

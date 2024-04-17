@@ -131,6 +131,7 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
     stage,
     stopLossTriggered,
     autoTakeProfitTriggered,
+    refinanceContextInput,
   } = props
   const { t } = useTranslation()
   const {
@@ -243,7 +244,7 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
         <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
 
-      {refinanceEnabled && <RefinanceBanner />}
+      {refinanceEnabled && <RefinanceBanner contextInput={refinanceContextInput} />}
     </Grid>
   )
 }

@@ -5,7 +5,6 @@ import { Address, AddressType, type ChainInfo, Token } from 'summerfi-sdk-common
 
 export function mapTokenToSdkToken(chainInfo: ChainInfo, token: string): Token {
   const contracts = (getNetworkContracts(chainInfo.chainId as NetworkIds) as any).tokens
-
   const tokenMeta = getTokenMetaData(token, contracts)
 
   return Token.createFrom({

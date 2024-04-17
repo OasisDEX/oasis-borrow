@@ -11,13 +11,14 @@ import type {
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/refinance/helpers'
+import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useAppConfig } from 'helpers/config'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useState } from 'react'
-import { type AddressValue, getChainInfoByChainId, TokenAmount } from 'summerfi-sdk-common'
+import { type AddressValue, TokenAmount } from 'summerfi-sdk-common'
 
 const steps = [
   RefinanceSidebarStep.Option,
@@ -34,9 +35,11 @@ export const useInitializeRefinanceContext = ({
 }: {
   contextInput?: RefinanceContextInput
   defaultCtx?: RefinanceContextBase
-}) => {
+}): {
+  ctx: RefinanceContextBase | undefined
+  reset: (resetData: RefinanceContextBase) => void
+} => {
   const { RefinanceSafetySwitch: isSafetySwitchEnabled } = useAppConfig('features')
-
   const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
     defaultCtx?.steps.currentStep || steps[0],
   )
@@ -67,7 +70,7 @@ export const useInitializeRefinanceContext = ({
   }
 
   const {
-    environment: { tokenPrices, chainId, slippage, address, isOwner },
+    environment: { tokenPrices, slippage, address, isOwner },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
     position: {
       collateralAmount,
@@ -75,17 +78,13 @@ export const useInitializeRefinanceContext = ({
       liquidationPrice,
       positionId,
       ltv,
-      protocol,
-      productType,
+      positionType: type,
+      lendingProtocol,
     },
     automations,
   } = contextInput
 
-  const chainInfo = getChainInfoByChainId(chainId)
-
-  if (!chainInfo) {
-    throw new Error(`ChainId ${chainId} is not supported`)
-  }
+  const chainInfo = poolId.protocol.chainInfo
 
   const collateralTokenData = TokenAmount.createFrom({
     amount: collateralAmount,
@@ -96,11 +95,10 @@ export const useInitializeRefinanceContext = ({
     token: mapTokenToSdkToken(chainInfo, debtTokenSymbol),
   })
 
-  const collateralPrice = tokenPrices[collateralTokenData.token.symbol]
-  const debtPrice = tokenPrices[debtTokenData.token.symbol]
+  const collateralPrice = tokenPrices[collateralTokenSymbol]
+  const debtPrice = tokenPrices[debtTokenSymbol]
   const ethPrice = tokenPrices['ETH']
 
-  // TODO: validate address
   const parsedAddress = address as AddressValue
 
   const setupStepManager = (): RefinanceSteps => {
@@ -130,6 +128,10 @@ export const useInitializeRefinanceContext = ({
   }
 
   const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
+  if (!type) {
+    throw new Error('Unsupported position type')
+  }
+  const currentProductType = positionTypeToOmniProductType(type)
 
   const ctx: RefinanceContextBase = {
     metadata: {
@@ -137,7 +139,7 @@ export const useInitializeRefinanceContext = ({
         getRefinanceFlowStateFilter({
           event,
           filterConsumed,
-          currentProductType: productType,
+          currentProductType,
           formState: form.state,
         }),
       validations: getRefinanceValidations({ state: form.state }),
@@ -152,7 +154,6 @@ export const useInitializeRefinanceContext = ({
       chainInfo,
       slippage,
       gasEstimation,
-      protocol,
       isOwner,
     },
     position: {
@@ -161,8 +162,9 @@ export const useInitializeRefinanceContext = ({
       liquidationPrice,
       positionId,
       ltv,
-      productType,
+      positionType: type,
       isShort,
+      lendingProtocol,
     },
     poolData: {
       poolId,
