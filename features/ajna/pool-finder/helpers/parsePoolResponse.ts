@@ -9,10 +9,10 @@ import type { OraclessPoolResult } from 'features/ajna/pool-finder/types'
 import { isPoolOracless, isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaSupportedNetworkIds } from 'features/omni-kit/protocols/ajna/types'
 import {
-  productHubAjnaRewardsTooltip,
   productHubAjnaEmptyPoolMaxLtvTooltip,
   productHubAjnaEmptyPoolWeeklyApyTooltip,
   productHubAjnaOraclessLtvTooltip,
+  productHubAjnaRewardsTooltip,
 } from 'features/productHub/content'
 import { formatCryptoBalance, shortenTokenSymbol } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'

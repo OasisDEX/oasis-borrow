@@ -9,9 +9,15 @@ export type ProductHubTooltipType = {
   content: {
     title?: {
       key: string
+      props?: {
+        [key: string]: string
+      }
     }
     description: {
       key: string
+      props?: {
+        [key: string]: string
+      }
     }
   }
   icon: keyof typeof productHubIcons

@@ -9,6 +9,7 @@ import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type { AjnaPoolsTableData } from 'features/omni-kit/protocols/ajna/helpers'
 import {
+  ajnaWeeklyRewards,
   getAjnaPoolsData,
   isPoolOracless,
   isPoolSupportingMultiply,
@@ -29,6 +30,7 @@ import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -50,9 +52,10 @@ async function getAjnaPoolData(
     ...Object.values(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
   ].map((contract) => contract.address.toLowerCase())
 
-  const prices = uniq(
-    Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
-  ).reduce<Tickers>(
+  const prices = uniq([
+    'AJNA',
+    ...Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
+  ]).reduce<Tickers>(
     (v, token) => ({
       ...v,
       [token]: new BigNumber(getTokenPrice(token, tickers, 'ajnaHandler')),
@@ -141,6 +144,24 @@ async function getAjnaPoolData(
           const primaryTokenGroup = getTokenGroup(collateralToken)
           const secondaryTokenGroup = getTokenGroup(quoteToken)
 
+          const weeklyRewards = ajnaWeeklyRewards[networkId]?.[`${collateralToken}-${quoteToken}`]
+          const borrowRewardsApy = weeklyRewards
+            ? weeklyRewards.amount
+                .times(weeklyRewards.borrowShare)
+                .times(prices.AJNA)
+                .div(debt)
+                .div(7)
+                .times(365)
+            : zero
+          const earnRewardsApy = weeklyRewards
+            ? weeklyRewards.amount
+                .times(weeklyRewards.earnShare)
+                .times(prices.AJNA)
+                .div(30000)
+                .div(7)
+                .times(365)
+            : zero
+
           return {
             table: [
               ...v.table,
@@ -178,8 +199,22 @@ async function getAjnaPoolData(
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
                 automationFeatures: settings.availableAutomations[networkId],
                 tooltips: {
-                  ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
-                    fee: productHubAjnaRewardsTooltip,
+                  ...(weeklyRewards && {
+                    fee: {
+                      content: {
+                        title: {
+                          key: 'ajna.product-hub-tooltips.ajna-rewards-title',
+                        },
+                        description: {
+                          key: 'ajna.product-hub-tooltips.ajna-rewards-description',
+                          props: {
+                            weekly: weeklyRewards.amount.toString(),
+                            apy: formatDecimalAsPercent(borrowRewardsApy),
+                          },
+                        },
+                      },
+                      icon: 'sparks',
+                    },
                     ...(isPoolNotEmpty && {
                       weeklyNetApy: productHubAjnaRewardsTooltip,
                     }),
@@ -226,8 +261,22 @@ async function getAjnaPoolData(
                   ...(!isPoolNotEmpty && {
                     weeklyNetApy: productHubAjnaEmptyPoolWeeklyApyTooltip,
                   }),
-                  ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
-                    weeklyNetApy: productHubAjnaRewardsTooltip,
+                  ...(weeklyRewards && {
+                    weeklyNetApy: {
+                      content: {
+                        title: {
+                          key: 'ajna.product-hub-tooltips.ajna-rewards-title',
+                        },
+                        description: {
+                          key: 'ajna.product-hub-tooltips.ajna-rewards-description',
+                          props: {
+                            weekly: weeklyRewards.amount.toString(),
+                            apy: formatDecimalAsPercent(earnRewardsApy),
+                          },
+                        },
+                      },
+                      icon: 'sparks',
+                    },
                   }),
                 },
               },
