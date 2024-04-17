@@ -9,10 +9,9 @@ import {
   type PositionCreated,
   type PositionType,
 } from 'features/aave/services'
-import { getMorphoPositionWithPairId } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 
 export interface MorphoVauldIdPositionsResponse {
@@ -89,7 +88,6 @@ export async function getPositionsFromUrlData({
   networkId,
   pairId,
   positionId,
-  protocol,
 }: GetPositionFromUrlDataParams): Promise<GetPositionFromUrlDataResponse> {
   const accounts = await getAccounts({ networkId, positionId })
 
@@ -108,7 +106,10 @@ export async function getPositionsFromUrlData({
       ),
     ).toPromise())
 
-    const data = {
+    // currently we are using pairId from URL which works, but the side effect is that when someone has for example
+    // position with pairId 1 and user will type manually in url pairId 2 instead (assuming that market with id 2 exists),
+    // the position UI will load even though it shouldn't
+    return {
       dpmAddress: account.id,
       owner: account.user.id,
       positions: account.createEvents.map(
@@ -125,34 +126,6 @@ export async function getPositionsFromUrlData({
           proxyAddress: account.id,
         }),
       ),
-    }
-
-    switch (protocol) {
-      case LendingProtocol.MorphoBlue:
-        const { response: morphoResponse } = (await loadSubgraph(
-          'Morpho',
-          'getMorphoVauldIdPositions',
-          networkId,
-          {
-            positionId,
-          },
-        )) as SubgraphsResponses['Morpho']['getMorphoVauldIdPositions']
-
-        // return position as is except for checking positions market id with internal config to determine its index
-        // only for morpho blue items
-        return {
-          ...data,
-          positions: data.positions.map((position) =>
-            getMorphoPositionWithPairId({
-              networkId,
-              pairId,
-              position,
-              response: morphoResponse,
-            }),
-          ),
-        }
-      default:
-        return data
     }
   } else return emptyResponse
 }
