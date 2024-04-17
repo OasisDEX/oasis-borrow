@@ -74,7 +74,7 @@ export type RefinanceContextInput = {
   contextId: string
 }
 
-export type RefinanceContextBase = {
+export type RefinanceGeneralContextBase = {
   environment: {
     contextId: string
     collateralPrice: string
@@ -114,10 +114,16 @@ export type RefinanceContextBase = {
   tx: OmniGeneralContextTx
 }
 
-type RefinanceContexts = Record<string, RefinanceContextBase>
+interface RefinanceGeneralContextCache {
+  handlePositionOwner: (owner?: string) => void
+  positionOwner?: string
+}
+
+type RefinanceContexts = Record<string, RefinanceGeneralContextBase>
 
 export type RefinanceGeneralContext = {
-  ctx?: RefinanceContextBase
+  ctx?: RefinanceGeneralContextBase
+  cache: RefinanceGeneralContextCache
   handleSetContext: (ctx: RefinanceContextInput) => void
   handleOnClose: (id: string) => void
 }
@@ -140,12 +146,21 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
   const [currentContext, setCurrentContext] = useState<string>('')
   const [contextInput, setContextInput] = useState<RefinanceContextInput | undefined>(undefined)
 
+  // cache
+  const [positionOwner, setPositionOwner] = useState<string>()
+
   const { ctx, reset } = useInitializeRefinanceContext({
     contextInput: contextInput,
     defaultCtx: contexts[currentContext],
   })
 
   const handleSetContext = (init: RefinanceContextInput) => {
+    // Reset cache
+    if (currentContext !== init.contextId) {
+      setPositionOwner(undefined)
+    }
+
+    // Load context
     setContextInput(init)
     setCurrentContext(init.contextId)
     reset(contexts[init.contextId])
@@ -157,10 +172,18 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
     }
   }
 
+  const handlePositionOwner = (owner?: string) => {
+    setPositionOwner(owner)
+  }
+
   return (
     <refinanceGeneralContext.Provider
       value={{
         ctx,
+        cache: {
+          handlePositionOwner,
+          positionOwner,
+        },
         handleSetContext,
         handleOnClose,
       }}

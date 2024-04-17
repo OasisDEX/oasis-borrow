@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import type { ProductHubItem } from 'features/productHub/types'
-import { RefinanceModal } from 'features/refinance/components/RefinanceModal'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { RefinanceModalController } from 'features/refinance/controllers'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
 import { omniProductTypeToSDKType } from 'features/refinance/helpers/omniProductTypeToSDKType'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
@@ -177,7 +177,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
             return
           }
 
-          openModal(RefinanceModal, {
+          openModal(RefinanceModalController, {
             contextInput: getRefinanceContextInput({
               borrowRate,
               primaryToken,

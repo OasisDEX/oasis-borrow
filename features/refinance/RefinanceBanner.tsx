@@ -1,6 +1,6 @@
 import { Banner } from 'components/Banner'
-import { RefinanceModal } from 'features/refinance/components'
 import type { RefinanceContextInput } from 'features/refinance/contexts'
+import { RefinanceModalController } from 'features/refinance/controllers'
 import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -24,7 +24,7 @@ export const RefinanceBanner: React.FC<{ contextInput?: RefinanceContextInput }>
       }}
       button={{
         action: () => {
-          openModal(RefinanceModal, { contextInput })
+          openModal(RefinanceModalController, { contextInput })
         },
         text: t('refinance.banner.button'),
       }}
