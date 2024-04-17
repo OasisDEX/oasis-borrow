@@ -2,23 +2,12 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowItems } from 'components/assetsTable/types'
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
 import { parseProductNumbers } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
-import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 import { Trans } from 'react-i18next'
-
-const yieldLoopStables = [
-  'SDAI/USDC Yield Loop',
-  'SDAI/LUSD Yield Loop',
-  'SDAI/FRAX Yield Loop',
-  'SDAI/DAI Yield Loop',
-]
 
 export function parseProduct(
   {
@@ -31,7 +20,6 @@ export function parseProduct(
     multiplyStrategy,
     tooltips,
     weeklyNetApy: weeklyNetApyString,
-    protocol,
   }: Partial<ProductHubItem>,
   product: ProductHubProductType,
   liquidityToken?: string,
@@ -145,13 +133,7 @@ export function parseProduct(
           sortable: weeklyNetApy?.toNumber() || 0,
           value: (
             <>
-              {earnStrategyDescription &&
-              protocol === LendingProtocol.AaveV3 &&
-              yieldLoopStables.includes(earnStrategyDescription) ? (
-                <AppLink href={EXTERNAL_LINKS.AAVE_SDAI_YIELD_DUNE}>
-                  <WithArrow>APY</WithArrow>
-                </AppLink>
-              ) : weeklyNetApy ? (
+              {weeklyNetApy ? (
                 formatDecimalAsPercent(weeklyNetApy)
               ) : (
                 <AssetsTableDataCellInactive />

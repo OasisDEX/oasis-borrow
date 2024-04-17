@@ -1,4 +1,5 @@
 import { getMarketRate } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
@@ -8,6 +9,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
+import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { morphoMarkets, settings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
@@ -91,8 +93,14 @@ async function getMorphoMarketData(
           supportedTokens: settings.supportedMultiplyTokens[networkId],
         })
 
+        const isYieldLoop = isYieldLoopPair({
+          collateralToken,
+          debtToken: quoteToken,
+        })
+
         const isShort = isShortPosition({ collateralToken })
         const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
+        const earnStrategyDescription = `${collateralToken}/${quoteToken} Yield Loop`
         const multiplyStrategyType = isShort ? 'short' : 'long'
         const maxMultiply = BigNumber.max(
           one.plus(one.div(one.div(maxLtv).minus(one))),
@@ -108,7 +116,8 @@ async function getMorphoMarketData(
               ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
               product: [
                 ProductHubProductType.Borrow,
-                ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
+                ...(isWithMultiply && !isYieldLoop ? [ProductHubProductType.Multiply] : []),
+                ...(isYieldLoop ? [ProductHubProductType.Earn] : []),
               ],
               protocol,
               secondaryToken: quoteToken,
@@ -121,6 +130,10 @@ async function getMorphoMarketData(
               secondaryTokenAddress,
               multiplyStrategy,
               multiplyStrategyType,
+              ...(isYieldLoop && {
+                earnStrategy: EarnStrategies.yield_loop,
+                earnStrategyDescription,
+              }),
             },
           ],
           warnings: [],

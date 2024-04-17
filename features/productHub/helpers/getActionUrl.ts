@@ -1,7 +1,7 @@
 import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
-import dayjs from 'dayjs'
 import { strategies as aaveStrategyList } from 'features/aave'
+import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
@@ -42,13 +42,25 @@ export const getAaveLikeViewStrategyUrl = ({
       search.protocol,
     )
   ) {
-    return `/${search.network.toLocaleLowerCase()}/${
+    const {
+      network: aaveLikeNetwork,
+      protocol: aaveLikeProtocol,
+      type,
+      tokens: { collateral, debt },
+    } = search
+    const resolvedType = isYieldLoopPair({
+      collateralToken: collateral,
+      debtToken: debt,
+    })
+      ? 'multiply'
+      : type
+    return `/${aaveLikeNetwork.toLocaleLowerCase()}/${
       {
         [LendingProtocol.AaveV3]: 'aave/v3',
         [LendingProtocol.AaveV2]: 'aave/v2',
         [LendingProtocol.SparkV3]: 'spark',
-      }[search.protocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3]
-    }/${search.type.toLocaleLowerCase()}/${search.tokens.collateral.toLocaleUpperCase()}-${search.tokens.debt.toLocaleUpperCase()}`
+      }[aaveLikeProtocol as LendingProtocol.SparkV3 | LendingProtocol.AaveV3]
+    }/${resolvedType.toLocaleLowerCase()}/${collateral.toLocaleUpperCase()}-${debt.toLocaleUpperCase()}`
   }
 
   return !search?.urlSlug ||
@@ -72,40 +84,35 @@ export function getActionUrl({
   secondaryToken,
   secondaryTokenAddress,
 }: ProductHubItem & { bypassFeatureFlag?: boolean; networkId?: NetworkIds }): string {
-  if (
-    primaryToken === 'WEETH' &&
-    protocol === LendingProtocol.AaveV3 &&
-    !dayjs().isAfter(dayjs.unix(1713099600)) // time when WEETH gets live, whole check to be removed some time after
-  ) {
-    return '/'
-  }
   if (earnStrategy === EarnStrategies.erc_4626) {
     const { id } = erc4626VaultsByName[label]
 
     return `/${network}/${Erc4626PseudoProtocol}/${product[0]}/${id}`
   }
 
+  const isEarnProduct = product[0] === ProductHubProductType.Earn
+  const collateralToken = isEarnProduct ? secondaryToken : primaryToken
+  const collateralAddress = isEarnProduct ? secondaryTokenAddress : primaryTokenAddress
+  const quoteToken = isEarnProduct ? primaryToken : secondaryToken
+  const quoteAddress = isEarnProduct ? primaryTokenAddress : secondaryTokenAddress
+
   switch (protocol) {
     case LendingProtocol.Ajna:
-      const isEarnProduct = product[0] === ProductHubProductType.Earn
-      const collateralToken = isEarnProduct ? secondaryToken : primaryToken
-      const collateralAddress = isEarnProduct ? secondaryTokenAddress : primaryTokenAddress
-      const quoteToken = isEarnProduct ? primaryToken : secondaryToken
-      const quoteAddress = isEarnProduct ? primaryTokenAddress : secondaryTokenAddress
       const isOracless = isPoolOracless({
         collateralToken,
         quoteToken,
         networkId,
       })
-      const productInUrl =
+      const ajnaProductInUrl =
         isEarnProduct && earnStrategy === EarnStrategies.yield_loop
           ? ProductHubProductType.Multiply
           : product
-      const tokensInUrl = isOracless
-        ? `${collateralAddress}-${quoteAddress}`
-        : `${collateralToken}-${quoteToken}`
+      const tokensInUrl =
+        isOracless && !isYieldLoopPair({ collateralToken, debtToken: quoteToken })
+          ? `${collateralAddress}-${quoteAddress}`
+          : `${collateralToken}-${quoteToken}`
 
-      return `/${network}/ajna/${productInUrl}/${tokensInUrl}`
+      return `/${network}/ajna/${ajnaProductInUrl}/${tokensInUrl}`
     case LendingProtocol.AaveV2:
       return getAaveLikeViewStrategyUrl({
         version: 'v2',
@@ -136,7 +143,11 @@ export function getActionUrl({
 
       return `/vaults/${openUrl}/${ilkInUrl}`
     case LendingProtocol.MorphoBlue:
-      return `/${network}/${LendingProtocol.MorphoBlue}/${product[0]}/${label.replace('/', '-')}`
+      const morphoBlueProductInUrl =
+        isEarnProduct && earnStrategy === EarnStrategies.yield_loop
+          ? ProductHubProductType.Multiply
+          : product[0]
+      return `/${network}/${LendingProtocol.MorphoBlue}/${morphoBlueProductInUrl}/${label.replace('/', '-')}`
     case LendingProtocol.SparkV3:
       return getAaveLikeViewStrategyUrl({
         version: 'v3',

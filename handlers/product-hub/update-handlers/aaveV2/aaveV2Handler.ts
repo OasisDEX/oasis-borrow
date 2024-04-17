@@ -1,21 +1,15 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
-import dayjs from 'dayjs'
 import { ProductHubProductType } from 'features/productHub/types'
-import { GraphQLClient } from 'graphql-request'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
-import type {
-  AaveLikeYieldsResponse,
-  FilterYieldFieldsType,
-} from 'lendingProtocols/aave-like-common'
-import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
+import { getYieldsRequest } from 'helpers/lambda/yields'
+import { zero } from 'helpers/zero'
 import { flatten } from 'lodash'
-import { curry } from 'ramda'
 
 import { aaveV2ProductHubProducts } from './aaveV2Products'
 
@@ -37,17 +31,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const secondaryTokensList = [
     ...new Set(aaveV2ProductHubProducts.map((product) => product.secondaryToken)),
   ]
-
-  const graphQlProvider = new GraphQLClient(
-    getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
-  )
-  const yieldsPromisesMap: Record<
-    string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
-  > = {
-    // a crude map, but it works for now since we only have one earn product
-    'STETH/ETH': curry(getAaveStEthYield)(graphQlProvider, dayjs()),
-  }
 
   // reserveData -> liq available and variable fee
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
@@ -80,9 +63,25 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     const { riskRatio } = tokensReserveData.find((data) => data[product.primaryToken])![
       product.primaryToken
     ]
-    const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
+    const contracts = getNetworkContracts(NetworkIds.MAINNET)
+    ensureGivenTokensExist(NetworkIds.MAINNET, contracts, [
+      product.primaryToken,
+      product.secondaryToken,
+    ])
+
+    const response = await getYieldsRequest(
+      {
+        collateralTokenAddress: contracts.tokens[product.primaryToken].address,
+        quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
+        ltv: riskRatio.loanToValue,
+        referenceDate: new Date(),
+        networkId: NetworkIds.MAINNET,
+        protocol: product.protocol,
+      },
+      process.env.FUNCTIONS_API_URL,
+    )
     return {
-      [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
+      [product.label]: new BigNumber(response?.results.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     }
   })
 

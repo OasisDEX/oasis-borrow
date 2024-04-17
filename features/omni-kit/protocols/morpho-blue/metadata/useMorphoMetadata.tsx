@@ -49,6 +49,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      isYieldLoopWithData,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -122,13 +123,14 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             balance: quoteBalance,
             position,
           }),
-          footerColumns: 2,
+          footerColumns: isYieldLoopWithData ? 3 : 2,
           maxSliderAsMaxLtv: true,
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
           overviewContent: <MorphoDetailsSectionContent />,
           overviewFooter: <MorphoDetailsSectionFooter />,
+          overviewWithSimulation: isYieldLoopWithData,
         },
         featureToggles: {
           safetySwitch: morphoSafetySwitchOn,

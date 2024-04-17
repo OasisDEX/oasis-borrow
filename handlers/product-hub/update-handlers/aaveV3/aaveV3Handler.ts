@@ -6,18 +6,14 @@ import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contract
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
-import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
-import { ProductHubProductType } from 'features/productHub/types'
-import { GraphQLClient } from 'graphql-request'
+import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
-import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
-import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
+import { getYieldsRequest } from 'helpers/lambda/yields'
+import { zero } from 'helpers/zero'
 import { memoize } from 'lodash'
-import { curry } from 'ramda'
-import { match } from 'ts-pattern'
 
 import { aaveV3ProductHubProducts } from './aave-v3-products'
 
@@ -99,25 +95,15 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const getAaveV3TokensDataPromises = aaveV3NetworksList.map((networkName) =>
     memoizedTokensData(networkName as AaveV3Networks, tickers),
   )
-  const graphQlProvider = new GraphQLClient(
-    getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
-  )
-
-  const resolveYields = (label: string, network: NetworkNames) => {
-    return match({ label, network })
-      .with({ label: 'WSTETH/ETH', network: NetworkNames.ethereumMainnet }, () =>
-        curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
-      )
-      .otherwise(() => emptyYields)
-  }
-
   // getting the APYs
-  const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
+  const earnProducts = aaveV3ProductHubProducts.filter(({ primaryToken, secondaryToken }) =>
+    isYieldLoopPair({
+      collateralToken: primaryToken,
+      debtToken: secondaryToken,
+    }),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
     const tokensReserveData = await memoizedTokensData(product.network as AaveV3Networks, tickers)
-
     const riskRatio =
       product.label === 'WSTETH/ETH'
         ? wstethRiskRatio
@@ -126,9 +112,23 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
               product.network as AaveV3Networks
             ].tokensReserveConfigurationData.find((data) => data[product.primaryToken]),
           )[product.primaryToken].riskRatio
-    const response = await resolveYields(product.label, product.network)(riskRatio, ['7Days'])
+    const networkId = networkNameToIdMap[product.network as AaveV3Networks]
+    const contracts = getNetworkContracts(networkId)
+    ensureGivenTokensExist(networkId, contracts, [product.primaryToken, product.secondaryToken])
+
+    const response = await getYieldsRequest(
+      {
+        collateralTokenAddress: contracts.tokens[product.primaryToken].address,
+        quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
+        ltv: riskRatio.loanToValue,
+        referenceDate: new Date(),
+        networkId: networkId,
+        protocol: product.protocol,
+      },
+      process.env.FUNCTIONS_API_URL,
+    )
     return {
-      [`${product.label}-${product.network}`]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
+      [`${product.label}-${product.network}`]: new BigNumber(response?.results.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     } as Record<string, BigNumber>
   })
   return Promise.all([

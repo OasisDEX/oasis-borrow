@@ -59,6 +59,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
         ...getNetworkContracts(NetworkIds.ARBITRUMMAINNET).ajnaPoolPairs,
         ...getNetworkContracts(NetworkIds.OPTIMISMMAINNET).ajnaPoolPairs,
       })
+      console.log('collateralToken, quoteToken', collateralToken, quoteToken)
 
       return (
         supportedPools.includes(`${collateralToken}-${quoteToken}`) ||

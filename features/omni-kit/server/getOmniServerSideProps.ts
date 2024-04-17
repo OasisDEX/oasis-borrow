@@ -98,6 +98,7 @@ export async function getOmniServerSideProps({
   }
 
   if (!isProductPageValid(omniProductPage)) {
+    console.log('omniProductPage', omniProductPage)
     return {
       redirect: {
         permanent: false,
