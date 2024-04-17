@@ -12,7 +12,7 @@ import {
 } from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { settings } from 'features/omni-kit/protocols/spark/settings'
-import type { OmniSupportedNetworkIds } from 'features/omni-kit/types';
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
 import { aaveLikeAprToApy, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'

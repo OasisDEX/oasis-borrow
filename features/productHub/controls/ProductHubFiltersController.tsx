@@ -3,10 +3,7 @@ import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersCont
 import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubHelp } from 'features/productHub/components'
 import { useProductHubFilters } from 'features/productHub/hooks'
-import type {
-  ProductHubFilters,
-  ProductHubItem,
-} from 'features/productHub/types'
+import type { ProductHubFilters, ProductHubItem } from 'features/productHub/types'
 import React, { type FC } from 'react'
 
 interface ProductHubFiltersControllerProps {

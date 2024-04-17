@@ -9,7 +9,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { settingsV3 } from 'features/omni-kit/protocols/aave/settings'
-import type { OmniSupportedNetworkIds } from 'features/omni-kit/types';
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { aaveLikeAprToApy, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'

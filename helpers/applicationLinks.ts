@@ -87,8 +87,7 @@ export const EXTERNAL_LINKS = {
     LEARN: 'https://blog.summer.fi/tag/learn',
     HOW_TO_SET_UP_AUTO_TAKE_PROFIT: 'https://blog.summer.fi/how-to-set-up-auto-take-profit',
     HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL: 'https://blog.summer.fi/how-to-choose-the-right-protocol',
-    SELECTING_THE_RIGHT_POSITION_TYPE:
-      'https://blog.summer.fi/selecting-the-right-position-type',
+    SELECTING_THE_RIGHT_POSITION_TYPE: 'https://blog.summer.fi/selecting-the-right-position-type',
     SELECTING_THE_RIGHT_PAIR: 'https://blog.summer.fi/selecting-the-right-pair',
     PROTOCOL_TRADEOFFS: 'https://blog.summer.fi/protocol-tradeoffs',
     UNDERSTANDING_YIELD_LOOPS: 'https://blog.summer.fi/understanding-yield-loops',

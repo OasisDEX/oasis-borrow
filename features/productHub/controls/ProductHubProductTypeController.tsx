@@ -11,9 +11,11 @@ interface ProductHubProductTypeControllerProps {
   onChange: (product: OmniProductType) => void
 }
 
-export const ProductHubProductTypeController: FC<
-  ProductHubProductTypeControllerProps
-> = ({ gradient, onChange, defaultProduct }) => {
+export const ProductHubProductTypeController: FC<ProductHubProductTypeControllerProps> = ({
+  gradient,
+  onChange,
+  defaultProduct,
+}) => {
   return (
     <Tabs<OmniProductType>
       defaultId={defaultProduct}

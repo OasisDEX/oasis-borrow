@@ -1,4 +1,8 @@
-import { getGradientColor, summerBrandGradient, summerFadedBrandGradient } from 'helpers/getGradientColor'
+import {
+  getGradientColor,
+  summerBrandGradient,
+  summerFadedBrandGradient,
+} from 'helpers/getGradientColor'
 import type { FC } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'

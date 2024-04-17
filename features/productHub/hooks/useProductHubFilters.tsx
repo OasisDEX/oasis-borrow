@@ -7,10 +7,7 @@ import {
   productHubProtocolFilter,
   productHubTestNetworkFilter,
 } from 'features/productHub/meta'
-import type {
-  ProductHubFilters,
-  ProductHubItem,
-} from 'features/productHub/types'
+import type { ProductHubFilters, ProductHubItem } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { intersectionWith } from 'lodash'
 import React, { useMemo } from 'react'

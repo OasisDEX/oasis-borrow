@@ -20,16 +20,12 @@ const automationIconMap: Record<keyof PortfolioPosition['automations'], IconProp
   takeProfit: take_profit,
 }
 
-export const AutomationIcon = ({
-  enabled,
-  iconNotActiveBg,
-  type,
-}: AutomationIconProps) => {
+export const AutomationIcon = ({ enabled, iconNotActiveBg, type }: AutomationIconProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
   return (
     <StatefulTooltip
-    tooltip={tPortfolio(`automation-details.${type}`)}
+      tooltip={tPortfolio(`automation-details.${type}`)}
       containerSx={{
         position: 'relative',
         p: '6px',
