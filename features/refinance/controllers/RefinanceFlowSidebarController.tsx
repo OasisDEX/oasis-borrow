@@ -33,11 +33,10 @@ export const RefinanceFlowSidebarController = () => {
       )
       updateState('hasSimilarPosition', !!filteredEvents.length)
     },
-    onEverythingReady: (data) => {
+    onEverythingReady: ({ availableProxies }) => {
       // Check if owner is already dpm and use it as dpm for refinance, if not fallback to first available dpm
       const dpm =
-        data.availableProxies.find((item) => item.address.toLowerCase() === owner) ||
-        data.availableProxies[0]
+        availableProxies.find((item) => item.address.toLowerCase() === owner) || availableProxies[0]
 
       updateState('dpm', dpm)
 
