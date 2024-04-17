@@ -133,7 +133,7 @@ export function AssetsTable({
       sx={{
         position: 'relative',
         ...(!paddless && {
-          px: ['24px', null, null, 4],
+          px: ['24px', null, null, 0],
           pb: '24px',
           mt: '-8px',
         }),

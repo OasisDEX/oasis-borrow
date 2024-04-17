@@ -28,9 +28,12 @@ import { LendingProtocol } from 'lendingProtocols'
 import React, { type FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
+  customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
   featured?: ProductHubFeaturedFilters[]
+  hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
   hiddenHelp?: boolean
+  hiddenTags?: boolean
   highlighted?: ProductHubFeaturedFilters[]
   limitRows?: number
   networkId?: NetworkIds
@@ -45,9 +48,12 @@ interface ProductHubContentControllerProps {
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
+  customSortByDefault,
   featured,
+  hiddenCategories,
   hiddenColumns,
   hiddenHelp,
+  hiddenTags,
   highlighted,
   limitRows,
   networkId,
@@ -102,8 +108,11 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [dataFilteredByProductType, selectedFilters, stickied],
   )
   const dataSortedByDefault = useMemo(
-    () => sortByDefault(dataFilteredByUserFilters, selectedProduct),
-    [dataFilteredByUserFilters, selectedProduct],
+    () =>
+      customSortByDefault
+        ? customSortByDefault(dataFilteredByUserFilters)
+        : sortByDefault(dataFilteredByUserFilters, selectedProduct),
+    [customSortByDefault, dataFilteredByUserFilters, selectedProduct],
   )
   const rows = useMemo(
     () =>
@@ -131,11 +140,13 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   return (
     <>
-      <ProductHubCategoryController
-        onChange={onChange}
-        selectedFilters={selectedFilters}
-        selectedProduct={selectedProduct}
-      />
+      {!hiddenCategories && (
+        <ProductHubCategoryController
+          onChange={onChange}
+          selectedFilters={selectedFilters}
+          selectedProduct={selectedProduct}
+        />
+      )}
       <AssetsTableContainer>
         <ProductHubFiltersController
           data={dataFilteredByProductType}
@@ -145,11 +156,13 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           selectedFilters={selectedFilters}
           selectedProduct={selectedProduct}
         />
-        <ProductHubTagsController
-          onChange={onChange}
-          selectedFilters={selectedFilters}
-          selectedProduct={selectedProduct}
-        />
+        {!hiddenTags && (
+          <ProductHubTagsController
+            onChange={onChange}
+            selectedFilters={selectedFilters}
+            selectedProduct={selectedProduct}
+          />
+        )}
         <ProductHubTableController
           banner={banner}
           perPage={perPage}

@@ -26,12 +26,15 @@ import React, { Fragment, useState } from 'react'
 import { Box } from 'theme-ui'
 
 interface ProductHubViewProps {
+  customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
   featured?: ProductHubFeaturedFilters[]
   headerGradient?: [string, string, ...string[]]
+  hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
   hiddenHelp?: boolean
   hiddenProductTypeSelector?: boolean
+  hiddenTags?: boolean
   highlighted?: ProductHubFeaturedFilters[]
   initialFilters?: ProductHubFilters
   limitRows?: number
@@ -44,12 +47,15 @@ interface ProductHubViewProps {
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
+  customSortByDefault,
   dataParser = (_table) => _table,
   featured,
   headerGradient = ['#007da3', '#e7a77f', '#e97047'],
+  hiddenCategories,
   hiddenColumns,
   hiddenHelp,
   hiddenProductTypeSelector = false,
+  hiddenTags,
   highlighted,
   initialFilters = {},
   limitRows,
@@ -113,10 +119,13 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           {() => (
             <>
               <ProductHubContentController
+                customSortByDefault={customSortByDefault}
                 featured={featured}
                 hiddenColumns={hiddenColumns}
+                hiddenCategories={hiddenCategories}
                 hiddenHelp={hiddenHelp}
                 highlighted={highlighted}
+                hiddenTags={hiddenTags}
                 limitRows={limitRows}
                 networkId={wallet?.chainId}
                 onChange={(_selectedFilters) => setSelectedFilters(_selectedFilters)}
