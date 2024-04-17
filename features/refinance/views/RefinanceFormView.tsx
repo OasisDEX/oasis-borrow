@@ -15,8 +15,8 @@ import {
   getRefinanceStepCounter,
 } from 'features/refinance/helpers'
 import { getRefinanceSidebarButtonsStatus } from 'features/refinance/helpers/getRefinanceSidebarButtonStatus'
-import { useRefinanceTxHandler } from 'features/refinance/hooks'
 import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
+import { useRefinanceTxHandler } from 'features/refinance/hooks'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
@@ -111,7 +111,7 @@ export const RefinanceFormView: FC = ({ children }) => {
 
   const currentNetwork = getNetworkById(chainId)
   const network = getNetworkByName(strategy?.network || currentNetwork.name)
-  const protocol = strategy?.protocol || currentProtocol
+  const protocol = strategy?.protocol || lendingProtocol
 
   const primaryButtonActions = getRefinanceSidebarPrimaryButtonActions({
     collateralAddress: strategy?.primaryTokenAddress || collateralTokenData.token.address.value,

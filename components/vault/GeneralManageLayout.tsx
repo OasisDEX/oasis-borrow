@@ -7,11 +7,8 @@ import type { FollowButtonControlProps } from 'features/follow/controllers/Follo
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
-import { RefinanceModal } from 'features/refinance/components'
 import { vaultTypeToSDKType } from 'features/refinance/helpers/vaultTypeToSDKType'
 import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
-import { useAppConfig } from 'helpers/config'
-import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
@@ -32,8 +29,6 @@ export function GeneralManageLayout({
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo, account } = generalManageVault.state
-  const { openModal } = useModalContext()
-  const { EnableRefinance: refinanceEnabled } = useAppConfig('features')
   const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
 
   const showAutomationTabs = isSupportedAutomationIlk(chainId, vault.ilk)
@@ -60,13 +55,11 @@ export function GeneralManageLayout({
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
-  const collateralToken = vault.token
-
-  const contextInput = useMakerRefinanceContextInputs({
+  generalManageVault.state.refinanceContextInput = useMakerRefinanceContextInputs({
     address: account,
     chainId,
     collateralAmount: vault.lockedCollateral.toString(),
-    collateralToken,
+    collateralToken: vault.token,
     debtAmount: vault.debt.toString(),
     id: vault.id.toString(),
     slippage: generalManageVault.state.slippage.toNumber(),
@@ -89,14 +82,8 @@ export function GeneralManageLayout({
       generalManageVault.state.account?.toLowerCase(),
   })
 
-  generalManageVault.state.refinanceContextInput = contextInput
-
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      {/* In general, it shouldn't be here, but it's here to ease development for now */}
-      {refinanceEnabled && (
-        <button onClick={() => openModal(RefinanceModal, { contextInput })}>Refinance</button>
-      )}
       <VaultNoticesView id={vault.id} />
       <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>
       <GeneralManageTabBar
