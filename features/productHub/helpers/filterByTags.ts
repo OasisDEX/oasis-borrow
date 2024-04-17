@@ -1,10 +1,10 @@
 import { EarnStrategies } from '@prisma/client'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
-  PAIR_BLUECHIP,
   PROTOCOLS_ISOLATED_PAIRS,
   PROTOCOLS_LONGEVITY,
   PROTOCOLS_TVL_GT_1B,
+  TOKENS_BLUECHIP,
   TOKENS_MEME,
   TOKENS_STABLE_GROUPS,
 } from 'features/productHub/filterGroups'
@@ -31,13 +31,13 @@ export function filterByTags({
   return tags.every((tag) => {
     switch (tag) {
       case ProductHubTag.BluechipAssets:
-        return PAIR_BLUECHIP.includes(`${primaryToken}-${secondaryToken}`)
+        return TOKENS_BLUECHIP.includes(primaryToken) && TOKENS_BLUECHIP.includes(secondaryToken)
       case ProductHubTag.EasiestToManage:
         return row.managementType === 'passive'
       case ProductHubTag.EthDerivativeYieldLoops:
         return (
           primaryTokenGroup === 'ETH' &&
-          !TOKENS_STABLE_GROUPS.includes(secondaryTokenGroup) &&
+          secondaryToken === 'ETH' &&
           (row.product.includes(OmniProductType.Earn)
             ? row.earnStrategy === EarnStrategies.yield_loop
             : true)
