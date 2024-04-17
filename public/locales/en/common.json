@@ -3736,6 +3736,11 @@
     "validations": {
       "similar-position": "You already have similar {{collateralToken}}/{{quoteToken}} position on {{protocol}}. You can check it in the portfolio."
     },
-    "mobile-not-available": "Refinance is not available on mobile. Please use desktop to Refinance your position."
+    "mobile-not-available": "Refinance is not available on mobile. Please use desktop to Refinance your position.",
+    "banner": {
+      "title": "Refinance",
+      "description": "Refinance your position to a new one in one go. Move your funds between products becomes a breeze.",
+      "button": "Get Started"
+    }
   }
 }

@@ -9,9 +9,10 @@ import React from 'react'
 export const RefinanceFlowSidebarController = () => {
   const {
     metadata: { flowStateFilter },
-    environment: { chainInfo, protocol },
+    environment: { chainInfo },
     form: { updateState },
     poolData: { pairId },
+    position: { lendingProtocol: protocol },
     steps: { setStep, setNextStep },
   } = useRefinanceContext()
 

@@ -7,8 +7,8 @@ import type { FollowButtonControlProps } from 'features/follow/controllers/Follo
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
-import type { OmniProductType } from 'features/omni-kit/types'
 import { RefinanceModal } from 'features/refinance/components'
+import { vaultTypeToSDKType } from 'features/refinance/helpers/vaultTypeToSDKType'
 import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
 import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
@@ -60,11 +60,13 @@ export function GeneralManageLayout({
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
+  const collateralToken = vault.token
+
   const contextInput = useMakerRefinanceContextInputs({
     address: account,
     chainId,
     collateralAmount: vault.lockedCollateral.toString(),
-    collateralToken: vault.token,
+    collateralToken,
     debtAmount: vault.debt.toString(),
     id: vault.id.toString(),
     slippage: generalManageVault.state.slippage.toNumber(),
@@ -80,8 +82,10 @@ export function GeneralManageLayout({
       RiskRatio.TYPE.COL_RATIO,
     ).loanToValue.toString(),
     ilkType: vault.ilk,
-    productType: generalManageVault.type as unknown as OmniProductType,
+    positionType: vaultTypeToSDKType(generalManageVault.type),
   })
+
+  generalManageVault.state.refinanceContextInput = contextInput
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
