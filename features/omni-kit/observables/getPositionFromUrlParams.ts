@@ -88,7 +88,6 @@ export async function getPositionsFromUrlData({
   networkId,
   pairId,
   positionId,
-  protocol,
 }: GetPositionFromUrlDataParams): Promise<GetPositionFromUrlDataResponse> {
   const accounts = await getAccounts({ networkId, positionId })
 
