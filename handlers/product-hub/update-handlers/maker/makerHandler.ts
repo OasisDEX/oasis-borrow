@@ -154,7 +154,7 @@ async function getMakerData(
               AutomationFeature.stopLoss,
               AutomationFeature.autoBuy,
               AutomationFeature.autoSell,
-              AutomationFeature.takeProfit,
+              AutomationFeature.autoTakeProfit,
               AutomationFeature.constantMultiple,
             ],
           }

@@ -15,7 +15,7 @@ import { settings } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
-import { aaveLikeAprToApy, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
+import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -183,10 +183,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
           hasRewards,
-          automationFeatures: mapOmniToProductHubAutomations({
-            networkId: networksByName[product.network].id as OmniSupportedNetworkIds,
-            omniAutomations: settings.availableAutomations,
-          }),
+          automationFeatures:
+            settings.availableAutomations[
+              networksByName[product.network].id as OmniSupportedNetworkIds
+            ],
         }
       }),
       warnings: [],

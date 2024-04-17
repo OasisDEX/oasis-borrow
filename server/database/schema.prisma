@@ -339,9 +339,11 @@ enum ProductHubStrategy {
 
 enum AutomationFeature {
   stopLoss
+  trailingStopLoss
   autoBuy
   autoSell
-  takeProfit
+  autoTakeProfit
+  partialTakeProfit
   constantMultiple
 
   @@map("automationFeature")

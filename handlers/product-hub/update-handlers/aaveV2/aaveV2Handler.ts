@@ -9,7 +9,6 @@ import dayjs from 'dayjs'
 import { settingsV2 } from 'features/omni-kit/protocols/aave/settings'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
-import { mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import type {
   AaveLikeYieldsResponse,
@@ -114,10 +113,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           weeklyNetApy: weeklyNetApy[label] ? weeklyNetApy[label]!.toString() : undefined,
-          automationFeatures: mapOmniToProductHubAutomations({
-            networkId: NetworkIds.MAINNET,
-            omniAutomations: settingsV2.availableAutomations,
-          }),
+          automationFeatures: settingsV2.availableAutomations[NetworkIds.MAINNET],
         }
       }),
       warnings: [],

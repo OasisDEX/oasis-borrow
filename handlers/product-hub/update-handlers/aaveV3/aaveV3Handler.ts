@@ -12,7 +12,7 @@ import { settingsV3 } from 'features/omni-kit/protocols/aave/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
-import { aaveLikeAprToApy, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
+import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -176,10 +176,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards: product.hasRewards ?? false,
-          automationFeatures: mapOmniToProductHubAutomations({
-            networkId: networksByName[product.network].id as OmniSupportedNetworkIds,
-            omniAutomations: settingsV3.availableAutomations,
-          }),
+          automationFeatures:
+            settingsV3.availableAutomations[
+              networksByName[product.network].id as OmniSupportedNetworkIds
+            ],
         }
       }),
       warnings: [],

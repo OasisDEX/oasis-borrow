@@ -24,7 +24,7 @@ import {
   productHubAjnaRewardsTooltip,
 } from 'features/productHub/content'
 import type { ProductHubSupportedNetworks } from 'features/productHub/types'
-import { getTokenGroup, mapOmniToProductHubAutomations } from 'handlers/product-hub/helpers'
+import { getTokenGroup } from 'handlers/product-hub/helpers'
 import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
@@ -176,10 +176,7 @@ async function getAjnaPoolData(
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
-                automationFeatures: mapOmniToProductHubAutomations({
-                  networkId,
-                  omniAutomations: settings.availableAutomations,
-                }),
+                automationFeatures: settings.availableAutomations[networkId],
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
                     fee: productHubAjnaRewardsTooltip,

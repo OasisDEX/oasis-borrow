@@ -3510,9 +3510,11 @@
     "automation-details": {
       "autoBuy": "Auto Buy",
       "autoSell": "Auto Sell",
+      "autoTakeProfit": "Auto Take Profit",
       "constantMultiple": "Constant Multiple",
+      "partialTakeProfit": "Partial Take Profit",
       "stopLoss": "Stop-Loss",
-      "takeProfit": "Take Profit"
+      "trailingStopLoss": "Trailing Stop-Loss"
     },
     "banners": {
       "pool-finder": {
