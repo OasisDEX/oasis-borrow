@@ -50,7 +50,7 @@ export const getRefinanceContextInput = ({
   automations: RefinanceContextInputAutomations
   contextId: string
   positionId: string | number
-  positionType: PositionType | undefined
+  positionType: PositionType
 }): RefinanceContextInput => {
   const lendingProtocol = protocolNameToLendingProtocol(poolId.protocol.name)
 

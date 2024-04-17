@@ -40,7 +40,7 @@ export const useMakerRefinanceContextInputs = ({
   ltv: string
   maxLtv: string
   ilkType: string
-  positionType: PositionType | undefined
+  positionType: PositionType
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 

@@ -66,7 +66,7 @@ export type RefinanceContextInput = {
     debtAmount: string
     liquidationPrice: string
     ltv: RiskRatio
-    positionType: PositionType | undefined
+    positionType: PositionType
     lendingProtocol: LendingProtocol
   }
   automations: RefinanceContextInputAutomations
