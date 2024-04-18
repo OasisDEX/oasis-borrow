@@ -90,6 +90,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
       <Flex
         sx={{ alignItems: 'center', columnGap: 1, ml: '14px', cursor: 'pointer' }}
         onClick={() => setIsOpen(!isOpen)}
+        data-testid="deposit-token-selector"
       >
         <TokensGroup tokens={[selectedToken]} forceSize={32} />
         <ExpandableArrow direction={isOpen ? 'up' : 'down'} size={14} />
@@ -148,6 +149,7 @@ export const OmniInputSwap: FC<OmniInputSwapProps> = ({
               borderRadius: 'large',
             },
           }}
+          data-testid="deposit-token-list"
         >
           {tokensList?.map(({ balance, token, ...rest }) => (
             <Flex
