@@ -13,7 +13,7 @@ export const RefinanceFlowSidebarController = () => {
     environment: { chainInfo },
     form: { updateState },
     poolData: { pairId },
-    position: { lendingProtocol: protocol },
+    position: { lendingProtocol: protocol, owner },
     steps: { setStep, setNextStep },
   } = useRefinanceContext()
 
@@ -33,9 +33,20 @@ export const RefinanceFlowSidebarController = () => {
       )
       updateState('hasSimilarPosition', !!filteredEvents.length)
     },
-    onEverythingReady: (data) => {
-      updateState('dpm', data.availableProxies[0])
-      setNextStep()
+    onEverythingReady: ({ availableProxies }) => {
+      // Check if owner is already dpm and use it as dpm for refinance, if not fallback to first available dpm
+      const dpm =
+        availableProxies.find((item) => item.address.toLowerCase() === owner) || availableProxies[0]
+
+      updateState('dpm', dpm)
+
+      // If position owner is dpm that will be used for refinance
+      // skip to refinance tx
+      if (dpm.address.toLowerCase() === owner) {
+        setStep(RefinanceSidebarStep.Changes)
+      } else {
+        setNextStep()
+      }
     },
     onGoBack: () => setStep(RefinanceSidebarStep.Strategy),
     step: '3/5',

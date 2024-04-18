@@ -6,8 +6,8 @@ import {
 } from 'features/omni-kit/contexts'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type {
-  RefinanceContextBase,
   RefinanceContextInput,
+  RefinanceGeneralContextBase,
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/refinance/helpers'
@@ -34,10 +34,10 @@ export const useInitializeRefinanceContext = ({
   defaultCtx,
 }: {
   contextInput?: RefinanceContextInput
-  defaultCtx?: RefinanceContextBase
+  defaultCtx?: RefinanceGeneralContextBase
 }): {
-  ctx: RefinanceContextBase | undefined
-  reset: (resetData: RefinanceContextBase) => void
+  ctx: RefinanceGeneralContextBase | undefined
+  reset: (resetData: RefinanceGeneralContextBase) => void
 } => {
   const {
     RefinanceSafetySwitch: isSafetySwitchEnabled,
@@ -57,7 +57,7 @@ export const useInitializeRefinanceContext = ({
 
   const form = useRefinanceFormReducto({})
 
-  const reset = (resetData: RefinanceContextBase) => {
+  const reset = (resetData: RefinanceGeneralContextBase) => {
     setCurrentStep(resetData?.steps.currentStep || steps[0])
     setIsFlowStateReady(resetData?.steps.isFlowStateReady || false)
     setTxDetails(resetData?.tx.txDetails)
@@ -136,7 +136,7 @@ export const useInitializeRefinanceContext = ({
   }
   const currentProductType = positionTypeToOmniProductType(type)
 
-  const ctx: RefinanceContextBase = {
+  const ctx: RefinanceGeneralContextBase = {
     metadata: {
       flowStateFilter: ({ event, filterConsumed }) =>
         getRefinanceFlowStateFilter({
