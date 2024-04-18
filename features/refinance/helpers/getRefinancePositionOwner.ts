@@ -32,6 +32,6 @@ export const getRefinancePositionOwner = async ({
       return owner.toLowerCase()
     default:
       // It doesn't matter for now for other protocols since owner will be provided by sdk
-      return '0x0000000000000000000000000000000000000000'
+      throw new Error(`Getting position owner for given protocol ${protocol} is not supported yet.`)
   }
 }
