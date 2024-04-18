@@ -33,7 +33,7 @@
     "middleware.ts",
     "lambdas/lib/shared"
   ],
-  "exclude": ["node_modules", "types", "coverage", "infra", "lambdas", ".next"],
+  "exclude": ["node_modules", "coverage", "infra", "lambdas", ".next"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

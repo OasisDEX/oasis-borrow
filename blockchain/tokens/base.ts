@@ -15,6 +15,7 @@ export const tokensBase = {
   LDO: contractDesc(erc20, base.common.LDO),
   LUSD: contractDesc(erc20, base.common.LUSD),
   RENBTC: contractDesc(erc20, base.common.RENBTC),
+  WEETH: contractDesc(erc20, base.common.WEETH),
   RETH: contractDesc(erc20, base.common.RETH),
   SDAI: contractDesc(erc20, base.common.SDAI),
   STETH: contractDesc(erc20, base.common.STETH),

@@ -1,5 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { Radio } from 'components/forms/Radio'
+import { Radio } from 'components/Radio'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
 import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'

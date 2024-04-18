@@ -3333,6 +3333,24 @@
       "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
+  "aave-like": {
+    "product-hub-tooltips": {
+      "double-etherfi-points": "This position earns 2x Ether.fi points via Summer.fi"
+    },
+    "position-page": {
+      "common": {
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Aave position",
+            "setup": "Configure your Aave {{productType}} Position",
+            "manage": "Manage your Aave {{productType}} Position",
+            "transaction": "Confirm your Aave {{productType}} Position",
+            "transition": "Switch your Aave {{productType}} Position"
+          }
+        }
+      }
+    }
+  },
   "morpho": {
     "content-card": {
       "ltv": {
@@ -3372,8 +3390,7 @@
         "estimated-market-cap": "Estimate <icon /> {{token}} market cap for better APY accuracy",
         "market-apy": "Market APY",
         "per-1k-usd": "{{amount}} {{token}} per $1,000",
-        "vault-allocation-breakdown": "Vault allocation breakdown",
-        "vault-token-rewards": "Vault token rewards"
+        "vault-allocation-breakdown": "Vault allocation breakdown"
       },
       "earn": {
         "form-order": {
@@ -3749,5 +3766,8 @@
       "description": "Refinance your position to a new one in one go. Move your funds between products becomes a breeze.",
       "button": "Get Started"
     }
+  },
+  "vault-token-rewards": {
+    "title": "Vault token rewards"
   }
 }

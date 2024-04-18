@@ -4,14 +4,13 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
-import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
 import { getOmniTxStatuses, useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
+import type { OmniTxData } from 'features/omni-kit/hooks'
 import { submitGenericOmniTransaction } from 'features/omni-kit/observables'
-import type { Erc4626Claims } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { handleTransactionTxState } from 'helpers/handleTransaction'
@@ -23,13 +22,16 @@ import type { FC } from 'react'
 import React, { useMemo, useState } from 'react'
 import { Button, Flex, Text } from 'theme-ui'
 
-interface Erc4626VaultRewardsProps extends Erc4626Claims {
+interface OmniErc20ClaimsProps {
+  token: string
+  claimable: BigNumber
+  tx: OmniTxData
   prices: {
     [key: string]: BigNumber
   }
 }
 
-export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, prices, tx }) => {
+export const OmniErc20Claims: FC<OmniErc20ClaimsProps> = ({ token, claimable, tx, prices }) => {
   const { t } = useTranslation()
 
   const { connectedContext$ } = useMainContext()
@@ -47,56 +49,34 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
   )
 
   const signer = context?.transactionProvider
-  const rows = useMemo(
-    () =>
-      claims.reduce<AssetsTableRowData[]>(
-        (sum, { claimable, earned, token }) => [
-          ...sum,
-          {
-            items: {
-              token: (
-                <AssetsTableDataCellAsset
-                  asset={token}
-                  icons={[token]}
-                  description={getTokenGuarded(token)?.name}
-                />
-              ),
-              rewardsEarned: (
+  const rows = useMemo(() => {
+    return [
+      {
+        items: {
+          token: (
+            <AssetsTableDataCellAsset
+              asset={token}
+              icons={[token]}
+              description={getTokenGuarded(token)?.name}
+            />
+          ),
+          claimableNow: (
+            <>
+              {formatCryptoBalance(claimable)} {token}
+              {prices[token] && (
                 <>
-                  {formatCryptoBalance(earned)} {token}
-                  {prices[token] && (
-                    <>
-                      <br />
-                      <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-                        {formatUsdValue(earned.times(prices[token]))}
-                      </Text>
-                    </>
-                  )}
+                  <br />
+                  <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
+                    {formatUsdValue(claimable.times(prices[token]))}
+                  </Text>
                 </>
-              ),
-              claimableNow: (
-                <>
-                  {formatCryptoBalance(claimable)} {token}
-                  {prices[token] && (
-                    <>
-                      <br />
-                      <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-                        {formatUsdValue(claimable.times(prices[token]))}
-                      </Text>
-                    </>
-                  )}
-                </>
-              ),
-            },
-          },
-        ],
-        [],
-      ),
-    [claims, prices],
-  )
-  const totalClaimable = useMemo(() => {
-    return claims.reduce<BigNumber>((total, { claimable }) => total.plus(claimable), zero)
-  }, [claims])
+              )}
+            </>
+          ),
+        },
+      },
+    ]
+  }, [claimable, token, prices])
 
   const txSidebarProgress = t('erc-4626.position-page.earn.transaction.progress')
   const txSidebarSuccess = t('erc-4626.position-page.earn.transaction.success')
@@ -119,13 +99,7 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
   }, [isTxInProgress, isTxSuccess, networkId, txSidebarProgress, txSidebarSuccess, txState])
 
   const isClaimButtonDisabled =
-    !isOwner ||
-    !tx ||
-    totalClaimable.lte(zero) ||
-    claims.length === 0 ||
-    isTxInProgress ||
-    isTxWaitingForApproval ||
-    isTxSuccess
+    !isOwner || !tx || isTxInProgress || isTxWaitingForApproval || isTxSuccess
   const claimButtonLabel = !isConnected
     ? t('connect-wallet')
     : shouldSwitchNetwork
