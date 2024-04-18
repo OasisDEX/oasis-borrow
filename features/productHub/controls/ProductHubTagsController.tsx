@@ -84,7 +84,7 @@ export const ProductHubTagsController: FC<ProductHubTagsControllerProps> = ({
             color: 'neutral80',
             '&:hover': {
               color: 'primary100',
-              borderColor: 'neutral70',
+              borderColor: isOpen ? 'primary100' : 'neutral70',
             },
           }}
           onClick={toggleIsOpen}
