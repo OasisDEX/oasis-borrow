@@ -28,11 +28,11 @@ export const useProductHubBanner = ({
   } = useAppConfig('features')
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
-  const { biggestPositionLink, migrationsCount } = useMigrationBannerMeta({
+  const { link, migrationsCount } = useMigrationBannerMeta({
     address: walletAddress,
   })
 
-  if (migrationsCount > 0 && biggestPositionLink && migrationsEnabled) {
+  if (migrationsCount > 0 && migrationsEnabled) {
     return {
       title: t('product-hub.banners.migration.title', {
         migrationsCount,
@@ -40,7 +40,7 @@ export const useProductHubBanner = ({
       children: t('product-hub.banners.migration.description'),
       cta: {
         label: t('product-hub.banners.migration.cta'),
-        url: biggestPositionLink,
+        url: link,
       },
       image: staticFilesRuntimeUrl(migrationsIcon),
     }
