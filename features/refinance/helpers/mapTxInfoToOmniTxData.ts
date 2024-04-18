@@ -5,5 +5,10 @@ export function mapTxInfoToOmniTxData(txInfo: TransactionInfo | undefined): Omni
   if (txInfo == null) {
     return undefined
   }
-  throw new Error('Function not implemented.')
+  const { transaction } = txInfo
+  return {
+    data: transaction.calldata,
+    to: transaction.target.toString(),
+    value: transaction.value,
+  }
 }
