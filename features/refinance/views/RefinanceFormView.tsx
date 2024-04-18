@@ -152,7 +152,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     isTxSuccess,
     text: getRefinanceStatusCopy({
       currentStep,
-      protocol: lendingProtocol,
+      protocol: strategy?.protocol,
       collateralToken: collateralTokenData.token.symbol,
       quoteToken: debtTokenData.token.symbol,
       productType,

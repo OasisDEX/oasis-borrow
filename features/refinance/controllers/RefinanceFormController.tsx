@@ -2,7 +2,6 @@ import {
   RefinanceGiveStep,
   RefinanceProductTableStep,
   RefinanceStrategyStep,
-  RefinanceTransactionStep,
   RefinanceWhatsChangingStep,
 } from 'features/refinance/components/steps'
 import { useRefinanceContext } from 'features/refinance/contexts'
@@ -21,7 +20,6 @@ export const RefinanceFormController = () => {
       {currentStep === RefinanceSidebarStep.Strategy && <RefinanceProductTableStep />}
       {currentStep === RefinanceSidebarStep.Give && <RefinanceGiveStep />}
       {currentStep === RefinanceSidebarStep.Changes && <RefinanceWhatsChangingStep />}
-      {currentStep === RefinanceSidebarStep.Transaction && <RefinanceTransactionStep />}
     </RefinanceFormView>
   )
 }
