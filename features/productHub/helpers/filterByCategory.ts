@@ -1,3 +1,4 @@
+import { EarnStrategies } from '@prisma/client'
 import {
   TOKENS_WITH_RESTAKING,
   TOKENS_WITH_STAKING_REWARDS,
@@ -14,7 +15,11 @@ interface FilterByCategoryParams {
   secondaryTokenGroup: string
 }
 
-export function filterByCategory({ category, primaryToken, row }: FilterByCategoryParams) {
+export function filterByCategory({
+  category,
+  primaryToken,
+  row,
+}: FilterByCategoryParams) {
   switch (category) {
     case ProductHubCategory.All:
       return true
@@ -25,7 +30,6 @@ export function filterByCategory({ category, primaryToken, row }: FilterByCatego
     case ProductHubCategory.Restaking:
       return TOKENS_WITH_RESTAKING.includes(primaryToken)
     case ProductHubCategory.YieldLoops:
-      // TODO: use method that Marcin provides
-      return false
+      return row.earnStrategy === EarnStrategies.yield_loop
   }
 }
