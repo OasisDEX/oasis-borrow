@@ -90,14 +90,15 @@ async function getAjnaPoolData(
           {
             pair: [collateralToken, quoteToken],
             pool: {
-              collateralAddress: collateralTokenAddress,
               buckets,
+              collateralAddress: collateralTokenAddress,
               debt,
               interestRate,
+              lendApr,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
-              lendApr,
               quoteTokenAddress,
+              summerDepositAmountEarningInterest,
             },
           },
         ) => {
@@ -157,7 +158,7 @@ async function getAjnaPoolData(
             ? weeklyRewards.amount
                 .times(weeklyRewards.earnShare)
                 .times(prices.AJNA)
-                .div(30000)
+                .div(summerDepositAmountEarningInterest)
                 .div(7)
                 .times(365)
             : zero
