@@ -2,6 +2,7 @@ import 'rc-slider/assets/index.css'
 
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { StatefulTooltip } from 'components/Tooltip'
 import type { OmniProductType } from 'features/omni-kit/types'
 import { MIN_LIQUIDITY, productHubTags } from 'features/productHub/meta'
 import { type ProductHubFilters } from 'features/productHub/types'
@@ -165,28 +166,43 @@ export const ProductHubTagsController: FC<ProductHubTagsControllerProps> = ({
         </Box>
       </Box>
       {productHubTags[selectedProduct].map((tag) => (
-        <Box as="li">
-          <Button
-            variant={selectedFilters['tags']?.includes(tag) ? 'actionActive' : 'action'}
-            sx={{
-              px: 3,
-              color: 'neutral80',
-              '&:hover': {
-                color: 'primary100',
-                borderColor: 'neutral70',
-              },
-            }}
-            onClick={() => {
-              const tags = selectedFilters['tags'] ?? []
-
-              onChange({
-                ...selectedFilters,
-                tags: tags.includes(tag) ? tags.filter((_tag) => _tag !== tag) : [...tags, tag],
-              })
+        <Box as="li" sx={{ position: 'relative' }}>
+          <StatefulTooltip
+            tooltip={t(`product-hub.tags.${tag}.tooltip`)}
+            tooltipSx={{
+              top: '100%',
+              left: 0,
+              width: '250px',
+              mt: 2,
+              fontSize: 1,
+              textAlign: 'left',
+              border: 'none',
+              borderRadius: 'medium',
+              boxShadow: 'buttonMenu',
             }}
           >
-            {t(`product-hub.tags.${tag}`)}
-          </Button>
+            <Button
+              variant={selectedFilters['tags']?.includes(tag) ? 'actionActive' : 'action'}
+              sx={{
+                px: 3,
+                color: 'neutral80',
+                '&:hover': {
+                  color: 'primary100',
+                  borderColor: 'neutral70',
+                },
+              }}
+              onClick={() => {
+                const tags = selectedFilters['tags'] ?? []
+
+                onChange({
+                  ...selectedFilters,
+                  tags: tags.includes(tag) ? tags.filter((_tag) => _tag !== tag) : [...tags, tag],
+                })
+              }}
+            >
+              {t(`product-hub.tags.${tag}.label`)}
+            </Button>
+          </StatefulTooltip>
         </Box>
       ))}
     </Flex>

@@ -150,7 +150,7 @@ async function getAjnaPoolData(
             ? weeklyRewards.amount
                 .times(weeklyRewards.borrowShare)
                 .times(prices.AJNA)
-                .div(debt)
+                .div(debt.times(quotePrice))
                 .div(7)
                 .times(365)
             : zero
@@ -158,7 +158,7 @@ async function getAjnaPoolData(
             ? weeklyRewards.amount
                 .times(weeklyRewards.earnShare)
                 .times(prices.AJNA)
-                .div(summerDepositAmountEarningInterest)
+                .div(summerDepositAmountEarningInterest.times(quotePrice))
                 .div(7)
                 .times(365)
             : zero
