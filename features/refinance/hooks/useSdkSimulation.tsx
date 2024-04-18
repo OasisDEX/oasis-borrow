@@ -1,4 +1,5 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { type SparkPoolId } from 'features/refinance/types'
@@ -22,8 +23,6 @@ import {
   TokenAmount,
   Wallet,
 } from 'summerfi-sdk-common'
-
-import { getEmode } from '../helpers/getEmode'
 
 export function useSdkSimulation() {
   const [error, setError] = useState<null | string>(null)
