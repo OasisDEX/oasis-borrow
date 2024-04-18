@@ -29,7 +29,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const { closeModal } = useModalContext()
   const isMobile = useOnMobile()
 
-  const { handleSetContext, handleOnClose, ctx, cache } = useRefinanceGeneralContext()
+  const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
 
   const positionOwner = useMemo(
     () =>
@@ -45,10 +45,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     [contextInput.contextId, cache.positionOwner],
   )
   const [owner] = useObservable(positionOwner)
-
-  useMemo(() => {
-    handleSetContext(contextInput)
-  }, [])
 
   const onClose = () => {
     handleOnClose(contextInput.contextId)
