@@ -24,6 +24,7 @@ export const PROTOCOLS_TVL_GT_1B = [
   LendingProtocol.AaveV2,
   LendingProtocol.AaveV3,
   LendingProtocol.Maker,
+  LendingProtocol.MorphoBlue,
   LendingProtocol.SparkV3,
 ]
 export const PROTOCOLS_ISOLATED_PAIRS = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue]

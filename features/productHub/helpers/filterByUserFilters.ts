@@ -1,4 +1,5 @@
 import { filterByCategory, filterByTags, filterFeaturedProducts } from 'features/productHub/helpers'
+import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
   ProductHubCategory,
   ProductHubFeaturedFilters,
@@ -63,6 +64,9 @@ export function filterByUserFilters(
                 return true
             }
           } else return true
-        }),
+        }) &&
+        (row.liquidity
+          ? Number(row.liquidity) >= Number(filters['min-liquidity'] ?? MIN_LIQUIDITY)
+          : true),
   )
 }

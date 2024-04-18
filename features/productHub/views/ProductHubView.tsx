@@ -12,6 +12,7 @@ import {
 } from 'features/productHub/controls'
 import { parseQueryString } from 'features/productHub/helpers'
 import { useProductHubRouter } from 'features/productHub/hooks'
+import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
   ProductHubColumnKey,
   ProductHubFeaturedFilters,
@@ -128,7 +129,14 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 hiddenTags={hiddenTags}
                 limitRows={limitRows}
                 networkId={wallet?.chainId}
-                onChange={(_selectedFilters) => setSelectedFilters(_selectedFilters)}
+                onChange={(_selectedFilters) => {
+                  setSelectedFilters(() => {
+                    if (_selectedFilters['min-liquidity']?.[0] === MIN_LIQUIDITY.toString())
+                      delete _selectedFilters['min-liquidity']
+
+                    return _selectedFilters
+                  })
+                }}
                 onRowClick={onRowClick}
                 perPage={perPage}
                 selectedFilters={selectedFilters}

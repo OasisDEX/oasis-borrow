@@ -918,6 +918,7 @@
   "max": "Max",
   "manage": "Manage",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
+  "min-liquidity": "Min. Liquidity",
   "minimum": "Minimum",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
