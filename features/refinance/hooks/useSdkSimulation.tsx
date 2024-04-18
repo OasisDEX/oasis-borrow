@@ -154,7 +154,6 @@ export function useSdkSimulation() {
     })
   }, [
     sdk,
-    strategy,
     slippage,
     collateralPrice,
     debtPrice,
@@ -162,8 +161,8 @@ export function useSdkSimulation() {
     chainInfo,
     poolId,
     positionId,
-    collateralTokenData,
-    debtTokenData,
+    JSON.stringify(collateralTokenData),
+    JSON.stringify(debtTokenData),
     positionType,
     strategy?.product,
     strategy?.primaryToken,

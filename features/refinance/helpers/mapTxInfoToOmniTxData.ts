@@ -8,7 +8,7 @@ export function mapTxInfoToOmniTxData(txInfo: TransactionInfo | undefined): Omni
   const { transaction } = txInfo
   return {
     data: transaction.calldata,
-    to: transaction.target.toString(),
+    to: transaction.target.value,
     value: transaction.value,
   }
 }

@@ -9,7 +9,7 @@ import { useSdkRefinanceTransaction } from 'features/refinance/hooks/useSdkTrans
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { TransactionInfo } from 'summerfi-sdk-common'
 
 export const useRefinanceTxHandler = () => {
@@ -33,8 +33,7 @@ export const useRefinanceTxHandler = () => {
     setGasEstimation(undefined)
   }, [currentStep, setGasEstimation])
 
-  // TODO for give tx it should be dsproxy, for refinance tx it should be dpm proxy
-  const proxyAddress = '0x6C7eD10997873b59c2B2D9449d9106fE1dD85784' || dpm?.address
+  const proxyAddress = dpm?.address
 
   const {
     error: simulationErrer,
@@ -62,24 +61,26 @@ export const useRefinanceTxHandler = () => {
     case RefinanceSidebarStep.Give:
       txInfo = txImportPosition?.transactions[0]
       break
-    case RefinanceSidebarStep.Transaction:
+    case RefinanceSidebarStep.Changes:
       txInfo = txRefinance?.transactions[0]
   }
 
-  const txData = mapTxInfoToOmniTxData(txInfo)
+  const txData = useMemo(() => mapTxInfoToOmniTxData(txInfo), [txInfo])
 
   useEffect(() => {
     if (
       dpm &&
       signer &&
       [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(currentStep) &&
-      txData
+      txData &&
+      proxyAddress
     ) {
       estimateOmniGas$({
         networkId: chainId,
         proxyAddress,
         signer,
         txData,
+        sendAsSinger: true,
       }).subscribe((value) => setGasEstimation(value))
     }
   }, [
@@ -94,7 +95,7 @@ export const useRefinanceTxHandler = () => {
     setGasEstimation,
   ])
 
-  if (!txData || !dpm || !signer?.provider) {
+  if (!txData || !dpm || !signer?.provider || !proxyAddress) {
     return () => console.warn('no txData or proxyAddress or signer provider')
   }
 
@@ -104,6 +105,7 @@ export const useRefinanceTxHandler = () => {
       networkId: chainId,
       txData,
       proxyAddress,
+      sendAsSinger: true,
     }).subscribe((txState) => {
       const castedTxState = txState as TxState<TxMeta>
 

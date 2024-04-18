@@ -72,7 +72,6 @@ export function useSdkRefinanceTransaction({
     })
   }, [
     sdk,
-    strategy,
     dpm?.address,
     slippage,
     collateralPrice,
@@ -81,14 +80,14 @@ export function useSdkRefinanceTransaction({
     chainInfo,
     poolId,
     positionId,
-    collateralTokenData,
-    debtTokenData,
+    JSON.stringify(collateralTokenData),
+    JSON.stringify(debtTokenData),
     positionType,
     strategy?.product,
     strategy?.primaryToken,
     strategy?.secondaryToken,
-    importPositionSimulation,
-    refinanceSimulation,
+    JSON.stringify(importPositionSimulation),
+    JSON.stringify(refinanceSimulation),
   ])
 
   return { error, txImportPosition, txRefinance }
