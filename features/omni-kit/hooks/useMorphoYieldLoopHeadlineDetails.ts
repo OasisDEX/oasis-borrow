@@ -1,13 +1,10 @@
-import type { IRiskRatio } from '@oasisdex/dma-library'
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { useAaveTvl } from 'features/aave/hooks'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { useOmniYieldLoopHeadline } from 'features/omni-kit/hooks'
 import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
-import { isAaveLikeLendingProtocol } from 'lendingProtocols'
 
-export const useAaveLikeHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: IRiskRatio }) => {
+export const useYieldLoopHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: BigNumber }) => {
   const {
     environment: {
       protocol,
@@ -21,10 +18,6 @@ export const useAaveLikeHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: IRi
 
   if (!(isYieldLoopWithData && isOpening)) {
     return { headlineDetails: [], isLoading: false }
-  }
-
-  if (!isAaveLikeLendingProtocol(protocol)) {
-    throw Error('Given protocol is not aave-like')
   }
 
   const minRiskRatio = new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE)
@@ -44,7 +37,7 @@ export const useAaveLikeHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: IRi
     actionSource: 'useAaveLikeHeadlineDetails maxYields',
     quoteTokenAddress: quoteAddress,
     collateralTokenAddress: collateralAddress,
-    ltv: maxRiskRatio.loanToValue,
+    ltv: maxRiskRatio,
     networkId: network.id,
     protocol,
     referenceDate,
@@ -53,19 +46,16 @@ export const useAaveLikeHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: IRi
     actionSource: 'useAaveLikeHeadlineDetails maxYields',
     quoteTokenAddress: quoteAddress,
     collateralTokenAddress: collateralAddress,
-    ltv: maxRiskRatio.loanToValue,
+    ltv: maxRiskRatio,
     networkId: network.id,
     protocol,
     referenceDate: referenceDateOffset,
   })
 
-  const tvlData = useAaveTvl(protocol, network.name)
-
   const { headlineDetails, isLoading } = useOmniYieldLoopHeadline({
     maxYields,
     maxYieldsOffset,
     minYields,
-    tvlData,
   })
 
   return {

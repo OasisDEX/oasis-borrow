@@ -15,7 +15,7 @@ export const useOmniYieldLoopHeadline = ({
   minYields: GetYieldsResponseMapped | undefined
   maxYields: GetYieldsResponseMapped | undefined
   maxYieldsOffset: GetYieldsResponseMapped | undefined
-  tvlData: AaveTotalValueLocked | undefined
+  tvlData?: AaveTotalValueLocked
 }) => {
   const { t } = useTranslation()
 
