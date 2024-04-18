@@ -82,6 +82,12 @@ const steakhouseCurator = {
   icon: '/static/img/protocol_icons/steakhouse_logo.svg',
 }
 
+const blockAnaliticaBProtocolCurator = {
+  label: 'Block Analitica / B.Protocol',
+  url: 'https://morpho.blockanalitica.com/',
+  icon: '/static/img/block-analitica-b-protocol.svg',
+}
+
 const morphoRewards = {
   token: 'MORPHO',
   label: 'Morpho token rewards',
@@ -164,6 +170,57 @@ export const erc4626Vaults: Erc4626Config[] = [
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address,
       precision: getToken('ETH').precision,
       symbol: 'ETH',
+    },
+  },
+  {
+    address: '0x38989bba00bdf8181f4082995b3deae96163ac5d',
+    curator: blockAnaliticaBProtocolCurator,
+    id: 'flagship-ETH',
+    name: 'Flagship ETH',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
+    strategy: 'Flagship MetaMorpho Vault',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address,
+      precision: getToken('ETH').precision,
+      symbol: 'ETH',
+    },
+  },
+  {
+    address: '0x2c25f6c25770ffec5959d34b94bf898865e5d6b1',
+    curator: blockAnaliticaBProtocolCurator,
+    id: 'flagship-USDT',
+    name: 'Flagship USDT',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
+    strategy: 'Flagship MetaMorpho Vault',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDT.address,
+      precision: getToken('USDT').precision,
+      symbol: 'USDT',
+    },
+  },
+  {
+    address: '0x186514400e52270cef3d80e1c6f8d10a75d47344',
+    curator: blockAnaliticaBProtocolCurator,
+    id: 'flagship-USDC',
+    name: 'Flagship USDC',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
+    strategy: 'Flagship MetaMorpho Vault',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
+      precision: getToken('USDC').precision,
+      symbol: 'USDC',
     },
   },
 ]
