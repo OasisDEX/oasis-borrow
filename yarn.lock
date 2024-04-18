@@ -1541,46 +1541,6 @@
   dependencies:
     tslib "^2.1.0"
 
-"@gnosis.pm/safe-apps-provider@0.11.3":
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.11.3.tgz#9e1ec2fb69a7fae8127631330f630662bd07a580"
-  integrity sha512-vER+vuf44f40KfwqTRjU8rdVMDnGZMmgQcGetlMxq+MTI7VD2Cr3CrCuABFGE/DZK80SxZ+IvQ9yjkemo/ywmQ==
-  dependencies:
-    "@gnosis.pm/safe-apps-sdk" "7.5.0"
-    events "^3.3.0"
-
-"@gnosis.pm/safe-apps-sdk@7.5.0":
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-7.5.0.tgz#59033c62726abacbf988286ea57250e7581444e8"
-  integrity sha512-OaF2agv2zfPExzedv1eOGtt3W+rnwGFwtuP37epofhsnDgqS/JMPoqyDLRSvyWYlU22OeKvtghTppvRfaEnUTw==
-  dependencies:
-    "@gnosis.pm/safe-react-gateway-sdk" "^3.1.3"
-    ethers "^5.6.8"
-
-"@gnosis.pm/safe-apps-sdk@^7.7.0":
-  version "7.7.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-7.7.0.tgz#dc3621634bd42f1d24cbe4342fd85592cd1491cd"
-  integrity sha512-MuiH09q/5DFfHQLrwNW7JSvGEMGqrS3jNJy9UKZHW77rxzmZssHX1l3+p5whTbtrcvLbxQgcp5egMrdw/sj0qw==
-  dependencies:
-    "@gnosis.pm/safe-react-gateway-sdk" "^3.1.3"
-    ethers "^5.6.8"
-
-"@gnosis.pm/safe-apps-web3-react@^1.3.0":
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-web3-react/-/safe-apps-web3-react-1.4.2.tgz#9241be3f85a47091b082253d93b451143da2e9fd"
-  integrity sha512-3CIsdHFpZ79nigoRxMqL/iWFUAqMC1ngoQfJ+/YeaBmzVaPkfUFquRiNdIjbLRzogE7TOjn0BqWkxSPXrxhMsg==
-  dependencies:
-    "@gnosis.pm/safe-apps-provider" "0.11.3"
-    "@gnosis.pm/safe-apps-sdk" "7.5.0"
-    "@web3-react/abstract-connector" "6.0.7"
-
-"@gnosis.pm/safe-react-gateway-sdk@^3.1.3":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.2.1.tgz#f378febf506b1bb1c77bc3530fdea7cd73e0bb6e"
-  integrity sha512-5k2DHIhsjvamWo7KL+LNC/YksCI76IWIKWUZ3H22w8TnWtoXTh1BFP5hDNHQL1pur2sF4zcPJuPh2qY+y5YanA==
-  dependencies:
-    cross-fetch "^3.1.5"
-
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
@@ -5407,7 +5367,7 @@
     "@web3auth/modal" "^5.0.1"
     react-dom "^18.2.0"
 
-"@web3-react/abstract-connector@6.0.7", "@web3-react/abstract-connector@^6.0.7":
+"@web3-react/abstract-connector@^6.0.7":
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/@web3-react/abstract-connector/-/abstract-connector-6.0.7.tgz#401b3c045f1e0fab04256311be49d5144e9badc6"
   integrity sha512-RhQasA4Ox8CxUC0OENc1AJJm8UTybu/oOCM61Zjg6y0iF7Z0sqv1Ai1VdhC33hrQpA8qSBgoXN9PaP8jKmtdqg==
@@ -7543,7 +7503,7 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-fetch@3.1.5, cross-fetch@^3.1.5:
+cross-fetch@3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
@@ -8846,7 +8806,7 @@ ethereumjs-util@7.1.5, ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.3, ethereum
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethers@5.5.3, ethers@5.5.4, ethers@5.7.0, ethers@5.7.2, ethers@^5.6.2, ethers@^5.6.8, ethers@^5.7.0, ethers@^5.7.2:
+ethers@5.5.3, ethers@5.5.4, ethers@5.7.0, ethers@5.7.2, ethers@^5.6.2, ethers@^5.7.0, ethers@^5.7.2:
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.0.tgz#0055da174b9e076b242b8282638bc94e04b39835"
   integrity sha512-5Xhzp2ZQRi0Em+0OkOcRHxPzCfoBfgtOQA+RUylSkuHbhTEaQklnYi2hsWbRgs3ztJsXVXd9VKBcO1ScWL8YfA==
