@@ -3,12 +3,14 @@ import BigNumber from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { estimateOmniGas$, sendOmniTransaction$ } from 'features/omni-kit/observables'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { useSdkSimulation } from 'features/refinance/simulations/useSdkSimulation'
-import { useSdkRefinanceTransaction } from 'features/refinance/simulations/useSdkTransaction'
+import { mapTxInfoToOmniTxData } from 'features/refinance/helpers/mapTxInfoToOmniTxData'
+import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
+import { useSdkRefinanceTransaction } from 'features/refinance/hooks/useSdkTransaction'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useEffect } from 'react'
+import type { TransactionInfo } from 'summerfi-sdk-common'
 
 export const useRefinanceTxHandler = () => {
   const { connectedContext$ } = useMainContext()
@@ -41,25 +43,37 @@ export const useRefinanceTxHandler = () => {
   } = useSdkSimulation()
   const {
     error: transactionError,
-    txImport,
+    txImportPosition,
     txRefinance,
   } = useSdkRefinanceTransaction({
     refinanceSimulation,
     importPositionSimulation,
   })
 
-  if (simulationErrer || transactionError) {
-    throw new Error(simulationErrer || transactionError)
+  if (simulationErrer != null) {
+    throw new Error(simulationErrer)
+  }
+  if (transactionError != null) {
+    throw new Error(transactionError)
   }
 
-  // TODO: add import tx
-  const txData = txRefinance
+  let txInfo: TransactionInfo | undefined
+  switch (currentStep) {
+    case RefinanceSidebarStep.Give:
+      txInfo = txImportPosition?.transactions[0]
+      break
+    case RefinanceSidebarStep.Transaction:
+      txInfo = txRefinance?.transactions[0]
+  }
+
+  const txData = mapTxInfoToOmniTxData(txInfo)
 
   useEffect(() => {
     if (
       dpm &&
       signer &&
-      [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(currentStep)
+      [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(currentStep) &&
+      txData
     ) {
       estimateOmniGas$({
         networkId: chainId,
@@ -79,10 +93,6 @@ export const useRefinanceTxHandler = () => {
     proxyAddress,
     setGasEstimation,
   ])
-
-  if (txRefinance == null) {
-    return () => console.warn('no txRefinance')
-  }
 
   if (!txData || !dpm || !signer?.provider) {
     return () => console.warn('no txData or proxyAddress or signer provider')

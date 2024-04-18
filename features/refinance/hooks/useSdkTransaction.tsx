@@ -1,7 +1,7 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { useEffect, useMemo, useState } from 'react'
 import { makeSDK } from 'summerfi-sdk-client'
-import type { ISimulation, SimulationType } from 'summerfi-sdk-common'
+import type { ISimulation, Order, SimulationType } from 'summerfi-sdk-common'
 import { Address, AddressType, Wallet } from 'summerfi-sdk-common'
 
 export function useSdkRefinanceTransaction({
@@ -12,8 +12,8 @@ export function useSdkRefinanceTransaction({
   importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
 }) {
   const [error, setError] = useState<null | string>(null)
-  const [txImportPosition, setTxImportPosition] = useState<null | string>(null)
-  const [txRefinance, setTxRefinance] = useState<null | string>(null)
+  const [txImportPosition, setTxImportPosition] = useState<null | Order>(null)
+  const [txRefinance, setTxRefinance] = useState<null | Order>(null)
 
   const {
     environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
