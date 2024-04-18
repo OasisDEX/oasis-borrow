@@ -36,7 +36,14 @@ export function useSdkSimulation() {
 
   const {
     environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: { positionId, liquidationPrice, collateralTokenData, debtTokenData, positionType },
+    position: {
+      positionId,
+      liquidationPrice,
+      collateralTokenData,
+      debtTokenData,
+      positionType,
+      owner,
+    },
     poolData: { poolId },
     form: {
       state: { strategy },
@@ -130,7 +137,7 @@ export function useSdkSimulation() {
           position: _sourcePosition,
           externalId: {
             address: Address.createFromEthereum({
-              value: '0x6c7ed10997873b59c2b2d9449d9106fe1dd85784',
+              value: owner as `0x${string}`,
             }),
             type: ExternalPositionType.DS_PROXY,
           },

@@ -147,6 +147,10 @@ export function useFlowState({
   useEffect(() => {
     if (!walletAddress) return
     const userDpmProxies = userDpmProxies$(walletAddress, networkId).subscribe((userProxyList) => {
+      if (userProxyList.length === 0) {
+        setUiDataLoading(false)
+      }
+
       setUserProxyList(userProxyList)
     })
     return () => {
@@ -190,6 +194,13 @@ export function useFlowState({
       const filteredAndSortedproxiesList = (
         filteredProxiesList.filter(Boolean) as typeof userProxyEventsList
       ).sort((aproxy, bproxy) => Number(aproxy.proxyId) - Number(bproxy.proxyId))
+
+      console.log('here1', filteredAndSortedproxiesList)
+      if (filteredAndSortedproxiesList.length === 0) {
+        console.log('here2')
+        setUiDataLoading(false)
+      }
+
       setAvailableProxies(
         filteredAndSortedproxiesList.map(({ proxyAddress, proxyId }) => ({
           address: proxyAddress,
