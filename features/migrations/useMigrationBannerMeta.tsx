@@ -1,17 +1,16 @@
-import { getMigrationLink } from 'features/migrations/getMigrationLink'
 import { useMigrationsClient } from 'features/migrations/migrationsClient'
-import type { ProductHubSupportedNetworks } from 'features/productHub/types'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useEffect, useState } from 'react'
 
 /**
- * Should generate biggest position link
+ * Should generate the biggest position link
  * @returns string
  */
 export const useMigrationBannerMeta = ({ address }: { address: string | undefined }) => {
   const { fetchMigrationPositions } = useMigrationsClient()
 
-  const [biggestPosition, setBiggestPosition] = useState<PortfolioPosition | undefined | null>(
+  const [positionToMigrate, setPositionToMigrate] = useState<PortfolioPosition | undefined | null>(
     undefined,
   )
   const [migrationsCount, setMigrationsCount] = useState<number>(0)
@@ -24,24 +23,20 @@ export const useMigrationBannerMeta = ({ address }: { address: string | undefine
       }
       const positions = await fetchMigrationPositions(address)
       if (!positions || positions.length === 0) {
-        setBiggestPosition(null)
+        setPositionToMigrate(null)
         return
       }
-      setBiggestPosition(positions[0])
+      setPositionToMigrate(positions[0])
       setMigrationsCount(positions.length)
     }
 
     void fetchBiggestPosition()
   }, [fetchMigrationPositions, address])
 
-  const link =
-    biggestPosition != null && address
-      ? getMigrationLink({
-          network: biggestPosition.network as ProductHubSupportedNetworks,
-          protocol: biggestPosition.protocol,
-          address,
-        })
-      : undefined
+  const portfolioLink = `${INTERNAL_LINKS.portfolio}/${address}`
 
-  return { biggestPositionLink: link, migrationsCount }
+  return {
+    link: migrationsCount > 1 ? portfolioLink : positionToMigrate?.url || portfolioLink,
+    migrationsCount,
+  }
 }
