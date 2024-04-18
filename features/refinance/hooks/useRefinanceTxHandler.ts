@@ -3,25 +3,17 @@ import BigNumber from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { estimateOmniGas$, sendOmniTransaction$ } from 'features/omni-kit/observables'
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { useSdkSimulation } from 'features/refinance/simulations/useSdkSimulation'
+import { useSdkRefinanceTransaction } from 'features/refinance/simulations/useSdkTransaction'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 export const useRefinanceTxHandler = () => {
   const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
   const signer = context?.transactionProvider
-
-  // from simulation hook
-  const txData = useMemo(
-    () => ({
-      to: '0x6C7eD10997873b59c2B2D9449d9106fE1dD85784',
-      data: '0xfcafcc680000000000000000000000000000000000000000000000000000000000007b9e000000000000000000000000f51d862200885a4732bab4c4b76188b33b3c5c8d',
-      value: '0',
-    }),
-    [],
-  )
 
   const {
     environment: {
@@ -37,10 +29,31 @@ export const useRefinanceTxHandler = () => {
 
   useEffect(() => {
     setGasEstimation(undefined)
-  }, [currentStep])
+  }, [currentStep, setGasEstimation])
 
   // TODO for give tx it should be dsproxy, for refinance tx it should be dpm proxy
   const proxyAddress = '0x6C7eD10997873b59c2B2D9449d9106fE1dD85784' || dpm?.address
+
+  const {
+    error: simulationErrer,
+    refinanceSimulation,
+    importPositionSimulation,
+  } = useSdkSimulation()
+  const {
+    error: transactionError,
+    txImport,
+    txRefinance,
+  } = useSdkRefinanceTransaction({
+    refinanceSimulation,
+    importPositionSimulation,
+  })
+
+  if (simulationErrer || transactionError) {
+    throw new Error(simulationErrer || transactionError)
+  }
+
+  // TODO: add import tx
+  const txData = txRefinance
 
   useEffect(() => {
     if (
@@ -55,7 +68,21 @@ export const useRefinanceTxHandler = () => {
         txData,
       }).subscribe((value) => setGasEstimation(value))
     }
-  }, [dpm?.address, txData, chainId, signer, strategy, currentStep])
+  }, [
+    dpm?.address,
+    txData,
+    chainId,
+    signer,
+    strategy,
+    currentStep,
+    dpm,
+    proxyAddress,
+    setGasEstimation,
+  ])
+
+  if (txRefinance == null) {
+    return () => console.warn('no txRefinance')
+  }
 
   if (!txData || !dpm || !signer?.provider) {
     return () => console.warn('no txData or proxyAddress or signer provider')
