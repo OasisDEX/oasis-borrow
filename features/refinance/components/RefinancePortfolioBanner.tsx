@@ -81,6 +81,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
   const { userSettings$ } = useAccountContext()
   const [userSettingsData] = useObservable(userSettings$)
   const { wallet } = useWalletManagement()
+  const { handleSetContext } = useRefinanceGeneralContext()
 
   const { address: portfolioAddress } = useParams<{ address: string }>()
 
@@ -177,30 +178,33 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
             return
           }
 
+          const contextInput = getRefinanceContextInput({
+            borrowRate,
+            primaryToken,
+            secondaryToken,
+            collateralPrice,
+            debtPrice,
+            ethPrice,
+            poolId,
+            network,
+            address: wallet?.address,
+            slippage: userSettingsData.slippage.toNumber(),
+            collateral,
+            debt,
+            positionId,
+            liquidationPrice,
+            ltv,
+            maxLtv,
+            automations,
+            contextId,
+            positionType: omniProductTypeToSDKType(productType),
+            pairId,
+            isOwner: wallet?.address.toLowerCase() === portfolioAddress?.toLowerCase(),
+          })
+
+          handleSetContext(contextInput)
           openModal(RefinanceModalController, {
-            contextInput: getRefinanceContextInput({
-              borrowRate,
-              primaryToken,
-              secondaryToken,
-              collateralPrice,
-              debtPrice,
-              ethPrice,
-              poolId,
-              network,
-              address: wallet?.address,
-              slippage: userSettingsData.slippage.toNumber(),
-              collateral,
-              debt,
-              positionId,
-              liquidationPrice,
-              ltv,
-              maxLtv,
-              automations,
-              contextId,
-              positionType: omniProductTypeToSDKType(productType),
-              pairId,
-              isOwner: wallet?.address.toLowerCase() === portfolioAddress?.toLowerCase(),
-            }),
+            contextInput,
           })
         }}
       >
