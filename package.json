@@ -40,8 +40,8 @@
     "@babel/runtime": "^7.21.0",
     "@contentful/rich-text-react-renderer": "15.19.4",
     "@emotion/react": "^11.11.1",
-    "@lifi/wallet-management": "^2.6.1",
-    "@lifi/widget": "^2.10.2",
+    "@lifi/wallet-management": "^2.3.4",
+    "@lifi/widget": "2.4.6",
     "@metamask/eth-sig-util": "^5.0.2",
     "@oasisdex/addresses": "0.1.60",
     "@oasisdex/automation": "1.6.5",
@@ -143,7 +143,6 @@
     "resolve": "1.22.4",
     "tslib": "2.2.0",
     "type-fest": "0.20.2",
-    "viem": "1.21.4",
     "webpack": "5",
     "yargs-parser": "20.2.2"
   },
