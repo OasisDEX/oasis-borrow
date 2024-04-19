@@ -195,9 +195,7 @@ export function useFlowState({
         filteredProxiesList.filter(Boolean) as typeof userProxyEventsList
       ).sort((aproxy, bproxy) => Number(aproxy.proxyId) - Number(bproxy.proxyId))
 
-      console.log('here1', filteredAndSortedproxiesList)
       if (filteredAndSortedproxiesList.length === 0) {
-        console.log('here2')
         setUiDataLoading(false)
       }
 
