@@ -1,7 +1,7 @@
 import { getPoolLiquidity } from '@oasisdex/dma-library'
 import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
@@ -33,7 +33,7 @@ import type {
 import { getYieldsRequest } from 'helpers/lambda/yields'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { uniq } from 'lodash'
+import { isNull, uniq } from 'lodash'
 
 async function getAjnaPoolData(
   networkId:
@@ -43,7 +43,6 @@ async function getAjnaPoolData(
     | NetworkIds.OPTIMISMMAINNET,
   tickers: Tickers,
 ): Promise<ProductHubHandlerResponseData> {
-  const contracts = getNetworkContracts(networkId)
   const poolContracts = {
     ...getNetworkContracts(networkId).ajnaPoolPairs,
     ...getNetworkContracts(networkId).ajnaOraclessPoolPairs,
@@ -69,39 +68,44 @@ async function getAjnaPoolData(
     isYieldLoopPair({ collateralToken: pair[0], debtToken: pair[1] }),
   )
 
-  const yieldLoopApys = await Promise.all(
+  const yieldLoopApysCalls = await Promise.all(
     yieldLoopPoolPairs.map(async ([collateralToken, quoteToken]) => {
-      ensureGivenTokensExist(networkId, contracts, [collateralToken, quoteToken])
       const poolData = ajnaPoolsData.find(
-        (pool) =>
-          pool.collateralAddress.toLowerCase() ===
-          contracts.tokens[collateralToken].address.toLowerCase(),
+        ({ quoteToken: poolQuoteToken, collateralToken: poolCollateralToken }) => {
+          return (
+            poolQuoteToken?.toLocaleLowerCase() === quoteToken?.toLocaleLowerCase() &&
+            poolCollateralToken?.toLocaleLowerCase() === collateralToken?.toLocaleLowerCase()
+          )
+        },
       )
       if (!poolData) {
         console.error('Pool data not found for', collateralToken, quoteToken)
         return null
       }
-      const { lowestUtilizedPrice } = poolData
-      const collateralTokenAddress = contracts.tokens[collateralToken].address
-      const quoteTokenAddress = contracts.tokens[quoteToken].address
+      const { lowestUtilizedPrice, quoteTokenAddress, collateralTokenAddress, address } = poolData
       const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
       const collateralPrice = isOracless ? one : prices[collateralToken]
       const quotePrice = isOracless ? one : prices[quoteToken]
       const marketPrice = collateralPrice.div(quotePrice)
       const maxLtv = lowestUtilizedPrice.div(marketPrice)
+
       return await getYieldsRequest(
         {
           collateralTokenAddress,
           quoteTokenAddress,
+          quoteToken,
+          collateralToken,
           networkId,
           protocol: LendingProtocol.Ajna,
           referenceDate: new Date(),
           ltv: maxLtv,
+          poolAddress: address,
         },
         process.env.FUNCTIONS_API_URL,
       )
     }),
   )
+  const yieldLoopApys = yieldLoopApysCalls.filter((apy) => !isNull(apy))
 
   try {
     return ajnaPoolsData
@@ -130,7 +134,8 @@ async function getAjnaPoolData(
           {
             pair: [collateralToken, quoteToken],
             pool: {
-              collateralAddress: collateralTokenAddress,
+              address,
+              collateralTokenAddress,
               buckets,
               debt,
               interestRate,
@@ -181,11 +186,7 @@ async function getAjnaPoolData(
           const weeklyNetApy = isYieldLoop
             ? yieldLoopApys
                 .find((yields) => {
-                  return (
-                    yields?.position.collateral[0].toLocaleLowerCase() ===
-                      collateralToken.toLocaleLowerCase() &&
-                    yields?.position.debt[0].toLocaleLowerCase() === quoteToken.toLocaleLowerCase()
-                  )
+                  return yields?.position.poolAddress?.toLocaleLowerCase() === address
                 })
                 ?.results.apy7d.toString()
             : lendApr.toString()
@@ -204,7 +205,6 @@ async function getAjnaPoolData(
                 product: [
                   ProductHubProductType.Borrow,
                   ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
-                  ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,

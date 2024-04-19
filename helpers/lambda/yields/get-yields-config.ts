@@ -16,6 +16,7 @@ export const getYieldsConfig = ({
   quoteToken,
   referenceDate,
   actionSource,
+  poolAddress,
 }: GetYieldsParams) => {
   const debugGetYieldsConfig = true
   const protocolQuery = {
@@ -40,6 +41,7 @@ export const getYieldsConfig = ({
   const referenceDateQuery = `&referenceDate=${dayjs(referenceDate).format('YYYY-MM-DD')}`
   const morphoMarketIdQuery = morphoMarketId ? `&marketId=${morphoMarketId}` : ''
   const modeQuery = morphoMarketId ? `&mode=borrow` : ''
+  const poolAddressQuery = poolAddress ? `&poolAddress=${poolAddress}` : ''
 
   if (actionSource && debugGetYieldsConfig) {
     console.info(
@@ -53,6 +55,7 @@ export const getYieldsConfig = ({
           morphoMarketIdQuery,
           modeQuery,
           actionSource,
+          poolAddressQuery,
         },
         null,
         2,
@@ -67,6 +70,7 @@ export const getYieldsConfig = ({
       referenceDateQuery,
       morphoMarketIdQuery,
       modeQuery,
+      poolAddressQuery,
     ].join('')}`,
   }
 }

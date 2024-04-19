@@ -12,10 +12,12 @@ export interface GetYieldsParams {
   networkId: NetworkIds
   protocol: LendingProtocol
   referenceDate: Date
+  poolAddress?: string
 }
 
 export interface GetYieldsResponse {
   position: {
+    poolAddress?: string
     collateral: string[]
     debt: string[]
     ltv: string

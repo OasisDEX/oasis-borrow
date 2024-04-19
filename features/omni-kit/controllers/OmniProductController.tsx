@@ -22,13 +22,12 @@ import {
 import type {
   GetOmniMetadata,
   OmniFormDefaults,
-  OmniProductType,
   OmniProtocolHookProps,
   OmniProtocolSettings,
   OmniSupportedNetworkIds,
   OmniSupportedProtocols,
 } from 'features/omni-kit/types'
-import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
+import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -165,7 +164,9 @@ export const OmniProductController = <Auction, History, Position>({
 
   const isYieldLoop = getOmniIsOmniYieldLoop({ collateralToken, pseudoProtocol, quoteToken })
   // Flag to determine whether full yield-loop UI experience is available for given protocol & pair
-  const isYieldLoopWithData = isYieldLoopPair({ collateralToken, debtToken: quoteToken })
+  const isYieldLoopWithData =
+    isYieldLoopPair({ collateralToken, debtToken: quoteToken }) &&
+    productType === OmniProductType.Multiply
 
   return (
     <WithConnection>

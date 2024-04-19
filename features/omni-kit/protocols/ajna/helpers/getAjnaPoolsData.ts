@@ -9,6 +9,12 @@ export interface AjnaPoolsDataResponse {
   address: string
   collateralAddress: string
   quoteTokenAddress: string
+  quoteToken: {
+    symbol: string
+  }
+  collateralToken: {
+    symbol: string
+  }
   debt: string
   depositSize: string
   interestRate: string
@@ -25,8 +31,10 @@ export interface AjnaPoolsDataResponse {
 
 export interface AjnaPoolsTableData {
   address: string
-  collateralAddress: string
+  collateralTokenAddress: string
   quoteTokenAddress: string
+  collateralToken: string
+  quoteToken: string
   debt: BigNumber
   depositSize: BigNumber
   interestRate: BigNumber
@@ -70,11 +78,15 @@ export const getAjnaPoolsData = async (
         quoteTokenAddress,
         lendApr,
         borrowApr,
+        quoteToken,
+        collateralToken,
       }) => ({
         address,
         buckets,
-        collateralAddress,
+        collateralTokenAddress: collateralAddress,
         quoteTokenAddress,
+        quoteToken: quoteToken.symbol,
+        collateralToken: collateralToken.symbol,
         interestRate: new BigNumber(interestRate).shiftedBy(negativeWadPrecision),
         debt: new BigNumber(debt).shiftedBy(negativeWadPrecision),
         depositSize: new BigNumber(depositSize).shiftedBy(negativeWadPrecision),

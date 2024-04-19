@@ -106,9 +106,11 @@ export function getActionUrl({
       const ajnaProductInUrl =
         isEarnProduct && earnStrategy === EarnStrategies.yield_loop
           ? ProductHubProductType.Multiply
-          : product
+          : product[0]
       const tokensInUrl =
-        isOracless && !isYieldLoopPair({ collateralToken, debtToken: quoteToken })
+        isOracless &&
+        !isYieldLoopPair({ collateralToken, debtToken: quoteToken }) &&
+        ajnaProductInUrl === ProductHubProductType.Multiply
           ? `${collateralAddress}-${quoteAddress}`
           : `${collateralToken}-${quoteToken}`
 

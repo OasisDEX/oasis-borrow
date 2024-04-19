@@ -307,6 +307,12 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         address
         collateralAddress
         quoteTokenAddress
+        quoteToken {
+          symbol
+        }
+        collateralToken {
+          symbol
+        }
         dailyPercentageRate30dAverage
         debt
         depositSize
