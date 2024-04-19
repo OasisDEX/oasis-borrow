@@ -264,7 +264,10 @@ export function GenericMultiselect({
         }}
         onClick={() => {
           setIsOpen((_isOpen) => {
-            if (!isOpen && searchRef.current) searchRef.current.focus()
+            if (!isOpen && searchRef.current) {
+              setSearch('')
+              searchRef.current.focus()
+            }
 
             return !_isOpen
           })
