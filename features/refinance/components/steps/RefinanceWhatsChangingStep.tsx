@@ -86,6 +86,7 @@ export const RefinanceWhatsChangingStep = () => {
           {
             label: t('system.max-transaction-cost'),
             value: <>{getEstimatedGasFeeText(gasEstimation)}</>,
+            isLoading: !gasEstimation,
           },
         ]}
       />
