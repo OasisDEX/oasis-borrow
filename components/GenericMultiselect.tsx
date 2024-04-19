@@ -420,6 +420,13 @@ export function GenericMultiselect({
               {...option}
             />
           ))}
+          {filteredOptions.length === 0 && (
+            <Box as="li">
+              <Text as="p" variant="paragraph3" sx={{ mx: 1, my: 1 }}>
+                {t('empty-options-list')}
+              </Text>
+            </Box>
+          )}
         </Flex>
       </Box>
     </Box>

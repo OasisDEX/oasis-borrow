@@ -327,6 +327,7 @@
   "edit-token-allowance": "Edit {{token}} allowance",
   "edit-vault-details": "Edit Vault details",
   "email": "Email",
+  "empty-options-list": "No items matching your search were found",
   "pending": "Pending...",
   "email-invalid": "Provided email is invalid",
   "email-required": "Email address is required",
