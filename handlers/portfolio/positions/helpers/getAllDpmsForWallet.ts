@@ -3,6 +3,7 @@ import type { OmniProductType } from 'features/omni-kit/types'
 import request, { gql } from 'graphql-request'
 import type { ConfigResponseType } from 'helpers/config'
 import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
+import { uniq } from 'ramda'
 
 const dpmListQuery = gql`
   query dpmData($walletAddress: String) {
@@ -100,7 +101,7 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
   // It has created position events associated
   // Those events can be other protocols with other token pairs relative to the DPM primary properties
   // therefore we are mapping it
-  return await Promise.all(dpmCallList).then((dpmNetworkList) => {
+  const dpms = await Promise.all(dpmCallList).then((dpmNetworkList) => {
     return dpmNetworkList.flatMap((dpm) => {
       return dpm.accounts.flatMap((account) => {
         return account.createEvents.map((createEvent) => ({
@@ -117,4 +118,8 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
       })
     })
   })
+
+  // Since we are mapping nested events, there is a possibility that output array will contain duplicates
+  // which should not be passed on UI
+  return uniq(dpms)
 }
