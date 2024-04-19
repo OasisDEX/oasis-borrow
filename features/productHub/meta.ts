@@ -172,7 +172,6 @@ export const productHubTags: ProductHubTags = {
     ProductHubTag.Gt1BTvl,
     ProductHubTag.IsolatedPairs,
     ProductHubTag.BluechipAssets,
-    ProductHubTag.Memecoins,
   ],
   [OmniProductType.Multiply]: [
     ProductHubTag.StablecoinStrategies,
