@@ -86,6 +86,7 @@ export const RefinanceProductTableStep = () => {
         updateState('strategy', item)
         setNextStep()
       }}
+      hideBanners
     />
   )
 }
