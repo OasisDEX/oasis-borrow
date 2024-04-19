@@ -3,25 +3,19 @@ import BigNumber from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { estimateOmniGas$, sendOmniTransaction$ } from 'features/omni-kit/observables'
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { mapTxInfoToOmniTxData } from 'features/refinance/helpers/mapTxInfoToOmniTxData'
+import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
+import { useSdkRefinanceTransaction } from 'features/refinance/hooks/useSdkTransaction'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useEffect, useMemo } from 'react'
+import type { TransactionInfo } from 'summerfi-sdk-common'
 
 export const useRefinanceTxHandler = () => {
   const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
   const signer = context?.transactionProvider
-
-  // from simulation hook
-  const txData = useMemo(
-    () => ({
-      to: '0x6C7eD10997873b59c2B2D9449d9106fE1dD85784',
-      data: '0xfcafcc680000000000000000000000000000000000000000000000000000000000007b9e000000000000000000000000f51d862200885a4732bab4c4b76188b33b3c5c8d',
-      value: '0',
-    }),
-    [],
-  )
 
   const {
     environment: {
@@ -37,27 +31,71 @@ export const useRefinanceTxHandler = () => {
 
   useEffect(() => {
     setGasEstimation(undefined)
-  }, [currentStep])
+  }, [currentStep, setGasEstimation])
 
-  // TODO for give tx it should be dsproxy, for refinance tx it should be dpm proxy
-  const proxyAddress = '0x6C7eD10997873b59c2B2D9449d9106fE1dD85784' || dpm?.address
+  const proxyAddress = dpm?.address
+
+  const {
+    error: simulationErrer,
+    refinanceSimulation,
+    importPositionSimulation,
+  } = useSdkSimulation()
+  const {
+    error: transactionError,
+    txImportPosition,
+    txRefinance,
+  } = useSdkRefinanceTransaction({
+    refinanceSimulation,
+    importPositionSimulation,
+  })
+
+  if (simulationErrer != null) {
+    throw new Error(simulationErrer)
+  }
+  if (transactionError != null) {
+    throw new Error(transactionError)
+  }
+
+  let txInfo: TransactionInfo | undefined
+  switch (currentStep) {
+    case RefinanceSidebarStep.Give:
+      txInfo = txImportPosition?.transactions[0]
+      break
+    case RefinanceSidebarStep.Changes:
+      txInfo = txRefinance?.transactions[0]
+  }
+
+  const txData = useMemo(() => mapTxInfoToOmniTxData(txInfo), [txInfo])
 
   useEffect(() => {
     if (
       dpm &&
       signer &&
-      [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(currentStep)
+      [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(currentStep) &&
+      txData &&
+      proxyAddress
     ) {
       estimateOmniGas$({
         networkId: chainId,
         proxyAddress,
         signer,
         txData,
+        sendAsSinger: true,
       }).subscribe((value) => setGasEstimation(value))
     }
-  }, [dpm?.address, txData, chainId, signer, strategy, currentStep])
+  }, [
+    dpm?.address,
+    txData,
+    chainId,
+    signer,
+    strategy,
+    currentStep,
+    dpm,
+    proxyAddress,
+    setGasEstimation,
+  ])
 
-  if (!txData || !dpm || !signer?.provider) {
+  if (!txData || !dpm || !signer?.provider || !proxyAddress) {
     return () => console.warn('no txData or proxyAddress or signer provider')
   }
 
@@ -67,6 +105,7 @@ export const useRefinanceTxHandler = () => {
       networkId: chainId,
       txData,
       proxyAddress,
+      sendAsSinger: true,
     }).subscribe((txState) => {
       const castedTxState = txState as TxState<TxMeta>
 

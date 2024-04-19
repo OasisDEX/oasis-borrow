@@ -18,7 +18,7 @@ export const getRefinanceStatusCopy = ({
   collateralToken: string
   quoteToken: string
   productType: OmniProductType
-  protocol: LendingProtocol
+  protocol?: LendingProtocol
   t: TranslationType
 }) =>
   currentStep === RefinanceSidebarStep.Give
@@ -27,5 +27,5 @@ export const getRefinanceStatusCopy = ({
         collateralToken,
         quoteToken,
         productType,
-        protocol: LendingProtocolLabel[protocol],
+        protocol: protocol ? LendingProtocolLabel[protocol] : undefined,
       })

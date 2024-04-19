@@ -1,4 +1,5 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { type SparkPoolId } from 'features/refinance/types'
@@ -6,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK } from 'summerfi-sdk-client'
 import type {
-  ILendingPool,
+  IImportPositionParameters,
   IPosition,
   IRefinanceParameters,
   ISimulation,
@@ -15,6 +16,7 @@ import type {
 import {
   Address,
   AddressType,
+  ExternalPositionType,
   Percentage,
   Position,
   ProtocolName,
@@ -22,18 +24,26 @@ import {
   Wallet,
 } from 'summerfi-sdk-common'
 
-import { getEmode } from './getEmode'
-
 export function useSdkSimulation() {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
   const [sourcePosition, setSourcePosition] = useState<null | IPosition>(null)
-  const [simulation, setSimulation] = useState<null | ISimulation<SimulationType.Refinance>>(null)
+  const [refinanceSimulation, setRefinanceSimulation] =
+    useState<null | ISimulation<SimulationType.Refinance>>(null)
+  const [importPositionSimulation, setImportPositionSimulation] =
+    useState<null | ISimulation<SimulationType.ImportPosition>>(null)
 
   const {
     environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: { positionId, liquidationPrice, collateralTokenData, debtTokenData, positionType },
+    position: {
+      positionId,
+      liquidationPrice,
+      collateralTokenData,
+      debtTokenData,
+      positionType,
+      owner,
+    },
     poolData: { poolId },
     form: {
       state: { strategy },
@@ -83,8 +93,17 @@ export function useSdkSimulation() {
       if (!makerProtocol) {
         throw new Error(`Protocol ${ProtocolName.Maker} is not found`)
       }
+      const sparkProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
+        name: ProtocolName.Spark,
+      })
+      if (!sparkProtocol) {
+        throw new Error(`Protocol ${ProtocolName.Spark} is not supported`)
+      }
 
-      const sourcePool = await makerProtocol.getPool({ poolId })
+      const [sourcePool, targetPool] = await Promise.all([
+        makerProtocol.getPool({ poolId }),
+        sparkProtocol.getPool({ poolId: targetPoolId }),
+      ])
 
       const _sourcePosition = Position.createFrom({
         positionId,
@@ -94,17 +113,6 @@ export function useSdkSimulation() {
         type: positionType,
       })
       setSourcePosition(_sourcePosition)
-
-      const sparkProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
-        name: ProtocolName.Spark,
-      })
-      if (!sparkProtocol) {
-        throw new Error(`Protocol ${ProtocolName.Spark} is not supported`)
-      }
-
-      const targetPool: ILendingPool = await sparkProtocol.getPool({
-        poolId: targetPoolId,
-      })
 
       const _targetPosition = Position.createFrom({
         positionId: { id: 'newEmptyPositionFromPool' },
@@ -124,22 +132,35 @@ export function useSdkSimulation() {
         type: positionType,
       })
 
+      const importPositionParameters: IImportPositionParameters = {
+        externalPosition: {
+          position: _sourcePosition,
+          externalId: {
+            address: Address.createFromEthereum({
+              value: owner as `0x${string}`,
+            }),
+            type: ExternalPositionType.DS_PROXY,
+          },
+        },
+      }
       const refinanceParameters: IRefinanceParameters = {
         sourcePosition: _sourcePosition,
         targetPosition: _targetPosition,
         slippage: Percentage.createFrom({ value: slippage }),
       }
 
-      const _simulation =
-        await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
-      setSimulation(_simulation)
+      const [_importPositionSimulation, _refinanceSimulation] = await Promise.all([
+        sdk.simulator.importing.simulateImportPosition(importPositionParameters),
+        sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters),
+      ])
+      setImportPositionSimulation(_importPositionSimulation)
+      setRefinanceSimulation(_refinanceSimulation)
     }
     void fetchData().catch((err) => {
       setError(err.message)
     })
   }, [
     sdk,
-    strategy,
     slippage,
     collateralPrice,
     debtPrice,
@@ -147,15 +168,24 @@ export function useSdkSimulation() {
     chainInfo,
     poolId,
     positionId,
-    collateralTokenData,
-    debtTokenData,
+    JSON.stringify(collateralTokenData),
+    JSON.stringify(debtTokenData),
     positionType,
     strategy?.product,
     strategy?.primaryToken,
     strategy?.secondaryToken,
   ])
 
-  const simulatedPosition = simulation?.targetPosition || null
+  const simulatedPosition = refinanceSimulation?.targetPosition || null
 
-  return { error, chain, user, sourcePosition, simulatedPosition, liquidationPrice }
+  return {
+    error,
+    chain,
+    user,
+    sourcePosition,
+    simulatedPosition,
+    importPositionSimulation,
+    refinanceSimulation,
+    liquidationPrice,
+  }
 }

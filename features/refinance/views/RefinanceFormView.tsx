@@ -59,6 +59,8 @@ export const RefinanceFormView: FC = ({ children }) => {
 
   const txHandler = useRefinanceTxHandler()
 
+  const isSimulationLoading = txHandler === null
+
   const shouldSwitchNetwork = chainId !== walletChainId
 
   const primaryButtonLabel = getRefinancePrimaryButtonLabelKey({
@@ -89,7 +91,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     currentStep,
     hasErrors,
     isOwner,
-    isSimulationLoading: false, // to potentially use loading state from simulation hook
+    isSimulationLoading,
     isTxInProgress,
     isTxSuccess,
     isTxWaitingForApproval,
@@ -150,7 +152,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     isTxSuccess,
     text: getRefinanceStatusCopy({
       currentStep,
-      protocol: lendingProtocol,
+      protocol: strategy?.protocol,
       collateralToken: collateralTokenData.token.symbol,
       quoteToken: debtTokenData.token.symbol,
       productType,

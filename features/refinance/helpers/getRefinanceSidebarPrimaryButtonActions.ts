@@ -74,7 +74,7 @@ export function getRefinanceSidebarPrimaryButtonActions({
           protocol,
           pseudoProtocol,
           quoteAddress,
-          quoteToken: quoteToken,
+          quoteToken,
         }),
       }
     case isStepWithTransaction && isTxSuccess:
