@@ -16,6 +16,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useEffect, useMemo } from 'react'
+import { useBeforeUnload } from 'react-use'
 import { EMPTY, from } from 'rxjs'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Flex, Text } from 'theme-ui'
@@ -30,6 +31,10 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const isMobile = useOnMobile()
 
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
+
+  const isTxInProgress = !!ctx?.tx.isTxInProgress
+
+  useBeforeUnload(isTxInProgress)
 
   const positionOwner = useMemo(
     () =>
@@ -47,6 +52,14 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const [owner] = useObservable(positionOwner)
 
   const onClose = () => {
+    if (isTxInProgress) {
+      if (window.confirm(t('refinance.close-prompt'))) {
+        handleOnClose(contextInput.contextId)
+        closeModal()
+      }
+      return
+    }
+
     handleOnClose(contextInput.contextId)
     closeModal()
   }
