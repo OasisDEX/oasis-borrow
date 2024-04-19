@@ -25,7 +25,7 @@ const finalConfig = async (): Promise<Config.InitialOptions> => {
   return {
     ...nextConfig,
     transformIgnorePatterns: [
-      '/node_modules/(?!(@web3-onboard|nanoid|ramda|uint8arrays|multiformats|@walletconnect)/)',
+      '/node_modules/(?!(@web3-onboard|nanoid|ramda|isows|uint8arrays|multiformats|@walletconnect)/)',
     ],
   }
 }

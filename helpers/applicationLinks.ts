@@ -1,6 +1,11 @@
 export const INTERNAL_LINKS = {
   appUrl: 'https://summer.fi',
   homepage: '/',
+  /**
+   To be used with address
+   `${INTERNAL_LINKS.portfolio}/${walletAddress}`
+   */
+  portfolio: '/portfolio',
   about: '/about',
   notFound: '/not-found',
   privacy: '/privacy',

@@ -97,6 +97,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
               productType,
               protocol,
               quoteAddress,
+              positionTriggers: productContext.automation.positionTriggers,
             }),
         },
         values: {
