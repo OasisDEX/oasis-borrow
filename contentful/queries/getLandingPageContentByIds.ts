@@ -98,7 +98,9 @@ export const getLandingPageContentByIds = async (collectionIds: string[], previe
                   }
                   ... on ProductFinder {
                     name
-                    token
+                    collateralToken
+                    debtToken
+                    depositToken
                     product {
                       slug
                       name
@@ -132,6 +134,7 @@ export const getLandingPageContentByIds = async (collectionIds: string[], previe
                           name
                           slug
                         }
+                        label
                       }
                     }
                   }

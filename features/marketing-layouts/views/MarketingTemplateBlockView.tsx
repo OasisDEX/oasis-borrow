@@ -107,7 +107,13 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           {content.map((productFinder, i) => {
             return (
               <Fragment key={i}>
-                <ProductHubView headerGradient={foreground} limitRows={10} {...productFinder} />
+                <ProductHubView
+                  headerGradient={
+                    foreground.length > 1 ? foreground : [foreground[0], foreground[0]]
+                  }
+                  limitRows={10}
+                  {...productFinder}
+                />
               </Fragment>
             )
           })}

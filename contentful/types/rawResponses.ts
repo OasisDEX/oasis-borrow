@@ -147,24 +147,26 @@ export interface LendingPageProductBoxRawResponse {
 export interface ProductFinderRawResponse {
   __typename: LandingPageRawBlocks.PRODUCT_FINDER
   name: string
-  token: string
   product: {
     slug: OmniProductType
     name: string
   }
-  initialProtocolCollection: {
+  collateralToken?: string[]
+  debtToken?: string[]
+  depositToken?: string[]
+  initialProtocolCollection?: {
     items: {
       slug: LendingProtocol
       name: LendingProtocolLabel
     }[]
   }
-  initialNetworkCollection: {
+  initialNetworkCollection?: {
     items: {
       slug: ProductHubSupportedNetworks
       name: NetworkLabelType
     }[]
   }
-  promoCardsCollection: {
+  promoCardsCollection?: {
     items: {
       name: string
       network: { name: string; slug: string }
@@ -178,6 +180,7 @@ export interface ProductFinderRawResponse {
         name: string
         slug: string
       }
+      label?: string
     }[]
   }
 }
