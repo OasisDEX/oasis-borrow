@@ -4,7 +4,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3UserAccountData } from 'blockchain/spark-v3'
 import type { OmniFlowStateFilterParams } from 'features/omni-kit/types'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function aaveLikeFlowStateFilter({

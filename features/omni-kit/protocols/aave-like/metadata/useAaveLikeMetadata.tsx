@@ -8,7 +8,7 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useMorphoYieldLoopHeadlineDetails'
+import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import {
   AaveLikeDetailsSectionContent,
   AaveLikeDetailsSectionFooter,
@@ -80,7 +80,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       const resolvedSimulation = simulation || cachedSimulation
 
       const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
-        maxRiskRatio: position.maxRiskRatio.loanToValue,
+        ltv: position.riskRatio.loanToValue || resolvedSimulation?.maxRiskRatio.loanToValue,
       })
 
       return {

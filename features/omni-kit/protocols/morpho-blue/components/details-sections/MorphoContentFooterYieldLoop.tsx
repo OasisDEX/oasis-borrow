@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { OmniOpenYieldLoopFooter } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
@@ -7,7 +6,14 @@ import React, { useMemo } from 'react'
 
 export function MorphoContentFooterYieldLoop() {
   const {
-    environment: { protocol, network, quoteAddress, collateralAddress },
+    environment: {
+      protocol,
+      network,
+      quoteAddress,
+      collateralAddress,
+      quoteToken,
+      collateralToken,
+    },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -16,8 +22,8 @@ export function MorphoContentFooterYieldLoop() {
   } = useOmniProductContext(OmniProductType.Multiply)
 
   const ltv = useMemo(() => {
-    return new BigNumber(1)
-  }, [])
+    return position.maxRiskRatio.loanToValue || simulation?.maxRiskRatio.loanToValue
+  }, [position.maxRiskRatio.loanToValue, simulation?.maxRiskRatio.loanToValue])
 
   return (
     <OmniOpenYieldLoopFooter
@@ -26,6 +32,8 @@ export function MorphoContentFooterYieldLoop() {
           actionSource: 'MorphoContentFooterYieldLoop',
           quoteTokenAddress: quoteAddress,
           collateralTokenAddress: collateralAddress,
+          quoteToken: quoteToken,
+          collateralToken: collateralToken,
           ltv,
           networkId: network.id,
           protocol,

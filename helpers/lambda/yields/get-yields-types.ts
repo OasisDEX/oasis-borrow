@@ -7,6 +7,8 @@ export interface GetYieldsParams {
   ltv: BigNumber
   quoteTokenAddress: string
   collateralTokenAddress: string
+  quoteToken: string
+  collateralToken: string
   networkId: NetworkIds
   protocol: LendingProtocol
   referenceDate: Date

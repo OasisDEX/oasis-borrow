@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { OmniOpenYieldLoopSimulation } from 'features/omni-kit/components/details-section'
 import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -10,7 +9,15 @@ import React, { useMemo } from 'react'
 
 export const MorphoDetailsSectionContentYieldLoopOpen: FC = () => {
   const {
-    environment: { productType, quoteToken, quoteAddress, collateralAddress, protocol, network },
+    environment: {
+      productType,
+      quoteToken,
+      quoteAddress,
+      collateralAddress,
+      protocol,
+      network,
+      collateralToken,
+    },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -27,8 +34,8 @@ export const MorphoDetailsSectionContentYieldLoopOpen: FC = () => {
   )
 
   const ltv = useMemo(() => {
-    return new BigNumber(1)
-  }, [])
+    return position.maxRiskRatio.loanToValue || simulation?.maxRiskRatio.loanToValue
+  }, [position.maxRiskRatio.loanToValue, simulation?.maxRiskRatio.loanToValue])
 
   const simulations = useOmniSimulationYields({
     amount,
@@ -38,6 +45,8 @@ export const MorphoDetailsSectionContentYieldLoopOpen: FC = () => {
         actionSource: 'MorphoDetailsSectionContentYieldLoopOpen',
         quoteTokenAddress: quoteAddress,
         collateralTokenAddress: collateralAddress,
+        quoteToken: quoteToken,
+        collateralToken: collateralToken,
         ltv,
         networkId: network.id,
         protocol,

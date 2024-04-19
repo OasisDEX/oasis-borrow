@@ -71,6 +71,8 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
             actionSource: 'AaveLikeDetailsSectionContentManage',
             quoteTokenAddress: quoteAddress,
             collateralTokenAddress: collateralAddress,
+            quoteToken: quoteToken,
+            collateralToken: collateralToken,
             ltv: castedPosition.riskRatio.loanToValue,
             networkId: network.id,
             protocol,

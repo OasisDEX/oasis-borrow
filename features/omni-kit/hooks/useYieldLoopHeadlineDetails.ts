@@ -4,7 +4,7 @@ import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { useOmniYieldLoopHeadline } from 'features/omni-kit/hooks'
 import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 
-export const useYieldLoopHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: BigNumber }) => {
+export const useYieldLoopHeadlineDetails = ({ ltv }: { ltv: BigNumber }) => {
   const {
     environment: {
       protocol,
@@ -13,6 +13,8 @@ export const useYieldLoopHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: Bi
       network,
       quoteAddress,
       collateralAddress,
+      collateralToken,
+      quoteToken,
     },
   } = useOmniGeneralContext()
 
@@ -25,28 +27,34 @@ export const useYieldLoopHeadlineDetails = ({ maxRiskRatio }: { maxRiskRatio: Bi
   const referenceDateOffset = new Date(new Date().setDate(referenceDate.getDate() - 1))
 
   const minYields = useOmniEarnYields({
-    actionSource: 'useAaveLikeHeadlineDetails minYields',
+    actionSource: 'useYieldLoopHeadlineDetails minYields',
     quoteTokenAddress: quoteAddress,
     collateralTokenAddress: collateralAddress,
+    quoteToken: quoteToken,
+    collateralToken: collateralToken,
     ltv: minRiskRatio.loanToValue,
     networkId: network.id,
     protocol,
     referenceDate,
   })
   const maxYields = useOmniEarnYields({
-    actionSource: 'useAaveLikeHeadlineDetails maxYields',
+    actionSource: 'useYieldLoopHeadlineDetails maxYields',
     quoteTokenAddress: quoteAddress,
     collateralTokenAddress: collateralAddress,
-    ltv: maxRiskRatio,
+    quoteToken: quoteToken,
+    collateralToken: collateralToken,
+    ltv,
     networkId: network.id,
     protocol,
     referenceDate,
   })
   const maxYieldsOffset = useOmniEarnYields({
-    actionSource: 'useAaveLikeHeadlineDetails maxYields',
+    actionSource: 'useYieldLoopHeadlineDetails maxYields',
     quoteTokenAddress: quoteAddress,
     collateralTokenAddress: collateralAddress,
-    ltv: maxRiskRatio,
+    quoteToken: quoteToken,
+    collateralToken: collateralToken,
+    ltv,
     networkId: network.id,
     protocol,
     referenceDate: referenceDateOffset,

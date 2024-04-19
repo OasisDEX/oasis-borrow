@@ -2,15 +2,14 @@ import BigNumber from 'bignumber.js'
 import type { GetYieldsParams, GetYieldsResponseMapped } from 'helpers/lambda/yields'
 import { getYieldsRequest } from 'helpers/lambda/yields'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponseMapped | undefined {
   const [omniYields, setOmniYields] = useState<GetYieldsResponseMapped>()
-  const memoizedGetYieldsRequest = useMemo(() => getYieldsRequest, [])
 
   useDebouncedEffect(
     () => {
-      memoizedGetYieldsRequest(params)
+      getYieldsRequest(params)
         .then((yieldsResponse) => {
           if (yieldsResponse?.results) {
             setOmniYields({

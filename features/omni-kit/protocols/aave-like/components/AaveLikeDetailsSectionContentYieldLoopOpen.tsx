@@ -13,7 +13,15 @@ import React, { useMemo } from 'react'
 
 export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
   const {
-    environment: { productType, quoteToken, quoteAddress, collateralAddress, protocol, network },
+    environment: {
+      productType,
+      quoteToken,
+      quoteAddress,
+      collateralAddress,
+      protocol,
+      network,
+      collateralToken,
+    },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -46,6 +54,8 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
         actionSource: 'AaveLikeDetailsSectionContentYieldLoopOpen',
         quoteTokenAddress: quoteAddress,
         collateralTokenAddress: collateralAddress,
+        quoteToken: quoteToken,
+        collateralToken: collateralToken,
         ltv: riskRatio.loanToValue,
         networkId: network.id,
         protocol,

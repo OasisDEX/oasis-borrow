@@ -1,6 +1,5 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
 import faqMultiply from 'features/content/faqs/morphoblue/multiply/en'
@@ -12,7 +11,7 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useMorphoYieldLoopHeadlineDetails'
+import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { MorphoDetailsSectionContentWrapper } from 'features/omni-kit/protocols/morpho-blue/components/details-sections/MorphoDetailsSectionContentWrapper'
 import {
@@ -55,10 +54,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
     tx: { txDetails },
   } = useOmniGeneralContext()
 
-  const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
-    maxRiskRatio: new BigNumber(8),
-  })
-
   const validations = productContext.position.simulationCommon.getValidations({
     safetySwitchOn: morphoSafetySwitchOn,
     isFormFrozen: false,
@@ -81,6 +76,10 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         | MorphoBluePosition
         | undefined
       const resolvedSimulation = simulation || cachedSimulation
+
+      const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
+        ltv: position.riskRatio.loanToValue || resolvedSimulation?.maxRiskRatio.loanToValue,
+      })
 
       return {
         notifications,

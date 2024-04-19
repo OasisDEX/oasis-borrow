@@ -73,6 +73,6 @@ export const useOmniYieldLoopHeadline = ({
 
   return {
     headlineDetails,
-    isLoading: !(!!tvlData && !!minYields && !!maxYields),
+    isLoading: !(!!minYields && !!maxYields),
   }
 }

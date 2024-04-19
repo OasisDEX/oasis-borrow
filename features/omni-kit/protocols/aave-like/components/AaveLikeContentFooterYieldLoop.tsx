@@ -7,7 +7,14 @@ import React, { useMemo } from 'react'
 
 export function AaveLikeContentFooterYieldLoop() {
   const {
-    environment: { protocol, network, quoteAddress, collateralAddress },
+    environment: {
+      protocol,
+      network,
+      quoteAddress,
+      collateralAddress,
+      quoteToken,
+      collateralToken,
+    },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -32,6 +39,8 @@ export function AaveLikeContentFooterYieldLoop() {
           actionSource: 'AaveLikeContentFooterYieldLoop',
           quoteTokenAddress: quoteAddress,
           collateralTokenAddress: collateralAddress,
+          quoteToken: quoteToken,
+          collateralToken: collateralToken,
           ltv: riskRatio.loanToValue,
           networkId: network.id,
           protocol,
