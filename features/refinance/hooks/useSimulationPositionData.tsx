@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js'
 import type { RefinancePositionViewProps } from 'features/refinance/components'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
+import { type SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import type { RefinancePositionViewType } from 'features/refinance/types'
 import { PositionUtils } from 'summerfi-sdk-client'
 import { CurrencySymbol, Price } from 'summerfi-sdk-common'
 
-export const useSimulationPositionData = () => {
-  const simulation = useSdkSimulation()
+export const useSimulationPositionData = (simulation: SDKSimulation) => {
   const {
     environment: { collateralPrice, debtPrice },
   } = useRefinanceContext()

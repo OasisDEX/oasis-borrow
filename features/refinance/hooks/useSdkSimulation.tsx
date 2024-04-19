@@ -8,6 +8,7 @@ import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK } from 'summerfi-sdk-client'
 import type {
   IImportPositionParameters,
+  IPool,
   IPosition,
   IRefinanceParameters,
   ISimulation,
@@ -24,7 +25,19 @@ import {
   Wallet,
 } from 'summerfi-sdk-common'
 
-export function useSdkSimulation() {
+export type SDKSimulation = {
+  error: string | null
+  chain: Chain | null
+  user: User | null
+  sourcePosition: IPosition | null
+  simulatedPosition: IPosition | null
+  simulatedPool: IPool | null
+  importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
+  refinanceSimulation: ISimulation<SimulationType.Refinance> | null
+  liquidationPrice: string
+}
+
+export function useSdkSimulation(): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
@@ -33,6 +46,7 @@ export function useSdkSimulation() {
     useState<null | ISimulation<SimulationType.Refinance>>(null)
   const [importPositionSimulation, setImportPositionSimulation] =
     useState<null | ISimulation<SimulationType.ImportPosition>>(null)
+  const [simulatedPool, setSimulatedPool] = useState<null | IPool>(null)
 
   const {
     environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
@@ -104,6 +118,7 @@ export function useSdkSimulation() {
         makerProtocol.getPool({ poolId }),
         sparkProtocol.getPool({ poolId: targetPoolId }),
       ])
+      setSimulatedPool(targetPool)
 
       const _sourcePosition = Position.createFrom({
         positionId,
@@ -167,10 +182,11 @@ export function useSdkSimulation() {
     address,
     chainInfo,
     poolId,
-    positionId,
+    positionId.id,
     JSON.stringify(collateralTokenData),
     JSON.stringify(debtTokenData),
     positionType,
+    owner,
     strategy?.product,
     strategy?.primaryToken,
     strategy?.secondaryToken,
@@ -184,6 +200,7 @@ export function useSdkSimulation() {
     user,
     sourcePosition,
     simulatedPosition,
+    simulatedPool,
     importPositionSimulation,
     refinanceSimulation,
     liquidationPrice,

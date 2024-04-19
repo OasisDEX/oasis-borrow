@@ -7,13 +7,14 @@ import { RefinanceReviewChangesSection } from 'features/refinance/components/ste
 import { RefinanceRouteSection } from 'features/refinance/components/steps/RefinanceRouteSection'
 import { RefinanceSwapSection } from 'features/refinance/components/steps/RefinanceSwapSection'
 import { useRefinanceContext } from 'features/refinance/contexts'
+import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { formatFiatBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
 
-export const RefinanceWhatsChangingStep = () => {
+export const RefinanceWhatsChangingStep = ({ simulation }: { simulation: SDKSimulation }) => {
   const { t } = useTranslation()
 
   const {
@@ -69,7 +70,7 @@ export const RefinanceWhatsChangingStep = () => {
         {t('refinance.sidebar.whats-changing.description')}
       </Text>
       <RefinanceHighlightedChangeSection />
-      <RefinanceReviewChangesSection />
+      <RefinanceReviewChangesSection simulation={simulation} />
       <RefinanceSwapSection />
       <RefinanceRouteSection />
       <RefinanceValidationMessages validations={errors} type="error" />

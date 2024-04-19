@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
+import { useRefinanceContext } from 'features/refinance/contexts'
+import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -8,19 +10,52 @@ import {
 } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { PositionUtils } from 'summerfi-sdk-client'
+import { type RiskRatio, RiskRatioType } from 'summerfi-sdk-common'
 import { Text } from 'theme-ui'
 
-export const RefinanceReviewChangesSection = () => {
+export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKSimulation }) => {
   const { t } = useTranslation()
 
-  const ltv = new BigNumber(0.6)
-  const afterLtv = new BigNumber(0.7)
-  const liquidationPrice = new BigNumber(1235)
-  const afterLiquidationPrice = new BigNumber(1335)
-  const debt = new BigNumber(12000)
-  const afterDebt = new BigNumber(14000)
-  const primaryToken = 'ETH'
-  const afterSecondaryToken = 'USDC'
+  const {
+    environment: { debtPrice },
+    poolData,
+    position,
+  } = useRefinanceContext()
+
+  const ltv = new BigNumber(poolData.maxLtv.loanToValue)
+  const liquidationPrice = new BigNumber(position.liquidationPrice)
+  const debt = new BigNumber(position.debtTokenData.amount)
+  const debtToken = position.debtTokenData.token.symbol
+
+  const simulatedPosition = simulation.simulatedPosition
+
+  if (!simulatedPosition) {
+    return null
+  }
+
+  // TECH DEBT: This is a temporary fix to get the liquidation threshold from SDK as there is no other way currently
+  let liquidationThreshold: RiskRatio | undefined
+  try {
+    liquidationThreshold = (simulatedPosition.pool as any).collaterals.get({
+      token: simulatedPosition.collateralAmount.token,
+    })?.maxLtv
+  } catch (e) {
+    console.error('Error getting liquidation threshold', e)
+  }
+  const afterLtv = new BigNumber(
+    liquidationThreshold ? liquidationThreshold.convertTo(RiskRatioType.LTV) : 0,
+  )
+  // TECH DEBT END
+
+  const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
+    liquidationThreshold: liquidationThreshold,
+    debtPriceInUsd: debtPrice,
+    position: simulatedPosition,
+  })
+  const afterLiquidationPrice = new BigNumber(afterLiquidationPriceInUsd).div(100)
+  const afterDebt = new BigNumber(simulatedPosition.collateralAmount.amount)
+  const afterDebtToken = simulatedPosition.collateralAmount.token.symbol
 
   const ltvChange = afterLtv.minus(ltv).div(ltv)
   const liquidationPriceChange = afterLiquidationPrice.minus(liquidationPrice).div(liquidationPrice)
@@ -32,11 +67,9 @@ export const RefinanceReviewChangesSection = () => {
     liquidationPrice: formatCryptoBalance(liquidationPrice),
     afterLiquidationPrice: formatCryptoBalance(afterLiquidationPrice),
     liquidationPriceChange: formatDecimalAsPercent(liquidationPriceChange),
-    debt: (
-      <ItemValueWithIcon tokens={[primaryToken]}>{formatCryptoBalance(debt)}</ItemValueWithIcon>
-    ),
+    debt: <ItemValueWithIcon tokens={[debtToken]}>{formatCryptoBalance(debt)}</ItemValueWithIcon>,
     afterDebt: (
-      <ItemValueWithIcon tokens={[afterSecondaryToken]}>
+      <ItemValueWithIcon tokens={[afterDebtToken]}>
         {formatCryptoBalance(afterDebt)}
       </ItemValueWithIcon>
     ),
