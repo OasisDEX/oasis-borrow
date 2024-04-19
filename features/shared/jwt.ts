@@ -1,4 +1,5 @@
-import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
+import type { SendTransactionsResponse } from '@safe-global/safe-apps-sdk'
+import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { decode } from 'jsonwebtoken'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
@@ -71,7 +72,7 @@ async function getGnosisSafeDetails(
   }
 
   const dataToSign = getDataToSignFromChallenge(newChallenge)
-  const { safeTxHash } = await sdk.txs.signMessage(dataToSign)
+  const { safeTxHash } = (await sdk.txs.signMessage(dataToSign)) as SendTransactionsResponse
   localStorage.setItem(
     key,
     JSON.stringify({
