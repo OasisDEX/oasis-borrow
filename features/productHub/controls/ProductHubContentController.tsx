@@ -166,8 +166,9 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         )}
         <ProductHubTableController
           banner={banner}
+          limitRows={limitRows}
           perPage={perPage}
-          rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
+          rows={rows}
           separator={separator}
         />
       </AssetsTableContainer>

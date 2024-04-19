@@ -8,6 +8,7 @@ import React from 'react'
 
 interface ProductHubTableControllerProps {
   banner?: ActionBannerProps
+  limitRows?: number
   perPage?: number
   rows: AssetsTableRowData[]
   separator?: AssetsTableSeparator
@@ -15,6 +16,7 @@ interface ProductHubTableControllerProps {
 
 export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({
   banner,
+  limitRows,
   perPage,
   rows,
   separator,
@@ -26,6 +28,7 @@ export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({
       {rows.length > 0 ? (
         <AssetsResponsiveTable
           banner={banner}
+          limitRows={limitRows}
           perPage={perPage}
           rows={rows}
           separator={separator}

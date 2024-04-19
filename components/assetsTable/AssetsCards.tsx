@@ -27,6 +27,7 @@ export function AssetsCards({
   banner,
   headerTranslationProps,
   isLoading = false,
+  limitRows,
   perPage,
   rows = [],
 }: AssetsCardsProps) {
@@ -69,7 +70,9 @@ export function AssetsCards({
       ...rowsWithStickied,
       ...(resolvedPerPage
         ? rowsWithoutStickied.slice((page - 1) * resolvedPerPage, page * resolvedPerPage)
-        : rowsWithoutStickied),
+        : limitRows
+          ? rowsWithoutStickied.slice(0, limitRows)
+          : rowsWithoutStickied),
     ],
     [page, resolvedPerPage, rowsWithStickied, rowsWithoutStickied],
   )

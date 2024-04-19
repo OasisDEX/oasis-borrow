@@ -41,6 +41,7 @@ export interface AssetsTableProps {
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isLoading?: boolean
   isSticky?: boolean
+  limitRows?: number
   paddless?: boolean
   perPage?: number
   rows: AssetsTableRowData[]

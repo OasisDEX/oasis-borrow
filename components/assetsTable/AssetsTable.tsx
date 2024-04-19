@@ -52,6 +52,7 @@ export function AssetsTable({
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
+  limitRows,
   paddless,
   perPage,
   rows,
@@ -110,9 +111,11 @@ export function AssetsTable({
       ...rowsWithStickied,
       ...(resolvedPerPage
         ? sortedRows.slice((page - 1) * resolvedPerPage, page * resolvedPerPage)
-        : sortedRows),
+        : limitRows
+          ? sortedRows.slice(0, limitRows)
+          : sortedRows),
     ],
-    [page, resolvedPerPage, rowsWithStickied, sortedRows],
+    [limitRows, page, resolvedPerPage, rowsWithStickied, sortedRows],
   )
 
   const bannerRows = Math.min(paginatedRows.length - 1, 9)
