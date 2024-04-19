@@ -3,7 +3,6 @@ import { AppLink } from 'components/Links'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
 import { WithArrow } from 'components/WithArrow'
-import { getMigrationLink } from 'features/migrations/getMigrationLink'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { getLocalAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -100,15 +99,7 @@ export const PortfolioOverview = ({
           subValue={
             getLocalAppConfig('features').EnableMigrations && (
               <AppLink
-                href={
-                  biggestMigration
-                    ? getMigrationLink({
-                        protocol: biggestMigration.protocol,
-                        network: biggestMigration.network,
-                        address: biggestMigration.url,
-                      })
-                    : ''
-                }
+                href={biggestMigration ? biggestMigration.url : ''}
                 target="_self"
                 sx={{ mr: 3 }}
               >
