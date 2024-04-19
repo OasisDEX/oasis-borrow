@@ -104,7 +104,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [selectedProduct, dataFilteredByFeatureFlags],
   )
   const dataFilteredByUserFilters = useMemo(
-    () => filterByUserFilters(dataFilteredByProductType, selectedFilters, stickied),
+    () =>
+      filterByUserFilters(dataFilteredByProductType, selectedFilters, selectedProduct, stickied),
     [dataFilteredByProductType, selectedFilters, stickied],
   )
   const dataSortedByDefault = useMemo(

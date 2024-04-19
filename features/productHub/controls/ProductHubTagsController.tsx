@@ -1,6 +1,6 @@
 import 'rc-slider/assets/index.css'
 
-import type { OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHabTagButton, ProductHubTagLiquidity } from 'features/productHub/components'
 import { productHubTags } from 'features/productHub/meta'
 import { type ProductHubFilters } from 'features/productHub/types'
@@ -35,7 +35,9 @@ export const ProductHubTagsController: FC<ProductHubTagsControllerProps> = ({
         zIndex: 1,
       }}
     >
-      <ProductHubTagLiquidity onChange={onChange} selectedFilters={selectedFilters} />
+      {selectedProduct !== OmniProductType.Earn && (
+        <ProductHubTagLiquidity onChange={onChange} selectedFilters={selectedFilters} />
+      )}
       {productHubTags[selectedProduct].map((tag) => (
         <ProductHabTagButton
           key={tag}

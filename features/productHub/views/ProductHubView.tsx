@@ -104,6 +104,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                   delete _selectedFilters['debt-token']
                   delete _selectedFilters['deposit-token']
                   delete _selectedFilters['tags']
+                  delete _selectedFilters['min-liquidity']
 
                   return _selectedFilters
                 })

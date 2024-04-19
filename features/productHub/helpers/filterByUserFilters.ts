@@ -1,3 +1,4 @@
+import { OmniProductType } from 'features/omni-kit/types'
 import { filterByCategory, filterByTags, filterFeaturedProducts } from 'features/productHub/helpers'
 import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
@@ -10,7 +11,8 @@ import type {
 
 export function filterByUserFilters(
   rows: ProductHubItem[],
-  filters: ProductHubFilters,
+  selectedFilters: ProductHubFilters,
+  selectedProduct: OmniProductType,
   stickied: ProductHubFeaturedFilters[] = [],
 ): ProductHubItem[] {
   const stickiedRows = filterFeaturedProducts({ filters: stickied, rows })
@@ -18,8 +20,8 @@ export function filterByUserFilters(
   return rows.filter((row) =>
     stickiedRows.includes(row)
       ? true
-      : Object.keys(filters).every((k) => {
-          const value = filters[k]
+      : Object.keys(selectedFilters).every((k) => {
+          const value = selectedFilters[k]
 
           if (value.length) {
             const primaryToken = row.reverseTokens ? row.secondaryToken : row.primaryToken
@@ -34,7 +36,7 @@ export function filterByUserFilters(
             switch (k) {
               case 'category':
                 return filterByCategory({
-                  category: filters.category[0] as ProductHubCategory,
+                  category: selectedFilters.category[0] as ProductHubCategory,
                   primaryToken,
                   primaryTokenGroup,
                   row,
@@ -58,15 +60,15 @@ export function filterByUserFilters(
                   row,
                   secondaryToken,
                   secondaryTokenGroup,
-                  tags: filters.tags as ProductHubTag[],
+                  tags: selectedFilters.tags as ProductHubTag[],
                 })
               default:
                 return true
             }
           } else return true
         }) &&
-        (row.liquidity
-          ? Number(row.liquidity) >= Number(filters['min-liquidity'] ?? MIN_LIQUIDITY)
+        (selectedProduct !== OmniProductType.Earn
+          ? Number(row.liquidity) >= Number(selectedFilters['min-liquidity'] ?? MIN_LIQUIDITY)
           : true),
   )
 }
