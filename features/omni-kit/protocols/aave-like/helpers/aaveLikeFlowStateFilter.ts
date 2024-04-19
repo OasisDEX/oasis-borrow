@@ -4,6 +4,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3UserAccountData } from 'blockchain/spark-v3'
 import type { OmniFlowStateFilterParams } from 'features/omni-kit/types'
+import type { GetTriggersResponse } from 'helpers/triggers'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function aaveLikeFlowStateFilter({
@@ -13,9 +14,17 @@ export async function aaveLikeFlowStateFilter({
   networkId,
   protocol,
   quoteAddress,
+  positionTriggers,
 }: OmniFlowStateFilterParams & {
   networkId: NetworkIds
+  positionTriggers?: GetTriggersResponse
 }): Promise<boolean> {
+  // if theres triggers we should not allow
+  // the user to open a new position with this DPM
+  if (positionTriggers?.triggersCount && positionTriggers.triggersCount !== 0) {
+    return Promise.resolve(false)
+  }
+
   // if its spark/aave we need to check that because we cant mix them
   if (
     (protocol === LendingProtocol.AaveV3 && event.protocol === LendingProtocol.SparkV3) ||
