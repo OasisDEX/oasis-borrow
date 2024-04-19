@@ -23,12 +23,13 @@ import { circle_slider } from 'theme/icons'
 export function OmniAutomationFormController() {
   const { t } = useTranslation()
   const {
-    environment: { isOpening, productType, settings, networkId },
+    environment: { isOpening, productType },
     automationSteps: { currentStep, setStep },
     tx: { isTxInProgress },
   } = useOmniGeneralContext()
   const {
     automation: {
+      availableAutomations,
       commonForm: {
         updateState,
         state: { uiDropdownProtection, uiDropdownOptimization, activeAction },
@@ -45,8 +46,6 @@ export function OmniAutomationFormController() {
   }
 
   const { activeForm, isOptimization, isProtection } = automation.resolved
-
-  const availableAutomations = settings.availableAutomations[networkId]
 
   const itemsMap: { [key: string]: SidebarSectionHeaderSelectItem[] } | undefined = {
     optimization: [

@@ -12,7 +12,7 @@ import { Grid } from 'theme-ui'
 
 export const OmniOptimizationOverviewController: FC = () => {
   const {
-    environment: { productType, settings, networkId },
+    environment: { productType },
     automationSteps: { setStep },
     tx: { isTxInProgress },
   } = useOmniGeneralContext()
@@ -21,11 +21,10 @@ export const OmniOptimizationOverviewController: FC = () => {
       values: { automation },
     },
     automation: {
+      availableAutomations,
       commonForm: { state, updateState },
     },
   } = useOmniProductContext(productType)
-
-  const availableAutomations = settings.availableAutomations?.[networkId]
 
   const isPartialTakeProfitEnabled = !!automation?.flags.isPartialTakeProfitEnabled
   const isAutoBuyEnabled = !!automation?.flags.isAutoBuyEnabled

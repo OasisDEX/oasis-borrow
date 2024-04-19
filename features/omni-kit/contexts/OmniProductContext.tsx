@@ -1,8 +1,9 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniValidations } from 'features/omni-kit/helpers'
 import { useOmniInitialization } from 'features/omni-kit/hooks'
-import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
+import { formatSwapData, isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import type {
   OmniPositionSet,
   OmniSimulationCommon,
@@ -80,6 +81,9 @@ export function OmniProductContextProvider({
       quoteBalance,
       quotePrecision,
       quoteToken,
+      settings,
+      isYieldLoop,
+      networkId,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -123,6 +127,20 @@ export function OmniProductContextProvider({
       position.riskRatio.loanToValue,
     )
   }
+
+  const isMultiplySupported = isPoolSupportingMultiply({
+    collateralToken,
+    quoteToken,
+    supportedTokens: settings.supportedMultiplyTokens[networkId],
+  })
+
+  const automationFeatures = isMultiplySupported
+    ? settings.availableAutomations?.[networkId] || []
+    : []
+
+  const resolvedAutomationFeatures = isYieldLoop
+    ? automationFeatures.filter((feature) => feature !== AutomationFeatures.TRAILING_STOP_LOSS)
+    : automationFeatures
 
   const context = useMemo(() => {
     const fromTokenPrecision = isIncreasingPositionRisk ? quotePrecision : collateralPrecision
@@ -178,6 +196,7 @@ export function OmniProductContextProvider({
         history: positionHistory,
       },
       automation: {
+        availableAutomations: resolvedAutomationFeatures,
         positionTriggers,
         automationForms,
         commonForm: automationForm,

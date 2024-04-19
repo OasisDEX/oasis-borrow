@@ -17,7 +17,7 @@ import { Grid } from 'theme-ui'
 
 export const OmniProtectionOverviewController: FC = () => {
   const {
-    environment: { productType, settings, networkId },
+    environment: { productType },
     automationSteps: { setStep },
     tx: { isTxInProgress },
   } = useOmniGeneralContext()
@@ -26,11 +26,10 @@ export const OmniProtectionOverviewController: FC = () => {
       values: { automation },
     },
     automation: {
+      availableAutomations,
       commonForm: { state, updateState },
     },
   } = useOmniProductContext(productType)
-
-  const availableAutomations = settings.availableAutomations?.[networkId]
 
   const isStopLossEnabled = !!automation?.flags.isStopLossEnabled
   const isTrailingStopLossEnabled = !!automation?.flags.isTrailingStopLossEnabled

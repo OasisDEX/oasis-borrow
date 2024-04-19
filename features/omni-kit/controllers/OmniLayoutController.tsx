@@ -22,7 +22,6 @@ import { OmniBorrowFormController } from 'features/omni-kit/controllers/borrow'
 import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
-import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
@@ -49,7 +48,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       isOracless,
       isOwner,
       isShort,
-      isYieldLoop,
       isYieldLoopWithData,
       network,
       networkId,
@@ -62,7 +60,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       quoteIcon,
       quotePrice,
       quoteToken,
-      settings,
     },
     tx: { isTxInProgress },
     automationSteps,
@@ -76,6 +73,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       values: { headline, headlineDetails, isHeadlineDetailsLoading, automation },
     },
     automation: {
+      availableAutomations,
       positionTriggers,
       commonForm: {
         state: { uiDropdownProtection, uiDropdownOptimization },
@@ -85,14 +83,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   } = useOmniProductContext(productType)
 
   const automationFormStateDispatch = automation?.resolved.activeForm.dispatch
-
-  const isMultiplySupported = isPoolSupportingMultiply({
-    collateralToken,
-    quoteToken,
-    supportedTokens: settings.supportedMultiplyTokens[networkId],
-  })
-  const automationFeatures =
-    isMultiplySupported && !isYieldLoop ? settings.availableAutomations?.[networkId] || [] : []
 
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
   const netValue = 'netValue' in position ? position.netValue : undefined
@@ -181,7 +171,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           },
           ...(!isOpening
             ? [
-                ...(hasCommonElement(automationFeatures, omniProtectionLikeAutomationFeatures)
+                ...(hasCommonElement(availableAutomations, omniProtectionLikeAutomationFeatures)
                   ? [
                       {
                         value: 'protection',
@@ -208,7 +198,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                       },
                     ]
                   : []),
-                ...(hasCommonElement(automationFeatures, omniOptimizationLikeAutomationFeatures)
+                ...(hasCommonElement(availableAutomations, omniOptimizationLikeAutomationFeatures)
                   ? [
                       {
                         value: 'optimization',

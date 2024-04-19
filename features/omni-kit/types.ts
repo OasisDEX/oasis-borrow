@@ -558,6 +558,7 @@ export type ProductContextAutomationForm =
   ProductContextAutomationForms[keyof ProductContextAutomationForms]
 
 export interface ProductContextAutomation {
+  availableAutomations: AutomationFeatures[]
   positionTriggers: GetTriggersResponse
   automationForms: ProductContextAutomationForms
   commonForm: ReturnType<typeof useOmniAutomationFormReducto>
