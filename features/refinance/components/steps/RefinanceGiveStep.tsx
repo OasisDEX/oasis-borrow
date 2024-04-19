@@ -21,6 +21,7 @@ export const RefinanceGiveStep = () => {
           {
             label: t('system.max-transaction-cost'),
             value: <>{getEstimatedGasFeeText(gasEstimation)}</>,
+            isLoading: !gasEstimation,
           },
         ]}
       />

@@ -23,29 +23,36 @@ import { Divider, Flex, Text } from 'theme-ui'
 export type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
   Type extends RefinancePositionViewType.EMPTY
     ? { type: Type }
-    : {
-        primaryToken: string
-        secondaryToken: string
-        protocolData: {
-          network: NetworkNames
-          protocol: LendingProtocol
+    : Type extends RefinancePositionViewType.CLOSED
+      ? {
+          type: Type
+          primaryToken: string
+          secondaryToken: string
+          positionId: string
         }
-        poolData: {
-          borrowRate: BigNumber
-          maxLtv: BigNumber
-          borrowRateChange?: BigNumber
-          maxLtvChange?: BigNumber
+      : {
+          primaryToken: string
+          secondaryToken: string
+          protocolData: {
+            network: NetworkNames
+            protocol: LendingProtocol
+          }
+          poolData: {
+            borrowRate: BigNumber
+            maxLtv: BigNumber
+            borrowRateChange?: BigNumber
+            maxLtvChange?: BigNumber
+          }
+          positionData?: {
+            ltv: BigNumber
+            collateral: BigNumber
+            debt: BigNumber
+            liquidationPrice: BigNumber
+          }
+          type: Type
+          automations: PortfolioPositionAutomations
+          positionId?: string
         }
-        positionData?: {
-          ltv: BigNumber
-          collateral: BigNumber
-          debt: BigNumber
-          liquidationPrice: BigNumber
-        }
-        type: Type
-        automations: PortfolioPositionAutomations
-        positionId?: string
-      }
 
 export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   props: RefinancePositionViewProps<Type>,
@@ -64,11 +71,35 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
           }}
         >
           <Icon icon={eye} size="25px" color="primary60" />
-          <Text as="h3" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+          <Text as="h3" sx={{ fontSize: 3, fontWeight: 'semiBold', mb: 2 }}>
             {t('refinance.position.empty.title')}
           </Text>
           <Text as="p" sx={{ fontSize: 2, color: 'neutral80' }}>
             {t('refinance.position.empty.description')}
+          </Text>
+        </Flex>
+      </RefinanceCardWrapper>
+    )
+  }
+
+  if (props.type === RefinancePositionViewType.CLOSED) {
+    return (
+      <RefinanceCardWrapper sx={{ height: 'fit-content' }}>
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
+          <Text as="h2" sx={{ fontSize: 3, fontWeight: 'semiBold', mb: 3 }}>
+            {t(`refinance.position.title.${props.type}`, {
+              positionId: props.positionId,
+            })}
+          </Text>
+          <Text as="p" sx={{ fontSize: 2, color: 'neutral80' }}>
+            {t('refinance.position.closed.description', {
+              pair: `${props.primaryToken}/${props.secondaryToken}`,
+            })}
           </Text>
         </Flex>
       </RefinanceCardWrapper>

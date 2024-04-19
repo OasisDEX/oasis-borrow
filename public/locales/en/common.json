@@ -3680,11 +3680,15 @@
       "title": {
         "current": "Current {{pair}} position #{{positionId}}",
         "simulation": "New {{pair}} position",
-        "created": "{{pair}} position #{{positionId}}"
+        "created": "{{pair}} position #{{positionId}}",
+        "closed": "Current position #{{positionId}}"
       },
       "empty": {
         "title": "New Position",
         "description": "It will show the position you are migrating to"
+      },
+      "closed": {
+        "description": "Your old {{pair}} position is closed."
       },
       "footer": {
         "canceled-automation": "*Automations will be canceled on new position. You can set it up again once the new position is created."
