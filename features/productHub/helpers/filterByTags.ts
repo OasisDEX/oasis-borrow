@@ -46,15 +46,19 @@ export function filterByTags({
         return PROTOCOLS_TVL_GT_1B.includes(row.protocol)
       case ProductHubTag.IsolatedPairs:
         return PROTOCOLS_ISOLATED_PAIRS.includes(row.protocol)
+      case ProductHubTag.Long:
+        return row.multiplyStrategyType === 'long'
       case ProductHubTag.Longevity:
         return PROTOCOLS_LONGEVITY.includes(row.protocol)
       case ProductHubTag.Memecoins:
         return TOKENS_MEME.includes(primaryToken) || TOKENS_MEME.includes(secondaryToken)
       case ProductHubTag.NonStablecoinCollateral:
         return !TOKENS_STABLE_GROUPS.includes(primaryTokenGroup)
-      case ProductHubTag.Stablecoins:
+      case ProductHubTag.Short:
+        return row.multiplyStrategyType === 'short'
+      case ProductHubTag.StablecoinStrategies:
         return (
-          TOKENS_STABLE_GROUPS.includes(primaryTokenGroup) ||
+          TOKENS_STABLE_GROUPS.includes(primaryTokenGroup) &&
           TOKENS_STABLE_GROUPS.includes(secondaryTokenGroup)
         )
       default:

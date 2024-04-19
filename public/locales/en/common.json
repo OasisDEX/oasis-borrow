@@ -225,7 +225,7 @@
         "activity": "Activity",
         "annual-fee": "Annual fee",
         "asset": "Vault",
-        "automation": "Automation",
+        "automation": "Available automations",
         "borrow-rate": "Borrow rate",
         "cdp-id": "",
         "claimable-now": "Claimable now",
@@ -3516,6 +3516,10 @@
         "label": "Isolated Pairs",
         "tooltip": "Only protocols where risk is contained to one pair only, not the entire borrow/lend market"
       },
+      "long": {
+        "label": "Long",
+        "tooltip": "Only long strategy positions"
+      },
       "longevity": {
         "label": "Longevity",
         "tooltip": "Only projects that have been operating >3 years"
@@ -3528,8 +3532,12 @@
         "label": "Non-Stablecoin Collateral",
         "tooltip": "Only borrow against non-stablecoin collateral"
       },
-      "stablecoins": {
-        "label": "Stablecoins",
+      "short": {
+        "label": "Short",
+        "tooltip": "Only short strategy positions"
+      },
+      "stablecoin-strategies": {
+        "label": "Stablecoin Strategies",
         "tooltip": "Only positions with correlated stablecoin pairs, for yield loops / basis trades"
       }
     },

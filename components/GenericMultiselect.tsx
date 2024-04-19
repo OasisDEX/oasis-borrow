@@ -5,7 +5,6 @@ import { TokensGroup } from 'components/TokensGroup'
 import { useAppConfig } from 'helpers/config'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import { useToggle } from 'helpers/useToggle'
 import { isEqual, keyBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -173,10 +172,11 @@ export function GenericMultiselect({
 
   const didMountRef = useRef(false)
   const [values, setValues] = useState<string[]>(initialValues)
-  const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const [search, setSearch] = useState<string>('')
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
   const features = useAppConfig('features')
 
   const matchingOptionsGroup = useMemo(() => {
@@ -236,6 +236,12 @@ export function GenericMultiselect({
     else didMountRef.current = true
   }, [values])
 
+  // useEffect(() => {
+  //   console.log(isOpen)
+  //   console.log(searchRef.current)
+  //   if (isOpen && searchRef.current) searchRef.current.focus()
+  // }, [isOpen])
+
   return (
     <Box sx={{ position: 'relative', userSelect: 'none', ...sx }} ref={outsideRef}>
       <Box
@@ -256,7 +262,13 @@ export function GenericMultiselect({
             borderColor: isOpen ? 'primary100' : 'neutral70',
           },
         }}
-        onClick={toggleIsOpen}
+        onClick={() => {
+          setIsOpen((_isOpen) => {
+            if (!isOpen && searchRef.current) searchRef.current.focus()
+
+            return !_isOpen
+          })
+        }}
       >
         <Text
           sx={{
@@ -347,6 +359,7 @@ export function GenericMultiselect({
                 sx={{ position: 'absolute', top: 3, left: 3, pointerEvens: 'none' }}
               />
               <Input
+                ref={searchRef}
                 type="text"
                 autoComplete="off"
                 placeholder={`${t('search')} ${label.toLowerCase()}`}

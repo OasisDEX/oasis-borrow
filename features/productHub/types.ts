@@ -33,11 +33,13 @@ export enum ProductHubTag {
   EthDerivativeYieldLoops = 'eth-derivative-yield-loops',
   Gt1BTvl = 'gt-1b-tvl',
   IsolatedPairs = 'isolated-pairs',
+  Long = 'long',
   Longevity = 'longevity',
   Memecoins = 'memecoins',
   MoreCapitalEfficient = 'more-capital-efficient',
   NonStablecoinCollateral = 'non-stablecoin-collateral',
-  Stablecoins = 'stablecoins',
+  Short = 'short',
+  StablecoinStrategies = 'stablecoin-strategies',
 }
 
 export type ProductHubColumnKey =
