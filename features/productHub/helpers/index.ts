@@ -1,4 +1,5 @@
 export * from './filterByCategory'
+export * from './filterByDatabaseQuery'
 export * from './filterByProductType'
 export * from './filterByTags'
 export * from './filterByUserFilters'

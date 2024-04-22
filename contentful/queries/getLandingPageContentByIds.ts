@@ -117,6 +117,7 @@ export const getLandingPageContentByIds = async (collectionIds: string[], previe
                         slug
                       }
                     }
+                    databaseQuery
                     promoCardsCollection {
                       items {
                         name
@@ -135,6 +136,7 @@ export const getLandingPageContentByIds = async (collectionIds: string[], previe
                           slug
                         }
                         label
+                        detailedFilters
                       }
                     }
                   }

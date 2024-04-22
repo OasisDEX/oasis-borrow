@@ -35,7 +35,7 @@ export function parseRows({
   product,
   rows,
 }: ParseRowsParams): AssetsTableRowData[] {
-  const featuredRows = filterFeaturedProducts({ filters: featured, rows })
+  const featuredRows = filterFeaturedProducts({ filters: featured, product, rows })
 
   return rows.map((row) => {
     const {

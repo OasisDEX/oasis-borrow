@@ -8,6 +8,7 @@ export const getProductMultiplyNavItems = (productHub: ProductHubItem[]) => {
     filters: {
       products: featuredMultiplyNavigationProducts,
     },
+    product: OmniProductType.Multiply,
     rows: productHub,
   })
     .map((product) => ({

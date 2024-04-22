@@ -134,6 +134,8 @@ export interface ProductHubFeaturedFilters
   secondaryToken: string
 }
 
+export type ProductHubDatabaseQuery = Partial<ProductHubFeaturedFilters>
+
 export type ProductHubFeaturedProducts = {
   isTagged?: boolean
   isHighlighted?: boolean

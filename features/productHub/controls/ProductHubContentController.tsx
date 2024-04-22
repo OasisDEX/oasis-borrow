@@ -11,6 +11,7 @@ import {
   ProductHubTagsController,
 } from 'features/productHub/controls'
 import {
+  filterByDatabaseQuery,
   filterByProductType,
   filterByUserFilters,
   parseRows,
@@ -19,6 +20,7 @@ import {
 import { useProductHubBanner } from 'features/productHub/hooks'
 import type {
   ProductHubColumnKey,
+  ProductHubDatabaseQuery,
   ProductHubFeaturedProducts,
   ProductHubFilters,
   ProductHubItem,
@@ -28,6 +30,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import React, { type FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
+  databaseQuery?: ProductHubDatabaseQuery
   customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
   featured: ProductHubFeaturedProducts
   hiddenCategories?: boolean
@@ -46,6 +49,7 @@ interface ProductHubContentControllerProps {
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
+  databaseQuery,
   customSortByDefault,
   featured,
   hiddenCategories,
@@ -95,9 +99,16 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
       }),
     [tableData, ajnaSafetySwitchOn, ajnaBaseEnabled, morphoBlueEnabled, erc4626VaultsEnabled],
   )
+  const dataFilteredByDatabaseQuery = useMemo(
+    () =>
+      databaseQuery
+        ? filterByDatabaseQuery(dataFilteredByFeatureFlags, databaseQuery)
+        : dataFilteredByFeatureFlags,
+    [databaseQuery, dataFilteredByFeatureFlags],
+  )
   const dataFilteredByProductType = useMemo(
-    () => filterByProductType(dataFilteredByFeatureFlags, selectedProduct),
-    [selectedProduct, dataFilteredByFeatureFlags],
+    () => filterByProductType(dataFilteredByDatabaseQuery, selectedProduct),
+    [dataFilteredByDatabaseQuery, selectedProduct],
   )
   const dataFilteredByUserFilters = useMemo(
     () =>

@@ -1,12 +1,15 @@
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubFeaturedProducts, ProductHubItem } from 'features/productHub/types'
 
 interface FilterFeaturedProductsParams {
   filters: ProductHubFeaturedProducts
+  product: OmniProductType
   rows: ProductHubItem[]
 }
 
 export function filterFeaturedProducts({
   filters,
+  product,
   rows,
 }: FilterFeaturedProductsParams): ProductHubItem[] {
   return rows
@@ -15,7 +18,7 @@ export function filterFeaturedProducts({
       index: filters.products.findIndex((featured) =>
         Object.entries(featured).every(([key, value]) =>
           key === 'product'
-            ? row.product.includes(value)
+            ? product === featured.product
             : String(row[key as keyof typeof row]).toLowerCase() === String(value).toLowerCase(),
         ),
       ),

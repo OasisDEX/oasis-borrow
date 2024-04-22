@@ -15,6 +15,7 @@ import { useProductHubRouter } from 'features/productHub/hooks'
 import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
   ProductHubColumnKey,
+  ProductHubDatabaseQuery,
   ProductHubFeaturedProducts,
   ProductHubFilters,
   ProductHubItem,
@@ -28,6 +29,7 @@ import { Box } from 'theme-ui'
 
 interface ProductHubViewProps {
   customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
+  databaseQuery?: ProductHubDatabaseQuery
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
   featured?: ProductHubFeaturedProducts
   headerGradient?: [string, string, ...string[]]
@@ -47,6 +49,7 @@ interface ProductHubViewProps {
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
   customSortByDefault,
+  databaseQuery,
   dataParser = (_table) => _table,
   featured,
   headerGradient = ['#007da3', '#e7a77f', '#e97047'],
@@ -118,6 +121,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           {() => (
             <>
               <ProductHubContentController
+                databaseQuery={databaseQuery}
                 customSortByDefault={customSortByDefault}
                 featured={shuffledFeatured}
                 hiddenColumns={hiddenColumns}

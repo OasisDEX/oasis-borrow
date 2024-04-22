@@ -166,6 +166,11 @@ export interface ProductFinderRawResponse {
       name: NetworkLabelType
     }[]
   }
+  databaseQuery?: {
+    id: string
+    key: string
+    value: string
+  }[]
   promoCardsCollection?: {
     items: {
       name: string
@@ -181,6 +186,11 @@ export interface ProductFinderRawResponse {
         slug: string
       }
       label?: string
+      detailedFilters?: {
+        id: string
+        key: string
+        value: string
+      }[]
     }[]
   }
 }

@@ -22,6 +22,11 @@ export const mapLandingProductFinderBlock = (
       ...(promoCard.label && {
         label: promoCard.label,
       }),
+      ...(promoCard.detailedFilters &&
+        Object.values(promoCard.detailedFilters).reduce<{ [key: string]: string }>(
+          (total, { key, value }) => ({ ...total, [key]: value }),
+          {},
+        )),
     }))
 
     return {
@@ -37,9 +42,18 @@ export const mapLandingProductFinderBlock = (
           protocol: uniq(item.initialProtocolCollection.items.map(({ slug }) => slug)),
         }),
       },
+      ...(item.databaseQuery && {
+        databaseQuery: Object.values(item.databaseQuery).reduce<{ [key: string]: string }>(
+          (total, { key, value }) => ({ ...total, [key]: value }),
+          {},
+        ),
+      }),
       ...(filters && {
         featured: {
           products: filters,
+          isHighlighted: true,
+          isPromoted: true,
+          isTagged: true,
         },
       }),
     }

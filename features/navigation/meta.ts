@@ -35,6 +35,7 @@ export const featuredEarnNavigationProducts: ProductHubFeaturedFilters[] = [
     protocol: LendingProtocol.MorphoBlue,
     network: NetworkNames.ethereumMainnet,
     product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
   },
   {
     primaryToken: 'DAI',
