@@ -175,7 +175,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
           variant: poolData.maxLtvChange?.isPositive() ? 'positive' : 'negative',
         },
       }),
-      tooltip: 'TBD',
+      tooltip: t('refinance.position.tooltips.max-ltv'),
     },
     {
       label: t('system.borrow-rate'),
@@ -186,7 +186,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
           variant: poolData.borrowRateChange?.isPositive() ? 'negative' : 'positive',
         },
       }),
-      tooltip: 'TBD',
+      tooltip: t('refinance.position.tooltips.borrow-rate'),
     },
     {
       label: t('system.protocol'),
