@@ -99,7 +99,7 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
               },
             },
             {
-              label: t('system.ltv-short'),
+              label: t('max-ltv'),
               value: formatted.ltv,
               change: formatted.afterLtv,
               secondary: {
