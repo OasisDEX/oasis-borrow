@@ -33,6 +33,7 @@ interface ProductHubContentControllerProps {
   databaseQuery?: ProductHubDatabaseQuery
   customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
   featured: ProductHubFeaturedProducts
+  hiddenBanners?: boolean
   hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
   hiddenHelp?: boolean
@@ -46,13 +47,13 @@ interface ProductHubContentControllerProps {
   selectedProduct: OmniProductType
   separator?: AssetsTableSeparator
   tableData: ProductHubItem[]
-  hideBanners?: boolean
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
   databaseQuery,
   customSortByDefault,
   featured,
+  hiddenBanners,
   hiddenCategories,
   hiddenColumns,
   hiddenHelp,
@@ -66,7 +67,6 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedProduct,
   separator,
   tableData,
-  hideBanners,
 }) => {
   const {
     AjnaBase: ajnaBaseEnabled,
@@ -77,8 +77,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const banner = useProductHubBanner({
     filters: selectedFilters,
-    selectedProduct: selectedProduct,
-    hideBanners,
+    hidden: !!hiddenBanners,
+    selectedProduct: selectedProduct
   })
 
   const dataFilteredByFeatureFlags = useMemo(

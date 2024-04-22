@@ -33,6 +33,7 @@ interface ProductHubViewProps {
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
   featured?: ProductHubFeaturedProducts
   headerGradient?: [string, string, ...string[]]
+  hiddenBanners?: boolean
   hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
   hiddenHelp?: boolean
@@ -53,6 +54,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   dataParser = (_table) => _table,
   featured,
   headerGradient = ['#007da3', '#e7a77f', '#e97047'],
+  hiddenBanners,
   hiddenCategories,
   hiddenColumns,
   hiddenHelp,
@@ -124,6 +126,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 databaseQuery={databaseQuery}
                 customSortByDefault={customSortByDefault}
                 featured={shuffledFeatured}
+                hiddenBanners={hiddenBanners}
                 hiddenColumns={hiddenColumns}
                 hiddenCategories={hiddenCategories}
                 hiddenHelp={hiddenHelp}
