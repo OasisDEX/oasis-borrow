@@ -53,7 +53,7 @@ export const ProductHabTagButton: FC<ProductHubTagButtonProps> = ({
             color: 'neutral80',
             '&:hover': {
               color: 'primary100',
-              borderColor: 'neutral70',
+              borderColor: selectedFilters['tags']?.includes(tag) ? 'primary100' : 'neutral70',
             },
           }}
           onClick={() => {
