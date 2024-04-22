@@ -3571,9 +3571,12 @@
     "help": {
       "faq": "FAQ",
       "how-to-choose-the-right-protocol": "How to choose the right protocol",
-      "protocol-tradeoffs": "Protocol tradeoffs",
-      "selecting-the-right-pair": "Selecting the right pair",
-      "selecting-the-right-position-type": "Selecting the right position type",
+      "selecting-the-right-borrow-pair": "Selecting the right Borrow pair",
+      "selecting-the-right-multiply-position": "Selecting the right Multiply position",
+      "selecting-the-right-earn-position-type": "Selecting the right Earn position type",
+      "why-borrow": "Why Borrow?",
+      "why-multiply": "Why Multiply?",
+      "why-earn": "Why Earn?",
       "understanding-yield-loops": "Understanding Yield Loops"
     }
   },

@@ -88,17 +88,29 @@ export const EXTERNAL_LINKS = {
     EXPANDING_EARN_AAVE_V3: 'https://blog.summer.fi/expanding-earn-with-aave-v3',
     MULTIPLY_FOR_AAVE: 'https://blog.summer.fi/introducing-oasis-multiply-for-aave',
     DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
-    MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
+    MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes',
     LEARN: 'https://blog.summer.fi/tag/learn',
     HOW_TO_SET_UP_AUTO_TAKE_PROFIT: 'https://blog.summer.fi/how-to-set-up-auto-take-profit',
-    HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL: 'https://blog.summer.fi/how-to-choose-the-right-protocol',
-    SELECTING_THE_RIGHT_POSITION_TYPE: 'https://blog.summer.fi/selecting-the-right-position-type',
-    SELECTING_THE_RIGHT_PAIR: 'https://blog.summer.fi/selecting-the-right-pair',
-    PROTOCOL_TRADEOFFS: 'https://blog.summer.fi/protocol-tradeoffs',
+    HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_BORROW:
+      'https://blog.summer.fi/how-to-choose-the-correct-protocol-to-borrow/',
+    HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_MULTIPLY:
+      'https://blog.summer.fi/how-to-choose-the-right-protocol-to-multiply',
+    SELECTING_THE_RIGHT_BORROW_PAIR: 'https://blog.summer.fi/select-the-right-borrow-pair/',
+    SELECTING_THE_RIGHT_MULTIPLY_POSITION:
+      'https://blog.summer.fi/choosing-the-best-multiply-position',
+    SELECTING_THE_RIGHT_EARN_POSITION_TYPE:
+      'https://blog.summer.fi/choosing-your-earn-position-type',
     UNDERSTANDING_YIELD_LOOPS: 'https://blog.summer.fi/understanding-yield-loops',
+    WHY_BORROW_ON_SUMMER: 'https://blog.summer.fi/why-borrow-on-summer',
+    WHY_MULTIPLY_ON_SUMMER: 'https://blog.summer.fi/why-multiply-on-summer',
+    WHY_EARN_ON_SUMMER: 'https://blog.summer.fi/blog.summer.fi/why-earn-on-summer',
   },
   DOCS: {
-    FAQ: 'https://docs.summer.fi/products/borrow/frequently-asked-questions',
+    FAQ: {
+      BORROW: 'https://docs.summer.fi/products/borrow/frequently-asked-questions',
+      MULTIPLY: 'https://docs.summer.fi/products/multiply/frequently-asked-questions',
+      EARN: 'https://docs.summer.fi/products/earn',
+    },
     AJNA: {
       HUB: 'https://docs.summer.fi/protocols/ajna',
       HOW_TO_BORROW:

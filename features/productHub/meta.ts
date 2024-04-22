@@ -232,48 +232,48 @@ export const featuredProducts: ProductHubFeaturedFilters[] = [
 export const productHubHelp = {
   [OmniProductType.Borrow]: [
     {
+      translationKey: 'why-borrow',
+      link: EXTERNAL_LINKS.BLOG.WHY_BORROW_ON_SUMMER,
+    },
+    {
+      translationKey: 'selecting-the-right-borrow-pair',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_BORROW_PAIR,
+    },
+    {
       translationKey: 'how-to-choose-the-right-protocol',
-      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
-    },
-    {
-      translationKey: 'selecting-the-right-pair',
-      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_PAIR,
-    },
-    {
-      translationKey: 'protocol-tradeoffs',
-      link: EXTERNAL_LINKS.BLOG.PROTOCOL_TRADEOFFS,
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_BORROW,
     },
     {
       translationKey: 'faq',
-      link: EXTERNAL_LINKS.DOCS.FAQ,
+      link: EXTERNAL_LINKS.DOCS.FAQ.BORROW,
     },
   ],
   [OmniProductType.Multiply]: [
     {
+      translationKey: 'why-multiply',
+      link: EXTERNAL_LINKS.BLOG.WHY_MULTIPLY_ON_SUMMER,
+    },
+    {
+      translationKey: 'selecting-the-right-multiply-position',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_MULTIPLY_POSITION,
+    },
+    {
       translationKey: 'how-to-choose-the-right-protocol',
-      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
-    },
-    {
-      translationKey: 'selecting-the-right-position-type',
-      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_POSITION_TYPE,
-    },
-    {
-      translationKey: 'protocol-tradeoffs',
-      link: EXTERNAL_LINKS.BLOG.PROTOCOL_TRADEOFFS,
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_MULTIPLY,
     },
     {
       translationKey: 'faq',
-      link: EXTERNAL_LINKS.DOCS.FAQ,
+      link: EXTERNAL_LINKS.DOCS.FAQ.MULTIPLY,
     },
   ],
   [OmniProductType.Earn]: [
     {
-      translationKey: 'how-to-choose-the-right-protocol',
-      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
+      translationKey: 'why-earn',
+      link: EXTERNAL_LINKS.BLOG.WHY_EARN_ON_SUMMER,
     },
     {
-      translationKey: 'selecting-the-right-position-type',
-      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_POSITION_TYPE,
+      translationKey: 'selecting-the-right-earn-position-type',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_EARN_POSITION_TYPE,
     },
     {
       translationKey: 'understanding-yield-loops',
@@ -281,7 +281,7 @@ export const productHubHelp = {
     },
     {
       translationKey: 'faq',
-      link: EXTERNAL_LINKS.DOCS.FAQ,
+      link: EXTERNAL_LINKS.DOCS.FAQ.EARN,
     },
   ],
 }
