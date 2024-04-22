@@ -133,6 +133,7 @@ async function getMorphoMarketData(
               ...(isYieldLoop && {
                 earnStrategy: EarnStrategies.yield_loop,
                 earnStrategyDescription,
+                managementType: 'active',
               }),
             },
           ],

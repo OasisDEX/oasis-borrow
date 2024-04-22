@@ -27,50 +27,36 @@ export const getYieldsConfig = ({
     [LendingProtocol.Maker]: 'maker', // shouldnt happen
     [LendingProtocol.MorphoBlue]: 'morpho-blue',
   }[protocol]
-  // optional data
   const morphoMarketId =
+    protocol === LendingProtocol.MorphoBlue &&
     morphoMarkets[networkId as NetworkIds.MAINNET]?.[`${collateralToken}-${quoteToken}`]?.[0]
 
-  // query params
-  const quoteTokenQuery = `&debt=${quoteTokenAddress}`
-  const collateralTokenQuery = `&collateral=${collateralTokenAddress}`
-  const ltvQuery = `&ltv=${ltv
-    .times(lambdaPercentageDenomination * lambdaPercentageDenomination)
-    .toFixed(0)
-    .toString()}`
-  const referenceDateQuery = `&referenceDate=${dayjs(referenceDate).format('YYYY-MM-DD')}`
-  const morphoMarketIdQuery = morphoMarketId ? `&marketId=${morphoMarketId}` : ''
-  const modeQuery = morphoMarketId ? `&mode=borrow` : ''
-  const poolAddressQuery = poolAddress ? `&poolAddress=${poolAddress}` : ''
+  const queryParams = new URLSearchParams()
+  queryParams.append('debt', quoteTokenAddress)
+  queryParams.append('collateral', collateralTokenAddress)
+  queryParams.append(
+    'ltv',
+    ltv
+      .times(lambdaPercentageDenomination * lambdaPercentageDenomination)
+      .toFixed(0)
+      .toString(),
+  )
+  queryParams.append('referenceDate', dayjs(referenceDate).format('YYYY-MM-DD'))
+  if (morphoMarketId) {
+    queryParams.append('marketId', morphoMarketId)
+    queryParams.append('mode', 'borrow')
+  }
+  if (poolAddress) {
+    queryParams.append('poolAddress', poolAddress)
+  }
 
   if (actionSource && debugGetYieldsConfig) {
     console.info(
       'getYieldsConfig',
-      JSON.stringify(
-        {
-          quoteTokenQuery,
-          collateralTokenQuery,
-          ltvQuery,
-          referenceDateQuery,
-          morphoMarketIdQuery,
-          modeQuery,
-          actionSource,
-          poolAddressQuery,
-        },
-        null,
-        2,
-      ),
+      JSON.stringify({ actionSource, params: queryParams.toString().split('&') }, null, 2),
     )
   }
   return {
-    url: `/api/apy/${networkId}/${protocolQuery}?${[
-      quoteTokenQuery,
-      collateralTokenQuery,
-      ltvQuery,
-      referenceDateQuery,
-      morphoMarketIdQuery,
-      modeQuery,
-      poolAddressQuery,
-    ].join('')}`,
+    url: `/api/apy/${networkId}/${protocolQuery}?${queryParams.toString()}`,
   }
 }

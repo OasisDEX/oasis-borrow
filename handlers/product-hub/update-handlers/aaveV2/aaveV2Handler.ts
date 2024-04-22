@@ -71,6 +71,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
     const response = await getYieldsRequest(
       {
+        actionSource: 'product-hub aave-v2 handler',
         collateralTokenAddress: contracts.tokens[product.primaryToken].address,
         quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
         collateralToken: product.primaryToken,
@@ -82,6 +83,9 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       },
       process.env.FUNCTIONS_API_URL,
     )
+    if (!response?.results) {
+      console.warn('No AAVE v2 APY data for', product.label, product.network, response)
+    }
     return {
       [product.label]: new BigNumber(response?.results.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     }

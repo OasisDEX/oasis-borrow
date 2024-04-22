@@ -8,6 +8,7 @@ import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
+import { ProductHubProductType } from 'features/productHub/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -118,6 +119,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
     const response = await getYieldsRequest(
       {
+        actionSource: 'product-hub handler aaveV3',
         collateralTokenAddress: contracts.tokens[product.primaryToken].address,
         quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
         collateralToken: product.primaryToken,
@@ -129,6 +131,9 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       },
       process.env.FUNCTIONS_API_URL,
     )
+    if (!response?.results) {
+      console.warn('No AAVE v3 APY data for', product.label, product.network, response)
+    }
     return {
       [`${product.label}-${product.network}`]:
         new BigNumber(response?.results?.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
@@ -159,6 +164,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         const networkId = networkNameToIdMap[network as AaveV3Networks]
         const contracts = getNetworkContracts(networkId)
+        const isYieldLoop = isYieldLoopPair({
+          collateralToken: primaryToken,
+          debtToken: secondaryToken,
+        })
+        const isMultiply = product.product[0] === ProductHubProductType.Multiply
 
         ensureGivenTokensExist(networkId, contracts, [primaryToken, secondaryToken])
 
@@ -166,6 +176,13 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         return {
           ...product,
+          product: [isMultiply && isYieldLoop ? ProductHubProductType.Earn : product.product[0]],
+          ...(isYieldLoop &&
+            isMultiply && {
+              earnStrategy: 'yield_loop',
+              earnStrategyDescription: `${primaryToken}/${secondaryToken} Yield Loop`,
+              managementType: 'active',
+            }),
           primaryTokenAddress: tokens[primaryToken].address,
           secondaryTokenAddress: tokens[secondaryToken].address,
           maxMultiply:

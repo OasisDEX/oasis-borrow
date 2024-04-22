@@ -89,7 +89,7 @@ async function getAjnaPoolData(
       const marketPrice = collateralPrice.div(quotePrice)
       const maxLtv = lowestUtilizedPrice.div(marketPrice)
 
-      return await getYieldsRequest(
+      const response = await getYieldsRequest(
         {
           collateralTokenAddress,
           quoteTokenAddress,
@@ -103,6 +103,18 @@ async function getAjnaPoolData(
         },
         process.env.FUNCTIONS_API_URL,
       )
+
+      if (!response?.results) {
+        console.warn(
+          'No Ajna APY data for',
+          poolData.address,
+          poolData.collateralToken,
+          poolData.quoteToken,
+          response,
+        )
+      }
+
+      return response
     }),
   )
   const yieldLoopApys = yieldLoopApysCalls.filter((apy) => !isNull(apy))
