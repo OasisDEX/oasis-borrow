@@ -28,6 +28,7 @@ interface RefinanceModalProps {
 
 export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput }) => {
   const { closeModal } = useModalContext()
+  const { t } = useTranslation()
 
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
 

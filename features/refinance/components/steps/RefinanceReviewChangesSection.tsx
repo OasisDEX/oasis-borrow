@@ -14,6 +14,30 @@ import { PositionUtils } from 'summerfi-sdk-client'
 import { type Percentage } from 'summerfi-sdk-common'
 import { Text } from 'theme-ui'
 
+const getChangeVariant = (
+  changeType: 'ltv' | 'liquidationPrice',
+  change: BigNumber,
+  isShort: boolean,
+): 'positive' | 'negative' => {
+  let changeDirection: 'isPositive' | 'isNegative'
+  switch (changeType) {
+    case 'ltv':
+      changeDirection = 'isNegative'
+      break
+    case 'liquidationPrice':
+      changeDirection = 'isPositive'
+      break
+    default:
+      throw new Error('Invalid change type')
+  }
+  if (isShort) {
+    return change[changeDirection]() ? 'positive' : 'negative'
+  } else {
+    // Long position
+    return change[changeDirection]() ? 'negative' : 'positive'
+  }
+}
+
 export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKSimulation }) => {
   const { t } = useTranslation()
 
@@ -54,7 +78,8 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
     debtPriceInUsd: debtPrice,
     position: simulatedPosition,
   })
-  const afterLiquidationPrice = new BigNumber(afterLiquidationPriceInUsd).div(100)
+
+  const afterLiquidationPrice = new BigNumber(afterLiquidationPriceInUsd)
   const afterDebt = new BigNumber(simulatedPosition.debtAmount.amount)
   const afterDebtToken = simulatedPosition.debtAmount.token.symbol
 
@@ -88,7 +113,11 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
               change: formatted.afterLiquidationPrice,
               secondary: {
                 value: formatted.liquidationPriceChange,
-                variant: liquidationPriceChange.isPositive() ? 'positive' : 'negative',
+                variant: getChangeVariant(
+                  'liquidationPrice',
+                  liquidationPriceChange,
+                  position.isShort,
+                ),
               },
             },
             {
@@ -97,7 +126,7 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
               change: formatted.afterLtv,
               secondary: {
                 value: formatted.ltvChange,
-                variant: ltvChange.isPositive() ? 'positive' : 'negative',
+                variant: getChangeVariant('ltv', ltvChange, position.isShort),
               },
             },
             {
