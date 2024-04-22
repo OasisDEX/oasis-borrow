@@ -33,6 +33,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
 
   const isTxInProgress = !!ctx?.tx.isTxInProgress
+
   useBeforeUnload(isTxInProgress)
 
   const positionOwner = useMemo(
