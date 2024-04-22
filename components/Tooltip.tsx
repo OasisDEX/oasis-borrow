@@ -85,6 +85,7 @@ export function StatefulTooltip({
           transform: tooltipOpen ? 'translateY(0px)' : 'translateY(5px)',
           transition: 'opacity 200ms, transform 200ms',
           fontSize: 1,
+          fontWeight: 'semiBold',
           ...tooltipSx,
         }}
       >
