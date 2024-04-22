@@ -3324,7 +3324,8 @@
       "no-weekly-apy": "There are currently no borrow or multiply positions for this pool. 7 day net APY will be calculated following the creation of the first position.",
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
       "ajna-rewards-title": "This pool is earning Summer.fi × Ajna token Rewards",
-      "ajna-rewards-description": "This pool distributes a total of {{weekly}} AJNA per week. The current annualised reward rate is {{apy}}"
+      "ajna-rewards-description": "This pool distributes a total of {{weekly}} AJNA per week. The current annualised reward rate is {{apy}}",
+      "ajna-rewards-oracless": "Rewards APY is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool and earn Ajna token rewards."
     }
   },
   "spark": {

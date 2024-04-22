@@ -207,7 +207,9 @@ async function getAjnaPoolData(
                           key: 'ajna.product-hub-tooltips.ajna-rewards-title',
                         },
                         description: {
-                          key: 'ajna.product-hub-tooltips.ajna-rewards-description',
+                          key: isOracless
+                            ? 'ajna.product-hub-tooltips.ajna-rewards-oracless'
+                            : 'ajna.product-hub-tooltips.ajna-rewards-description',
                           props: {
                             weekly: weeklyRewards.amount.toString(),
                             apy: formatDecimalAsPercent(borrowRewardsApy),
@@ -269,7 +271,9 @@ async function getAjnaPoolData(
                           key: 'ajna.product-hub-tooltips.ajna-rewards-title',
                         },
                         description: {
-                          key: 'ajna.product-hub-tooltips.ajna-rewards-description',
+                          key: isOracless
+                            ? 'ajna.product-hub-tooltips.ajna-rewards-oracless'
+                            : 'ajna.product-hub-tooltips.ajna-rewards-description',
                           props: {
                             weekly: weeklyRewards.amount.toString(),
                             apy: formatDecimalAsPercent(earnRewardsApy),

@@ -162,6 +162,6 @@ export function isPoolWithRewards({
   quoteToken,
 }: IsPoolWithRewardsParams): boolean {
   return !!Object.keys(ajnaWeeklyRewards[networkId] ?? {})?.includes(
-    `${collateralToken}-${quoteToken}`,
+    `${collateralToken.replace(/-|:/gi, '')}-${quoteToken.replace(/-|:/gi, '')}`,
   )
 }

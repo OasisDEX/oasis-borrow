@@ -31,11 +31,32 @@ export const useProductHubFilters = ({
   const isTestnet = isTestnetNetworkId(networkId ?? NetworkIds.MAINNET)
 
   const collateralTokens = useMemo(
-    () => getTokensFilterOptions({ data, key: 'primaryToken' }),
+    () =>
+      getTokensFilterOptions({
+        data,
+        featured: ['WSTETH', 'ETH', 'WBTC', 'RETH', 'MKR'],
+        key: 'primaryToken',
+      }),
     [data],
   )
-  const debtTokens = useMemo(() => getTokensFilterOptions({ data, key: 'secondaryToken' }), [data])
-  const depositTokens = useMemo(() => getTokensFilterOptions({ data, key: 'depositToken' }), [data])
+  const debtTokens = useMemo(
+    () =>
+      getTokensFilterOptions({
+        data,
+        featured: ['DAI', 'ETH', 'USDC', 'WBTC', 'USDT'],
+        key: 'secondaryToken',
+      }),
+    [data],
+  )
+  const depositTokens = useMemo(
+    () =>
+      getTokensFilterOptions({
+        data,
+        featured: ['DAI', 'USDC', 'USDT', 'ETH', 'WSTETH'],
+        key: 'depositToken',
+      }),
+    [data],
+  )
 
   const ethCollateralTokens = useMemo(
     () =>
