@@ -1,4 +1,4 @@
-import { useRefinanceContext } from 'features/refinance/contexts'
+import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
@@ -36,7 +36,7 @@ export type SDKSimulation = {
   liquidationThreshold: Percentage | null
 }
 
-export function useSdkSimulation(): SDKSimulation {
+export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
@@ -48,17 +48,23 @@ export function useSdkSimulation(): SDKSimulation {
   const [liquidationPrice, setLiquidationPrice] = useState<string>('')
   const [liquidationThreshold, setLiquidationThreshold] = useState<Percentage | null>(null)
 
-  const {
-    environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: { positionId, collateralTokenData, debtTokenData, positionType, owner },
-    poolData: { poolId },
-    form: {
-      state: { strategy },
-    },
-  } = useRefinanceContext()
+  const ctx = useRefinanceGeneralContext().ctx
+
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
+    if (!ctx) {
+      return
+    }
+    const {
+      environment: { slippage, chainInfo, debtPrice, address },
+      position: { positionId, collateralTokenData, debtTokenData, positionType },
+      poolData: { poolId },
+      form: {
+        state: { strategy },
+      },
+    } = ctx
+
     if (!strategy) {
       return
     }
@@ -194,20 +200,20 @@ export function useSdkSimulation(): SDKSimulation {
     })
   }, [
     sdk,
-    slippage,
-    collateralPrice,
-    debtPrice,
-    address,
-    chainInfo,
-    poolId,
-    positionId.id,
-    JSON.stringify(collateralTokenData),
-    JSON.stringify(debtTokenData),
-    positionType,
+    ctx?.environment.slippage,
+    ctx?.environment.collateralPrice,
+    ctx?.environment.debtPrice,
+    ctx?.environment.address,
+    ctx?.environment.chainInfo,
+    ctx?.poolData.poolId,
+    ctx?.position.positionId.id,
+    JSON.stringify(ctx?.position.collateralTokenData),
+    JSON.stringify(ctx?.position.debtTokenData),
+    ctx?.position.positionType,
     owner,
-    strategy?.product,
-    strategy?.primaryToken,
-    strategy?.secondaryToken,
+    ctx?.form.state.strategy?.product,
+    ctx?.form.state.strategy?.primaryToken,
+    ctx?.form.state.strategy?.secondaryToken,
   ])
 
   const simulatedPosition = refinanceSimulation?.targetPosition || null

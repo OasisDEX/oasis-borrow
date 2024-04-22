@@ -33,7 +33,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
 
   const isTxInProgress = !!ctx?.tx.isTxInProgress
-
   useBeforeUnload(isTxInProgress)
 
   const positionOwner = useMemo(
@@ -47,7 +46,12 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
             }),
           )
         : EMPTY,
-    [contextInput.contextId, cache.positionOwner],
+    [
+      cache.positionOwner,
+      contextInput.environment.chainId,
+      contextInput.position.lendingProtocol,
+      contextInput.position.positionId.id,
+    ],
   )
   const [owner] = useObservable(positionOwner)
 
@@ -63,6 +67,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
+  const simulation = useSdkSimulation({ owner })
 
   useEffect(() => {
     if (owner) cache.handlePositionOwner(owner)
@@ -84,6 +89,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
                 ..._ctx.position,
                 owner: _owner,
               },
+              simulation,
             }}
           >
             <RefinanceModalContainer onClose={onClose} />
@@ -97,7 +103,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
 function RefinanceModalContainer({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
-  const simulation = useSdkSimulation()
 
   return (
     <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
@@ -107,8 +112,8 @@ function RefinanceModalContainer({ onClose }: { onClose: () => void }) {
       ) : (
         <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
           <RefinancePosition />
-          <RefinanceFormController simulation={simulation} />
-          <RefinanceSimulation simulation={simulation} />
+          <RefinanceFormController />
+          <RefinanceSimulation />
         </Flex>
       )}
     </Flex>
