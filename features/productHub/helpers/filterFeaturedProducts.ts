@@ -7,14 +7,12 @@ interface FilterFeaturedProductsParams {
 
 export function filterFeaturedProducts({ filters, rows }: FilterFeaturedProductsParams) {
   return rows.filter((row) =>
-    filters.some(
-      (featured) =>
-        (featured.label ? featured.label === row.label : true) &&
-        row.primaryToken.toLowerCase() === featured.primaryToken.toLowerCase() &&
-        row.secondaryToken.toLowerCase() === featured.secondaryToken.toLowerCase() &&
-        row.protocol === featured.protocol &&
-        row.network === featured.network &&
-        row.product.includes(featured.product),
+    filters.some((featured) =>
+      Object.entries(featured).every(([key, value]) =>
+        key === 'product'
+          ? row.product.includes(value)
+          : String(row[key as keyof typeof row]).toLowerCase() === String(value).toLowerCase(),
+      ),
     ),
   )
 }

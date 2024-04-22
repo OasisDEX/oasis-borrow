@@ -201,6 +201,7 @@ export const featuredProducts: ProductHubFeaturedFilters[] = [
     protocol: LendingProtocol.MorphoBlue,
     network: NetworkNames.ethereumMainnet,
     product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
   },
 ]
 

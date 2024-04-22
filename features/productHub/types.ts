@@ -123,8 +123,10 @@ export type ProductHubTags = {
   [key in OmniProductType]: ProductHubTag[]
 }
 
-export interface ProductHubFeaturedFilters {
-  label?: string
+export interface ProductHubFeaturedFilters
+  extends Partial<
+    Omit<ProductHubItemData, 'automationFeatures' | 'hasRewards' | 'product' | 'reverseTokens'>
+  > {
   network: ProductHubSupportedNetworks
   primaryToken: string
   product: OmniProductType
