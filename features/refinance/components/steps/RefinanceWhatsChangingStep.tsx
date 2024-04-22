@@ -82,11 +82,12 @@ export const RefinanceWhatsChangingStep = ({ simulation }: { simulation: SDKSimu
           {
             label: t('refinance.sidebar.whats-changing.summerfi-fee'),
             value: formatted.summerFee,
-            tooltip: 'TBD',
+            tooltip: t('refinance.sidebar.whats-changing.summerfi-fee'),
           },
           {
             label: t('system.max-transaction-cost'),
             value: <>{getEstimatedGasFeeText(gasEstimation)}</>,
+            isLoading: !gasEstimation,
           },
         ]}
       />

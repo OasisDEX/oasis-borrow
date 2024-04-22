@@ -3,7 +3,7 @@ import type { ChainInfo, IPoolId, ProtocolName } from 'summerfi-sdk-common'
 export enum RefinancePositionViewType {
   CURRENT = 'current',
   SIMULATION = 'simulation',
-  CREATED = 'created',
+  CLOSED = 'closed',
   EMPTY = 'empty',
 }
 
