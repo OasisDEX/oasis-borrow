@@ -29,7 +29,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const { closeModal } = useModalContext()
 
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
-
   const positionOwner = useMemo(
     () =>
       !cache.positionOwner
@@ -49,6 +48,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
+  const simulation = useSdkSimulation({ owner })
 
   useEffect(() => {
     if (owner) cache.handlePositionOwner(owner)
@@ -70,6 +70,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
                 ..._ctx.position,
                 owner: _owner,
               },
+              simulation,
             }}
           >
             <RefinanceModalContainer onClose={onClose} />

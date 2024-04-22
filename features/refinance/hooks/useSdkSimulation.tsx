@@ -1,4 +1,4 @@
-import { useRefinanceContext } from 'features/refinance/contexts'
+import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
@@ -37,7 +37,7 @@ export type SDKSimulation = {
   liquidationPrice: string
 }
 
-export function useSdkSimulation(): SDKSimulation {
+export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
@@ -48,24 +48,23 @@ export function useSdkSimulation(): SDKSimulation {
     useState<null | ISimulation<SimulationType.ImportPosition>>(null)
   const [simulatedPool, setSimulatedPool] = useState<null | IPool>(null)
 
-  const {
-    environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: {
-      positionId,
-      liquidationPrice,
-      collateralTokenData,
-      debtTokenData,
-      positionType,
-      owner,
-    },
-    poolData: { poolId },
-    form: {
-      state: { strategy },
-    },
-  } = useRefinanceContext()
+  const refinanceGeneralContext = useRefinanceGeneralContext()
+
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
+    if (!refinanceGeneralContext.ctx) {
+      return
+    }
+    const {
+      environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
+      position: { positionId, liquidationPrice, collateralTokenData, debtTokenData, positionType },
+      poolData: { poolId },
+      form: {
+        state: { strategy },
+      },
+    } = refinanceGeneralContext.ctx
+
     if (!strategy) {
       return
     }
