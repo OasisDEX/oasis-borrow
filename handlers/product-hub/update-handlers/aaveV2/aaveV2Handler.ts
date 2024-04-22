@@ -73,6 +73,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       {
         collateralTokenAddress: contracts.tokens[product.primaryToken].address,
         quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
+        collateralToken: product.primaryToken,
+        quoteToken: product.secondaryToken,
         ltv: riskRatio.loanToValue,
         referenceDate: new Date(),
         networkId: NetworkIds.MAINNET,

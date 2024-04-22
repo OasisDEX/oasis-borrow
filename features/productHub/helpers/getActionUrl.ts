@@ -91,10 +91,12 @@ export function getActionUrl({
   }
 
   const isEarnProduct = product[0] === ProductHubProductType.Earn
-  const collateralToken = isEarnProduct ? secondaryToken : primaryToken
-  const collateralAddress = isEarnProduct ? secondaryTokenAddress : primaryTokenAddress
-  const quoteToken = isEarnProduct ? primaryToken : secondaryToken
-  const quoteAddress = isEarnProduct ? primaryTokenAddress : secondaryTokenAddress
+  const isYieldLoop = earnStrategy === EarnStrategies.yield_loop
+  const collateralToken = isEarnProduct && !isYieldLoop ? secondaryToken : primaryToken
+  const collateralAddress =
+    isEarnProduct && !isYieldLoop ? secondaryTokenAddress : primaryTokenAddress
+  const quoteToken = isEarnProduct && !isYieldLoop ? primaryToken : secondaryToken
+  const quoteAddress = isEarnProduct && !isYieldLoop ? primaryTokenAddress : secondaryTokenAddress
 
   switch (protocol) {
     case LendingProtocol.Ajna:
@@ -104,9 +106,7 @@ export function getActionUrl({
         networkId,
       })
       const ajnaProductInUrl =
-        isEarnProduct && earnStrategy === EarnStrategies.yield_loop
-          ? ProductHubProductType.Multiply
-          : product[0]
+        isEarnProduct && isYieldLoop ? ProductHubProductType.Multiply : product[0]
       const tokensInUrl =
         isOracless &&
         !isYieldLoopPair({ collateralToken, debtToken: quoteToken }) &&

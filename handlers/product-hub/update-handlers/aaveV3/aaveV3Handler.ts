@@ -120,6 +120,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       {
         collateralTokenAddress: contracts.tokens[product.primaryToken].address,
         quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
+        collateralToken: product.primaryToken,
+        quoteToken: product.secondaryToken,
         ltv: riskRatio.loanToValue,
         referenceDate: new Date(),
         networkId: networkId,
@@ -128,7 +130,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       process.env.FUNCTIONS_API_URL,
     )
     return {
-      [`${product.label}-${product.network}`]: new BigNumber(response?.results.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
+      [`${product.label}-${product.network}`]:
+        new BigNumber(response?.results?.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     } as Record<string, BigNumber>
   })
   return Promise.all([

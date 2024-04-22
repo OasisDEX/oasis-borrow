@@ -204,7 +204,8 @@ async function getAjnaPoolData(
                 ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
                 product: [
                   ProductHubProductType.Borrow,
-                  ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
+                  ...(!isYieldLoop && isWithMultiply ? [ProductHubProductType.Multiply] : []),
+                  ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,
