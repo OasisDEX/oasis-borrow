@@ -3526,6 +3526,10 @@
         "label": "Longevity",
         "tooltip": "Only projects that have been operating >3 years"
       },
+      "lp-only": {
+        "label": "LP only",
+        "tooltip": "Earn yield for providing liquidity"
+      },
       "memecoins": {
         "label": "Memecoins",
         "tooltip": "Get liquidity for your speculative tokens based on memes"

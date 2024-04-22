@@ -50,6 +50,11 @@ export function filterByTags({
         return row.multiplyStrategyType === 'long'
       case ProductHubTag.Longevity:
         return PROTOCOLS_LONGEVITY.includes(row.protocol)
+      case ProductHubTag.LpOnly:
+        return (
+          row.earnStrategy === EarnStrategies.liquidity_provision ||
+          row.earnStrategy === EarnStrategies.erc_4626
+        )
       case ProductHubTag.Memecoins:
         return TOKENS_MEME.includes(primaryToken) || TOKENS_MEME.includes(secondaryToken)
       case ProductHubTag.NonStablecoinCollateral:

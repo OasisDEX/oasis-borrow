@@ -35,6 +35,7 @@ export enum ProductHubTag {
   IsolatedPairs = 'isolated-pairs',
   Long = 'long',
   Longevity = 'longevity',
+  LpOnly = 'lp-only',
   Memecoins = 'memecoins',
   MoreCapitalEfficient = 'more-capital-efficient',
   NonStablecoinCollateral = 'non-stablecoin-collateral',

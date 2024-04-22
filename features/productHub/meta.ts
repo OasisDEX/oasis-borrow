@@ -186,6 +186,7 @@ export const productHubTags: ProductHubTags = {
   [OmniProductType.Earn]: [
     ProductHubTag.StablecoinStrategies,
     ProductHubTag.EthDerivativeYieldLoops,
+    ProductHubTag.LpOnly,
     ProductHubTag.EasiestToManage,
     ProductHubTag.Longevity,
     ProductHubTag.Gt1BTvl,
