@@ -39,7 +39,7 @@ export const useRefinanceTxHandler = () => {
     error: simulationErrer,
     refinanceSimulation,
     importPositionSimulation,
-  } = useSdkSimulation()
+  } = useSdkSimulation({ owner: proxyAddress })
   const {
     error: transactionError,
     txImportPosition,

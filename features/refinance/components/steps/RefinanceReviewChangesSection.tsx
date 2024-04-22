@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -36,10 +35,10 @@ const getChangeVariant = (
   }
 }
 
-export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKSimulation }) => {
+export const RefinanceReviewChangesSection = () => {
   const { t } = useTranslation()
 
-  const { poolData, position } = useRefinanceContext()
+  const { poolData, position, simulation } = useRefinanceContext()
 
   const ltv = new BigNumber(poolData.maxLtv.loanToValue)
   const liquidationPrice = new BigNumber(position.liquidationPrice)

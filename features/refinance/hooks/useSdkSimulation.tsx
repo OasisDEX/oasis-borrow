@@ -53,7 +53,7 @@ export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
-    if (!ctx) {
+    if (!ctx || !owner) {
       return
     }
     const {
@@ -176,7 +176,7 @@ export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
       }
       let _liquidationThreshold: Percentage | null = null
       try {
-        _liquidationThreshold = (_simulatedPosition.pool as any).collaterals.get({
+        _liquidationThreshold = _simulatedPosition.pool.collaterals.get({
           token: _simulatedPosition.collateralAmount.token,
         })?.maxLtv?.ratio
       } catch (e) {
@@ -204,14 +204,14 @@ export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
     ctx?.environment.collateralPrice,
     ctx?.environment.debtPrice,
     ctx?.environment.address,
-    ctx?.environment.chainInfo,
-    ctx?.poolData.poolId,
+    ctx?.environment.chainInfo?.toString(),
+    JSON.stringify(ctx?.poolData.poolId),
     ctx?.position.positionId.id,
     JSON.stringify(ctx?.position.collateralTokenData),
     JSON.stringify(ctx?.position.debtTokenData),
     ctx?.position.positionType,
     owner,
-    ctx?.form.state.strategy?.product,
+    ctx?.form.state.strategy?.product?.toString(),
     ctx?.form.state.strategy?.primaryToken,
     ctx?.form.state.strategy?.secondaryToken,
   ])

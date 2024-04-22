@@ -7,14 +7,13 @@ import { RefinanceReviewChangesSection } from 'features/refinance/components/ste
 import { RefinanceRouteSection } from 'features/refinance/components/steps/RefinanceRouteSection'
 import { RefinanceSwapSection } from 'features/refinance/components/steps/RefinanceSwapSection'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { formatFiatBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
 
-export const RefinanceWhatsChangingStep = ({ simulation }: { simulation: SDKSimulation }) => {
+export const RefinanceWhatsChangingStep = () => {
   const { t } = useTranslation()
 
   const {
@@ -31,30 +30,26 @@ export const RefinanceWhatsChangingStep = ({ simulation }: { simulation: SDKSimu
 
   if (isTxSuccess) {
     return (
-      <>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('refinance.sidebar.transaction.description.success', {
-            oldId: positionId.id,
-            newId: dpm?.id,
-          })}
-          <Flex sx={{ justifyContent: 'center', mt: 3 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
-          </Flex>
-        </Text>
-      </>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('refinance.sidebar.transaction.description.success', {
+          oldId: positionId.id,
+          newId: dpm?.id,
+        })}
+        <Flex sx={{ justifyContent: 'center', mt: 3 }}>
+          <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
+        </Flex>
+      </Text>
     )
   }
 
   if (isTxInProgress) {
     return (
-      <>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('refinance.sidebar.transaction.description.in-progress')}
-          <Flex sx={{ justifyContent: 'center', mt: 3 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
-          </Flex>
-        </Text>
-      </>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('refinance.sidebar.transaction.description.in-progress')}
+        <Flex sx={{ justifyContent: 'center', mt: 3 }}>
+          <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
+        </Flex>
+      </Text>
     )
   }
 
@@ -70,7 +65,7 @@ export const RefinanceWhatsChangingStep = ({ simulation }: { simulation: SDKSimu
         {t('refinance.sidebar.whats-changing.description')}
       </Text>
       <RefinanceHighlightedChangeSection />
-      <RefinanceReviewChangesSection simulation={simulation} />
+      <RefinanceReviewChangesSection />
       <RefinanceSwapSection />
       <RefinanceRouteSection />
       <RefinanceValidationMessages validations={errors} type="error" />

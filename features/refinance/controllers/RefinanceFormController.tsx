@@ -5,12 +5,11 @@ import {
   RefinanceWhatsChangingStep,
 } from 'features/refinance/components/steps'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { RefinanceFormView } from 'features/refinance/views'
 import React from 'react'
 
-export const RefinanceFormController = ({ simulation }: { simulation: SDKSimulation }) => {
+export const RefinanceFormController = () => {
   const {
     steps: { currentStep },
   } = useRefinanceContext()
@@ -20,9 +19,7 @@ export const RefinanceFormController = ({ simulation }: { simulation: SDKSimulat
       {currentStep === RefinanceSidebarStep.Option && <RefinanceStrategyStep />}
       {currentStep === RefinanceSidebarStep.Strategy && <RefinanceProductTableStep />}
       {currentStep === RefinanceSidebarStep.Give && <RefinanceGiveStep />}
-      {currentStep === RefinanceSidebarStep.Changes && (
-        <RefinanceWhatsChangingStep simulation={simulation} />
-      )}
+      {currentStep === RefinanceSidebarStep.Changes && <RefinanceWhatsChangingStep />}
     </RefinanceFormView>
   )
 }

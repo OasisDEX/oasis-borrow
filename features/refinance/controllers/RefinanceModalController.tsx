@@ -100,7 +100,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   )
 }
 
-function RefinanceModalContainer({ onClose }: { onClose: () => void }) {
+function RefinanceModalContainer({ onClose }: Readonly<{ onClose: () => void }>) {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
 

@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { RefinancePositionView } from 'features/refinance/components/RefinancePositionView'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { useSimulationPositionData } from 'features/refinance/hooks/useSimulationPositionData'
 import { RefinancePositionViewType, RefinanceSidebarStep } from 'features/refinance/types'
 import { zero } from 'helpers/zero'
 import React from 'react'
 
-export const RefinanceSimulation = ({ simulation }: { simulation: SDKSimulation }) => {
+export const RefinanceSimulation = () => {
   const {
     steps: { currentStep },
     form: {
@@ -16,7 +15,7 @@ export const RefinanceSimulation = ({ simulation }: { simulation: SDKSimulation 
     poolData: { maxLtv: currentMaxLtv, borrowRate: currentBorrowRate },
   } = useRefinanceContext()
 
-  const positionData = useSimulationPositionData(simulation)
+  const positionData = useSimulationPositionData()
 
   if (currentStep === RefinanceSidebarStep.Option) {
     return <RefinancePositionView type={RefinancePositionViewType.EMPTY} />
