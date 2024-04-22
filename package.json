@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "12.20.5",
+  "version": "12.20.7",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.19"
@@ -130,6 +130,7 @@
     "@ethersproject/abstract-provider": "5.7.0",
     "@ethersproject/providers": "5.7.0",
     "@ethersproject/signing-key": "5.7.0",
+    "@walletconnect/ethereum-provider": "2.9.1",
     "acorn": "8.5.0",
     "bn.js": "5.2.1",
     "debug": "4.3.4",
