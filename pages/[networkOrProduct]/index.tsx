@@ -21,8 +21,13 @@ function ProductHubPage({ product }: ProductHubPageProps) {
       <WithConnection>
         <AnimatedWrapper sx={{ mb: 5 }}>
           <ProductHubView
-            featured={featuredProducts}
-            highlighted={featuredProducts}
+            featured={{
+              products: featuredProducts,
+              limit: 1,
+              isTagged: true,
+              isHighlighted: true,
+              isPromoted: true,
+            }}
             perPage={20}
             product={product}
             url="/"

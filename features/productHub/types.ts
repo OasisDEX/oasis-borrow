@@ -135,5 +135,10 @@ export interface ProductHubFeaturedFilters
 }
 
 export type ProductHubFeaturedProducts = {
-  [key in OmniProductType]?: ProductHubFeaturedFilters[]
+  isTagged?: boolean
+  isHighlighted?: boolean
+  isPromoted?: boolean
+  isStickied?: boolean
+  limit?: number
+  products: ProductHubFeaturedFilters[]
 }

@@ -3,22 +3,23 @@ import { filterByCategory, filterByTags, filterFeaturedProducts } from 'features
 import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
   ProductHubCategory,
-  ProductHubFeaturedFilters,
+  ProductHubFeaturedProducts,
   ProductHubFilters,
   ProductHubItem,
   ProductHubTag,
 } from 'features/productHub/types'
+import { isEqual } from 'lodash'
 
 export function filterByUserFilters(
   rows: ProductHubItem[],
   selectedFilters: ProductHubFilters,
   selectedProduct: OmniProductType,
-  stickied: ProductHubFeaturedFilters[] = [],
+  featured: ProductHubFeaturedProducts,
 ): ProductHubItem[] {
-  const stickiedRows = filterFeaturedProducts({ filters: stickied, rows })
+  const stickiedRows = filterFeaturedProducts({ filters: featured, rows })
 
   return rows.filter((row) =>
-    stickiedRows.includes(row)
+    featured.isStickied && stickiedRows.some((_row) => isEqual(_row, row))
       ? true
       : Object.keys(selectedFilters).every((k) => {
           const value = selectedFilters[k]

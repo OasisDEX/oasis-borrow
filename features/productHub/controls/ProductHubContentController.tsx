@@ -19,7 +19,7 @@ import {
 import { useProductHubBanner } from 'features/productHub/hooks'
 import type {
   ProductHubColumnKey,
-  ProductHubFeaturedFilters,
+  ProductHubFeaturedProducts,
   ProductHubFilters,
   ProductHubItem,
 } from 'features/productHub/types'
@@ -29,12 +29,11 @@ import React, { type FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
   customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
-  featured?: ProductHubFeaturedFilters[]
+  featured: ProductHubFeaturedProducts
   hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
   hiddenHelp?: boolean
   hiddenTags?: boolean
-  highlighted?: ProductHubFeaturedFilters[]
   limitRows?: number
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
@@ -43,7 +42,6 @@ interface ProductHubContentControllerProps {
   selectedFilters: ProductHubFilters
   selectedProduct: OmniProductType
   separator?: AssetsTableSeparator
-  stickied?: ProductHubFeaturedFilters[]
   tableData: ProductHubItem[]
 }
 
@@ -54,7 +52,6 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   hiddenColumns,
   hiddenHelp,
   hiddenTags,
-  highlighted,
   limitRows,
   networkId,
   onChange,
@@ -63,7 +60,6 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedFilters,
   selectedProduct,
   separator,
-  stickied,
   tableData,
 }) => {
   const {
@@ -105,8 +101,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   )
   const dataFilteredByUserFilters = useMemo(
     () =>
-      filterByUserFilters(dataFilteredByProductType, selectedFilters, selectedProduct, stickied),
-    [dataFilteredByProductType, selectedFilters, stickied],
+      filterByUserFilters(dataFilteredByProductType, selectedFilters, selectedProduct, featured),
+    [dataFilteredByProductType, selectedFilters, selectedProduct, featured],
   )
   const dataSortedByDefault = useMemo(
     () =>
@@ -120,23 +116,12 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
       parseRows({
         featured,
         hiddenColumns,
-        highlighted,
         networkId,
         onRowClick,
         product: selectedProduct,
         rows: dataSortedByDefault,
-        stickied,
       }),
-    [
-      dataSortedByDefault,
-      featured,
-      hiddenColumns,
-      highlighted,
-      networkId,
-      onRowClick,
-      selectedProduct,
-      stickied,
-    ],
+    [dataSortedByDefault, featured, hiddenColumns, networkId, onRowClick, selectedProduct],
   )
 
   return (

@@ -203,6 +203,30 @@ export const featuredProducts: ProductHubFeaturedFilters[] = [
     product: OmniProductType.Earn,
     earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
   },
+  {
+    primaryToken: 'USDT',
+    secondaryToken: 'USDT',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
+  },
+  {
+    primaryToken: 'PYUSD',
+    secondaryToken: 'PYUSD',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
+  },
+  {
+    primaryToken: 'ETH',
+    secondaryToken: 'ETH',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
+  },
 ]
 
 export const productHubHelp = {

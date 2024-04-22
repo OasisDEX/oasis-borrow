@@ -10,12 +10,12 @@ import {
   ProductHubContentController,
   ProductHubProductTypeController,
 } from 'features/productHub/controls'
-import { parseQueryString } from 'features/productHub/helpers'
+import { parseQueryString, shuffleFiltersOrder } from 'features/productHub/helpers'
 import { useProductHubRouter } from 'features/productHub/hooks'
 import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
   ProductHubColumnKey,
-  ProductHubFeaturedFilters,
+  ProductHubFeaturedProducts,
   ProductHubFilters,
   ProductHubItem,
 } from 'features/productHub/types'
@@ -29,21 +29,19 @@ import { Box } from 'theme-ui'
 interface ProductHubViewProps {
   customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
-  featured?: ProductHubFeaturedFilters[]
+  featured?: ProductHubFeaturedProducts
   headerGradient?: [string, string, ...string[]]
   hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
   hiddenHelp?: boolean
   hiddenProductTypeSelector?: boolean
   hiddenTags?: boolean
-  highlighted?: ProductHubFeaturedFilters[]
   initialFilters?: ProductHubFilters
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
   product: OmniProductType
   separator?: AssetsTableSeparator
-  stickied?: ProductHubFeaturedFilters[]
   url?: string
 }
 
@@ -57,14 +55,12 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   hiddenHelp,
   hiddenProductTypeSelector = false,
   hiddenTags,
-  highlighted,
   initialFilters = {},
   limitRows,
   onRowClick,
   perPage,
   product,
   separator,
-  stickied,
   url,
 }) => {
   const { productHub: data } = usePreloadAppDataContext()
@@ -73,6 +69,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const { connecting, wallet } = useWalletManagement()
   const searchParams = useSearchParams()
 
+  const [shuffledFeatured] = useState<ProductHubFeaturedProducts>(shuffleFiltersOrder(featured))
   const [selectedProduct, setSelectedProduct] = useState<OmniProductType>(product)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>({
     ...initialFilters,
@@ -122,11 +119,10 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
             <>
               <ProductHubContentController
                 customSortByDefault={customSortByDefault}
-                featured={featured}
+                featured={shuffledFeatured}
                 hiddenColumns={hiddenColumns}
                 hiddenCategories={hiddenCategories}
                 hiddenHelp={hiddenHelp}
-                highlighted={highlighted}
                 hiddenTags={hiddenTags}
                 limitRows={limitRows}
                 networkId={wallet?.chainId}
@@ -143,7 +139,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 selectedFilters={selectedFilters}
                 selectedProduct={selectedProduct}
                 separator={separator}
-                stickied={stickied}
                 tableData={table}
               />
               {limitRows && limitRows > 0 && (

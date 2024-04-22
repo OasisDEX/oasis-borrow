@@ -5,7 +5,9 @@ import type { ProductHubItem } from 'features/productHub/types'
 
 export const getProductMultiplyNavItems = (productHub: ProductHubItem[]) => {
   return filterFeaturedProducts({
-    filters: featuredMultiplyNavigationProducts,
+    filters: {
+      products: featuredMultiplyNavigationProducts,
+    },
     rows: productHub,
   })
     .map((product) => ({

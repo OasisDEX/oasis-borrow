@@ -12,36 +12,30 @@ import {
 } from 'features/productHub/helpers'
 import type {
   ProductHubColumnKey,
-  ProductHubFeaturedFilters,
+  ProductHubFeaturedProducts,
   ProductHubItem,
 } from 'features/productHub/types'
-import { omit } from 'lodash'
+import { isEqual, omit } from 'lodash'
 import React from 'react'
 
 interface ParseRowsParams {
-  featured?: ProductHubFeaturedFilters[]
+  featured: ProductHubFeaturedProducts
   hiddenColumns?: ProductHubColumnKey[]
-  highlighted?: ProductHubFeaturedFilters[]
   networkId?: NetworkIds
   onRowClick?: (row: ProductHubItem) => void
   product: OmniProductType
   rows: ProductHubItem[]
-  stickied?: ProductHubFeaturedFilters[]
 }
 
 export function parseRows({
-  featured = [],
+  featured,
   hiddenColumns,
-  highlighted = [],
   networkId,
   onRowClick,
   product,
   rows,
-  stickied = [],
 }: ParseRowsParams): AssetsTableRowData[] {
   const featuredRows = filterFeaturedProducts({ filters: featured, rows })
-  const highlightedRows = filterFeaturedProducts({ filters: highlighted, rows })
-  const stickiedRows = filterFeaturedProducts({ filters: stickied, rows })
 
   return rows.map((row) => {
     const {
@@ -62,9 +56,7 @@ export function parseRows({
     const url = getGenericPositionUrl({ ...row, networkId: networkId, product: [product] })
     const isUrlDisabled = url === '/'
 
-    const isFeatured = featuredRows.includes(row)
-    const isHighlighted = highlightedRows.includes(row)
-    const isStickied = stickiedRows.includes(row)
+    const isFeatured = featuredRows.some((_row) => isEqual(_row, row))
 
     const items = omit(
       {
@@ -75,7 +67,7 @@ export function parseRows({
               icons={icons}
               addon={
                 <>
-                  {isFeatured && <BrandTag sx={{ ml: 2 }}>Featured</BrandTag>}
+                  {isFeatured && featured.isTagged && <BrandTag sx={{ ml: 2 }}>Featured</BrandTag>}
                   {tooltips?.asset && <AssetsTableTooltip {...tooltips.asset} />}
                 </>
               }
@@ -95,8 +87,8 @@ export function parseRows({
 
     return {
       items,
-      isHighlighted,
-      isStickied,
+      isHighlighted: isFeatured && featured.isHighlighted,
+      isStickied: isFeatured && (featured.isStickied || featured.isPromoted),
       ...(!isUrlDisabled && { link: url }),
       ...(onRowClick && {
         onClick: () => onRowClick(row),

@@ -7,7 +7,9 @@ import { zero } from 'helpers/zero'
 
 export const getProductEarnNavItems = (productHub: ProductHubItem[]) => {
   return filterFeaturedProducts({
-    filters: featuredEarnNavigationProducts,
+    filters: {
+      products: featuredEarnNavigationProducts,
+    },
     rows: productHub,
   })
     .map((product) => ({
