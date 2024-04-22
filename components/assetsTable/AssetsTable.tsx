@@ -338,11 +338,6 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
   const { push } = useRouter()
   const ref = useRef<HTMLDivElement>(null)
 
-  const hasUndisabledButton = useMemo(
-    () => ref.current?.querySelector('.table-action-button:not(:disabled') !== null,
-    [ref],
-  )
-
   return (
     <Box
       ref={ref}
@@ -351,7 +346,7 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
         position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
-        ...((row.onClick || row.link || hasUndisabledButton) && {
+        ...((row.onClick || row.link) && {
           cursor: 'pointer',
           '&:hover': {
             boxShadow: 'buttonMenu',
@@ -367,18 +362,10 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
               role: 'button',
               onClick: row.onClick,
             }
-          : row.link
-            ? {
-                role: 'link',
-                onClick: () => void push(row.link as string),
-              }
-            : hasUndisabledButton && {
-                role: 'link',
-                onClick: () => {
-                  if (ref.current && ref.current.querySelector('.table-action-button'))
-                    (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
-                },
-              }),
+          : row.link && {
+              role: 'link',
+              onClick: () => void push(row.link as string),
+            }),
       }}
     >
       {rowKeys.map((label, i) => (
@@ -398,31 +385,31 @@ export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDa
     <Box
       as="td"
       sx={{
-        p: '14px 12px',
+        p: '12px',
+        height: 5,
         textAlign: 'right',
         whiteSpace: 'nowrap',
+        border: '1px solid',
+        borderColor: 'transparent',
         verticalAlign,
         ...(row.isHighlighted && {
           bg: '#fdf4f0',
-          borderTop: '1px solid',
-          borderBottom: '1px solid',
-          borderColor: '#f7ccbd',
+          borderTopColor: '#f7ccbd',
+          borderBottomColor: '#f7ccbd',
         }),
         '&:first-of-type': {
           textAlign: 'left',
           borderTopLeftRadius: 'medium',
           borderBottomLeftRadius: 'medium',
           ...(row.isHighlighted && {
-            borderLeft: '1px solid',
-            borderColor: '#f7ccbd',
+            borderLeftColor: '#f7ccbd',
           }),
         },
         '&:last-of-type': {
           borderTopRightRadius: 'medium',
           borderBottomRightRadius: 'medium',
           ...(row.isHighlighted && {
-            borderRight: '1px solid',
-            borderColor: '#f7ccbd',
+            borderRightColor: '#f7ccbd',
           }),
         },
       }}
