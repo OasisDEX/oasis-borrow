@@ -19,6 +19,7 @@ import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { getYieldsRequest } from 'helpers/lambda/yields'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -98,6 +99,23 @@ async function getMorphoMarketData(
           debtToken: quoteToken,
         })
 
+        const weeklyNetApyCall = await (isYieldLoop
+          ? getYieldsRequest(
+              {
+                actionSource: 'product-hub handler morpho-blue',
+                collateralTokenAddress: primaryTokenAddress,
+                quoteTokenAddress: secondaryTokenAddress,
+                quoteToken,
+                collateralToken,
+                networkId,
+                protocol: LendingProtocol.MorphoBlue,
+                ltv: new BigNumber(maxLtv),
+              },
+              process.env.FUNCTIONS_API_URL,
+            )
+          : Promise.resolve(null))
+        const weeklyNetApy = weeklyNetApyCall?.results?.apy7d.toString()
+
         const isShort = isShortPosition({ collateralToken })
         const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
         const earnStrategyDescription = `${collateralToken}/${quoteToken} Yield Loop`
@@ -126,6 +144,7 @@ async function getMorphoMarketData(
               liquidity,
               maxLtv,
               maxMultiply,
+              weeklyNetApy,
               primaryTokenAddress,
               secondaryTokenAddress,
               multiplyStrategy,

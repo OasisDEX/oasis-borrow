@@ -76,7 +76,6 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
             ltv: castedPosition.riskRatio.loanToValue,
             networkId: network.id,
             protocol,
-            referenceDate: new Date(),
           }),
       })
     : undefined

@@ -11,7 +11,7 @@ export interface GetYieldsParams {
   collateralToken: string
   networkId: NetworkIds
   protocol: LendingProtocol
-  referenceDate: Date
+  referenceDate?: Date
   poolAddress?: string
 }
 

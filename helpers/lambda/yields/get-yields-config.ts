@@ -41,7 +41,7 @@ export const getYieldsConfig = ({
       .toFixed(0)
       .toString(),
   )
-  queryParams.append('referenceDate', dayjs(referenceDate).format('YYYY-MM-DD'))
+  queryParams.append('referenceDate', dayjs(referenceDate || new Date()).format('YYYY-MM-DD'))
   if (morphoMarketId) {
     queryParams.append('marketId', morphoMarketId)
     queryParams.append('mode', 'borrow')

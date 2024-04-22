@@ -77,7 +77,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         collateralToken: product.primaryToken,
         quoteToken: product.secondaryToken,
         ltv: riskRatio.loanToValue,
-        referenceDate: new Date(),
         networkId: NetworkIds.MAINNET,
         protocol: product.protocol,
       },

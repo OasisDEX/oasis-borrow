@@ -59,7 +59,6 @@ export const AaveLikeDetailsSectionContentYieldLoopOpen: FC = () => {
         ltv: riskRatio.loanToValue,
         networkId: network.id,
         protocol,
-        referenceDate: new Date(),
       }),
   })
 

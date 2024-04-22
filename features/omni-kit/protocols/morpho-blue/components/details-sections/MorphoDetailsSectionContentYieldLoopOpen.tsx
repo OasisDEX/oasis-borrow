@@ -50,7 +50,6 @@ export const MorphoDetailsSectionContentYieldLoopOpen: FC = () => {
         ltv,
         networkId: network.id,
         protocol,
-        referenceDate: new Date(),
       }),
   })
 

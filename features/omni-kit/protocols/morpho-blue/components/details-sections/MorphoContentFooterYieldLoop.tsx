@@ -37,7 +37,6 @@ export function MorphoContentFooterYieldLoop() {
           ltv,
           networkId: network.id,
           protocol,
-          referenceDate: new Date(),
         })
       }
     />

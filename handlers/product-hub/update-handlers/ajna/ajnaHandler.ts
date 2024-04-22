@@ -97,7 +97,6 @@ async function getAjnaPoolData(
           collateralToken,
           networkId,
           protocol: LendingProtocol.Ajna,
-          referenceDate: new Date(),
           ltv: maxLtv,
           poolAddress: address,
         },
