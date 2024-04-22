@@ -1,4 +1,5 @@
 import type { RefinanceGeneralContextBase } from 'features/refinance/contexts/RefinanceGeneralContext'
+import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import type { FC } from 'react'
 import React, { useContext } from 'react'
 
@@ -7,6 +8,7 @@ export type RefinanceContext = {
   position: RefinanceGeneralContextBase['position'] & {
     owner: string
   }
+  simulation: SDKSimulation
   poolData: RefinanceGeneralContextBase['poolData']
   metadata: RefinanceGeneralContextBase['metadata']
   automations: RefinanceGeneralContextBase['automations']

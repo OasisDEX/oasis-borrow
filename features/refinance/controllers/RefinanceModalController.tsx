@@ -10,6 +10,7 @@ import type { RefinanceContextInput } from 'features/refinance/contexts/Refinanc
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { RefinanceFormController } from 'features/refinance/controllers/index'
 import { getRefinancePositionOwner } from 'features/refinance/helpers'
+import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -26,9 +27,8 @@ interface RefinanceModalProps {
 }
 
 export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput }) => {
-  const { t } = useTranslation()
   const { closeModal } = useModalContext()
-  const isMobile = useOnMobile()
+  const { t } = useTranslation()
 
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
 
@@ -47,7 +47,12 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
             }),
           )
         : EMPTY,
-    [contextInput.contextId, cache.positionOwner],
+    [
+      cache.positionOwner,
+      contextInput.environment.chainId,
+      contextInput.position.lendingProtocol,
+      contextInput.position.positionId.id,
+    ],
   )
   const [owner] = useObservable(positionOwner)
 
@@ -63,6 +68,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
+  const simulation = useSdkSimulation({ owner })
 
   useEffect(() => {
     if (owner) cache.handlePositionOwner(owner)
@@ -84,23 +90,33 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
                 ..._ctx.position,
                 owner: _owner,
               },
+              simulation,
             }}
           >
-            <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
-              <RefinanceHeader onClose={onClose} />
-              {isMobile ? (
-                <Text variant="paragraph2">{t('refinance.mobile-not-available')}</Text>
-              ) : (
-                <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
-                  <RefinancePosition />
-                  <RefinanceFormController />
-                  <RefinanceSimulation />
-                </Flex>
-              )}
-            </Flex>
+            <RefinanceModalContainer onClose={onClose} />
           </RefinanceContextProvider>
         )}
       </WithLoadingIndicator>
     </Modal>
+  )
+}
+
+function RefinanceModalContainer({ onClose }: Readonly<{ onClose: () => void }>) {
+  const { t } = useTranslation()
+  const isMobile = useOnMobile()
+
+  return (
+    <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
+      <RefinanceHeader onClose={onClose} />
+      {isMobile ? (
+        <Text variant="paragraph2">{t('refinance.mobile-not-available')}</Text>
+      ) : (
+        <Flex sx={{ gap: 3, flexWrap: 'wrap' }}>
+          <RefinancePosition />
+          <RefinanceFormController />
+          <RefinanceSimulation />
+        </Flex>
+      )}
+    </Flex>
   )
 }

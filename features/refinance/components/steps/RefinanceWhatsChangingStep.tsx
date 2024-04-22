@@ -30,30 +30,26 @@ export const RefinanceWhatsChangingStep = () => {
 
   if (isTxSuccess) {
     return (
-      <>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('refinance.sidebar.transaction.description.success', {
-            oldId: positionId.id,
-            newId: dpm?.id,
-          })}
-          <Flex sx={{ justifyContent: 'center', mt: 3 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
-          </Flex>
-        </Text>
-      </>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('refinance.sidebar.transaction.description.success', {
+          oldId: positionId.id,
+          newId: dpm?.id,
+        })}
+        <Flex sx={{ justifyContent: 'center', mt: 3 }}>
+          <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
+        </Flex>
+      </Text>
     )
   }
 
   if (isTxInProgress) {
     return (
-      <>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('refinance.sidebar.transaction.description.in-progress')}
-          <Flex sx={{ justifyContent: 'center', mt: 3 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
-          </Flex>
-        </Text>
-      </>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('refinance.sidebar.transaction.description.in-progress')}
+        <Flex sx={{ justifyContent: 'center', mt: 3 }}>
+          <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
+        </Flex>
+      </Text>
     )
   }
 

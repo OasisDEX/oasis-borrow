@@ -1,11 +1,11 @@
-import { useRefinanceContext } from 'features/refinance/contexts'
+import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
-import { makeSDK } from 'summerfi-sdk-client'
+import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
 import type {
   IImportPositionParameters,
   IPosition,
@@ -24,7 +24,19 @@ import {
   Wallet,
 } from 'summerfi-sdk-common'
 
-export function useSdkSimulation() {
+export type SDKSimulation = {
+  error: string | null
+  chain: Chain | null
+  user: User | null
+  sourcePosition: IPosition | null
+  simulatedPosition: IPosition | null
+  importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
+  refinanceSimulation: ISimulation<SimulationType.Refinance> | null
+  liquidationPrice: string
+  liquidationThreshold: Percentage | null
+}
+
+export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
@@ -33,25 +45,26 @@ export function useSdkSimulation() {
     useState<null | ISimulation<SimulationType.Refinance>>(null)
   const [importPositionSimulation, setImportPositionSimulation] =
     useState<null | ISimulation<SimulationType.ImportPosition>>(null)
+  const [liquidationPrice, setLiquidationPrice] = useState<string>('')
+  const [liquidationThreshold, setLiquidationThreshold] = useState<Percentage | null>(null)
 
-  const {
-    environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: {
-      positionId,
-      liquidationPrice,
-      collateralTokenData,
-      debtTokenData,
-      positionType,
-      owner,
-    },
-    poolData: { poolId },
-    form: {
-      state: { strategy },
-    },
-  } = useRefinanceContext()
+  const ctx = useRefinanceGeneralContext().ctx
+
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
+    if (!ctx || !owner) {
+      return
+    }
+    const {
+      environment: { slippage, chainInfo, debtPrice, address },
+      position: { positionId, collateralTokenData, debtTokenData, positionType },
+      poolData: { poolId },
+      form: {
+        state: { strategy },
+      },
+    } = ctx
+
     if (!strategy) {
       return
     }
@@ -155,25 +168,52 @@ export function useSdkSimulation() {
       ])
       setImportPositionSimulation(_importPositionSimulation)
       setRefinanceSimulation(_refinanceSimulation)
+
+      // TECH DEBT: This is a temporary fix to get the liquidation threshold from SDK as there is no other way currently
+      const _simulatedPosition = _refinanceSimulation?.targetPosition
+      if (_simulatedPosition == null) {
+        return
+      }
+      let _liquidationThreshold: Percentage | null = null
+      try {
+        _liquidationThreshold = _simulatedPosition.pool.collaterals.get({
+          token: _simulatedPosition.collateralAmount.token,
+        })?.maxLtv?.ratio
+      } catch (e) {
+        console.error('Error getting liquidation threshold', e)
+      }
+      if (_liquidationThreshold == null) {
+        return
+      }
+      // TECH DEBT END
+      setLiquidationThreshold(_liquidationThreshold)
+
+      const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
+        liquidationThreshold: _liquidationThreshold,
+        debtPriceInUsd: debtPrice,
+        position: _simulatedPosition,
+      })
+      setLiquidationPrice(afterLiquidationPriceInUsd)
     }
     void fetchData().catch((err) => {
       setError(err.message)
     })
   }, [
     sdk,
-    slippage,
-    collateralPrice,
-    debtPrice,
-    address,
-    chainInfo,
-    poolId,
-    positionId,
-    JSON.stringify(collateralTokenData),
-    JSON.stringify(debtTokenData),
-    positionType,
-    strategy?.product,
-    strategy?.primaryToken,
-    strategy?.secondaryToken,
+    ctx?.environment.slippage,
+    ctx?.environment.collateralPrice,
+    ctx?.environment.debtPrice,
+    ctx?.environment.address,
+    ctx?.environment.chainInfo?.toString(),
+    JSON.stringify(ctx?.poolData.poolId),
+    ctx?.position.positionId.id,
+    JSON.stringify(ctx?.position.collateralTokenData),
+    JSON.stringify(ctx?.position.debtTokenData),
+    ctx?.position.positionType,
+    owner,
+    ctx?.form.state.strategy?.product?.toString(),
+    ctx?.form.state.strategy?.primaryToken,
+    ctx?.form.state.strategy?.secondaryToken,
   ])
 
   const simulatedPosition = refinanceSimulation?.targetPosition || null
@@ -187,5 +227,6 @@ export function useSdkSimulation() {
     importPositionSimulation,
     refinanceSimulation,
     liquidationPrice,
+    liquidationThreshold,
   }
 }
