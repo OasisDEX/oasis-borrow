@@ -14805,20 +14805,20 @@ stylis@^4.0.6:
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.3.0.tgz#abe305a669fc3d8777e10eefcfc73ad861c5588c"
   integrity sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==
 
-summerfi-sdk-client@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/summerfi-sdk-client/-/summerfi-sdk-client-0.1.0.tgz#a74e74cc97b0b05d9325a5ae3e68511e64002d1c"
-  integrity sha512-jV9UvKEQdUSsylFoTS1olpA5+x7vcB+k5s2SGDb2vFtrmr+m3KDg/oM0L4KBFPrBpJBN5tuZ7mslZ6GCm2Njcw==
+summerfi-sdk-client@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-client/-/summerfi-sdk-client-0.1.1.tgz#891f6c021226a9a0e7a9c47df0401b4b58936ea0"
+  integrity sha512-IbG3dW8i0bXJmKff7LWJvW95lWqhoXWZXpw5J1uSv5nPV45cJru1yZ0mHpSD+ZfIng1pALM0ZNTgJK68V5ZYmQ==
   dependencies:
     "@trpc/client" "11.0.0-next-beta.264"
     bignumber.js "^9.1.2"
     superjson "^1.13.3"
     viem "^2.7.9"
 
-summerfi-sdk-common@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/summerfi-sdk-common/-/summerfi-sdk-common-0.1.0.tgz#2379152ce73e32b376c96d84c6ebbb9e8b1cc4a3"
-  integrity sha512-mGf7W38QR5MLs0Ci0rPQKu/kZRUiaxFiYxUIEg3HJJbe45AnrByLC5htCIOxpU2mJI9SLYN6KC3hnvzTOyAqaQ==
+summerfi-sdk-common@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-common/-/summerfi-sdk-common-0.1.1.tgz#d875cc327ead1d3e4fd2d496c6a74f6e5eb37f55"
+  integrity sha512-trgi2X/SCdzA8EXtPQfMY9DPIM6G7iWm/qOWrKyoalQ0iyojD+xNg51iS/RJvlad4Sa/Mm9r53MYxsavLvBoYg==
   dependencies:
     bignumber.js "9.0.1"
     superjson "^1.13.3"
@@ -15779,6 +15779,20 @@ viem@^1.0.0:
     "@types/ws" "^8.5.5"
     abitype "0.9.8"
     isomorphic-ws "5.0.0"
+    ws "8.13.0"
+
+viem@^1.6.0:
+  version "1.21.4"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
+  integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==
+  dependencies:
+    "@adraffy/ens-normalize" "1.10.0"
+    "@noble/curves" "1.2.0"
+    "@noble/hashes" "1.3.2"
+    "@scure/bip32" "1.3.2"
+    "@scure/bip39" "1.2.1"
+    abitype "0.9.8"
+    isows "1.0.3"
     ws "8.13.0"
 
 viem@^2.2.0, viem@^2.7.9:

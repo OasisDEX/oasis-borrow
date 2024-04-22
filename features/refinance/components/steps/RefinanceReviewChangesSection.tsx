@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { PositionUtils } from 'summerfi-sdk-client'
-import { type RiskRatio, RiskRatioType } from 'summerfi-sdk-common'
+import { type Percentage } from 'summerfi-sdk-common'
 import { Text } from 'theme-ui'
 
 export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKSimulation }) => {
@@ -35,17 +35,18 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
   }
 
   // TECH DEBT: This is a temporary fix to get the liquidation threshold from SDK as there is no other way currently
-  let liquidationThreshold: RiskRatio | undefined
+  let liquidationThreshold: Percentage | undefined
   try {
     liquidationThreshold = (simulatedPosition.pool as any).collaterals.get({
       token: simulatedPosition.collateralAmount.token,
-    })?.maxLtv
+    })?.maxLtv?.ratio
   } catch (e) {
     console.error('Error getting liquidation threshold', e)
   }
-  const afterLtv = new BigNumber(
-    liquidationThreshold ? liquidationThreshold.convertTo(RiskRatioType.LTV) : 0,
-  )
+  if (liquidationThreshold == null) {
+    return null
+  }
+  const afterLtv = new BigNumber(liquidationThreshold ? liquidationThreshold.toProportion() : 0)
   // TECH DEBT END
 
   const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
@@ -54,8 +55,8 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
     position: simulatedPosition,
   })
   const afterLiquidationPrice = new BigNumber(afterLiquidationPriceInUsd).div(100)
-  const afterDebt = new BigNumber(simulatedPosition.collateralAmount.amount)
-  const afterDebtToken = simulatedPosition.collateralAmount.token.symbol
+  const afterDebt = new BigNumber(simulatedPosition.debtAmount.amount)
+  const afterDebtToken = simulatedPosition.debtAmount.token.symbol
 
   const ltvChange = afterLtv.minus(ltv).div(ltv)
   const liquidationPriceChange = afterLiquidationPrice.minus(liquidationPrice).div(liquidationPrice)
@@ -96,7 +97,7 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
               change: formatted.afterLtv,
               secondary: {
                 value: formatted.ltvChange,
-                variant: ltvChange.isPositive() ? 'negative' : 'positive',
+                variant: ltvChange.isPositive() ? 'positive' : 'negative',
               },
             },
             {
