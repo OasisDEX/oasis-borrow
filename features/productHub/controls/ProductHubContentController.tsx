@@ -78,7 +78,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   const banner = useProductHubBanner({
     filters: selectedFilters,
     hidden: !!hiddenBanners,
-    selectedProduct: selectedProduct
+    selectedProduct: selectedProduct,
   })
 
   const dataFilteredByFeatureFlags = useMemo(

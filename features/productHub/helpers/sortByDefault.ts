@@ -61,10 +61,7 @@ export function sortByDefault(
 
   switch (selectedProduct) {
     case OmniProductType.Borrow:
-      return [
-        ...sortByProductValue('fee', available),
-        ...sortByProductValue('fee', comingSoon),
-      ]
+      return [...sortByProductValue('fee', available), ...sortByProductValue('fee', comingSoon)]
     case OmniProductType.Multiply:
       return [
         ...sortByProductValue('maxMultiply', available, -1),

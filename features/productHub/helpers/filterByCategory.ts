@@ -15,11 +15,7 @@ interface FilterByCategoryParams {
   secondaryTokenGroup: string
 }
 
-export function filterByCategory({
-  category,
-  primaryToken,
-  row,
-}: FilterByCategoryParams) {
+export function filterByCategory({ category, primaryToken, row }: FilterByCategoryParams) {
   switch (category) {
     case ProductHubCategory.All:
       return true
