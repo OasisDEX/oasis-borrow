@@ -38,8 +38,9 @@ export const mapLandingProductFinderBlock = (
         }),
       },
       ...(filters && {
-        featured: filters,
-        highlighted: filters,
+        featured: {
+          products: filters,
+        },
       }),
     }
   }),

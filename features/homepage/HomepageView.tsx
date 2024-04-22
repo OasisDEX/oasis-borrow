@@ -167,8 +167,13 @@ export function HomepageView() {
       <WhyOasisStats oasisStats={oasisStats} />
       <Box sx={{ mt: 7 }}>
         <ProductHubView
-          featured={featuredProducts}
-          highlighted={featuredProducts}
+          featured={{
+            products: featuredProducts,
+            limit: 1,
+            isTagged: true,
+            isHighlighted: true,
+            isPromoted: true,
+          }}
           limitRows={10}
           product={OmniProductType.Earn}
         />

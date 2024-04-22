@@ -92,6 +92,7 @@ export function AjnaHomepageView() {
           initialFilters={{
             protocol: [LendingProtocol.Ajna],
           }}
+          limitRows={10}
           product={OmniProductType.Borrow}
         />
       </Box>

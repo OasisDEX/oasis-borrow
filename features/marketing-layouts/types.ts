@@ -1,6 +1,6 @@
 import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 import type { OmniProductType } from 'features/omni-kit/types'
-import type { ProductHubFeaturedFilters, ProductHubFilters } from 'features/productHub/types'
+import type { ProductHubFeaturedProducts, ProductHubFilters } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export interface MarketingTemplatePalette {
@@ -28,7 +28,7 @@ export interface MarketingTemplateBlock {
 }
 
 interface MarketingTemplateProductFinderProps {
-  featured?: ProductHubFeaturedFilters[]
+  featured?: ProductHubFeaturedProducts
   initialFilters?: ProductHubFilters
   product: OmniProductType
 }
