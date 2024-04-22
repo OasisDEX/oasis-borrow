@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "12.20.5",
+  "version": "12.20.7",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.19"
@@ -43,7 +43,7 @@
     "@lifi/wallet-management": "^2.6.1",
     "@lifi/widget": "^2.10.2",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "0.1.60",
+    "@oasisdex/addresses": "0.1.61",
     "@oasisdex/automation": "1.6.5",
     "@oasisdex/dma-library": "0.6.52",
     "@oasisdex/multiply": "^0.2.11",
@@ -130,6 +130,7 @@
     "@ethersproject/abstract-provider": "5.7.0",
     "@ethersproject/providers": "5.7.0",
     "@ethersproject/signing-key": "5.7.0",
+    "@walletconnect/ethereum-provider": "2.9.1",
     "acorn": "8.5.0",
     "bn.js": "5.2.1",
     "debug": "4.3.4",
