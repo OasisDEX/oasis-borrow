@@ -28,6 +28,7 @@ export interface GenericMultiselectProps {
   initialValues?: string[]
   label: string
   onChange: (value: string[]) => void
+  onSingleChange?: (value: string) => void
   options: GenericMultiselectOption[]
   optionGroups?: {
     id: string
@@ -163,6 +164,7 @@ export function GenericMultiselect({
   initialValues = [],
   label,
   onChange,
+  onSingleChange,
   optionGroups,
   options,
   sx,
@@ -407,7 +409,10 @@ export function GenericMultiselect({
                   }}
                   onClick={() => {
                     if (matchingOptionsGroup === id) setValues([])
-                    else setValues(_options)
+                    else {
+                      setValues(_options)
+                      onSingleChange?.(`Group: ${id}`)
+                    }
                   }}
                 >
                   {t(key)} ({_options.length})
@@ -419,7 +424,10 @@ export function GenericMultiselect({
             <GenericMultiselectItem
               key={option.value}
               isSelected={values.includes(option.value)}
-              onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
+              onClick={(value) => {
+                setValues(toggleArrayItem<string>(values, value))
+                onSingleChange?.(value)
+              }}
               {...option}
             />
           ))}

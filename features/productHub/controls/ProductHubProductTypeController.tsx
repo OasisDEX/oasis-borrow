@@ -1,3 +1,5 @@
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import { Tabs } from 'components/Tabs'
 import { OmniProductType } from 'features/omni-kit/types'
 import { upperFirst } from 'lodash'
@@ -37,7 +39,13 @@ export const ProductHubProductTypeController: FC<ProductHubProductTypeController
         ),
         id: productType,
       }))}
-      onClick={(_selectedProduct) => onChange(_selectedProduct)}
+      onClick={(_selectedProduct) => {
+        onChange(_selectedProduct)
+        trackingEvents.productHub.filterChange(
+          MixpanelProductHubChangeFilter.ProductType,
+          _selectedProduct,
+        )
+      }}
       underlineGradient={gradient}
       underlinePadding="12px"
       underlineSize="3px"

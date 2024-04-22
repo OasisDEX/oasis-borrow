@@ -1,3 +1,5 @@
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { ProductHubFilters, ProductHubTag } from 'features/productHub/types'
 import React, { type FC, useRef } from 'react'
@@ -61,6 +63,7 @@ export const ProductHabTagButton: FC<ProductHubTagButtonProps> = ({
               ...selectedFilters,
               tags: tags.includes(tag) ? tags.filter((_tag) => _tag !== tag) : [...tags, tag],
             })
+            trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.Tag, tag)
           }}
         >
           {t(`product-hub.tags.${tag}.label`)}

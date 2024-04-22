@@ -1,3 +1,5 @@
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { MIN_LIQUIDITY } from 'features/productHub/meta'
@@ -36,6 +38,10 @@ export const ProductHubTagLiquidity: FC<ProductHubTagLiquidityProps> = ({
         ...selectedFilters,
         'min-liquidity': [minLiquidity.toString()],
       })
+      trackingEvents.productHub.filterChange(
+        MixpanelProductHubChangeFilter.MinLiquidity,
+        minLiquidity.toString(),
+      )
     },
     [minLiquidity],
     250,

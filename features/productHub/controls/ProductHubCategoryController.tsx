@@ -1,3 +1,5 @@
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import { Icon } from 'components/Icon'
 import { Tabs } from 'components/Tabs'
 import type { OmniProductType } from 'features/omni-kit/types'
@@ -59,12 +61,16 @@ export const ProductHubCategoryController: FC<ProductHubCategoryControllerProps>
           id,
         }),
       )}
-      onClick={(selectedCategory) =>
+      onClick={(selectedCategory) => {
         onChange({
           ...selectedFilters,
           category: selectedCategory === productHubCategoryAll.id ? [] : [selectedCategory],
         })
-      }
+        trackingEvents.productHub.filterChange(
+          MixpanelProductHubChangeFilter.Category,
+          selectedCategory,
+        )
+      }}
       underlinePadding="20px"
       sx={{ justifyContent: 'center', mb: '-1px' }}
     />

@@ -1,3 +1,5 @@
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import { isTestnetNetworkId, NetworkIds } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { TOKENS_STABLE_GROUPS } from 'features/productHub/filterGroups'
@@ -133,6 +135,12 @@ export const useProductHubFilters = ({
             'collateral-token': value,
           })
         }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(
+            MixpanelProductHubChangeFilter.CollateralToken,
+            value,
+          )
+        }}
         withSearch
       />
     ),
@@ -140,7 +148,6 @@ export const useProductHubFilters = ({
       collateralTokenFilterLabel,
       collateralTokens,
       ethCollateralTokens,
-      onChange,
       selectedFilters,
       stableCollateralTokens,
     ],
@@ -163,6 +170,9 @@ export const useProductHubFilters = ({
             ...selectedFilters,
             'debt-token': value,
           })
+        }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.DebtToken, value)
         }}
         withSearch
       />
@@ -193,10 +203,20 @@ export const useProductHubFilters = ({
             'deposit-token': value,
           })
         }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.DepositToken, value)
+        }}
         withSearch
       />
     ),
-    [depositTokenFilterLabel, depositTokens, selectedFilters],
+    [
+      depositTokenFilterLabel,
+      depositTokens,
+      ethDepositTokens,
+      onChange,
+      selectedFilters,
+      stableDepositTokens,
+    ],
   )
   const protocolFilter = useMemo(
     () => (
@@ -209,6 +229,9 @@ export const useProductHubFilters = ({
             ...selectedFilters,
             protocol: value,
           })
+        }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.Protocol, value)
         }}
       />
     ),
@@ -225,6 +248,9 @@ export const useProductHubFilters = ({
             ...selectedFilters,
             network: value,
           })
+        }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.Network, value)
         }}
       />
     ),
