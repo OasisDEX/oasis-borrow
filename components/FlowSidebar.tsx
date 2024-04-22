@@ -1,5 +1,6 @@
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import { FlowSidebarSkeleton } from 'components/FlowSidebarSkeleton'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -79,7 +80,11 @@ export function FlowSidebar({
   availableProxies,
   asUserAction,
   onEverythingReady,
+  isUiDataLoading,
+  step,
+  useHeaderBackBtn,
 }: CreateDPMAccountViewProps) {
+  const { t } = useTranslation()
   const [dpmState, dpmSend] = useActor(internals.dpmMachine)
   const [allowanceState] = useActor(internals.allowanceMachine)
   const allowanceConsidered = !!token && token !== 'ETH' && amount
@@ -119,6 +124,16 @@ export function FlowSidebar({
   if (!isWalletConnected) {
     return <NoConnectionStateView noConnectionContent={noConnectionContent} />
   }
+
+  if (isUiDataLoading) {
+    return (
+      <FlowSidebarSkeleton
+        step={step}
+        title={t('dpm.create-flow.welcome-screen.searching-header')}
+      />
+    )
+  }
+
   if (!isProxyReady && !isAllowanceReady) {
     switch (true) {
       case dpmState.matches('idle'):
@@ -130,6 +145,8 @@ export function FlowSidebar({
             state={dpmState}
             send={dpmSend}
             backButtonOnFirstStep="back-to-editing"
+            step={step}
+            useHeaderBackBtn={useHeaderBackBtn}
           />
         )
       default:
@@ -147,6 +164,8 @@ export function FlowSidebar({
             allowanceMachine={internals.allowanceMachine}
             isLoading={isLoading}
             backButtonOnFirstStep="back-to-editing"
+            useHeaderBackBtn={useHeaderBackBtn}
+            step={step}
           />
         )
       default:

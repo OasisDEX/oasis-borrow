@@ -14,11 +14,13 @@ import poolFinderIcon from 'public/static/img/product_hub_banners/pool-finder.sv
 
 interface ProductHubBannerProps {
   filters: ProductHubFilters
+  hideBanners?: boolean
   selectedProduct: OmniProductType
 }
 
 export const useProductHubBanner = ({
   filters: { protocol },
+  hideBanners,
   selectedProduct,
 }: ProductHubBannerProps): ActionBannerProps | undefined => {
   const {
@@ -31,6 +33,10 @@ export const useProductHubBanner = ({
   const { link, migrationsCount } = useMigrationBannerMeta({
     address: walletAddress,
   })
+
+  if (hideBanners) {
+    return undefined
+  }
 
   if (migrationsCount > 0 && migrationsEnabled) {
     return {

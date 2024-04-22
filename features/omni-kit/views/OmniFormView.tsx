@@ -11,6 +11,7 @@ import { ethers } from 'ethers'
 import { OmniDupePositionModal } from 'features/omni-kit/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
+  getOmniFilterConsumedProxy,
   getOmniFlowStateConfig,
   getOmniPrimaryButtonLabelKey,
   getOmniSidebarButtonsStatus,
@@ -113,7 +114,7 @@ export function OmniFormView({
     pairId,
     protocol,
     networkId,
-    ...(dpmProxy && { existingProxy: dpmProxy }),
+    ...(dpmProxy && positionId && { existingProxy: { address: dpmProxy, id: positionId } }),
     ...getOmniFlowStateConfig({
       protocol,
       collateralToken,
@@ -124,14 +125,7 @@ export function OmniFormView({
       state,
       quotePrecision,
     }),
-    filterConsumedProxy: async (events) => {
-      // leaving this all separate as its easier for debugging
-      const filterConsumedProxiesPromisesList = events.map((event) =>
-        omniProxyFilter({ event, filterConsumed: true }),
-      )
-      const filteredConsumedProxies = await Promise.all(filterConsumedProxiesPromisesList)
-      return filteredConsumedProxies.every(Boolean)
-    },
+    filterConsumedProxy: async (events) => getOmniFilterConsumedProxy(events, omniProxyFilter),
     onProxiesAvailable: async (events, dpmAccounts) => {
       const filteredEventsBooleanMap = await Promise.all(
         events.map((event) => omniProxyFilter({ event })),
@@ -188,6 +182,7 @@ export function OmniFormView({
     editingStep,
     hasErrors,
     isAllowanceLoading: flowState.isLoading,
+    isFlowSidebarUiLoading: flowState.isUiDataLoading,
     isFormFrozen,
     isFormValid,
     isOpening,
@@ -313,7 +308,7 @@ export function OmniFormView({
     dispatch({
       type: 'update-dpm',
       dpmAddress: flowState.availableProxies.length
-        ? flowState.availableProxies[0]
+        ? flowState.availableProxies[0].address
         : ethers.constants.AddressZero,
     })
   }, [flowState.availableProxies])

@@ -39,6 +39,13 @@ export const PortfolioPositionAutomationIcons = ({
           iconNotActiveBg={iconNotActiveBg}
         />
       )}
+      {automations.constantMultiple && (
+        <AutomationIcon
+          enabled={automations.constantMultiple.enabled}
+          type="constantMultiple"
+          iconNotActiveBg={iconNotActiveBg}
+        />
+      )}
     </>
   )
 }

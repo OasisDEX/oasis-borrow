@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-interface OmniValidationMessagesControllerProps {
+export interface OmniValidationMessagesControllerProps {
   validations: OmniValidationItem[]
   type: 'warning' | 'error' | 'notice' | 'success'
 }

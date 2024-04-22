@@ -46,6 +46,7 @@ interface ProductHubContentControllerProps {
   selectedProduct: OmniProductType
   separator?: AssetsTableSeparator
   tableData: ProductHubItem[]
+  hideBanners?: boolean
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
@@ -65,6 +66,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedProduct,
   separator,
   tableData,
+  hideBanners,
 }) => {
   const {
     AjnaBase: ajnaBaseEnabled,
@@ -76,6 +78,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   const banner = useProductHubBanner({
     filters: selectedFilters,
     selectedProduct: selectedProduct,
+    hideBanners,
   })
 
   const dataFilteredByFeatureFlags = useMemo(

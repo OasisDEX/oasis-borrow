@@ -158,6 +158,7 @@
     "create-flow": {
       "welcome-screen": {
         "header": "Create your Smart DeFi account",
+        "searching-header": "Looking for Smart DeFi account...",
         "create-button": "Create Smart DeFi account",
         "paragraph": "In order to open a position on Summer.fi, you need a Smart DeFi Account. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>.",
         "retry-create-button": "Retry Create Smart DeFi account",
@@ -678,6 +679,10 @@
           "primary": "Your funds, your choice: ",
           "secondary": "put your capital to work while staying in full control, with no exceptions",
           "cta": "Know more about security"
+        },
+        "refinance": {
+          "title": "Move seamlessly between protocols with SummerFi refinance tool",
+          "cta": "Refinance"
         }
       },
       "image-labels": {
@@ -3675,7 +3680,12 @@
     },
     "allowance-form": {
       "title": "Approve Summer.fi to access your position",
-      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website."
+      "title-short": "Approve permission",
+      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website.",
+      "status": {
+        "in-progress": "Giving Summer.fi permission to access your position.",
+        "success": "All required permissions has been set."
+      }
     },
     "vault-banners": {
       "automation": {
@@ -3748,18 +3758,28 @@
   },
   "refinance": {
     "modal-title": "Refinance {{pair}} position",
+    "close-prompt": "Are you sure you want to leave when transaction is in progress?",
     "position": {
       "title": {
         "current": "Current {{pair}} position #{{positionId}}",
         "simulation": "New {{pair}} position",
-        "created": "{{pair}} position #{{positionId}}"
+        "created": "{{pair}} position #{{positionId}}",
+        "closed": "Current position #{{positionId}}"
       },
       "empty": {
         "title": "New Position",
         "description": "It will show the position you are migrating to"
       },
+      "closed": {
+        "description": "Your old {{pair}} position is closed."
+      },
       "footer": {
         "canceled-automation": "*Automations will be canceled on new position. You can set it up again once the new position is created."
+      },
+      "tooltips": {
+        "max-ltv": "The Max Loan to Value indicates the amount that can be borrowed to the value of the collateral.",
+        "borrow-rate": "The annual percent rate for borrowing in this position.",
+        "automations": "This indicates which automation features are available for you on this position."
       }
     },
     "about": {
@@ -3786,7 +3806,7 @@
           "title": "I want to",
           "item-1": "Switch to higher max Loan To Value",
           "item-2": "Switch to lower my cost",
-          "item-3": "Change direction of my position (long to short)",
+          "item-3": "Change direction of my position",
           "item-4": "Switch to an Earn position"
         }
       },
@@ -3795,9 +3815,9 @@
         "description": "We are going to refinance your position. You can refinance back to your original position anytime you want, but it will cost gas and swap fees again.",
         "highlighted": {
           "lowering-borrowing-cost": "Lowering Borrowing Cost",
-          "increase-to-higher-ltv": "Increase to higher ltv",
-          "change-direction": "Change direction",
-          "switch-to-earn": "Switch to Earn"
+          "increase-to-higher-ltv": "Increase to higher LTV",
+          "change-direction": "Switching to {{value}}",
+          "switch-to-earn": "Opening Earn Position"
         },
         "review-all-changes": "Review all changes",
         "route": {
@@ -3808,16 +3828,35 @@
         },
         "summerfi-fee": "Summer.fi Fee"
       },
+      "refinance-option": {
+        "title-base": "Choose position to {{extension}}",
+        "title-extension": {
+          "higher-ltv": "increase your LTV",
+          "lower-cost": "lower your cost",
+          "change-direction": "change direction",
+          "switch-to-earn": "switch to earn"
+        }
+      },
+      "give": {},
       "transaction": {
         "title": {
           "success": "It's Done!",
           "in-progress": "Refinancing..."
         },
         "description": {
-          "success": "Your ETH/DAI position (<1>#{{oldId}}</1>) refinanced to new ETH/USDC position (<2>#{{newId}}</2>) successfully.",
+          "success": "Your ETH/DAI position (#{{oldId}}) refinanced to new ETH/USDC position (#{{newId}}) successfully.",
           "in-progress": "Refinancing your position."
         }
       }
+    },
+    "validations": {
+      "similar-position": "You already have similar {{collateralToken}}/{{quoteToken}} position on {{protocol}}. You can check it in the portfolio."
+    },
+    "mobile-not-available": "Refinance is not available on mobile. Please use desktop to Refinance your position.",
+    "banner": {
+      "title": "Refinance",
+      "description": "Refinance your position to a new one in one go. Move your funds between products becomes a breeze.",
+      "button": "Get Started"
     }
   },
   "vault-token-rewards": {

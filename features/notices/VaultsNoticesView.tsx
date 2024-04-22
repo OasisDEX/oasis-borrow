@@ -317,7 +317,7 @@ export function VaultLiquidatedNotice({
     unlockedCollateral.gt(zero) &&
     (isVaultController ? (
       <>
-        <Text sx={{ mb: 3 }}>
+        <Text as="p" sx={{ mb: 3 }}>
           {t('vault-notices.liquidated.maker.subheader1')}{' '}
           {t('vault-notices.liquidated.maker.subheader2', {
             amount: formatCryptoBalance(unlockedCollateral),
