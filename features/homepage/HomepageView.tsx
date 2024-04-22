@@ -3,11 +3,14 @@ import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { slideInAnimation } from 'theme/animations'
@@ -73,9 +76,12 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export function HomepageView() {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn, EnableRefinance: isRefinanceEnabled } =
+    useAppConfig('features')
   const { t } = useTranslation()
   const { data: oasisStats } = useOasisStats()
+  const { push } = useRouter()
+  const { wallet } = useWalletManagement()
 
   return (
     <Box
@@ -166,6 +172,35 @@ export function HomepageView() {
         </HomepagePromoBlock.Big>
       </Grid>
       <WhyOasisStats oasisStats={oasisStats} />
+      {isRefinanceEnabled && wallet && (
+        <Grid
+          columns={['1fr', '1.8fr 1.2fr']}
+          sx={{
+            background: 'linear-gradient(111.72deg, #F2FCFF 2.94%, #FFE7D8 100%), #FFFFFF',
+            mt: 7,
+            pl: 4,
+            pr: '20px',
+            py: 4,
+            borderRadius: 'rounder',
+          }}
+        >
+          <HomepageHeadline
+            primaryText={t('landing.why-oasis.sub-headers.refinance.title')}
+            ctaLabel={t('landing.why-oasis.sub-headers.refinance.cta')}
+            ctaOnClick={() => push(getPortfolioLink(wallet?.address))}
+            sx={{ alignSelf: 'center', mb: [5, 0] }}
+            buttonVariant="primaryInverted"
+          />
+          <Image
+            src={staticFilesRuntimeUrl('/static/img/homepage/refinance.svg')}
+            sx={{
+              height: ['auto', '300px'],
+              width: ['100%', '450px'],
+              justifySelf: ['center', 'right'],
+            }}
+          />
+        </Grid>
+      )}
       <Box sx={{ mt: 7 }}>
         <ProductHubView
           product={ProductHubProductType.Earn}

@@ -1,4 +1,5 @@
 import { Announcement } from 'components/Announcement'
+import { ProductContextProvider } from 'components/context/ProductContextProvider'
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioNonOwnerNotice } from 'components/portfolio/PortfolioNonOwnerNotice'
@@ -8,10 +9,12 @@ import { PortfolioPositionsView } from 'components/portfolio/positions/Portfolio
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
 import { MigrationsContext } from 'features/migrations/context'
+import { RefinanceGeneralContextProvider } from 'features/refinance/contexts/RefinanceGeneralContext'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
 import { useAppConfig } from 'helpers/config'
+import { ModalProvider } from 'helpers/modalHook'
 import { useAccount } from 'helpers/useAccount'
 import { useRedirect } from 'helpers/useRedirect'
 import { LendingProtocol } from 'lendingProtocols'
@@ -101,67 +104,73 @@ export default function PortfolioView(props: PortfolioViewProps) {
   )
 
   return address ? (
-    <PortfolioLayout>
-      <Box sx={{ width: '100%' }}>
-        {ajnaSafetySwitchOn && isOwner && hasAjnaPositions && (
-          <Announcement
-            text={tPortfolio('ajna-warning')}
-            discordLink={EXTERNAL_LINKS.DISCORD}
-            link="https://blog.summer.fi/ajna-possible-attack-vector/"
-            linkText="Read more"
-            withClose={false}
-          />
-        )}
-        <PortfolioNonOwnerNotice
-          address={address}
-          connectedAssets={portfolioConnectedWalletWalletData?.assets}
-          isConnected={isConnected}
-          isOwner={isOwner}
-          ownerAssets={portfolioWalletData?.assets}
-        />
-        <PortfolioHeader address={address} />
-        {overviewData && portfolioWalletData ? (
-          <PortfolioOverview
-            address={address}
-            overviewData={overviewData}
-            portfolioWalletData={portfolioWalletData}
-            migrationPositions={migrationPositions}
-          />
-        ) : (
-          <PortfolioOverviewSkeleton />
-        )}
-        <TabBar
-          variant="underline"
-          sections={[
-            {
-              value: 'positions',
-              label: tPortfolio('positions-tab'),
-              content: (
-                <PortfolioPositionsView
+    <ProductContextProvider>
+      <RefinanceGeneralContextProvider>
+        <ModalProvider>
+          <PortfolioLayout>
+            <Box sx={{ width: '100%' }}>
+              {ajnaSafetySwitchOn && isOwner && hasAjnaPositions && (
+                <Announcement
+                  text={tPortfolio('ajna-warning')}
+                  discordLink={EXTERNAL_LINKS.DISCORD}
+                  link="https://blog.summer.fi/ajna-possible-attack-vector/"
+                  linkText="Read more"
+                  withClose={false}
+                />
+              )}
+              <PortfolioNonOwnerNotice
+                address={address}
+                connectedAssets={portfolioConnectedWalletWalletData?.assets}
+                isConnected={isConnected}
+                isOwner={isOwner}
+                ownerAssets={portfolioWalletData?.assets}
+              />
+              <PortfolioHeader address={address} />
+              {overviewData && portfolioWalletData ? (
+                <PortfolioOverview
                   address={address}
-                  blogPosts={blogPosts}
-                  isOwner={isOwner}
-                  portfolioPositionsData={portfolioPositionsData}
+                  overviewData={overviewData}
                   portfolioWalletData={portfolioWalletData}
                   migrationPositions={migrationPositions}
                 />
-              ),
-            },
-            {
-              value: 'wallet',
-              label: tPortfolio('wallet-tab'),
-              content: (
-                <PortfolioWalletView
-                  address={address}
-                  blogPosts={blogPosts}
-                  isOwner={isOwner}
-                  portfolioWalletData={portfolioWalletData}
-                />
-              ),
-            },
-          ]}
-        />
-      </Box>
-    </PortfolioLayout>
+              ) : (
+                <PortfolioOverviewSkeleton />
+              )}
+              <TabBar
+                variant="underline"
+                sections={[
+                  {
+                    value: 'positions',
+                    label: tPortfolio('positions-tab'),
+                    content: (
+                      <PortfolioPositionsView
+                        address={address}
+                        blogPosts={blogPosts}
+                        isOwner={isOwner}
+                        portfolioPositionsData={portfolioPositionsData}
+                        portfolioWalletData={portfolioWalletData}
+                        migrationPositions={migrationPositions}
+                      />
+                    ),
+                  },
+                  {
+                    value: 'wallet',
+                    label: tPortfolio('wallet-tab'),
+                    content: (
+                      <PortfolioWalletView
+                        address={address}
+                        blogPosts={blogPosts}
+                        isOwner={isOwner}
+                        portfolioWalletData={portfolioWalletData}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            </Box>
+          </PortfolioLayout>
+        </ModalProvider>
+      </RefinanceGeneralContextProvider>
+    </ProductContextProvider>
   ) : null
 }

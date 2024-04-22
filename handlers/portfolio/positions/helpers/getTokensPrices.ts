@@ -20,7 +20,7 @@ export async function getTokensPrices(retries: number = 0): Promise<TokensPrices
   const tickers = Object.entries(tickersResponse).reduce<Tickers>(
     (acc, [key, value]) => ({
       ...acc,
-      [key.toLowerCase()]: new BigNumber(value),
+      [key.toLowerCase()]: new BigNumber(value as any),
     }),
     {},
   )

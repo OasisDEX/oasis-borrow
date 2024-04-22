@@ -34,6 +34,7 @@ interface ProductHubContentControllerProps {
   selectedProduct: ProductHubProductType
   selectedToken: string
   tableData: ProductHubItem[]
+  hideBanners?: boolean
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
@@ -50,6 +51,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedProduct,
   selectedToken,
   tableData,
+  hideBanners,
 }) => {
   const {
     AjnaBase: ajnaBaseEnabled,
@@ -66,6 +68,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   const banner = useProductHubBanner({
     filters: selectedFilters,
     product: selectedProduct,
+    hideBanners,
   })
 
   const dataMatchedToFeatureFlags = useMemo(
