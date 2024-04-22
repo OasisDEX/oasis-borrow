@@ -5,10 +5,9 @@ import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
-import { makeSDK } from 'summerfi-sdk-client'
+import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
 import type {
   IImportPositionParameters,
-  IPool,
   IPosition,
   IRefinanceParameters,
   ISimulation,
@@ -31,10 +30,10 @@ export type SDKSimulation = {
   user: User | null
   sourcePosition: IPosition | null
   simulatedPosition: IPosition | null
-  simulatedPool: IPool | null
   importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
   refinanceSimulation: ISimulation<SimulationType.Refinance> | null
   liquidationPrice: string
+  liquidationThreshold: Percentage | null
 }
 
 export function useSdkSimulation(): SDKSimulation {
@@ -46,18 +45,12 @@ export function useSdkSimulation(): SDKSimulation {
     useState<null | ISimulation<SimulationType.Refinance>>(null)
   const [importPositionSimulation, setImportPositionSimulation] =
     useState<null | ISimulation<SimulationType.ImportPosition>>(null)
-  const [simulatedPool, setSimulatedPool] = useState<null | IPool>(null)
+  const [liquidationPrice, setLiquidationPrice] = useState<string>('')
+  const [liquidationThreshold, setLiquidationThreshold] = useState<Percentage | null>(null)
 
   const {
     environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
-    position: {
-      positionId,
-      liquidationPrice,
-      collateralTokenData,
-      debtTokenData,
-      positionType,
-      owner,
-    },
+    position: { positionId, collateralTokenData, debtTokenData, positionType, owner },
     poolData: { poolId },
     form: {
       state: { strategy },
@@ -118,7 +111,6 @@ export function useSdkSimulation(): SDKSimulation {
         makerProtocol.getPool({ poolId }),
         sparkProtocol.getPool({ poolId: targetPoolId }),
       ])
-      setSimulatedPool(targetPool)
 
       const _sourcePosition = Position.createFrom({
         positionId,
@@ -170,6 +162,32 @@ export function useSdkSimulation(): SDKSimulation {
       ])
       setImportPositionSimulation(_importPositionSimulation)
       setRefinanceSimulation(_refinanceSimulation)
+
+      // TECH DEBT: This is a temporary fix to get the liquidation threshold from SDK as there is no other way currently
+      const _simulatedPosition = _refinanceSimulation?.targetPosition
+      if (_simulatedPosition == null) {
+        return
+      }
+      let _liquidationThreshold: Percentage | null = null
+      try {
+        _liquidationThreshold = (_simulatedPosition.pool as any).collaterals.get({
+          token: _simulatedPosition.collateralAmount.token,
+        })?.maxLtv?.ratio
+      } catch (e) {
+        console.error('Error getting liquidation threshold', e)
+      }
+      if (_liquidationThreshold == null) {
+        return
+      }
+      // TECH DEBT END
+      setLiquidationThreshold(_liquidationThreshold)
+
+      const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
+        liquidationThreshold: _liquidationThreshold,
+        debtPriceInUsd: debtPrice,
+        position: _simulatedPosition,
+      })
+      setLiquidationPrice(afterLiquidationPriceInUsd)
     }
     void fetchData().catch((err) => {
       setError(err.message)
@@ -200,9 +218,9 @@ export function useSdkSimulation(): SDKSimulation {
     user,
     sourcePosition,
     simulatedPosition,
-    simulatedPool,
     importPositionSimulation,
     refinanceSimulation,
     liquidationPrice,
+    liquidationThreshold,
   }
 }

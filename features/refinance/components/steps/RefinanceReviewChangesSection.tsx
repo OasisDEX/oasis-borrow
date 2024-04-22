@@ -10,8 +10,6 @@ import {
 } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { PositionUtils } from 'summerfi-sdk-client'
-import { type Percentage } from 'summerfi-sdk-common'
 import { Text } from 'theme-ui'
 
 const getChangeVariant = (
@@ -41,11 +39,7 @@ const getChangeVariant = (
 export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKSimulation }) => {
   const { t } = useTranslation()
 
-  const {
-    environment: { debtPrice },
-    poolData,
-    position,
-  } = useRefinanceContext()
+  const { poolData, position } = useRefinanceContext()
 
   const ltv = new BigNumber(poolData.maxLtv.loanToValue)
   const liquidationPrice = new BigNumber(position.liquidationPrice)
@@ -58,27 +52,11 @@ export const RefinanceReviewChangesSection = ({ simulation }: { simulation: SDKS
     return null
   }
 
-  // TECH DEBT: This is a temporary fix to get the liquidation threshold from SDK as there is no other way currently
-  let liquidationThreshold: Percentage | undefined
-  try {
-    liquidationThreshold = (simulatedPosition.pool as any).collaterals.get({
-      token: simulatedPosition.collateralAmount.token,
-    })?.maxLtv?.ratio
-  } catch (e) {
-    console.error('Error getting liquidation threshold', e)
-  }
-  if (liquidationThreshold == null) {
-    return null
-  }
-  const afterLtv = new BigNumber(liquidationThreshold ? liquidationThreshold.toProportion() : 0)
-  // TECH DEBT END
+  const afterLtv = new BigNumber(
+    simulation.liquidationThreshold ? simulation.liquidationThreshold.toProportion() : 0,
+  )
 
-  const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
-    liquidationThreshold: liquidationThreshold,
-    debtPriceInUsd: debtPrice,
-    position: simulatedPosition,
-  })
-
+  const afterLiquidationPriceInUsd = simulation.liquidationPrice
   const afterLiquidationPrice = new BigNumber(afterLiquidationPriceInUsd)
   const afterDebt = new BigNumber(simulatedPosition.debtAmount.amount)
   const afterDebtToken = simulatedPosition.debtAmount.token.symbol
