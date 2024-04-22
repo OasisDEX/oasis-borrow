@@ -1,12 +1,10 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
-import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { BrandTag } from 'components/BrandTag'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { OmniProductType } from 'features/omni-kit/types'
-import { ProductHubAutomations } from 'features/productHub/components'
 import {
   filterFeaturedProducts,
   getGenericPositionUrl,
@@ -90,11 +88,6 @@ export function parseRows({
             network={Array.isArray(network) ? network[0] : network}
             protocol={protocol}
           />
-        ),
-        automation: row.automationFeatures?.length ? (
-          <ProductHubAutomations automationFeatures={row.automationFeatures} product={product} />
-        ) : (
-          <AssetsTableDataCellInactive />
         ),
       },
       hiddenColumns ?? [],

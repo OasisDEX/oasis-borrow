@@ -183,10 +183,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
           hasRewards,
-          automationFeatures:
-            settings.availableAutomations[
-              networksByName[product.network].id as OmniSupportedNetworkIds
-            ],
+          automationFeatures: !product.product.includes(OmniProductType.Earn)
+            ? settings.availableAutomations[
+                networksByName[product.network].id as OmniSupportedNetworkIds
+              ]
+            : [],
         }
       }),
       warnings: [],

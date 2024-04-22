@@ -176,10 +176,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards: product.hasRewards ?? false,
-          automationFeatures:
-            settingsV3.availableAutomations[
-              networksByName[product.network].id as OmniSupportedNetworkIds
-            ],
+          automationFeatures: !product.product.includes(OmniProductType.Earn)
+            ? settingsV3.availableAutomations[
+                networksByName[product.network].id as OmniSupportedNetworkIds
+              ]
+            : [],
         }
       }),
       warnings: [],

@@ -3,6 +3,7 @@ import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponen
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowItems } from 'components/assetsTable/types'
 import { OmniProductType } from 'features/omni-kit/types'
+import { ProductHubAutomations } from 'features/productHub/components'
 import { parseProductNumbers } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
@@ -11,6 +12,7 @@ import { Trans } from 'react-i18next'
 
 export function parseProduct(
   {
+    automationFeatures,
     earnStrategyDescription,
     fee: feeString,
     liquidity: liquidityString,
@@ -72,6 +74,11 @@ export function parseProduct(
             </>
           ),
         },
+        automation: automationFeatures?.length ? (
+          <ProductHubAutomations automationFeatures={automationFeatures} product={product} />
+        ) : (
+          <AssetsTableDataCellInactive />
+        ),
       }
     case OmniProductType.Multiply:
       return {
@@ -108,6 +115,11 @@ export function parseProduct(
             </>
           ),
         },
+        automation: automationFeatures?.length ? (
+          <ProductHubAutomations automationFeatures={automationFeatures} product={product} />
+        ) : (
+          <AssetsTableDataCellInactive />
+        ),
       }
     case OmniProductType.Earn:
       return {
