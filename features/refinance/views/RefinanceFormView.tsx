@@ -188,11 +188,7 @@ export const RefinanceFormView: FC = ({ children }) => {
 
   return (
     <Flex
-      sx={
-        [RefinanceSidebarStep.Strategy, RefinanceSidebarStep.Dpm].includes(currentStep)
-          ? { flex: 1 }
-          : { maxWidth: '407px' }
-      }
+      sx={[RefinanceSidebarStep.Strategy].includes(currentStep) ? { flex: 1 } : { width: '407px' }}
     >
       {!isExternalStep ? (
         <SidebarSection {...sidebarSectionProps} />

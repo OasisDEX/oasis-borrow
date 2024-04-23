@@ -291,7 +291,7 @@ export const theme = themeTypeSafe({
     },
     modalAutoWidth: {
       width: 'fit-content',
-      minWidth: '1200px',
+      minWidth: ['auto', '1200px'],
     },
     vaultPageContainer: {
       maxWidth: ['400px', '1232px'],
