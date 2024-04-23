@@ -9,17 +9,22 @@ import {
   useOmniCardDataBuyingPower,
   useOmniCardDataLiquidationPrice,
   useOmniCardDataLtv,
+  useOmniCardDataNetApy,
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
+import { OmniCardDataNetApyModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataNetApyModal'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   getOmniNetValuePnlData,
   mapBorrowCumulativesToOmniCumulatives,
 } from 'features/omni-kit/helpers'
+import { useOmniSimulationYields } from 'features/omni-kit/hooks'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { useAjnaCardDataNetValueLending } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -28,13 +33,19 @@ export const MorphoDetailsSectionContent: FC = () => {
     environment: {
       collateralPrice,
       collateralToken,
+      isYieldLoopWithData,
       isOpening,
       isShort,
       isYieldLoop,
       priceFormat,
       productType,
       quotePrice,
+      protocol,
       quoteToken,
+      network,
+      collateralPrecision,
+      collateralAddress,
+      quoteAddress,
     },
   } = useOmniGeneralContext()
   const {
@@ -60,6 +71,24 @@ export const MorphoDetailsSectionContent: FC = () => {
       ? normalizeValue(one.div(castedPosition.liquidationToMarketPrice))
       : castedPosition.liquidationToMarketPrice,
   )
+
+  const simulations = isYieldLoopWithData
+    ? useOmniSimulationYields({
+        amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
+        token: collateralToken,
+        getYields: () =>
+          useOmniEarnYields({
+            actionSource: 'MorphoDetailsSectionContent',
+            quoteTokenAddress: quoteAddress,
+            collateralTokenAddress: collateralAddress,
+            quoteToken: quoteToken,
+            collateralToken: collateralToken,
+            ltv: castedPosition.riskRatio.loanToValue,
+            networkId: network.id,
+            protocol,
+          }),
+      })
+    : undefined
 
   const commonContentCardData = {
     changeVariant,
@@ -149,7 +178,45 @@ export const MorphoDetailsSectionContent: FC = () => {
       : undefined,
   )
 
-  return (
+  const netValueContentCardData = useAjnaCardDataNetValueLending(
+    !isOpening
+      ? getOmniNetValuePnlData({
+          cumulatives: mapBorrowCumulativesToOmniCumulatives(castedPosition.pnl.cumulatives),
+          productType,
+          collateralTokenPrice: collateralPrice,
+          debtTokenPrice: quotePrice,
+          netValueInCollateralToken: position.netValue.div(collateralPrice),
+          netValueInDebtToken: position.netValue.div(quotePrice),
+          collateralToken,
+          debtToken: quoteToken,
+          useDebtTokenAsPnL: isYieldLoop,
+        })
+      : undefined,
+  )
+
+  const netApyContentCardCommonData = useOmniCardDataNetApy({
+    netApy: simulations?.apy?.div(100),
+    modal: (
+      <OmniCardDataNetApyModal
+        collateralToken={collateralToken}
+        quoteToken={quoteToken}
+        protocol={LendingProtocolLabel[protocol]}
+      />
+    ),
+  })
+
+  return isYieldLoopWithData ? (
+    <>
+      <OmniContentCard
+        {...commonContentCardData}
+        {...netValueContentCardCommonData}
+        {...netValueContentCardData}
+      />
+      <OmniContentCard {...commonContentCardData} {...netApyContentCardCommonData} />
+      <OmniContentCard {...commonContentCardData} {...liquidationPriceContentCardCommonData} />
+      <OmniContentCard {...commonContentCardData} {...ltvContentCardCommonData} />
+    </>
+  ) : (
     <>
       <OmniContentCard {...commonContentCardData} {...liquidationPriceContentCardCommonData} />
       <OmniContentCard {...commonContentCardData} {...ltvContentCardCommonData} />

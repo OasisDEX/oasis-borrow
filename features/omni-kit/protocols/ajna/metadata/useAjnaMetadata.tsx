@@ -285,58 +285,60 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               value={`${originationFeeFormatted} ${!isOracless ? originationFeeFormattedUSD : ''}`}
             />
           ) : undefined,
-          overviewContent: isYieldLoopWithData ? (
-            <OmniOpenYieldLoopDetails poolAddress={position.pool.poolAddress} />
-          ) : (
-            <AjnaLendingDetailsSectionContent
-              changeVariant={changeVariant}
-              collateralPrice={collateralPrice}
-              collateralToken={collateralToken}
-              isOpening={isOpening}
-              isOracless={isOracless}
-              isProxyWithManyPositions={isProxyWithManyPositions}
-              isShort={isShort}
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              owner={owner}
-              position={position}
-              priceFormat={priceFormat}
-              productType={productType}
-              quotePrice={quotePrice}
-              quoteToken={quoteToken}
-              shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
-              simulation={simulation}
-              isYieldLoop={isYieldLoop}
-            />
-          ),
-          overviewFooter: isYieldLoopWithData ? (
-            <OmniOpenYieldLoopFooter
-              getYields={() =>
-                useOmniEarnYields({
-                  actionSource: 'ajnaMetadata',
-                  ltv,
-                  networkId: networkId,
-                  protocol,
-                  poolAddress: position.pool.poolAddress,
-                })
-              }
-            />
-          ) : (
-            <AjnaLendingDetailsSectionFooter
-              changeVariant={changeVariant}
-              collateralPrice={collateralPrice}
-              collateralToken={collateralToken}
-              isOracless={isOracless}
-              isOwner={isOwner}
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              networkId={networkId}
-              owner={owner}
-              position={position}
-              productType={productType}
-              quotePrice={quotePrice}
-              quoteToken={quoteToken}
-              simulation={simulation}
-            />
-          ),
+          overviewContent:
+            isYieldLoopWithData && isOpening ? (
+              <OmniOpenYieldLoopDetails poolAddress={position.pool.poolAddress} />
+            ) : (
+              <AjnaLendingDetailsSectionContent
+                changeVariant={changeVariant}
+                collateralPrice={collateralPrice}
+                collateralToken={collateralToken}
+                isOpening={isOpening}
+                isOracless={isOracless}
+                isProxyWithManyPositions={isProxyWithManyPositions}
+                isShort={isShort}
+                isSimulationLoading={productContext.position.isSimulationLoading}
+                owner={owner}
+                position={position}
+                priceFormat={priceFormat}
+                productType={productType}
+                quotePrice={quotePrice}
+                quoteToken={quoteToken}
+                shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
+                simulation={simulation}
+                isYieldLoop={isYieldLoop}
+              />
+            ),
+          overviewFooter:
+            isYieldLoopWithData && isOpening ? (
+              <OmniOpenYieldLoopFooter
+                getYields={() =>
+                  useOmniEarnYields({
+                    actionSource: 'ajnaMetadata',
+                    ltv,
+                    networkId: networkId,
+                    protocol,
+                    poolAddress: position.pool.poolAddress,
+                  })
+                }
+              />
+            ) : (
+              <AjnaLendingDetailsSectionFooter
+                changeVariant={changeVariant}
+                collateralPrice={collateralPrice}
+                collateralToken={collateralToken}
+                isOracless={isOracless}
+                isOwner={isOwner}
+                isSimulationLoading={productContext.position.isSimulationLoading}
+                networkId={networkId}
+                owner={owner}
+                position={position}
+                productType={productType}
+                quotePrice={quotePrice}
+                quoteToken={quoteToken}
+                simulation={simulation}
+              />
+            ),
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} />
           ) : undefined,

@@ -214,6 +214,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
       />
       <OmniContentCard {...commonContentCardData} {...netApyContentCardCommonData} />
       <OmniContentCard {...commonContentCardData} {...liquidationPriceContentCardCommonData} />
+      <OmniContentCard {...commonContentCardData} {...ltvContentCardCommonData} />
     </>
   ) : (
     <>
