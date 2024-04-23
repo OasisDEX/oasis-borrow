@@ -104,11 +104,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const getAaveV3TokensDataPromises = aaveV3NetworksList.map((networkName) =>
     memoizedTokensData(networkName as AaveV3Networks, tickers),
   )
-  const earnProducts = aaveV3ProductHubProducts.filter(({ primaryToken, secondaryToken }) =>
-    isYieldLoopPair({
-      collateralToken: primaryToken,
-      debtToken: secondaryToken,
-    }),
+  const earnProducts = aaveV3ProductHubProducts.filter(
+    ({ primaryToken, secondaryToken, product }) =>
+      isYieldLoopPair({
+        collateralToken: primaryToken,
+        debtToken: secondaryToken,
+      }) && [OmniProductType.Multiply, OmniProductType.Earn].includes(product[0]),
   )
   const earnProductsEmodeLtvPromises = await Promise.all(
     aaveV3SupportedNetworkList.map(async (networkId) => {

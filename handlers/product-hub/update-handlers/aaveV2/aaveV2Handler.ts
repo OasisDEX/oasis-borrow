@@ -55,16 +55,16 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       },
     }
   })
+  const tokensReserveConfigurationData = await Promise.all(tokensReserveConfigurationDataPromises)
 
   // getting the APYs
   const earnProducts = aaveV2ProductHubProducts.filter(({ product }) =>
     product.includes(OmniProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await Promise.all(tokensReserveConfigurationDataPromises)
-    const { riskRatio } = tokensReserveData.find((data) => data[product.primaryToken])![
-      product.primaryToken
-    ]
+    const { riskRatio } = tokensReserveConfigurationData.find(
+      (data) => data[product.primaryToken],
+    )![product.primaryToken]
     const contracts = getNetworkContracts(NetworkIds.MAINNET)
     ensureGivenTokensExist(NetworkIds.MAINNET, contracts, [
       product.primaryToken,
@@ -95,9 +95,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
   return Promise.all([
     Promise.all(tokensReserveDataPromises),
-    Promise.all(tokensReserveConfigurationDataPromises),
     Promise.all(earnProductsPromises),
-  ]).then(([tokensReserveData, tokensReserveConfigurationData, earnProductsYields]) => {
+  ]).then(([tokensReserveData, earnProductsYields]) => {
     return {
       table: aaveV2ProductHubProducts.map((product) => {
         const { secondaryToken, primaryToken, label } = product

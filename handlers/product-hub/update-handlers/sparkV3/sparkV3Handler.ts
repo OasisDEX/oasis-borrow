@@ -121,7 +121,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     return { ...acc, ...curr }
   }, {})
 
-  // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>
     product.includes(OmniProductType.Earn),
   )
