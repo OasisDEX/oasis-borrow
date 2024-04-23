@@ -34,8 +34,8 @@ export const OmniOpenYieldLoopDetails: FC<{ poolAddress?: string }> = ({ poolAdd
   )
 
   const ltv = useMemo(() => {
-    return position.maxRiskRatio.loanToValue || simulation?.maxRiskRatio.loanToValue
-  }, [position.maxRiskRatio.loanToValue, simulation?.maxRiskRatio.loanToValue])
+    return simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue
+  }, [position.riskRatio.loanToValue, simulation?.riskRatio.loanToValue])
 
   const simulations = useOmniSimulationYields({
     amount,

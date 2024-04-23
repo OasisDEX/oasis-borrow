@@ -237,7 +237,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ? simulation.buyingPower
           : undefined
 
-      const ltv = position.riskRatio.loanToValue || resolvedSimulation?.maxRiskRatio.loanToValue
+      const ltv = resolvedSimulation?.maxRiskRatio.loanToValue || position.riskRatio.loanToValue
 
       const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
         ltv,

@@ -33,7 +33,7 @@ export function MorphoContentFooterYieldLoop() {
   } = useOmniProductContext(OmniProductType.Multiply)
 
   const ltv = useMemo(() => {
-    return position.maxRiskRatio.loanToValue || simulation?.maxRiskRatio.loanToValue
+    return simulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue
   }, [position.maxRiskRatio.loanToValue, simulation?.maxRiskRatio.loanToValue])
   const commonContentCardData = {
     asFooter: true,

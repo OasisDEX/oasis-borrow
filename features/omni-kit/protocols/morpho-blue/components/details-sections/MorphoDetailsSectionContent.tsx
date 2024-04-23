@@ -83,7 +83,7 @@ export const MorphoDetailsSectionContent: FC = () => {
             collateralTokenAddress: collateralAddress,
             quoteToken: quoteToken,
             collateralToken: collateralToken,
-            ltv: castedPosition.riskRatio.loanToValue,
+            ltv: simulation?.riskRatio.loanToValue || castedPosition.riskRatio.loanToValue,
             networkId: network.id,
             protocol,
           }),

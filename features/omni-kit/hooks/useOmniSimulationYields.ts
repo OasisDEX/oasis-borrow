@@ -30,6 +30,9 @@ export function useOmniSimulationYields({
   } = useOmniProductContext(OmniProductType.Multiply)
   const yields = getYields()
 
+  // TODO: fix this dependancy
+  // it blocks the simulation from being calculated
+  // if the wallet has no tokens (gasEstimation?.usdValue is zero)
   const fees = gasEstimation?.usdValue.div(quotePrice)
 
   const simulations = useMemo(() => {

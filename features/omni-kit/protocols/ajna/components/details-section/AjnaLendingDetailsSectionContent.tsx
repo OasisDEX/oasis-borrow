@@ -9,13 +9,18 @@ import {
   useOmniCardDataBuyingPower,
   useOmniCardDataLiquidationPrice,
   useOmniCardDataLtv,
+  useOmniCardDataNetApy,
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
+import { OmniCardDataNetApyModal } from 'features/omni-kit/components/details-section/modals/OmniCardDataNetApyModal'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniNetValuePnlData,
   mapBorrowCumulativesToOmniCumulatives,
 } from 'features/omni-kit/helpers'
+import { useOmniSimulationYields } from 'features/omni-kit/hooks'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import {
   useAjnaCardDataBuyingPower,
   useAjnaCardDataNetValueLending,
@@ -24,6 +29,7 @@ import {
 import { useAjnaCardDataLiquidationPrice } from 'features/omni-kit/protocols/ajna/components/details-section/'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import type { FC } from 'react'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
@@ -65,6 +71,16 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   simulation,
   isYieldLoop,
 }) => {
+  const {
+    environment: {
+      isYieldLoopWithData,
+      protocol,
+      network,
+      collateralPrecision,
+      collateralAddress,
+      quoteAddress,
+    },
+  } = useOmniGeneralContext()
   const liquidationPrice = normalizeValue(
     isShort ? one.div(position.liquidationPrice) : position.liquidationPrice,
   )
@@ -190,6 +206,65 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const buyingPowerContentCardAjnaData = useAjnaCardDataBuyingPower({
     shouldShowDynamicLtv,
   })
+
+  const simulations = isYieldLoopWithData
+    ? useOmniSimulationYields({
+        amount: position.collateralAmount.shiftedBy(collateralPrecision),
+        token: collateralToken,
+        getYields: () =>
+          useOmniEarnYields({
+            actionSource: 'AjnaLendingDetailsSectionContent',
+            ltv: simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue,
+            networkId: network.id,
+            protocol,
+            poolAddress: position.pool.poolAddress,
+          }),
+      })
+    : undefined
+
+  const netApyContentCardCommonData = useOmniCardDataNetApy({
+    netApy: simulations?.apy?.div(100),
+    modal: (
+      <OmniCardDataNetApyModal
+        collateralToken={collateralToken}
+        quoteToken={quoteToken}
+        protocol={LendingProtocolLabel[protocol]}
+      />
+    ),
+  })
+
+  const netValueContentCardData = useAjnaCardDataNetValueLending(
+    !isOpening
+      ? getOmniNetValuePnlData({
+          cumulatives: mapBorrowCumulativesToOmniCumulatives(position.pnl.cumulatives),
+          productType,
+          collateralTokenPrice: collateralPrice,
+          debtTokenPrice: quotePrice,
+          netValueInCollateralToken: position.netValue.div(collateralPrice),
+          netValueInDebtToken: position.netValue.div(quotePrice),
+          collateralToken,
+          debtToken: quoteToken,
+          useDebtTokenAsPnL: isYieldLoop,
+        })
+      : undefined,
+  )
+
+  if (productType === OmniProductType.Multiply && isYieldLoopWithData) {
+    // special case for yield loops
+    // TODO: we should refactor ajna components to match aave/morpho
+    return (
+      <>
+        <OmniContentCard
+          {...commonContentCardData}
+          {...netValueContentCardCommonData}
+          {...netValueContentCardData}
+        />
+        <OmniContentCard {...commonContentCardData} {...netApyContentCardCommonData} />
+        <OmniContentCard {...commonContentCardData} {...liquidationPriceContentCardCommonData} />
+        <OmniContentCard {...commonContentCardData} {...ltvContentCardCommonData} />
+      </>
+    )
+  }
 
   return (
     <>
