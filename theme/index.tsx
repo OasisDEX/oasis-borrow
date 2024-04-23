@@ -289,6 +289,10 @@ export const theme = themeTypeSafe({
       variant: 'layout.modal',
       minHeight: '50vh',
     },
+    modalAutoWidth: {
+      width: 'fit-content',
+      minWidth: ['auto', '1200px'],
+    },
     vaultPageContainer: {
       maxWidth: ['400px', '1232px'],
       zIndex: 1,

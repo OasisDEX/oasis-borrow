@@ -55,6 +55,7 @@ export type ProductHubColumnKey =
   | 'maxMultiple'
   | 'protocolNetwork'
   | 'strategy'
+  | 'automation'
 
 export interface ProductHubItemBasics {
   label: string

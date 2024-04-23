@@ -91,10 +91,8 @@ export const EXTERNAL_LINKS = {
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes',
     LEARN: 'https://blog.summer.fi/tag/learn',
     HOW_TO_SET_UP_AUTO_TAKE_PROFIT: 'https://blog.summer.fi/how-to-set-up-auto-take-profit',
-    HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_BORROW:
-      'https://blog.summer.fi/how-to-choose-the-correct-protocol-to-borrow/',
-    HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_MULTIPLY:
-      'https://blog.summer.fi/how-to-choose-the-right-protocol-to-multiply',
+    HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL:
+      'https://docs.summer.fi/protocols/choosing-the-right-protocol',
     SELECTING_THE_RIGHT_BORROW_PAIR: 'https://blog.summer.fi/select-the-right-borrow-pair/',
     SELECTING_THE_RIGHT_MULTIPLY_POSITION:
       'https://blog.summer.fi/choosing-the-best-multiply-position',
@@ -103,7 +101,7 @@ export const EXTERNAL_LINKS = {
     UNDERSTANDING_YIELD_LOOPS: 'https://blog.summer.fi/understanding-yield-loops',
     WHY_BORROW_ON_SUMMER: 'https://blog.summer.fi/why-borrow-on-summer',
     WHY_MULTIPLY_ON_SUMMER: 'https://blog.summer.fi/why-multiply-on-summer',
-    WHY_EARN_ON_SUMMER: 'https://blog.summer.fi/blog.summer.fi/why-earn-on-summer',
+    WHY_EARN_ON_SUMMER: 'https://blog.summer.fi/why-earn-on-summer',
   },
   DOCS: {
     FAQ: {

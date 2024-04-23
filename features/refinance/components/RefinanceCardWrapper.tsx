@@ -10,10 +10,9 @@ export const RefinanceCardWrapper: FC<RefinanceCardWrapperProps> = ({ children, 
   <Card
     sx={{
       backgroundColor: 'neutral30',
-      flex: 1,
       px: '24px',
       py: '28px',
-      maxWidth: '365px',
+      width: '365px',
       height: 'fit-content',
       ...sx,
     }}
