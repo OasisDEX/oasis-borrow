@@ -3,16 +3,13 @@ import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import type { AaveTotalValueLocked } from 'features/aave/aave-context'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
 export const useOmniYieldLoopHeadline = ({
-  minYields,
   maxYields,
   maxYieldsOffset,
   tvlData,
 }: {
-  minYields: GetYieldsResponseMapped | undefined
   maxYields: GetYieldsResponseMapped | undefined
   maxYieldsOffset: GetYieldsResponseMapped | undefined
   tvlData?: AaveTotalValueLocked
@@ -20,19 +17,18 @@ export const useOmniYieldLoopHeadline = ({
   const { t } = useTranslation()
 
   const headlineDetails = []
-  if (minYields && maxYields && maxYieldsOffset) {
+  if (maxYields && maxYieldsOffset) {
     const formatYield = (yieldVal: BigNumber) =>
       formatPercent(yieldVal, {
         precision: 2,
       })
-    const yield7DaysMin = minYields.apy7d ?? zero
-    const yield7DaysMax = maxYields.apy7d ?? zero
+    const yield7DaysMax = maxYields.apy7d
 
     const yield7DaysDiff = maxYields.apy7d.minus(maxYieldsOffset.apy7d)
 
     headlineDetails.push({
       label: t('open-earn.aave.product-header.current-yield'),
-      value: `${formatYield(yield7DaysMin).toString()} - ${formatYield(yield7DaysMax).toString()}`,
+      value: formatYield(yield7DaysMax).toString(),
       sub: formatPercent(yield7DaysDiff, {
         precision: 2,
         plus: true,
@@ -73,6 +69,6 @@ export const useOmniYieldLoopHeadline = ({
 
   return {
     headlineDetails,
-    isLoading: !(!!minYields && !!maxYields),
+    isLoading: !maxYields,
   }
 }

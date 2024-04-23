@@ -2689,8 +2689,8 @@
           "spark-wsteth-eth": "Spark wstETH yield multiple",
           "spark-reth-eth": "Spark rETH yield multiple"
         },
-        "current-yield": "APY",
-        "90-day-avg-yield": "90 Day Avg",
+        "current-yield": "7 Day APY",
+        "90-day-avg-yield": "90 Day Avg APY",
         "total-value-locked": "Total value locked"
       },
       "vault-form": {
@@ -2973,7 +2973,7 @@
         "title": "{{days}} days average APY"
       },
       "apy": {
-        "title": "APY"
+        "title": "Current APY"
       },
       "est-break-even": {
         "title": "Est. break-even"

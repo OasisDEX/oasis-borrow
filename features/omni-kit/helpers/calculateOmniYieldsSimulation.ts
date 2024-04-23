@@ -12,6 +12,7 @@ export interface CalculateSimulationResult {
   breakEven?: BigNumber
   entryFees?: BigNumber
   apy?: BigNumber
+  currentApy?: BigNumber
   previous7Days?: Simulation
   previous30Days?: Simulation
   previous90Days?: Simulation
@@ -34,6 +35,7 @@ export function calculateOmniYieldsSimulation({
     yields.apy7d && amount.times(yields.apy7d.div(100).plus(one)).minus(amount).div(365)
   return {
     apy: yields.apy7d,
+    currentApy: yields.apy,
     breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
     previous7Days:

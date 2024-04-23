@@ -45,7 +45,7 @@ export const OmniOpenYieldLoopFooter: FC<AaveLikeContentFooterYieldLoopProps> = 
     token: quoteToken,
   })
   const apyContentCardCommonData = useOmniCardDataApy({
-    apy: simulations?.apy?.div(100),
+    apy: simulations?.currentApy?.div(100),
     isSimulationLoading,
   })
 

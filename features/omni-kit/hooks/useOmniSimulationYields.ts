@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
-import type { CalculateSimulationResult } from 'features/aave/open/services'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import type { CalculateSimulationResult } from 'features/omni-kit/helpers/calculateOmniYieldsSimulation'
 import { calculateOmniYieldsSimulation } from 'features/omni-kit/helpers/calculateOmniYieldsSimulation'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
