@@ -25,7 +25,7 @@ export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponseMap
           console.error('Enable to get yields', { error: e, params })
         })
     },
-    [params.ltv.toString()],
+    [params.ltv.toFixed(6).toString()], // not update on ltv slight change
     400,
     () => {
       setOmniYields(undefined)
