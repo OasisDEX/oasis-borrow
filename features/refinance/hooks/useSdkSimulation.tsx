@@ -53,7 +53,7 @@ export function useSdkSimulation(): SDKSimulation {
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
-    if (!ctx || !cache?.positionOwner) {
+    if (!ctx || !cache.positionOwner) {
       return
     }
     const {
