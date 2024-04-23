@@ -5,11 +5,12 @@ import type { NextApiHandler, NextApiRequest } from 'next'
 
 async function get({ req: { body } }: { req: NextApiRequest }) {
   try {
-    const { subgraph, method, params, networkId } = JSON.parse(body)
+    const { subgraph, method, params, networkId, rawQuery } = JSON.parse(body)
 
     const subgraphUrl = await getSubgraphUrl(subgraph, networkId)
 
-    const subgraphMethod = subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord]
+    const subgraphMethod =
+      rawQuery || subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord]
 
     // error handling for missing subgraph url and method in dictionary
     if (!subgraphUrl) throw new Error(`Subgraph url not found for ${subgraph} on ${networkId}`)

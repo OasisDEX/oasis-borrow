@@ -44,8 +44,13 @@ async function getErc4626Positions({
   prices,
 }: GetErc4626PositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
-  const subgraphPositions = (await loadSubgraph('Erc4626', 'getErc4626DpmPositions', networkId, {
-    dpmProxyAddress,
+  const subgraphPositions = (await loadSubgraph({
+    subgraph: 'Erc4626',
+    method: 'getErc4626DpmPositions',
+    networkId,
+    params: {
+      dpmProxyAddress,
+    },
   })) as SubgraphsResponses['Erc4626']['getErc4626DpmPositions']
   const positionsArray = subgraphPositions.response.positions.flatMap(({ account, vault }) => ({
     ...account,
