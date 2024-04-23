@@ -1,6 +1,6 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
@@ -10,17 +10,14 @@ import {
   getSparkV3ReserveConfigurationData,
   getSparkV3ReserveData,
 } from 'blockchain/spark-v3'
-import { wstethRiskRatio } from 'features/aave/constants'
+import { lambdaPercentageDenomination, wstethRiskRatio } from 'features/aave/constants'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
 import { ProductHubProductType } from 'features/productHub/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
-import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
-import type {
-  AaveLikeYieldsResponse,
-  FilterYieldFieldsType,
-} from 'lendingProtocols/aave-like-common'
+import { getYieldsRequest } from 'helpers/lambda/yields'
+import { zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 
 import { sparkV3ProductHubProducts } from './sparkV3Products'
@@ -98,15 +95,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     memoizedTokensData(networkName as SparkV3Networks, tickers),
   )
 
-  const yieldsPromisesMap: Record<
-    string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
-  > = {
-    'WSTETH/ETH': emptyYields,
-    'RETH/ETH': emptyYields,
-    'SDAI/USDC': emptyYields,
-    'SDAI/USDT': emptyYields,
-  }
   // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Earn),
@@ -135,25 +123,46 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
             (data) => data[product.primaryToken],
           ),
         )[product.primaryToken].riskRatio
-    const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
-    return {
-      [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
+    const contracts = getNetworkContracts(networkId)
+    ensureGivenTokensExist(networkId, contracts, [product.primaryToken, product.secondaryToken])
+
+    const response = await getYieldsRequest(
+      {
+        actionSource: 'product-hub handler spark',
+        collateralTokenAddress: contracts.tokens[product.primaryToken].address,
+        quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
+        collateralToken: product.primaryToken,
+        quoteToken: product.secondaryToken,
+        ltv: riskRatio.loanToValue,
+        networkId: networkId,
+        protocol: product.protocol,
+      },
+      process.env.FUNCTIONS_API_URL,
+    )
+    if (!response?.results) {
+      console.warn('No Spark APY data for', product.label, product.network, response)
     }
+    return {
+      [`${product.label}-${product.network}`]:
+        new BigNumber(response?.results?.apy7d || zero).div(lambdaPercentageDenomination) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
+    } as Record<string, BigNumber>
   })
   return Promise.all([
     Promise.all(getSparkV3TokensDataPromises),
     Promise.all(earnProductsPromises),
   ]).then(([sparkV3TokensDataList, earnProductsYields]) => {
     const sparkV3TokensData = sparkV3TokensDataList[0] // only one (ethereum) now
+    const flattenYields = earnProductsYields.reduce((acc, curr) => {
+      return { ...acc, ...curr }
+    })
     return {
       table: sparkV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =
           sparkV3TokensData[product.network as SparkV3Networks]
-        const { secondaryToken, primaryToken, label, primaryTokenGroup } = product
+        const { secondaryToken, primaryToken, label, primaryTokenGroup, network } = product
         const { liquidity, fee } = ensureFind(
           tokensReserveData.find((data) => data[secondaryToken]),
         )[secondaryToken]
-        const weeklyNetApy = earnProductsYields.find((data) => data[label])
         const { maxLtv, riskRatio } = ensureFind(
           tokensReserveConfigurationData.find((data) => data[primaryToken]),
         )[primaryToken]
@@ -179,7 +188,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           tooltips: {
             fee: hasRewards ? productHubSparkRewardsTooltip : undefined,
           },
-          weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
+          weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards,
         }
       }),

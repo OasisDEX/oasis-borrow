@@ -4,7 +4,13 @@ import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { useOmniYieldLoopHeadline } from 'features/omni-kit/hooks'
 import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 
-export const useYieldLoopHeadlineDetails = ({ ltv }: { ltv: BigNumber }) => {
+export const useYieldLoopHeadlineDetails = ({
+  ltv,
+  poolAddress,
+}: {
+  ltv: BigNumber
+  poolAddress?: string
+}) => {
   const {
     environment: {
       protocol,
@@ -36,6 +42,7 @@ export const useYieldLoopHeadlineDetails = ({ ltv }: { ltv: BigNumber }) => {
     networkId: network.id,
     protocol,
     referenceDate,
+    poolAddress,
   })
   const maxYields = useOmniEarnYields({
     actionSource: 'useYieldLoopHeadlineDetails maxYields',
@@ -47,6 +54,7 @@ export const useYieldLoopHeadlineDetails = ({ ltv }: { ltv: BigNumber }) => {
     networkId: network.id,
     protocol,
     referenceDate,
+    poolAddress,
   })
   const maxYieldsOffset = useOmniEarnYields({
     actionSource: 'useYieldLoopHeadlineDetails maxYields',
@@ -58,6 +66,7 @@ export const useYieldLoopHeadlineDetails = ({ ltv }: { ltv: BigNumber }) => {
     networkId: network.id,
     protocol,
     referenceDate: referenceDateOffset,
+    poolAddress,
   })
 
   const { headlineDetails, isLoading } = useOmniYieldLoopHeadline({

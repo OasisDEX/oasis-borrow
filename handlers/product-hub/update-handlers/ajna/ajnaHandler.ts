@@ -6,6 +6,7 @@ import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import type { AjnaPoolsTableData } from 'features/omni-kit/protocols/ajna/helpers'
@@ -82,7 +83,7 @@ async function getAjnaPoolData(
         console.error('Pool data not found for', collateralToken, quoteToken)
         return null
       }
-      const { lowestUtilizedPrice, quoteTokenAddress, collateralTokenAddress, address } = poolData
+      const { lowestUtilizedPrice, address } = poolData
       const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
       const collateralPrice = isOracless ? one : prices[collateralToken]
       const quotePrice = isOracless ? one : prices[quoteToken]
@@ -91,10 +92,7 @@ async function getAjnaPoolData(
 
       const response = await getYieldsRequest(
         {
-          collateralTokenAddress,
-          quoteTokenAddress,
-          quoteToken,
-          collateralToken,
+          actionSource: 'product-hub handler ajna',
           networkId,
           protocol: LendingProtocol.Ajna,
           ltv: maxLtv,
@@ -104,13 +102,13 @@ async function getAjnaPoolData(
       )
 
       if (!response?.results) {
-        console.warn(
-          'No Ajna APY data for',
-          poolData.address,
-          poolData.collateralToken,
-          poolData.quoteToken,
+        console.warn('No Ajna APY data for request: ', {
+          networkId,
+          protocol: LendingProtocol.Ajna,
+          ltv: maxLtv,
+          poolAddress: address,
           response,
-        )
+        })
       }
 
       return response
@@ -195,11 +193,13 @@ async function getAjnaPoolData(
           const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
           const weeklyNetApy = isYieldLoop
-            ? yieldLoopApys
-                .find((yields) => {
-                  return yields?.position.poolAddress?.toLocaleLowerCase() === address
-                })
-                ?.results.apy7d.toString()
+            ? new BigNumber(
+                yieldLoopApys.find((yields) => {
+                  return yields?.position?.poolAddress?.toLocaleLowerCase() === address
+                })?.results.apy7d || zero,
+              )
+                .div(lambdaPercentageDenomination)
+                .toString()
             : lendApr.toString()
 
           const primaryTokenGroup = getTokenGroup(collateralToken)
@@ -234,9 +234,7 @@ async function getAjnaPoolData(
                   earnStrategy: EarnStrategies.yield_loop,
                   earnStrategyDescription: earnYieldLoopStrategy,
                   managementType,
-                  ...(isPoolNotEmpty && {
-                    weeklyNetApy,
-                  }),
+                  weeklyNetApy,
                 }),
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),

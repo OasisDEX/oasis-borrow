@@ -5,10 +5,10 @@ import type { LendingProtocol } from 'lendingProtocols'
 export interface GetYieldsParams {
   actionSource?: string
   ltv: BigNumber
-  quoteTokenAddress: string
-  collateralTokenAddress: string
-  quoteToken: string
-  collateralToken: string
+  quoteTokenAddress?: string
+  collateralTokenAddress?: string
+  quoteToken?: string
+  collateralToken?: string
   networkId: NetworkIds
   protocol: LendingProtocol
   referenceDate?: Date

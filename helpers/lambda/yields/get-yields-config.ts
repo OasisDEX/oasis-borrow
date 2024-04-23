@@ -32,8 +32,8 @@ export const getYieldsConfig = ({
     morphoMarkets[networkId as NetworkIds.MAINNET]?.[`${collateralToken}-${quoteToken}`]?.[0]
 
   const queryParams = new URLSearchParams()
-  queryParams.append('debt', quoteTokenAddress)
-  queryParams.append('collateral', collateralTokenAddress)
+  quoteTokenAddress && queryParams.append('debt', quoteTokenAddress)
+  collateralTokenAddress && queryParams.append('collateral', collateralTokenAddress)
   queryParams.append(
     'ltv',
     ltv
@@ -48,12 +48,20 @@ export const getYieldsConfig = ({
   }
   if (poolAddress) {
     queryParams.append('poolAddress', poolAddress)
+    queryParams.append('mode', 'borrow')
   }
 
   if (actionSource && debugGetYieldsConfig) {
     console.info(
       'getYieldsConfig',
-      JSON.stringify({ actionSource, params: queryParams.toString().split('&') }, null, 2),
+      JSON.stringify(
+        {
+          actionSource,
+          url: `/api/apy/${networkId}/${protocolQuery}?${queryParams.toString()}`,
+        },
+        null,
+        2,
+      ),
     )
   }
   return {

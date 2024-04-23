@@ -5,6 +5,7 @@ import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contract
 import { NetworkIds } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getYieldsRequest } from 'helpers/lambda/yields'
@@ -86,7 +87,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       console.warn('No AAVE v2 APY data for', product.label, product.network, response)
     }
     return {
-      [product.label]: new BigNumber(response?.results.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
+      [product.label]:
+        new BigNumber(response?.results.apy7d || zero).div(lambdaPercentageDenomination) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     }
   })
 

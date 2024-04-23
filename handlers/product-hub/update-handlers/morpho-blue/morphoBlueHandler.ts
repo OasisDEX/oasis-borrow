@@ -8,6 +8,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
@@ -103,8 +104,6 @@ async function getMorphoMarketData(
           ? getYieldsRequest(
               {
                 actionSource: 'product-hub handler morpho-blue',
-                collateralTokenAddress: primaryTokenAddress,
-                quoteTokenAddress: secondaryTokenAddress,
                 quoteToken,
                 collateralToken,
                 networkId,
@@ -114,7 +113,9 @@ async function getMorphoMarketData(
               process.env.FUNCTIONS_API_URL,
             )
           : Promise.resolve(null))
-        const weeklyNetApy = weeklyNetApyCall?.results?.apy7d.toString()
+        const weeklyNetApy = new BigNumber(weeklyNetApyCall?.results?.apy7d || zero)
+          .div(lambdaPercentageDenomination)
+          .toString()
 
         const isShort = isShortPosition({ collateralToken })
         const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`

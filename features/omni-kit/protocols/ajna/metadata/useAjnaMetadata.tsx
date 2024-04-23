@@ -241,6 +241,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
       const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
         ltv,
+        poolAddress: position.pool.poolAddress,
       })
 
       return {
@@ -285,7 +286,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             />
           ) : undefined,
           overviewContent: isYieldLoopWithData ? (
-            <OmniOpenYieldLoopDetails />
+            <OmniOpenYieldLoopDetails poolAddress={position.pool.poolAddress} />
           ) : (
             <AjnaLendingDetailsSectionContent
               changeVariant={changeVariant}
@@ -312,13 +313,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               getYields={() =>
                 useOmniEarnYields({
                   actionSource: 'ajnaMetadata',
-                  quoteTokenAddress: quoteAddress,
-                  collateralTokenAddress: collateralAddress,
-                  quoteToken: quoteToken,
-                  collateralToken: collateralToken,
                   ltv,
                   networkId: networkId,
                   protocol,
+                  poolAddress: position.pool.poolAddress,
                 })
               }
             />

@@ -6,7 +6,7 @@ import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contract
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
-import { wstethRiskRatio } from 'features/aave/constants'
+import { lambdaPercentageDenomination, wstethRiskRatio } from 'features/aave/constants'
 import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import { ProductHubProductType } from 'features/productHub/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
@@ -135,7 +135,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     }
     return {
       [`${product.label}-${product.network}`]:
-        new BigNumber(response?.results?.apy7d || zero) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
+        new BigNumber(response?.results?.apy7d || zero).div(lambdaPercentageDenomination) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     } as Record<string, BigNumber>
   })
   return Promise.all([

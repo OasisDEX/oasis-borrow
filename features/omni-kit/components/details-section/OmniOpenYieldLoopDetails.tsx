@@ -7,7 +7,7 @@ import type { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 
-export const OmniOpenYieldLoopDetails: FC = () => {
+export const OmniOpenYieldLoopDetails: FC<{ poolAddress?: string }> = ({ poolAddress }) => {
   const {
     environment: {
       productType,
@@ -50,6 +50,7 @@ export const OmniOpenYieldLoopDetails: FC = () => {
         ltv,
         networkId: network.id,
         protocol,
+        poolAddress,
       }),
   })
 
