@@ -1,47 +1,38 @@
-import { ALL_ASSETS } from 'features/productHub/meta'
-import type { ProductHubProductType, ProductHubQueryString } from 'features/productHub/types'
+import type { OmniProductType } from 'features/omni-kit/types'
+import type { ProductHubFilters } from 'features/productHub/types'
 import { useRouter } from 'next/router'
+import type { ParsedUrlQueryInput } from 'querystring'
 import { useEffect, useMemo } from 'react'
 
 interface UseProductHubRouterProps {
-  queryString: ProductHubQueryString
-  selectedProduct: ProductHubProductType
-  selectedToken?: string
+  selectedFilters: ProductHubFilters
+  selectedProduct: OmniProductType
   url?: string
 }
 
 export const useProductHubRouter = ({
-  queryString,
+  selectedFilters,
   selectedProduct,
-  selectedToken,
   url,
 }: UseProductHubRouterProps) => {
-  const { asPath, replace } = useRouter()
+  const { replace } = useRouter()
 
-  const tokenInUrl = useMemo(
-    () => (selectedToken === ALL_ASSETS ? '' : `/${selectedToken}`),
-    [selectedToken],
-  )
-  const pathname = useMemo(
-    () => (url ? `${url}${selectedProduct}${tokenInUrl}` : asPath.split('?')[0]),
-    [asPath, selectedProduct, tokenInUrl, url],
-  )
-  const query = useMemo(
-    () =>
-      Object.keys(queryString).reduce<{ [key in keyof ProductHubQueryString]: string | undefined }>(
-        (sum, key) => ({
-          ...sum,
-          [key]: queryString[key as keyof typeof queryString]?.join(','),
+  const query = useMemo(() => {
+    return Object.entries(selectedFilters).reduce<ParsedUrlQueryInput>(
+      (total, [key, value]) => ({
+        ...total,
+        ...(value.length && {
+          [key]: value.join(','),
         }),
-        {},
-      ),
-    [queryString],
-  )
+      }),
+      {},
+    )
+  }, [selectedFilters, selectedProduct])
 
-  useEffect(
-    () => void replace({ pathname, query }, undefined, { shallow: true }),
-    [pathname, query, url],
-  )
+  useEffect(() => {
+    if (url)
+      void replace({ pathname: `${url}${selectedProduct}`, query }, undefined, { shallow: true })
+  }, [query, selectedProduct, url])
 
   return {
     query,

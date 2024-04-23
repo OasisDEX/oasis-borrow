@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import { featuredProducts } from 'features/productHub/meta'
 import { ProductHubView } from 'features/productHub/views'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -76,8 +77,8 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export function HomepageView() {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn, EnableRefinance: isRefinanceEnabled } =
-    useAppConfig('features')
+  const { EnableRefinance: isRefinanceEnabled } = useAppConfig('features')
+
   const { t } = useTranslation()
   const { data: oasisStats } = useOasisStats()
   const { push } = useRouter()
@@ -203,9 +204,15 @@ export function HomepageView() {
       )}
       <Box sx={{ mt: 7 }}>
         <ProductHubView
-          product={ProductHubProductType.Earn}
-          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
+          featured={{
+            products: featuredProducts,
+            limit: 1,
+            isTagged: true,
+            isHighlighted: true,
+            isPromoted: true,
+          }}
           limitRows={10}
+          product={OmniProductType.Earn}
         />
       </Box>
       <Box

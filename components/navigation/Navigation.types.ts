@@ -98,7 +98,6 @@ export interface NavigationMenuPanelListItem {
   icon?: NavigationMenuPanelIcon
   list?: NavigationMenuPanelList
   promoted?: boolean
-  query?: { [key: string]: string }
   tags?: NavigationMenuPanelListTags
   title: ReactNode
   url?: string

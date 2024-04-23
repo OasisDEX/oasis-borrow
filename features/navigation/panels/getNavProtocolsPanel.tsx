@@ -25,23 +25,13 @@ export const getNavProtocolsPanel = ({
   navigation: AppConfigType['navigation']
 }): NavigationMenuPanelType => {
   const query = {
-    aave: {
-      protocol: `${lendingProtocolsByName[LendingProtocol.AaveV2].name},${
-        lendingProtocolsByName[LendingProtocol.AaveV3].name
-      }`,
-    },
-    ajna: {
-      protocol: lendingProtocolsByName[LendingProtocol.Ajna].name,
-    },
-    maker: {
-      protocol: lendingProtocolsByName[LendingProtocol.Maker].name,
-    },
-    morphoBlue: {
-      protocol: lendingProtocolsByName[LendingProtocol.MorphoBlue].name,
-    },
-    spark: {
-      protocol: lendingProtocolsByName[LendingProtocol.SparkV3].name,
-    },
+    aave: `?protocol=${lendingProtocolsByName[LendingProtocol.AaveV2].name},${
+      lendingProtocolsByName[LendingProtocol.AaveV3].name
+    }`,
+    ajna: `?protocol=${lendingProtocolsByName[LendingProtocol.Ajna].name}`,
+    maker: `?protocol=${lendingProtocolsByName[LendingProtocol.Maker].name}`,
+    morphoBlue: `?protocol=${lendingProtocolsByName[LendingProtocol.MorphoBlue].name}`,
+    spark: `?protocol=${lendingProtocolsByName[LendingProtocol.SparkV3].name}`,
   }
   return {
     label: t('nav.protocols'),
@@ -61,20 +51,17 @@ export const getNavProtocolsPanel = ({
                 {
                   title: t('nav.borrow'),
                   description: navigation.protocols.aave.borrow.description,
-                  url: `${INTERNAL_LINKS.borrow}`,
-                  query: query.aave,
+                  url: `${INTERNAL_LINKS.borrow}${query.aave}`,
                 },
                 {
                   title: t('nav.multiply'),
                   description: navigation.protocols.aave.multiply.description,
-                  url: `${INTERNAL_LINKS.multiply}`,
-                  query: query.aave,
+                  url: `${INTERNAL_LINKS.multiply}${query.aave}`,
                 },
                 {
                   title: t('nav.earn'),
                   description: navigation.protocols.aave.earn.description,
-                  url: `${INTERNAL_LINKS.earn}`,
-                  query: query.aave,
+                  url: `${INTERNAL_LINKS.earn}${query.aave}`,
                 },
                 {
                   title: navigation.protocols.aave.extra.title,
@@ -83,9 +70,6 @@ export const getNavProtocolsPanel = ({
                   url: navigation.protocols.aave.extra.url,
                 },
               ],
-              // link: {
-              //   label: t('nav.protocols-more', { protocol: 'Aave' }),
-              // },
             },
           },
           ...(AjnaSafetySwitch
@@ -104,20 +88,17 @@ export const getNavProtocolsPanel = ({
                       {
                         title: t('nav.borrow'),
                         description: navigation.protocols.ajna.borrow.description,
-                        url: `${INTERNAL_LINKS.borrow}`,
-                        query: query.ajna,
+                        url: `${INTERNAL_LINKS.borrow}${query.ajna}`,
                       },
                       {
                         title: t('nav.multiply'),
                         description: navigation.protocols.ajna.multiply.description,
-                        url: `${INTERNAL_LINKS.multiply}`,
-                        query: query.ajna,
+                        url: `${INTERNAL_LINKS.multiply}${query.ajna}`,
                       },
                       {
                         title: t('nav.earn'),
                         description: navigation.protocols.ajna.earn.description,
-                        url: `${INTERNAL_LINKS.earn}`,
-                        query: query.ajna,
+                        url: `${INTERNAL_LINKS.earn}${query.ajna}`,
                       },
                       {
                         title: navigation.protocols.ajna.extra.title,
@@ -126,9 +107,6 @@ export const getNavProtocolsPanel = ({
                         url: navigation.protocols.ajna.extra.url,
                       },
                     ],
-                    // link: {
-                    //   label: t('nav.protocols-more', { protocol: 'Ajna' }),
-                    // },
                   },
                 },
               ] as NavigationMenuPanelListItem[])),
@@ -145,20 +123,17 @@ export const getNavProtocolsPanel = ({
                 {
                   title: t('nav.borrow'),
                   description: navigation.protocols.maker.borrow.description,
-                  url: `${INTERNAL_LINKS.borrow}`,
-                  query: query.maker,
+                  url: `${INTERNAL_LINKS.borrow}${query.maker}`,
                 },
                 {
                   title: t('nav.multiply'),
                   description: navigation.protocols.maker.multiply.description,
-                  url: `${INTERNAL_LINKS.multiply}`,
-                  query: query.maker,
+                  url: `${INTERNAL_LINKS.multiply}${query.maker}`,
                 },
                 {
                   title: t('nav.earn'),
                   description: navigation.protocols.maker.earn.description,
-                  url: `${INTERNAL_LINKS.earn}`,
-                  query: query.maker,
+                  url: `${INTERNAL_LINKS.earn}${query.maker}`,
                 },
                 {
                   title: navigation.protocols.maker.extra.title,
@@ -167,9 +142,6 @@ export const getNavProtocolsPanel = ({
                   url: navigation.protocols.maker.extra.url,
                 },
               ],
-              // link: {
-              //   label: t('nav.protocols-more', { protocol: 'Maker' }),
-              // },
             },
           },
           ...(MorphoBlueEnabled
@@ -189,22 +161,19 @@ export const getNavProtocolsPanel = ({
                       {
                         title: t('nav.borrow'),
                         description: navigation.protocols.morphoBlue.borrow.description,
-                        url: `${INTERNAL_LINKS.borrow}`,
-                        query: query.morphoBlue,
+                        url: `${INTERNAL_LINKS.borrow}${query.morphoBlue}`,
                       },
                       {
                         title: t('nav.multiply'),
                         description: navigation.protocols.morphoBlue.multiply.description,
-                        url: `${INTERNAL_LINKS.multiply}`,
-                        query: query.morphoBlue,
+                        url: `${INTERNAL_LINKS.multiply}${query.morphoBlue}`,
                       },
                       ...(erc4626VaultsEnabled
                         ? [
                             {
                               title: t('nav.earn'),
                               description: navigation.protocols.morphoBlue.earn.description,
-                              url: `${INTERNAL_LINKS.earn}`,
-                              query: query.morphoBlue,
+                              url: `${INTERNAL_LINKS.earn}${query.morphoBlue}`,
                             },
                           ]
                         : []),
@@ -215,9 +184,6 @@ export const getNavProtocolsPanel = ({
                         url: navigation.protocols.morphoBlue.extra.url,
                       },
                     ],
-                    // link: {
-                    //   label: t('nav.protocols-more', { protocol: 'Morpho Blue' }),
-                    // },
                   },
                 },
               ] as NavigationMenuPanelListItem[])
@@ -235,20 +201,17 @@ export const getNavProtocolsPanel = ({
                 {
                   title: t('nav.borrow'),
                   description: navigation.protocols.spark.borrow.description,
-                  url: `${INTERNAL_LINKS.borrow}`,
-                  query: query.spark,
+                  url: `${INTERNAL_LINKS.borrow}${query.spark}`,
                 },
                 {
                   title: t('nav.multiply'),
                   description: navigation.protocols.spark.multiply.description,
-                  url: `${INTERNAL_LINKS.multiply}`,
-                  query: query.spark,
+                  url: `${INTERNAL_LINKS.multiply}${query.spark}`,
                 },
                 {
                   title: t('nav.earn'),
                   description: navigation.protocols.spark.earn.description,
-                  url: `${INTERNAL_LINKS.earn}`,
-                  query: query.spark,
+                  url: `${INTERNAL_LINKS.earn}${query.spark}`,
                 },
                 {
                   title: navigation.protocols.spark.extra.title,
@@ -257,9 +220,6 @@ export const getNavProtocolsPanel = ({
                   url: navigation.protocols.spark.extra.url,
                 },
               ],
-              // link: {
-              //   label: t('nav.protocols-more', { protocol: 'Spark' }),
-              // },
             },
           },
         ],

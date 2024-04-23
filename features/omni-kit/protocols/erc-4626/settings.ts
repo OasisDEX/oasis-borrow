@@ -108,7 +108,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     protocol: LendingProtocol.MorphoBlue,
     rewards: [morphoRewards, wstethRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
-    strategy: 'MetaMorpho Lending',
+    strategy: 'Steakhouse MetaMorpho Vault',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
       precision: getToken('USDC').precision,
@@ -125,7 +125,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     pricePicker: morphoPricePicker,
     rewards: [morphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
-    strategy: 'MetaMorpho Lending',
+    strategy: 'Steakhouse MetaMorpho Vault',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.PYUSD.address,
       precision: getToken('PYUSD').precision,
@@ -142,7 +142,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     pricePicker: morphoPricePicker,
     rewards: [morphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
-    strategy: 'MetaMorpho Lending',
+    strategy: 'Steakhouse MetaMorpho Vault',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDT.address,
       precision: getToken('USDT').precision,
@@ -159,7 +159,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     pricePicker: morphoPricePicker,
     rewards: [morphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
-    strategy: 'MetaMorpho Lending',
+    strategy: 'Steakhouse MetaMorpho Vault',
     token: {
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address,
       precision: getToken('ETH').precision,

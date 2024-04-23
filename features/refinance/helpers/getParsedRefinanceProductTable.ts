@@ -1,8 +1,8 @@
 import type { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { isShortPosition } from 'features/omni-kit/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubItem } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { RefinanceOptions } from 'features/refinance/types'
 import { zero } from 'helpers/zero'
 
@@ -32,7 +32,7 @@ export const getParsedRefinanceProductTable = ({
       return table.filter((item) => new BigNumber(item.maxLtv || zero).gt(maxLtv.loanToValue))
     case RefinanceOptions.SWITCH_TO_EARN:
       // in theory not required because PH is pre-configured in this case to Earn
-      return table.filter((item) => item.product.includes(ProductHubProductType.Earn))
+      return table.filter((item) => item.product.includes(OmniProductType.Earn))
     default:
       return table
   }

@@ -1,79 +1,53 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
+import { OmniProductType } from 'features/omni-kit/types'
+import { ProductHubHelp } from 'features/productHub/components'
 import { useProductHubFilters } from 'features/productHub/hooks/useProductHubFilters'
-import { productHubFiltersCount, productHubGridTemplateColumns } from 'features/productHub/meta'
-import type {
-  ProductHubFilters,
-  ProductHubItem,
-  ProductHubQueryString,
-  ProductHubSupportedNetworks,
-} from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
-import type { LendingProtocol } from 'lendingProtocols'
-import type { FC } from 'react'
-import React from 'react'
-import { theme } from 'theme'
-import { Box } from 'theme-ui'
-import { useMediaQuery } from 'usehooks-ts'
+import type { ProductHubFilters, ProductHubItem } from 'features/productHub/types'
+import React, { type FC } from 'react'
 
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
+  hiddenHelp?: boolean
   networkId?: NetworkIds
-  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
-  queryString: ProductHubQueryString
+  onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductHubProductType
-  selectedToken: string
+  selectedProduct: OmniProductType
 }
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
   data,
-  initialNetwork = [],
-  initialProtocol = [],
+  hiddenHelp,
   networkId,
   onChange,
-  queryString,
   selectedFilters,
   selectedProduct,
-  selectedToken,
 }) => {
-  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
-
   const {
+    collateralTokenFilter,
     debtTokenFilter,
-    multiplyStrategyFilter,
+    depositTokenFilter,
     networkFilter,
     protocolFilter,
-    secondaryTokenFilter,
   } = useProductHubFilters({
     data,
     onChange,
-    queryString,
     selectedFilters,
-    selectedToken,
-    initialNetwork,
-    initialProtocol,
     networkId,
   })
 
   return (
     <AssetsFiltersContainer
-      key={`${selectedProduct}-${selectedToken}`}
-      gridTemplateColumns={[
-        '100%',
-        null,
-        `repeat(${productHubFiltersCount[selectedProduct]}, 1fr)`,
-        productHubGridTemplateColumns[selectedProduct],
+      key={selectedProduct}
+      filters={[
+        ...(selectedProduct === OmniProductType.Earn
+          ? [depositTokenFilter]
+          : [collateralTokenFilter, debtTokenFilter]),
+        protocolFilter,
+        networkFilter,
       ]}
     >
-      {selectedProduct === ProductHubProductType.Borrow && debtTokenFilter}
-      {selectedProduct === ProductHubProductType.Multiply && secondaryTokenFilter}
-      {!isSmallerScreen && <Box />}
-      {selectedProduct === ProductHubProductType.Multiply && multiplyStrategyFilter}
-      {networkFilter}
-      {protocolFilter}
+      {!hiddenHelp && <ProductHubHelp selectedProduct={selectedProduct} />}
     </AssetsFiltersContainer>
   )
 }

@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { NavigationMenuPanelList } from 'components/navigation/Navigation.types'
-import { productHubOptionsMap } from 'features/productHub/meta'
-import { ProductHubProductType } from 'features/productHub/types'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { capitalize } from 'lodash'
@@ -22,8 +20,6 @@ export const getNavTokensNestedListItem = (
   token: string,
   { fee, apyPassive, apyActive, maxMultiple }: NavTokensNestedListParams,
 ): NavigationMenuPanelList => {
-  const tokenGroup = getTokenGroup(token)
-
   const borrow = {
     title: t('nav.borrow'),
     description: (
@@ -33,7 +29,7 @@ export const getNavTokensNestedListItem = (
         components={{ em: <em /> }}
       />
     ),
-    url: `${INTERNAL_LINKS.borrow}/${tokenGroup}`,
+    url: `${INTERNAL_LINKS.borrow}?collateral-token=${token}`,
   }
   const multiply = {
     title: t('nav.multiply'),
@@ -43,12 +39,12 @@ export const getNavTokensNestedListItem = (
         values={{
           token,
           maxMultiple: maxMultiple.toFixed(2),
-          product: capitalize(ProductHubProductType.Multiply),
+          product: capitalize(OmniProductType.Multiply),
         }}
         components={{ em: <em /> }}
       />
     ),
-    url: `${INTERNAL_LINKS.multiply}/${tokenGroup}`,
+    url: `${INTERNAL_LINKS.multiply}?collateral-token=${token}`,
   }
   const earn = {
     title: t('nav.earn'),
@@ -75,22 +71,15 @@ export const getNavTokensNestedListItem = (
               : apyPassive !== 0 && apyActive === 0
                 ? formatDecimalAsPercent(new BigNumber(apyPassive))
                 : undefined,
-          product: capitalize(ProductHubProductType.Earn),
+          product: capitalize(OmniProductType.Earn),
         }}
         components={{ em: <em /> }}
       />
     ),
-    url: `${INTERNAL_LINKS.earn}/${tokenGroup}`,
+    url: `${INTERNAL_LINKS.earn}?deposit-token=${token}`,
   }
 
   return {
-    items: [
-      ...(Object.keys(productHubOptionsMap.borrow.tokens).includes(tokenGroup) ? [borrow] : []),
-      ...(Object.keys(productHubOptionsMap.multiply.tokens).includes(tokenGroup) ? [multiply] : []),
-      ...(Object.keys(productHubOptionsMap.earn.tokens).includes(tokenGroup) ? [earn] : []),
-    ],
-    // link: {
-    //   label: t('nav.tokens-more', { token }),
-    // },
+    items: [earn, multiply, borrow],
   }
 }

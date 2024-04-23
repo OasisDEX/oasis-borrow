@@ -226,7 +226,7 @@
         "activity": "Activity",
         "annual-fee": "Annual fee",
         "asset": "Vault",
-        "automation": "Automation",
+        "automation": "Available automations",
         "borrow-rate": "Borrow rate",
         "cdp-id": "",
         "claimable-now": "Claimable now",
@@ -328,6 +328,7 @@
   "edit-token-allowance": "Edit {{token}} allowance",
   "edit-vault-details": "Edit Vault details",
   "email": "Email",
+  "empty-options-list": "No items matching your search were found",
   "pending": "Pending...",
   "email-invalid": "Provided email is invalid",
   "email-required": "Email address is required",
@@ -412,6 +413,7 @@
   "from:": "From",
   "full": "Full",
   "heads-up": "Heads up! It can take up to 30 seconds for your Position to update.",
+  "help": "Help",
   "history": {
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
@@ -922,6 +924,7 @@
   "max": "Max",
   "manage": "Manage",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
+  "min-liquidity": "Min. Liquidity",
   "minimum": "Minimum",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
@@ -1049,6 +1052,7 @@
   "one-of-some": "{{one}} of {{some}}",
   "onramp-leave-message": "By clicking buy, you will leave Summer.fi and be redirected to a third party website where you will complete the buy process.",
   "open-new-vault": "Open new Vault",
+  "open-position": "Open position",
   "open-vault": {
     "title": "Open Vault",
     "simulate": "Simulate"
@@ -1232,6 +1236,7 @@
     "max": "Max transaction cost"
   },
   "notice": "Notice",
+  "search": "Search",
   "soon": "Soon",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
@@ -3323,8 +3328,9 @@
       "no-max-multiple": "There are currently no borrow or multiply positions for this pool. Max multiple will be calculated following the creation of the first position.",
       "no-weekly-apy": "There are currently no borrow or multiply positions for this pool. 7 day net APY will be calculated following the creation of the first position.",
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
-      "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
-      "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
+      "ajna-rewards-title": "This pool is earning Summer.fi × Ajna token Rewards",
+      "ajna-rewards-description": "This pool distributes a total of {{weekly}} AJNA per week. The current annualised reward rate is {{apy}}",
+      "ajna-rewards-oracless": "Rewards APY is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool and earn Ajna token rewards."
     }
   },
   "spark": {
@@ -3416,15 +3422,11 @@
         "earn": "with "
       }
     },
-    "select": {
-      "borrow": "Borrow against your favorite crypto assets",
-      "multiply": "Increase your exposure to any crypto asset",
-      "earn": "Earn long term yields to compound your crypto capital"
-    },
     "intro": {
-      "borrow": "Easily borrow stablecoins or other crypto-assets against your collateral. Read more about",
-      "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset. Read more about",
-      "earn": "Earn long term yields to compound your crypto capital. Read more about"
+      "borrow": "Easily borrow stablecoins or other crypto-assets against your collateral.",
+      "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset.",
+      "earn": "Earn long term yields to compound your crypto capital.",
+      "read-more": "Read more about"
     },
     "featured": "Featured",
     "promo-cards": {
@@ -3483,12 +3485,81 @@
       "passive": "Passive",
       "short": "Short only"
     },
+    "categories": {
+      "all": "All categories",
+      "restaking": "Restaking",
+      "staking-rewards": "Staking rewards",
+      "token-farming": "Token farming",
+      "yield-loops": "Yield Loops"
+    },
     "filters": {
+      "collateral-tokens": "Collateral Tokens",
       "debt-tokens": "Debt Tokens",
-      "secondary-tokens": "Secondary Tokens",
-      "strategies": "Strategies",
+      "deposit-tokens": "Deposit Tokens",
       "networks": "Networks",
-      "protocols": "Protocols"
+      "protocols": "Protocols",
+      "eth-variants": "ETH variants",
+      "stablecoins": "Stablecoins",
+      "strategies": "Strategies"
+    },
+    "tags": {
+      "bluechip-assets": {
+        "label": "Bluechip Assets",
+        "tooltip": "Only the highest quality collateral and debt assets"
+      },
+      "easiest-to-manage": {
+        "label": "Easiest To Manage",
+        "tooltip": "Only passive strategies"
+      },
+      "eth-derivative-yield-loops": {
+        "label": "ETH Derivative Yield Loops",
+        "tooltip": "ETH Based correlated pairs where collateral asset has native yield"
+      },
+      "gt-1b-tvl": {
+        "label": ">1B TVL",
+        "tooltip": "Only protocols that have a total value locked >$1B"
+      },
+      "isolated-pairs": {
+        "label": "Isolated Pairs",
+        "tooltip": "Only protocols where risk is contained to one pair only, not the entire borrow/lend market"
+      },
+      "long": {
+        "label": "Long",
+        "tooltip": "Only long strategy positions"
+      },
+      "longevity": {
+        "label": "Longevity",
+        "tooltip": "Only projects that have been operating >3 years"
+      },
+      "lp-only": {
+        "label": "LP only",
+        "tooltip": "Earn yield for providing liquidity"
+      },
+      "memecoins": {
+        "label": "Memecoins",
+        "tooltip": "Get liquidity for your speculative tokens based on memes"
+      },
+      "non-stablecoin-collateral": {
+        "label": "Non-Stablecoin Collateral",
+        "tooltip": "Only borrow against non-stablecoin collateral"
+      },
+      "short": {
+        "label": "Short",
+        "tooltip": "Only short strategy positions"
+      },
+      "stablecoin-strategies": {
+        "label": "Stablecoin Strategies",
+        "tooltip": "Only positions with correlated stablecoin pairs, for yield loops / basis trades"
+      }
+    },
+    "automation-details": {
+      "autoBuy": "Auto Buy",
+      "autoSell": "Auto Sell",
+      "autoTakeProfit": "Auto Take Profit",
+      "constantMultiple": "Constant Multiple",
+      "partialTakeProfit": "Partial Take Profit",
+      "stopLoss": "Stop-Loss",
+      "trailingStopLoss": "Trailing Stop-Loss"
     },
     "banners": {
       "pool-finder": {
@@ -3501,6 +3572,17 @@
         "description": "Migrate to Summer.fi for benefits like stop loss, one click multiply and automated management.",
         "cta": "View Positions ->"
       }
+    },
+    "help": {
+      "faq": "FAQ",
+      "how-to-choose-the-right-protocol": "How to choose the right protocol",
+      "selecting-the-right-borrow-pair": "Selecting the right Borrow pair",
+      "selecting-the-right-multiply-position": "Selecting the right Multiply position",
+      "selecting-the-right-earn-position-type": "Selecting the right Earn position type",
+      "why-borrow": "Why Borrow?",
+      "why-multiply": "Why Multiply?",
+      "why-earn": "Why Earn?",
+      "understanding-yield-loops": "Understanding Yield Loops"
     }
   },
   "navigation-network": {

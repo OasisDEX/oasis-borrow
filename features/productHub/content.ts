@@ -9,9 +9,15 @@ export type ProductHubTooltipType = {
   content: {
     title?: {
       key: string
+      props?: {
+        [key: string]: string
+      }
     }
     description: {
       key: string
+      props?: {
+        [key: string]: string
+      }
     }
   }
   icon: keyof typeof productHubIcons
@@ -59,7 +65,7 @@ export const productHubWeETHRewardsTooltip: ProductHubTooltipType = {
   icon: 'sparks',
 }
 
-export const productHubEmptyPoolMaxLtvTooltip: ProductHubTooltipType = {
+export const productHubAjnaEmptyPoolMaxLtvTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.no-max-ltv',
@@ -68,7 +74,7 @@ export const productHubEmptyPoolMaxLtvTooltip: ProductHubTooltipType = {
   ...questionMark,
 }
 
-export const productHubEmptyPoolMaxMultipleTooltip: ProductHubTooltipType = {
+export const productHubAjnaEmptyPoolMaxMultipleTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.no-max-multiple',
@@ -77,7 +83,7 @@ export const productHubEmptyPoolMaxMultipleTooltip: ProductHubTooltipType = {
   ...questionMark,
 }
 
-export const productHubEmptyPoolWeeklyApyTooltip: ProductHubTooltipType = {
+export const productHubAjnaEmptyPoolWeeklyApyTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.no-weekly-apy',
@@ -86,7 +92,7 @@ export const productHubEmptyPoolWeeklyApyTooltip: ProductHubTooltipType = {
   ...questionMark,
 }
 
-export const productHubOraclessLtvTooltip: ProductHubTooltipType = {
+export const productHubAjnaOraclessLtvTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.oracless-ltv',

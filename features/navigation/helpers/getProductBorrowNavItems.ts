@@ -1,7 +1,7 @@
 import { NetworkNames } from 'blockchain/networks'
-import { getActionUrl } from 'features/productHub/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
+import { getGenericPositionUrl } from 'features/productHub/helpers'
 import type { ProductHubItem, ProductHubSupportedNetworks } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 type ProductBorrowNavItem = {
@@ -32,7 +32,7 @@ export const getProductBorrowNavItems = (
   productHubItems: ProductHubItem[],
 ): ProductBorrowNavItems => {
   return productHubItems
-    .filter((item) => item.product.includes(ProductHubProductType.Borrow))
+    .filter((item) => item.product.includes(OmniProductType.Borrow))
     .reduce(
       (acc, curr) => {
         const accMaxLtvHigherThanCurr =
@@ -53,7 +53,7 @@ export const getProductBorrowNavItems = (
             network: accMaxLtvHigherThanCurr ? acc.maxLtv.network : curr.network,
             url: accMaxLtvHigherThanCurr
               ? acc.maxLtv.url
-              : getActionUrl({ ...curr, product: [ProductHubProductType.Borrow] }),
+              : getGenericPositionUrl({ ...curr, product: [OmniProductType.Borrow] }),
           },
           fee: {
             value: accFeeLowerThanCurr ? acc.fee.value : Number(curr.fee),
@@ -63,7 +63,7 @@ export const getProductBorrowNavItems = (
             network: accFeeLowerThanCurr ? acc.fee.network : curr.network,
             url: accFeeLowerThanCurr
               ? acc.fee.url
-              : getActionUrl({ ...curr, product: [ProductHubProductType.Borrow] }),
+              : getGenericPositionUrl({ ...curr, product: [OmniProductType.Borrow] }),
           },
           liquidity: {
             value: currLiquidityHigherThanAcc ? Number(curr.liquidity) : acc.liquidity.value,
@@ -76,7 +76,7 @@ export const getProductBorrowNavItems = (
               : acc.liquidity.secondaryToken,
             network: currLiquidityHigherThanAcc ? acc.liquidity.network : curr.network,
             url: currLiquidityHigherThanAcc
-              ? getActionUrl({ ...curr, product: [ProductHubProductType.Borrow] })
+              ? getGenericPositionUrl({ ...curr, product: [OmniProductType.Borrow] })
               : acc.liquidity.url,
           },
         }

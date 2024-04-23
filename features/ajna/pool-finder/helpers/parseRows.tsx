@@ -8,14 +8,13 @@ import { getOmniPositionUrl } from 'features/omni-kit/helpers'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
 import { parseProduct } from 'features/productHub/helpers'
-import type { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import React from 'react'
 
 export function parseRows(
   rows: OraclessPoolResult[],
-  product: ProductHubProductType,
+  product: OmniProductType,
 ): AssetsTableRowData[] {
   return rows.map((row) => {
     const {

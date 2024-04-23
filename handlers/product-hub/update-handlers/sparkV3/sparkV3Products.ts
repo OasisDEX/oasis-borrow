@@ -1,12 +1,12 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -18,7 +18,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -30,7 +30,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Long RETH',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'ETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -42,7 +42,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'ETH',
@@ -54,7 +54,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Short ETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -64,7 +64,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     label: 'WSTETH/DAI',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -74,7 +74,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     label: 'RETH/DAI',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'ETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -84,7 +84,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     label: 'ETH/DAI',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'ETH',
@@ -94,7 +94,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     label: 'SDAI/ETH',
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -107,7 +107,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -120,7 +120,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'USDC',
@@ -133,7 +133,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'USDT',
@@ -146,7 +146,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
@@ -158,7 +158,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WBTC',
     primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',

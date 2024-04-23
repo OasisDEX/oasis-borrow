@@ -1,7 +1,7 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, networksByName } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
@@ -11,8 +11,10 @@ import {
   getSparkV3ReserveData,
 } from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
+import { settings } from 'features/omni-kit/protocols/spark/settings'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
-import { ProductHubProductType } from 'features/productHub/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
@@ -109,7 +111,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   }
   // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
+    product.includes(OmniProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
     const networkId = networkNameToIdMap[product.network as SparkV3Networks]
@@ -181,6 +183,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
           hasRewards,
+          automationFeatures: !product.product.includes(OmniProductType.Earn)
+            ? settings.availableAutomations[
+                networksByName[product.network].id as OmniSupportedNetworkIds
+              ]
+            : [],
         }
       }),
       warnings: [],
