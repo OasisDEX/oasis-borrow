@@ -1,3 +1,5 @@
+import 'rc-slider/assets/index.css'
+
 import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import BigNumber from 'bignumber.js'

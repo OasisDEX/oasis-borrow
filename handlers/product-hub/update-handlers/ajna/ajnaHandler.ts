@@ -105,8 +105,6 @@ async function getAjnaPoolData(
           const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
           const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
           const isShort = isShortPosition({ collateralToken })
-          // Temporary hidden yield loops products until APY solution is found
-          // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const isWithMultiply = isPoolSupportingMultiply({
             collateralToken,
             quoteToken,
@@ -138,7 +136,6 @@ async function getAjnaPoolData(
             zero,
           ).toString()
           const earnLPStrategy = `${collateralToken}/${quoteToken} LP`
-          // const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
           const weeklyNetApy = lendApr.toString()
 
@@ -174,7 +171,6 @@ async function getAjnaPoolData(
                 product: [
                   OmniProductType.Borrow,
                   ...(isWithMultiply ? [OmniProductType.Multiply] : []),
-                  // ...(isYieldLoop && isWithMultiply ? [OmniProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,
@@ -188,13 +184,6 @@ async function getAjnaPoolData(
                   }),
                 multiplyStrategy,
                 multiplyStrategyType,
-                // ...(isYieldLoop && {
-                //   earnStrategy: earnYieldLoopStrategy,
-                //   managementType,
-                //   ...(isPoolNotEmpty && {
-                //     weeklyNetApy,
-                //   }),
-                // }),
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),

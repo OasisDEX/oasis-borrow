@@ -238,12 +238,6 @@ export function GenericMultiselect({
     else didMountRef.current = true
   }, [values])
 
-  // useEffect(() => {
-  //   console.log(isOpen)
-  //   console.log(searchRef.current)
-  //   if (isOpen && searchRef.current) searchRef.current.focus()
-  // }, [isOpen])
-
   return (
     <Box sx={{ position: 'relative', userSelect: 'none', ...sx }} ref={outsideRef}>
       <Box

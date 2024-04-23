@@ -84,8 +84,8 @@ export const ProductHubHelp: FC<ProductHubHelpProps> = ({ selectedProduct }) => 
           transition: 'opacity 200ms, transform 200ms',
         }}
       >
-        {productHubHelp[selectedProduct].map(({ link, translationKey }) => (
-          <Box as="li" sx={{ whiteSpace: 'nowrap' }}>
+        {productHubHelp[selectedProduct].map(({ link, translationKey }, i) => (
+          <Box key={i} as="li" sx={{ whiteSpace: 'nowrap' }}>
             <AppLink href={link} sx={{ fontWeight: 'regular' }}>
               {t(`product-hub.help.${translationKey}`)}
             </AppLink>

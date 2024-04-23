@@ -1,5 +1,3 @@
-import 'rc-slider/assets/index.css'
-
 import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHabTagButton, ProductHubTagLiquidity } from 'features/productHub/components'
 import { productHubTags } from 'features/productHub/meta'
