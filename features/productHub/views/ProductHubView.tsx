@@ -1,120 +1,87 @@
-import { getNetworkById, NetworkNames } from 'blockchain/networks'
+import type { AssetsTableSeparator } from 'components/assetsTable/types'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
-import { ProductHubLoadingState } from 'features/productHub/components/ProductHubLoadingState'
-import { ProductHubViewAll } from 'features/productHub/components/ProductHubViewAll'
+import type { OmniProductType } from 'features/omni-kit/types'
 import {
-  ProductHubNaturalLanguageSelectorController,
-  ProductHubPromoCardsController,
+  ProductHubIntro,
+  ProductHubLoadingState,
+  ProductHubViewAll,
+} from 'features/productHub/components/'
+import {
+  ProductHubContentController,
+  ProductHubProductTypeController,
 } from 'features/productHub/controls'
-import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
-import {
-  getInitialFilters,
-  getInitialQueryString,
-  getStrippedQueryString,
-} from 'features/productHub/helpers'
+import { parseQueryString, shuffleFiltersOrder } from 'features/productHub/helpers'
 import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRouter'
-import { ALL_ASSETS } from 'features/productHub/meta'
+import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
   ProductHubColumnKey,
+  ProductHubDatabaseQuery,
+  ProductHubFeaturedProducts,
   ProductHubFilters,
   ProductHubItem,
-  ProductHubProductType,
-  ProductHubQueryString,
-  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
-import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
-import type { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import type { LendingProtocol } from 'lendingProtocols'
 import { useSearchParams } from 'next/navigation'
-import type { FC, ReactNode } from 'react'
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import type { FC } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Box } from 'theme-ui'
 
 interface ProductHubViewProps {
+  customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
+  databaseQuery?: ProductHubDatabaseQuery
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
+  featured?: ProductHubFeaturedProducts
   headerGradient?: [string, string, ...string[]]
+  hiddenBanners?: boolean
+  hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
-  hiddenNLS?: boolean
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
-  intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
+  hiddenHelp?: boolean
+  hiddenProductTypeSelector?: boolean
+  hiddenTags?: boolean
+  initialFilters?: ProductHubFilters
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
-  product: ProductHubProductType
-  promoCardsCollection: PromoCardsCollection
-  promoCardsHeading?: ReactNode
-  promoCardsPosition?: 'top' | 'bottom' | 'none'
-  token?: string
+  product: OmniProductType
+  separator?: AssetsTableSeparator
   url?: string
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
+  customSortByDefault,
+  databaseQuery,
   dataParser = (_table) => _table,
-  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
+  featured,
+  headerGradient = ['#007da3', '#e7a77f', '#e97047'],
+  hiddenBanners,
+  hiddenCategories,
   hiddenColumns,
-  hiddenNLS = false,
-  initialNetwork,
-  initialProtocol,
-  intro,
+  hiddenHelp,
+  hiddenProductTypeSelector = false,
+  hiddenTags,
+  initialFilters = {},
   limitRows,
   onRowClick,
   perPage,
   product,
-  promoCardsCollection,
-  promoCardsHeading,
-  promoCardsPosition = 'top',
-  token,
+  separator,
   url,
 }) => {
   const { productHub: data } = usePreloadAppDataContext()
   const table = dataParser(data.table)
-  const searchParams = useSearchParams()
 
   const { connecting, wallet } = useWalletManagement()
+  const searchParams = useSearchParams()
 
-  const resolvedInitialNetwork: ProductHubSupportedNetworks[] = useMemo(() => {
-    if (initialNetwork) return initialNetwork
-    else if (wallet?.chainId)
-      return [getNetworkById(wallet.chainId).name as ProductHubSupportedNetworks]
-    else return [NetworkNames.ethereumMainnet as ProductHubSupportedNetworks]
-  }, [initialNetwork, wallet?.chainId])
-
-  const initialQueryString = getInitialQueryString(searchParams)
-  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
-  const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
-  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(
-    getInitialFilters({
-      initialQueryString,
-      initialNetwork: resolvedInitialNetwork,
-      initialProtocol,
-      selectedProduct,
-      token,
-    }),
-  )
-  const [queryString, setQueryString] = useState<ProductHubQueryString>(initialQueryString)
-
-  useEffect(() => {
-    if (!queryString.network) {
-      setSelectedFilters({
-        or: selectedFilters.or,
-        and: {
-          ...selectedFilters.and,
-          network: resolvedInitialNetwork,
-        },
-      })
-    }
-  }, [resolvedInitialNetwork])
-
-  const { query } = useProductHubRouter({
-    queryString,
-    selectedProduct,
-    selectedToken,
-    url,
+  const [shuffledFeatured] = useState<ProductHubFeaturedProducts>(shuffleFiltersOrder(featured))
+  const [selectedProduct, setSelectedProduct] = useState<OmniProductType>(product)
+  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>({
+    ...initialFilters,
+    ...parseQueryString({ searchParams }),
   })
+
+  const { query } = useProductHubRouter({ selectedFilters, selectedProduct, url })
 
   return (
     <Fragment key={product}>
@@ -122,39 +89,31 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         id="product-hub"
         sx={{
           position: 'relative',
-          mt: [3, null, '48px'],
-          scrollMarginTop: '48px',
+          mt: [3, null, 4],
+          scrollMarginTop: 4,
           zIndex: 3,
         }}
       >
-        {!hiddenNLS && (
-          <Box
-            sx={{ position: 'relative', mb: [3, null, '48px'], textAlign: 'center', zIndex: '3' }}
-          >
-            <ProductHubNaturalLanguageSelectorController
+        {!hiddenProductTypeSelector && (
+          <Box sx={{ position: 'relative', mb: 5, textAlign: 'center', zIndex: '3' }}>
+            <ProductHubProductTypeController
               gradient={headerGradient}
-              product={product}
-              token={token}
-              onChange={(_selectedProduct, _selectedToken) => {
+              onChange={(_selectedProduct) => {
                 setSelectedProduct(_selectedProduct)
-                setSelectedToken(_selectedToken)
-                setSelectedFilters(
-                  getInitialFilters({
-                    initialQueryString,
-                    initialNetwork: resolvedInitialNetwork,
-                    initialProtocol,
-                    selectedProduct: _selectedProduct,
-                    token,
-                  }),
-                )
-                setQueryString(getStrippedQueryString({ queryString }))
+                setSelectedFilters((_selectedFilters) => {
+                  delete _selectedFilters['category']
+                  delete _selectedFilters['collateral-token']
+                  delete _selectedFilters['debt-token']
+                  delete _selectedFilters['deposit-token']
+                  delete _selectedFilters['tags']
+                  delete _selectedFilters['min-liquidity']
+
+                  return _selectedFilters
+                })
               }}
+              defaultProduct={product}
             />
-            {intro ? (
-              intro(selectedProduct, selectedToken)
-            ) : (
-              <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
-            )}
+            <ProductHubIntro selectedProduct={selectedProduct} />
           </Box>
         )}
         <WithLoadingIndicator
@@ -163,46 +122,34 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         >
           {() => (
             <>
-              {promoCardsPosition === 'top' && (
-                <ProductHubPromoCardsController
-                  heading={promoCardsHeading}
-                  promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)}
-                  selectedProduct={selectedProduct}
-                  selectedToken={selectedToken}
-                />
-              )}
               <ProductHubContentController
+                databaseQuery={databaseQuery}
+                customSortByDefault={customSortByDefault}
+                featured={shuffledFeatured}
+                hiddenBanners={hiddenBanners}
                 hiddenColumns={hiddenColumns}
-                initialNetwork={resolvedInitialNetwork}
-                initialProtocol={initialProtocol}
+                hiddenCategories={hiddenCategories}
+                hiddenHelp={hiddenHelp}
+                hiddenTags={hiddenTags}
                 limitRows={limitRows}
                 networkId={wallet?.chainId}
-                perPage={perPage}
-                queryString={queryString}
-                selectedFilters={selectedFilters}
-                selectedProduct={selectedProduct}
-                selectedToken={selectedToken}
-                tableData={table}
-                onChange={(_selectedFilters, _queryString) => {
-                  setSelectedFilters(_selectedFilters)
-                  setQueryString(_queryString)
+                onChange={(_selectedFilters) => {
+                  setSelectedFilters(() => {
+                    if (_selectedFilters['min-liquidity']?.[0] === MIN_LIQUIDITY.toString())
+                      delete _selectedFilters['min-liquidity']
+
+                    return _selectedFilters
+                  })
                 }}
                 onRowClick={onRowClick}
+                perPage={perPage}
+                selectedFilters={selectedFilters}
+                selectedProduct={selectedProduct}
+                separator={separator}
+                tableData={table}
               />
               {limitRows && limitRows > 0 && (
-                <ProductHubViewAll
-                  query={query}
-                  selectedProduct={selectedProduct}
-                  selectedToken={selectedToken}
-                />
-              )}
-              {promoCardsPosition === 'bottom' && (
-                <ProductHubPromoCardsController
-                  heading={promoCardsHeading}
-                  promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)}
-                  selectedProduct={selectedProduct}
-                  selectedToken={selectedToken}
-                />
+                <ProductHubViewAll query={query} selectedProduct={selectedProduct} />
               )}
             </>
           )}

@@ -1,3 +1,4 @@
+import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { Modal } from 'components/Modal'
 import {
   RefinanceHeader,
@@ -9,7 +10,11 @@ import { RefinanceContextProvider } from 'features/refinance/contexts'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { RefinanceFormController } from 'features/refinance/controllers/index'
-import { getRefinancePositionOwner } from 'features/refinance/helpers'
+import {
+  getRefinanceAaveLikeInterestRates,
+  getRefinanceInterestRatesInputParams,
+  getRefinancePositionOwner,
+} from 'features/refinance/helpers'
 import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useModalContext } from 'helpers/modalHook'
@@ -18,7 +23,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useEffect, useMemo } from 'react'
 import { useBeforeUnload } from 'react-use'
-import { EMPTY, from } from 'rxjs'
+import { from, of } from 'rxjs'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Flex, Text } from 'theme-ui'
 
@@ -29,6 +34,10 @@ interface RefinanceModalProps {
 export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput }) => {
   const { closeModal } = useModalContext()
   const { t } = useTranslation()
+
+  const { productHub: data } = usePreloadAppDataContext()
+
+  const interestRatesInput = getRefinanceInterestRatesInputParams(data.table)
 
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
 
@@ -46,7 +55,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
               chainId: contextInput.environment.chainId,
             }),
           )
-        : EMPTY,
+        : of(cache.positionOwner),
     [
       cache.positionOwner,
       contextInput.environment.chainId,
@@ -54,7 +63,17 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
       contextInput.position.positionId.id,
     ],
   )
-  const [owner] = useObservable(positionOwner)
+
+  // If needed we should extend it with other network & protocols and map to the same interface
+  const interestRates = useMemo(
+    () =>
+      !cache.interestRatesMetadata
+        ? from(getRefinanceAaveLikeInterestRates(interestRatesInput))
+        : of(cache.interestRatesMetadata),
+    [cache.interestRatesMetadata],
+  )
+  const [positionOwnerData] = useObservable(positionOwner)
+  const [interestRatesData] = useObservable(interestRates)
 
   const onClose = () => {
     if (isTxInProgress) {
@@ -68,24 +87,30 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
-  const simulation = useSdkSimulation({ owner })
+  const simulation = useSdkSimulation({ owner: positionOwnerData })
 
   useEffect(() => {
-    if (owner) cache.handlePositionOwner(owner)
-  }, [owner])
+    if (positionOwnerData) cache.handlePositionOwner(positionOwnerData)
+  }, [positionOwnerData])
 
-  const resolvedOwner = cache.positionOwner || owner
+  useEffect(() => {
+    if (interestRatesData) cache.handleInterestRates(interestRatesData)
+  }, [interestRatesData])
 
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose}>
       <WithLoadingIndicator
-        value={[ctx, resolvedOwner]}
+        value={[ctx, positionOwnerData, interestRatesData]}
         customLoader={<RefinanceModalSkeleton onClose={onClose} />}
       >
-        {([_ctx, _owner]) => (
+        {([_ctx, _owner, _interestRates]) => (
           <RefinanceContextProvider
             ctx={{
               ..._ctx,
+              metadata: {
+                ..._ctx.metadata,
+                interestRates: _interestRates,
+              },
               position: {
                 ..._ctx.position,
                 owner: _owner,

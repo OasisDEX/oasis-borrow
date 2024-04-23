@@ -1,24 +1,17 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import { ALL_ASSETS } from 'features/productHub/meta'
-import type { FC } from 'react'
-import React from 'react'
+import type { OmniProductType } from 'features/omni-kit/types'
+import type { ParsedUrlQueryInput } from 'querystring'
+import React, { type FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'theme-ui'
 
 interface ProductHubViewAllProps {
-  query: {
-    [key: string]: string
-  }
-  selectedProduct: string
-  selectedToken?: string
+  selectedProduct: OmniProductType
+  query: ParsedUrlQueryInput
 }
 
-export const ProductHubViewAll: FC<ProductHubViewAllProps> = ({
-  query,
-  selectedProduct,
-  selectedToken,
-}) => {
+export const ProductHubViewAll: FC<ProductHubViewAllProps> = ({ query, selectedProduct }) => {
   const { t } = useTranslation()
 
   return (
@@ -30,14 +23,7 @@ export const ProductHubViewAll: FC<ProductHubViewAllProps> = ({
         borderBottomColor: 'neutral20',
       }}
     >
-      <AppLink
-        href={
-          selectedToken === ALL_ASSETS
-            ? `/${selectedProduct}`
-            : `/${selectedProduct}/${selectedToken}`
-        }
-        query={query}
-      >
+      <AppLink href={`/${selectedProduct}`} query={query}>
         <WithArrow sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}>
           {t('view-all')}
         </WithArrow>

@@ -22,7 +22,6 @@ export function AssetsTablePagination({
         alignItems: 'center',
         justifyContent: 'center',
         columnGap: '24px',
-        mx: '-32px',
         mt: '24px',
         pt: '24px',
         borderTop: '1px solid',

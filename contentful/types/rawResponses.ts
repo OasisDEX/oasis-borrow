@@ -5,9 +5,10 @@ import {
   MarketingTemplatePalette,
 } from 'features/marketing-layouts/types'
 import { LandingPageRawBlocks } from 'contentful/types'
-import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
+import { ProductHubSupportedNetworks } from 'features/productHub/types'
 import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 import { NetworkLabelType } from 'blockchain/networks'
+import { OmniProductType } from 'features/omni-kit/types'
 
 export interface LandingPageRawBlocksItems {
   sys: {
@@ -146,24 +147,31 @@ export interface LendingPageProductBoxRawResponse {
 export interface ProductFinderRawResponse {
   __typename: LandingPageRawBlocks.PRODUCT_FINDER
   name: string
-  token: string
   product: {
-    slug: ProductHubProductType
+    slug: OmniProductType
     name: string
   }
-  initialProtocolCollection: {
+  collateralToken?: string[]
+  debtToken?: string[]
+  depositToken?: string[]
+  initialProtocolCollection?: {
     items: {
       slug: LendingProtocol
       name: LendingProtocolLabel
     }[]
   }
-  initialNetworkCollection: {
+  initialNetworkCollection?: {
     items: {
       slug: ProductHubSupportedNetworks
       name: NetworkLabelType
     }[]
   }
-  promoCardsCollection: {
+  databaseQuery?: {
+    id: string
+    key: string
+    value: string
+  }[]
+  promoCardsCollection?: {
     items: {
       name: string
       network: { name: string; slug: string }
@@ -177,6 +185,12 @@ export interface ProductFinderRawResponse {
         name: string
         slug: string
       }
+      label?: string
+      detailedFilters?: {
+        id: string
+        key: string
+        value: string
+      }[]
     }[]
   }
 }

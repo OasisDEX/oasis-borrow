@@ -1,5 +1,6 @@
 import { ActionBanner } from 'components/ActionBanner'
 import { AssetsTablePagination } from 'components/assetsTable/AssetsTablePagination'
+import { AssetsTableSeparator } from 'components/assetsTable/AssetsTableSeparator'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import { sortRows } from 'components/assetsTable/helpers/sortRows'
 import type {
@@ -15,6 +16,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { getRandomString } from 'helpers/getRandomString'
 import { scrollTo } from 'helpers/scrollTo'
 import { kebabCase } from 'lodash'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { question_o } from 'theme/icons'
@@ -50,37 +52,73 @@ export function AssetsTable({
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
+  limitRows,
   paddless,
   perPage,
   rows,
+  separator,
   tooltips = [],
   verticalAlign,
 }: AssetsTableProps) {
   const [page, setPage] = useState<number>(1)
+  const [rowsWithStickied, setRowsWithStickied] = useState<AssetsTableRowData[]>([])
+  const [rowsWithoutStickied, setRowsWithoutStickied] = useState<AssetsTableRowData[]>([])
   const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
-  const rowKeys = Object.keys(rows[0]?.items ?? [])
-  const totalPages = useMemo(
-    () => (perPage ? Math.ceil(rows.length / perPage) : 1),
-    [rows, perPage],
-  )
+  const [rowKeys, setRowKeys] = useState<string[]>([])
   const container = useRef<HTMLDivElement>(null)
 
-  const sortedRows = useMemo(
-    () => (sortingSettings ? sortRows({ rows, sortingSettings }) : rows),
-    [sortingSettings, rows],
-  )
+  useEffect(() => {
+    const [_rowsWithStickied, _rowsWithoutStickied] = rows.reduce<
+      [AssetsTableRowData[], AssetsTableRowData[]]
+    >(
+      ([withStickied, withoutStickied], current) => [
+        [...withStickied, ...(current.isStickied ? [current] : [])],
+        [...withoutStickied, ...(!current.isStickied ? [current] : [])],
+      ],
+      [[], []],
+    )
 
-  const paginatedRows = useMemo(
-    () => (perPage ? sortedRows.slice((page - 1) * perPage, page * perPage) : sortedRows),
-    [page, perPage, sortedRows],
-  )
-
-  const bannerRows = Math.min(paginatedRows.length - 1, 9)
-
-  useEffect(() => setPage(1), [rows])
+    setPage(1)
+    setRowKeys(Object.keys(rows[0]?.items ?? []))
+    setRowsWithStickied(_rowsWithStickied)
+    setRowsWithoutStickied(_rowsWithoutStickied)
+    setSortingSettings(undefined)
+  }, [rows])
   useEffect(() => {
     if ((container.current?.getBoundingClientRect().top ?? 0) < 0) scrollTo('assets-table')()
   }, [page])
+
+  const resolvedPerPage = useMemo(
+    () => (perPage ? perPage - rowsWithStickied.length : perPage),
+    [perPage, rowsWithStickied.length],
+  )
+
+  const totalPages = useMemo(
+    () => (resolvedPerPage ? Math.ceil(rowsWithoutStickied.length / resolvedPerPage) : 1),
+    [resolvedPerPage, rowsWithoutStickied.length],
+  )
+
+  const sortedRows = useMemo(
+    () =>
+      sortingSettings
+        ? sortRows({ rows: rowsWithoutStickied, sortingSettings })
+        : rowsWithoutStickied,
+    [sortingSettings, rowsWithoutStickied],
+  )
+
+  const paginatedRows = useMemo(
+    () => [
+      ...rowsWithStickied,
+      ...(resolvedPerPage
+        ? sortedRows.slice((page - 1) * resolvedPerPage, page * resolvedPerPage)
+        : limitRows
+          ? sortedRows.slice(0, limitRows)
+          : sortedRows),
+    ],
+    [limitRows, page, resolvedPerPage, rowsWithStickied, sortedRows],
+  )
+
+  const bannerRows = Math.min(paginatedRows.length - 1, 9)
 
   function onSortHandler(label: string) {
     setPage(1)
@@ -98,7 +136,7 @@ export function AssetsTable({
       sx={{
         position: 'relative',
         ...(!paddless && {
-          px: ['24px', null, null, 4],
+          px: ['24px', null, null, 0],
           pb: '24px',
           mt: '-8px',
         }),
@@ -124,11 +162,11 @@ export function AssetsTable({
           <tr>
             {rowKeys.map((label, i) => (
               <AssetsTableHeaderCell
-                key={getRowKey(i, rows[0])}
+                key={getRowKey(i, paginatedRows[0])}
                 first={i === 0}
                 headerTranslationProps={headerTranslationProps}
                 isSortable={
-                  (rows[0].items[label] as AssetsTableSortableCell).sortable !== undefined
+                  (paginatedRows[0].items[label] as AssetsTableSortableCell).sortable !== undefined
                 }
                 isSticky={isSticky}
                 label={label}
@@ -164,11 +202,20 @@ export function AssetsTable({
                   </td>
                 </tr>
               )}
+              {separator &&
+                (page - 1) * (resolvedPerPage ?? 0) + i + 1 === separator.index &&
+                sortingSettings === undefined && (
+                  <tr>
+                    <td colSpan={Object.keys(row.items).length}>
+                      <AssetsTableSeparator text={separator.text} />
+                    </td>
+                  </tr>
+                )}
             </Fragment>
           ))}
         </Box>
       </Box>
-      {perPage && totalPages > 1 && (
+      {resolvedPerPage && totalPages > 1 && (
         <AssetsTablePagination
           onNextPage={() => setPage(Math.min(totalPages, page + 1))}
           onPrevPage={() => setPage(Math.max(1, page - 1))}
@@ -288,14 +335,8 @@ export function AssetsTableHeaderCell({
 }
 
 export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableDataRowProps) {
+  const { push } = useRouter()
   const ref = useRef<HTMLDivElement>(null)
-  const [hasUndisabledButton, setHasUndisabledButton] = useState<boolean>(false)
-
-  useEffect(() => {
-    setHasUndisabledButton(
-      ref.current?.querySelector('.table-action-button:not(:disabled') !== null,
-    )
-  }, [ref])
 
   return (
     <Box
@@ -305,7 +346,7 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
         position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
-        ...((row.onClick || hasUndisabledButton) && {
+        ...((row.onClick || row.link) && {
           cursor: 'pointer',
           '&:hover': {
             boxShadow: 'buttonMenu',
@@ -321,12 +362,9 @@ export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableD
               role: 'button',
               onClick: row.onClick,
             }
-          : hasUndisabledButton && {
+          : row.link && {
               role: 'link',
-              onClick: () => {
-                if (ref.current && ref.current.querySelector('.table-action-button'))
-                  (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
-              },
+              onClick: () => void push(row.link as string),
             }),
       }}
     >
@@ -347,16 +385,36 @@ export function AssetsTableDataCell({ label, row, verticalAlign }: AssetsTableDa
     <Box
       as="td"
       sx={{
-        p: '14px 12px',
+        p: '12px',
+        height: 5,
         textAlign: 'right',
         whiteSpace: 'nowrap',
+        border: '1px solid',
+        borderColor: 'transparent',
         verticalAlign,
+        ...(row.isHighlighted && {
+          bg: '#fdf4f0',
+          borderTopColor: '#f7ccbd',
+          borderBottomColor: '#f7ccbd',
+        }),
         '&:first-of-type': {
           textAlign: 'left',
+          borderTopLeftRadius: 'medium',
+          borderBottomLeftRadius: 'medium',
+          ...(row.isHighlighted && {
+            borderLeftColor: '#f7ccbd',
+          }),
+        },
+        '&:last-of-type': {
+          borderTopRightRadius: 'medium',
+          borderBottomRightRadius: 'medium',
+          ...(row.isHighlighted && {
+            borderRightColor: '#f7ccbd',
+          }),
         },
       }}
     >
-      {(row.items[label] as AssetsTableSortableCell).value || row.items[label]}
+      {(row.items[label] as AssetsTableSortableCell)?.value ?? row.items[label]}
     </Box>
   )
 }

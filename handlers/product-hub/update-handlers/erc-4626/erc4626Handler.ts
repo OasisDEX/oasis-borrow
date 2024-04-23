@@ -3,7 +3,8 @@ import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/networks'
 import { erc4626Vaults } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
-import { ProductHubProductType, type ProductHubSupportedNetworks } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import { type ProductHubSupportedNetworks } from 'features/productHub/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
@@ -31,8 +32,13 @@ async function getErc4626VaultData({
   token,
 }: Erc4626Config): Promise<ProductHubHandlerResponseData> {
   try {
-    const { response } = (await loadSubgraph('Erc4626', 'getErc4626InterestRates', networkId, {
-      vault: address,
+    const { response } = (await loadSubgraph({
+      subgraph: 'Erc4626',
+      method: 'getErc4626InterestRates',
+      networkId,
+      params: {
+        vault: address,
+      },
     })) as SubgraphsResponses['Erc4626']['getErc4626InterestRates']
 
     const vaults = response.vaults[0]
@@ -53,10 +59,11 @@ async function getErc4626VaultData({
           network: networksById[networkId].name as ProductHubSupportedNetworks,
           primaryToken: token.symbol,
           ...(tokenGroup !== token.symbol && { primaryTokenGroup: tokenGroup }),
-          product: [ProductHubProductType.Earn],
+          product: [OmniProductType.Earn],
           protocol,
           secondaryToken: token.symbol,
           ...(tokenGroup !== token.symbol && { secondaryTokenGroup: tokenGroup }),
+          depositToken: token.symbol,
           earnStrategy: EarnStrategies.erc_4626,
           earnStrategyDescription: strategy ?? name,
           managementType: 'passive',

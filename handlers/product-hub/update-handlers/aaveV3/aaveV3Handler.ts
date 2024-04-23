@@ -3,12 +3,14 @@ import BigNumber from 'bignumber.js'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
 import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, networksByName } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import { lambdaPercentageDenomination, wstethRiskRatio } from 'features/aave/constants'
 import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
-import { ProductHubProductType } from 'features/productHub/types'
+import { settingsV3 } from 'features/omni-kit/protocols/aave/settings'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -167,7 +169,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           collateralToken: primaryToken,
           debtToken: secondaryToken,
         })
-        const isMultiply = product.product[0] === ProductHubProductType.Multiply
+        const isMultiply = product.product[0] === OmniProductType.Multiply
 
         ensureGivenTokensExist(networkId, contracts, [primaryToken, secondaryToken])
 
@@ -175,7 +177,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         return {
           ...product,
-          product: [isMultiply && isYieldLoop ? ProductHubProductType.Earn : product.product[0]],
+          product: [isMultiply && isYieldLoop ? OmniProductType.Earn : product.product[0]],
           ...(isYieldLoop &&
             isMultiply && {
               earnStrategy: 'yield_loop',
@@ -193,6 +195,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards: product.hasRewards ?? false,
+          automationFeatures: !product.product.includes(OmniProductType.Earn)
+            ? settingsV3.availableAutomations[
+                networksByName[product.network].id as OmniSupportedNetworkIds
+              ]
+            : [],
         }
       }),
       warnings: [],

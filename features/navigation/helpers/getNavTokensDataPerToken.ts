@@ -1,5 +1,5 @@
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubItem } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 
 export const getNavTokensDataPerToken = (token: string, productHubItems: ProductHubItem[]) => {
   return productHubItems
@@ -12,13 +12,13 @@ export const getNavTokensDataPerToken = (token: string, productHubItems: Product
             acc.maxMultiple > Number(curr.maxMultiply) ? acc.maxMultiple : Number(curr.maxMultiply),
           apyPassive:
             curr.managementType === 'passive' &&
-            curr.product.includes(ProductHubProductType.Earn) &&
+            curr.product.includes(OmniProductType.Earn) &&
             acc.apyPassive < Number(curr.weeklyNetApy)
               ? Number(curr.weeklyNetApy)
               : acc.apyPassive,
           apyActive:
             curr.managementType === 'active' &&
-            curr.product.includes(ProductHubProductType.Earn) &&
+            curr.product.includes(OmniProductType.Earn) &&
             acc.apyActive < Number(curr.weeklyNetApy)
               ? Number(curr.weeklyNetApy)
               : acc.apyActive,

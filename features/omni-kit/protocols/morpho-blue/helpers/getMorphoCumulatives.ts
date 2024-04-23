@@ -9,9 +9,14 @@ export const getMorphoCumulatives: (
   networkId: OmniSupportedNetworkIds,
 ) => GetCumulativesData<MorphoCumulativesData> =
   (networkId) => async (proxy: string, marketId: string) => {
-    const { response } = (await loadSubgraph('Morpho', 'getMorphoCumulatives', networkId, {
-      dpmProxyAddress: proxy.toLowerCase(),
-      marketId: marketId.toLowerCase(),
+    const { response } = (await loadSubgraph({
+      subgraph: 'Morpho',
+      method: 'getMorphoCumulatives',
+      networkId,
+      params: {
+        dpmProxyAddress: proxy.toLowerCase(),
+        marketId: marketId.toLowerCase(),
+      },
     })) as SubgraphsResponses['Morpho']['getMorphoCumulatives']
 
     const lendingCumulatives = response.account?.borrowPositions[0]

@@ -4,7 +4,6 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { estimateOmniGas$, sendOmniTransaction$ } from 'features/omni-kit/observables'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { mapTxInfoToOmniTxData } from 'features/refinance/helpers/mapTxInfoToOmniTxData'
-import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { useSdkRefinanceTransaction } from 'features/refinance/hooks/useSdkTransaction'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -27,6 +26,7 @@ export const useRefinanceTxHandler = () => {
       state: { dpm, strategy },
     },
     steps: { currentStep },
+    simulation: { refinanceSimulation, importPositionSimulation },
   } = useRefinanceContext()
 
   useEffect(() => {
@@ -36,11 +36,6 @@ export const useRefinanceTxHandler = () => {
   const proxyAddress = dpm?.address
 
   const {
-    error: simulationErrer,
-    refinanceSimulation,
-    importPositionSimulation,
-  } = useSdkSimulation({ owner: proxyAddress })
-  const {
     error: transactionError,
     txImportPosition,
     txRefinance,
@@ -49,9 +44,6 @@ export const useRefinanceTxHandler = () => {
     importPositionSimulation,
   })
 
-  if (simulationErrer != null) {
-    throw new Error(simulationErrer)
-  }
   if (transactionError != null) {
     throw new Error(transactionError)
   }

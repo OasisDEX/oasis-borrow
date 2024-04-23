@@ -6,7 +6,8 @@ import { NetworkIds } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
-import { ProductHubProductType } from 'features/productHub/types'
+import { settingsV2 } from 'features/omni-kit/protocols/aave/settings'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getYieldsRequest } from 'helpers/lambda/yields'
 import { zero } from 'helpers/zero'
@@ -57,7 +58,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
   // getting the APYs
   const earnProducts = aaveV2ProductHubProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
+    product.includes(OmniProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
     const tokensReserveData = await Promise.all(tokensReserveConfigurationDataPromises)
@@ -118,6 +119,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           weeklyNetApy: weeklyNetApy[label] ? weeklyNetApy[label]!.toString() : undefined,
+          automationFeatures: settingsV2.availableAutomations[NetworkIds.MAINNET],
         }
       }),
       warnings: [],

@@ -13,11 +13,11 @@ type AutomationType = {
 }
 
 export type PortfolioPositionAutomations = {
-  stopLoss?: AutomationType
-  takeProfit?: AutomationType
   autoBuy?: AutomationType
   autoSell?: AutomationType
   constantMultiple?: AutomationType
+  stopLoss?: AutomationType
+  takeProfit?: AutomationType
 }
 
 export type PortfolioPosition = {

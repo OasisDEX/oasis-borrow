@@ -6,8 +6,13 @@ export async function getClaimedReferralRewards(
   networkId: number,
   walletAddress: string,
 ): Promise<ClaimedReferralRewards[]> {
-  const res = await loadSubgraph('Referral', 'getClaimedReferralRewards', networkId, {
-    walletAddress: walletAddress.toLowerCase(),
+  const res = await loadSubgraph({
+    subgraph: 'Referral',
+    method: 'getClaimedReferralRewards',
+    networkId,
+    params: {
+      walletAddress: walletAddress.toLowerCase(),
+    },
   })
 
   if (res.success) {

@@ -2,15 +2,17 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowItems } from 'components/assetsTable/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import { ProductHubAutomations } from 'features/productHub/components'
 import { parseProductNumbers } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import React from 'react'
 import { Trans } from 'react-i18next'
 
 export function parseProduct(
   {
+    automationFeatures,
     earnStrategyDescription,
     fee: feeString,
     liquidity: liquidityString,
@@ -21,7 +23,7 @@ export function parseProduct(
     tooltips,
     weeklyNetApy: weeklyNetApyString,
   }: Partial<ProductHubItem>,
-  product: ProductHubProductType,
+  product: OmniProductType,
   liquidityToken?: string,
 ): AssetsTableRowItems {
   const [fee, liquidity, maxLtv, maxMultiply, weeklyNetApy] = parseProductNumbers([
@@ -41,7 +43,7 @@ export function parseProduct(
   }
 
   switch (product) {
-    case ProductHubProductType.Borrow:
+    case OmniProductType.Borrow:
       return {
         maxLtv: {
           sortable: maxLtv?.toNumber() || 0,
@@ -72,8 +74,13 @@ export function parseProduct(
             </>
           ),
         },
+        automation: automationFeatures?.length ? (
+          <ProductHubAutomations automationFeatures={automationFeatures} product={product} />
+        ) : (
+          <AssetsTableDataCellInactive />
+        ),
       }
-    case ProductHubProductType.Multiply:
+    case OmniProductType.Multiply:
       return {
         strategy: (
           <>
@@ -108,8 +115,13 @@ export function parseProduct(
             </>
           ),
         },
+        automation: automationFeatures?.length ? (
+          <ProductHubAutomations automationFeatures={automationFeatures} product={product} />
+        ) : (
+          <AssetsTableDataCellInactive />
+        ),
       }
-    case ProductHubProductType.Earn:
+    case OmniProductType.Earn:
       return {
         strategy: (
           <>

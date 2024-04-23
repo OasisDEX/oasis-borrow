@@ -121,4 +121,17 @@ export enum MixpanelEventTypes {
   TxStatus = 'tx-status',
   SwapWidgetEvent = 'swap-widget-event',
   TopBannerEvent = 'top-banner-event',
+  ProductHubChange = 'product-hub-change',
+}
+
+export enum MixpanelProductHubChangeFilter {
+  Category = 'Category',
+  CollateralToken = 'CollateralToken',
+  DebtToken = 'DebtToken',
+  DepositToken = 'DepositToken',
+  MinLiquidity = 'MinLiquidity',
+  Network = 'Network',
+  ProductType = 'ProductType',
+  Protocol = 'Protocol',
+  Tag = 'MinLiquidity',
 }

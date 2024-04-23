@@ -1,264 +1,267 @@
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import { isTestnetNetworkId, NetworkIds } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
-import { Toggle } from 'components/Toggle'
-import { parseQueryString } from 'features/productHub/helpers'
+import { TOKENS_STABLE_GROUPS } from 'features/productHub/filterGroups'
+import { getTokensFilterOptions } from 'features/productHub/helpers'
 import {
-  ALL_ASSETS,
   productHubNetworkFilter,
   productHubProtocolFilter,
-  productHubStrategyFilter,
   productHubTestNetworkFilter,
 } from 'features/productHub/meta'
-import type {
-  ProductHubFilters,
-  ProductHubItem,
-  ProductHubMultiplyStrategyType,
-  ProductHubQueryString,
-  ProductHubSupportedNetworks,
-} from 'features/productHub/types'
-import type { LendingProtocol } from 'lendingProtocols'
-import { uniq } from 'lodash'
+import type { ProductHubFilters, ProductHubItem } from 'features/productHub/types'
+import { getTokenGroup } from 'handlers/product-hub/helpers'
+import { intersectionWith } from 'lodash'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Flex, Text } from 'theme-ui'
 
 export interface ProductHubFiltersParams {
   data: ProductHubItem[]
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
   networkId?: NetworkIds
-  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
-  queryString: ProductHubQueryString
+  onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
-  selectedToken: string
 }
 
 export const useProductHubFilters = ({
   data,
-  initialNetwork,
-  initialProtocol,
   networkId,
   onChange,
-  queryString,
   selectedFilters,
-  selectedToken,
 }: ProductHubFiltersParams) => {
   const { t } = useTranslation()
 
   const isTestnet = isTestnetNetworkId(networkId ?? NetworkIds.MAINNET)
-  const debtTokens = useMemo(
+
+  const collateralTokens = useMemo(
     () =>
-      uniq(data.map((item) => item.secondaryToken))
-        .sort()
-        .map((item) => ({
-          label: item,
-          value: item,
-          token: item,
-        })),
+      getTokensFilterOptions({
+        data,
+        featured: ['WSTETH', 'ETH', 'WBTC', 'RETH', 'MKR'],
+        key: 'primaryToken',
+      }),
     [data],
   )
-  const secondaryTokens = useMemo(
+  const debtTokens = useMemo(
     () =>
-      uniq(
-        data.flatMap((item) => [
-          ...([ALL_ASSETS, item.primaryToken, item.primaryTokenGroup].includes(selectedToken)
-            ? [item.secondaryToken]
-            : []),
-          ...([ALL_ASSETS, item.secondaryToken, item.secondaryTokenGroup].includes(selectedToken)
-            ? [item.primaryToken]
-            : []),
-        ]),
-      )
-        .sort()
-        .map((item) => ({
-          label: item,
-          value: item,
-          token: item,
-        })),
-    [data, selectedToken],
+      getTokensFilterOptions({
+        data,
+        featured: ['DAI', 'ETH', 'USDC', 'WBTC', 'USDT'],
+        key: 'secondaryToken',
+      }),
+    [data],
+  )
+  const depositTokens = useMemo(
+    () =>
+      getTokensFilterOptions({
+        data,
+        featured: ['DAI', 'USDC', 'USDT', 'ETH', 'WSTETH'],
+        key: 'depositToken',
+      }),
+    [data],
   )
 
+  const ethCollateralTokens = useMemo(
+    () =>
+      collateralTokens
+        .filter(({ value }) => [getTokenGroup(value), value].includes('ETH'))
+        .map(({ value }) => value),
+    [collateralTokens],
+  )
+  const stableCollateralTokens = useMemo(
+    () =>
+      collateralTokens
+        .filter(
+          ({ value }) =>
+            !!intersectionWith([getTokenGroup(value), value], TOKENS_STABLE_GROUPS).length,
+        )
+        .map(({ value }) => value),
+    [collateralTokens],
+  )
+  const stableDebtTokens = useMemo(
+    () =>
+      debtTokens
+        .filter(
+          ({ value }) =>
+            !!intersectionWith([getTokenGroup(value), value], TOKENS_STABLE_GROUPS).length,
+        )
+        .map(({ value }) => value),
+    [debtTokens],
+  )
+  const ethDepositTokens = useMemo(
+    () =>
+      depositTokens
+        .filter(({ value }) => [getTokenGroup(value), value].includes('ETH'))
+        .map(({ value }) => value),
+    [depositTokens],
+  )
+  const stableDepositTokens = useMemo(
+    () =>
+      depositTokens
+        .filter(
+          ({ value }) =>
+            !!intersectionWith([getTokenGroup(value), value], TOKENS_STABLE_GROUPS).length,
+        )
+        .map(({ value }) => value),
+    [depositTokens],
+  )
+
+  const collateralTokenFilterLabel = t('product-hub.filters.collateral-tokens')
+  const debtTokenFilterLabel = t('product-hub.filters.debt-tokens')
+  const depositTokenFilterLabel = t('product-hub.filters.deposit-tokens')
+  const networkFilterLabel = t('product-hub.filters.networks')
+  const protocolFilterLabel = t('product-hub.filters.protocols')
+
+  const collateralTokenFilter = useMemo(
+    () => (
+      <GenericMultiselect
+        initialValues={selectedFilters['collateral-token'] ?? []}
+        label={collateralTokenFilterLabel}
+        options={collateralTokens}
+        optionGroups={[
+          {
+            id: 'eth-variants',
+            key: 'product-hub.filters.eth-variants',
+            options: ethCollateralTokens,
+          },
+          {
+            id: 'stablecoins',
+            key: 'product-hub.filters.stablecoins',
+            options: stableCollateralTokens,
+          },
+        ]}
+        onChange={(value) => {
+          onChange({
+            ...selectedFilters,
+            'collateral-token': value,
+          })
+        }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(
+            MixpanelProductHubChangeFilter.CollateralToken,
+            value,
+          )
+        }}
+        withSearch
+      />
+    ),
+    [
+      collateralTokenFilterLabel,
+      collateralTokens,
+      ethCollateralTokens,
+      selectedFilters,
+      stableCollateralTokens,
+    ],
+  )
   const debtTokenFilter = useMemo(
     () => (
       <GenericMultiselect
-        initialValues={queryString.debtToken}
-        label={t('product-hub.filters.debt-tokens')}
+        initialValues={selectedFilters['debt-token'] ?? []}
+        label={debtTokenFilterLabel}
         options={debtTokens}
+        optionGroups={[
+          {
+            id: 'stablecoins',
+            key: 'product-hub.filters.stablecoins',
+            options: stableDebtTokens,
+          },
+        ]}
         onChange={(value) => {
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: { ...selectedFilters.and, secondaryToken: value },
-            },
-            parseQueryString({
-              key: 'debtToken',
-              maxLength: debtTokens.length,
-              queryString,
-              value,
-            }),
-          )
+          onChange({
+            ...selectedFilters,
+            'debt-token': value,
+          })
         }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.DebtToken, value)
+        }}
+        withSearch
       />
     ),
-    [debtTokens, queryString, selectedFilters],
+    [debtTokenFilterLabel, debtTokens, selectedFilters, stableDebtTokens],
   )
-  const secondaryTokenFilter = useMemo(
+  const depositTokenFilter = useMemo(
     () => (
       <GenericMultiselect
-        initialValues={queryString.secondaryToken}
-        label={t('product-hub.filters.secondary-tokens')}
-        options={secondaryTokens}
+        initialValues={selectedFilters['deposit-token'] ?? []}
+        label={depositTokenFilterLabel}
+        options={depositTokens}
+        optionGroups={[
+          {
+            id: 'eth-variants',
+            key: 'product-hub.filters.eth-variants',
+            options: ethDepositTokens,
+          },
+          {
+            id: 'stablecoins',
+            key: 'product-hub.filters.stablecoins',
+            options: stableDepositTokens,
+          },
+        ]}
         onChange={(value) => {
-          onChange(
-            {
-              or:
-                selectedToken === ALL_ASSETS
-                  ? [{ primaryToken: value }, { secondaryToken: value }]
-                  : [
-                      { primaryTokenGroup: [selectedToken], secondaryToken: value },
-                      { primaryToken: [selectedToken], secondaryToken: value },
-                      { primaryToken: value, secondaryToken: [selectedToken] },
-                      { primaryToken: value, secondaryTokenGroup: [selectedToken] },
-                    ],
-              and: selectedFilters.and,
-            },
-            parseQueryString({
-              key: 'secondaryToken',
-              maxLength: secondaryTokens.length,
-              queryString,
-              value,
-            }),
-          )
+          onChange({
+            ...selectedFilters,
+            'deposit-token': value,
+          })
         }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.DepositToken, value)
+        }}
+        withSearch
       />
     ),
-    [queryString, secondaryTokens, selectedFilters, selectedToken],
-  )
-  const multiplyStrategyFilter = useMemo(
-    () => (
-      <GenericMultiselect
-        initialValues={queryString.strategy}
-        label={t('product-hub.filters.strategies')}
-        options={productHubStrategyFilter}
-        onChange={(value) => {
-          const multiplyStrategyType = value as ProductHubMultiplyStrategyType[]
-
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: {
-                ...selectedFilters.and,
-                multiplyStrategyType,
-              },
-            },
-            parseQueryString({
-              key: 'strategy',
-              maxLength: productHubStrategyFilter.length,
-              queryString,
-              value: multiplyStrategyType,
-            }),
-          )
-        }}
-      />
-    ),
-    [queryString, selectedFilters],
-  )
-  const networkFilter = useMemo(
-    () => (
-      <GenericMultiselect
-        initialValues={queryString.network || initialNetwork}
-        label={t('product-hub.filters.networks')}
-        options={isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter}
-        onChange={(value) => {
-          const network = value as ProductHubSupportedNetworks[]
-
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: {
-                ...selectedFilters.and,
-                network,
-              },
-            },
-            parseQueryString({
-              key: 'network',
-              maxLength: (isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter).length,
-              queryString,
-              value: network,
-            }),
-          )
-        }}
-      />
-    ),
-    [initialNetwork, isTestnet, queryString, selectedFilters],
+    [
+      depositTokenFilterLabel,
+      depositTokens,
+      ethDepositTokens,
+      onChange,
+      selectedFilters,
+      stableDepositTokens,
+    ],
   )
   const protocolFilter = useMemo(
     () => (
       <GenericMultiselect
-        initialValues={queryString.protocol || initialProtocol}
-        label={t('product-hub.filters.protocols')}
+        initialValues={selectedFilters['protocol'] ?? []}
+        label={protocolFilterLabel}
         options={productHubProtocolFilter}
-        fitContents
         onChange={(value) => {
-          const protocol = value as LendingProtocol[]
-
-          onChange(
-            {
-              or: selectedFilters.or,
-              and: {
-                ...selectedFilters.and,
-                protocol,
-              },
-            },
-            parseQueryString({
-              key: 'protocol',
-              maxLength: productHubProtocolFilter.length,
-              queryString,
-              value: protocol,
-            }),
-          )
+          onChange({
+            ...selectedFilters,
+            protocol: value,
+          })
+        }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.Protocol, value)
         }}
       />
     ),
-    [initialProtocol, queryString, selectedFilters],
+    [protocolFilterLabel, selectedFilters],
   )
-  const rewardsFilter = useMemo(
+  const networkFilter = useMemo(
     () => (
-      <Flex sx={{ columnGap: 2 }}>
-        <Text variant="boldParagraph3">Rewards only</Text>
-        <Toggle
-          isChecked={queryString.rewardsOnly?.[0] ?? false}
-          onChange={(checked) => {
-            delete selectedFilters.and.hasRewards
-
-            onChange(
-              {
-                or: selectedFilters.or,
-                and: {
-                  ...selectedFilters.and,
-                  ...(checked && { hasRewards: [true] }),
-                },
-              },
-              parseQueryString({
-                key: 'rewardsOnly',
-                maxLength: 2,
-                queryString,
-                value: [checked],
-              }),
-            )
-          }}
-        />
-      </Flex>
+      <GenericMultiselect
+        initialValues={selectedFilters['network'] ?? []}
+        label={networkFilterLabel}
+        options={isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter}
+        onChange={(value) => {
+          onChange({
+            ...selectedFilters,
+            network: value,
+          })
+        }}
+        onSingleChange={(value) => {
+          trackingEvents.productHub.filterChange(MixpanelProductHubChangeFilter.Network, value)
+        }}
+      />
     ),
-    [initialProtocol, queryString, selectedFilters],
+    [isTestnet, networkFilterLabel, selectedFilters],
   )
 
   return {
+    collateralTokenFilter,
     debtTokenFilter,
-    multiplyStrategyFilter,
+    depositTokenFilter,
     networkFilter,
     protocolFilter,
-    rewardsFilter,
-    secondaryTokenFilter,
   }
 }

@@ -1,142 +1,176 @@
 import { EarnStrategies } from '@prisma/client'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
-import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
-import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
-import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
-import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
+import type { AssetsTableSeparator } from 'components/assetsTable/types'
+import type { OmniProductType } from 'features/omni-kit/types'
+import {
+  ProductHubCategoryController,
+  ProductHubFiltersController,
+  ProductHubTableController,
+  ProductHubTagsController,
+} from 'features/productHub/controls'
+import {
+  filterByDatabaseQuery,
+  filterByProductType,
+  filterByUserFilters,
+  parseRows,
+  sortByDefault,
+} from 'features/productHub/helpers'
 import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
 import type {
   ProductHubColumnKey,
+  ProductHubDatabaseQuery,
+  ProductHubFeaturedProducts,
   ProductHubFilters,
   ProductHubItem,
-  ProductHubProductType,
-  ProductHubQueryString,
-  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
-import type { FC } from 'react'
-import React, { useMemo } from 'react'
+import React, { type FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
+  databaseQuery?: ProductHubDatabaseQuery
+  customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
+  featured: ProductHubFeaturedProducts
+  hiddenBanners?: boolean
+  hiddenCategories?: boolean
   hiddenColumns?: ProductHubColumnKey[]
-  initialNetwork?: ProductHubSupportedNetworks[]
-  initialProtocol?: LendingProtocol[]
+  hiddenHelp?: boolean
+  hiddenTags?: boolean
   limitRows?: number
   networkId?: NetworkIds
-  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
+  onChange: (selectedFilters: ProductHubFilters) => void
   onRowClick?: (row: ProductHubItem) => void
   perPage?: number
-  queryString: ProductHubQueryString
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductHubProductType
-  selectedToken: string
+  selectedProduct: OmniProductType
+  separator?: AssetsTableSeparator
   tableData: ProductHubItem[]
-  hideBanners?: boolean
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
+  databaseQuery,
+  customSortByDefault,
+  featured,
+  hiddenBanners,
+  hiddenCategories,
   hiddenColumns,
-  initialNetwork = [],
-  initialProtocol = [],
+  hiddenHelp,
+  hiddenTags,
   limitRows,
   networkId,
   onChange,
   onRowClick,
   perPage,
-  queryString,
   selectedFilters,
   selectedProduct,
-  selectedToken,
+  separator,
   tableData,
-  hideBanners,
 }) => {
   const {
     AjnaBase: ajnaBaseEnabled,
-    AjnaPoolFinder: ajnaPoolFinderEnabled,
     AjnaSafetySwitch: ajnaSafetySwitchOn,
-    MorphoBlue: morphoBlueEnabled,
     Erc4626Vaults: erc4626VaultsEnabled,
+    MorphoBlue: morphoBlueEnabled,
   } = useAppConfig('features')
-
-  const ajnaOraclessPoolPairsKeys = Object.keys(
-    getNetworkContracts(NetworkIds.MAINNET, networkId).ajnaOraclessPoolPairs,
-  )
 
   const banner = useProductHubBanner({
     filters: selectedFilters,
-    product: selectedProduct,
-    hideBanners,
+    hidden: !!hiddenBanners,
+    selectedProduct: selectedProduct,
   })
 
-  const dataMatchedToFeatureFlags = useMemo(
+  const dataFilteredByFeatureFlags = useMemo(
     () =>
-      tableData.filter(({ earnStrategy, label, network, protocol }) => {
+      tableData.filter(({ earnStrategy, network, protocol }) => {
         const isAjna = protocol === LendingProtocol.Ajna
         const isMorpho = protocol === LendingProtocol.MorphoBlue
         const isErc4626 = earnStrategy === EarnStrategies.erc_4626
 
-        const unalailableChecksList = [
+        const unavailableChecksList = [
           // these checks predicate that the pool/strategy is UNAVAILABLE
           isAjna && ajnaSafetySwitchOn,
-          isAjna &&
-            !ajnaPoolFinderEnabled &&
-            ajnaOraclessPoolPairsKeys.includes(label.replace('/', '-')),
           isAjna && network === NetworkNames.baseMainnet && !ajnaBaseEnabled,
           isMorpho && !morphoBlueEnabled,
           isErc4626 && !erc4626VaultsEnabled,
         ]
-        if (unalailableChecksList.some((check) => !!check)) {
+        if (unavailableChecksList.some((check) => !!check)) {
           return false
         }
         return true
       }),
-    [tableData, ajnaSafetySwitchOn, ajnaPoolFinderEnabled, ajnaOraclessPoolPairsKeys],
+    [tableData, ajnaSafetySwitchOn, ajnaBaseEnabled, morphoBlueEnabled, erc4626VaultsEnabled],
   )
-  const dataMatchedByNL = useMemo(
-    () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),
-    [selectedProduct, selectedToken, dataMatchedToFeatureFlags],
+  const dataFilteredByDatabaseQuery = useMemo(
+    () =>
+      databaseQuery
+        ? filterByDatabaseQuery(dataFilteredByFeatureFlags, databaseQuery)
+        : dataFilteredByFeatureFlags,
+    [databaseQuery, dataFilteredByFeatureFlags],
   )
-  const dataMatchedByFilters = useMemo(
-    () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
-    [dataMatchedByNL, selectedFilters],
+  const dataFilteredByProductType = useMemo(
+    () => filterByProductType(dataFilteredByDatabaseQuery, selectedProduct),
+    [dataFilteredByDatabaseQuery, selectedProduct],
+  )
+  const dataFilteredByUserFilters = useMemo(
+    () =>
+      filterByUserFilters(dataFilteredByProductType, selectedFilters, selectedProduct, featured),
+    [dataFilteredByProductType, selectedFilters, selectedProduct, featured],
   )
   const dataSortedByDefault = useMemo(
-    () => sortByDefault(dataMatchedByFilters, selectedProduct),
-    [dataMatchedByFilters, selectedProduct],
+    () =>
+      customSortByDefault
+        ? customSortByDefault(dataFilteredByUserFilters)
+        : sortByDefault(dataFilteredByUserFilters, selectedProduct),
+    [customSortByDefault, dataFilteredByUserFilters, selectedProduct],
   )
   const rows = useMemo(
     () =>
       parseRows({
+        featured,
         hiddenColumns,
         networkId,
         onRowClick,
         product: selectedProduct,
         rows: dataSortedByDefault,
       }),
-    [dataSortedByDefault, selectedProduct],
+    [dataSortedByDefault, featured, hiddenColumns, networkId, onRowClick, selectedProduct],
   )
 
   return (
-    <AssetsTableContainer>
-      <ProductHubFiltersController
-        data={dataMatchedByNL}
-        initialNetwork={initialNetwork}
-        initialProtocol={initialProtocol}
-        networkId={networkId}
-        onChange={onChange}
-        queryString={queryString}
-        selectedFilters={selectedFilters}
-        selectedProduct={selectedProduct}
-        selectedToken={selectedToken}
-      />
-      <ProductHubTableController
-        banner={banner}
-        perPage={perPage}
-        rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
-      />
-    </AssetsTableContainer>
+    <>
+      {!hiddenCategories && (
+        <ProductHubCategoryController
+          onChange={onChange}
+          selectedFilters={selectedFilters}
+          selectedProduct={selectedProduct}
+        />
+      )}
+      <AssetsTableContainer>
+        <ProductHubFiltersController
+          data={dataFilteredByProductType}
+          hiddenHelp={hiddenHelp}
+          networkId={networkId}
+          onChange={onChange}
+          selectedFilters={selectedFilters}
+          selectedProduct={selectedProduct}
+        />
+        {!hiddenTags && (
+          <ProductHubTagsController
+            onChange={onChange}
+            selectedFilters={selectedFilters}
+            selectedProduct={selectedProduct}
+          />
+        )}
+        <ProductHubTableController
+          banner={banner}
+          limitRows={limitRows}
+          perPage={perPage}
+          rows={rows}
+          separator={separator}
+        />
+      </AssetsTableContainer>
+    </>
   )
 }

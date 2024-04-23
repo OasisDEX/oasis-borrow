@@ -1,5 +1,5 @@
 import type { MixpanelCommonAnalyticsSections, MixpanelPages } from 'analytics/types'
-import type { ProductHubProductType } from 'features/productHub/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export enum MixpanelMigrationsEventIds {
@@ -20,7 +20,7 @@ export type MixpanelMigrationsButtonClickParams =
         positionId: string
         alreadyHadDpm: boolean
         protocol: LendingProtocol
-        positionType: ProductHubProductType.Borrow | ProductHubProductType.Earn
+        positionType: OmniProductType.Borrow | OmniProductType.Earn
         tokenOrPair: string
         stopLoss?: {
           level: string

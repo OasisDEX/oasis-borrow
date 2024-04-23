@@ -66,8 +66,11 @@ export const searchAjnaPool = async (
     else where.and.push({ quoteToken_: { symbol_contains_nocase: quoteToken } })
   }
 
-  const { response } = (await loadSubgraph('Ajna', 'searchAjnaPool', networkId, {
-    where,
+  const { response } = (await loadSubgraph({
+    subgraph: 'Ajna',
+    method: 'searchAjnaPool',
+    networkId,
+    params: { where },
   })) as SubgraphsResponses['Ajna']['searchAjnaPool']
 
   const pools = response?.pools || []

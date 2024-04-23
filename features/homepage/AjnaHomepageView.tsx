@@ -4,7 +4,7 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -48,8 +48,7 @@ export const benefitCardsAnja = [
 ]
 
 export function AjnaHomepageView() {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
-    useAppConfig('features')
+  const { AjnaPoolFinder: ajnaPoolFinderEnabled } = useAppConfig('features')
 
   const { t } = useTranslation()
   const { context$ } = useMainContext()
@@ -90,9 +89,11 @@ export function AjnaHomepageView() {
       <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
         <ProductHubView
           headerGradient={['#f154db', '#974eea']}
-          initialProtocol={[LendingProtocol.Ajna]}
-          product={ProductHubProductType.Borrow}
-          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'AjnaLP'}
+          initialFilters={{
+            protocol: [LendingProtocol.Ajna],
+          }}
+          limitRows={10}
+          product={OmniProductType.Borrow}
         />
       </Box>
       <Flex

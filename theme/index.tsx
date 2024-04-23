@@ -547,7 +547,7 @@ export const theme = themeTypeSafe({
       color: 'primary100',
       borderRadius: 'round',
       whiteSpace: 'nowrap',
-      transition: 'background-color 200ms, border-color 200ms',
+      transition: 'background-color 200ms, border-color 200ms, color 200ms',
       '&:hover': {
         bg: 'secondary100',
       },

@@ -163,8 +163,13 @@ async function getAccounts({ networkId, positionId }: GetAccountByPositionIdPara
       },
     ]
   } else {
-    const response = (await loadSubgraph('SummerDpm', 'getUserCreateEvents', networkId, {
-      positionId,
+    const response = (await loadSubgraph({
+      subgraph: 'SummerDpm',
+      method: 'getUserCreateEvents',
+      networkId,
+      params: {
+        positionId,
+      },
     })) as SubgraphsResponses['SummerDpm']['getUserCreateEvents']
     if (!response.success) return null
     return response.response.accounts

@@ -9,9 +9,14 @@ export const getAjnaCumulatives: (
   networkId: OmniSupportedNetworkIds,
 ) => GetCumulativesData<AjnaCumulativesData> =
   (networkId) => async (proxy: string, poolAddress: string) => {
-    const { response } = (await loadSubgraph('Ajna', 'getAjnaCumulatives', networkId, {
-      dpmProxyAddress: proxy.toLowerCase(),
-      poolAddress: poolAddress.toLowerCase(),
+    const { response } = (await loadSubgraph({
+      subgraph: 'Ajna',
+      method: 'getAjnaCumulatives',
+      networkId,
+      params: {
+        dpmProxyAddress: proxy.toLowerCase(),
+        poolAddress: poolAddress.toLowerCase(),
+      },
     })) as SubgraphsResponses['Ajna']['getAjnaCumulatives']
 
     const mappedOmniLendingCumulatives = response.account?.borrowPositions[0]

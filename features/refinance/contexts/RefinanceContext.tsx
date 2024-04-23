@@ -1,4 +1,5 @@
 import type { RefinanceGeneralContextBase } from 'features/refinance/contexts/RefinanceGeneralContext'
+import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers'
 import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import type { FC } from 'react'
 import React, { useContext } from 'react'
@@ -10,7 +11,9 @@ export type RefinanceContext = {
   }
   simulation: SDKSimulation
   poolData: RefinanceGeneralContextBase['poolData']
-  metadata: RefinanceGeneralContextBase['metadata']
+  metadata: RefinanceGeneralContextBase['metadata'] & {
+    interestRates: RefinanceInterestRatesMetadata
+  }
   automations: RefinanceGeneralContextBase['automations']
   form: RefinanceGeneralContextBase['form']
   steps: RefinanceGeneralContextBase['steps']

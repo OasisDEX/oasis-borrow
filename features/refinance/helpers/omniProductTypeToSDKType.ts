@@ -1,10 +1,7 @@
 import { OmniProductType } from 'features/omni-kit/types'
-import type { ProductHubProductType } from 'features/productHub/types'
 import { PositionType } from 'summerfi-sdk-common'
 
-export const omniProductTypeToSDKType = (
-  type: OmniProductType | ProductHubProductType,
-): PositionType => {
+export const omniProductTypeToSDKType = (type: OmniProductType): PositionType => {
   switch (type) {
     case OmniProductType.Borrow:
       return PositionType.Borrow

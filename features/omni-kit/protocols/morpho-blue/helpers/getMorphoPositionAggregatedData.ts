@@ -17,10 +17,15 @@ export const getMorpoPositionAggregatedData = async (
   collateralTokenAddress: string,
   quoteTokenAddress: string,
 ): Promise<MorphoPositionAggregatedData> => {
-  const { response } = (await loadSubgraph('Morpho', 'getMorphoPositionAggregatedData', networkId, {
-    dpmProxyAddress: proxy.toLowerCase(),
-    collateralAddress: collateralTokenAddress.toLowerCase(),
-    quoteAddress: quoteTokenAddress.toLowerCase(),
+  const { response } = (await loadSubgraph({
+    subgraph: 'Morpho',
+    method: 'getMorphoPositionAggregatedData',
+    networkId,
+    params: {
+      dpmProxyAddress: proxy.toLowerCase(),
+      collateralAddress: collateralTokenAddress.toLowerCase(),
+      quoteAddress: quoteTokenAddress.toLowerCase(),
+    },
   })) as SubgraphsResponses['Morpho']['getMorphoPositionAggregatedData']
   const errors = []
 

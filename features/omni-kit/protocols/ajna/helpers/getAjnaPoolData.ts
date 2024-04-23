@@ -49,8 +49,13 @@ export const getAjnaPoolData: (networkId: OmniSupportedNetworkIds) => GetPoolDat
       case NetworkIds.OPTIMISMMAINNET:
       case NetworkIds.ARBITRUMMAINNET:
       case NetworkIds.GOERLI: {
-        const { response } = await loadSubgraph('Ajna', 'getAjnaPoolData', networkId, {
-          poolAddress: poolAddress.toLowerCase(),
+        const { response } = await loadSubgraph({
+          subgraph: 'Ajna',
+          method: 'getAjnaPoolData',
+          networkId,
+          params: {
+            poolAddress: poolAddress.toLowerCase(),
+          },
         })
         const provider = getRpcProvider(networkId)
         const { ajnaPoolInfo } = getNetworkContracts(networkId)

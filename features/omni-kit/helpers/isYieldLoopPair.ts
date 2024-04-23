@@ -1,4 +1,4 @@
-type PotentialYieldLoopPair = {
+interface IsYieldLoopPairParams {
   collateralToken: string
   debtToken: string
 }
@@ -38,9 +38,10 @@ export const yieldLoopDefinition = {
   ],
 }
 
-export const isYieldLoopPair = (pair: PotentialYieldLoopPair) => {
+export const isYieldLoopPair = (pair: IsYieldLoopPairParams) => {
   const { collateralToken, debtToken } = pair
   const { ethYieldTokens, stableCoinYieldTokens } = yieldLoopDefinition
+
   return (
     // its an eth yield loop
     (ethYieldTokens.includes(collateralToken.toLocaleUpperCase()) &&

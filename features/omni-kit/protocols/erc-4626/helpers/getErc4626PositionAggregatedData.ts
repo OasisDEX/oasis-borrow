@@ -49,15 +49,15 @@ export async function getErc4626PositionAggregatedData(
   vaultAddress: string,
   dpmProxyAddress: string,
 ): Promise<Erc4626PositionAggregatedData> {
-  const { response } = (await loadSubgraph(
-    'Erc4626',
-    'getErc4626PositionAggregatedData',
+  const { response } = (await loadSubgraph({
+    subgraph: 'Erc4626',
+    method: 'getErc4626PositionAggregatedData',
     networkId,
-    {
+    params: {
       dpmProxyAddress: dpmProxyAddress.toLowerCase(),
       vault: vaultAddress.toLowerCase(),
     },
-  )) as SubgraphsResponses['Erc4626']['getErc4626PositionAggregatedData']
+  })) as SubgraphsResponses['Erc4626']['getErc4626PositionAggregatedData']
 
   if (response.summerEvents.length === 0) {
     return {

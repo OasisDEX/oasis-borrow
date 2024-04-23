@@ -41,8 +41,13 @@ async function getMorphoPositions({
   protocolRaw,
 }: GetMorphoPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
-  const subgraphPositions = (await loadSubgraph('Morpho', 'getMorphoDpmPositions', networkId, {
-    dpmProxyAddress,
+  const subgraphPositions = (await loadSubgraph({
+    subgraph: 'Morpho',
+    method: 'getMorphoDpmPositions',
+    networkId,
+    params: {
+      dpmProxyAddress,
+    },
   })) as SubgraphsResponses['Morpho']['getMorphoDpmPositions']
   const positionsArray = subgraphPositions.response.accounts.flatMap(
     ({ address: proxyAddress, borrowPositions, vaultId: positionId }) =>
