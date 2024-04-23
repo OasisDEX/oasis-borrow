@@ -87,7 +87,9 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
-  const simulation = useSdkSimulation({ owner: positionOwnerData })
+
+  const dpmAddress = ctx?.form.state.dpm?.address
+  const simulation = useSdkSimulation({ owner: dpmAddress })
 
   useEffect(() => {
     if (positionOwnerData) cache.handlePositionOwner(positionOwnerData)
