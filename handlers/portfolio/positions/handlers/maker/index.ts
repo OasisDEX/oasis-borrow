@@ -25,14 +25,14 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   prices,
   positionsCount,
 }) => {
-  const subgraphPositions = (await loadSubgraph(
-    'Discover',
-    'getMakerDiscoverPositions',
-    NetworkIds.MAINNET,
-    {
+  const subgraphPositions = (await loadSubgraph({
+    subgraph: 'Discover',
+    method: 'getMakerDiscoverPositions',
+    networkId: NetworkIds.MAINNET,
+    params: {
       walletAddress: address,
     },
-  )) as SubgraphsResponses['Discover']['getMakerDiscoverPositions']
+  })) as SubgraphsResponses['Discover']['getMakerDiscoverPositions']
 
   if (positionsCount || !apiVaults) {
     return {

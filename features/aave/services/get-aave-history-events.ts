@@ -6,6 +6,7 @@ import type {
   AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
 
@@ -26,11 +27,16 @@ export async function getAaveHistoryEvents(
   positionCumulatives?: AaveLikeCumulativeData
 }> {
   const tokens = getNetworkContracts(_networkId as OmniSupportedNetworkIds).tokens
-  const response = await loadSubgraph('Aave', 'getAaveHistory', _networkId, {
-    dpmProxyAddress: _proxyAdrress,
-    collateralAddress: tokens[collateralToken.toUpperCase()].address.toLowerCase(),
-    quoteAddress: tokens[quoteToken.toUpperCase()].address.toLowerCase(),
-  })
+  const response = (await loadSubgraph({
+    subgraph: 'Aave',
+    method: 'getAaveHistory',
+    networkId: _networkId,
+    params: {
+      dpmProxyAddress: _proxyAdrress,
+      collateralAddress: tokens[collateralToken.toUpperCase()].address.toLowerCase(),
+      quoteAddress: tokens[quoteToken.toUpperCase()].address.toLowerCase(),
+    },
+  })) as SubgraphsResponses['Aave']['getAaveHistory']
 
   if (response.success) {
     const { positionEvents, positions } = response.response

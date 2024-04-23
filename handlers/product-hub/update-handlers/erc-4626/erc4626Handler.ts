@@ -32,8 +32,13 @@ async function getErc4626VaultData({
   token,
 }: Erc4626Config): Promise<ProductHubHandlerResponseData> {
   try {
-    const { response } = (await loadSubgraph('Erc4626', 'getErc4626InterestRates', networkId, {
-      vault: address,
+    const { response } = (await loadSubgraph({
+      subgraph: 'Erc4626',
+      method: 'getErc4626InterestRates',
+      networkId,
+      params: {
+        vault: address,
+      },
     })) as SubgraphsResponses['Erc4626']['getErc4626InterestRates']
 
     const vaults = response.vaults[0]

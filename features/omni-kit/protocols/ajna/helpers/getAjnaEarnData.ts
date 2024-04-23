@@ -15,9 +15,14 @@ const defaultResponse = {
 
 export const getAjnaEarnData: (networkId: OmniSupportedNetworkIds) => GetEarnData =
   (networkId) => async (proxy: string, poolAddress: string) => {
-    const { response } = (await loadSubgraph('Ajna', 'getAjnaEarnPositionData', networkId, {
-      dpmProxyAddress: proxy.toLowerCase(),
-      poolAddress: poolAddress.toLowerCase(),
+    const { response } = (await loadSubgraph({
+      subgraph: 'Ajna',
+      method: 'getAjnaEarnPositionData',
+      networkId,
+      params: {
+        dpmProxyAddress: proxy.toLowerCase(),
+        poolAddress: poolAddress.toLowerCase(),
+      },
     })) as SubgraphsResponses['Ajna']['getAjnaEarnPositionData']
 
     if (

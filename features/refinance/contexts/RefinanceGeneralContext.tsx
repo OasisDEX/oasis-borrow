@@ -3,6 +3,7 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
 import type { OmniFiltersParameters, OmniValidations } from 'features/omni-kit/types'
+import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers'
 import { useInitializeRefinanceContext } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
@@ -117,6 +118,8 @@ export type RefinanceGeneralContextBase = {
 interface RefinanceGeneralContextCache {
   handlePositionOwner: (owner?: string) => void
   positionOwner?: string
+  handleInterestRates: (interestRates?: RefinanceInterestRatesMetadata) => void
+  interestRatesMetadata?: RefinanceInterestRatesMetadata
 }
 
 type RefinanceContexts = Record<string, RefinanceGeneralContextBase>
@@ -148,6 +151,8 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
 
   // cache
   const [positionOwner, setPositionOwner] = useState<string>()
+  const [interestRatesMetadata, setInterestRatesMetadata] =
+    useState<RefinanceInterestRatesMetadata>()
 
   const { ctx, reset } = useInitializeRefinanceContext({
     contextInput: contextInput,
@@ -176,6 +181,10 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
     setPositionOwner(owner)
   }
 
+  const handleInterestRates = (interestRates?: RefinanceInterestRatesMetadata) => {
+    setInterestRatesMetadata(interestRates)
+  }
+
   return (
     <refinanceGeneralContext.Provider
       value={{
@@ -183,6 +192,8 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
         cache: {
           handlePositionOwner,
           positionOwner,
+          handleInterestRates,
+          interestRatesMetadata,
         },
         handleSetContext,
         handleOnClose,

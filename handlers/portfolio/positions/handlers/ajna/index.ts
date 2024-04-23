@@ -43,8 +43,13 @@ async function getAjnaPositions({
   protocolRaw,
 }: GetAjnaPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
-  const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', networkId, {
-    dpmProxyAddress,
+  const subgraphPositions = (await loadSubgraph({
+    subgraph: 'Ajna',
+    method: 'getAjnaDpmPositions',
+    networkId,
+    params: {
+      dpmProxyAddress,
+    },
   })) as SubgraphsResponses['Ajna']['getAjnaDpmPositions']
   const positionsArray = subgraphPositions.response.accounts.flatMap(
     ({ address: proxyAddress, borrowPositions, earnPositions, vaultId: positionId }) => [
