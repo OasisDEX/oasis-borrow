@@ -6,7 +6,7 @@ import { LendingProtocol } from 'lendingProtocols'
 
 export type GetAaveLikeInterestRateInput = Record<NetworkIds, Record<LendingProtocol, string[]>>
 
-export type AaveLikeVariableInterestRates = Record<'borrowVariable' | 'lendingVariable', string>
+export type AaveLikeVariableInterestRates = Record<'borrowVariable' | 'lendVariable', string>
 export type AaveLikeTokenInterestRate = Record<string, AaveLikeVariableInterestRates>
 
 export type RefinanceInterestRatesMetadata = Record<
@@ -93,14 +93,18 @@ export const getRefinanceAaveLikeInterestRates = async (
 
               const castedProtocol = protocol as LendingProtocol
               const token = value?.[0]?.token.symbol?.toUpperCase()
+              const resolvedToken = token === 'WETH' ? 'ETH' : token
+
               return {
                 ...acc2,
                 [protocol]: {
                   ...(acc2[castedProtocol] ? acc2[castedProtocol] : {}),
-                  ...(token
+                  ...(resolvedToken
                     ? {
-                        [token]: {
-                          ...(acc2[castedProtocol]?.[token] ? acc2[castedProtocol]?.[token] : {}),
+                        [resolvedToken]: {
+                          ...(acc2[castedProtocol]?.[resolvedToken]
+                            ? acc2[castedProtocol]?.[resolvedToken]
+                            : {}),
                           [type]: value?.[0]?.rate,
                         },
                       }
