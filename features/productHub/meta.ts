@@ -241,7 +241,7 @@ export const productHubHelp = {
     },
     {
       translationKey: 'how-to-choose-the-right-protocol',
-      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_BORROW,
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
     },
     {
       translationKey: 'faq',
@@ -259,7 +259,7 @@ export const productHubHelp = {
     },
     {
       translationKey: 'how-to-choose-the-right-protocol',
-      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_MULTIPLY,
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL,
     },
     {
       translationKey: 'faq',
