@@ -15,6 +15,7 @@ import poolFinderIcon from 'public/static/img/product_hub_banners/pool-finder.sv
 interface ProductHubBannerProps {
   filters: ProductHubFilters
   product: ProductHubProductType
+  hideBanners?: boolean
 }
 
 export const useProductHubBanner = ({
@@ -22,6 +23,7 @@ export const useProductHubBanner = ({
     and: { protocol },
   },
   product,
+  hideBanners = false,
 }: ProductHubBannerProps): ActionBannerProps | undefined => {
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
@@ -33,6 +35,10 @@ export const useProductHubBanner = ({
   const { link, migrationsCount } = useMigrationBannerMeta({
     address: walletAddress,
   })
+
+  if (hideBanners) {
+    return undefined
+  }
 
   if (migrationsCount > 0 && migrationsEnabled) {
     return {

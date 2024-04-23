@@ -10,7 +10,6 @@ import { LendingProtocol } from 'lendingProtocols'
 export async function aaveLikeFlowStateFilter({
   collateralAddress,
   event,
-  filterConsumed,
   networkId,
   protocol,
   quoteAddress,
@@ -47,7 +46,8 @@ export async function aaveLikeFlowStateFilter({
             address: event.proxyAddress,
             networkId: networkId as SparkV3SupportedNetwork,
           })
-    return !!filterConsumed && userData.totalDebtBase.isZero()
+    return userData.totalDebtBase.isZero()
   }
+
   return Promise.resolve(false)
 }

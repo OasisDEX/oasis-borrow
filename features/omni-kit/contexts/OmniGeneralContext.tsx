@@ -127,7 +127,7 @@ interface OmniGeneralContextAutomationSteps {
   setPrevStep: () => void
 }
 
-interface OmniGeneralContextTx {
+export interface OmniGeneralContextTx {
   isTxError: boolean
   isTxInProgress: boolean
   isTxStarted: boolean

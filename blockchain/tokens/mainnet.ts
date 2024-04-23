@@ -82,6 +82,7 @@ export const tokensMainnet = {
   SUSD: contractDesc(erc20, mainnet.common.SUSD),
   USDE: contractDesc(erc20, mainnet.common.USDE),
   TBTC: contractDesc(erc20, mainnet.common.TBTC),
+  USDA: contractDesc(erc20, mainnet.common.USDA),
   USDC: contractDesc(erc20, mainnet.common.USDC),
   USDT: contractDesc(erc20, mainnet.common.USDT),
   USDP: contractDesc(erc20, mainnet.common.PAXUSD),

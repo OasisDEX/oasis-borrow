@@ -2502,10 +2502,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.60":
-  version "0.1.60"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.60.tgz#fb1bf3c4b21d496c166a59e728ba530cba7284ac"
-  integrity sha512-UAmNodCG3ld4LK5w7sgtoA0ml4lMFfSE7Zp1vswW7/3823IZFmvEO6wy0Pd/vPnJjjKDYaLJdhsRRYGYHwYGSg==
+"@oasisdex/addresses@0.1.61":
+  version "0.1.61"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.61.tgz#481956be5ce20bcfdd44875ad82a404d2bcea635"
+  integrity sha512-VeEopPLOwSXI4dEsdrfnJdnMn+uxl16xX3oJejCrV0HueEPAvcoEj9kCbcTk30dLbOIU4fBb9URHW+eZTdGOlw==
 
 "@oasisdex/automation@1.6.5":
   version "1.6.5"
@@ -3929,6 +3929,11 @@
     typeforce "^1.18.0"
     varuint-bitcoin "^1.1.2"
     wif "^2.0.6"
+
+"@trpc/client@11.0.0-next-beta.264":
+  version "11.0.0-next-beta.264"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-11.0.0-next-beta.264.tgz#1d773018342136c46ac94e08fb4ecb022d51503a"
+  integrity sha512-He/kE++/rDq/yZr7xCkQmOC+1S3auulLVjBuo6LvuYuFQL+Slf2ObRftbNVWa92GVd/llxV+eNlbzR9mTVPCPg==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
@@ -7429,6 +7434,13 @@ cookiejar@^2.1.1:
   resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.4.tgz#ee669c1fea2cf42dc31585469d193fef0d65771b"
   integrity sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==
 
+copy-anything@^3.0.2:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/copy-anything/-/copy-anything-3.0.5.tgz#2d92dce8c498f790fa7ad16b01a1ae5a45b020a0"
+  integrity sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==
+  dependencies:
+    is-what "^4.1.8"
+
 copy-to-clipboard@^3.3.1, copy-to-clipboard@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/copy-to-clipboard/-/copy-to-clipboard-3.3.3.tgz#55ac43a1db8ae639a4bd99511c148cdd1b83a1b0"
@@ -10445,6 +10457,11 @@ is-weakset@^2.0.1:
   dependencies:
     call-bind "^1.0.2"
     get-intrinsic "^1.1.1"
+
+is-what@^4.1.8:
+  version "4.1.16"
+  resolved "https://registry.yarnpkg.com/is-what/-/is-what-4.1.16.tgz#1ad860a19da8b4895ad5495da3182ce2acdd7a6f"
+  integrity sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==
 
 is-wsl@^2.1.1, is-wsl@^2.2.0:
   version "2.2.0"
@@ -14877,6 +14894,32 @@ stylis@^4.0.6:
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.3.0.tgz#abe305a669fc3d8777e10eefcfc73ad861c5588c"
   integrity sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==
 
+summerfi-sdk-client@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-client/-/summerfi-sdk-client-0.1.1.tgz#891f6c021226a9a0e7a9c47df0401b4b58936ea0"
+  integrity sha512-IbG3dW8i0bXJmKff7LWJvW95lWqhoXWZXpw5J1uSv5nPV45cJru1yZ0mHpSD+ZfIng1pALM0ZNTgJK68V5ZYmQ==
+  dependencies:
+    "@trpc/client" "11.0.0-next-beta.264"
+    bignumber.js "^9.1.2"
+    superjson "^1.13.3"
+    viem "^2.7.9"
+
+summerfi-sdk-common@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-common/-/summerfi-sdk-common-0.1.1.tgz#d875cc327ead1d3e4fd2d496c6a74f6e5eb37f55"
+  integrity sha512-trgi2X/SCdzA8EXtPQfMY9DPIM6G7iWm/qOWrKyoalQ0iyojD+xNg51iS/RJvlad4Sa/Mm9r53MYxsavLvBoYg==
+  dependencies:
+    bignumber.js "9.0.1"
+    superjson "^1.13.3"
+    viem "^2.2.0"
+
+superjson@^1.13.3:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/superjson/-/superjson-1.13.3.tgz#3bd64046f6c0a47062850bb3180ef352a471f930"
+  integrity sha512-mJiVjfd2vokfDxsQPOwJ/PtanO87LhpYY88ubI5dUB1Ab58Txbyje3+jpm+/83R/fevaq/107NNhtYBLuoTrFg==
+  dependencies:
+    copy-anything "^3.0.2"
+
 superstruct@^0.14.2:
   version "0.14.2"
   resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.14.2.tgz#0dbcdf3d83676588828f1cf5ed35cda02f59025b"
@@ -15807,7 +15850,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viem@1.21.4, viem@^1.0.0, viem@^1.17.2, viem@^1.19.11, viem@^1.6.0:
+viem@1.21.4, viem@^1.0.0, viem@^1.17.2, viem@^1.19.11, viem@^1.6.0, viem@^2.2.0, viem@^2.7.9:
   version "1.21.4"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
   integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==

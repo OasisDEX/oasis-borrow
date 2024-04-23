@@ -2,7 +2,8 @@ import { Icon } from 'components/Icon'
 import type { IconProps } from 'components/Icon.types'
 import type { ReactNode } from 'react'
 import React from 'react'
-import { Flex, Heading } from 'theme-ui'
+import { arrow_left } from 'theme/icons'
+import { Button, Flex, Heading, Text } from 'theme-ui'
 
 import type { SidebarSectionHeaderSelectItem } from './SidebarSectionHeaderSelect'
 import { SidebarSectionHeaderSelect } from './SidebarSectionHeaderSelect'
@@ -11,6 +12,11 @@ export interface SidebarSectionHeaderButton {
   label: string
   icon?: IconProps['icon']
   action: () => void
+}
+
+export interface SidebarSectionHeaderBackButtonProps {
+  action: () => void
+  hidden?: boolean
 }
 
 export interface SidebarSectionHeaderDropdown {
@@ -23,7 +29,9 @@ export interface SidebarSectionHeaderProps {
   title: ReactNode
   dropdown?: SidebarSectionHeaderDropdown
   headerButton?: SidebarSectionHeaderButton
+  headerBackButton?: SidebarSectionHeaderBackButtonProps
   onSelect: (panel: string) => void
+  step?: string
 }
 
 export function SidebarSectionHeader({
@@ -31,6 +39,8 @@ export function SidebarSectionHeader({
   dropdown,
   headerButton,
   onSelect,
+  headerBackButton,
+  step,
 }: SidebarSectionHeaderProps) {
   return (
     <Flex
@@ -43,6 +53,11 @@ export function SidebarSectionHeader({
         zIndex: 1,
       }}
     >
+      {headerBackButton && !headerBackButton.hidden && (
+        <Button variant="circle" onClick={headerBackButton.action}>
+          <Icon size="14px" icon={arrow_left} />
+        </Button>
+      )}
       <Flex sx={{ minHeight: 40, alignItems: 'center' }}>
         {typeof title === 'string' ? (
           <Heading
@@ -73,6 +88,15 @@ export function SidebarSectionHeader({
           {headerButton.label}
         </Flex>
       ) : null}
+      {step && (
+        <Text
+          variant="boldParagraph3"
+          as="p"
+          sx={{ color: 'neutral80', display: 'flex', alignItems: 'center' }}
+        >
+          {step}
+        </Text>
+      )}
     </Flex>
   )
 }
