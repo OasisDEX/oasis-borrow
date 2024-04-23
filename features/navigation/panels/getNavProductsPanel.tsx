@@ -84,11 +84,11 @@ export const getNavProductsPanel = ({
                       : item.earnStrategy === EarnStrategies.yield_loop
                         ? t('nav.earn-on-yield-loop-strategy', {
                             token: item.primaryToken,
-                            protocol: item.protocol.toUpperCase(),
+                            protocol: lendingProtocolsByName[item.protocol].label.toUpperCase(),
                           })
                         : t('nav.earn-on-liquidity-provision-strategy', {
                             token: item.primaryToken,
-                            protocol: item.protocol.toUpperCase(),
+                            protocol: lendingProtocolsByName[item.protocol].label.toUpperCase(),
                           }),
                   tags: [
                     [
