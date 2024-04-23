@@ -11,7 +11,7 @@ import {
   ProductHubProductTypeController,
 } from 'features/productHub/controls'
 import { parseQueryString, shuffleFiltersOrder } from 'features/productHub/helpers'
-import { useProductHubRouter } from 'features/productHub/hooks'
+import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRouter'
 import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
   ProductHubColumnKey,

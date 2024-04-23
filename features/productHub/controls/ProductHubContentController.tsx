@@ -17,7 +17,7 @@ import {
   parseRows,
   sortByDefault,
 } from 'features/productHub/helpers'
-import { useProductHubBanner } from 'features/productHub/hooks'
+import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
 import type {
   ProductHubColumnKey,
   ProductHubDatabaseQuery,
