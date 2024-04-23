@@ -72,7 +72,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
         : of(cache.interestRatesMetadata),
     [cache.interestRatesMetadata],
   )
-  const [ownerData] = useObservable(positionOwner)
+  const [positionOwnerData] = useObservable(positionOwner)
   const [interestRatesData] = useObservable(interestRates)
 
   const onClose = () => {
@@ -87,11 +87,11 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
-  const simulation = useSdkSimulation({ owner: ownerData })
+  const simulation = useSdkSimulation({ owner: positionOwnerData })
 
   useEffect(() => {
-    if (ownerData) cache.handlePositionOwner(ownerData)
-  }, [ownerData])
+    if (positionOwnerData) cache.handlePositionOwner(positionOwnerData)
+  }, [positionOwnerData])
 
   useEffect(() => {
     if (interestRatesData) cache.handleInterestRates(interestRatesData)
@@ -100,7 +100,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose}>
       <WithLoadingIndicator
-        value={[ctx, ownerData, interestRatesData]}
+        value={[ctx, positionOwnerData, interestRatesData]}
         customLoader={<RefinanceModalSkeleton onClose={onClose} />}
       >
         {([_ctx, _owner, _interestRates]) => (
