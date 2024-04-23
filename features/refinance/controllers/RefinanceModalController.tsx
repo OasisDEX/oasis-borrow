@@ -87,7 +87,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
-  const simulation = useSdkSimulation({ owner: positionOwnerData })
+  const simulation = useSdkSimulation()
 
   useEffect(() => {
     if (positionOwnerData) cache.handlePositionOwner(positionOwnerData)
@@ -98,7 +98,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   }, [interestRatesData])
 
   return (
-    <Modal sx={{ margin: '0 auto' }} close={onClose}>
+    <Modal sx={{ margin: '0 auto' }} close={onClose} variant="modalAutoWidth">
       <WithLoadingIndicator
         value={[ctx, positionOwnerData, interestRatesData]}
         customLoader={<RefinanceModalSkeleton onClose={onClose} />}
@@ -131,7 +131,7 @@ function RefinanceModalContainer({ onClose }: Readonly<{ onClose: () => void }>)
   const isMobile = useOnMobile()
 
   return (
-    <Flex sx={{ flexDirection: 'column', m: 3, height: ['auto', '800px'] }}>
+    <Flex sx={{ flexDirection: 'column', m: 3, minHeight: ['auto', '800px'] }}>
       <RefinanceHeader onClose={onClose} />
       {isMobile ? (
         <Text variant="paragraph2">{t('refinance.mobile-not-available')}</Text>

@@ -1,15 +1,21 @@
+import { NetworkNames } from 'blockchain/networks'
+import { OmniProductType } from 'features/omni-kit/types'
+import { ProductHubView } from 'features/productHub/views'
+import { useRefinanceContext } from 'features/refinance/contexts'
+import { RefinanceOptions } from 'features/refinance/types'
+import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 
 export const RefinanceProductTableStep = () => {
   // const { productHub: data } = usePreloadAppDataContext()
 
-  // const {
-  //   poolData: { borrowRate, maxLtv },
-  //   position: { isShort },
-  //   form: {
-  //     state: { refinanceOption },
-  //   },
-  // } = useRefinanceContext()
+  const {
+    form: {
+      state: { refinanceOption },
+      updateState,
+    },
+    steps: { setNextStep },
+  } = useRefinanceContext()
 
   // const table = getParsedRefinanceProductTable({
   //   table: data.table,
@@ -30,12 +36,12 @@ export const RefinanceProductTableStep = () => {
   //   form: { updateState, state },
   // } = useRefinanceContext()
 
-  // const selectedProduct = {
-  //   [RefinanceOptions.HIGHER_LTV]: ProductHubProductType.Borrow,
-  //   [RefinanceOptions.LOWER_COST]: ProductHubProductType.Borrow,
-  //   [RefinanceOptions.CHANGE_DIRECTION]: ProductHubProductType.Borrow,
-  //   [RefinanceOptions.SWITCH_TO_EARN]: ProductHubProductType.Earn,
-  // }[state.refinanceOption || RefinanceOptions.LOWER_COST]
+  const product = {
+    [RefinanceOptions.HIGHER_LTV]: OmniProductType.Borrow,
+    [RefinanceOptions.LOWER_COST]: OmniProductType.Borrow,
+    [RefinanceOptions.CHANGE_DIRECTION]: OmniProductType.Borrow,
+    [RefinanceOptions.SWITCH_TO_EARN]: OmniProductType.Earn,
+  }[refinanceOption || RefinanceOptions.LOWER_COST]
 
   // const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(
   //   getInitialFilters({
@@ -50,7 +56,24 @@ export const RefinanceProductTableStep = () => {
   // const [queryString, setQueryString] = useState<ProductHubQueryString>(initialQueryString)
 
   return (
-    <></>
+    <ProductHubView
+      product={product}
+      hiddenProductTypeSelector
+      hiddenCategories
+      hiddenHelp
+      hiddenTags
+      perPage={5}
+      hiddenBanners
+      initialFilters={{
+        protocol: [LendingProtocol.SparkV3],
+        network: [NetworkNames.ethereumMainnet],
+      }}
+      hiddenColumns={['automation']}
+      onRowClick={(item) => {
+        updateState('strategy', item)
+        setNextStep()
+      }}
+    />
     // <ProductHubContentController
     //   hiddenColumns={['action', 'strategy']}
     //   initialNetwork={initialNetwork}

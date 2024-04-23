@@ -36,7 +36,7 @@ export type SDKSimulation = {
   liquidationThreshold: Percentage | null
 }
 
-export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
+export function useSdkSimulation(): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
@@ -48,12 +48,12 @@ export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
   const [liquidationPrice, setLiquidationPrice] = useState<string>('')
   const [liquidationThreshold, setLiquidationThreshold] = useState<Percentage | null>(null)
 
-  const ctx = useRefinanceGeneralContext().ctx
+  const { ctx, cache } = useRefinanceGeneralContext()
 
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
-    if (!ctx || !owner) {
+    if (!ctx || !cache?.positionOwner) {
       return
     }
     const {
@@ -64,6 +64,8 @@ export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
         state: { strategy },
       },
     } = ctx
+
+    const owner = cache.positionOwner
 
     if (!strategy) {
       return
@@ -210,10 +212,10 @@ export function useSdkSimulation({ owner }: { owner?: string }): SDKSimulation {
     JSON.stringify(ctx?.position.debtTokenData),
     ctx?.position.positionType,
     JSON.stringify(ctx?.poolData.poolId),
-    owner,
     ctx?.form.state.strategy?.product?.toString(),
     ctx?.form.state.strategy?.primaryToken,
     ctx?.form.state.strategy?.secondaryToken,
+    cache.positionOwner,
   ])
 
   const simulatedPosition = refinanceSimulation?.targetPosition || null
