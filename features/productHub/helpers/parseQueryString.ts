@@ -1,31 +1,16 @@
-import type { ProductHubQueryString } from 'features/productHub/types'
+import type { ProductHubFilters } from 'features/productHub/types'
+import type { ReadonlyURLSearchParams } from 'next/navigation'
 
-export function parseQueryString<T extends keyof ProductHubQueryString>({
-  key,
-  maxLength,
-  queryString,
-  value,
-}: {
-  key: T
-  maxLength: number
-  queryString: ProductHubQueryString
-  value: ProductHubQueryString[T]
-}): ProductHubQueryString {
-  delete queryString[key]
+interface ParseQueryStringParams {
+  searchParams: ReadonlyURLSearchParams
+}
 
-  // for now switch only uses one case, but it's safe to assume that those filters will grown and it's easier to work from that position
-  switch (key) {
-    case 'rewardsOnly':
-      delete queryString.rewardsOnly
-
-      return {
-        ...queryString,
-        ...(value?.[0] === true && { rewardsOnly: [true] }),
-      }
-    default:
-      return {
-        ...queryString,
-        ...(value && value.length < maxLength && { [key]: value }),
-      }
-  }
+export function parseQueryString({ searchParams }: ParseQueryStringParams) {
+  return Object.entries(Object.fromEntries(searchParams.entries())).reduce<ProductHubFilters>(
+    (total, [key, value]) => ({
+      ...total,
+      [key]: value.split(','),
+    }),
+    {},
+  )
 }

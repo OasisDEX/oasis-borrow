@@ -1,15 +1,17 @@
 import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/networks'
-import { getToken } from 'blockchain/tokensMetadata'
 import type { GenericMultiselectOption } from 'components/GenericMultiselect'
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
-import { ProductHubProductType } from 'features/productHub/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import type {
+  ProductHubCategories,
+  ProductHubFeaturedFilters,
+  ProductHubTags,
+} from 'features/productHub/types'
+import { ProductHubCategory, ProductHubTag } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
-import { clone } from 'ramda'
 import {
-  btc_circle_color,
   selectBorrow,
   selectBorrowActive,
   selectEarn,
@@ -19,29 +21,15 @@ import {
 } from 'theme/icons'
 import { FeaturesEnum } from 'types/config'
 
-export const MIN_LIQUIDITY = 3000
+export const MIN_LIQUIDITY = 10000
 
-export const ALL_ASSETS = 'all assets'
-
-export const productHubLinksMap: { [key in ProductHubProductType]: string } = {
+export const productHubLinksMap: { [key in OmniProductType]: string } = {
   borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
   multiply: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
   earn: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
 }
 
-export const productHubFiltersCount: { [key in ProductHubProductType]: number } = {
-  [ProductHubProductType.Borrow]: 3,
-  [ProductHubProductType.Multiply]: 4,
-  [ProductHubProductType.Earn]: 2,
-}
-export const productHubGridTemplateColumns: { [key in ProductHubProductType]: string } = {
-  [ProductHubProductType.Borrow]: '270px auto 220px 220px',
-  [ProductHubProductType.Multiply]: '270px auto 220px 220px 220px',
-  [ProductHubProductType.Earn]: 'auto 220px 220px',
-}
-
-// TODO: find a way how to put translations into metadata
-export const productHubProductOptions: { [key in ProductHubProductType]: HeaderSelectorOption } = {
+export const productHubProductOptions: { [key in OmniProductType]: HeaderSelectorOption } = {
   borrow: {
     title: 'Borrow',
     description: 'Borrow against your favorite crypto assets',
@@ -61,199 +49,6 @@ export const productHubProductOptions: { [key in ProductHubProductType]: HeaderS
     icon: [selectEarn, selectEarnActive],
   },
 }
-
-export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
-  all: {
-    title: 'All assets',
-    value: ALL_ASSETS,
-  },
-  ETH: {
-    title: 'Ether',
-    description: 'ETH/stETH/cbETH/rETH',
-    value: 'ETH',
-    icon: getToken('ETH').iconCircle,
-  },
-  BTC: {
-    title: 'Bitcoin',
-    description: 'WBTC',
-    value: 'BTC',
-    icon: btc_circle_color,
-  },
-  USDC: {
-    title: 'USDCoin',
-    description: 'USDC/USDbC',
-    value: 'USDC',
-    icon: getToken('USDC').iconCircle,
-  },
-  DAI: {
-    title: 'DAI stablecoin',
-    description: 'DAI',
-    value: 'DAI',
-    icon: getToken('DAI').iconCircle,
-  },
-  YFI: {
-    title: 'Yearn',
-    description: 'YFI',
-    value: 'YFI',
-    icon: getToken('YFI').iconCircle,
-  },
-  SUSDE: {
-    title: 'Ethena Staked USDe',
-    description: 'SUSDE/USDE',
-    value: 'SUSDE',
-    icon: getToken('SUSDE').iconCircle,
-  },
-  USDT: {
-    title: 'USDT stablecoin',
-    description: 'USDT',
-    value: 'USDT',
-    icon: getToken('USDT').iconCircle,
-  },
-  MKR: {
-    title: 'MKR MakerDAO',
-    description: 'MKR',
-    value: 'MKR',
-    icon: getToken('MKR').iconCircle,
-  },
-  LINK: {
-    title: 'Chainlink LINK',
-    description: 'LINK',
-    value: 'LINK',
-    icon: getToken('LINK').iconCircle,
-  },
-  LDO: {
-    title: 'Lido LDO',
-    description: 'LDO',
-    value: 'LDO',
-    icon: getToken('LDO').iconCircle,
-  },
-  ENA: {
-    title: 'Ethena',
-    description: 'ENA',
-    value: 'ENA',
-    icon: getToken('ENA').iconCircle,
-  },
-  DEGEN: {
-    title: 'DEGEN',
-    description: 'DEGEN',
-    value: 'DEGEN',
-    icon: getToken('DEGEN').iconCircle,
-  },
-  SNX: {
-    title: 'Synthetix Network',
-    description: 'SNX',
-    value: 'SNX',
-    icon: getToken('SNX').iconCircle,
-  },
-  AERO: {
-    title: 'Aerodrome',
-    description: 'AERO',
-    value: 'AERO',
-    icon: getToken('AERO').iconCircle,
-  },
-  PRIME: {
-    title: 'Prime',
-    description: 'PRIME',
-    value: 'PRIME',
-    icon: getToken('PRIME').iconCircle,
-  },
-}
-
-export const productHubOptionsMapBase: {
-  [key in ProductHubProductType]: {
-    product: HeaderSelectorOption
-    tokens: { [key: string]: HeaderSelectorOption }
-  }
-} = {
-  borrow: {
-    product: productHubProductOptions.borrow,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      BTC: productHubTokenOptions.BTC,
-      USDC: productHubTokenOptions.USDC,
-      USDT: productHubTokenOptions.USDT,
-      DAI: productHubTokenOptions.DAI,
-      SUSDE: productHubTokenOptions.SUSDE,
-      MKR: productHubTokenOptions.MKR,
-      LINK: productHubTokenOptions.LINK,
-      LDO: productHubTokenOptions.LDO,
-      YFI: productHubTokenOptions.YFI,
-      DEGEN: productHubTokenOptions.DEGEN,
-      ENA: productHubTokenOptions.ENA,
-      SNX: productHubTokenOptions.SNX,
-      AERO: productHubTokenOptions.AERO,
-      PRIME: productHubTokenOptions.PRIME,
-    },
-  },
-  multiply: {
-    product: productHubProductOptions.multiply,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      BTC: productHubTokenOptions.BTC,
-      USDC: productHubTokenOptions.USDC,
-      USDT: productHubTokenOptions.USDT,
-      DAI: productHubTokenOptions.DAI,
-      SUSDE: productHubTokenOptions.SUSDE,
-      MKR: productHubTokenOptions.MKR,
-      LINK: productHubTokenOptions.LINK,
-      LDO: productHubTokenOptions.LDO,
-      YFI: productHubTokenOptions.YFI,
-      DEGEN: productHubTokenOptions.DEGEN,
-      ENA: productHubTokenOptions.ENA,
-      SNX: productHubTokenOptions.SNX,
-      AERO: productHubTokenOptions.AERO,
-      PRIME: productHubTokenOptions.PRIME,
-    },
-  },
-  earn: {
-    product: productHubProductOptions.earn,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      BTC: productHubTokenOptions.BTC,
-      USDC: productHubTokenOptions.USDC,
-      USDT: productHubTokenOptions.USDT,
-      DAI: productHubTokenOptions.DAI,
-      SUSDE: productHubTokenOptions.SUSDE,
-      MKR: productHubTokenOptions.MKR,
-      LINK: productHubTokenOptions.LINK,
-      LDO: productHubTokenOptions.LDO,
-      YFI: productHubTokenOptions.YFI,
-      DEGEN: productHubTokenOptions.DEGEN,
-      ENA: productHubTokenOptions.ENA,
-      SNX: productHubTokenOptions.SNX,
-      AERO: productHubTokenOptions.AERO,
-      PRIME: productHubTokenOptions.PRIME,
-    },
-  },
-}
-
-const productHubOptionsMap = clone(productHubOptionsMapBase)
-
-if (getLocalAppConfig('features')[FeaturesEnum.AjnaSafetySwitch]) {
-  delete productHubOptionsMap.borrow.tokens.YFI
-  delete productHubOptionsMap.borrow.tokens.GHO
-  delete productHubOptionsMap.multiply.tokens.YFI
-  delete productHubOptionsMap.multiply.tokens.GHO
-  delete productHubOptionsMap.earn.tokens.BTC
-  delete productHubOptionsMap.earn.tokens.USDC
-  delete productHubOptionsMap.earn.tokens.GHO
-}
-
-export { productHubOptionsMap }
-
-export const productHubStrategyFilter: GenericMultiselectOption[] = [
-  {
-    label: 'Long',
-    value: 'long',
-  },
-  {
-    label: 'Short',
-    value: 'short',
-  },
-]
 
 export const productHubNetworkFilter: GenericMultiselectOption[] = [
   {
@@ -330,3 +125,163 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
     image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
   },
 ]
+
+export const productHubCategoryAll = {
+  icon: 'doc',
+  id: ProductHubCategory.All,
+}
+const productHubCategoryTokenFarming = {
+  icon: 'plant',
+  id: ProductHubCategory.TokenFarming,
+}
+const productHubCategoryStakingRewards = {
+  icon: 'sparks_empty',
+  id: ProductHubCategory.StakingRewards,
+}
+const productHubCategoryRestaking = {
+  icon: 'relock',
+  id: ProductHubCategory.Restaking,
+}
+const productHubCategoryYieldLoops = {
+  icon: 'yield_loop',
+  id: ProductHubCategory.YieldLoops,
+}
+
+export const productHubCategories: ProductHubCategories = {
+  [OmniProductType.Borrow]: [
+    productHubCategoryTokenFarming,
+    productHubCategoryStakingRewards,
+    productHubCategoryRestaking,
+  ],
+  [OmniProductType.Multiply]: [
+    productHubCategoryTokenFarming,
+    productHubCategoryStakingRewards,
+    productHubCategoryRestaking,
+  ],
+  [OmniProductType.Earn]: [
+    productHubCategoryTokenFarming,
+    productHubCategoryYieldLoops,
+    productHubCategoryRestaking,
+  ],
+}
+
+export const productHubTags: ProductHubTags = {
+  [OmniProductType.Borrow]: [
+    ProductHubTag.NonStablecoinCollateral,
+    ProductHubTag.Longevity,
+    ProductHubTag.Gt1BTvl,
+    ProductHubTag.IsolatedPairs,
+    ProductHubTag.BluechipAssets,
+  ],
+  [OmniProductType.Multiply]: [
+    ProductHubTag.StablecoinStrategies,
+    ProductHubTag.EthDerivativeYieldLoops,
+    ProductHubTag.Longevity,
+    ProductHubTag.Gt1BTvl,
+    ProductHubTag.IsolatedPairs,
+    ProductHubTag.BluechipAssets,
+    ProductHubTag.Long,
+    ProductHubTag.Short,
+  ],
+  [OmniProductType.Earn]: [
+    ProductHubTag.StablecoinStrategies,
+    ProductHubTag.EthDerivativeYieldLoops,
+    ProductHubTag.LpOnly,
+    ProductHubTag.EasiestToManage,
+    ProductHubTag.Longevity,
+    ProductHubTag.Gt1BTvl,
+    ProductHubTag.BluechipAssets,
+  ],
+}
+
+export const featuredProducts: ProductHubFeaturedFilters[] = [
+  {
+    primaryToken: 'USDC',
+    secondaryToken: 'USDC',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
+  },
+  {
+    primaryToken: 'USDT',
+    secondaryToken: 'USDT',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
+  },
+  {
+    primaryToken: 'PYUSD',
+    secondaryToken: 'PYUSD',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
+  },
+  {
+    primaryToken: 'ETH',
+    secondaryToken: 'ETH',
+    protocol: LendingProtocol.MorphoBlue,
+    network: NetworkNames.ethereumMainnet,
+    product: OmniProductType.Earn,
+    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
+  },
+]
+
+export const productHubHelp = {
+  [OmniProductType.Borrow]: [
+    {
+      translationKey: 'why-borrow',
+      link: EXTERNAL_LINKS.BLOG.WHY_BORROW_ON_SUMMER,
+    },
+    {
+      translationKey: 'selecting-the-right-borrow-pair',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_BORROW_PAIR,
+    },
+    {
+      translationKey: 'how-to-choose-the-right-protocol',
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_BORROW,
+    },
+    {
+      translationKey: 'faq',
+      link: EXTERNAL_LINKS.DOCS.FAQ.BORROW,
+    },
+  ],
+  [OmniProductType.Multiply]: [
+    {
+      translationKey: 'why-multiply',
+      link: EXTERNAL_LINKS.BLOG.WHY_MULTIPLY_ON_SUMMER,
+    },
+    {
+      translationKey: 'selecting-the-right-multiply-position',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_MULTIPLY_POSITION,
+    },
+    {
+      translationKey: 'how-to-choose-the-right-protocol',
+      link: EXTERNAL_LINKS.BLOG.HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL_TO_MULTIPLY,
+    },
+    {
+      translationKey: 'faq',
+      link: EXTERNAL_LINKS.DOCS.FAQ.MULTIPLY,
+    },
+  ],
+  [OmniProductType.Earn]: [
+    {
+      translationKey: 'why-earn',
+      link: EXTERNAL_LINKS.BLOG.WHY_EARN_ON_SUMMER,
+    },
+    {
+      translationKey: 'selecting-the-right-earn-position-type',
+      link: EXTERNAL_LINKS.BLOG.SELECTING_THE_RIGHT_EARN_POSITION_TYPE,
+    },
+    {
+      translationKey: 'understanding-yield-loops',
+      link: EXTERNAL_LINKS.BLOG.UNDERSTANDING_YIELD_LOOPS,
+    },
+    {
+      translationKey: 'faq',
+      link: EXTERNAL_LINKS.DOCS.FAQ.EARN,
+    },
+  ],
+}

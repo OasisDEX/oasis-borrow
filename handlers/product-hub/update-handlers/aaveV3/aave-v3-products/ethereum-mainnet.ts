@@ -1,14 +1,15 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
+import { OmniProductType } from 'features/omni-kit/types'
 import { productHubWeETHRewardsTooltip } from 'features/productHub/content'
-import { type ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import { type ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers/get-token-group'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
   // ethereum products
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -21,7 +22,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -31,10 +32,11 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
+    depositToken: 'RETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'RETH/ETH',
@@ -43,7 +45,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -53,10 +55,11 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
+    depositToken: 'CBETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'CBETH/ETH',
@@ -65,7 +68,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'WEETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -81,7 +84,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     },
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -91,7 +94,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: NetworkNames.ethereumMainnet,
@@ -101,7 +104,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     depositToken: 'ETH',
@@ -110,7 +113,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -122,7 +125,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long CBETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -132,7 +135,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -144,7 +147,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long CBETH',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: 'BTC',
     secondaryToken: 'USDC',
@@ -156,7 +159,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WBTC',
     primaryTokenGroup: 'BTC',
     secondaryToken: 'USDC',
@@ -166,7 +169,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -178,7 +181,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -188,7 +191,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'DAI',
     secondaryToken: 'ETH',
     network: NetworkNames.ethereumMainnet,
@@ -198,7 +201,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Short ETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'DAI',
     secondaryToken: 'ETH',
     depositToken: 'DAI',
@@ -207,7 +210,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'DAI',
     secondaryToken: 'WBTC',
     secondaryTokenGroup: 'BTC',
@@ -218,7 +221,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Short WBTC',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'DAI',
     secondaryToken: 'WBTC',
     secondaryTokenGroup: 'BTC',
@@ -228,7 +231,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
     network: NetworkNames.ethereumMainnet,
@@ -238,7 +241,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
     depositToken: 'ETH',
@@ -247,7 +250,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -258,7 +261,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long rETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -268,7 +271,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -279,7 +282,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long rETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -289,7 +292,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'USDC',
     secondaryToken: 'ETH',
     network: NetworkNames.ethereumMainnet,
@@ -299,7 +302,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Short ETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'USDC',
     secondaryToken: 'ETH',
     depositToken: 'USDC',
@@ -308,7 +311,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'USDC',
     secondaryToken: 'WBTC',
     secondaryTokenGroup: 'BTC',
@@ -319,7 +322,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Short WBTC',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'USDC',
     secondaryToken: 'WBTC',
     secondaryTokenGroup: 'BTC',
@@ -329,7 +332,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
@@ -340,7 +343,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WBTC',
     primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
@@ -350,7 +353,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -361,7 +364,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -371,10 +374,11 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'USDC',
+    depositToken: 'SDAI',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'SDAI/USDC',
@@ -383,7 +387,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'USDC',
@@ -393,10 +397,11 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'LUSD',
+    depositToken: 'SDAI',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'SDAI/LUSD',
@@ -405,7 +410,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'LUSD',
@@ -416,10 +421,11 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   },
 
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'FRAX',
+    depositToken: 'SDAI',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'SDAI/FRAX',
@@ -428,7 +434,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'FRAX',
@@ -438,10 +444,11 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
     secondaryToken: 'DAI',
+    depositToken: 'SDAI',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'SDAI/DAI',
@@ -450,7 +457,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDT',
@@ -461,7 +468,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDT',
@@ -471,7 +478,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'GHO',
@@ -483,7 +490,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Long CBETH',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'GHO',
@@ -493,7 +500,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'LDO',
     primaryTokenGroup: getTokenGroup('LDO'),
     secondaryToken: 'USDT',
@@ -505,7 +512,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'LDO',
     primaryTokenGroup: getTokenGroup('LDO'),
     secondaryToken: 'USDT',
@@ -516,7 +523,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   },
 
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'DAI',
@@ -528,7 +535,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'DAI',
@@ -538,7 +545,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'GHO',
@@ -550,7 +557,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'GHO',
@@ -560,7 +567,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'USDC',
@@ -572,7 +579,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'USDC',
@@ -582,7 +589,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'USDT',
@@ -594,7 +601,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'USDT',
@@ -604,7 +611,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'ETH',
@@ -616,7 +623,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'LINK',
     primaryTokenGroup: getTokenGroup('LINK'),
     secondaryToken: 'ETH',
@@ -626,7 +633,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'MKR',
     primaryTokenGroup: getTokenGroup('MKR'),
     secondaryToken: 'DAI',
@@ -638,7 +645,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'MKR',
     primaryTokenGroup: getTokenGroup('MKR'),
     secondaryToken: 'DAI',
@@ -648,7 +655,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'RETH',
     primaryTokenGroup: getTokenGroup('RETH'),
     secondaryToken: 'GHO',
@@ -660,7 +667,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'RETH',
     primaryTokenGroup: getTokenGroup('RETH'),
     secondaryToken: 'GHO',
@@ -670,7 +677,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'RETH',
     primaryTokenGroup: getTokenGroup('RETH'),
     secondaryToken: 'USDT',
@@ -682,7 +689,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'RETH',
     primaryTokenGroup: getTokenGroup('RETH'),
     secondaryToken: 'USDT',
@@ -692,7 +699,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'GHO',
@@ -704,7 +711,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'GHO',
@@ -714,7 +721,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'USDT',
@@ -726,7 +733,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'USDT',
@@ -736,7 +743,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'WBTC',
@@ -748,7 +755,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'WBTC',
@@ -758,7 +765,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'ETH',
@@ -770,7 +777,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'SDAI',
     primaryTokenGroup: getTokenGroup('SDAI'),
     secondaryToken: 'ETH',
@@ -780,7 +787,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'GHO',
@@ -792,7 +799,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'GHO',
@@ -802,7 +809,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'LUSD',
@@ -814,7 +821,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'LUSD',
@@ -824,7 +831,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'USDT',
@@ -836,7 +843,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'USDT',
@@ -846,7 +853,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'ETH',
@@ -858,7 +865,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WBTC',
     primaryTokenGroup: getTokenGroup('WBTC'),
     secondaryToken: 'ETH',
@@ -868,7 +875,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'ETH',
     primaryTokenGroup: getTokenGroup('ETH'),
     secondaryToken: 'GHO',
@@ -880,7 +887,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'ETH',
     primaryTokenGroup: getTokenGroup('ETH'),
     secondaryToken: 'GHO',
@@ -890,7 +897,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'ETH',
     primaryTokenGroup: getTokenGroup('ETH'),
     secondaryToken: 'USDT',
@@ -902,7 +909,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'ETH',
     primaryTokenGroup: getTokenGroup('ETH'),
     secondaryToken: 'USDT',
@@ -912,7 +919,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'ETH',
     primaryTokenGroup: getTokenGroup('ETH'),
     secondaryToken: 'WBTC',
@@ -924,7 +931,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'ETH',
     primaryTokenGroup: getTokenGroup('ETH'),
     secondaryToken: 'WBTC',
@@ -934,7 +941,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'CBETH',
@@ -946,7 +953,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'CBETH',
@@ -956,7 +963,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'GHO',
@@ -968,7 +975,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'GHO',
@@ -978,7 +985,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'LUSD',
@@ -990,7 +997,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'LUSD',
@@ -1000,7 +1007,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'RPL',
@@ -1012,7 +1019,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'WSTETH',
     primaryTokenGroup: getTokenGroup('WSTETH'),
     secondaryToken: 'RPL',
@@ -1023,7 +1030,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   },
 
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'DAI',
     primaryTokenGroup: getTokenGroup('DAI'),
     secondaryToken: 'MKR',
@@ -1035,7 +1042,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     multiplyStrategy: 'Short MKR',
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'DAI',
     primaryTokenGroup: getTokenGroup('DAI'),
     secondaryToken: 'MKR',
@@ -1045,7 +1052,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'USDC',
     primaryTokenGroup: getTokenGroup('USDC'),
     secondaryToken: 'GHO',
@@ -1057,7 +1064,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'USDC',
     primaryTokenGroup: getTokenGroup('USDC'),
     secondaryToken: 'GHO',
@@ -1067,7 +1074,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'USDC',
     primaryTokenGroup: getTokenGroup('USDC'),
     secondaryToken: 'USDT',
@@ -1079,7 +1086,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'USDC',
     primaryTokenGroup: getTokenGroup('USDC'),
     secondaryToken: 'USDT',
@@ -1089,7 +1096,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'USDC',
     primaryTokenGroup: getTokenGroup('USDC'),
     secondaryToken: 'WSTETH',
@@ -1101,7 +1108,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'USDC',
     primaryTokenGroup: getTokenGroup('USDC'),
     secondaryToken: 'WSTETH',
@@ -1111,7 +1118,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'USDT',
     primaryTokenGroup: getTokenGroup('USDT'),
     secondaryToken: 'ETH',
@@ -1123,7 +1130,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [ProductHubProductType.Borrow],
+    product: [OmniProductType.Borrow],
     primaryToken: 'USDT',
     primaryTokenGroup: getTokenGroup('USDT'),
     secondaryToken: 'ETH',

@@ -9,10 +9,10 @@ import type { OraclessPoolResult } from 'features/ajna/pool-finder/types'
 import { isPoolOracless, isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaSupportedNetworkIds } from 'features/omni-kit/protocols/ajna/types'
 import {
+  productHubAjnaEmptyPoolMaxLtvTooltip,
+  productHubAjnaEmptyPoolWeeklyApyTooltip,
+  productHubAjnaOraclessLtvTooltip,
   productHubAjnaRewardsTooltip,
-  productHubEmptyPoolMaxLtvTooltip,
-  productHubEmptyPoolWeeklyApyTooltip,
-  productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
 import { formatCryptoBalance, shortenTokenSymbol } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
@@ -99,13 +99,13 @@ export function parsePoolResponse(
             }),
             ...(!isOracless &&
               !isPoolNotEmpty && {
-                maxLtv: productHubEmptyPoolMaxLtvTooltip,
+                maxLtv: productHubAjnaEmptyPoolMaxLtvTooltip,
               }),
             ...(!isPoolNotEmpty && {
-              weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+              weeklyNetApy: productHubAjnaEmptyPoolWeeklyApyTooltip,
             }),
             ...(isOracless && {
-              maxLtv: productHubOraclessLtvTooltip,
+              maxLtv: productHubAjnaOraclessLtvTooltip,
             }),
           },
         }

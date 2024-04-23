@@ -9,8 +9,6 @@ import { getNavProtocolsPanel } from 'features/navigation/panels/getNavProtocols
 import { getNavTokensPanel } from 'features/navigation/panels/getNavTokensPanel'
 import { getNavUseCasesPanel } from 'features/navigation/panels/getNavUseCasesPanel'
 import { useConnection } from 'features/web3OnBoard/useConnection'
-import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
-import { useAppConfig } from 'helpers/config'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -27,16 +25,11 @@ export function NavigationController() {
   const { connect } = useConnection()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
 
-  const { AjnaSafetySwitch } = useAppConfig('features')
-
   const productHubItems = productHub.table
 
-  const promoCardsData =
-    PROMO_CARD_COLLECTIONS_PARSERS[AjnaSafetySwitch ? 'Home' : 'HomeWithAjna'](productHubItems)
-
   const navProductsPanel = useMemo(
-    () => getNavProductsPanel({ t, productHubItems, promoCardsData, isConnected, connect }),
-    [t, productHubItems, promoCardsData, isConnected, connect],
+    () => getNavProductsPanel({ t, productHubItems, isConnected, connect }),
+    [t, productHubItems, isConnected, connect],
   )
   const navProtocolsPanel = useMemo(() => getNavProtocolsPanel({ t, navigation }), [t, navigation])
   const navTokensPanel = useMemo(

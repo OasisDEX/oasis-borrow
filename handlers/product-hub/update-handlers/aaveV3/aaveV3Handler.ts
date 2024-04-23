@@ -3,12 +3,14 @@ import BigNumber from 'bignumber.js'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
 import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, networksByName } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
-import { ProductHubProductType } from 'features/productHub/types'
+import { settingsV3 } from 'features/omni-kit/protocols/aave/settings'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
@@ -113,7 +115,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
   // getting the APYs
   const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
+    product.includes(OmniProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
     const tokensReserveData = await memoizedTokensData(product.network as AaveV3Networks, tickers)
@@ -174,6 +176,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards: product.hasRewards ?? false,
+          automationFeatures: !product.product.includes(OmniProductType.Earn)
+            ? settingsV3.availableAutomations[
+                networksByName[product.network].id as OmniSupportedNetworkIds
+              ]
+            : [],
         }
       }),
       warnings: [],

@@ -20,12 +20,19 @@ export interface AssetsTableSortableCell {
 }
 
 export type AssetsTableCell = AssetsTableCellContent | AssetsTableSortableCell
+export interface AssetsTableSeparator {
+  index: number
+  text?: string
+}
 
 export interface AssetsTableRowItems {
   [key: string]: AssetsTableCell
 }
 export interface AssetsTableRowData {
+  isHighlighted?: boolean
+  isStickied?: boolean
   items: AssetsTableRowItems
+  link?: string
   onClick?: () => void
 }
 
@@ -34,9 +41,11 @@ export interface AssetsTableProps {
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isLoading?: boolean
   isSticky?: boolean
+  limitRows?: number
   paddless?: boolean
   perPage?: number
   rows: AssetsTableRowData[]
+  separator?: AssetsTableSeparator
   tooltips?: string[]
   verticalAlign?: string
 }

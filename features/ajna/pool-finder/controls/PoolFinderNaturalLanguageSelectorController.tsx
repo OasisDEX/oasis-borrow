@@ -1,6 +1,6 @@
 import { HeaderSelector } from 'components/HeaderSelector'
-import { productHubOptionsMap } from 'features/productHub/meta'
-import type { ProductHubProductType } from 'features/productHub/types'
+import type { OmniProductType } from 'features/omni-kit/types'
+import { productHubProductOptions } from 'features/productHub/meta'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -10,8 +10,8 @@ import { Box, Heading } from 'theme-ui'
 
 interface PoolFinderNaturalLanguageSelectorControllerProps {
   gradient: [string, string, ...string[]]
-  product: ProductHubProductType
-  onChange?: (product: ProductHubProductType) => void
+  product: OmniProductType
+  onChange?: (product: OmniProductType) => void
 }
 
 export const PoolFinderNaturalLanguageSelectorController: FC<
@@ -26,15 +26,16 @@ export const PoolFinderNaturalLanguageSelectorController: FC<
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
         {t('product-hub.header.i-want-to')}
         <HeaderSelector
-          defaultOption={productHubOptionsMap[product].product}
+          defaultOption={productHubProductOptions[product]}
           gradient={gradient}
-          options={Object.values([productHubOptionsMap.borrow, productHubOptionsMap.earn]).map(
-            (option) => option.product,
-          )}
+          options={Object.values([
+            productHubProductOptions.borrow,
+            productHubProductOptions.earn,
+          ]).map((option) => option)}
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
-            onChange && onChange(selected.value as ProductHubProductType)
+            onChange && onChange(selected.value as OmniProductType)
             void push(`${INTERNAL_LINKS.ajnaPoolFinder}/${selected.value}`)
           }}
         />

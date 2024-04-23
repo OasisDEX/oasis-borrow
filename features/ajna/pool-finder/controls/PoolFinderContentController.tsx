@@ -5,7 +5,7 @@ import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { parseRows } from 'features/ajna/pool-finder/helpers'
 import type { OraclessPoolResult, PoolFinderFormState } from 'features/ajna/pool-finder/types'
-import type { ProductHubProductType } from 'features/productHub/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
@@ -13,7 +13,7 @@ import { Trans, useTranslation } from 'react-i18next'
 
 interface PoolFinderContentControllerProps {
   addresses: PoolFinderFormState
-  selectedProduct: ProductHubProductType
+  selectedProduct: OmniProductType
   tableData: OraclessPoolResult[]
 }
 

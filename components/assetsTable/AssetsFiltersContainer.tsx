@@ -1,28 +1,33 @@
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import React from 'react'
 import { theme } from 'theme'
-import { Box, Grid } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface AssetsFiltersContainerProps {
-  gridTemplateColumns: string | (string | null)[]
+  filters: ReactNode[]
   isSticky?: boolean
 }
 
 export function AssetsFiltersContainer({
-  gridTemplateColumns,
   children,
+  filters,
   isSticky = false,
 }: PropsWithChildren<AssetsFiltersContainerProps>) {
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
   return (
-    <Box
+    <Flex
       sx={{
+        position: 'relative',
         ...(!isSmallerScreen && {
           position: isSticky ? 'sticky' : 'relative',
           top: 0,
         }),
+        alignItems: ['stretch', null, 'flex-start'],
+        flexDirection: ['column', null, 'row'],
+        flexWrap: ['wrap', null, 'nowrap'],
+        gap: '12px',
         py: 3,
         backgroundColor: 'neutral10',
         borderBottom: '1px solid',
@@ -32,7 +37,29 @@ export function AssetsFiltersContainer({
         zIndex: 2,
       }}
     >
-      <Grid sx={{ gap: '12px', gridTemplateColumns }}>{children}</Grid>
-    </Box>
+      <Flex
+        sx={{
+          flexDirection: ['column', null, 'row'],
+          flexWrap: ['wrap', null, null, 'nowrap'],
+          gap: '12px',
+          flexGrow: 1,
+        }}
+      >
+        {filters.map((filter) => (
+          <Box
+            sx={{
+              flex: ['1', '1 45%', '1'],
+              maxWidth: ['none', null, null, '255px'],
+              '&:last-of-type': {
+                ml: [0, null, null, 'auto'],
+              },
+            }}
+          >
+            {filter}
+          </Box>
+        ))}
+      </Flex>
+      {children}
+    </Flex>
   )
 }

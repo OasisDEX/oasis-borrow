@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
 import type { PromoCardProps } from 'components/PromoCard.types'
-import { getActionUrl } from 'features/productHub/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
+import { getGenericPositionUrl } from 'features/productHub/helpers'
 import type {
   ProductHubItem,
   ProductHubManagementType,
   ProductHubMultiplyStrategyType,
 } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { shuffle, upperFirst } from 'lodash'
 
@@ -19,7 +19,7 @@ interface GetGenericPromoCardTitleParams {
   earnStrategyDescription?: string
   primaryToken: string
   secondaryToken: string
-  type: ProductHubProductType
+  type: OmniProductType
 }
 
 interface GetGenericPromoCardPillsParams {
@@ -30,7 +30,7 @@ interface GetGenericPromoCardPillsParams {
   multiplyStrategyType?: ProductHubMultiplyStrategyType
   primaryToken: string
   secondaryToken: string
-  type: ProductHubProductType
+  type: OmniProductType
   weeklyNetApy?: string
 }
 
@@ -42,11 +42,11 @@ export function getGenericPromoCardTitle({
   type,
 }: GetGenericPromoCardTitleParams): string {
   switch (type) {
-    case ProductHubProductType.Borrow:
+    case OmniProductType.Borrow:
       return `Borrow ${secondaryToken} against ${primaryToken}`
-    case ProductHubProductType.Earn:
+    case OmniProductType.Earn:
       return earnStrategyDescription ?? `Earn on your ${depositToken ?? primaryToken}`
-    case ProductHubProductType.Multiply:
+    case OmniProductType.Multiply:
       return `Multiply exposure to ${primaryToken} against ${secondaryToken}`
   }
 }
@@ -63,7 +63,7 @@ export function getGenericPromoCardPills({
   weeklyNetApy,
 }: GetGenericPromoCardPillsParams): PromoCardProps['pills'] {
   switch (type) {
-    case ProductHubProductType.Borrow:
+    case OmniProductType.Borrow:
       return [
         ...(maxLtv
           ? [{ label: `Up to ${formatDecimalAsPercent(new BigNumber(maxLtv))} LTV` }]
@@ -72,14 +72,14 @@ export function getGenericPromoCardPills({
           ? [{ label: `Only ${formatDecimalAsPercent(new BigNumber(fee))} borrow rate` }]
           : []),
       ]
-    case ProductHubProductType.Earn:
+    case OmniProductType.Earn:
       return [
         ...(weeklyNetApy
           ? [{ label: `${formatDecimalAsPercent(new BigNumber(weeklyNetApy))} avg weekly APY` }]
           : []),
         ...(managementType ? [{ label: `${upperFirst(managementType)} management` }] : []),
       ]
-    case ProductHubProductType.Multiply:
+    case OmniProductType.Multiply:
       return [
         ...(maxMultiply
           ? [{ label: `Up to ${new BigNumber(maxMultiply).toFixed(2)}x multiple` }]
@@ -134,7 +134,7 @@ export function getGenericPromoCard({ product }: GetGenericPromoCardParams): Pro
       weeklyNetApy,
     }),
     link: {
-      href: getActionUrl({
+      href: getGenericPositionUrl({
         ...product,
         product: [type],
       }),

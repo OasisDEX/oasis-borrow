@@ -17,6 +17,7 @@ import { TrackingProductType } from './TrackingProductType'
 import type {
   MixpanelAutomationEventIds,
   MixpanelAutomationEventsAdditionalParams,
+  MixpanelProductHubChangeFilter,
   MixpanelSwapWidgetEvents,
   MixpanelTopBannerEvents,
 } from './types'
@@ -963,6 +964,14 @@ export const trackingEvents = {
 
     !mixpanel.has_opted_out_tracking() &&
       mixpanelInternalAPI(MixpanelEventTypes.TxStatus, eventBody)
+  },
+  productHub: {
+    filterChange: (filter: MixpanelProductHubChangeFilter, value: string) => {
+      mixpanelInternalAPI(MixpanelEventTypes.ProductHubChange, {
+        filter,
+        value,
+      })
+    },
   },
 }
 
