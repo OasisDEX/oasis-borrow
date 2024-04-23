@@ -87,7 +87,6 @@ export const getAjnaPoolsData = async (
         address,
         borrowApr: new BigNumber(borrowApr).shiftedBy(NEGATIVE_WAD_PRECISION),
         buckets,
-        collateralAddress,
         dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage).shiftedBy(
           negativeWadPrecision,
         ),
