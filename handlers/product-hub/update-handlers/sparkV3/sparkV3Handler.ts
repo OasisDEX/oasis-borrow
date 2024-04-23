@@ -6,11 +6,12 @@ import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import {
+  getEModeCategoryData,
   getSparkV3EModeCategoryForAsset,
   getSparkV3ReserveConfigurationData,
   getSparkV3ReserveData,
 } from 'blockchain/spark-v3'
-import { lambdaPercentageDenomination, wstethRiskRatio } from 'features/aave/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { settings } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -96,6 +97,29 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const getSparkV3TokensDataPromises = sparkV3NetworksList.map((networkName) =>
     memoizedTokensData(networkName as SparkV3Networks, tickers),
   )
+  const earnProductsEmodeLtvPromises = await Promise.all(
+    [NetworkIds.MAINNET].map(async (networkId) => {
+      const [cat1, cat2] = await Promise.all([
+        getEModeCategoryData({
+          categoryId: new BigNumber(1),
+          networkId: networkId as SparkV3SupportedNetwork,
+        }),
+        getEModeCategoryData({
+          categoryId: new BigNumber(2),
+          networkId: networkId as SparkV3SupportedNetwork,
+        }),
+      ])
+      return {
+        [networkId]: {
+          1: cat1.ltv,
+          2: cat2.ltv,
+        },
+      }
+    }),
+  )
+  const earnProductsEmodeLtv = earnProductsEmodeLtvPromises.reduce((acc, curr) => {
+    return { ...acc, ...curr }
+  }, {})
 
   // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>
@@ -118,13 +142,18 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     const isEModeTokenPair =
       !primaryTokenEModeCategory.isZero() &&
       primaryTokenEModeCategory.eq(secondaryTokenEModeCategory)
-    const riskRatio = isEModeTokenPair
-      ? wstethRiskRatio
+    const sparkEmodeRiskRatio =
+      (isEModeTokenPair &&
+        earnProductsEmodeLtv[networkId][primaryTokenEModeCategory.toNumber() as 1 | 2]) ||
+      zero
+    const ltv = isEModeTokenPair
+      ? sparkEmodeRiskRatio
       : ensureFind(
           tokensReserveData[product.network as SparkV3Networks].tokensReserveConfigurationData.find(
             (data) => data[product.primaryToken],
           ),
-        )[product.primaryToken].riskRatio
+        )[product.primaryToken].riskRatio.loanToValue
+
     const contracts = getNetworkContracts(networkId)
     ensureGivenTokensExist(networkId, contracts, [product.primaryToken, product.secondaryToken])
 
@@ -135,7 +164,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
         collateralToken: product.primaryToken,
         quoteToken: product.secondaryToken,
-        ltv: riskRatio.loanToValue,
+        ltv,
         networkId: networkId,
         protocol: product.protocol,
       },
@@ -180,10 +209,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           ...product,
           primaryTokenAddress: tokensAddresses[primaryToken].address,
           secondaryTokenAddress: tokensAddresses[secondaryToken].address,
-          maxMultiply:
-            product.label === 'WSTETH/ETH'
-              ? wstethRiskRatio.multiple.toString()
-              : riskRatio.multiple.toString(),
+          maxMultiply: riskRatio.multiple.toString(),
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),

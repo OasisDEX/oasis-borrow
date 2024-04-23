@@ -1,4 +1,4 @@
-import type { NetworkIds } from 'blockchain/networks'
+import { type NetworkIds, networkSetById } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
@@ -57,6 +57,13 @@ export const getYieldsConfig = ({
       JSON.stringify(
         {
           actionSource,
+          quoteToken,
+          collateralToken,
+          network: networkSetById[networkId].name,
+          ltv: ltv
+            .times(lambdaPercentageDenomination * lambdaPercentageDenomination)
+            .toFixed(0)
+            .toString(),
           url: `/api/apy/${networkId}/${protocolQuery}?${queryParams.toString()}`,
         },
         null,
