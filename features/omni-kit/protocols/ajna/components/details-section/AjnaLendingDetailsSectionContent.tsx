@@ -72,14 +72,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   isYieldLoop,
 }) => {
   const {
-    environment: {
-      isYieldLoopWithData,
-      protocol,
-      network,
-      collateralPrecision,
-      collateralAddress,
-      quoteAddress,
-    },
+    environment: { isYieldLoopWithData, protocol, network, collateralPrecision },
   } = useOmniGeneralContext()
   const liquidationPrice = normalizeValue(
     isShort ? one.div(position.liquidationPrice) : position.liquidationPrice,
