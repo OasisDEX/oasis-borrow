@@ -75,6 +75,7 @@ export const tokensMainnet = {
   RBN: contractDesc(erc20, mainnet.common.RBN),
   OSETH: contractDesc(erc20, mainnet.common.OSETH),
   RPL: contractDesc(erc20, mainnet.common.RPL),
+  SAFE: contractDesc(erc20, mainnet.common.SAFE),
   SDAI: contractDesc(savingsDai, mainnet.common.SDAI),
   STETH: contractDesc(erc20, mainnet.common.STETH),
   STYETH: contractDesc(erc20, mainnet.common.STYETH),
