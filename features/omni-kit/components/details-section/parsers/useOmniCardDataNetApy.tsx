@@ -9,11 +9,13 @@ import React from 'react'
 
 interface OmniCardDataNetApyParams extends OmniContentCardDataWithModal {
   simulations?: SimulationYields
+  simulationsChange?: SimulationYields
 }
 
 export function useOmniCardDataNetApy({
   modal,
   simulations,
+  simulationsChange,
 }: OmniCardDataNetApyParams): OmniContentCardBase {
   return {
     title: { key: 'omni-kit.content-card.net-apy.title' },
@@ -23,6 +25,9 @@ export function useOmniCardDataNetApy({
         }
       : {
           value: formatDecimalAsPercent(simulations.apy?.div(100)),
+          change: simulationsChange?.apy
+            ? [formatDecimalAsPercent(simulationsChange.apy?.div(100))]
+            : undefined,
         }),
     modal,
   }

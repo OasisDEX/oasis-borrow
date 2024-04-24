@@ -1,9 +1,11 @@
-import type BigNumber from 'bignumber.js'
+import { amountFromWei } from '@oasisdex/utils'
+import BigNumber from 'bignumber.js'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import type { CalculateSimulationResult } from 'features/omni-kit/helpers/calculateOmniYieldsSimulation'
 import { calculateOmniYieldsSimulation } from 'features/omni-kit/helpers/calculateOmniYieldsSimulation'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
+import { thousand } from 'helpers/zero'
 import { useMemo } from 'react'
 
 type useSimulationYieldsParams = {
@@ -20,20 +22,19 @@ export function useOmniSimulationYields({
   getYields,
 }: useSimulationYieldsParams): SimulationYields | undefined {
   const {
-    environment: { gasEstimation, quotePrice },
+    environment: { gasEstimation, quotePrice, gasPrice },
   } = useOmniGeneralContext()
   const {
-    form: {
-      state: { depositAmount },
-    },
     position: { isSimulationLoading },
   } = useOmniProductContext(OmniProductType.Multiply)
   const yields = getYields()
 
-  // TODO: fix this dependancy
-  // it blocks the simulation from being calculated
-  // if the wallet has no tokens (gasEstimation?.usdValue is zero)
   const fees = gasEstimation?.usdValue.div(quotePrice)
+  // estimated fees for simulation
+  // 3 million gas * gasPrice
+  const simulationFees = amountFromWei(
+    new BigNumber(3).times(thousand).times(thousand).times(gasPrice.maxFeePerGas),
+  )
 
   const simulations = useMemo(() => {
     if (yields && amount) {
@@ -42,17 +43,13 @@ export function useOmniSimulationYields({
           amount,
           token,
           yields,
-          fees, // here we allow fees to be 0 so initial simulation works
+          fees: gasEstimation?.usdValue.eq(0) ? simulationFees : fees,
         }),
         yields,
       }
     }
     return undefined
-  }, [fees?.toString(), amount?.toString(), token, yields])
+  }, [fees?.toString(), simulationFees.toString(), amount?.toString(), token, yields])
 
-  if ((depositAmount && fees?.isZero()) || isSimulationLoading) {
-    return undefined
-  }
-
-  return simulations
+  return isSimulationLoading ? undefined : simulations
 }
