@@ -6,7 +6,9 @@ import { PositionUtils } from 'summerfi-sdk-client'
 
 export const useSimulationPositionData = () => {
   const {
-    environment: { collateralPrice, debtPrice },
+    environment: {
+      marketPrices: { collateralPrice, debtPrice },
+    },
     simulation,
   } = useRefinanceContext()
 

@@ -68,11 +68,6 @@ export const getRefinanceContextInput = ({
       pairId,
     },
     environment: {
-      tokenPrices: {
-        [primaryToken]: collateralPrice,
-        [secondaryToken]: debtPrice,
-        ETH: ethPrice,
-      },
       chainId: networkNameToIdMap[network],
       slippage,
       address,
@@ -86,6 +81,11 @@ export const getRefinanceContextInput = ({
       liquidationPrice: liquidationPrice,
       ltv: new RiskRatio(new BigNumber(ltv), RiskRatio.TYPE.LTV),
       positionType,
+      protocolPrices: {
+        [primaryToken]: collateralPrice,
+        [secondaryToken]: debtPrice,
+        ETH: ethPrice,
+      },
     },
     automations: automations,
     contextId,

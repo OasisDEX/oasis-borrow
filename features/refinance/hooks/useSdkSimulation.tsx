@@ -1,3 +1,4 @@
+import type { Tickers } from 'blockchain/prices.types'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
@@ -36,7 +37,7 @@ export type SDKSimulation = {
   liquidationThreshold: Percentage | null
 }
 
-export function useSdkSimulation(): SDKSimulation {
+export function useSdkSimulation({ tickers }: { tickers?: Tickers }): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
@@ -53,17 +54,19 @@ export function useSdkSimulation(): SDKSimulation {
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
-    if (!ctx || !cache.positionOwner) {
+    if (!ctx || !cache.positionOwner || !tickers) {
       return
     }
     const {
-      environment: { slippage, chainInfo, debtPrice, address },
+      environment: { slippage, chainInfo, address },
       position: { positionId, collateralTokenData, debtTokenData, positionType },
       poolData: { poolId },
       form: {
         state: { strategy },
       },
     } = ctx
+
+    const debtPrice = tickers[debtTokenData.token.symbol].toString()
 
     const owner = cache.positionOwner
 
@@ -203,8 +206,7 @@ export function useSdkSimulation(): SDKSimulation {
   }, [
     sdk,
     ctx?.environment.slippage,
-    ctx?.environment.collateralPrice,
-    ctx?.environment.debtPrice,
+    JSON.stringify(tickers),
     ctx?.environment.address,
     JSON.stringify(ctx?.environment.chainInfo),
     ctx?.position.positionId.id,

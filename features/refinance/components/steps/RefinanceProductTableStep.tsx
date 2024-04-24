@@ -9,7 +9,9 @@ import React from 'react'
 
 export const RefinanceProductTableStep = () => {
   const {
-    environment: { debtPrice, collateralPrice },
+    environment: {
+      marketPrices: { debtPrice, collateralPrice },
+    },
     metadata: { interestRates },
     form: {
       state: { refinanceOption },

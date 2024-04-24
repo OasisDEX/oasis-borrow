@@ -1,4 +1,5 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { Modal } from 'components/Modal'
 import {
   RefinanceHeader,
@@ -17,13 +18,14 @@ import {
 } from 'features/refinance/helpers'
 import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useEffect, useMemo } from 'react'
 import { useBeforeUnload } from 'react-use'
-import { from, of } from 'rxjs'
+import { EMPTY, from, of } from 'rxjs'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Flex, Text } from 'theme-ui'
 
@@ -36,7 +38,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const { t } = useTranslation()
 
   const { productHub: data } = usePreloadAppDataContext()
-
+  const { tokenPriceUSD$ } = useProductContext()
   const interestRatesInput = getRefinanceInterestRatesInputParams(data.table)
 
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
@@ -44,6 +46,20 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const isTxInProgress = !!ctx?.tx.isTxInProgress
 
   useBeforeUnload(isTxInProgress)
+
+  const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
+    useMemo(
+      () =>
+        ctx
+          ? tokenPriceUSD$([
+              ctx.position.collateralTokenData.token.symbol,
+              ctx.position.debtTokenData.token.symbol,
+              'ETH',
+            ])
+          : EMPTY,
+      [ctx?.position.collateralTokenData.token.symbol, ctx?.position.debtTokenData.token.symbol],
+    ),
+  )
 
   const positionOwner = useMemo(
     () =>
@@ -72,8 +88,8 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
         : of(cache.interestRatesMetadata),
     [cache.interestRatesMetadata],
   )
-  const [positionOwnerData] = useObservable(positionOwner)
-  const [interestRatesData] = useObservable(interestRates)
+  const [positionOwnerData, positionOwnerError] = useObservable(positionOwner)
+  const [interestRatesData, interestRatesError] = useObservable(interestRates)
 
   const onClose = () => {
     if (isTxInProgress) {
@@ -87,7 +103,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
-  const simulation = useSdkSimulation()
+  const simulation = useSdkSimulation({ tickers: tokenPriceUSDData })
 
   useEffect(() => {
     if (positionOwnerData) cache.handlePositionOwner(positionOwnerData)
@@ -99,29 +115,40 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
 
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose} variant="modalAutoWidth">
-      <WithLoadingIndicator
-        value={[ctx, positionOwnerData, interestRatesData]}
-        customLoader={<RefinanceModalSkeleton onClose={onClose} />}
-      >
-        {([_ctx, _owner, _interestRates]) => (
-          <RefinanceContextProvider
-            ctx={{
-              ..._ctx,
-              metadata: {
-                ..._ctx.metadata,
-                interestRates: _interestRates,
-              },
-              position: {
-                ..._ctx.position,
-                owner: _owner,
-              },
-              simulation,
-            }}
-          >
-            <RefinanceModalContainer onClose={onClose} />
-          </RefinanceContextProvider>
-        )}
-      </WithLoadingIndicator>
+      <WithErrorHandler error={[positionOwnerError, interestRatesError, tokenPriceUSDError]}>
+        <WithLoadingIndicator
+          value={[ctx, positionOwnerData, interestRatesData, tokenPriceUSDData]}
+          customLoader={<RefinanceModalSkeleton onClose={onClose} />}
+        >
+          {([_ctx, _owner, _interestRates, _tokenPriceUSD]) => (
+            <RefinanceContextProvider
+              ctx={{
+                ..._ctx,
+                environment: {
+                  ..._ctx.environment,
+                  marketPrices: {
+                    collateralPrice:
+                      _tokenPriceUSD[_ctx.position.collateralTokenData.token.symbol].toString(),
+                    debtPrice: _tokenPriceUSD[_ctx.position.debtTokenData.token.symbol].toString(),
+                    ethPrice: _tokenPriceUSD['ETH'].toString(),
+                  },
+                },
+                metadata: {
+                  ..._ctx.metadata,
+                  interestRates: _interestRates,
+                },
+                position: {
+                  ..._ctx.position,
+                  owner: _owner,
+                },
+                simulation,
+              }}
+            >
+              <RefinanceModalContainer onClose={onClose} />
+            </RefinanceContextProvider>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
     </Modal>
   )
 }
