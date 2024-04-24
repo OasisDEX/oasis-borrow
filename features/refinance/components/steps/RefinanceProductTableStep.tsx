@@ -62,6 +62,8 @@ export const RefinanceProductTableStep = () => {
       hiddenCategories
       hiddenHelp
       hiddenTags
+      hiddenProtocolFilter
+      hiddenNetworkFilter
       perPage={5}
       hiddenBanners
       initialFilters={{

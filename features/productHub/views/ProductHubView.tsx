@@ -40,6 +40,8 @@ interface ProductHubViewProps {
   hiddenHelp?: boolean
   hiddenProductTypeSelector?: boolean
   hiddenTags?: boolean
+  hiddenProtocolFilter?: boolean
+  hiddenNetworkFilter?: boolean
   initialFilters?: ProductHubFilters
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
@@ -62,6 +64,8 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   hiddenHelp,
   hiddenProductTypeSelector = false,
   hiddenTags,
+  hiddenProtocolFilter,
+  hiddenNetworkFilter,
   initialFilters = {},
   limitRows,
   onRowClick,
@@ -151,6 +155,8 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 selectedProduct={selectedProduct}
                 separator={separator}
                 tableData={table}
+                hiddenNetworkFilter={hiddenNetworkFilter}
+                hiddenProtocolFilter={hiddenProtocolFilter}
               />
               {limitRows && limitRows > 0 && (
                 <ProductHubViewAll query={query} selectedProduct={selectedProduct} />
