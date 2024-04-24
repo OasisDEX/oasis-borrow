@@ -179,9 +179,10 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
     netValue: position.netValue,
   })
   const netApyContentCardCommonData = useOmniCardDataNetApy({
-    netApy: simulations?.apy?.div(100),
+    simulations,
     modal: (
       <OmniCardDataNetApyModal
+        simulations={simulations}
         collateralToken={collateralToken}
         quoteToken={quoteToken}
         protocol={LendingProtocolLabel[protocol]}
