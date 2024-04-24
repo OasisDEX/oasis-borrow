@@ -18,7 +18,7 @@ export const getYieldsConfig = ({
   actionSource,
   poolAddress,
 }: GetYieldsParams) => {
-  const debugGetYieldsConfig = true
+  const debugGetYieldsConfig = process.env.NEXT_PUBLIC_DEBUG_YIELDS
   const protocolQuery = {
     [LendingProtocol.AaveV2]: 'aave-v2',
     [LendingProtocol.AaveV3]: 'aave-v3',

@@ -27,8 +27,8 @@ export function AaveLikeContentFooterYieldLoop() {
     RiskRatio.TYPE.LTV,
   )
 
-  const riskRatio = useMemo(
-    () => simulation?.riskRatio || defaultRiskRatio,
+  const ltv = useMemo(
+    () => simulation?.riskRatio.loanToValue || defaultRiskRatio.loanToValue,
     [defaultRiskRatio, simulation],
   )
 
@@ -41,7 +41,7 @@ export function AaveLikeContentFooterYieldLoop() {
           collateralTokenAddress: collateralAddress,
           quoteToken: quoteToken,
           collateralToken: collateralToken,
-          ltv: riskRatio.loanToValue,
+          ltv,
           networkId: network.id,
           protocol,
         })

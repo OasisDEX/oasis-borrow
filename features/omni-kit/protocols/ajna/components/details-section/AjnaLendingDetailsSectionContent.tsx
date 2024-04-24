@@ -207,7 +207,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
         getYields: () =>
           useOmniEarnYields({
             actionSource: 'AjnaLendingDetailsSectionContent',
-            ltv: simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue,
+            ltv: position.riskRatio.loanToValue,
             networkId: network.id,
             protocol,
             poolAddress: position.pool.poolAddress,
@@ -215,8 +215,22 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
       })
     : undefined
 
+  const simulationsChange = useOmniSimulationYields({
+    amount: position.collateralAmount.shiftedBy(collateralPrecision),
+    token: collateralToken,
+    getYields: () =>
+      useOmniEarnYields({
+        actionSource: 'AjnaLendingDetailsSectionContent',
+        ltv: simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue,
+        networkId: network.id,
+        protocol,
+        poolAddress: position.pool.poolAddress,
+      }),
+  })
+
   const netApyContentCardCommonData = useOmniCardDataNetApy({
     simulations,
+    simulationsChange: simulation?.riskRatio.loanToValue ? simulationsChange : undefined,
     modal: (
       <OmniCardDataNetApyModal
         simulations={simulations}

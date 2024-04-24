@@ -73,12 +73,28 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
             collateralTokenAddress: collateralAddress,
             quoteToken: quoteToken,
             collateralToken: collateralToken,
-            ltv: simulation?.riskRatio.loanToValue || castedPosition.riskRatio.loanToValue,
+            ltv: castedPosition.riskRatio.loanToValue,
             networkId: network.id,
             protocol,
           }),
       })
     : undefined
+
+  const simulationsChange = useOmniSimulationYields({
+    amount: castedPosition.collateralAmount.shiftedBy(collateralPrecision),
+    token: collateralToken,
+    getYields: () =>
+      useOmniEarnYields({
+        actionSource: 'AaveLikeDetailsSectionContentManage',
+        quoteTokenAddress: quoteAddress,
+        collateralTokenAddress: collateralAddress,
+        quoteToken: quoteToken,
+        collateralToken: collateralToken,
+        ltv: simulation?.riskRatio.loanToValue || castedPosition.riskRatio.loanToValue,
+        networkId: network.id,
+        protocol,
+      }),
+  })
 
   const liquidationPrice = normalizeValue(
     isShort ? one.div(castedPosition.liquidationPrice) : castedPosition.liquidationPrice,
@@ -180,6 +196,7 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
   })
   const netApyContentCardCommonData = useOmniCardDataNetApy({
     simulations,
+    simulationsChange: simulation?.riskRatio.loanToValue ? simulationsChange : undefined,
     modal: (
       <OmniCardDataNetApyModal
         simulations={simulations}
