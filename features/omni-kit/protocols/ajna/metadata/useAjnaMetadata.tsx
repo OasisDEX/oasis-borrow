@@ -5,6 +5,8 @@ import { PillAccordion } from 'components/PillAccordion'
 import faqBorrow from 'features/content/faqs/ajna/borrow/en'
 import faqEarn from 'features/content/faqs/ajna/earn/en'
 import faqMultiply from 'features/content/faqs/ajna/multiply/en'
+import { OmniOpenYieldLoopFooter } from 'features/omni-kit/components/details-section'
+import { OmniOpenYieldLoopDetails } from 'features/omni-kit/components/details-section/OmniOpenYieldLoopDetails'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowDebtMax,
@@ -13,6 +15,8 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
+import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import {
   AjnaEarnDetailsSectionContent,
   AjnaEarnDetailsSectionFooter,
@@ -90,6 +94,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       isOracless,
       isOwner,
       isProxyWithManyPositions,
+      isYieldLoopWithData,
       isShort,
       isYieldLoop,
       networkId,
@@ -232,11 +237,20 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ? simulation.buyingPower
           : undefined
 
+      const ltv = resolvedSimulation?.maxRiskRatio.loanToValue || position.riskRatio.loanToValue
+
+      const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
+        ltv,
+        poolAddress: position.pool.poolAddress,
+      })
+
       return {
         notifications,
         validations,
         filters,
         values: {
+          headlineDetails,
+          isHeadlineDetailsLoading,
           interestRate,
           isFormEmpty,
           afterBuyingPower,
@@ -260,7 +274,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             position,
           }),
           sidebarTitle,
-          footerColumns: 2,
+          footerColumns: isYieldLoopWithData ? 3 : 2,
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
@@ -271,53 +285,69 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               value={`${originationFeeFormatted} ${!isOracless ? originationFeeFormattedUSD : ''}`}
             />
           ) : undefined,
-          overviewContent: (
-            <AjnaLendingDetailsSectionContent
-              changeVariant={changeVariant}
-              collateralPrice={collateralPrice}
-              collateralToken={collateralToken}
-              isOpening={isOpening}
-              isOracless={isOracless}
-              isProxyWithManyPositions={isProxyWithManyPositions}
-              isShort={isShort}
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              owner={owner}
-              position={position}
-              priceFormat={priceFormat}
-              productType={productType}
-              quotePrice={quotePrice}
-              quoteToken={quoteToken}
-              shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
-              simulation={simulation}
-              isYieldLoop={isYieldLoop}
-            />
-          ),
-          overviewFooter: (
-            <AjnaLendingDetailsSectionFooter
-              changeVariant={changeVariant}
-              collateralPrice={collateralPrice}
-              collateralToken={collateralToken}
-              isOracless={isOracless}
-              isOwner={isOwner}
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              networkId={networkId}
-              owner={owner}
-              position={position}
-              productType={productType}
-              quotePrice={quotePrice}
-              quoteToken={quoteToken}
-              simulation={simulation}
-            />
-          ),
+          overviewContent:
+            isYieldLoopWithData && isOpening ? (
+              <OmniOpenYieldLoopDetails poolAddress={position.pool.poolAddress} />
+            ) : (
+              <AjnaLendingDetailsSectionContent
+                changeVariant={changeVariant}
+                collateralPrice={collateralPrice}
+                collateralToken={collateralToken}
+                isOpening={isOpening}
+                isOracless={isOracless}
+                isProxyWithManyPositions={isProxyWithManyPositions}
+                isShort={isShort}
+                isSimulationLoading={productContext.position.isSimulationLoading}
+                owner={owner}
+                position={position}
+                priceFormat={priceFormat}
+                productType={productType}
+                quotePrice={quotePrice}
+                quoteToken={quoteToken}
+                shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
+                simulation={simulation}
+                isYieldLoop={isYieldLoop}
+              />
+            ),
+          overviewFooter:
+            isYieldLoopWithData && isOpening ? (
+              <OmniOpenYieldLoopFooter
+                getYields={() =>
+                  useOmniEarnYields({
+                    actionSource: 'ajnaMetadata',
+                    ltv,
+                    networkId: networkId,
+                    protocol,
+                    poolAddress: position.pool.poolAddress,
+                  })
+                }
+              />
+            ) : (
+              <AjnaLendingDetailsSectionFooter
+                changeVariant={changeVariant}
+                collateralPrice={collateralPrice}
+                collateralToken={collateralToken}
+                isOracless={isOracless}
+                isOwner={isOwner}
+                isSimulationLoading={productContext.position.isSimulationLoading}
+                networkId={networkId}
+                owner={owner}
+                position={position}
+                productType={productType}
+                quotePrice={quotePrice}
+                quoteToken={quoteToken}
+                simulation={simulation}
+              />
+            ),
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} />
           ) : undefined,
           riskSidebar: <AjnaFormContentRisk />,
+          overviewWithSimulation: isYieldLoopWithData,
         },
         theme: ajnaExtensionTheme,
         featureToggles,
       } as LendingMetadata
-
     case OmniProductType.Earn: {
       const earnContext = productContext as ProductContextWithEarn
 
@@ -379,7 +409,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             txStatus: txDetails?.txStatus,
           }),
           sidebarTitle,
-          footerColumns: isOpening ? 2 : 3,
+          footerColumns: isOpening || !isYieldLoopWithData ? 2 : 3,
           headlineDetails: [
             {
               label: t('omni-kit.headline.details.current-apy'),
@@ -501,6 +531,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               isFormFrozen={validations.isFormFrozen}
             />
           ),
+          overviewWithSimulation: isYieldLoopWithData,
         },
         theme: ajnaExtensionTheme,
         featureToggles,

@@ -20,7 +20,7 @@ import type {
   StopLossTriggersWithDecodedParams,
   TrailingStopLossTriggers,
   TrailingStopLossTriggersWithDecodedParams,
-} from 'helpers/triggers'
+} from 'helpers/lambda/triggers'
 
 const mapStopLossTriggers = (
   triggers?: StopLossTriggers,

@@ -11,10 +11,9 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import {
-  MorphoDetailsSectionContent,
-  MorphoDetailsSectionFooter,
-} from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
+import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
+import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
+import { MorphoDetailsSectionContentWrapper } from 'features/omni-kit/protocols/morpho-blue/components/details-sections/MorphoDetailsSectionContentWrapper'
 import {
   getMorphoBorrowWithdrawMax,
   getMorphoNotifications,
@@ -49,6 +48,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      isYieldLoopWithData,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -77,6 +77,10 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         | undefined
       const resolvedSimulation = simulation || cachedSimulation
 
+      const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
+        ltv: position.riskRatio.loanToValue || resolvedSimulation?.maxRiskRatio.loanToValue,
+      })
+
       return {
         notifications,
         validations,
@@ -93,6 +97,8 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             }),
         },
         values: {
+          headlineDetails,
+          isHeadlineDetailsLoading,
           interestRate: position.rate,
           isFormEmpty: getOmniIsFormEmpty({
             stateTypeWrapper: getOmniIsFormEmptyStateGuard({
@@ -122,13 +128,14 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             balance: quoteBalance,
             position,
           }),
-          footerColumns: 2,
+          footerColumns: isYieldLoopWithData ? 3 : 2,
           maxSliderAsMaxLtv: true,
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
-          overviewContent: <MorphoDetailsSectionContent />,
+          overviewContent: <MorphoDetailsSectionContentWrapper />,
           overviewFooter: <MorphoDetailsSectionFooter />,
+          overviewWithSimulation: isYieldLoopWithData,
         },
         featureToggles: {
           safetySwitch: morphoSafetySwitchOn,

@@ -14,7 +14,7 @@ import { OmniAutomationFromOrder } from 'features/omni-kit/automation/components
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { OmniAutomationFormView } from 'features/omni-kit/views'
-import { TriggerAction } from 'helpers/triggers'
+import { TriggerAction } from 'helpers/lambda/triggers'
 import { useHash } from 'helpers/useHash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

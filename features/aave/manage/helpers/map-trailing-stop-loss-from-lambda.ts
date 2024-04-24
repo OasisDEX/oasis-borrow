@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { lambdaPriceDenomination } from 'features/aave/constants'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 
 type TrailingStopLossTriggers = Pick<
   GetTriggersResponse['triggers'],

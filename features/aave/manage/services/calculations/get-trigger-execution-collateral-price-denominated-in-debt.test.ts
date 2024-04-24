@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { SupportedLambdaProtocols } from 'helpers/triggers'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
 import { LendingProtocol } from 'lendingProtocols'
 
 import { getTriggerExecutionPrice } from './get-trigger-execution-price'

@@ -1,4 +1,4 @@
-import { TriggerAction } from 'helpers/triggers'
+import { TriggerAction } from 'helpers/lambda/triggers'
 
 export const resolveStopLossishAction = ({
   existingSLTrigger,

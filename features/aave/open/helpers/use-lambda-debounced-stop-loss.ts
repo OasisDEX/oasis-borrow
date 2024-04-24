@@ -4,14 +4,14 @@ import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
-import type { SupportedLambdaProtocols } from 'helpers/triggers'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
 import type {
   SetupBasicStopLossResponse,
   TriggerAction,
   TriggersApiError,
   TriggersApiWarning,
-} from 'helpers/triggers/setup-triggers'
-import { setupAaveLikeStopLoss } from 'helpers/triggers/setup-triggers'
+} from 'helpers/lambda/triggers/setup-triggers'
+import { setupAaveLikeStopLoss } from 'helpers/lambda/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 
