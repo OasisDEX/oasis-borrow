@@ -61,7 +61,7 @@ function generateInterestRateQueries(data: Record<LendingProtocol, string[]>): s
     })
   })
 
-  return `{ ${queries.join('')} }`
+  return `{ ${queries.join('')} }`.replaceAll(' ', '')
 }
 
 export const getRefinanceAaveLikeInterestRates = async (
