@@ -66,16 +66,18 @@ export function useSdkSimulation({ tickers }: { tickers?: Tickers }): SDKSimulat
       },
     } = ctx
 
-    const debtPrice = tickers[debtTokenData.token.symbol].toString()
-
     const owner = cache.positionOwner
 
     if (!strategy) {
       return
     }
+
     if (!positionType) {
       throw new Error('Unsupported position type.')
     }
+
+    const debtPrice = tickers[strategy.secondaryToken].toString()
+
     const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
       const targetPoolId: SparkPoolId = {
