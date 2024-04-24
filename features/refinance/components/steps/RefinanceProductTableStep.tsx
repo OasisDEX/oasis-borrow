@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
-import { getNetworkByName, NetworkNames } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { getRefinanceProductHubDataParser } from 'features/refinance/helpers'
 import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
@@ -16,54 +16,48 @@ export const RefinanceProductTableStep = () => {
       updateState,
     },
     position: {
-      collateralTokenData: { amount: collateralAmount },
-      debtTokenData: { amount: debtAmount },
+      collateralTokenData: {
+        amount: collateralAmount,
+        token: { symbol: collateralToken },
+      },
+      debtTokenData: {
+        amount: debtAmount,
+        token: { symbol: debtToken },
+      },
+      isShort,
     },
     steps: { setNextStep },
   } = useRefinanceContext()
+
+  if (!refinanceOption) {
+    return null
+  }
 
   const product = {
     [RefinanceOptions.HIGHER_LTV]: OmniProductType.Borrow,
     [RefinanceOptions.LOWER_COST]: OmniProductType.Borrow,
     [RefinanceOptions.CHANGE_DIRECTION]: OmniProductType.Borrow,
     [RefinanceOptions.SWITCH_TO_EARN]: OmniProductType.Earn,
-  }[refinanceOption || RefinanceOptions.LOWER_COST]
+  }[refinanceOption]
 
   return (
     <ProductHubView
       product={product}
-      dataParser={(table) => {
-        // WIP version, will be extracted and extended
-        return table.map((item) => {
-          const network = getNetworkByName(item.network)
-          const protocol = item.protocol
-
-          const customCollateralRates = interestRates[network.id]?.[protocol]?.[item.primaryToken]
-          const customDebtRates = interestRates[network.id]?.[protocol]?.[item.secondaryToken]
-
-          const netValue = new BigNumber(collateralAmount)
-            .times(collateralPrice)
-            .minus(new BigNumber(debtAmount).times(debtPrice))
-
-          if (customCollateralRates && customDebtRates) {
-            return {
-              ...item,
-              fee: new BigNumber(customDebtRates.borrowVariable)
-                .times(debtAmount)
-                .times(debtPrice)
-                .minus(
-                  new BigNumber(customCollateralRates.lendVariable)
-                    .times(collateralAmount)
-                    .times(collateralPrice),
-                )
-                .div(netValue)
-                .toString(),
-            }
-          }
-
-          return item
+      customSortByDefault={(table) => table}
+      dataParser={(table) =>
+        getRefinanceProductHubDataParser({
+          table,
+          interestRates,
+          collateralPrice,
+          collateralToken,
+          collateralAmount,
+          debtPrice,
+          debtToken,
+          debtAmount,
+          isShort,
+          refinanceOption,
         })
-      }}
+      }
       hiddenProductTypeSelector
       hiddenCategories
       hiddenHelp
@@ -79,6 +73,7 @@ export const RefinanceProductTableStep = () => {
         updateState('strategy', item)
         setNextStep()
       }}
+      wrapperSx={{ mt: 0 }}
     />
   )
 }
