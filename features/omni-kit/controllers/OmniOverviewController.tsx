@@ -14,7 +14,7 @@ export function OmniOverviewController() {
   const { t } = useTranslation()
 
   const {
-    environment: { productType, isOpening, quoteToken },
+    environment: { productType, isOpening, quoteToken, entryToken },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -31,7 +31,10 @@ export function OmniOverviewController() {
       <DetailsSection
         title={
           (overviewWithSimulation && isOpening && (
-            <SimulateTitle token={quoteToken} depositAmount={amountInPosition} />
+            <SimulateTitle
+              token={entryToken.symbol || quoteToken}
+              depositAmount={amountInPosition}
+            />
           )) ||
           t('system.overview')
         }
