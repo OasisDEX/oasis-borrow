@@ -3813,7 +3813,7 @@
       },
       "whats-changing": {
         "title": "What's changing",
-        "description": "We are going to refinance your position. You can refinance back to your original position anytime you want, but it will cost gas and swap fees again.",
+        "description": "Your position is about to be refinanced. This operation is one way only, refinancing back will be released soon.",
         "highlighted": {
           "lowering-borrowing-cost": "Lowering Borrowing Cost",
           "increase-to-higher-ltv": "Increase to higher LTV",

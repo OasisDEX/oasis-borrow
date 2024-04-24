@@ -1,3 +1,5 @@
+import { getTokenPrice } from 'blockchain/prices'
+import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
@@ -57,7 +59,7 @@ export function useSdkSimulation(): SDKSimulation {
       return
     }
     const {
-      environment: { slippage, chainInfo, debtPrice, address },
+      environment: { slippage, chainInfo, address },
       position: { positionId, collateralTokenData, debtTokenData, positionType },
       poolData: { poolId },
       form: {
@@ -70,9 +72,17 @@ export function useSdkSimulation(): SDKSimulation {
     if (!strategy) {
       return
     }
+
     if (!positionType) {
       throw new Error('Unsupported position type.')
     }
+
+    const debtPrice = getTokenPrice(
+      strategy.secondaryToken,
+      tokenPriceStore.prices,
+      'debt price - useSdkSimulation',
+    ).toString()
+
     const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
       const targetPoolId: SparkPoolId = {
@@ -203,8 +213,6 @@ export function useSdkSimulation(): SDKSimulation {
   }, [
     sdk,
     ctx?.environment.slippage,
-    ctx?.environment.collateralPrice,
-    ctx?.environment.debtPrice,
     ctx?.environment.address,
     JSON.stringify(ctx?.environment.chainInfo),
     ctx?.position.positionId.id,

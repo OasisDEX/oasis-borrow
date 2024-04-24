@@ -5,7 +5,11 @@ import type { FC } from 'react'
 import React, { useContext } from 'react'
 
 export type RefinanceContext = {
-  environment: RefinanceGeneralContextBase['environment']
+  environment: RefinanceGeneralContextBase['environment'] & {
+    marketPrices: {
+      ethPrice: string
+    }
+  }
   position: RefinanceGeneralContextBase['position'] & {
     owner: string
   }

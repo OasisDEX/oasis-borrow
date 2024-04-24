@@ -56,7 +56,6 @@ export type RefinanceContextInput = {
     pairId: number
   }
   environment: {
-    tokenPrices: Record<string, string>
     chainId: number
     slippage: number
     address?: string
@@ -70,6 +69,7 @@ export type RefinanceContextInput = {
     ltv: RiskRatio
     positionType: PositionType
     lendingProtocol: LendingProtocol
+    protocolPrices: Record<string, string>
   }
   automations: RefinanceContextInputAutomations
   contextId: string
@@ -78,9 +78,6 @@ export type RefinanceContextInput = {
 export type RefinanceGeneralContextBase = {
   environment: {
     contextId: string
-    collateralPrice: string
-    debtPrice: string
-    ethPrice: string
     address?: AddressValue
     chainInfo: ChainInfo
     slippage: number
@@ -96,6 +93,11 @@ export type RefinanceGeneralContextBase = {
     positionType: PositionType
     isShort: boolean
     lendingProtocol: LendingProtocol
+    protocolPrices: {
+      collateralPrice: string
+      debtPrice: string
+      ethPrice: string
+    }
   }
   poolData: {
     poolId: IPoolId

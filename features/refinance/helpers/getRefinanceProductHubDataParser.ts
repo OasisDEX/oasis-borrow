@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkByName } from 'blockchain/networks'
+import { getTokenPrice } from 'blockchain/prices'
+import { tokenPriceStore } from 'blockchain/prices.constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers/getRefinanceAaveLikeInterestRates'
@@ -9,15 +11,11 @@ import { moveItemsToFront } from 'helpers/moveItemsToFront'
 const borrowRateMapping = ({
   table,
   interestRates,
-  collateralPrice,
-  debtPrice,
   collateralAmount,
   debtAmount,
 }: {
   table: ProductHubItem[]
   interestRates: RefinanceInterestRatesMetadata
-  collateralPrice: string
-  debtPrice: string
   collateralAmount: string
   debtAmount: string
 }) =>
@@ -28,11 +26,22 @@ const borrowRateMapping = ({
     const customCollateralRates = interestRates[network.id]?.[protocol]?.[item.primaryToken]
     const customDebtRates = interestRates[network.id]?.[protocol]?.[item.secondaryToken]
 
-    const netValue = new BigNumber(collateralAmount)
-      .times(collateralPrice)
-      .minus(new BigNumber(debtAmount).times(debtPrice))
-
     if (customCollateralRates && customDebtRates) {
+      const collateralPrice = getTokenPrice(
+        item.primaryToken,
+        tokenPriceStore.prices,
+        'collateral price - borrowRateMapping',
+      )
+      const debtPrice = getTokenPrice(
+        item.secondaryToken,
+        tokenPriceStore.prices,
+        'debt price - borrowRateMapping',
+      )
+
+      const netValue = new BigNumber(collateralAmount)
+        .times(collateralPrice)
+        .minus(new BigNumber(debtAmount).times(debtPrice))
+
       return {
         ...item,
         fee: new BigNumber(customDebtRates.borrowVariable)
@@ -81,8 +90,6 @@ const changeDirectionMapping = ({
 export const getRefinanceProductHubDataParser = ({
   table,
   interestRates,
-  collateralPrice,
-  debtPrice,
   collateralAmount,
   debtAmount,
   refinanceOption,
@@ -92,8 +99,6 @@ export const getRefinanceProductHubDataParser = ({
 }: {
   table: ProductHubItem[]
   interestRates: RefinanceInterestRatesMetadata
-  collateralPrice: string
-  debtPrice: string
   collateralAmount: string
   debtAmount: string
   refinanceOption: RefinanceOptions
@@ -105,8 +110,6 @@ export const getRefinanceProductHubDataParser = ({
   const borrowRatesMapped = borrowRateMapping({
     table,
     interestRates,
-    collateralPrice,
-    debtPrice,
     collateralAmount,
     debtAmount,
   })

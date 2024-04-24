@@ -16,7 +16,12 @@ export function useSdkRefinanceTransaction({
   const [txRefinance, setTxRefinance] = useState<null | Order>(null)
 
   const {
-    environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
+    environment: {
+      slippage,
+      chainInfo,
+      marketPrices: { ethPrice },
+      address,
+    },
     position: { positionId, collateralTokenData, debtTokenData, positionType },
     poolData: { poolId },
     form: {
@@ -74,8 +79,7 @@ export function useSdkRefinanceTransaction({
     sdk,
     dpm?.address,
     slippage,
-    collateralPrice,
-    debtPrice,
+    ethPrice,
     address,
     chainInfo,
     poolId,

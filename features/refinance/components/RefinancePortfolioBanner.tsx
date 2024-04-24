@@ -1,14 +1,10 @@
-import BigNumber from 'bignumber.js'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import type { ProductHubItem } from 'features/productHub/types'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { RefinanceModalController } from 'features/refinance/controllers'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
 import { omniProductTypeToSDKType } from 'features/refinance/helpers/omniProductTypeToSDKType'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { LendingProtocol } from 'lendingProtocols'
@@ -18,60 +14,62 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex, Text } from 'theme-ui'
 
-interface LowerLiquidationPriceProps {
-  positionId: number | string
-  collateral: BigNumber
-  debt: BigNumber
-  debtPrice: BigNumber
-  liquidationPrice: BigNumber
-  table: ProductHubItem[]
-  refinanceToProtocols?: LendingProtocol[]
-}
+// interface LowerLiquidationPriceProps {
+//   positionId: number | string
+//   collateral: BigNumber
+//   debt: BigNumber
+//   debtPrice: BigNumber
+//   liquidationPrice: BigNumber
+//   table: ProductHubItem[]
+//   refinanceToProtocols?: LendingProtocol[]
+// }
 
-const LowerLiquidationPrice: FC<LowerLiquidationPriceProps> = ({
-  positionId,
-  collateral,
-  debt,
-  debtPrice,
-  liquidationPrice,
-  table,
-  refinanceToProtocols,
-}) => {
-  const { t: tPortfolio } = useTranslation('portfolio')
+// To be useful once we will have clear definition on all copy variants within banner
 
-  const itemWithHighestMaxLtv = table
-    .filter((item) => refinanceToProtocols?.includes(item.protocol))
-    .reduce((prev, current) => {
-      return prev && Number(prev?.maxLtv) > Number(current?.maxLtv) ? prev : current
-    })
-
-  if (!itemWithHighestMaxLtv.maxLtv) {
-    return (
-      <Text as="span" variant="boldParagraph3" color="primary100">
-        {tPortfolio('refinance.banner.default', {
-          id: positionId,
-        })}
-      </Text>
-    )
-  }
-
-  const refinanceLiquidationPrice = debt
-    .times(debtPrice)
-    .div(collateral.times(itemWithHighestMaxLtv.maxLtv))
-
-  const liquidationPriceChange = liquidationPrice
-    .minus(refinanceLiquidationPrice)
-    .div(liquidationPrice)
-
-  return (
-    <Text as="span" variant="boldParagraph3" color="primary100">
-      {tPortfolio('refinance.banner.lowerLiquidationPrice', {
-        id: positionId,
-        value: formatDecimalAsPercent(liquidationPriceChange),
-      })}
-    </Text>
-  )
-}
+// const LowerLiquidationPrice: FC<LowerLiquidationPriceProps> = ({
+//   positionId,
+//   collateral,
+//   debt,
+//   debtPrice,
+//   liquidationPrice,
+//   table,
+//   refinanceToProtocols,
+// }) => {
+//   const { t: tPortfolio } = useTranslation('portfolio')
+//
+//   const itemWithHighestMaxLtv = table
+//     .filter((item) => refinanceToProtocols?.includes(item.protocol))
+//     .reduce((prev, current) => {
+//       return prev && Number(prev?.maxLtv) > Number(current?.maxLtv) ? prev : current
+//     })
+//
+//   if (!itemWithHighestMaxLtv.maxLtv) {
+//     return (
+//       <Text as="span" variant="boldParagraph3" color="primary100">
+//         {tPortfolio('refinance.banner.default', {
+//           id: positionId,
+//         })}
+//       </Text>
+//     )
+//   }
+//
+//   const refinanceLiquidationPrice = debt
+//     .times(debtPrice)
+//     .div(collateral.times(itemWithHighestMaxLtv.maxLtv))
+//
+//   const liquidationPriceChange = liquidationPrice
+//     .minus(refinanceLiquidationPrice)
+//     .div(liquidationPrice)
+//
+//   return (
+//     <Text as="span" variant="boldParagraph3" color="primary100">
+//       {tPortfolio('refinance.banner.lowerLiquidationPrice', {
+//         id: positionId,
+//         value: formatDecimalAsPercent(liquidationPriceChange),
+//       })}
+//     </Text>
+//   )
+// }
 
 interface RefinancePortfolioBannerProps {
   position: PortfolioPosition
@@ -87,9 +85,6 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
 
   const { openModal } = useModalContext()
   const { t: tPortfolio } = useTranslation('portfolio')
-  const {
-    productHub: { table },
-  } = usePreloadAppDataContext()
 
   const refinanceGeneralContext = useRefinanceGeneralContext()
 
@@ -120,26 +115,23 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     ethPrice,
   } = position.rawPositionDetails
 
-  const refinanceToProtocols = {
-    [LendingProtocol.Maker]: [LendingProtocol.SparkV3],
-    [LendingProtocol.Ajna]: [],
-    [LendingProtocol.AaveV3]: [],
-    [LendingProtocol.AaveV2]: [],
-    [LendingProtocol.SparkV3]: [],
-    [LendingProtocol.MorphoBlue]: [],
-  }[protocol]
+  // To be useful once we will have clear definition on all copy variants within banner
+  // const refinanceToProtocols = {
+  //   [LendingProtocol.Maker]: [LendingProtocol.SparkV3],
+  //   [LendingProtocol.Ajna]: [],
+  //   [LendingProtocol.AaveV3]: [],
+  //   [LendingProtocol.AaveV2]: [],
+  //   [LendingProtocol.SparkV3]: [],
+  //   [LendingProtocol.MorphoBlue]: [],
+  // }[protocol]
 
   const content = {
     [LendingProtocol.Maker]: (
-      <LowerLiquidationPrice
-        liquidationPrice={new BigNumber(liquidationPrice)}
-        debtPrice={new BigNumber(debtPrice)}
-        debt={new BigNumber(debt)}
-        positionId={positionId}
-        collateral={new BigNumber(collateral)}
-        refinanceToProtocols={refinanceToProtocols}
-        table={table}
-      />
+      <Text as="span" variant="boldParagraph3" color="primary100">
+        {tPortfolio('refinance.banner.default', {
+          id: positionId,
+        })}
+      </Text>
     ),
     [LendingProtocol.Ajna]: null,
     [LendingProtocol.AaveV3]: null,
