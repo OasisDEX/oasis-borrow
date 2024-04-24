@@ -219,6 +219,7 @@ export const optimismContracts: OptimismContracts = {
     'SDAI-ENA': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SDAIENA),
     'AERO-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_AEROUSDC),
     'PRIME-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_PRIMEUSDC),
+    'SAFE-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SAFEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
