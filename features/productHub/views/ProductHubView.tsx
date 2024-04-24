@@ -25,6 +25,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useSearchParams } from 'next/navigation'
 import type { FC } from 'react'
 import React, { Fragment, useState } from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box } from 'theme-ui'
 
 interface ProductHubViewProps {
@@ -39,6 +40,8 @@ interface ProductHubViewProps {
   hiddenHelp?: boolean
   hiddenProductTypeSelector?: boolean
   hiddenTags?: boolean
+  hiddenProtocolFilter?: boolean
+  hiddenNetworkFilter?: boolean
   initialFilters?: ProductHubFilters
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
@@ -46,6 +49,7 @@ interface ProductHubViewProps {
   product: OmniProductType
   separator?: AssetsTableSeparator
   url?: string
+  wrapperSx?: ThemeUIStyleObject
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
@@ -60,6 +64,8 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   hiddenHelp,
   hiddenProductTypeSelector = false,
   hiddenTags,
+  hiddenProtocolFilter,
+  hiddenNetworkFilter,
   initialFilters = {},
   limitRows,
   onRowClick,
@@ -67,6 +73,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   product,
   separator,
   url,
+  wrapperSx,
 }) => {
   const { productHub: data } = usePreloadAppDataContext()
   const table = dataParser(data.table)
@@ -92,6 +99,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           mt: [3, null, 4],
           scrollMarginTop: 4,
           zIndex: 3,
+          ...wrapperSx,
         }}
       >
         {!hiddenProductTypeSelector && (
@@ -147,6 +155,8 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 selectedProduct={selectedProduct}
                 separator={separator}
                 tableData={table}
+                hiddenNetworkFilter={hiddenNetworkFilter}
+                hiddenProtocolFilter={hiddenProtocolFilter}
               />
               {limitRows && limitRows > 0 && (
                 <ProductHubViewAll query={query} selectedProduct={selectedProduct} />

@@ -7,12 +7,14 @@ import { useMediaQuery } from 'usehooks-ts'
 interface AssetsFiltersContainerProps {
   filters: ReactNode[]
   isSticky?: boolean
+  lastWithAutoOffset?: boolean
 }
 
 export function AssetsFiltersContainer({
   children,
   filters,
   isSticky = false,
+  lastWithAutoOffset = true,
 }: PropsWithChildren<AssetsFiltersContainerProps>) {
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
@@ -43,6 +45,7 @@ export function AssetsFiltersContainer({
           flexWrap: ['wrap', null, null, 'nowrap'],
           gap: '12px',
           flexGrow: 1,
+          justifyContent: 'flex-start',
         }}
       >
         {filters.map((filter) => (
@@ -50,9 +53,11 @@ export function AssetsFiltersContainer({
             sx={{
               flex: ['1', '1 45%', '1'],
               maxWidth: ['none', null, null, '255px'],
-              '&:last-of-type': {
-                ml: [0, null, null, 'auto'],
-              },
+              ...(lastWithAutoOffset && {
+                '&:last-of-type': {
+                  ml: [0, null, null, 'auto'],
+                },
+              }),
             }}
           >
             {filter}
