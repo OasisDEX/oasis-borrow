@@ -119,7 +119,6 @@ export interface OmniProtocolSettings {
   supportedMultiplyTokens: NetworkIdsWithValues<string[]>
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
-  yieldLoopPairsWithData?: NetworkIdsWithValues<string[]>
   availableAutomations: NetworkIdsWithValues<AutomationFeatures[]>
 }
 

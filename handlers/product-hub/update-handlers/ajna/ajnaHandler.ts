@@ -363,9 +363,9 @@ async function getAjnaPoolData(
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   return Promise.all([
     getAjnaPoolData(NetworkIds.MAINNET, tickers),
-    // getAjnaPoolData(NetworkIds.BASEMAINNET, tickers),
-    // getAjnaPoolData(NetworkIds.ARBITRUMMAINNET, tickers),
-    // getAjnaPoolData(NetworkIds.OPTIMISMMAINNET, tickers),
+    getAjnaPoolData(NetworkIds.BASEMAINNET, tickers),
+    getAjnaPoolData(NetworkIds.ARBITRUMMAINNET, tickers),
+    getAjnaPoolData(NetworkIds.OPTIMISMMAINNET, tickers),
   ]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {
