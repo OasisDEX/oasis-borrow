@@ -42,6 +42,9 @@ export const settings: OmniProtocolSettings = {
       manage: omniSidebarManageBorrowishSteps,
     },
   },
+  entryTokens: {
+    [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
+  },
   availableAutomations: {
     [NetworkIds.MAINNET]: [],
   },

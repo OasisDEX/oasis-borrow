@@ -78,7 +78,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       const resolvedSimulation = simulation || cachedSimulation
 
       const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
-        ltv: position.riskRatio.loanToValue || resolvedSimulation?.maxRiskRatio.loanToValue,
+        ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
 
       return {
