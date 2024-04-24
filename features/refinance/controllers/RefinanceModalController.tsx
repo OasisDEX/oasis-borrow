@@ -25,7 +25,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useEffect, useMemo } from 'react'
 import { useBeforeUnload } from 'react-use'
-import { EMPTY, from, of } from 'rxjs'
+import { from, of } from 'rxjs'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Flex, Text } from 'theme-ui'
 
@@ -47,18 +47,9 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
 
   useBeforeUnload(isTxInProgress)
 
+  // Call it with ETH to make sure that tokenPriceStore has been initialized
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
-    useMemo(
-      () =>
-        ctx
-          ? tokenPriceUSD$([
-              ctx.position.collateralTokenData.token.symbol,
-              ctx.position.debtTokenData.token.symbol,
-              'ETH',
-            ])
-          : EMPTY,
-      [ctx?.position.collateralTokenData.token.symbol, ctx?.position.debtTokenData.token.symbol],
-    ),
+    useMemo(() => tokenPriceUSD$(['ETH']), []),
   )
 
   const positionOwner = useMemo(
@@ -103,7 +94,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     handleOnClose(contextInput.contextId)
     closeModal()
   }
-  const simulation = useSdkSimulation({ tickers: tokenPriceUSDData })
+  const simulation = useSdkSimulation()
 
   useEffect(() => {
     if (positionOwnerData) cache.handlePositionOwner(positionOwnerData)
@@ -127,9 +118,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
                 environment: {
                   ..._ctx.environment,
                   marketPrices: {
-                    collateralPrice:
-                      _tokenPriceUSD[_ctx.position.collateralTokenData.token.symbol].toString(),
-                    debtPrice: _tokenPriceUSD[_ctx.position.debtTokenData.token.symbol].toString(),
                     ethPrice: _tokenPriceUSD['ETH'].toString(),
                   },
                 },

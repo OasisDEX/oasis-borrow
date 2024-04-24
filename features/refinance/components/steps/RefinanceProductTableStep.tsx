@@ -9,9 +9,6 @@ import React from 'react'
 
 export const RefinanceProductTableStep = () => {
   const {
-    environment: {
-      marketPrices: { debtPrice, collateralPrice },
-    },
     metadata: { interestRates },
     form: {
       state: { refinanceOption },
@@ -50,10 +47,8 @@ export const RefinanceProductTableStep = () => {
         getRefinanceProductHubDataParser({
           table,
           interestRates,
-          collateralPrice,
           collateralToken,
           collateralAmount,
-          debtPrice,
           debtToken,
           debtAmount,
           isShort,

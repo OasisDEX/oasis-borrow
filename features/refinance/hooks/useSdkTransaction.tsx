@@ -19,7 +19,7 @@ export function useSdkRefinanceTransaction({
     environment: {
       slippage,
       chainInfo,
-      marketPrices: { collateralPrice, debtPrice },
+      marketPrices: { ethPrice },
       address,
     },
     position: { positionId, collateralTokenData, debtTokenData, positionType },
@@ -79,8 +79,7 @@ export function useSdkRefinanceTransaction({
     sdk,
     dpm?.address,
     slippage,
-    collateralPrice,
-    debtPrice,
+    ethPrice,
     address,
     chainInfo,
     poolId,

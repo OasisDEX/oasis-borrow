@@ -1,4 +1,5 @@
-import type { Tickers } from 'blockchain/prices.types'
+import { getTokenPrice } from 'blockchain/prices'
+import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
@@ -37,7 +38,7 @@ export type SDKSimulation = {
   liquidationThreshold: Percentage | null
 }
 
-export function useSdkSimulation({ tickers }: { tickers?: Tickers }): SDKSimulation {
+export function useSdkSimulation(): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
   const [user, setUser] = useState<null | User>(null)
   const [chain, setChain] = useState<null | Chain>(null)
@@ -54,7 +55,7 @@ export function useSdkSimulation({ tickers }: { tickers?: Tickers }): SDKSimulat
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
   useEffect(() => {
-    if (!ctx || !cache.positionOwner || !tickers) {
+    if (!ctx || !cache.positionOwner) {
       return
     }
     const {
@@ -76,7 +77,11 @@ export function useSdkSimulation({ tickers }: { tickers?: Tickers }): SDKSimulat
       throw new Error('Unsupported position type.')
     }
 
-    const debtPrice = tickers[strategy.secondaryToken].toString()
+    const debtPrice = getTokenPrice(
+      strategy.secondaryToken,
+      tokenPriceStore.prices,
+      'debt price - useSdkSimulation',
+    ).toString()
 
     const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
@@ -208,7 +213,6 @@ export function useSdkSimulation({ tickers }: { tickers?: Tickers }): SDKSimulat
   }, [
     sdk,
     ctx?.environment.slippage,
-    JSON.stringify(tickers),
     ctx?.environment.address,
     JSON.stringify(ctx?.environment.chainInfo),
     ctx?.position.positionId.id,

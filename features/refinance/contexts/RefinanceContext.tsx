@@ -7,8 +7,6 @@ import React, { useContext } from 'react'
 export type RefinanceContext = {
   environment: RefinanceGeneralContextBase['environment'] & {
     marketPrices: {
-      collateralPrice: string
-      debtPrice: string
       ethPrice: string
     }
   }
