@@ -36,7 +36,7 @@ export function getMorphoPositionDetails({
   const priceFormat = isShort
     ? `${secondaryToken}/${primaryToken}`
     : `${primaryToken}/${secondaryToken}`
-  const marketPrice = isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice)
+  const marketPrice = isShort ? one.div(position.marketPrice) : position.marketPrice
 
   switch (type) {
     case OmniProductType.Borrow: {
@@ -71,7 +71,7 @@ export function getMorphoPositionDetails({
         },
       ]
     }
-    case OmniProductType.Multiply:
+    case OmniProductType.Multiply: {
       const {
         collateralAmount,
         debtAmount,
@@ -114,6 +114,7 @@ export function getMorphoPositionDetails({
           subvalue: `Max ${maxRiskRatio.multiple.toFixed(2)}x`,
         },
       ]
+    }
     default: {
       return []
     }
