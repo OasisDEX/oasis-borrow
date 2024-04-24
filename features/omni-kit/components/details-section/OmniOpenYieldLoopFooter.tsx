@@ -7,13 +7,13 @@ import {
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
+import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
 import { hundred } from 'helpers/zero'
-import type { AaveLikeYieldsResponse } from 'lendingProtocols/aave-like-common'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 
 interface AaveLikeContentFooterYieldLoopProps {
-  getYields: () => AaveLikeYieldsResponse | undefined
+  getYields: () => GetYieldsResponseMapped | undefined
 }
 
 export const OmniOpenYieldLoopFooter: FC<AaveLikeContentFooterYieldLoopProps> = ({ getYields }) => {
@@ -45,7 +45,7 @@ export const OmniOpenYieldLoopFooter: FC<AaveLikeContentFooterYieldLoopProps> = 
     token: quoteToken,
   })
   const apyContentCardCommonData = useOmniCardDataApy({
-    apy: simulations?.apy?.div(100),
+    apy: simulations?.currentApy?.div(100),
     isSimulationLoading,
   })
 

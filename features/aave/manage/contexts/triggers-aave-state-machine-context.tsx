@@ -11,7 +11,7 @@ import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/auto
 import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
-import type { SupportedLambdaProtocols } from 'helpers/triggers'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { env } from 'process'

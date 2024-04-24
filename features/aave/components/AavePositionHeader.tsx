@@ -63,7 +63,7 @@ function AavePositionHeader({
   aaveTVL,
   minimumRiskRatio,
 }: {
-  maxRisk?: IRiskRatio
+  maxRisk: IRiskRatio
   strategy: IStrategyConfig
   aaveTVL?: PreparedAaveTotalValueLocked
   minimumRiskRatio: IRiskRatio

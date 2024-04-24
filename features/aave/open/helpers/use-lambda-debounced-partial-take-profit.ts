@@ -6,7 +6,7 @@ import { lambdaPriceDenomination } from 'features/aave/constants'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { StrategyType } from 'features/aave/types'
-import type { SupportedLambdaProtocols } from 'helpers/triggers'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
 import type {
   ProfitsSimulationBalanceRaw,
   ProfitsSimulationMapped,
@@ -14,8 +14,8 @@ import type {
   TriggerAction,
   TriggersApiError,
   TriggersApiWarning,
-} from 'helpers/triggers/setup-triggers'
-import { setupAaveLikePartialTakeProfit } from 'helpers/triggers/setup-triggers/setup-aave-partial-take-profit'
+} from 'helpers/lambda/triggers/setup-triggers'
+import { setupAaveLikePartialTakeProfit } from 'helpers/lambda/triggers/setup-triggers/setup-aave-partial-take-profit'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 

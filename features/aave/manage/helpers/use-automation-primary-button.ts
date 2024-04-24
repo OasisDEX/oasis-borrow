@@ -2,7 +2,7 @@ import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/Side
 import type { AutoBuySidebarAaveVaultProps } from 'features/aave/manage/sidebars/AutoBuySidebarAaveVault'
 import type { AutoSellSidebarAaveVaultProps } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
-import { TriggerAction } from 'helpers/triggers/setup-triggers'
+import { TriggerAction } from 'helpers/lambda/triggers/setup-triggers'
 import { useTranslation } from 'next-i18next'
 
 export function useAutomationPrimaryButton(

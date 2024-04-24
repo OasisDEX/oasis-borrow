@@ -12,7 +12,7 @@ import {
   getMaxToken,
 } from 'features/automation/protection/stopLoss/helpers'
 import { formatPercent } from 'helpers/formatters/format'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { one, zero } from 'helpers/zero'
 import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import React, { useMemo } from 'react'

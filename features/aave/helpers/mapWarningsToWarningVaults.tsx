@@ -1,6 +1,6 @@
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { TriggersApiWarning } from 'helpers/triggers/setup-triggers'
-import { TriggersApiWarningCode } from 'helpers/triggers/setup-triggers'
+import type { TriggersApiWarning } from 'helpers/lambda/triggers/setup-triggers'
+import { TriggersApiWarningCode } from 'helpers/lambda/triggers/setup-triggers'
 
 export function mapWarningsToWarningVaults(
   warnings: TriggersApiWarning[] | undefined,

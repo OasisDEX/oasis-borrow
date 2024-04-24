@@ -1,6 +1,6 @@
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import type { TriggersApiError } from 'helpers/triggers/setup-triggers'
-import { TriggersApiErrorCode } from 'helpers/triggers/setup-triggers'
+import type { TriggersApiError } from 'helpers/lambda/triggers/setup-triggers'
+import { TriggersApiErrorCode } from 'helpers/lambda/triggers/setup-triggers'
 
 export function mapErrorsToErrorVaults(
   errors: TriggersApiError[] | undefined,

@@ -11,6 +11,12 @@ export interface AjnaPoolsDataResponse {
   buckets: Bucket[]
   collateralAddress: string
   dailyPercentageRate30dAverage: string
+  quoteToken: {
+    symbol: string
+  }
+  collateralToken: {
+    symbol: string
+  }
   debt: string
   depositSize: string
   htp: string
@@ -28,7 +34,9 @@ export interface AjnaPoolsTableData {
   address: string
   borrowApr: BigNumber
   buckets: Bucket[]
-  collateralAddress: string
+  collateralTokenAddress: string
+  collateralToken: string
+  quoteToken: string
   dailyPercentageRate30dAverage: BigNumber
   debt: BigNumber
   depositSize: BigNumber
@@ -73,14 +81,18 @@ export const getAjnaPoolsData = async (
         poolMinDebtAmount,
         quoteTokenAddress,
         summerDepositAmountEarningInterest,
+        quoteToken,
+        collateralToken,
       }) => ({
         address,
         borrowApr: new BigNumber(borrowApr).shiftedBy(NEGATIVE_WAD_PRECISION),
         buckets,
-        collateralAddress,
         dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage).shiftedBy(
           negativeWadPrecision,
         ),
+        collateralTokenAddress: collateralAddress,
+        quoteToken: quoteToken.symbol,
+        collateralToken: collateralToken.symbol,
         debt: new BigNumber(debt).shiftedBy(negativeWadPrecision),
         depositSize: new BigNumber(depositSize).shiftedBy(negativeWadPrecision),
         highestThresholdPrice: new BigNumber(htp).shiftedBy(negativeWadPrecision),
