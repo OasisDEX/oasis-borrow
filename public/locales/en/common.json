@@ -111,6 +111,7 @@
   "position-apy": "Position APY",
   "average-apy-in-days": "Average APY - {{days}}d",
   "build-your-position": "Build your position",
+  "strategy": "Strategy",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
