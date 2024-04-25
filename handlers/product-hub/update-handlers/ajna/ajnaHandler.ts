@@ -243,6 +243,7 @@ async function getAjnaPoolData(
                 protocol,
                 secondaryToken: quoteToken,
                 ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
+                depositToken: collateralToken,
                 fee,
                 liquidity,
                 ...(isPoolNotEmpty &&

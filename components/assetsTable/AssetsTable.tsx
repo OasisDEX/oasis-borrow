@@ -336,11 +336,9 @@ export function AssetsTableHeaderCell({
 
 export function AssetsTableDataRow({ row, rowKeys, verticalAlign }: AssetsTableDataRowProps) {
   const { push } = useRouter()
-  const ref = useRef<HTMLDivElement>(null)
 
   return (
     <Box
-      ref={ref}
       as="tr"
       sx={{
         position: 'relative',

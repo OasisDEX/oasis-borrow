@@ -103,6 +103,7 @@ export const tokensMainnet = {
   MPETH: contractDesc(erc20, mainnet.common.MPETH),
   UNIETH: contractDesc(erc20, mainnet.common.UNIETH),
   XETH: contractDesc(erc20, mainnet.common.XETH),
+  PTWEETH: contractDesc(erc20, mainnet.common.PTWEETH),
   PYUSD: contractDesc(erc20, mainnet.common.PYUSD),
   CRVUSD: contractDesc(erc20, mainnet.common.CRVUSD),
   AETHSDAI: contractDesc(erc20, mainnet.common.AETHSDAI),

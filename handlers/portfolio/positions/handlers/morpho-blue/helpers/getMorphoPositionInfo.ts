@@ -2,6 +2,7 @@ import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/networks'
 import { getOmniPositionUrl } from 'features/omni-kit/helpers'
+import { getMorphoOraclePrices } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { MorphoDpmPositionsMarket } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
@@ -25,7 +26,7 @@ interface GetMorphoPositionInfoParams {
   protocolRaw: string
 }
 
-export function getMorphoPositionInfo({
+export async function getMorphoPositionInfo({
   apiVaults,
   dpmList,
   market: { collateralToken, debtToken, id: marketId },
@@ -37,8 +38,20 @@ export function getMorphoPositionInfo({
 }: GetMorphoPositionInfoParams) {
   const primaryToken = getTokenDisplayName(collateralToken.symbol)
   const secondaryToken = getTokenDisplayName(debtToken.symbol)
-  const collateralPrice = new BigNumber(prices[collateralToken.symbol.toUpperCase()])
-  const quotePrice = new BigNumber(prices[debtToken.symbol.toUpperCase()])
+
+  const oraclePrices = await getMorphoOraclePrices({
+    collateralPrecision: Number(collateralToken.decimals),
+    collateralToken: primaryToken,
+    marketId,
+    networkId,
+    quotePrecision: Number(debtToken.decimals),
+    quoteToken: secondaryToken,
+    collateralPrice: new BigNumber(prices[primaryToken]),
+    quotePrice: new BigNumber(prices[secondaryToken]),
+  })
+  const collateralPrice = oraclePrices[primaryToken]
+  const quotePrice = oraclePrices[secondaryToken]
+
   const networkName = networksById[networkId].name
   const networkMarkets = morphoMarkets[networkId] ?? {}
   const pairId = networkMarkets[`${primaryToken}-${secondaryToken}`].indexOf(marketId) + 1
