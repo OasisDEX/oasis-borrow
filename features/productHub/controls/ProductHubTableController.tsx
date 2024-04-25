@@ -1,7 +1,7 @@
 import type { ActionBannerProps } from 'components/ActionBanner'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
-import type { AssetsTableRowData, AssetsTableSeparator } from 'components/assetsTable/types'
+import type { AssetsTableRowData, AssetsTableSeparatorStatic } from 'components/assetsTable/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -11,7 +11,7 @@ interface ProductHubTableControllerProps {
   limitRows?: number
   perPage?: number
   rows: AssetsTableRowData[]
-  separator?: AssetsTableSeparator
+  separator?: AssetsTableSeparatorStatic
 }
 
 export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({
