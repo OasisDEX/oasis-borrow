@@ -1,5 +1,5 @@
 import { OmniOpenYieldLoopSimulation } from 'features/omni-kit/components/details-section'
-import { omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
+import { MAX_SENSIBLE_LTV, omniDefaultOverviewSimulationDeposit } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniSimulationYields } from 'features/omni-kit/hooks'
 import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
@@ -33,9 +33,16 @@ export const OmniOpenYieldLoopDetails: FC<{ poolAddress?: string }> = ({ poolAdd
     [depositAmount],
   )
 
+  const maxRiskRatio = useMemo(() => {
+    if (position.maxRiskRatio.loanToValue.gt(MAX_SENSIBLE_LTV)) {
+      return MAX_SENSIBLE_LTV
+    }
+    return position.maxRiskRatio.loanToValue
+  }, [position.maxRiskRatio.loanToValue])
+
   const ltv = useMemo(() => {
-    return simulation?.riskRatio.loanToValue || position.maxRiskRatio.loanToValue
-  }, [position.maxRiskRatio.loanToValue, simulation?.riskRatio.loanToValue])
+    return simulation?.riskRatio.loanToValue || maxRiskRatio
+  }, [maxRiskRatio, simulation?.riskRatio.loanToValue])
 
   const simulations = useOmniSimulationYields({
     amount,

@@ -7,6 +7,7 @@ import faqEarn from 'features/content/faqs/ajna/earn/en'
 import faqMultiply from 'features/content/faqs/ajna/multiply/en'
 import { OmniOpenYieldLoopFooter } from 'features/omni-kit/components/details-section'
 import { OmniOpenYieldLoopDetails } from 'features/omni-kit/components/details-section/OmniOpenYieldLoopDetails'
+import { MAX_SENSIBLE_LTV } from 'features/omni-kit/constants'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowDebtMax,
@@ -70,7 +71,7 @@ import {
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ajnaExtensionTheme } from 'theme'
 
 export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
@@ -237,7 +238,16 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ? simulation.buyingPower
           : undefined
 
-      const ltv = resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue
+      const maxRiskRatio = useMemo(() => {
+        if (position.maxRiskRatio.loanToValue.gt(MAX_SENSIBLE_LTV)) {
+          return MAX_SENSIBLE_LTV
+        }
+        return position.maxRiskRatio.loanToValue
+      }, [position.maxRiskRatio.loanToValue])
+
+      const ltv = useMemo(() => {
+        return resolvedSimulation?.riskRatio.loanToValue || maxRiskRatio
+      }, [maxRiskRatio, resolvedSimulation?.riskRatio.loanToValue])
 
       const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
         ltv,
