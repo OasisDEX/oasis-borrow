@@ -10,7 +10,12 @@ export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponseMap
 
   useDebouncedEffect(
     () => {
-      if (!isYieldLoopToken(params.collateralToken) && !isYieldLoopToken(params.quoteToken)) {
+      if (
+        params.collateralToken &&
+        params.quoteToken &&
+        !isYieldLoopToken(params.collateralToken) &&
+        !isYieldLoopToken(params.quoteToken)
+      ) {
         return
       }
       getYieldsRequest(params)

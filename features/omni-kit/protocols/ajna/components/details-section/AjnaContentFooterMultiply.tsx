@@ -9,12 +9,14 @@ import {
   useOmniCardDataVariableAnnualFee,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import {
   useAjnaCardDataBorrowRate,
   useAjnaCardDataPositionDebt,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import React from 'react'
+import { zero } from 'helpers/zero'
+import React, { useMemo } from 'react'
 
 interface AjnaContentFooterMultiplyProps {
   changeVariant?: ChangeVariantType
@@ -44,13 +46,22 @@ export function AjnaContentFooterMultiply({
   simulation,
 }: AjnaContentFooterMultiplyProps) {
   const {
-    environment: { isYieldLoopWithData },
+    environment: { protocol, network, isYieldLoopWithData },
   } = useOmniGeneralContext()
   const commonContentCardData = {
     asFooter: true,
     changeVariant,
     isLoading: isSimulationLoading,
   }
+
+  const ltv = useMemo(() => position.riskRatio.loanToValue, [position])
+  const yields = useOmniEarnYields({
+    actionSource: 'AjnaContentFooterMultiply',
+    ltv,
+    networkId: network.id,
+    protocol,
+    poolAddress: position.pool.poolAddress,
+  })
 
   const totalCollateralExposureContentCardCommonData = useOmniCardDataTokensValue({
     afterTokensAmount: simulation?.collateralAmount,
@@ -74,9 +85,8 @@ export function AjnaContentFooterMultiply({
     afterMultiple: simulation?.riskRatio.multiple,
     multiple: position.riskRatio.multiple,
   })
-
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: position.pool.interestRate,
+    borrowRate: position.pool.interestRate.minus(yields?.apy.div(100) || zero),
   })
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
     collateralToken,
@@ -84,7 +94,7 @@ export function AjnaContentFooterMultiply({
     networkId,
     owner,
     quoteToken,
-    borrowRate: position.pool.interestRate,
+    borrowRate: position.pool.interestRate.minus(yields?.apy.div(100) || zero),
     ...(!isOracless && {
       quotePrice,
     }),
