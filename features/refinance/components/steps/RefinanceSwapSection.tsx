@@ -45,7 +45,7 @@ export const RefinanceSwapSection = () => {
     const rawPrice = new BigNumber(1).div(swap.offerPrice.value)
 
     const formatted = {
-      fromTokenlAsset: (
+      fromTokenAsset: (
         <ItemValueWithIcon tokens={[fromToken]}>
           {formatCryptoBalance(fromTokenAmount)}
         </ItemValueWithIcon>
@@ -64,7 +64,7 @@ export const RefinanceSwapSection = () => {
     dropdownGroups.push([
       {
         label: isCollateral ? t('system.collateral-asset') : t('system.debt-asset'),
-        value: formatted.fromTokenlAsset,
+        value: formatted.fromTokenAsset,
         change: formatted.toTokenAsset,
         tooltip: isCollateral
           ? t('refinance.sidebar.whats-changing.tooltips.collateral-asset')
