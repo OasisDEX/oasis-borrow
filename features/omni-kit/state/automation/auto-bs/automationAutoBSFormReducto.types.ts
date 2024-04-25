@@ -8,7 +8,7 @@ import type {
   AutomationFormActionsUpdateTriggerLtv,
   AutomationFormActionsUpdateUseThreshold,
 } from 'features/omni-kit/state/automation/common'
-import type { TriggerAction } from 'helpers/triggers'
+import type { TriggerAction } from 'helpers/lambda/triggers'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniAutomationAutoBSFormState {

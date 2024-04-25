@@ -1,31 +1,26 @@
-import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
+import { featuredMultiplyNavigationProducts } from 'features/navigation/meta'
+import { OmniProductType } from 'features/omni-kit/types'
+import { filterFeaturedProducts, getGenericPositionUrl } from 'features/productHub/helpers'
+import type { ProductHubItem } from 'features/productHub/types'
 
-export const getProductMultiplyNavItems = (
-  promoCards: ProductHubPromoCards,
-  productHub: ProductHubItem[],
-) => {
-  const data: (ProductHubItem & { url?: string })[] = []
-
-  promoCards.multiply.default.forEach((promoCard) => {
-    const foundItem = productHub.find(
-      (item) =>
-        item.primaryToken === promoCard.tokens?.[0] &&
-        item.secondaryToken === promoCard.tokens?.[1] &&
-        item.network === promoCard.protocol?.network &&
-        item.protocol === promoCard.protocol.protocol &&
-        item.product.includes(ProductHubProductType.Multiply),
-    )
-
-    if (foundItem) data.push({ ...foundItem, url: promoCard.link?.href })
+export const getProductMultiplyNavItems = (productHub: ProductHubItem[]) => {
+  return filterFeaturedProducts({
+    filters: {
+      products: featuredMultiplyNavigationProducts,
+    },
+    product: OmniProductType.Multiply,
+    rows: productHub,
   })
-
-  return data.map((item) => ({
-    maxMultiply: item.maxMultiply ? Number(item.maxMultiply) : undefined,
-    collateralToken: item.primaryToken,
-    debtToken: item.secondaryToken,
-    protocol: item.protocol,
-    network: item.network,
-    url: item.url,
-  }))
+    .map((product) => ({
+      maxMultiply: product.maxMultiply ? Number(product.maxMultiply) : undefined,
+      collateralToken: product.primaryToken,
+      debtToken: product.secondaryToken,
+      protocol: product.protocol,
+      network: product.network,
+      url: getGenericPositionUrl({
+        ...product,
+        product: [OmniProductType.Multiply],
+      }),
+    }))
+    .sort((a, b) => (b.maxMultiply ?? 0) - (a.maxMultiply ?? 0))
 }

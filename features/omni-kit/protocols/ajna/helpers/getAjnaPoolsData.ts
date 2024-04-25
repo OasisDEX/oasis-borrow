@@ -7,48 +7,58 @@ import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaPoolsDataResponse {
   address: string
-  collateralAddress: string
-  quoteTokenAddress: string
-  debt: string
-  depositSize: string
-  interestRate: string
-  dailyPercentageRate30dAverage: string
-  poolMinDebtAmount: string
-  lup: string
-  lupIndex: string
-  htp: string
-  htpIndex: string
-  lendApr: string
   borrowApr: string
   buckets: Bucket[]
+  collateralAddress: string
+  dailyPercentageRate30dAverage: string
+  quoteToken: {
+    symbol: string
+  }
+  collateralToken: {
+    symbol: string
+  }
+  debt: string
+  depositSize: string
+  htp: string
+  htpIndex: string
+  interestRate: string
+  lendApr: string
+  lup: string
+  lupIndex: string
+  poolMinDebtAmount: string
+  quoteTokenAddress: string
+  summerDepositAmountEarningInterest: string
 }
 
 export interface AjnaPoolsTableData {
   address: string
-  collateralAddress: string
-  quoteTokenAddress: string
-  debt: BigNumber
-  depositSize: BigNumber
-  interestRate: BigNumber
-  dailyPercentageRate30dAverage: BigNumber
-  poolMinDebtAmount: BigNumber
-  lowestUtilizedPrice: BigNumber
-  lowestUtilizedPriceIndex: number
-  highestThresholdPrice: BigNumber
-  highestThresholdPriceIndex: number
-  lendApr: BigNumber
   borrowApr: BigNumber
   buckets: Bucket[]
+  collateralTokenAddress: string
+  collateralToken: string
+  quoteToken: string
+  dailyPercentageRate30dAverage: BigNumber
+  debt: BigNumber
+  depositSize: BigNumber
+  highestThresholdPrice: BigNumber
+  highestThresholdPriceIndex: number
+  interestRate: BigNumber
+  lendApr: BigNumber
+  lowestUtilizedPrice: BigNumber
+  lowestUtilizedPriceIndex: number
+  poolMinDebtAmount: BigNumber
+  quoteTokenAddress: string
+  summerDepositAmountEarningInterest: BigNumber
 }
 
 export const getAjnaPoolsData = async (
   networkId: OmniSupportedNetworkIds,
 ): Promise<AjnaPoolsTableData[]> => {
-  const { response } = (await loadSubgraph(
-    'Ajna',
-    'getAjnaPoolsData',
+  const { response } = (await loadSubgraph({
+    subgraph: 'Ajna',
+    method: 'getAjnaPoolsData',
     networkId,
-  )) as SubgraphsResponses['Ajna']['getAjnaPoolsData']
+  })) as SubgraphsResponses['Ajna']['getAjnaPoolsData']
 
   const negativeWadPrecision = WAD_PRECISION * -1
 
@@ -56,6 +66,7 @@ export const getAjnaPoolsData = async (
     return response.pools.map(
       ({
         address,
+        borrowApr,
         buckets,
         collateralAddress,
         dailyPercentageRate30dAverage,
@@ -64,30 +75,37 @@ export const getAjnaPoolsData = async (
         htp,
         htpIndex,
         interestRate,
+        lendApr,
         lup,
         lupIndex,
         poolMinDebtAmount,
         quoteTokenAddress,
-        lendApr,
-        borrowApr,
+        summerDepositAmountEarningInterest,
+        quoteToken,
+        collateralToken,
       }) => ({
         address,
+        borrowApr: new BigNumber(borrowApr).shiftedBy(NEGATIVE_WAD_PRECISION),
         buckets,
-        collateralAddress,
-        quoteTokenAddress,
-        interestRate: new BigNumber(interestRate).shiftedBy(negativeWadPrecision),
-        debt: new BigNumber(debt).shiftedBy(negativeWadPrecision),
-        depositSize: new BigNumber(depositSize).shiftedBy(negativeWadPrecision),
         dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage).shiftedBy(
           negativeWadPrecision,
         ),
-        poolMinDebtAmount: new BigNumber(poolMinDebtAmount).shiftedBy(negativeWadPrecision),
-        lowestUtilizedPrice: new BigNumber(lup).shiftedBy(negativeWadPrecision),
-        lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
+        collateralTokenAddress: collateralAddress,
+        quoteToken: quoteToken.symbol,
+        collateralToken: collateralToken.symbol,
+        debt: new BigNumber(debt).shiftedBy(negativeWadPrecision),
+        depositSize: new BigNumber(depositSize).shiftedBy(negativeWadPrecision),
         highestThresholdPrice: new BigNumber(htp).shiftedBy(negativeWadPrecision),
         highestThresholdPriceIndex: parseInt(htpIndex, 10),
+        interestRate: new BigNumber(interestRate).shiftedBy(negativeWadPrecision),
         lendApr: new BigNumber(lendApr).shiftedBy(NEGATIVE_WAD_PRECISION),
-        borrowApr: new BigNumber(borrowApr).shiftedBy(NEGATIVE_WAD_PRECISION),
+        lowestUtilizedPrice: new BigNumber(lup).shiftedBy(negativeWadPrecision),
+        lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
+        poolMinDebtAmount: new BigNumber(poolMinDebtAmount).shiftedBy(negativeWadPrecision),
+        quoteTokenAddress,
+        summerDepositAmountEarningInterest: new BigNumber(
+          summerDepositAmountEarningInterest,
+        ).shiftedBy(negativeWadPrecision),
       }),
     )
   }

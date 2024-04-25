@@ -2,43 +2,57 @@ import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import type { ItemProps } from 'components/infoSection/Item'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { TokensGroup } from 'components/TokensGroup'
 import { RefinanceAutomationSection, RefinanceCardWrapper } from 'features/refinance/components'
 import { RefinancePositionViewType } from 'features/refinance/types'
 import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatLtvDecimalAsPercent,
+} from 'helpers/formatters/format'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { eye } from 'theme/icons'
 import { Divider, Flex, Text } from 'theme-ui'
 
-type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
+export type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
   Type extends RefinancePositionViewType.EMPTY
     ? { type: Type }
-    : {
-        primaryToken: string
-        secondaryToken: string
-        protocolData: {
-          network: NetworkNames
-          protocol: LendingProtocol
+    : Type extends RefinancePositionViewType.CLOSED
+      ? {
+          type: Type
+          primaryToken: string
+          secondaryToken: string
+          positionId: string
         }
-        poolData: {
-          borrowRate: BigNumber
-          maxLtv: BigNumber
+      : {
+          primaryToken: string
+          secondaryToken: string
+          protocolData: {
+            network: NetworkNames
+            protocol: LendingProtocol
+          }
+          poolData: {
+            borrowRate: BigNumber
+            maxLtv: BigNumber
+            borrowRateChange?: BigNumber
+            maxLtvChange?: BigNumber
+          }
+          positionData?: {
+            ltv: BigNumber
+            collateral: BigNumber
+            debt: BigNumber
+            liquidationPrice: BigNumber
+          }
+          type: Type
+          automations: PortfolioPositionAutomations
+          positionId?: string
         }
-        positionData: {
-          ltv: BigNumber
-          collateral: BigNumber
-          debt: BigNumber
-          liquidationPrice: BigNumber
-        }
-        type: Type
-        automations: PortfolioPositionAutomations
-        positionId?: BigNumber
-      }
 
 export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   props: RefinancePositionViewProps<Type>,
@@ -46,7 +60,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   const { t } = useTranslation()
   if (props.type === RefinancePositionViewType.EMPTY) {
     return (
-      <RefinanceCardWrapper>
+      <RefinanceCardWrapper sx={{ height: ['auto', '522px'] }}>
         <Flex
           sx={{
             flexDirection: 'column',
@@ -57,11 +71,35 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
           }}
         >
           <Icon icon={eye} size="25px" color="primary60" />
-          <Text as="h3" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+          <Text as="h3" sx={{ fontSize: 3, fontWeight: 'semiBold', mb: 2 }}>
             {t('refinance.position.empty.title')}
           </Text>
           <Text as="p" sx={{ fontSize: 2, color: 'neutral80' }}>
             {t('refinance.position.empty.description')}
+          </Text>
+        </Flex>
+      </RefinanceCardWrapper>
+    )
+  }
+
+  if (props.type === RefinancePositionViewType.CLOSED) {
+    return (
+      <RefinanceCardWrapper sx={{ height: 'fit-content' }}>
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
+          <Text as="h2" sx={{ fontSize: 3, fontWeight: 'semiBold', mb: 3 }}>
+            {t(`refinance.position.title.${props.type}`, {
+              positionId: props.positionId,
+            })}
+          </Text>
+          <Text as="p" sx={{ fontSize: 2, color: 'neutral80' }}>
+            {t('refinance.position.closed.description', {
+              pair: `${props.primaryToken}/${props.secondaryToken}`,
+            })}
           </Text>
         </Flex>
       </RefinanceCardWrapper>
@@ -79,51 +117,76 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   } = props
 
   const formatted = {
-    ltv: formatLtvDecimalAsPercent(positionData.ltv),
-    liquidationPrice: formatCryptoBalance(positionData.liquidationPrice),
-    collateral: (
+    ltv: positionData?.ltv && formatLtvDecimalAsPercent(positionData.ltv),
+    liquidationPrice:
+      positionData?.liquidationPrice && formatCryptoBalance(positionData.liquidationPrice),
+    collateral: positionData?.collateral && (
       <ItemValueWithIcon tokens={[primaryToken]}>
         {formatCryptoBalance(positionData.collateral)}
       </ItemValueWithIcon>
     ),
-    debt: (
+    debt: positionData?.debt && (
       <ItemValueWithIcon tokens={[secondaryToken]}>
         {formatCryptoBalance(positionData.debt)}
       </ItemValueWithIcon>
     ),
     maxLtv: formatLtvDecimalAsPercent(poolData.maxLtv),
+    ...(poolData.maxLtvChange && {
+      maxLtvChange: formatLtvDecimalAsPercent(poolData.maxLtvChange, { plus: true }),
+    }),
     borrowRate: formatLtvDecimalAsPercent(poolData.borrowRate),
+    ...(poolData.borrowRateChange && {
+      borrowRateChange: `${formatDecimalAsPercent(poolData.borrowRateChange, { plus: true })}`,
+    }),
   }
 
-  const positionInfoSectionItems = [
+  const isLoading = !positionData
+
+  const positionInfoSectionItems: ItemProps[] = [
     {
       label: t('system.ltv-short'),
       value: formatted.ltv,
+      isLoading,
     },
     {
       label: `${t('system.liq-price-short')} (${primaryToken}/${secondaryToken})`,
       value: formatted.liquidationPrice,
+      isLoading,
     },
     {
       label: t('system.collateral'),
       value: formatted.collateral,
+      isLoading,
     },
     {
       label: t('system.debt'),
       value: formatted.debt,
+      isLoading,
     },
   ]
 
-  const poolInfoSectionItems = [
+  const poolInfoSectionItems: ItemProps[] = [
     {
       label: t('max-ltv'),
       value: formatted.maxLtv,
-      tooltip: 'TBD',
+      ...(formatted.maxLtvChange && {
+        secondary: {
+          value: formatted.maxLtvChange,
+          variant: poolData.maxLtvChange?.isPositive() ? 'positive' : 'negative',
+        },
+      }),
+      tooltip: t('refinance.position.tooltips.max-ltv'),
     },
     {
       label: t('system.borrow-rate'),
       value: formatted.borrowRate,
-      tooltip: 'TBD',
+      ...(formatted.borrowRateChange && {
+        secondary: {
+          value: formatted.borrowRateChange,
+          variant: poolData.borrowRateChange?.isPositive() ? 'negative' : 'positive',
+        },
+      }),
+      tooltip: t('refinance.position.tooltips.borrow-rate'),
     },
     {
       label: t('system.protocol'),

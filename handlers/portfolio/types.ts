@@ -1,6 +1,7 @@
 import type { Vault } from '@prisma/client'
 import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
+import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { HistoryResponse } from 'handlers/portfolio/positions/helpers/getHistoryData'
@@ -12,18 +13,33 @@ type AutomationType = {
 }
 
 export type PortfolioPositionAutomations = {
-  stopLoss?: AutomationType
-  takeProfit?: AutomationType
   autoBuy?: AutomationType
   autoSell?: AutomationType
+  constantMultiple?: AutomationType
+  stopLoss?: AutomationType
+  takeProfit?: AutomationType
 }
 
 export type PortfolioPosition = {
   assetLabel?: string
   availableToMigrate?: boolean
+  availableToRefinance?: boolean
   automations: PortfolioPositionAutomations
   description?: string
   details: PositionDetail[]
+  rawPositionDetails?: {
+    collateral: string
+    debt: string
+    collateralPrice: string
+    debtPrice: string
+    ethPrice: string
+    liquidationPrice: string
+    ltv: string
+    maxLtv: string
+    borrowRate: string
+    poolId: MakerPoolId | SparkPoolId
+    pairId: number
+  }
   /*
   lendingType:
     if earn, and has debt -> Yield Loop (loop)

@@ -32,7 +32,10 @@ export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 export type UseFlowStateProps = {
   allowanceAmount?: BigNumber
   amount?: BigNumber
-  existingProxy?: string
+  existingProxy?: {
+    address: string
+    id: string
+  }
   filterConsumedProxy?: (events: PositionFromUrl[]) => Promise<boolean>
   networkId: OmniSupportedNetworkIds
   onEverythingReady?: UseFlowStateCBType
@@ -41,6 +44,8 @@ export type UseFlowStateProps = {
   pairId: number
   protocol: LendingProtocol
   token?: string
+  step?: string
+  useHeaderBackBtn?: boolean
 }
 
 export function useFlowState({
@@ -55,16 +60,19 @@ export function useFlowState({
   pairId,
   protocol,
   token,
+  step,
+  useHeaderBackBtn,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
-  const [availableProxies, setAvailableProxies] = useState<string[]>(
+  const [availableProxies, setAvailableProxies] = useState<{ address: string; id: string }[]>(
     existingProxy ? [existingProxy] : [],
   )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [isUiDataLoading, setUiDataLoading] = useState<boolean>(true) // needed to be able to show skeleton when dpm data is being loaded
   const { dpmAccountStateMachine, allowanceStateMachine, allowanceForAccountEthers$ } =
     useProductContext()
   const { context$, connectedContext$ } = useMainContext()
@@ -97,7 +105,7 @@ export function useFlowState({
     error: undefined,
   }
 
-  const spender = availableProxies[0] // probably needs further thoguht
+  const spender = availableProxies[0]?.address // probably needs further thoguht
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
@@ -119,11 +127,14 @@ export function useFlowState({
       if (
         value === 'txSuccess' &&
         context.result?.proxy &&
-        !availableProxies?.includes(context.result?.proxy) &&
+        !availableProxies?.find((item) => item.address === context.result?.proxy) &&
         event.type === 'CONTINUE'
       ) {
         setAsUserAction(true)
-        setAvailableProxies([...(availableProxies || []), context.result.proxy])
+        setAvailableProxies([
+          ...(availableProxies || []),
+          { address: context.result.proxy, id: context.result.vaultId },
+        ])
       }
     })
     return () => {
@@ -136,6 +147,10 @@ export function useFlowState({
   useEffect(() => {
     if (!walletAddress) return
     const userDpmProxies = userDpmProxies$(walletAddress, networkId).subscribe((userProxyList) => {
+      if (userProxyList.length === 0) {
+        setUiDataLoading(false)
+      }
+
       setUserProxyList(userProxyList)
     })
     return () => {
@@ -179,7 +194,17 @@ export function useFlowState({
       const filteredAndSortedproxiesList = (
         filteredProxiesList.filter(Boolean) as typeof userProxyEventsList
       ).sort((aproxy, bproxy) => Number(aproxy.proxyId) - Number(bproxy.proxyId))
-      setAvailableProxies(filteredAndSortedproxiesList.map(({ proxyAddress }) => proxyAddress))
+
+      if (filteredAndSortedproxiesList.length === 0) {
+        setUiDataLoading(false)
+      }
+
+      setAvailableProxies(
+        filteredAndSortedproxiesList.map(({ proxyAddress, proxyId }) => ({
+          address: proxyAddress,
+          id: proxyId,
+        })),
+      )
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()
@@ -191,15 +216,17 @@ export function useFlowState({
     if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
     if (!token || !amount || new BigNumber(amount || NaN).isNaN()) {
       setLoading(false)
+      setUiDataLoading(false)
       setAllowanceReady(false)
     }
   }, [token, isProxyReady, walletAddress, amount])
 
   // allowance machine
   useEffect(() => {
-    if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
+    if (!isProxyReady || !spender || !allDefined(walletAddress, amount, token)) return
     if (token === 'ETH') {
       setLoading(false)
+      setUiDataLoading(false)
       setAllowanceReady(true)
       return
     }
@@ -207,6 +234,7 @@ export function useFlowState({
       (allowanceData) => {
         if (allowanceData && allowanceMachineSubscription) {
           setLoading(false)
+          setUiDataLoading(false)
           if (allowanceData.gt(zero) && allowanceData.gte(amount!)) {
             setAsUserAction(false)
             setAllowanceReady(true)
@@ -274,9 +302,12 @@ export function useFlowState({
     isWalletConnected,
     isAllowanceReady,
     isLoading, // just for the allowance loading state
+    isUiDataLoading,
     isEverythingReady: isAllowanceReady, // just for convenience, allowance is always the last step
     asUserAction,
     onEverythingReady,
     onGoBack,
+    step,
+    useHeaderBackBtn,
   }
 }

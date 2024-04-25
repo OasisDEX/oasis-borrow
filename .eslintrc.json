@@ -46,7 +46,10 @@
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/no-non-null-assertion": "warn",
-    "@typescript-eslint/no-shadow": ["warn", { "builtinGlobals": true, "hoist": "all" }],
+    "@typescript-eslint/no-shadow": [
+      "warn",
+      { "allow": ["Image", "Text", "Request"], "builtinGlobals": true, "hoist": "all" }
+    ],
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/consistent-type-imports": [

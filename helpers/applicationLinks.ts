@@ -1,6 +1,11 @@
 export const INTERNAL_LINKS = {
   appUrl: 'https://summer.fi',
   homepage: '/',
+  /**
+   To be used with address
+   `${INTERNAL_LINKS.portfolio}/${walletAddress}`
+   */
+  portfolio: '/portfolio',
   about: '/about',
   notFound: '/not-found',
   privacy: '/privacy',
@@ -83,11 +88,27 @@ export const EXTERNAL_LINKS = {
     EXPANDING_EARN_AAVE_V3: 'https://blog.summer.fi/expanding-earn-with-aave-v3',
     MULTIPLY_FOR_AAVE: 'https://blog.summer.fi/introducing-oasis-multiply-for-aave',
     DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
-    MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
+    MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes',
     LEARN: 'https://blog.summer.fi/tag/learn',
     HOW_TO_SET_UP_AUTO_TAKE_PROFIT: 'https://blog.summer.fi/how-to-set-up-auto-take-profit',
+    HOW_TO_CHOOSE_THE_RIGHT_PROTOCOL:
+      'https://docs.summer.fi/protocols/choosing-the-right-protocol',
+    SELECTING_THE_RIGHT_BORROW_PAIR: 'https://blog.summer.fi/select-the-right-borrow-pair/',
+    SELECTING_THE_RIGHT_MULTIPLY_POSITION:
+      'https://blog.summer.fi/choosing-the-best-multiply-position',
+    SELECTING_THE_RIGHT_EARN_POSITION_TYPE:
+      'https://blog.summer.fi/choosing-your-earn-position-type',
+    UNDERSTANDING_YIELD_LOOPS: 'https://blog.summer.fi/understanding-yield-loops',
+    WHY_BORROW_ON_SUMMER: 'https://blog.summer.fi/why-borrow-on-summer',
+    WHY_MULTIPLY_ON_SUMMER: 'https://blog.summer.fi/why-multiply-on-summer',
+    WHY_EARN_ON_SUMMER: 'https://blog.summer.fi/why-earn-on-summer',
   },
   DOCS: {
+    FAQ: {
+      BORROW: 'https://docs.summer.fi/products/borrow/frequently-asked-questions',
+      MULTIPLY: 'https://docs.summer.fi/products/multiply/frequently-asked-questions',
+      EARN: 'https://docs.summer.fi/products/earn',
+    },
     AJNA: {
       HUB: 'https://docs.summer.fi/protocols/ajna',
       HOW_TO_BORROW:
@@ -131,6 +152,5 @@ export const EXTERNAL_LINKS = {
   WONDERWALL: 'https://www.youtube.com/embed/6hzrDeceEKc',
   LIDO_FI_STETH_LIQUIDITY:
     'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards',
-  AAVE_SDAI_YIELD_DUNE: 'https://dune.com/Lucianken/aave-v3-sdai-yield-multiple',
   HOW_TO_SET_UP_AUTO_TAKE_PROFIT_VIDEO: 'https://youtu.be/ZqnvxeccJDQ?feature=shared',
 }

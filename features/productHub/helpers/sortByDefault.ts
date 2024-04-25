@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { getActionUrl } from 'features/productHub/helpers'
-import { MIN_LIQUIDITY } from 'features/productHub/meta'
+import { OmniProductType } from 'features/omni-kit/types'
+import { getGenericPositionUrl } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 
 function sortByProductValue(
   param: keyof ProductHubItem,
@@ -21,13 +20,9 @@ function sortByProductValue(
   )
 }
 
-function filterOutLowLiquidityProducts({ liquidity }: ProductHubItem) {
-  return liquidity && new BigNumber(liquidity).gte(MIN_LIQUIDITY)
-}
-
 export function sortByDefault(
   rows: ProductHubItem[],
-  selectedProduct: ProductHubProductType,
+  selectedProduct: OmniProductType,
 ): ProductHubItem[] {
   const { available, comingSoon } = rows.reduce<{
     available: ProductHubItem[]
@@ -46,7 +41,7 @@ export function sortByDefault(
         secondaryTokenAddress,
       } = current
 
-      return getActionUrl({
+      return getGenericPositionUrl({
         bypassFeatureFlag: false,
         earnStrategy,
         label,
@@ -65,17 +60,14 @@ export function sortByDefault(
   )
 
   switch (selectedProduct) {
-    case ProductHubProductType.Borrow:
+    case OmniProductType.Borrow:
+      return [...sortByProductValue('fee', available), ...sortByProductValue('fee', comingSoon)]
+    case OmniProductType.Multiply:
       return [
-        ...sortByProductValue('fee', available.filter(filterOutLowLiquidityProducts)),
-        ...sortByProductValue('fee', comingSoon),
-      ]
-    case ProductHubProductType.Multiply:
-      return [
-        ...sortByProductValue('maxMultiply', available.filter(filterOutLowLiquidityProducts), -1),
+        ...sortByProductValue('maxMultiply', available, -1),
         ...sortByProductValue('maxMultiply', comingSoon, -1),
       ]
-    case ProductHubProductType.Earn:
+    case OmniProductType.Earn:
       return [
         ...sortByProductValue('weeklyNetApy', available, -1),
         ...sortByProductValue('weeklyNetApy', comingSoon, -1),

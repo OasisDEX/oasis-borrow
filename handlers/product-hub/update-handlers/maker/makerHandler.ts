@@ -1,7 +1,8 @@
-// import { ProductHubProductType } from 'features/productHub/types'
+// import { OmniProductType } from 'features/productHub/types'
 
 import { RiskRatio } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
+import { AutomationFeature } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
@@ -38,7 +39,7 @@ const bigNumberify = (val: BigNumberish) => new BigNumber(val.toString())
 const getIlk = (label: string) => (['DSR'].includes(label) ? label : label.split('/')[0])
 
 async function getMakerData(
-  networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
+  networkId: NetworkIds.MAINNET,
   tickers: Tickers,
 ): ProductHubHandlerResponse {
   const rpcProvider = getRpcProvider(networkId)
@@ -149,6 +150,13 @@ async function getMakerData(
             maxMultiply: maxMultiple.toString(),
             maxLtv: maxLtv.toString(),
             hasRewards: false,
+            automationFeatures: [
+              AutomationFeature.stopLoss,
+              AutomationFeature.autoBuy,
+              AutomationFeature.autoSell,
+              AutomationFeature.autoTakeProfit,
+              AutomationFeature.constantMultiple,
+            ],
           }
         })
         .filter(Boolean) as ProductHubItem[],
@@ -158,10 +166,7 @@ async function getMakerData(
 }
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
-  return Promise.all([
-    getMakerData(NetworkIds.MAINNET, tickers),
-    getMakerData(NetworkIds.GOERLI, tickers),
-  ]).then((responses) => {
+  return Promise.all([getMakerData(NetworkIds.MAINNET, tickers)]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {
         return {

@@ -212,6 +212,9 @@ export const goerliContracts: MainnetContractsWithOptional = {
     'SNX-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SNXUSDC),
     'ENA-SDAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ENASDAI),
     'SDAI-ENA': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SDAIENA),
+    'AERO-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_AEROUSDC),
+    'PRIME-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_PRIMEUSDC),
+    'SAFE-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SAFEDAI),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),

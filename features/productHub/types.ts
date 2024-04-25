@@ -1,21 +1,13 @@
+import type { AutomationFeature } from '@prisma/client'
 import type { NetworkNames } from 'blockchain/networks'
 import type { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip.types'
-import type { PromoCardProps } from 'components/PromoCard.types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
 import type { EarnStrategies } from '.prisma/client'
 
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
 export type ProductHubManagementType = 'active' | 'passive'
-
-export enum ProductHubProductType {
-  Borrow = 'borrow',
-  Multiply = 'multiply',
-  Earn = 'earn',
-}
-
-export type ProductHubTokenType = string
-export type ProductHubRewardsType = boolean
 
 export type ProductHubSupportedNetworks =
   | NetworkNames.ethereumMainnet
@@ -26,6 +18,30 @@ export type ProductHubSupportedNetworks =
   | NetworkNames.optimismGoerli
   | NetworkNames.baseMainnet
   | NetworkNames.baseGoerli
+
+export enum ProductHubCategory {
+  All = 'all',
+  Restaking = 'restaking',
+  StakingRewards = 'staking-rewards',
+  TokenFarming = 'token-farming',
+  YieldLoops = 'yield-loops',
+}
+
+export enum ProductHubTag {
+  BluechipAssets = 'bluechip-assets',
+  EasiestToManage = 'easiest-to-manage',
+  EthDerivativeYieldLoops = 'eth-derivative-yield-loops',
+  Gt1BTvl = 'gt-1b-tvl',
+  IsolatedPairs = 'isolated-pairs',
+  Long = 'long',
+  Longevity = 'longevity',
+  LpOnly = 'lp-only',
+  Memecoins = 'memecoins',
+  MoreCapitalEfficient = 'more-capital-efficient',
+  NonStablecoinCollateral = 'non-stablecoin-collateral',
+  Short = 'short',
+  StablecoinStrategies = 'stablecoin-strategies',
+}
 
 export type ProductHubColumnKey =
   | '7DayNetApy'
@@ -39,21 +55,23 @@ export type ProductHubColumnKey =
   | 'maxMultiple'
   | 'protocolNetwork'
   | 'strategy'
+  | 'automation'
 
 export interface ProductHubItemBasics {
   label: string
   network: ProductHubSupportedNetworks
-  primaryToken: ProductHubTokenType
-  primaryTokenAddress: ProductHubTokenType
-  primaryTokenGroup?: ProductHubTokenType
-  product: ProductHubProductType[]
+  primaryToken: string
+  primaryTokenAddress: string
+  primaryTokenGroup?: string
+  product: OmniProductType[]
   protocol: LendingProtocol
-  secondaryToken: ProductHubTokenType
-  secondaryTokenAddress: ProductHubTokenType
-  secondaryTokenGroup?: ProductHubTokenType
+  secondaryToken: string
+  secondaryTokenAddress: string
+  secondaryTokenGroup?: string
 }
 
 export interface ProductHubItemDetails {
+  automationFeatures?: AutomationFeature[]
   depositToken?: string
   earnStrategy?: EarnStrategies
   earnStrategyDescription?: string
@@ -77,7 +95,8 @@ export interface ProductHubItemTooltips {
   }
 }
 
-export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
+export type ProductHubItemData = ProductHubItemBasics & ProductHubItemDetails
+export type ProductHubItem = ProductHubItemData & ProductHubItemTooltips
 export type ProductHubItemWithoutAddress = Omit<
   ProductHubItem,
   'primaryTokenAddress' | 'secondaryTokenAddress'
@@ -87,48 +106,42 @@ export type ProductHubItemWithFlattenTooltip = Omit<ProductHubItem, 'tooltips'> 
   tooltips: string
 }
 
-export type ProductHubPromoCards = {
-  [key in ProductHubProductType]: {
-    default: PromoCardProps[]
-    tokens: {
-      [key: string]: PromoCardProps[]
-    }
-  }
-}
-
 export interface ProductHubData {
   table: ProductHubItem[]
 }
-
-export interface ProductHubFiltersCriteria {
-  network?: ProductHubSupportedNetworks[]
-  primaryToken?: ProductHubTokenType[]
-  primaryTokenGroup?: ProductHubTokenType[]
-  protocol?: LendingProtocol[]
-  secondaryToken?: ProductHubTokenType[]
-  secondaryTokenGroup?: ProductHubTokenType[]
-  multiplyStrategyType?: ProductHubMultiplyStrategyType[]
-  hasRewards?: ProductHubRewardsType[]
-}
-
 export interface ProductHubFilters {
-  or: ProductHubFiltersCriteria[]
-  and: ProductHubFiltersCriteria
+  [key: string]: string[]
 }
 
-export interface ProductHubQueryString {
-  debtToken?: ProductHubTokenType[]
-  network?: ProductHubSupportedNetworks[]
-  protocol?: LendingProtocol[]
-  rewardsOnly?: ProductHubRewardsType[]
-  secondaryToken?: ProductHubTokenType[]
-  strategy?: ProductHubMultiplyStrategyType[]
+export type ProductHubCategories = {
+  [key in OmniProductType]: {
+    icon: string
+    id: ProductHubCategory
+  }[]
 }
 
-export interface ProductFinderPromoCardFilters {
+export type ProductHubTags = {
+  [key in OmniProductType]: ProductHubTag[]
+}
+
+export interface ProductHubFeaturedFilters
+  extends Partial<
+    Omit<ProductHubItemData, 'automationFeatures' | 'hasRewards' | 'product' | 'reverseTokens'>
+  > {
   network: ProductHubSupportedNetworks
   primaryToken: string
-  product: ProductHubProductType
+  product: OmniProductType
   protocol: LendingProtocol
-  secondaryToken: ProductHubTokenType
+  secondaryToken: string
+}
+
+export type ProductHubDatabaseQuery = Partial<ProductHubFeaturedFilters>
+
+export type ProductHubFeaturedProducts = {
+  isTagged?: boolean
+  isHighlighted?: boolean
+  isPromoted?: boolean
+  isStickied?: boolean
+  limit?: number
+  products: ProductHubFeaturedFilters[]
 }

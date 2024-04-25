@@ -26,10 +26,15 @@ export const getAjnaPositionAggregatedData = async (
   collateralTokenAddress: string,
   quoteTokenAddress: string,
 ): Promise<AjnaPositionAggregatedData> => {
-  const { response } = (await loadSubgraph('Ajna', 'getAjnaPositionAggregatedData', networkId, {
-    dpmProxyAddress: proxy.toLowerCase(),
-    collateralAddress: collateralTokenAddress.toLowerCase(),
-    quoteAddress: quoteTokenAddress.toLowerCase(),
+  const { response } = (await loadSubgraph({
+    subgraph: 'Ajna',
+    method: 'getAjnaPositionAggregatedData',
+    networkId,
+    params: {
+      dpmProxyAddress: proxy.toLowerCase(),
+      collateralAddress: collateralTokenAddress.toLowerCase(),
+      quoteAddress: quoteTokenAddress.toLowerCase(),
+    },
   })) as SubgraphsResponses['Ajna']['getAjnaPositionAggregatedData']
   const errors = []
 

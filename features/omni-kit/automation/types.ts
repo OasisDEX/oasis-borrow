@@ -4,7 +4,7 @@ import type { OmniAutomationFormState } from 'features/omni-kit/state/automation
 import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
 import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
 import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
-import type { SupportedLambdaProtocols } from 'helpers/triggers'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
 
 export type OmniAutomationCommonActionPayload = {
   dpm: string

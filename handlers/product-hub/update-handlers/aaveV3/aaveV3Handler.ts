@@ -1,23 +1,28 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
-import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
+import {
+  aaveV3SupportedNetworkList,
+  getAaveV3EModeCategoryForAsset,
+  getAaveV3ReserveConfigurationData,
+  getAaveV3ReserveData,
+  getEModeCategoryData,
+} from 'blockchain/aave-v3'
 import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, networksByName } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
-import dayjs from 'dayjs'
-import { wstethRiskRatio } from 'features/aave/constants'
-import { ProductHubProductType } from 'features/productHub/types'
-import { GraphQLClient } from 'graphql-request'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
+import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
+import { settingsV3 } from 'features/omni-kit/protocols/aave/settings'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
-import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
-import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
+import { getYieldsRequest } from 'helpers/lambda/yields'
+import { zero } from 'helpers/zero'
 import { memoize } from 'lodash'
-import { curry } from 'ramda'
-import { match } from 'ts-pattern'
 
 import { aaveV3ProductHubProducts } from './aave-v3-products'
 
@@ -91,44 +96,96 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
 }
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
-  // mainnet
   const memoizedTokensData = memoize(getAaveV3TokensData)
+  const memoizedEModeCategoryData = memoize(getAaveV3EModeCategoryForAsset)
   const aaveV3NetworksList = [
     ...new Set(aaveV3ProductHubProducts.map((product) => product.network)),
   ]
   const getAaveV3TokensDataPromises = aaveV3NetworksList.map((networkName) =>
     memoizedTokensData(networkName as AaveV3Networks, tickers),
   )
-  const graphQlProvider = new GraphQLClient(
-    getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
+  const earnProducts = aaveV3ProductHubProducts.filter(
+    ({ primaryToken, secondaryToken, product }) =>
+      isYieldLoopPair({
+        collateralToken: primaryToken,
+        debtToken: secondaryToken,
+      }) && [OmniProductType.Multiply, OmniProductType.Earn].includes(product[0]),
   )
-
-  const resolveYields = (label: string, network: NetworkNames) => {
-    return match({ label, network })
-      .with({ label: 'WSTETH/ETH', network: NetworkNames.ethereumMainnet }, () =>
-        curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
-      )
-      .otherwise(() => emptyYields)
-  }
-
-  // getting the APYs
-  const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
+  const earnProductsEmodeLtvPromises = await Promise.all(
+    aaveV3SupportedNetworkList.map(async (networkId) => {
+      const [cat1, cat2] = await Promise.all([
+        getEModeCategoryData({
+          categoryId: new BigNumber(1),
+          networkId: networkId as AaveV3SupportedNetwork,
+        }),
+        getEModeCategoryData({
+          categoryId: new BigNumber(2),
+          networkId: networkId as AaveV3SupportedNetwork,
+        }),
+      ])
+      return {
+        [networkId]: {
+          1: cat1.ltv,
+          2: cat2.ltv,
+        },
+      }
+    }),
   )
+  const earnProductsEmodeLtv = earnProductsEmodeLtvPromises.reduce((acc, curr) => {
+    return { ...acc, ...curr }
+  }, {})
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await memoizedTokensData(product.network as AaveV3Networks, tickers)
+    const networkId = networkNameToIdMap[product.network as AaveV3Networks]
+    const [primaryTokenEModeCategory, secondaryTokenEModeCategory, tokensReserveData] =
+      await Promise.all([
+        memoizedEModeCategoryData({
+          token: product.primaryToken,
+          networkId: networkId as AaveV3SupportedNetwork,
+        }),
+        memoizedEModeCategoryData({
+          token: product.secondaryToken,
+          networkId: networkId as AaveV3SupportedNetwork,
+        }),
+        memoizedTokensData(product.network as AaveV3Networks, tickers),
+      ])
+    const isEModeTokenPair =
+      !primaryTokenEModeCategory.isZero() &&
+      primaryTokenEModeCategory.eq(secondaryTokenEModeCategory)
+    const aaveLikeEmodeRiskRatio =
+      (isEModeTokenPair &&
+        earnProductsEmodeLtv[networkId][primaryTokenEModeCategory.toNumber() as 1 | 2]) ||
+      zero
 
-    const riskRatio =
-      product.label === 'WSTETH/ETH'
-        ? wstethRiskRatio
-        : ensureFind(
-            tokensReserveData[
-              product.network as AaveV3Networks
-            ].tokensReserveConfigurationData.find((data) => data[product.primaryToken]),
-          )[product.primaryToken].riskRatio
-    const response = await resolveYields(product.label, product.network)(riskRatio, ['7Days'])
+    const ltv = isEModeTokenPair
+      ? aaveLikeEmodeRiskRatio
+      : ensureFind(
+          tokensReserveData[product.network as AaveV3Networks].tokensReserveConfigurationData.find(
+            (data) => data[product.primaryToken],
+          ),
+        )[product.primaryToken].riskRatio.loanToValue
+
+    const contracts = getNetworkContracts(networkId)
+    ensureGivenTokensExist(networkId, contracts, [product.primaryToken, product.secondaryToken])
+
+    const response = await getYieldsRequest(
+      {
+        actionSource: `product-hub handler aaveV3 EMODE:${isEModeTokenPair} ${product.primaryToken}/${product.secondaryToken} ${product.network}`,
+        collateralTokenAddress: contracts.tokens[product.primaryToken].address,
+        quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
+        collateralToken: product.primaryToken,
+        quoteToken: product.secondaryToken,
+        ltv,
+        networkId: networkId,
+        protocol: product.protocol,
+      },
+      process.env.FUNCTIONS_API_URL,
+    )
+    if (!response?.results) {
+      console.warn('No AAVE v3 APY data for', product.label, product.network, response)
+    }
     return {
-      [`${product.label}-${product.network}`]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
+      [`${product.label}-${product.network}`]:
+        new BigNumber(response?.results?.apy7d || zero).div(lambdaPercentageDenomination) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     } as Record<string, BigNumber>
   })
   return Promise.all([
@@ -156,6 +213,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         const networkId = networkNameToIdMap[network as AaveV3Networks]
         const contracts = getNetworkContracts(networkId)
+        const isYieldLoop = isYieldLoopPair({
+          collateralToken: primaryToken,
+          debtToken: secondaryToken,
+        })
+        const isMultiply = product.product[0] === OmniProductType.Multiply
 
         ensureGivenTokensExist(networkId, contracts, [primaryToken, secondaryToken])
 
@@ -163,17 +225,26 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         return {
           ...product,
+          product: [isMultiply && isYieldLoop ? OmniProductType.Earn : product.product[0]],
+          ...(isYieldLoop &&
+            isMultiply && {
+              earnStrategy: 'yield_loop',
+              earnStrategyDescription: `${primaryToken}/${secondaryToken} Yield Loop`,
+              managementType: 'active',
+            }),
           primaryTokenAddress: tokens[primaryToken].address,
           secondaryTokenAddress: tokens[secondaryToken].address,
-          maxMultiply:
-            product.label === 'WSTETH/ETH' && product.network === NetworkNames.ethereumMainnet
-              ? wstethRiskRatio.multiple.toString()
-              : riskRatio.multiple.toString(),
+          maxMultiply: riskRatio.multiple.toString(),
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
-          hasRewards: false,
+          hasRewards: product.hasRewards ?? false,
+          automationFeatures: !product.product.includes(OmniProductType.Earn)
+            ? settingsV3.availableAutomations[
+                networksByName[product.network].id as OmniSupportedNetworkIds
+              ]
+            : [],
         }
       }),
       warnings: [],

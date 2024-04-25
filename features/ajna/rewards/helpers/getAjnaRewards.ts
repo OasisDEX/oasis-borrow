@@ -11,8 +11,11 @@ export interface AjnaClaimedReward {
 export type GetAjnaRewards = (walletAddress: string) => Promise<AjnaClaimedReward[]>
 
 export const getAjnaRewards: GetAjnaRewards = async (walletAddress: string) => {
-  const { response } = (await loadSubgraph('Ajna', 'getAjnaClaimedRewards', NetworkIds.MAINNET, {
-    walletAddress: walletAddress.toLowerCase(),
+  const { response } = (await loadSubgraph({
+    subgraph: 'Ajna',
+    method: 'getAjnaClaimedRewards',
+    networkId: NetworkIds.MAINNET,
+    params: { walletAddress: walletAddress.toLowerCase() },
   })) as SubgraphsResponses['Ajna']['getAjnaClaimedRewards']
 
   if (response && 'claimeds' in response) {

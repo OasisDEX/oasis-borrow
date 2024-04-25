@@ -289,6 +289,10 @@ export const theme = themeTypeSafe({
       variant: 'layout.modal',
       minHeight: '50vh',
     },
+    modalAutoWidth: {
+      width: 'fit-content',
+      minWidth: ['auto', '1200px'],
+    },
     vaultPageContainer: {
       maxWidth: ['400px', '1232px'],
       zIndex: 1,
@@ -401,6 +405,14 @@ export const theme = themeTypeSafe({
       bg: 'neutral30',
       borderRadius: 'large',
     },
+    vaultDetailsCardModalDetail: {
+      variant: 'text.boldParagraph3',
+      py: 3,
+      width: '100%',
+      textAlign: 'center',
+      bg: 'neutral30',
+      borderRadius: 'large',
+    },
     rewardsDetails: {
       p: 3,
       bg: 'neutral30',
@@ -454,6 +466,29 @@ export const theme = themeTypeSafe({
       '&:disabled': {
         bg: 'neutral60',
         pointerEvents: 'none',
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+    },
+    primaryInverted: {
+      variant: 'text.paragraph1',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'primary100',
+      border: '1px solid',
+      borderColor: 'neutral20',
+      bg: 'white',
+      transition: 'background 200ms',
+      '&:hover, &:focus-visible': {
+        bg: 'secondary100',
+      },
+      '&:disabled': {
+        opacity: '0.5',
+        pointerEvents: 'none',
+        cursor: 'not-allowed',
       },
       '&:focus': {
         outline: 'none',
@@ -524,7 +559,7 @@ export const theme = themeTypeSafe({
       color: 'primary100',
       borderRadius: 'round',
       whiteSpace: 'nowrap',
-      transition: 'background-color 200ms, border-color 200ms',
+      transition: 'background-color 200ms, border-color 200ms, color 200ms',
       '&:hover': {
         bg: 'secondary100',
       },
@@ -749,6 +784,24 @@ export const theme = themeTypeSafe({
       cursor: 'pointer',
       fontFamily: 'body',
       p: 0,
+    },
+    circle: {
+      cursor: 'pointer',
+      background: 'unset',
+      color: 'inherit',
+      p: 0,
+      borderRadius: 'round',
+      border: '1px solid',
+      borderColor: 'neutral20',
+      width: '36px',
+      height: '36px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      '&:hover': {
+        borderColor: 'interactive100',
+        boxShadow: '0px 0px 6px 0px rgba(87, 92, 254, 0.7)',
+      },
     },
     actionActive: {
       variant: 'buttons.action',

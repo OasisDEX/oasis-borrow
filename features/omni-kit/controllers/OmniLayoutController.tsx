@@ -28,6 +28,7 @@ import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import { hasCommonElement } from 'helpers/hasCommonElement'
 import { useAccount } from 'helpers/useAccount'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Container, Grid } from 'theme-ui'
@@ -42,7 +43,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   const {
     environment: {
       collateralIcon,
-      collateralPrice,
       collateralToken,
       dpmProxy,
       isOpening,
@@ -60,7 +60,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       productType,
       protocol,
       quoteIcon,
-      quotePrice,
       quoteToken,
       settings,
     },
@@ -101,9 +100,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   return (
     <Container variant="vaultPageContainerStatic">
       {contextIsLoaded && !isOwner && !isOpening && (
-        <Box sx={{ mb: 4 }}>
-          <VaultOwnershipBanner controller={owner} account={walletAddress} />
-        </Box>
+        <VaultOwnershipBanner controller={owner} account={walletAddress} mb={4} />
       )}
       {positionBanner && <Box sx={{ mb: 4 }}>{positionBanner}</Box>}
       <VaultHeadline
@@ -138,9 +135,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                       {
                         label: t('omni-kit.headline.details.current-market-price'),
                         value: `${formatCryptoBalance(
-                          isShort
-                            ? quotePrice.div(collateralPrice)
-                            : collateralPrice.div(quotePrice),
+                          isShort ? one.div(position.marketPrice) : position.marketPrice,
                         )} ${priceFormat}`,
                       },
                     ]

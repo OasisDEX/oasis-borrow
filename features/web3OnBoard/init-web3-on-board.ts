@@ -62,11 +62,10 @@ const getChains = () => {
 }
 
 const getWallets = () => {
-  const wallets: WalletInit[] = [injected, walletConnect]
+  const wallets: WalletInit[] = [injected, walletConnect, gnosis]
   if (!connectionMethods) {
     return wallets
   }
-  if (connectionMethods.gnosis) wallets.push(gnosis)
   if (connectionMethods.walletLink) wallets.push(walletLink)
   if (connectionMethods.ledger) wallets.push(ledger)
   if (connectionMethods.trezor) wallets.push(trezor)

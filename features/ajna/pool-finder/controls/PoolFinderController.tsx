@@ -1,11 +1,11 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { PoolFinderView } from 'features/ajna/pool-finder/views'
-import type { ProductHubProductType } from 'features/productHub/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 interface AjnaPoolFinderControllerProps {
-  product: ProductHubProductType
+  product: OmniProductType
 }
 
 export function AjnaPoolFinderController({ product }: AjnaPoolFinderControllerProps) {

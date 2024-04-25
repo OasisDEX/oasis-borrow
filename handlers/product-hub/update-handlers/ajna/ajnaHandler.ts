@@ -6,37 +6,40 @@ import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
+import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import type { AjnaPoolsTableData } from 'features/omni-kit/protocols/ajna/helpers'
 import {
+  ajnaWeeklyRewards,
   getAjnaPoolsData,
   isPoolOracless,
   isPoolSupportingMultiply,
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import { settings as ajnaSettings, settings } from 'features/omni-kit/protocols/ajna/settings'
+import { OmniProductType } from 'features/omni-kit/types'
 import {
-  productHubAjnaRewardsTooltip,
-  productHubEmptyPoolMaxLtvTooltip,
-  productHubEmptyPoolMaxMultipleTooltip,
-  productHubEmptyPoolWeeklyApyTooltip,
-  productHubOraclessLtvTooltip,
+  productHubAjnaEmptyPoolMaxLtvTooltip,
+  productHubAjnaEmptyPoolMaxMultipleTooltip,
+  productHubAjnaEmptyPoolWeeklyApyTooltip,
+  productHubAjnaOraclessLtvTooltip,
 } from 'features/productHub/content'
 import type { ProductHubSupportedNetworks } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { getYieldsRequest } from 'helpers/lambda/yields'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { uniq } from 'lodash'
+import { isNull, uniq } from 'lodash'
 
 async function getAjnaPoolData(
   networkId:
     | NetworkIds.MAINNET
-    | NetworkIds.GOERLI
     | NetworkIds.BASEMAINNET
     | NetworkIds.ARBITRUMMAINNET
     | NetworkIds.OPTIMISMMAINNET,
@@ -46,23 +49,80 @@ async function getAjnaPoolData(
     ...getNetworkContracts(networkId).ajnaPoolPairs,
     ...getNetworkContracts(networkId).ajnaOraclessPoolPairs,
   }
+  const poolsTokenPairs = Object.keys(poolContracts).map((pair) => ({
+    address: poolContracts[pair as keyof typeof poolContracts].address,
+    tokens: pair.split('-'),
+  }))
   const poolAddresses = [
     ...Object.values(getNetworkContracts(networkId).ajnaPoolPairs),
     ...Object.values(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
   ].map((contract) => contract.address.toLowerCase())
 
-  const prices = uniq(
-    Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
-  ).reduce<Tickers>(
+  const prices = uniq([
+    'AJNA',
+    ...Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
+  ]).reduce<Tickers>(
     (v, token) => ({
       ...v,
       [token]: new BigNumber(getTokenPrice(token, tickers, 'ajnaHandler')),
     }),
     {},
   )
+  const ajnaPoolsData = await getAjnaPoolsData(networkId)
+
+  const yieldLoopPoolPairs = poolsTokenPairs.filter((poolInfo) =>
+    isYieldLoopPair({ collateralToken: poolInfo.tokens[0], debtToken: poolInfo.tokens[1] }),
+  )
+
+  const yieldLoopApysCalls = await Promise.all(
+    yieldLoopPoolPairs.map(
+      async ({ address: yieldLoopPoolAddress, tokens: [collateralToken, quoteToken] }) => {
+        const poolData = ajnaPoolsData.find(({ address: poolAddress }) => {
+          return yieldLoopPoolAddress.toLocaleLowerCase() === poolAddress.toLocaleLowerCase()
+        })
+        if (!poolData) {
+          console.error(
+            `Pool data not found for [${collateralToken}-${quoteToken}], (${yieldLoopPoolAddress})`,
+          )
+          return null
+        }
+        const { lowestUtilizedPrice, address } = poolData
+        const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
+        const collateralPrice = isOracless ? one : prices[collateralToken]
+        const quotePrice = isOracless ? one : prices[quoteToken]
+        const marketPrice = collateralPrice.div(quotePrice)
+        const maxLtv = lowestUtilizedPrice.div(marketPrice)
+
+        const response = await getYieldsRequest(
+          {
+            actionSource: 'product-hub handler ajna',
+            networkId,
+            protocol: LendingProtocol.Ajna,
+            ltv: maxLtv,
+            poolAddress: address,
+          },
+          process.env.FUNCTIONS_API_URL,
+        )
+
+        if (!response?.results) {
+          console.warn('No Ajna APY data for request: ', {
+            networkId,
+            protocol: LendingProtocol.Ajna,
+            ltv: maxLtv,
+            poolAddress: address,
+            response,
+          })
+        }
+
+        return response
+      },
+    ),
+  )
+
+  const yieldLoopApys = yieldLoopApysCalls.filter((apy) => !isNull(apy))
 
   try {
-    return (await getAjnaPoolsData(networkId))
+    return ajnaPoolsData
       .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>(
         (v, pool) =>
           poolAddresses.includes(pool.address.toLowerCase())
@@ -88,22 +148,23 @@ async function getAjnaPoolData(
           {
             pair: [collateralToken, quoteToken],
             pool: {
-              collateralAddress: collateralTokenAddress,
+              address,
+              collateralTokenAddress,
               buckets,
               debt,
               interestRate,
+              lendApr,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
-              lendApr,
               quoteTokenAddress,
+              summerDepositAmountEarningInterest,
             },
           },
         ) => {
           const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
           const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
           const isShort = isShortPosition({ collateralToken })
-          // Temporary hidden yield loops products until APY solution is found
-          // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
+          const isYieldLoop = isYieldLoopPair({ collateralToken, debtToken: quoteToken })
           const isWithMultiply = isPoolSupportingMultiply({
             collateralToken,
             quoteToken,
@@ -135,12 +196,38 @@ async function getAjnaPoolData(
             zero,
           ).toString()
           const earnLPStrategy = `${collateralToken}/${quoteToken} LP`
-          // const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
+          const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
-          const weeklyNetApy = lendApr.toString()
+          const weeklyNetApy = isYieldLoop
+            ? new BigNumber(
+                yieldLoopApys.find((yields) => {
+                  return yields?.position?.poolAddress?.toLocaleLowerCase() === address
+                })?.results.apy7d || zero,
+              )
+                .div(lambdaPercentageDenomination)
+                .toString()
+            : lendApr.toString()
 
           const primaryTokenGroup = getTokenGroup(collateralToken)
           const secondaryTokenGroup = getTokenGroup(quoteToken)
+
+          const weeklyRewards = ajnaWeeklyRewards[networkId]?.[`${collateralToken}-${quoteToken}`]
+          const borrowRewardsApy = weeklyRewards
+            ? weeklyRewards.amount
+                .times(weeklyRewards.borrowShare)
+                .times(prices.AJNA)
+                .div(debt.times(quotePrice))
+                .div(7)
+                .times(365)
+            : zero
+          const earnRewardsApy = weeklyRewards
+            ? weeklyRewards.amount
+                .times(weeklyRewards.earnShare)
+                .times(prices.AJNA)
+                .div(summerDepositAmountEarningInterest.times(quotePrice))
+                .div(7)
+                .times(365)
+            : zero
 
           return {
             table: [
@@ -151,13 +238,14 @@ async function getAjnaPoolData(
                 primaryToken: collateralToken,
                 ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
                 product: [
-                  ProductHubProductType.Borrow,
-                  ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
-                  // ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
+                  OmniProductType.Borrow,
+                  ...(!isYieldLoop && isWithMultiply ? [OmniProductType.Multiply] : []),
+                  ...(isYieldLoop && isWithMultiply ? [OmniProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,
                 ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
+                depositToken: collateralToken,
                 fee,
                 liquidity,
                 ...(isPoolNotEmpty &&
@@ -167,33 +255,65 @@ async function getAjnaPoolData(
                   }),
                 multiplyStrategy,
                 multiplyStrategyType,
-                // ...(isYieldLoop && {
-                //   earnStrategy: earnYieldLoopStrategy,
-                //   managementType,
-                //   ...(isPoolNotEmpty && {
-                //     weeklyNetApy,
-                //   }),
-                // }),
+                ...(isYieldLoop && {
+                  earnStrategy: EarnStrategies.yield_loop,
+                  earnStrategyDescription: earnYieldLoopStrategy,
+                  managementType,
+                  weeklyNetApy,
+                }),
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
+                automationFeatures: settings.availableAutomations[networkId],
                 tooltips: {
-                  ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
-                    fee: productHubAjnaRewardsTooltip,
+                  ...(weeklyRewards && {
+                    fee: {
+                      content: {
+                        title: {
+                          key: 'ajna.product-hub-tooltips.ajna-rewards-title',
+                        },
+                        description: {
+                          key: isOracless
+                            ? 'ajna.product-hub-tooltips.ajna-rewards-oracless'
+                            : 'ajna.product-hub-tooltips.ajna-rewards-description',
+                          props: {
+                            weekly: weeklyRewards.amount.toString(),
+                            apy: formatDecimalAsPercent(borrowRewardsApy),
+                          },
+                        },
+                      },
+                      icon: 'sparks',
+                    },
                     ...(isPoolNotEmpty && {
-                      weeklyNetApy: productHubAjnaRewardsTooltip,
+                      weeklyNetApy: {
+                        content: {
+                          title: {
+                            key: 'ajna.product-hub-tooltips.ajna-rewards-title',
+                          },
+                          description: {
+                            key: isOracless
+                              ? 'ajna.product-hub-tooltips.ajna-rewards-oracless'
+                              : 'ajna.product-hub-tooltips.ajna-rewards-description',
+                            props: {
+                              weekly: weeklyRewards.amount.toString(),
+                              apy: formatDecimalAsPercent(earnRewardsApy),
+                            },
+                          },
+                        },
+                        icon: 'sparks',
+                      },
                     }),
                   }),
                   ...(!isOracless &&
                     !isPoolNotEmpty && {
-                      maxLtv: productHubEmptyPoolMaxLtvTooltip,
-                      maxMultiply: productHubEmptyPoolMaxMultipleTooltip,
+                      maxLtv: productHubAjnaEmptyPoolMaxLtvTooltip,
+                      maxMultiply: productHubAjnaEmptyPoolMaxMultipleTooltip,
                     }),
                   ...(!isPoolNotEmpty && {
-                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                    weeklyNetApy: productHubAjnaEmptyPoolWeeklyApyTooltip,
                   }),
                   ...(isOracless && {
-                    maxLtv: productHubOraclessLtvTooltip,
+                    maxLtv: productHubAjnaOraclessLtvTooltip,
                   }),
                 },
               },
@@ -204,12 +324,13 @@ async function getAjnaPoolData(
                 ...(secondaryTokenGroup !== quoteToken && {
                   primaryTokenGroup: secondaryTokenGroup,
                 }),
-                product: [ProductHubProductType.Earn],
+                product: [OmniProductType.Earn],
                 protocol,
                 secondaryToken: collateralToken,
                 ...(primaryTokenGroup !== collateralToken && {
                   secondaryTokenGroup: primaryTokenGroup,
                 }),
+                depositToken: quoteToken,
                 earnStrategy: EarnStrategies.liquidity_provision,
                 earnStrategyDescription: earnLPStrategy,
                 liquidity,
@@ -223,10 +344,26 @@ async function getAjnaPoolData(
                 hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
                 tooltips: {
                   ...(!isPoolNotEmpty && {
-                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                    weeklyNetApy: productHubAjnaEmptyPoolWeeklyApyTooltip,
                   }),
-                  ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
-                    weeklyNetApy: productHubAjnaRewardsTooltip,
+                  ...(weeklyRewards && {
+                    weeklyNetApy: {
+                      content: {
+                        title: {
+                          key: 'ajna.product-hub-tooltips.ajna-rewards-title',
+                        },
+                        description: {
+                          key: isOracless
+                            ? 'ajna.product-hub-tooltips.ajna-rewards-oracless'
+                            : 'ajna.product-hub-tooltips.ajna-rewards-description',
+                          props: {
+                            weekly: weeklyRewards.amount.toString(),
+                            apy: formatDecimalAsPercent(earnRewardsApy),
+                          },
+                        },
+                      },
+                      icon: 'sparks',
+                    },
                   }),
                 },
               },
@@ -245,7 +382,6 @@ async function getAjnaPoolData(
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   return Promise.all([
     getAjnaPoolData(NetworkIds.MAINNET, tickers),
-    getAjnaPoolData(NetworkIds.GOERLI, tickers),
     getAjnaPoolData(NetworkIds.BASEMAINNET, tickers),
     getAjnaPoolData(NetworkIds.ARBITRUMMAINNET, tickers),
     getAjnaPoolData(NetworkIds.OPTIMISMMAINNET, tickers),

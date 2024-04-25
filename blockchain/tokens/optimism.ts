@@ -18,6 +18,7 @@ export const tokensOptimism = {
   FRAX: contractDesc(erc20, optimism.common.FRAX),
   GHO: contractDesc(erc20, optimism.common.GHO),
   LDO: contractDesc(erc20, optimism.common.LDO),
+  WEETH: contractDesc(erc20, optimism.common.WEETH),
   LUSD: contractDesc(erc20, optimism.common.LUSD),
   RETH: contractDesc(erc20, optimism.common.RETH),
   RENBTC: contractDesc(erc20, optimism.common.RENBTC),

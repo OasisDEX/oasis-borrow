@@ -6,7 +6,7 @@ import type {
   AutomationFormActionsUpdateTrailingDistance,
 } from 'features/omni-kit/state/automation/common'
 import type { OmniCloseTo } from 'features/omni-kit/types'
-import type { TriggerAction } from 'helpers/triggers'
+import type { TriggerAction } from 'helpers/lambda/triggers'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniAutomationTrailingStopLossFormState {

@@ -256,6 +256,7 @@ model ProductHubItems {
   primaryTokenAddress     String                      @default("0x0000000000000000000000000000000000000000")
   secondaryTokenAddress   String                      @default("0x0000000000000000000000000000000000000000")
   hasRewards              Boolean                     @default(false)
+  automationFeatures      AutomationFeature[]
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
   @@map("product_hub_items")
@@ -334,6 +335,18 @@ enum ProductHubStrategy {
   short
 
   @@map("multiplyStrategyType")
+}
+
+enum AutomationFeature {
+  stopLoss
+  trailingStopLoss
+  autoBuy
+  autoSell
+  autoTakeProfit
+  partialTakeProfit
+  constantMultiple
+
+  @@map("automationFeature")
 }
 
 model AjnaRewardsWeeklyClaim {

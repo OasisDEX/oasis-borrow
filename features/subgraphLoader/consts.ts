@@ -305,19 +305,13 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     {
       pools {
         address
-        collateralAddress
-        quoteTokenAddress
-        dailyPercentageRate30dAverage
-        debt
-        depositSize
-        interestRate
-        poolMinDebtAmount
-        lup
-        lupIndex
-        htp
-        htpIndex
-        lendApr
         borrowApr
+        quoteToken {
+          symbol
+        }
+        collateralToken {
+          symbol
+        }
         buckets {
           price
           index
@@ -325,6 +319,19 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           collateral
           bucketLPs
         }
+        collateralAddress
+        dailyPercentageRate30dAverage
+        debt
+        depositSize
+        htp
+        htpIndex
+        interestRate
+        lendApr
+        lup
+        lupIndex
+        poolMinDebtAmount
+        quoteTokenAddress
+        summerDepositAmountEarningInterest
       }
     }
   `,

@@ -13,9 +13,14 @@ export const getAjnaPoolAddress: GetAjnaPoolAddress = async (
   quoteAddress,
   networkId,
 ) => {
-  const { response } = (await loadSubgraph('Ajna', 'getAjnaPoolAddress', networkId, {
-    collateralAddress: collateralAddress.toLowerCase(),
-    quoteAddress: quoteAddress.toLowerCase(),
+  const { response } = (await loadSubgraph({
+    subgraph: 'Ajna',
+    method: 'getAjnaPoolAddress',
+    networkId,
+    params: {
+      collateralAddress: collateralAddress.toLowerCase(),
+      quoteAddress: quoteAddress.toLowerCase(),
+    },
   })) as SubgraphsResponses['Ajna']['getAjnaPoolAddress']
 
   if (response && response.pools.length) {

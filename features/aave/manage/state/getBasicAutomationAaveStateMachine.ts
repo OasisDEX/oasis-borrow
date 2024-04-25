@@ -24,7 +24,7 @@ import type {
   SparkStopLossToCollateral,
   SparkStopLossToDebt,
   SupportedLambdaProtocols,
-} from 'helpers/triggers'
+} from 'helpers/lambda/triggers'
 import {
   getIntFromDecodedParam,
   getLtvNumberFromDecodedParam,
@@ -34,7 +34,7 @@ import {
   setupAaveAutoSell,
   TriggerAction,
   TRIGGERS_PRICE_DECIMALS,
-} from 'helpers/triggers'
+} from 'helpers/lambda/triggers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { LendingProtocol } from 'lendingProtocols'

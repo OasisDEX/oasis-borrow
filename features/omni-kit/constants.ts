@@ -127,3 +127,5 @@ export const omniOptimizationLikeAutomationFeatures = [
   AutomationFeatures.CONSTANT_MULTIPLE,
   AutomationFeatures.PARTIAL_TAKE_PROFIT,
 ]
+
+export const MAX_SENSIBLE_LTV = new BigNumber(0.99)

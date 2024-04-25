@@ -9,9 +9,12 @@ import {
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { useAjnaCardDataBorrowRate } from 'features/omni-kit/protocols/ajna/components/details-section'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import React from 'react'
+import { zero } from 'helpers/zero'
+import React, { useMemo } from 'react'
 import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaContentFooterBorrowProps {
@@ -43,6 +46,9 @@ export function AjnaContentFooterBorrow({
   quoteToken,
   simulation,
 }: AjnaContentFooterBorrowProps) {
+  const {
+    environment: { protocol, network },
+  } = useOmniGeneralContext()
   const netValue = position.collateralAmount
     .times(collateralPrice)
     .minus(position.debtAmount.times(quotePrice))
@@ -56,11 +62,21 @@ export function AjnaContentFooterBorrow({
     isLoading: isSimulationLoading,
   }
 
+  const ltv = useMemo(() => position.riskRatio.loanToValue, [position])
+
+  const yields = useOmniEarnYields({
+    actionSource: 'AjnaContentFooterBorrow',
+    ltv,
+    networkId: network.id,
+    protocol,
+    poolAddress: position.pool.poolAddress,
+  })
+
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: position.pool.interestRate,
+    borrowRate: position.pool.interestRate.minus(yields?.apy.div(100) || zero),
   })
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
-    borrowRate: position.pool.interestRate,
+    borrowRate: position.pool.interestRate.minus(yields?.apy.div(100) || zero),
     collateralToken,
     debtAmount: position.debtAmount,
     isOwner,

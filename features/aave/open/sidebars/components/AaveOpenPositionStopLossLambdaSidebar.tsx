@@ -10,7 +10,7 @@ import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambd
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { TriggerAction } from 'helpers/triggers'
+import { TriggerAction } from 'helpers/lambda/triggers'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'

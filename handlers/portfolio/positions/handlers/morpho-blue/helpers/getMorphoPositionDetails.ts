@@ -12,22 +12,18 @@ import {
 import { one, zero } from 'helpers/zero'
 
 interface GetMorphoPositionDetailsParam {
-  collateralPrice: BigNumber
   liquidationRatio: BigNumber
   position: MorphoBluePosition
   primaryToken: string
-  quotePrice: BigNumber
   rate: BigNumber
   secondaryToken: string
   type: OmniProductType
 }
 
 export function getMorphoPositionDetails({
-  collateralPrice,
   liquidationRatio,
   position,
   primaryToken,
-  quotePrice,
   rate,
   secondaryToken,
   type,
@@ -36,7 +32,7 @@ export function getMorphoPositionDetails({
   const priceFormat = isShort
     ? `${secondaryToken}/${primaryToken}`
     : `${primaryToken}/${secondaryToken}`
-  const marketPrice = isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice)
+  const marketPrice = isShort ? one.div(position.marketPrice) : position.marketPrice
 
   switch (type) {
     case OmniProductType.Borrow: {
@@ -71,27 +67,21 @@ export function getMorphoPositionDetails({
         },
       ]
     }
-    case OmniProductType.Multiply:
+    case OmniProductType.Multiply: {
       const {
-        collateralAmount,
-        debtAmount,
         liquidationPrice,
         pnl: { withoutFees },
         riskRatio,
         maxRiskRatio,
       } = position as MorphoBluePosition
 
-      const netValue = collateralAmount
-        .times(collateralPrice)
-        .minus(debtAmount.times(quotePrice))
-        .toNumber()
       const formattedLiquidationPrice = isShort
         ? normalizeValue(one.div(liquidationPrice))
         : liquidationPrice
       return [
         {
           type: 'netValue',
-          value: formatUsdValue(new BigNumber(netValue)),
+          value: formatUsdValue(position.netValue),
         },
         {
           type: 'pnl',
@@ -114,6 +104,7 @@ export function getMorphoPositionDetails({
           subvalue: `Max ${maxRiskRatio.multiple.toFixed(2)}x`,
         },
       ]
+    }
     default: {
       return []
     }

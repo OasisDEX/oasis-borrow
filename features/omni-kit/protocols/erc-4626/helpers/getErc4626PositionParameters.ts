@@ -47,9 +47,14 @@ const emptyErc4626PositionParametersResponse: Erc4626PositionParametersResponse 
 
 export function getErc4626PositionParameters(networkId: OmniSupportedNetworkIds) {
   return async (vaultAddress: string, dpmProxyAddress: string) => {
-    const { response } = (await loadSubgraph('Erc4626', 'getErc4626PositionParameters', networkId, {
-      dpmProxyAddress: dpmProxyAddress.toLowerCase(),
-      vault: vaultAddress.toLowerCase(),
+    const { response } = (await loadSubgraph({
+      subgraph: 'Erc4626',
+      method: 'getErc4626PositionParameters',
+      networkId,
+      params: {
+        dpmProxyAddress: dpmProxyAddress.toLowerCase(),
+        vault: vaultAddress.toLowerCase(),
+      },
     })) as SubgraphsResponses['Erc4626']['getErc4626PositionParameters']
 
     return {

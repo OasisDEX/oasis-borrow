@@ -199,7 +199,18 @@ const availableTokenPairs: TokenPairConfig[] = [
     collateral: 'USDC',
     debt: 'GHO',
     strategyType: StrategyType.Short,
-    productTypes: borrowAndMultiply,
+    productTypes: {
+      ...borrowAndMultiply,
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
   },
   {
     collateral: 'USDC',
@@ -283,7 +294,18 @@ const availableTokenPairs: TokenPairConfig[] = [
     collateral: 'WSTETH',
     debt: 'CBETH',
     strategyType: StrategyType.Long,
-    productTypes: borrowAndMultiply,
+    productTypes: {
+      ...borrowAndMultiply,
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
   },
   {
     collateral: 'WSTETH',
@@ -329,6 +351,31 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'WEETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-earn',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'WSTETH',
     debt: 'USDC',
     strategyType: StrategyType.Long,
@@ -338,13 +385,35 @@ const availableTokenPairs: TokenPairConfig[] = [
     collateral: 'SDAI',
     debt: 'GHO',
     strategyType: StrategyType.Long,
-    productTypes: borrowAndMultiply,
+    productTypes: {
+      ...borrowAndMultiply,
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
   },
   {
     collateral: 'SDAI',
     debt: 'USDT',
     strategyType: StrategyType.Long,
-    productTypes: borrowAndMultiply,
+    productTypes: {
+      ...borrowAndMultiply,
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
   },
   {
     collateral: 'SDAI',
@@ -717,7 +786,111 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Earn,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: FeaturesEnum.AaveV3EarnrETHeth,
+    availableActions: () => {
+      return [...allActionsAvailableInMultiply, 'switch-to-borrow']
+    },
+    defaultSlippage: SLIPPAGE_YIELD_LOOP,
+    executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
+    isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
+    name: 'usdcusdtV3',
+    urlSlug: 'usdcusdt',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'USDC',
+      debt: 'USDT',
+      deposit: 'USDC',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: ProductType.Earn,
+    protocol: LendingProtocol.AaveV3,
+    availableActions: () => {
+      return [...allActionsAvailableInMultiply, 'switch-to-borrow']
+    },
+    defaultSlippage: SLIPPAGE_YIELD_LOOP,
+    executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
+    isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
+    name: 'wstethcbethV3',
+    urlSlug: 'wstethcbeth',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WSTETH',
+      debt: 'CBETH',
+      deposit: 'CBETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: ProductType.Earn,
+    protocol: LendingProtocol.AaveV3,
+    availableActions: () => {
+      return [...allActionsAvailableInMultiply, 'switch-to-borrow']
+    },
+    defaultSlippage: SLIPPAGE_YIELD_LOOP,
+    executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
+    isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
+    name: 'usdcghoV3',
+    urlSlug: 'usdcgho',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'USDC',
+      debt: 'GHO',
+      deposit: 'GHO',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: ProductType.Earn,
+    protocol: LendingProtocol.AaveV3,
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
@@ -753,7 +926,41 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Earn,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: FeaturesEnum.AaveV3EarncbETHeth,
+    availableActions: () => {
+      return [...allActionsAvailableInMultiply, 'switch-to-borrow']
+    },
+    defaultSlippage: SLIPPAGE_YIELD_LOOP,
+    executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
+    isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
+    name: 'weethethV3',
+    urlSlug: 'weetheth',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WEETH',
+      debt: 'ETH',
+      deposit: 'WEETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: ProductType.Earn,
+    protocol: LendingProtocol.AaveV3,
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },

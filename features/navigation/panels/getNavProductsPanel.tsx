@@ -12,7 +12,7 @@ import {
   getProductEarnNavItems,
   getProductMultiplyNavItems,
 } from 'features/navigation/helpers'
-import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
+import type { ProductHubItem } from 'features/productHub/types'
 import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -29,18 +29,16 @@ import type { TranslationType } from 'ts_modules/i18next'
 export const getNavProductsPanel = ({
   t,
   productHubItems,
-  promoCardsData,
   isConnected,
   connect,
 }: {
   t: TranslationType
-  promoCardsData: ProductHubPromoCards
   productHubItems: ProductHubItem[]
   isConnected: boolean
   connect: () => void
 }): NavigationMenuPanelType => {
-  const productEarnNavItems = getProductEarnNavItems(promoCardsData, productHubItems)
-  const productMultiplyNavItems = getProductMultiplyNavItems(promoCardsData, productHubItems)
+  const productEarnNavItems = getProductEarnNavItems(productHubItems)
+  const productMultiplyNavItems = getProductMultiplyNavItems(productHubItems)
   const productBorrowNavItems = getProductBorrowNavItems(productHubItems)
 
   const widgetCallback = (variant: 'swap' | 'bridge') => {
@@ -86,11 +84,11 @@ export const getNavProductsPanel = ({
                       : item.earnStrategy === EarnStrategies.yield_loop
                         ? t('nav.earn-on-yield-loop-strategy', {
                             token: item.primaryToken,
-                            protocol: item.protocol.toUpperCase(),
+                            protocol: lendingProtocolsByName[item.protocol].label.toUpperCase(),
                           })
                         : t('nav.earn-on-liquidity-provision-strategy', {
                             token: item.primaryToken,
-                            protocol: item.protocol.toUpperCase(),
+                            protocol: lendingProtocolsByName[item.protocol].label.toUpperCase(),
                           }),
                   tags: [
                     [

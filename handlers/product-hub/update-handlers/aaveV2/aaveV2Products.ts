@@ -1,12 +1,12 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: NetworkNames.ethereumMainnet,
@@ -16,7 +16,7 @@ export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'STETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -27,7 +27,7 @@ export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Long STETH',
   },
   {
-    product: [ProductHubProductType.Multiply],
+    product: [OmniProductType.Multiply],
     primaryToken: 'WBTC',
     primaryTokenGroup: 'BTC',
     secondaryToken: 'USDC',
@@ -38,7 +38,7 @@ export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductHubProductType.Earn],
+    product: [OmniProductType.Earn],
     primaryToken: 'STETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',

@@ -1,5 +1,5 @@
 import { type NetworkNames, networksByName } from 'blockchain/networks'
-import { getToken } from 'blockchain/tokensMetadata'
+import { getToken, getTokenGuarded } from 'blockchain/tokensMetadata'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import { Icon } from 'components/Icon'
@@ -47,7 +47,8 @@ export function TokensGroup({ forceSize, network, sx, tokens }: TokensGroupProps
                 '&:last-child': { mr: 0 },
               }}
             >
-              {Object.keys(tokensBySymbol).includes(resolvedToken) ? (
+              {Object.keys(tokensBySymbol).includes(resolvedToken) &&
+              !getTokenGuarded(resolvedToken)?.iconUnavailable ? (
                 <Icon
                   size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
                   key={getToken(resolvedToken).name}

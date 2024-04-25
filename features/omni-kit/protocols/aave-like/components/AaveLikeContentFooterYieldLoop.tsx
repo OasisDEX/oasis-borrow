@@ -1,15 +1,20 @@
 import { RiskRatio } from '@oasisdex/dma-library'
-import { defaultYieldFields } from 'features/aave/components'
-import { useAaveEarnYields } from 'features/aave/hooks'
 import { OmniOpenYieldLoopFooter } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import React, { useMemo } from 'react'
 
 export function AaveLikeContentFooterYieldLoop() {
   const {
-    environment: { protocol, network },
+    environment: {
+      protocol,
+      network,
+      quoteAddress,
+      collateralAddress,
+      quoteToken,
+      collateralToken,
+    },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -22,20 +27,24 @@ export function AaveLikeContentFooterYieldLoop() {
     RiskRatio.TYPE.LTV,
   )
 
-  const riskRatio = useMemo(
-    () => simulation?.riskRatio || defaultRiskRatio,
+  const ltv = useMemo(
+    () => simulation?.riskRatio.loanToValue || defaultRiskRatio.loanToValue,
     [defaultRiskRatio, simulation],
   )
 
   return (
     <OmniOpenYieldLoopFooter
       getYields={() =>
-        useAaveEarnYields(
-          riskRatio,
-          protocol as AaveLikeLendingProtocol,
-          network.name,
-          defaultYieldFields,
-        )
+        useOmniEarnYields({
+          actionSource: 'AaveLikeContentFooterYieldLoop',
+          quoteTokenAddress: quoteAddress,
+          collateralTokenAddress: collateralAddress,
+          quoteToken: quoteToken,
+          collateralToken: collateralToken,
+          ltv,
+          networkId: network.id,
+          protocol,
+        })
       }
     />
   )

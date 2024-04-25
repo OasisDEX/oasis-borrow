@@ -17,21 +17,36 @@ interface UseSubgraphLoader<R> {
   response: SubgraphBaseResponse<R> | undefined
 }
 
+/**
+ * @param subgraph - The name of the subgraph.
+ * @param method - Optional, name of subgraph to be used - if not provided rawQuery is needed.
+ * @param networkId - Determines network of subgraph to be called.
+ * @param params - Optional, params for method function.
+ * @param rawQuery - Optional, should be used to inject custom query, when defined method and params are not required.
+ */
 export async function loadSubgraph<
   S extends keyof Subgraphs,
   M extends keyof Subgraphs[S],
   P extends Subgraphs[S][M],
->(
-  subgraph: S,
-  method: M,
-  networkId: NetworkIds,
-  params: P = {} as P,
-): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
+>({
+  subgraph,
+  method,
+  networkId,
+  params = {} as P,
+  rawQuery,
+}: {
+  subgraph: S
+  method?: M
+  networkId: NetworkIds
+  params?: P
+  rawQuery?: string
+}): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
   if (global.window === undefined) {
     const subgraphUrl = await getSubgraphUrl(subgraph, networkId)
+
     const response = await request(
       subgraphUrl,
-      subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord],
+      rawQuery || subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord],
       params as P,
     )
 
@@ -50,6 +65,7 @@ export async function loadSubgraph<
         method,
         params,
         networkId,
+        rawQuery,
       }),
     })
 
@@ -77,7 +93,7 @@ export function useSubgraphLoader<
       isLoading: true,
     }))
 
-    loadSubgraph(subgraph, method, networkId, params)
+    loadSubgraph({ subgraph, method, networkId, params })
       // @ts-ignore
       // TODO adjust types
       .then(({ success, response }) => {

@@ -137,7 +137,7 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
   return (
     <DetailsSection
       content={<AssetsResponsiveTable paddless rows={rows} verticalAlign="top" />}
-      title={t('erc-4626.position-page.common.vault-token-rewards')}
+      title={t('vault-token-rewards.title')}
       accordion
       accordionOpenByDefault
       footer={

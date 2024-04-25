@@ -87,6 +87,15 @@ const availableTokenPairs: TokenPairConfig[] = [
           },
         ],
       },
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
       [ProductType.Multiply]: {
         featureToggle: undefined,
         additionalManageActions: [
@@ -108,6 +117,15 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
             featureToggle: undefined,
           },
         ],

@@ -16,7 +16,7 @@ import type {
   AutomationMetadataValues,
   OmniAutomationSimulationResponse,
 } from 'features/omni-kit/types'
-import type { SupportedLambdaProtocols } from 'helpers/triggers'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export type OmniGetAutomationDataParams =

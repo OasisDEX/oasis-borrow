@@ -68,7 +68,7 @@ export function VaultNotice({
   color,
   withClose = true,
   mb = 0,
-}: VaultNoticeProps & { color: string; mb?: number }) {
+}: VaultNoticeProps & { color: string; mb?: number | string }) {
   const [isVisible, setIsVisible] = useState(true)
 
   return (
@@ -154,12 +154,16 @@ export function VaultLiquidatingNextPriceNotice({
 export function VaultOwnershipBanner({
   controller,
   account,
-}: Pick<VaultNoticesState, 'controller' | 'account'>) {
+  mb,
+}: Pick<VaultNoticesState, 'controller' | 'account'> & {
+  mb?: number | string
+}) {
   const { t } = useTranslation()
 
   if (!controller) return null
   return (
     <VaultNotice
+      mb={mb}
       status={
         <StatusFrame>
           <Icon size="auto" width="24" height="24" icon={bannerWallet} />
@@ -317,7 +321,7 @@ export function VaultLiquidatedNotice({
     unlockedCollateral.gt(zero) &&
     (isVaultController ? (
       <>
-        <Text sx={{ mb: 3 }}>
+        <Text as="p" sx={{ mb: 3 }}>
           {t('vault-notices.liquidated.maker.subheader1')}{' '}
           {t('vault-notices.liquidated.maker.subheader2', {
             amount: formatCryptoBalance(unlockedCollateral),

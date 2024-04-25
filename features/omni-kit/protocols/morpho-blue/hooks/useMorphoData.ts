@@ -1,5 +1,6 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
+import { useMorphoOraclePrices } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { getMorphoPositionAggregatedData$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
@@ -15,20 +16,33 @@ export function useMorphoData({
 }: OmniProtocolHookProps) {
   const { morphoPosition$ } = useProductContext()
 
+  const oraclePrices = useMorphoOraclePrices({
+    networkId,
+    pairId,
+    collateralPrecision: tokensPrecision?.collateralPrecision,
+    collateralToken: dpmPositionData?.collateralToken,
+    quotePrecision: tokensPrecision?.quotePrecision,
+    quoteToken: dpmPositionData?.quoteToken,
+    tokenPriceUSDData,
+  })
+
   const [morphoPositionData, morphoPositionError] = useObservable(
     useMemo(
       () =>
-        dpmPositionData && tokenPriceUSDData
+        dpmPositionData &&
+        oraclePrices &&
+        oraclePrices[dpmPositionData.collateralToken] &&
+        oraclePrices[dpmPositionData.quoteToken]
           ? morphoPosition$(
-              tokenPriceUSDData[dpmPositionData.collateralToken],
-              tokenPriceUSDData[dpmPositionData.quoteToken],
+              oraclePrices[dpmPositionData.collateralToken],
+              oraclePrices[dpmPositionData.quoteToken],
               dpmPositionData,
               pairId,
               networkId,
               tokensPrecision,
             )
           : EMPTY,
-      [dpmPositionData, tokenPriceUSDData],
+      [dpmPositionData, oraclePrices],
     ),
   )
 
@@ -49,7 +63,7 @@ export function useMorphoData({
     data: {
       aggregatedData: morphoPositionAggregatedData,
       positionData: morphoPositionData,
-      protocolPricesData: tokenPriceUSDData,
+      protocolPricesData: oraclePrices,
       positionTriggersData: omniPositionTriggersDataDefault,
     },
     errors: [morphoPositionError, morphoPositionAggregatedError],

@@ -12,6 +12,7 @@ export interface TokenConfig {
   name: string
   icon: IconProps['icon']
   iconCircle: IconProps['icon']
+  iconUnavailable?: boolean
   coinpaprikaTicker?: string
   coinpaprikaFallbackTicker?: string
   tags: CoinTag[]

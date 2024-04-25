@@ -9,22 +9,23 @@ export const settings: OmniProtocolSettings = {
   },
   supportedNetworkIds: [NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
-  supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],
+  supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply, OmniProductType.Earn],
   supportedMultiplyTokens: {
     [NetworkIds.MAINNET]: [
+      'DAI',
       'ETH',
-      'WSTETH',
-      'WEETH',
+      'EZETH',
       'OSETH',
       'RETH',
       'SDAI',
-      'DAI',
+      'SUSDE',
+      'USDA',
       'USDC',
+      'USDE',
       'USDT',
       'WBTC',
-      'EZETH',
-      'SUSDE',
-      'USDE',
+      'WEETH',
+      'WSTETH',
     ],
   },
   steps: {
@@ -40,6 +41,9 @@ export const settings: OmniProtocolSettings = {
       setup: omniSidebarSetupSteps,
       manage: omniSidebarManageBorrowishSteps,
     },
+  },
+  entryTokens: {
+    [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
   },
   availableAutomations: {
     [NetworkIds.MAINNET]: [],
@@ -78,5 +82,7 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     ],
     'SUSDE-USDT': ['0xdc5333039bcf15f1237133f74d5806675d83d9cf19cfd4cfdd9be674842651bf'],
     'MKR-DAI': ['0x578996c3c3ac4f100c4284b5c239673b04840e07945d04b681763c7b3401997c'],
+    'WSTETH-USDA': ['0x423cb007534ac88febb8ce39f544ab303e8b757f8415ed891fc76550f8f4c965'],
+    'PTWEETH-USDA': ['0xcc7b191903e4750ad71898a1594d912adbb5bb1c6effcde9c38f0a798112edd1'],
   },
 }

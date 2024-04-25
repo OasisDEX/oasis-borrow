@@ -2,10 +2,12 @@ import type { BigNumber } from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
+import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { ModalProvider } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import React, { useEffect } from 'react'
 
@@ -44,16 +46,23 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <GeneralManageLayout
-              generalManageVault={generalManageVault}
-              followButton={{
-                followerAddress: account,
-                vaultId: id,
-                chainId: chainId,
-                protocol: 'maker',
-              }}
-              chainId={chainId}
-            />
+            <RefinanceGeneralContextProvider>
+              {/*TODO we should use ModalProvider here
+                We need to refactor it so it accepts reactNode as modal content
+              */}
+              <ModalProvider>
+                <GeneralManageLayout
+                  generalManageVault={generalManageVault}
+                  followButton={{
+                    followerAddress: account,
+                    vaultId: id,
+                    chainId: chainId,
+                    protocol: 'maker',
+                  }}
+                  chainId={chainId}
+                />
+              </ModalProvider>
+            </RefinanceGeneralContextProvider>
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>

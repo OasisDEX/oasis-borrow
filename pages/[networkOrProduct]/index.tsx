@@ -1,20 +1,53 @@
-import { ProductHubProductType } from 'features/productHub/types'
-import ProductHubRouteHandler from 'features/productHub/views/ProductHubRouteHandler'
+import { AnimatedWrapper } from 'components/AnimatedWrapper'
+import { WithConnection } from 'components/connectWallet'
+import { AppLayout } from 'components/layouts/AppLayout'
+import { OmniProductType } from 'features/omni-kit/types'
+import { featuredProducts } from 'features/productHub/meta'
+import { ProductHubView } from 'features/productHub/views'
+import { useScrollToTop } from 'helpers/useScrollToTop'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import React from 'react'
 
-export default ProductHubRouteHandler
+interface ProductHubPageProps {
+  product: OmniProductType
+}
+
+function ProductHubPage({ product }: ProductHubPageProps) {
+  useScrollToTop(product)
+
+  return (
+    <AppLayout>
+      <WithConnection>
+        <AnimatedWrapper sx={{ mb: 5 }}>
+          <ProductHubView
+            featured={{
+              products: featuredProducts,
+              limit: 1,
+              isTagged: true,
+              isHighlighted: true,
+              isPromoted: true,
+            }}
+            perPage={20}
+            product={product}
+            url="/"
+          />
+        </AnimatedWrapper>
+      </WithConnection>
+    </AppLayout>
+  )
+}
+
+export default ProductHubPage
 
 export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   const paths =
     locales?.flatMap((locale) =>
-      Object.values(ProductHubProductType).flatMap((product) => ({
-        params: {
-          networkOrProduct: product,
-        },
+      Object.values(OmniProductType).flatMap((product) => ({
+        params: { networkOrProduct: product },
         locale,
       })),
-    ) || []
+    ) ?? []
 
   return {
     paths,
@@ -23,13 +56,10 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const product = params?.networkOrProduct as ProductHubProductType
-  const token = params?.token
   return {
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
-      ...(product && { product }),
-      ...(token && { token }),
+      product: params?.networkOrProduct,
     },
   }
 }
