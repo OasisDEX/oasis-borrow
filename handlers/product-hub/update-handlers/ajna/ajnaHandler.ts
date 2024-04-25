@@ -24,7 +24,6 @@ import {
   productHubAjnaEmptyPoolMaxMultipleTooltip,
   productHubAjnaEmptyPoolWeeklyApyTooltip,
   productHubAjnaOraclessLtvTooltip,
-  productHubAjnaRewardsTooltip,
 } from 'features/productHub/content'
 import type { ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
@@ -283,7 +282,23 @@ async function getAjnaPoolData(
                       icon: 'sparks',
                     },
                     ...(isPoolNotEmpty && {
-                      weeklyNetApy: productHubAjnaRewardsTooltip,
+                      weeklyNetApy: {
+                        content: {
+                          title: {
+                            key: 'ajna.product-hub-tooltips.ajna-rewards-title',
+                          },
+                          description: {
+                            key: isOracless
+                              ? 'ajna.product-hub-tooltips.ajna-rewards-oracless'
+                              : 'ajna.product-hub-tooltips.ajna-rewards-description',
+                            props: {
+                              weekly: weeklyRewards.amount.toString(),
+                              apy: formatDecimalAsPercent(earnRewardsApy),
+                            },
+                          },
+                        },
+                        icon: 'sparks',
+                      },
                     }),
                   }),
                   ...(!isOracless &&
