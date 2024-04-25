@@ -142,6 +142,12 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [dataSortedByDefault, featured, hiddenColumns, networkId, onRowClick, selectedProduct],
   )
 
+  const separatorResolved = useMemo(
+    () =>
+      separator ? ('index' in separator ? separator : separator(dataSortedByDefault)) : undefined,
+    [dataSortedByDefault, separator],
+  )
+
   return (
     <>
       {!hiddenCategories && (
@@ -174,7 +180,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           limitRows={limitRows}
           perPage={perPage}
           rows={rows}
-          separator={separator}
+          separator={separatorResolved}
         />
       </AssetsTableContainer>
     </>

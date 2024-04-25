@@ -24,7 +24,7 @@ import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useSearchParams } from 'next/navigation'
 import type { FC } from 'react'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box } from 'theme-ui'
 
@@ -76,7 +76,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   wrapperSx,
 }) => {
   const { productHub: data } = usePreloadAppDataContext()
-  const table = dataParser(data.table)
+  const table = useMemo(() => dataParser(data.table), [])
 
   const { connecting, wallet } = useWalletManagement()
   const searchParams = useSearchParams()

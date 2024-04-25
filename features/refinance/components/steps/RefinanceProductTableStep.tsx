@@ -1,11 +1,18 @@
 import { NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubView } from 'features/productHub/views'
+import {
+  refinanceProductHubHiddenColumns,
+  refinanceProductHubItemsPerPage,
+} from 'features/refinance/constants'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { getRefinanceProductHubDataParser } from 'features/refinance/helpers'
+import {
+  getRefinanceProductHubDataParser,
+  getRefinanceProductHubSeparator,
+} from 'features/refinance/helpers'
 import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
-import React from 'react'
+import React, { useCallback } from 'react'
 
 export const RefinanceProductTableStep = () => {
   const {
@@ -27,6 +34,14 @@ export const RefinanceProductTableStep = () => {
     },
     steps: { setNextStep },
   } = useRefinanceContext()
+
+  const onRowClick = useCallback(
+    (item) => {
+      updateState('strategy', item)
+      setNextStep()
+    },
+    [updateState, setNextStep],
+  )
 
   if (!refinanceOption) {
     return null
@@ -61,18 +76,16 @@ export const RefinanceProductTableStep = () => {
       hiddenTags
       hiddenProtocolFilter
       hiddenNetworkFilter
-      perPage={5}
+      perPage={refinanceProductHubItemsPerPage}
       hiddenBanners
       initialFilters={{
         protocol: [LendingProtocol.SparkV3],
         network: [NetworkNames.ethereumMainnet],
       }}
-      hiddenColumns={['automation', '7DayNetApy']}
-      onRowClick={(item) => {
-        updateState('strategy', item)
-        setNextStep()
-      }}
+      hiddenColumns={refinanceProductHubHiddenColumns}
+      onRowClick={onRowClick}
       wrapperSx={{ mt: 0 }}
+      separator={(table) => getRefinanceProductHubSeparator({ table, collateralToken, debtToken })}
     />
   )
 }
