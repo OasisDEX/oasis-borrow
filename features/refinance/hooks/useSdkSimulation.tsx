@@ -4,7 +4,7 @@ import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
-import { type SparkPoolId } from 'features/refinance/types'
+import { RefinanceSidebarStep, type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
@@ -53,6 +53,19 @@ export function useSdkSimulation(): SDKSimulation {
   const { ctx, cache } = useRefinanceGeneralContext()
 
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
+
+  // Reset state when user go back to strategy or option step
+  useEffect(() => {
+    if (
+      ctx &&
+      [RefinanceSidebarStep.Option, RefinanceSidebarStep.Strategy].includes(ctx.steps.currentStep)
+    ) {
+      setError(null)
+      setRefinanceSimulation(null)
+      setLiquidationPrice('')
+      setLiquidationThreshold(null)
+    }
+  }, [ctx?.steps.currentStep])
 
   useEffect(() => {
     if (!ctx || !cache.positionOwner) {
