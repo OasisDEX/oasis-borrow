@@ -24,7 +24,7 @@ import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
-import { RefinanceBanner } from 'features/refinance/RefinanceBanner'
+import { RefinanceBanner } from 'features/refinance/components'
 import { useAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

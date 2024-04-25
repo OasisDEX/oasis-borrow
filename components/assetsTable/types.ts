@@ -1,4 +1,5 @@
 import type { ActionBannerProps } from 'components/ActionBanner'
+import type { ProductHubItem } from 'features/productHub/types'
 import type { ReactNode } from 'react'
 
 export type AssetsTableSortingDirection = 'asc' | 'desc'
@@ -20,10 +21,15 @@ export interface AssetsTableSortableCell {
 }
 
 export type AssetsTableCell = AssetsTableCellContent | AssetsTableSortableCell
-export interface AssetsTableSeparator {
+
+export type AssetsTableSeparatorStatic = {
   index: number
   text?: string
 }
+export type AssetsTableSeparatorHandler = (
+  table: ProductHubItem[],
+) => AssetsTableSeparatorStatic | undefined
+export type AssetsTableSeparator = AssetsTableSeparatorStatic | AssetsTableSeparatorHandler
 
 export interface AssetsTableRowItems {
   [key: string]: AssetsTableCell
@@ -45,7 +51,7 @@ export interface AssetsTableProps {
   paddless?: boolean
   perPage?: number
   rows: AssetsTableRowData[]
-  separator?: AssetsTableSeparator
+  separator?: AssetsTableSeparatorStatic
   tooltips?: string[]
   verticalAlign?: string
 }
