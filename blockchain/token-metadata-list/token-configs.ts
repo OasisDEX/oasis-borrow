@@ -54,6 +54,7 @@ import {
   pax_circle_color,
   prime,
   pyusd,
+  question,
   rbn_circle_color,
   renbtc_circle_color,
   reth_circle_color,
@@ -986,6 +987,15 @@ export const tokenConfigs: TokenConfig[] = [
     coinGeckoTicker: 'usde',
     tags: [],
     rootToken: 'USD',
+  },  {
+    symbol: 'PTWEETH',
+    precision: 18,
+    digits: 5,
+    name: 'Pendle PT-weETH',
+    icon: question,
+    iconCircle: question,
+    iconUnavailable: true,
+    tags: [],
   },
   {
     symbol: 'PYUSD',

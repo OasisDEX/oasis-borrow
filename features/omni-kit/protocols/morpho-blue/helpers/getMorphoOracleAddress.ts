@@ -3,7 +3,7 @@ import { getRpcProvider } from 'blockchain/networks'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { MorphoBlue__factory as MorphoBlueFactory } from 'types/ethers-contracts'
 
-interface getMorphoOracleAddressParams {
+interface GetMorphoOracleAddressParams {
   marketId: string
   networkId: OmniSupportedNetworkIds
 }
@@ -11,7 +11,7 @@ interface getMorphoOracleAddressParams {
 export async function getMorphoOracleAddress({
   marketId,
   networkId,
-}: getMorphoOracleAddressParams) {
+}: GetMorphoOracleAddressParams) {
   const rpcProvider = getRpcProvider(networkId)
 
   const MorphoBlueContract = MorphoBlueFactory.connect(

@@ -6,19 +6,19 @@ import { ChainlinkPairOracle__factory as ChainlinkPairOracleFactory } from 'type
 interface GetMorphoOraclePriceParams {
   collateralPrecision: number
   networkId: OmniSupportedNetworkIds
-  oracle: string
+  oracleAddress: string
   quotePrecision: number
 }
 
 export async function getMorphoOraclePrice({
   collateralPrecision,
   networkId,
-  oracle,
+  oracleAddress,
   quotePrecision,
 }: GetMorphoOraclePriceParams) {
   const rpcProvider = getRpcProvider(networkId)
 
-  const ChainlinkPairOracleContract = ChainlinkPairOracleFactory.connect(oracle, rpcProvider)
+  const ChainlinkPairOracleContract = ChainlinkPairOracleFactory.connect(oracleAddress, rpcProvider)
   const price = await ChainlinkPairOracleContract.price()
 
   return new BigNumber(price.toString()).div(
