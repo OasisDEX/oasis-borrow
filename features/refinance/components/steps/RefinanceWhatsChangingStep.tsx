@@ -35,6 +35,8 @@ export const RefinanceWhatsChangingStep = () => {
         {t('refinance.sidebar.transaction.description.success', {
           oldId: positionId.id,
           newId: dpm?.id,
+          collateralToken: refinanceSimulation?.targetPosition.collateralAmount.token.symbol,
+          debtToken: refinanceSimulation?.targetPosition.debtAmount.token.symbol,
         })}
         <Flex sx={{ justifyContent: 'center', mt: 3 }}>
           <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
