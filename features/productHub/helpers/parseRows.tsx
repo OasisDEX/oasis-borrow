@@ -3,6 +3,7 @@ import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { BrandTag } from 'components/BrandTag'
+import { AppLink } from 'components/Links'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
@@ -15,8 +16,11 @@ import type {
   ProductHubFeaturedProducts,
   ProductHubItem,
 } from 'features/productHub/types'
+import { getLocalAppConfig } from 'helpers/config'
 import { isEqual, omit } from 'lodash'
 import React from 'react'
+import { Button } from 'theme-ui'
+import { FeaturesEnum } from 'types/config'
 
 interface ParseRowsParams {
   featured: ProductHubFeaturedProducts
@@ -35,6 +39,7 @@ export function parseRows({
   product,
   rows,
 }: ParseRowsParams): AssetsTableRowData[] {
+  const isDebugEnabled = getLocalAppConfig('features')[FeaturesEnum.ProductHubDebug]
   const featuredRows = filterFeaturedProducts({ filters: featured, product, rows })
 
   return rows.map((row) => {
@@ -81,6 +86,13 @@ export function parseRows({
             protocol={protocol}
           />
         ),
+        ...(isDebugEnabled && {
+          action: (
+            <AppLink href={url} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button variant="bean">Open</Button>
+            </AppLink>
+          ),
+        }),
       },
       hiddenColumns ?? [],
     )
@@ -89,7 +101,7 @@ export function parseRows({
       items,
       isHighlighted: isFeatured && featured.isHighlighted,
       isStickied: isFeatured && (featured.isStickied || featured.isPromoted),
-      ...(!isUrlDisabled && { link: url }),
+      ...(!isUrlDisabled && !isDebugEnabled && { link: url }),
       ...(onRowClick && {
         onClick: () => onRowClick(row),
       }),
