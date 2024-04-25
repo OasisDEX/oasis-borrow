@@ -3829,6 +3829,7 @@
           "item-3": "Opening your new position"
         },
         "summerfi-fee": "Summer.fi Fee",
+        "price-impact": "Price (impact)",
         "tooltips": {
           "slippage": "The maximum amount accepted as a lower price between this and the quoted price.",
           "summerfi-fee": "The Summer.fi fee on this swap.",
