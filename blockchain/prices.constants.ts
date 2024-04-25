@@ -1,15 +1,24 @@
+import BigNumber from 'bignumber.js'
 import type { Observable } from 'rxjs'
 import { timer } from 'rxjs'
 import { shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import type { Tickers } from './prices.types'
 
-export function tokenPrices(): Promise<Tickers> {
-  return fetch('/api/tokensPrices', {
+export async function tokenPrices(): Promise<Tickers> {
+  const rawTickers: Record<string, string> = await fetch('/api/tokensPrices', {
     headers: {
       Accept: 'application/json',
     },
   }).then((response) => response.json())
+
+  return Object.entries(rawTickers).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key]: new BigNumber(value),
+    }),
+    {},
+  )
 }
 
 interface ReadOnlyTokenPriceStore {
