@@ -142,6 +142,7 @@ async function getMorphoMarketData(
               protocol,
               secondaryToken: quoteToken,
               ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
+              depositToken: collateralToken,
               fee,
               liquidity,
               maxLtv,
