@@ -3829,7 +3829,15 @@
           "item-2": "Performing collateral and debt swaps if needed",
           "item-3": "Opening your new position"
         },
-        "summerfi-fee": "Summer.fi Fee"
+        "summerfi-fee": "Summer.fi Fee",
+        "tooltips": {
+          "slippage": "The maximum amount accepted as a lower price between this and the quoted price.",
+          "summerfi-fee": "The Summer.fi fee on this swap.",
+          "summerfi-fee-total": "The Summer.fi total fee.",
+          "price-impact": "The impact that this swap has on the market price. It is the difference between the best price in the route and the total average price in the swap route.",
+          "collateral-asset": "You are swapping the token you are lending as collateral.",
+          "debt-asset": "You are swapping the token you are borrowing as debt."
+        }
       },
       "refinance-option": {
         "title-base": "Choose position to {{extension}}",

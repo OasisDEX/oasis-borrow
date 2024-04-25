@@ -99,7 +99,7 @@ export const RefinanceWhatsChangingStep = () => {
           {
             label: t('refinance.sidebar.whats-changing.summerfi-fee'),
             value: formatted.summerFee,
-            tooltip: t('refinance.sidebar.whats-changing.summerfi-fee'),
+            tooltip: t('refinance.sidebar.whats-changing.tooltips.summerfi-fee-total'),
             isLoading: !refinanceSimulation,
           },
           {

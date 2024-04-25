@@ -50,20 +50,24 @@ export const RefinanceSwapSection = () => {
         label: isCollateral ? t('system.collateral-asset') : t('system.debt-asset'),
         value: formatted.fromTokenlAsset,
         change: formatted.toTokenAsset,
+        tooltip: isCollateral
+          ? t('refinance.sidebar.whats-changing.tooltips.collateral-asset')
+          : t('refinance.sidebar.whats-changing.tooltips.debt-asset'),
       },
       {
         label: t('system.price-impact'),
         value: formatted.priceImpact,
-        tooltip: t('system.price-impact-tooltip'),
+        tooltip: t('refinance.sidebar.whats-changing.tooltips.price-impact'),
       },
       {
         label: t('system.slippage'),
         value: formatted.slippage,
-        tooltip: t('system.slippage-tooltip'),
+        tooltip: t('refinance.sidebar.whats-changing.tooltips.slippage'),
       },
       {
-        label: t('system.fee'),
+        label: t('refinance.sidebar.whats-changing.summerfi-fee'),
         value: formatted.fee,
+        tooltip: t('refinance.sidebar.whats-changing.tooltips.summerfi-fee'),
       },
     ])
   })
