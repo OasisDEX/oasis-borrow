@@ -1090,6 +1090,8 @@
   "send-amount-exceed-balance": "Not enough {{ token }}",
   "send-to": "Send to",
   "sent": "Sent",
+  "off": "Off",
+  "on": "On",
   "seo": {
     "404": {
       "title": "Page not found 🥹 - Summer.fi",
