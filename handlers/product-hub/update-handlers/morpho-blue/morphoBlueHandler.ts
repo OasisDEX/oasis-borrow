@@ -49,7 +49,7 @@ async function getMorphoMarketData(
   const markets = Object.keys(networkMarkets).flatMap((pair) =>
     networkMarkets[pair].map((marketId) => ({ pair, marketId })),
   )
-  const prices = uniq(markets.flatMap(({ pair }) => pair.split('-'))).reduce<Tickers>(
+  const prices = uniq(markets.map(({ pair }) => pair.split('-')[1])).reduce<Tickers>(
     (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
     {},
   )
