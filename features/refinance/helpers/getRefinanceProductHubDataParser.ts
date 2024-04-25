@@ -8,6 +8,29 @@ import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers/
 import { RefinanceOptions } from 'features/refinance/types'
 import { moveItemsToFront } from 'helpers/moveItemsToFront'
 
+const availableLiquidityMapping = ({
+  table,
+  debtAmount,
+  debtToken,
+}: {
+  table: ProductHubItem[]
+  debtAmount: string
+  debtToken: string
+}) => {
+  const debtPrice = getTokenPrice(
+    debtToken,
+    tokenPriceStore.prices,
+    'debtPrice - availableLiquidityMapping',
+  )
+  const positionDebtInUsd = debtPrice.times(debtAmount)
+
+  // no positions with liquidity less than 5% more than outstanding debt should be surfaced
+  // if item.liquidity doesn't exist it means that liquidity is unlimited
+  return table.filter((item) =>
+    item.liquidity ? new BigNumber(item.liquidity).times(0.95).gte(positionDebtInUsd) : true,
+  )
+}
+
 const borrowRateMapping = ({
   table,
   interestRates,
@@ -106,9 +129,12 @@ export const getRefinanceProductHubDataParser = ({
   collateralToken: string
   debtToken: string
 }) => {
+  // Map only items with enough liquidity to perform refinance
+  const availableLiquidityMapped = availableLiquidityMapping({ table, debtAmount, debtToken })
+
   // Overwrite borrow rates from PH (which are per pool, not per position) for aave-like protocols
   const borrowRatesMapped = borrowRateMapping({
-    table,
+    table: availableLiquidityMapped,
     interestRates,
     collateralAmount,
     debtAmount,
