@@ -6,19 +6,10 @@ import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/fo
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-type SwapItem = {
-  label: string
-  dropdownValues: {
-    label: string
-    value: React.ReactNode
-    change?: React.ReactNode
-  }[]
-}
-
 export const RefinanceSwapSection = () => {
   const { t } = useTranslation()
   const {
-    environment: { collateralPrice, debtPrice, ethPrice },
+    environment: { collateralPrice, debtPrice },
     simulation: { refinanceSimulation },
   } = useRefinanceContext()
 
@@ -28,7 +19,13 @@ export const RefinanceSwapSection = () => {
 
   const { swaps, sourcePosition } = refinanceSimulation
 
-  const parsedSwaps: SwapItem[] = []
+  const dropdownGroups: {
+    label: string
+    value: React.ReactNode
+    change?: React.ReactNode
+    tooltip?: string
+  }[][] = []
+
   swaps.forEach((swap) => {
     const isCollateral =
       swap.fromTokenAmount.token.symbol === sourcePosition?.collateralAmount.token.symbol
@@ -40,7 +37,6 @@ export const RefinanceSwapSection = () => {
     const slippage = new BigNumber(swap.slippage.value)
     const feePrice = new BigNumber(isCollateral ? collateralPrice : debtPrice)
     const fee = new BigNumber(swap.summerFee.amount).times(feePrice)
-    console.log({ swap })
 
     const formatted = {
       fromTokenlAsset: <ItemValueWithIcon tokens={[fromToken]}>{fromToken}</ItemValueWithIcon>,
@@ -50,29 +46,39 @@ export const RefinanceSwapSection = () => {
       fee: `$${formatFiatBalance(fee)}`,
     }
 
-    parsedSwaps.push({
-      label: t('system.swap'),
-      dropdownValues: [
-        {
-          label: isCollateral ? t('system.collateral-asset') : t('system.debt-asset'),
-          value: formatted.fromTokenlAsset,
-          change: formatted.toTokenAsset,
-        },
-        {
-          label: t('system.price-impact'),
-          value: formatted.priceImpact,
-        },
-        {
-          label: t('system.slippage'),
-          value: formatted.slippage,
-        },
-        {
-          label: t('system.fee'),
-          value: formatted.fee,
-        },
-      ],
-    })
+    dropdownGroups.push([
+      {
+        label: isCollateral ? t('system.collateral-asset') : t('system.debt-asset'),
+        value: formatted.fromTokenlAsset,
+        change: formatted.toTokenAsset,
+      },
+      {
+        label: t('system.price-impact'),
+        value: formatted.priceImpact,
+        tooltip: t('system.price-impact-tooltip'),
+      },
+      {
+        label: t('system.slippage'),
+        value: formatted.slippage,
+        tooltip: t('system.slippage-tooltip'),
+      },
+      {
+        label: t('system.fee'),
+        value: formatted.fee,
+      },
+    ])
   })
+
+  if (dropdownGroups.length === 0) {
+    return null
+  }
+
+  const parsedSwaps = [
+    {
+      label: t('system.swap'),
+      dropdownGroups,
+    },
+  ]
 
   return (
     <InfoSection

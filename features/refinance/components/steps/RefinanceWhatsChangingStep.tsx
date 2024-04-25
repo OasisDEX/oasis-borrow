@@ -17,11 +17,12 @@ export const RefinanceWhatsChangingStep = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { gasEstimation },
+    environment: { gasEstimation, collateralPrice, debtPrice },
     metadata: {
       validations: { errors, warnings, notices, successes },
     },
     position: { positionId },
+    simulation: { refinanceSimulation },
     tx: { isTxSuccess, isTxInProgress },
     form: {
       state: { dpm },
@@ -53,8 +54,16 @@ export const RefinanceWhatsChangingStep = () => {
     )
   }
 
-  // TODO: Remove hardcoded value
-  const summerFee = new BigNumber(100)
+  let summerFee = new BigNumber(0)
+  const { swaps, sourcePosition } = refinanceSimulation || {}
+
+  swaps?.forEach((swap) => {
+    const isCollateral =
+      swap.fromTokenAmount.token.symbol === sourcePosition?.collateralAmount.token.symbol
+    const feePrice = new BigNumber(isCollateral ? collateralPrice : debtPrice)
+    const fee = new BigNumber(swap.summerFee.amount).times(feePrice)
+    summerFee = summerFee.plus(fee)
+  })
 
   const formatted = {
     summerFee: `$${formatFiatBalance(summerFee)}`,
@@ -79,6 +88,7 @@ export const RefinanceWhatsChangingStep = () => {
             label: t('refinance.sidebar.whats-changing.summerfi-fee'),
             value: formatted.summerFee,
             tooltip: t('refinance.sidebar.whats-changing.summerfi-fee'),
+            isLoading: !refinanceSimulation,
           },
           {
             label: t('system.max-transaction-cost'),

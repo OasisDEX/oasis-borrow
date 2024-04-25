@@ -34,6 +34,7 @@ export interface ItemProps {
     variant?: SecondaryVariantType
   }
   dropdownValues?: DropDownValue[]
+  dropdownGroups?: DropDownValue[][]
   isLoading?: boolean
   isHeading?: boolean
   tooltip?: string
@@ -91,6 +92,7 @@ export function Item({
   label,
   subLabel,
   dropdownValues,
+  dropdownGroups,
   value,
   change,
   secondary,
@@ -102,6 +104,8 @@ export function Item({
   itemWrapperSx,
 }: ItemProps) {
   const [open, setOpen] = useState(false)
+
+  const dropdownValuesExist = (dropdownValues?.length || 0) > 0 || (dropdownGroups?.length || 0) > 0
 
   return (
     <Box
@@ -115,13 +119,13 @@ export function Item({
     >
       <Flex
         sx={{
-          cursor: !isLoading && dropdownValues?.length ? 'pointer' : 'auto',
+          cursor: !isLoading && dropdownValuesExist ? 'pointer' : 'auto',
           justifyContent: 'space-between',
           alignItems: 'center',
           position: 'relative',
         }}
         onClick={() => {
-          !isLoading && dropdownValues?.length && setOpen(!open)
+          !isLoading && dropdownValuesExist && setOpen(!open)
         }}
       >
         {label &&
@@ -170,7 +174,7 @@ export function Item({
                   ({secondary.value})
                 </Text>
               )}
-              {dropdownValues?.length && (
+              {dropdownValuesExist && (
                 <ExpandableArrow
                   direction={open ? 'up' : 'down'}
                   sx={{
@@ -206,6 +210,25 @@ export function Item({
               {dropdownValues.map((item, idx) => (
                 <Item {...item} key={item.label || idx} />
               ))}
+            </Grid>
+          )}
+          {dropdownGroups && (
+            <Grid
+              as="ul"
+              gap={!isHeading ? 2 : 3}
+              sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 3, listStyle: 'none' }}
+            >
+              {dropdownGroups
+                .map((items) => {
+                  return [
+                    <div key={items[0].label} style={{ borderTop: '1px dashed #EAEAEA' }}>
+                      {/* separator */}
+                    </div>,
+                    items.map((item, idx) => <Item {...item} key={item.label || idx} />),
+                  ]
+                })
+                .flat()
+                .slice(1)}
             </Grid>
           )}
         </>
