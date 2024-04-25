@@ -16,6 +16,6 @@ export {
   useAaveContext,
   isAaveContextAvailable,
 } from './aave-context-provider'
-export { wstethRiskRatio } from './constants'
+export { aaveLikeEmodeRiskRatio } from './constants'
 export { ManageDebtActionsEnum } from './types/manage-debt-actions-enum'
 export { ManageCollateralActionsEnum } from './types/manage-collateral-actions-enum'

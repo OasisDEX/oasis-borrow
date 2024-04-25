@@ -9,8 +9,8 @@ import {
 import type { IStrategyConfig } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
 import { formatPercent } from 'helpers/formatters/format'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { nbsp } from 'helpers/nbsp'
-import type { GetTriggersResponse } from 'helpers/triggers'
 import { useMemo } from 'react'
 
 export const mapPartialTakeProfitFromLambda = (

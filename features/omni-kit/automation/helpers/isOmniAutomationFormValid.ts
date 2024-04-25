@@ -4,7 +4,7 @@ import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/auto
 import type { OmniAutomationPartialTakeProfitFormState } from 'features/omni-kit/state/automation/partial-take-profit'
 import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss'
 import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
-import { TriggerAction } from 'helpers/triggers'
+import { TriggerAction } from 'helpers/lambda/triggers'
 import { isBoolean } from 'lodash'
 
 export const isOmniAutomationFormValid = (

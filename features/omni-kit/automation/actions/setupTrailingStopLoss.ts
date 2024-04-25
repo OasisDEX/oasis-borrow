@@ -4,7 +4,7 @@ import { resolveStopLossishAction } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { OmniAutomationTrailingStopLossFormState } from 'features/omni-kit/state/automation/trailing-stop-loss'
 import type { AutomationMetadataValues } from 'features/omni-kit/types'
-import { setupAaveLikeTrailingStopLoss } from 'helpers/triggers'
+import { setupAaveLikeTrailingStopLoss } from 'helpers/lambda/triggers'
 
 export const setupTrailingStopLoss = ({
   automation,

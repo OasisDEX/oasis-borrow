@@ -38,6 +38,8 @@ interface ProductHubContentControllerProps {
   hiddenColumns?: ProductHubColumnKey[]
   hiddenHelp?: boolean
   hiddenTags?: boolean
+  hiddenProtocolFilter?: boolean
+  hiddenNetworkFilter?: boolean
   limitRows?: number
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
@@ -58,6 +60,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   hiddenColumns,
   hiddenHelp,
   hiddenTags,
+  hiddenProtocolFilter,
+  hiddenNetworkFilter,
   limitRows,
   networkId,
   onChange,
@@ -155,6 +159,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           onChange={onChange}
           selectedFilters={selectedFilters}
           selectedProduct={selectedProduct}
+          hiddenProtocolFilter={hiddenProtocolFilter}
+          hiddenNetworkFilter={hiddenNetworkFilter}
         />
         {!hiddenTags && (
           <ProductHubTagsController

@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import type { AutomationFeatures } from 'features/automation/common/types'
 import type { FormActionsReset } from 'features/omni-kit/state/index'
-import type { TriggerAction } from 'helpers/triggers'
+import type { TriggerAction } from 'helpers/lambda/triggers'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniAutomationFormState {

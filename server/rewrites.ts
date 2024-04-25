@@ -11,6 +11,10 @@ const rewriteRules = () => [
     destination: `${process.env.FUNCTIONS_API_URL}/api/triggers`,
   },
   {
+    source: '/api/apy/:path*',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/apy/:path*`,
+  },
+  {
     source: '/api/migrations',
     destination: `${process.env.FUNCTIONS_API_URL}/api/migrations`,
   },
@@ -21,6 +25,10 @@ const rewriteRules = () => [
   {
     source: '/api/morpho/:path*',
     destination: `${process.env.FUNCTIONS_API_URL}/api/morpho/:path*`,
+  },
+  {
+    source: '/api/apy/:path*',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/apy/:path*`,
   },
   // ... other rules
 ]

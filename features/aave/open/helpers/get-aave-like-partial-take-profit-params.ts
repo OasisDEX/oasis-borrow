@@ -10,7 +10,7 @@ import {
   getDynamicStopLossPrice,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
-import type { ProfitsSimulationMapped } from 'helpers/triggers'
+import type { ProfitsSimulationMapped } from 'helpers/lambda/triggers'
 import { hundred, one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import { useMemo, useState } from 'react'

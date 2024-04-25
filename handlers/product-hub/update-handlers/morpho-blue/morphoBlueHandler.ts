@@ -1,4 +1,5 @@
 import { getMarketRate } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
@@ -7,7 +8,9 @@ import type { Tickers } from 'blockchain/prices.types'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
+import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { morphoMarkets, settings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
@@ -18,6 +21,7 @@ import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { getYieldsRequest } from 'helpers/lambda/yields'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -92,8 +96,31 @@ async function getMorphoMarketData(
           supportedTokens: settings.supportedMultiplyTokens[networkId],
         })
 
+        const isYieldLoop = isYieldLoopPair({
+          collateralToken,
+          debtToken: quoteToken,
+        })
+
+        const weeklyNetApyCall = await (isYieldLoop
+          ? getYieldsRequest(
+              {
+                actionSource: 'product-hub handler morpho-blue',
+                quoteToken,
+                collateralToken,
+                networkId,
+                protocol: LendingProtocol.MorphoBlue,
+                ltv: new BigNumber(maxLtv),
+              },
+              process.env.FUNCTIONS_API_URL,
+            )
+          : Promise.resolve(null))
+        const weeklyNetApy = new BigNumber(weeklyNetApyCall?.results?.apy7d || zero)
+          .div(lambdaPercentageDenomination)
+          .toString()
+
         const isShort = isShortPosition({ collateralToken })
         const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
+        const earnStrategyDescription = `${collateralToken}/${quoteToken} Yield Loop`
         const multiplyStrategyType = isShort ? 'short' : 'long'
         const maxMultiply = BigNumber.max(
           one.plus(one.div(one.div(maxLtv).minus(one))),
@@ -109,7 +136,8 @@ async function getMorphoMarketData(
               ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
               product: [
                 OmniProductType.Borrow,
-                ...(isWithMultiply ? [OmniProductType.Multiply] : []),
+                ...(isWithMultiply && !isYieldLoop ? [OmniProductType.Multiply] : []),
+                ...(isYieldLoop ? [OmniProductType.Earn] : []),
               ],
               protocol,
               secondaryToken: quoteToken,
@@ -118,10 +146,16 @@ async function getMorphoMarketData(
               liquidity,
               maxLtv,
               maxMultiply,
+              weeklyNetApy,
               primaryTokenAddress,
               secondaryTokenAddress,
               multiplyStrategy,
               multiplyStrategyType,
+              ...(isYieldLoop && {
+                earnStrategy: EarnStrategies.yield_loop,
+                earnStrategyDescription,
+                managementType: 'active',
+              }),
               automationFeatures: settings.availableAutomations[networkId],
             },
           ],

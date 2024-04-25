@@ -1,8 +1,10 @@
+import { getTokenPrice } from 'blockchain/prices'
+import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
-import { type SparkPoolId } from 'features/refinance/types'
+import { RefinanceSidebarStep, type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
@@ -52,12 +54,25 @@ export function useSdkSimulation(): SDKSimulation {
 
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
 
+  // Reset state when user go back to strategy or option step
+  useEffect(() => {
+    if (
+      ctx &&
+      [RefinanceSidebarStep.Option, RefinanceSidebarStep.Strategy].includes(ctx.steps.currentStep)
+    ) {
+      setError(null)
+      setRefinanceSimulation(null)
+      setLiquidationPrice('')
+      setLiquidationThreshold(null)
+    }
+  }, [ctx?.steps.currentStep])
+
   useEffect(() => {
     if (!ctx || !cache.positionOwner) {
       return
     }
     const {
-      environment: { slippage, chainInfo, debtPrice, address },
+      environment: { slippage, chainInfo, address },
       position: { positionId, collateralTokenData, debtTokenData, positionType },
       poolData: { poolId },
       form: {
@@ -70,9 +85,17 @@ export function useSdkSimulation(): SDKSimulation {
     if (!strategy) {
       return
     }
+
     if (!positionType) {
       throw new Error('Unsupported position type.')
     }
+
+    const debtPrice = getTokenPrice(
+      strategy.secondaryToken,
+      tokenPriceStore.prices,
+      'debt price - useSdkSimulation',
+    ).toString()
+
     const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
       const targetPoolId: SparkPoolId = {
@@ -203,8 +226,6 @@ export function useSdkSimulation(): SDKSimulation {
   }, [
     sdk,
     ctx?.environment.slippage,
-    ctx?.environment.collateralPrice,
-    ctx?.environment.debtPrice,
     ctx?.environment.address,
     JSON.stringify(ctx?.environment.chainInfo),
     ctx?.position.positionId.id,

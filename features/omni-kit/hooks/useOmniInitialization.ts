@@ -22,7 +22,7 @@ import type {
   OmniSimulationData,
   OmniSimulationSwap,
 } from 'features/omni-kit/types'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { useState } from 'react'
 
 export function useOmniInitialization<OmniPositionType>({

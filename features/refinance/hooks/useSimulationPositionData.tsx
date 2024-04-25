@@ -1,14 +1,13 @@
 import BigNumber from 'bignumber.js'
+import { getTokenPrice } from 'blockchain/prices'
+import { tokenPriceStore } from 'blockchain/prices.constants'
 import type { RefinancePositionViewProps } from 'features/refinance/components'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import type { RefinancePositionViewType } from 'features/refinance/types'
 import { PositionUtils } from 'summerfi-sdk-client'
 
 export const useSimulationPositionData = () => {
-  const {
-    environment: { collateralPrice, debtPrice },
-    simulation,
-  } = useRefinanceContext()
+  const { simulation } = useRefinanceContext()
 
   if (simulation == null) {
     return undefined
@@ -22,6 +21,18 @@ export const useSimulationPositionData = () => {
     return undefined
   }
   const { collateralAmount, debtAmount } = simulatedPosition
+
+  const collateralPrice = getTokenPrice(
+    collateralAmount.token.symbol,
+    tokenPriceStore.prices,
+    'collateral price - refinance modal controller',
+  ).toString()
+
+  const debtPrice = getTokenPrice(
+    debtAmount.token.symbol,
+    tokenPriceStore.prices,
+    'debt price - refinance modal controller',
+  ).toString()
 
   const ltv = PositionUtils.getLTV({
     collateralTokenAmount: collateralAmount,

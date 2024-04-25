@@ -8,7 +8,7 @@ import type {
   OmniPartialValidations,
   OmniValidationItem,
 } from 'features/omni-kit/types'
-import type { GetTriggersResponse } from 'helpers/triggers'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { zero } from 'helpers/zero'
 import type { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'

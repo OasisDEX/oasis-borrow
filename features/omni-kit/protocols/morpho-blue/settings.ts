@@ -9,7 +9,7 @@ export const settings: OmniProtocolSettings = {
   },
   supportedNetworkIds: [NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
-  supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],
+  supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply, OmniProductType.Earn],
   supportedMultiplyTokens: {
     [NetworkIds.MAINNET]: [
       'DAI',
@@ -41,6 +41,9 @@ export const settings: OmniProtocolSettings = {
       setup: omniSidebarSetupSteps,
       manage: omniSidebarManageBorrowishSteps,
     },
+  },
+  entryTokens: {
+    [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
   },
   availableAutomations: {
     [NetworkIds.MAINNET]: [],

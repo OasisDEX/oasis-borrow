@@ -1,4 +1,5 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { Modal } from 'components/Modal'
 import {
   RefinanceHeader,
@@ -17,6 +18,7 @@ import {
 } from 'features/refinance/helpers'
 import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -36,7 +38,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const { t } = useTranslation()
 
   const { productHub: data } = usePreloadAppDataContext()
-
+  const { tokenPriceUSD$ } = useProductContext()
   const interestRatesInput = getRefinanceInterestRatesInputParams(data.table)
 
   const { handleOnClose, ctx, cache } = useRefinanceGeneralContext()
@@ -44,6 +46,11 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const isTxInProgress = !!ctx?.tx.isTxInProgress
 
   useBeforeUnload(isTxInProgress)
+
+  // Call it with ETH to make sure that tokenPriceStore has been initialized
+  const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
+    useMemo(() => tokenPriceUSD$(['ETH']), []),
+  )
 
   const positionOwner = useMemo(
     () =>
@@ -72,8 +79,8 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
         : of(cache.interestRatesMetadata),
     [cache.interestRatesMetadata],
   )
-  const [positionOwnerData] = useObservable(positionOwner)
-  const [interestRatesData] = useObservable(interestRates)
+  const [positionOwnerData, positionOwnerError] = useObservable(positionOwner)
+  const [interestRatesData, interestRatesError] = useObservable(interestRates)
 
   const onClose = () => {
     if (isTxInProgress) {
@@ -99,29 +106,37 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
 
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose} variant="modalAutoWidth">
-      <WithLoadingIndicator
-        value={[ctx, positionOwnerData, interestRatesData]}
-        customLoader={<RefinanceModalSkeleton onClose={onClose} />}
-      >
-        {([_ctx, _owner, _interestRates]) => (
-          <RefinanceContextProvider
-            ctx={{
-              ..._ctx,
-              metadata: {
-                ..._ctx.metadata,
-                interestRates: _interestRates,
-              },
-              position: {
-                ..._ctx.position,
-                owner: _owner,
-              },
-              simulation,
-            }}
-          >
-            <RefinanceModalContainer onClose={onClose} />
-          </RefinanceContextProvider>
-        )}
-      </WithLoadingIndicator>
+      <WithErrorHandler error={[positionOwnerError, interestRatesError, tokenPriceUSDError]}>
+        <WithLoadingIndicator
+          value={[ctx, positionOwnerData, interestRatesData, tokenPriceUSDData]}
+          customLoader={<RefinanceModalSkeleton onClose={onClose} />}
+        >
+          {([_ctx, _owner, _interestRates, _tokenPriceUSD]) => (
+            <RefinanceContextProvider
+              ctx={{
+                ..._ctx,
+                environment: {
+                  ..._ctx.environment,
+                  marketPrices: {
+                    ethPrice: _tokenPriceUSD['ETH'].toString(),
+                  },
+                },
+                metadata: {
+                  ..._ctx.metadata,
+                  interestRates: _interestRates,
+                },
+                position: {
+                  ..._ctx.position,
+                  owner: _owner,
+                },
+                simulation,
+              }}
+            >
+              <RefinanceModalContainer onClose={onClose} />
+            </RefinanceContextProvider>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
     </Modal>
   )
 }

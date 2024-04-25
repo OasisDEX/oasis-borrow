@@ -26,7 +26,6 @@ const steps = [
   RefinanceSidebarStep.Dpm,
   RefinanceSidebarStep.Give,
   RefinanceSidebarStep.Changes,
-  RefinanceSidebarStep.Transaction,
 ]
 
 export const useInitializeRefinanceContext = ({
@@ -73,7 +72,7 @@ export const useInitializeRefinanceContext = ({
   }
 
   const {
-    environment: { tokenPrices, slippage, address, isOwner },
+    environment: { slippage, address, isOwner },
     poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
     position: {
       collateralAmount,
@@ -83,6 +82,7 @@ export const useInitializeRefinanceContext = ({
       ltv,
       positionType: type,
       lendingProtocol,
+      protocolPrices,
     },
     automations,
   } = contextInput
@@ -98,9 +98,9 @@ export const useInitializeRefinanceContext = ({
     token: mapTokenToSdkToken(chainInfo, debtTokenSymbol),
   })
 
-  const collateralPrice = tokenPrices[collateralTokenSymbol]
-  const debtPrice = tokenPrices[debtTokenSymbol]
-  const ethPrice = tokenPrices['ETH']
+  const collateralPrice = protocolPrices[collateralTokenSymbol]
+  const debtPrice = protocolPrices[debtTokenSymbol]
+  const ethPrice = protocolPrices['ETH']
 
   const parsedAddress = address as AddressValue
 
@@ -151,9 +151,6 @@ export const useInitializeRefinanceContext = ({
     },
     environment: {
       contextId: contextInput.contextId,
-      collateralPrice,
-      debtPrice,
-      ethPrice,
       address: parsedAddress,
       chainInfo,
       slippage,
@@ -169,6 +166,11 @@ export const useInitializeRefinanceContext = ({
       positionType: type,
       isShort,
       lendingProtocol,
+      protocolPrices: {
+        collateralPrice,
+        debtPrice,
+        ethPrice,
+      },
     },
     poolData: {
       poolId,
