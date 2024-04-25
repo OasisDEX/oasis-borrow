@@ -405,6 +405,14 @@ export const theme = themeTypeSafe({
       bg: 'neutral30',
       borderRadius: 'large',
     },
+    vaultDetailsCardModalDetail: {
+      variant: 'text.boldParagraph3',
+      py: 3,
+      width: '100%',
+      textAlign: 'center',
+      bg: 'neutral30',
+      borderRadius: 'large',
+    },
     rewardsDetails: {
       p: 3,
       bg: 'neutral30',

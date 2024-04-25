@@ -1,29 +1,35 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import { isYieldLoopToken } from 'features/omni-kit/helpers'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid, Heading, Text } from 'theme-ui'
+import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export const AaveLikeCostToBorrowContentCardModal = ({
   collateralAmount,
   collateralPrice,
+  collateralToken,
   debtAmount,
   quotePrice,
   quoteToken,
   debtVariableBorrowRate,
   collateralLiquidityRate,
   netValue,
+  apy,
 }: {
   collateralAmount: BigNumber
   collateralPrice: BigNumber
+  collateralToken: string
   debtAmount: BigNumber
   quotePrice: BigNumber
   quoteToken: string
   debtVariableBorrowRate: BigNumber
   collateralLiquidityRate: BigNumber
   netValue: BigNumber
+  apy?: BigNumber
 }) => {
   const { t } = useTranslation()
 
@@ -33,7 +39,7 @@ export const AaveLikeCostToBorrowContentCardModal = ({
     .times(collateralPrice)
   const netBorrowCostPercentage = normalizeValue(
     costOfBorrowingDebt.minus(profitFromProvidingCollateral).div(netValue),
-  )
+  ).minus(apy || zero)
 
   const costToBorrow = debtAmount.times(NaNIsZero(debtVariableBorrowRate))
 
@@ -49,21 +55,22 @@ export const AaveLikeCostToBorrowContentCardModal = ({
       <Card as="p" variant="vaultDetailsCardModal">
         {formatDecimalAsPercent(NaNIsZero(netBorrowCostPercentage))}
       </Card>
-      <Text as="p" variant="boldParagraph3" sx={{ mb: 1 }}>
-        {t('aave-position-modal.net-borrow-cost.borrow-apy', {
-          rate: formatDecimalAsPercent(debtVariableBorrowRate),
-        })}
-      </Text>
-      <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-        <Text as="span" variant="boldParagraph3" sx={{ mb: 1 }}>
-          {t('aave-position-modal.net-borrow-cost.supply-apy', {
-            rate: formatDecimalAsPercent(collateralLiquidityRate),
+      <Flex sx={{ justifyContent: 'space-around' }}>
+        <Card variant="vaultDetailsCardModalDetail">
+          {t('aave-position-modal.net-borrow-cost.borrow-apy', {
+            rate: formatDecimalAsPercent(
+              debtVariableBorrowRate.plus(isYieldLoopToken(quoteToken) ? apy || zero : zero),
+            ),
           })}
-        </Text>
-        <Text as="span" variant="paragraph3" sx={{ mb: 1 }}>
-          {t('aave-position-modal.net-borrow-cost.supply-apy-note')}
-        </Text>
-      </Text>
+        </Card>
+        <Card variant="vaultDetailsCardModalDetail" sx={{ ml: 2 }}>
+          {t('aave-position-modal.net-borrow-cost.supply-apy', {
+            rate: formatDecimalAsPercent(
+              collateralLiquidityRate.plus(isYieldLoopToken(collateralToken) ? apy || zero : zero),
+            ),
+          })}
+        </Card>
+      </Flex>
       <Heading variant="header4">
         {t('aave-position-modal.net-borrow-cost.second-header', {
           debtToken: quoteToken,

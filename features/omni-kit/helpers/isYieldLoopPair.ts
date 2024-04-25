@@ -38,6 +38,19 @@ export const yieldLoopDefinition = {
   ],
 }
 
+export const isYieldLoopToken = (token?: string) => {
+  const { ethYieldTokens, stableCoinYieldTokens } = yieldLoopDefinition
+
+  if (!token) {
+    return false
+  }
+
+  return (
+    ethYieldTokens.includes(token.toLocaleUpperCase()) ||
+    stableCoinYieldTokens.includes(token.toLocaleUpperCase())
+  )
+}
+
 export const isYieldLoopPair = (pair: IsYieldLoopPairParams) => {
   const { collateralToken, debtToken } = pair
   const { ethYieldTokens, stableCoinYieldTokens } = yieldLoopDefinition

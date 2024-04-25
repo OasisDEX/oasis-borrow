@@ -9,6 +9,7 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
+import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCardModal'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
@@ -49,8 +50,6 @@ import React, { useMemo } from 'react'
 import { bell } from 'theme/icons'
 import { Grid } from 'theme-ui'
 import type { Sender, StateFrom } from 'xstate'
-
-import { CostToBorrowContentCardModal } from './CostToBorrowContentCard'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
