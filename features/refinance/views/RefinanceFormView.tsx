@@ -55,11 +55,12 @@ export const RefinanceFormView: FC = ({ children }) => {
       setNextStep,
       setPrevStep,
     },
+    simulation: { isLoading },
   } = useRefinanceContext()
 
   const txHandler = useRefinanceTxHandler()
 
-  const isSimulationLoading = txHandler === null
+  const isSimulationLoading = isLoading
 
   const shouldSwitchNetwork = chainId !== walletChainId
 
