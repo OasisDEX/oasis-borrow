@@ -53,6 +53,7 @@ export const RefinanceWhatsChangingStep = () => {
     )
   }
 
+  // TODO: Remove hardcoded value
   const summerFee = new BigNumber(100)
 
   const formatted = {

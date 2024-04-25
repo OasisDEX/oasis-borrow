@@ -45,11 +45,10 @@ export const RefinanceReviewChangesSection = () => {
   const debt = new BigNumber(position.debtTokenData.amount)
   const debtToken = position.debtTokenData.token.symbol
 
-  const simulatedPosition = simulation.simulatedPosition
-
-  if (!simulatedPosition) {
+  if (!simulation.refinanceSimulation) {
     return null
   }
+  const targetPosition = simulation.refinanceSimulation.targetPosition
 
   const afterLtv = new BigNumber(
     simulation.liquidationThreshold ? simulation.liquidationThreshold.toProportion() : 0,
@@ -57,8 +56,8 @@ export const RefinanceReviewChangesSection = () => {
 
   const afterLiquidationPriceInUsd = simulation.liquidationPrice
   const afterLiquidationPrice = new BigNumber(afterLiquidationPriceInUsd)
-  const afterDebt = new BigNumber(simulatedPosition.debtAmount.amount)
-  const afterDebtToken = simulatedPosition.debtAmount.token.symbol
+  const afterDebt = new BigNumber(targetPosition.debtAmount.amount)
+  const afterDebtToken = targetPosition.debtAmount.token.symbol
 
   const ltvChange = afterLtv.minus(ltv).div(ltv)
   const liquidationPriceChange = afterLiquidationPrice.minus(liquidationPrice).div(liquidationPrice)

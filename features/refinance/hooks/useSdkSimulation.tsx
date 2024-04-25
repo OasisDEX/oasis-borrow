@@ -29,7 +29,6 @@ export type SDKSimulation = {
   chain: Chain | null
   user: User | null
   sourcePosition: IPosition | null
-  simulatedPosition: IPosition | null
   importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
   refinanceSimulation: ISimulation<SimulationType.Refinance> | null
   liquidationPrice: string
@@ -218,14 +217,11 @@ export function useSdkSimulation(): SDKSimulation {
     cache.positionOwner,
   ])
 
-  const simulatedPosition = refinanceSimulation?.targetPosition || null
-
   return {
     error,
     chain,
     user,
     sourcePosition,
-    simulatedPosition,
     importPositionSimulation,
     refinanceSimulation,
     liquidationPrice,
