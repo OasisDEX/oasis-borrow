@@ -26,7 +26,6 @@ const steps = [
   RefinanceSidebarStep.Dpm,
   RefinanceSidebarStep.Give,
   RefinanceSidebarStep.Changes,
-  RefinanceSidebarStep.Transaction,
 ]
 
 export const useInitializeRefinanceContext = ({
