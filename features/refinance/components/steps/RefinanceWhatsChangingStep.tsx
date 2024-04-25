@@ -21,7 +21,15 @@ export const RefinanceWhatsChangingStep = () => {
     metadata: {
       validations: { errors, warnings, notices, successes },
     },
-    position: { positionId },
+    position: {
+      positionId,
+      collateralTokenData: {
+        token: { symbol: oldCollateralToken },
+      },
+      debtTokenData: {
+        token: { symbol: oldDebtToken },
+      },
+    },
     simulation: { refinanceSimulation, collateralPrice, debtPrice },
     tx: { isTxSuccess, isTxInProgress },
     form: {
@@ -35,6 +43,8 @@ export const RefinanceWhatsChangingStep = () => {
         {t('refinance.sidebar.transaction.description.success', {
           oldId: positionId.id,
           newId: dpm?.id,
+          oldCollateralToken,
+          oldDebtToken,
           collateralToken: refinanceSimulation?.targetPosition.collateralAmount.token.symbol,
           debtToken: refinanceSimulation?.targetPosition.debtAmount.token.symbol,
         })}
