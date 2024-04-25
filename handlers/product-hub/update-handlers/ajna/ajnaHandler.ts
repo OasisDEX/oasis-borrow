@@ -49,7 +49,10 @@ async function getAjnaPoolData(
     ...getNetworkContracts(networkId).ajnaPoolPairs,
     ...getNetworkContracts(networkId).ajnaOraclessPoolPairs,
   }
-  const poolsTokenPairs = Object.keys(poolContracts).map((pair) => pair.split('-'))
+  const poolsTokenPairs = Object.keys(poolContracts).map((pair) => ({
+    address: poolContracts[pair as keyof typeof poolContracts].address,
+    tokens: pair.split('-'),
+  }))
   const poolAddresses = [
     ...Object.values(getNetworkContracts(networkId).ajnaPoolPairs),
     ...Object.values(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
@@ -67,55 +70,55 @@ async function getAjnaPoolData(
   )
   const ajnaPoolsData = await getAjnaPoolsData(networkId)
 
-  const yieldLoopPoolPairs = poolsTokenPairs.filter((pair) =>
-    isYieldLoopPair({ collateralToken: pair[0], debtToken: pair[1] }),
+  const yieldLoopPoolPairs = poolsTokenPairs.filter((poolInfo) =>
+    isYieldLoopPair({ collateralToken: poolInfo.tokens[0], debtToken: poolInfo.tokens[1] }),
   )
 
   const yieldLoopApysCalls = await Promise.all(
-    yieldLoopPoolPairs.map(async ([collateralToken, quoteToken]) => {
-      const poolData = ajnaPoolsData.find(
-        ({ quoteToken: poolQuoteToken, collateralToken: poolCollateralToken }) => {
-          return (
-            poolQuoteToken?.toLocaleLowerCase() === quoteToken?.toLocaleLowerCase() &&
-            poolCollateralToken?.toLocaleLowerCase() === collateralToken?.toLocaleLowerCase()
-          )
-        },
-      )
-      if (!poolData) {
-        console.error('Pool data not found for', collateralToken, quoteToken)
-        return null
-      }
-      const { lowestUtilizedPrice, address } = poolData
-      const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
-      const collateralPrice = isOracless ? one : prices[collateralToken]
-      const quotePrice = isOracless ? one : prices[quoteToken]
-      const marketPrice = collateralPrice.div(quotePrice)
-      const maxLtv = lowestUtilizedPrice.div(marketPrice)
-
-      const response = await getYieldsRequest(
-        {
-          actionSource: 'product-hub handler ajna',
-          networkId,
-          protocol: LendingProtocol.Ajna,
-          ltv: maxLtv,
-          poolAddress: address,
-        },
-        process.env.FUNCTIONS_API_URL,
-      )
-
-      if (!response?.results) {
-        console.warn('No Ajna APY data for request: ', {
-          networkId,
-          protocol: LendingProtocol.Ajna,
-          ltv: maxLtv,
-          poolAddress: address,
-          response,
+    yieldLoopPoolPairs.map(
+      async ({ address: yieldLoopPoolAddress, tokens: [collateralToken, quoteToken] }) => {
+        const poolData = ajnaPoolsData.find(({ address: poolAddress }) => {
+          return yieldLoopPoolAddress.toLocaleLowerCase() === poolAddress.toLocaleLowerCase()
         })
-      }
+        if (!poolData) {
+          console.error(
+            `Pool data not found for [${collateralToken}-${quoteToken}], (${yieldLoopPoolAddress})`,
+          )
+          return null
+        }
+        const { lowestUtilizedPrice, address } = poolData
+        const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
+        const collateralPrice = isOracless ? one : prices[collateralToken]
+        const quotePrice = isOracless ? one : prices[quoteToken]
+        const marketPrice = collateralPrice.div(quotePrice)
+        const maxLtv = lowestUtilizedPrice.div(marketPrice)
 
-      return response
-    }),
+        const response = await getYieldsRequest(
+          {
+            actionSource: 'product-hub handler ajna',
+            networkId,
+            protocol: LendingProtocol.Ajna,
+            ltv: maxLtv,
+            poolAddress: address,
+          },
+          process.env.FUNCTIONS_API_URL,
+        )
+
+        if (!response?.results) {
+          console.warn('No Ajna APY data for request: ', {
+            networkId,
+            protocol: LendingProtocol.Ajna,
+            ltv: maxLtv,
+            poolAddress: address,
+            response,
+          })
+        }
+
+        return response
+      },
+    ),
   )
+
   const yieldLoopApys = yieldLoopApysCalls.filter((apy) => !isNull(apy))
 
   try {
