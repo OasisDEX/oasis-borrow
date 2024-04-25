@@ -35,7 +35,7 @@ export function calculateOmniYieldsSimulation({
     yields.apy7d && amount.times(yields.apy7d.div(100).plus(one)).minus(amount).div(365)
   return {
     apy: yields.apy7d,
-    currentApy: yields.apy,
+    currentApy: yields.apy1d,
     breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
     previous7Days:

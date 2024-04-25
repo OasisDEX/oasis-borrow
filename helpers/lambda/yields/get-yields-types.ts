@@ -25,6 +25,7 @@ export interface GetYieldsResponse {
   }
   results: {
     apy: number
+    apy1d: number
     apy7d: number
     apy30d: number
     apy90d: number
@@ -33,6 +34,7 @@ export interface GetYieldsResponse {
 
 export interface GetYieldsResponseMapped {
   apy: BigNumber
+  apy1d: BigNumber
   apy7d: BigNumber
   apy30d: BigNumber
   apy90d: BigNumber
