@@ -109,10 +109,9 @@ export function getGenericPositionUrl({
         networkId,
       })
       const ajnaProductInUrl = isEarnProduct && isYieldLoop ? OmniProductType.Multiply : product[0]
-      const tokensInUrl =
-        isOracless && !isYieldLoopPair({ collateralToken, debtToken: quoteToken })
-          ? `${collateralAddress}-${quoteAddress}`
-          : `${collateralToken}-${quoteToken}`
+      const tokensInUrl = isOracless
+        ? `${collateralAddress}-${quoteAddress}`
+        : `${collateralToken}-${quoteToken}`
 
       return `/${network}/ajna/${ajnaProductInUrl}/${tokensInUrl}`
     case LendingProtocol.AaveV2:
