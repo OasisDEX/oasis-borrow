@@ -123,30 +123,30 @@ const availableTokenPairs: TokenPairConfig[] = [
       },
     },
   },
-    {
-      collateral: 'WSTETH',
-      debt: 'ETH',
-      strategyType: StrategyType.Long,
-      productTypes: {
-        [ProductType.Borrow]: {
-          featureToggle: FeaturesEnum.BaseNetworkEnabled,
-          additionalManageActions: [
-            {
-              action: 'switch-to-earn',
-              featureToggle: FeaturesEnum.BaseNetworkEnabled,
-            },
-          ],
-        },
-        [ProductType.Earn]: {
-          featureToggle: FeaturesEnum.BaseNetworkEnabled,
-          additionalManageActions: [
-            {
-              action: 'switch-to-borrow',
-              featureToggle: FeaturesEnum.BaseNetworkEnabled,
-            },
-          ],
-        },
+  {
+    collateral: 'WSTETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-earn',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
       },
+      [ProductType.Earn]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+    },
   },
   {
     collateral: 'CBETH',
