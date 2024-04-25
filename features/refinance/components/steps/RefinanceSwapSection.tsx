@@ -9,11 +9,10 @@ import React from 'react'
 export const RefinanceSwapSection = () => {
   const { t } = useTranslation()
   const {
-    environment: { collateralPrice, debtPrice },
-    simulation: { refinanceSimulation },
+    simulation: { refinanceSimulation, debtPrice, collateralPrice },
   } = useRefinanceContext()
 
-  if (!refinanceSimulation) {
+  if (!refinanceSimulation || !collateralPrice || !debtPrice) {
     return null
   }
 

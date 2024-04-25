@@ -17,12 +17,12 @@ export const RefinanceWhatsChangingStep = () => {
   const { t } = useTranslation()
 
   const {
-    environment: { gasEstimation, collateralPrice, debtPrice },
+    environment: { gasEstimation },
     metadata: {
       validations: { errors, warnings, notices, successes },
     },
     position: { positionId },
-    simulation: { refinanceSimulation },
+    simulation: { refinanceSimulation, collateralPrice, debtPrice },
     tx: { isTxSuccess, isTxInProgress },
     form: {
       state: { dpm },
@@ -60,7 +60,7 @@ export const RefinanceWhatsChangingStep = () => {
   swaps?.forEach((swap) => {
     const isCollateral =
       swap.fromTokenAmount.token.symbol === sourcePosition?.collateralAmount.token.symbol
-    const feePrice = new BigNumber(isCollateral ? collateralPrice : debtPrice)
+    const feePrice = new BigNumber(isCollateral ? collateralPrice || 0 : debtPrice || 0)
     const fee = new BigNumber(swap.summerFee.amount).times(feePrice)
     summerFee = summerFee.plus(fee)
   })
