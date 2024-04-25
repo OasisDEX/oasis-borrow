@@ -21,7 +21,16 @@ export const RefinanceWhatsChangingStep = () => {
     metadata: {
       validations: { errors, warnings, notices, successes },
     },
-    position: { positionId },
+    position: {
+      positionId,
+      collateralTokenData: {
+        token: { symbol: oldCollateralToken },
+      },
+      debtTokenData: {
+        token: { symbol: oldDebtToken },
+      },
+    },
+    simulation: { refinanceSimulation, collateralPrice, debtPrice },
     tx: { isTxSuccess, isTxInProgress },
     form: {
       state: { dpm },
@@ -34,6 +43,10 @@ export const RefinanceWhatsChangingStep = () => {
         {t('refinance.sidebar.transaction.description.success', {
           oldId: positionId.id,
           newId: dpm?.id,
+          oldCollateralToken,
+          oldDebtToken,
+          collateralToken: refinanceSimulation?.targetPosition.collateralAmount.token.symbol,
+          debtToken: refinanceSimulation?.targetPosition.debtAmount.token.symbol,
         })}
         <Flex sx={{ justifyContent: 'center', mt: 3 }}>
           <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />
@@ -53,7 +66,16 @@ export const RefinanceWhatsChangingStep = () => {
     )
   }
 
-  const summerFee = new BigNumber(100)
+  let summerFee = new BigNumber(0)
+  const { swaps, sourcePosition } = refinanceSimulation || {}
+
+  swaps?.forEach((swap) => {
+    const isCollateral =
+      swap.fromTokenAmount.token.symbol === sourcePosition?.collateralAmount.token.symbol
+    const feePrice = new BigNumber(isCollateral ? collateralPrice || 0 : debtPrice || 0)
+    const fee = new BigNumber(swap.summerFee.amount).times(feePrice)
+    summerFee = summerFee.plus(fee)
+  })
 
   const formatted = {
     summerFee: `$${formatFiatBalance(summerFee)}`,
@@ -78,6 +100,7 @@ export const RefinanceWhatsChangingStep = () => {
             label: t('refinance.sidebar.whats-changing.summerfi-fee'),
             value: formatted.summerFee,
             tooltip: t('refinance.sidebar.whats-changing.summerfi-fee'),
+            isLoading: !refinanceSimulation,
           },
           {
             label: t('system.max-transaction-cost'),

@@ -31,11 +31,12 @@ export type SDKSimulation = {
   chain: Chain | null
   user: User | null
   sourcePosition: IPosition | null
-  simulatedPosition: IPosition | null
   importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
   refinanceSimulation: ISimulation<SimulationType.Refinance> | null
   liquidationPrice: string
   liquidationThreshold: Percentage | null
+  debtPrice: string | null
+  collateralPrice: string | null
 }
 
 export function useSdkSimulation(): SDKSimulation {
@@ -49,6 +50,8 @@ export function useSdkSimulation(): SDKSimulation {
     useState<null | ISimulation<SimulationType.ImportPosition>>(null)
   const [liquidationPrice, setLiquidationPrice] = useState<string>('')
   const [liquidationThreshold, setLiquidationThreshold] = useState<Percentage | null>(null)
+  const [debtPrice, setDebtPrice] = useState<string | null>(null)
+  const [collateralPrice, setCollateralPrice] = useState<string | null>(null)
 
   const { ctx, cache } = useRefinanceGeneralContext()
 
@@ -90,11 +93,18 @@ export function useSdkSimulation(): SDKSimulation {
       throw new Error('Unsupported position type.')
     }
 
-    const debtPrice = getTokenPrice(
-      strategy.secondaryToken,
+    const _debtPrice = getTokenPrice(
+      debtTokenData.token.symbol,
       tokenPriceStore.prices,
       'debt price - useSdkSimulation',
     ).toString()
+    setDebtPrice(_debtPrice)
+    const _collateralPrice = getTokenPrice(
+      collateralTokenData.token.symbol,
+      tokenPriceStore.prices,
+      'collateral price - refinance modal controller',
+    ).toString()
+    setCollateralPrice(_collateralPrice)
 
     const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
@@ -215,7 +225,7 @@ export function useSdkSimulation(): SDKSimulation {
 
       const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
         liquidationThreshold: _liquidationThreshold,
-        debtPriceInUsd: debtPrice,
+        debtPriceInUsd: _debtPrice,
         position: _simulatedPosition,
       })
       setLiquidationPrice(afterLiquidationPriceInUsd)
@@ -239,17 +249,16 @@ export function useSdkSimulation(): SDKSimulation {
     cache.positionOwner,
   ])
 
-  const simulatedPosition = refinanceSimulation?.targetPosition || null
-
   return {
     error,
     chain,
     user,
     sourcePosition,
-    simulatedPosition,
     importPositionSimulation,
     refinanceSimulation,
     liquidationPrice,
     liquidationThreshold,
+    debtPrice,
+    collateralPrice,
   }
 }

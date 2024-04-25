@@ -3847,7 +3847,7 @@
           "in-progress": "Refinancing..."
         },
         "description": {
-          "success": "Your ETH/DAI position (#{{oldId}}) refinanced to new ETH/USDC position (#{{newId}}) successfully.",
+          "success": "Your {{oldCollateralToken}}/{{oldDebtToken}} position (#{{oldId}}) refinanced to new {{collateralToken}}/{{debtToken}} position (#{{newId}}) successfully.",
           "in-progress": "Refinancing your position."
         }
       }
