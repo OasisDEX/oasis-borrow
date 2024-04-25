@@ -1,7 +1,7 @@
 import type { Tickers } from 'blockchain/prices.types'
 import {
+  getMorphoMarketPrice,
   getMorphoOracleAddress,
-  getMorphoOraclePrice,
   getMorphoTokenPriceFromOraclePrice,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
@@ -9,22 +9,22 @@ import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { useEffect, useState } from 'react'
 
 interface MorphoOraclePricesProps {
-  networkId: OmniSupportedNetworkIds
-  collateralToken?: string
-  quoteToken?: string
-  pairId: number
-  tokenPriceUSDData?: Tickers
   collateralPrecision?: number
+  collateralToken?: string
+  networkId: OmniSupportedNetworkIds
+  pairId: number
   quotePrecision?: number
+  quoteToken?: string
+  tokenPriceUSDData?: Tickers
 }
 
 export function useMorphoOraclePrices({
+  collateralPrecision,
+  collateralToken,
   networkId,
   pairId,
-  collateralToken,
-  quoteToken,
-  collateralPrecision,
   quotePrecision,
+  quoteToken,
   tokenPriceUSDData,
 }: MorphoOraclePricesProps) {
   const [oraclePrices, setOraclePrices] = useState<Tickers | undefined>(tokenPriceUSDData)
@@ -43,7 +43,7 @@ export function useMorphoOraclePrices({
       if (!tokenPriceUSDData[collateralToken] || !tokenPriceUSDData[quoteToken])
         void getMorphoOracleAddress({ marketId, networkId })
           .then((oracleAddress) => {
-            return getMorphoOraclePrice({
+            return getMorphoMarketPrice({
               collateralPrecision,
               networkId,
               oracleAddress,

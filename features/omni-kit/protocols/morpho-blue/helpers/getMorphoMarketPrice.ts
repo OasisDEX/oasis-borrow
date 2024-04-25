@@ -3,19 +3,19 @@ import { getRpcProvider } from 'blockchain/networks'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { ChainlinkPairOracle__factory as ChainlinkPairOracleFactory } from 'types/ethers-contracts'
 
-interface GetMorphoOraclePriceParams {
+interface GetMorphoMarketPriceParams {
   collateralPrecision: number
   networkId: OmniSupportedNetworkIds
   oracleAddress: string
   quotePrecision: number
 }
 
-export async function getMorphoOraclePrice({
+export async function getMorphoMarketPrice({
   collateralPrecision,
   networkId,
   oracleAddress,
   quotePrecision,
-}: GetMorphoOraclePriceParams) {
+}: GetMorphoMarketPriceParams) {
   const rpcProvider = getRpcProvider(networkId)
 
   const ChainlinkPairOracleContract = ChainlinkPairOracleFactory.connect(oracleAddress, rpcProvider)

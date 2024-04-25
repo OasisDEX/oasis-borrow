@@ -83,7 +83,7 @@ async function getMorphoPositions({
             secondaryToken,
             type,
             url,
-          } = getMorphoPositionInfo({
+          } = await getMorphoPositionInfo({
             apiVaults,
             dpmList,
             market,
@@ -110,26 +110,19 @@ async function getMorphoPositions({
             },
           )
 
-          const netValue = position.collateralAmount
-            .times(collateralPrice)
-            .minus(position.debtAmount.times(quotePrice))
-            .toNumber()
-
           return {
             availableToMigrate: false,
             automations: {},
             details: getMorphoPositionDetails({
-              collateralPrice,
               liquidationRatio: new BigNumber(liquidationRatio).shiftedBy(NEGATIVE_WAD_PRECISION),
               position,
               primaryToken,
-              quotePrice,
               rate: new BigNumber(rate),
               secondaryToken,
               type,
             }),
             network: networkName,
-            netValue,
+            netValue: position.netValue.toNumber(),
             pairId,
             positionId: Number(positionId),
             primaryToken,
