@@ -27,16 +27,18 @@ export function getRefinanceSidebarButtonsStatus({
   suppressValidation,
   walletAddress,
 }: GetOmniSidebarButtonsStatusParams) {
-  const isPrimaryButtonDisabled = suppressValidation
+  const isPrimaryButtonDisabled =
+    suppressValidation || isTxSuccess
+      ? false
+      : !!walletAddress &&
+        !shouldSwitchNetwork &&
+        (hasErrors || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
+
+  const isPrimaryButtonLoading = isTxSuccess
     ? false
     : !!walletAddress &&
       !shouldSwitchNetwork &&
-      (hasErrors || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
-
-  const isPrimaryButtonLoading =
-    !!walletAddress &&
-    !shouldSwitchNetwork &&
-    (isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
+      (isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
 
   const isPrimaryButtonHidden =
     !!(walletAddress && !isOwner) ||

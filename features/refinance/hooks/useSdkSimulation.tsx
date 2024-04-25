@@ -37,6 +37,7 @@ export type SDKSimulation = {
   liquidationThreshold: Percentage | null
   debtPrice: string | null
   collateralPrice: string | null
+  isLoading: boolean
 }
 
 export function useSdkSimulation(): SDKSimulation {
@@ -249,6 +250,10 @@ export function useSdkSimulation(): SDKSimulation {
     cache.positionOwner,
   ])
 
+  const isLoading =
+    (ctx?.steps.currentStep === RefinanceSidebarStep.Give && !importPositionSimulation) ||
+    (ctx?.steps.currentStep === RefinanceSidebarStep.Changes && !refinanceSimulation)
+
   return {
     error,
     chain,
@@ -260,5 +265,6 @@ export function useSdkSimulation(): SDKSimulation {
     liquidationThreshold,
     debtPrice,
     collateralPrice,
+    isLoading,
   }
 }
