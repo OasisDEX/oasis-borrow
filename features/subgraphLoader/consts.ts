@@ -306,6 +306,12 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       pools {
         address
         borrowApr
+        quoteToken {
+          symbol
+        }
+        collateralToken {
+          symbol
+        }
         buckets {
           price
           index

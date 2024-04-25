@@ -19,7 +19,7 @@ export const useRefinanceTxHandler = () => {
   const {
     environment: {
       chainInfo: { chainId },
-      ethPrice,
+      marketPrices: { ethPrice },
     },
     tx: { setTxDetails, setGasEstimation },
     form: {

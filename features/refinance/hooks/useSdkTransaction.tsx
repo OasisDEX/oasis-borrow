@@ -1,4 +1,5 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import { makeSDK } from 'summerfi-sdk-client'
 import type { ISimulation, Order, SimulationType } from 'summerfi-sdk-common'
@@ -16,14 +17,29 @@ export function useSdkRefinanceTransaction({
   const [txRefinance, setTxRefinance] = useState<null | Order>(null)
 
   const {
-    environment: { slippage, chainInfo, collateralPrice, debtPrice, address },
+    environment: {
+      slippage,
+      chainInfo,
+      marketPrices: { ethPrice },
+      address,
+    },
     position: { positionId, collateralTokenData, debtTokenData, positionType },
     poolData: { poolId },
     form: {
       state: { strategy, dpm },
     },
+    steps: { currentStep },
   } = useRefinanceContext()
   const sdk = useMemo(() => makeSDK({ apiURL: '/api/sdk' }), [])
+
+  // Reset state when user go back to strategy or option step
+  useEffect(() => {
+    if ([RefinanceSidebarStep.Option, RefinanceSidebarStep.Strategy].includes(currentStep)) {
+      setError(null)
+      setTxImportPosition(null)
+      setTxRefinance(null)
+    }
+  }, [currentStep])
 
   useEffect(() => {
     if (
@@ -74,8 +90,7 @@ export function useSdkRefinanceTransaction({
     sdk,
     dpm?.address,
     slippage,
-    collateralPrice,
-    debtPrice,
+    ethPrice,
     address,
     chainInfo,
     poolId,

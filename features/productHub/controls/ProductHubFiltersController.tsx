@@ -9,6 +9,8 @@ import React, { type FC } from 'react'
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
   hiddenHelp?: boolean
+  hiddenProtocolFilter?: boolean
+  hiddenNetworkFilter?: boolean
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
@@ -22,6 +24,8 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
   onChange,
   selectedFilters,
   selectedProduct,
+  hiddenProtocolFilter,
+  hiddenNetworkFilter,
 }) => {
   const {
     collateralTokenFilter,
@@ -43,9 +47,10 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         ...(selectedProduct === OmniProductType.Earn
           ? [depositTokenFilter]
           : [collateralTokenFilter, debtTokenFilter]),
-        protocolFilter,
-        networkFilter,
+        ...(!hiddenProtocolFilter ? [protocolFilter] : []),
+        ...(!hiddenNetworkFilter ? [networkFilter] : []),
       ]}
+      lastWithAutoOffset={!hiddenProtocolFilter && !hiddenNetworkFilter}
     >
       {!hiddenHelp && <ProductHubHelp selectedProduct={selectedProduct} />}
     </AssetsFiltersContainer>

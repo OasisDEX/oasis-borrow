@@ -1,7 +1,7 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { networkSetById } from 'blockchain/networks'
-import type { SupportedLambdaProtocols } from 'helpers/triggers/common'
-import { supportedLambdaProtocolsList } from 'helpers/triggers/common'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers/common'
+import { supportedLambdaProtocolsList } from 'helpers/lambda/triggers/common'
 import { LendingProtocol } from 'lendingProtocols'
 
 export interface GetSetupTriggerConfigParams {

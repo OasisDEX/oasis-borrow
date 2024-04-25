@@ -1,22 +1,17 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
-import dayjs from 'dayjs'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { settingsV2 } from 'features/omni-kit/protocols/aave/settings'
 import { OmniProductType } from 'features/omni-kit/types'
-import { GraphQLClient } from 'graphql-request'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
-import type {
-  AaveLikeYieldsResponse,
-  FilterYieldFieldsType,
-} from 'lendingProtocols/aave-like-common'
-import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
+import { getYieldsRequest } from 'helpers/lambda/yields'
+import { zero } from 'helpers/zero'
 import { flatten } from 'lodash'
-import { curry } from 'ramda'
 
 import { aaveV2ProductHubProducts } from './aaveV2Products'
 
@@ -39,17 +34,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     ...new Set(aaveV2ProductHubProducts.map((product) => product.secondaryToken)),
   ]
 
-  const graphQlProvider = new GraphQLClient(
-    getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
-  )
-  const yieldsPromisesMap: Record<
-    string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
-  > = {
-    // a crude map, but it works for now since we only have one earn product
-    'STETH/ETH': curry(getAaveStEthYield)(graphQlProvider, dayjs()),
-  }
-
   // reserveData -> liq available and variable fee
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getAaveV2ReserveData({ token })
@@ -71,27 +55,48 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       },
     }
   })
+  const tokensReserveConfigurationData = await Promise.all(tokensReserveConfigurationDataPromises)
 
   // getting the APYs
   const earnProducts = aaveV2ProductHubProducts.filter(({ product }) =>
     product.includes(OmniProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await Promise.all(tokensReserveConfigurationDataPromises)
-    const { riskRatio } = tokensReserveData.find((data) => data[product.primaryToken])![
-      product.primaryToken
-    ]
-    const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
+    const { riskRatio } = tokensReserveConfigurationData.find(
+      (data) => data[product.primaryToken],
+    )![product.primaryToken]
+    const contracts = getNetworkContracts(NetworkIds.MAINNET)
+    ensureGivenTokensExist(NetworkIds.MAINNET, contracts, [
+      product.primaryToken,
+      product.secondaryToken,
+    ])
+
+    const response = await getYieldsRequest(
+      {
+        actionSource: 'product-hub aave-v2 handler',
+        collateralTokenAddress: contracts.tokens[product.primaryToken].address,
+        quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
+        collateralToken: product.primaryToken,
+        quoteToken: product.secondaryToken,
+        ltv: riskRatio.loanToValue,
+        networkId: NetworkIds.MAINNET,
+        protocol: product.protocol,
+      },
+      process.env.FUNCTIONS_API_URL,
+    )
+    if (!response?.results) {
+      console.warn('No AAVE v2 APY data for', product.label, product.network, response)
+    }
     return {
-      [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
+      [product.label]:
+        new BigNumber(response?.results.apy7d || zero).div(lambdaPercentageDenomination) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
     }
   })
 
   return Promise.all([
     Promise.all(tokensReserveDataPromises),
-    Promise.all(tokensReserveConfigurationDataPromises),
     Promise.all(earnProductsPromises),
-  ]).then(([tokensReserveData, tokensReserveConfigurationData, earnProductsYields]) => {
+  ]).then(([tokensReserveData, earnProductsYields]) => {
     return {
       table: aaveV2ProductHubProducts.map((product) => {
         const { secondaryToken, primaryToken, label } = product

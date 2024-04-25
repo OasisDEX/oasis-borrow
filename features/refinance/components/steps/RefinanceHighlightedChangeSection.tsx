@@ -74,14 +74,22 @@ export const RefinanceHighlightedChangeSection = () => {
     // designs not ready
     [RefinanceOptions.CHANGE_DIRECTION]: [
       {
-        label: 'TBD',
-        value: 'TBD',
+        label: t('strategy'),
+        value: !isShort ? t('long') : t('short'),
+        change: isShort ? t('long') : t('short'),
       },
     ],
     [RefinanceOptions.SWITCH_TO_EARN]: [
+      // For now just use lending info since apys are not available yet
       {
-        label: 'TBD',
-        value: 'TBD',
+        label: t('max-ltv'),
+        value: formatted.maxLtv,
+        change: formatted.afterMaxLtv,
+      },
+      {
+        label: t('system.max-multiple'),
+        value: formatted.maxMultiple,
+        change: formatted.afterMaxMultiple,
       },
     ],
   }[refinanceOption]
@@ -89,7 +97,7 @@ export const RefinanceHighlightedChangeSection = () => {
   return (
     <InfoSectionWithGradient
       title={t(`refinance.sidebar.whats-changing.highlighted.${title}`, {
-        value: isShort ? 'Long' : 'Short',
+        value: isShort ? t('long') : t('short'),
       })}
       items={items}
     />

@@ -1,28 +1,33 @@
-import type BigNumber from 'bignumber.js'
 import { Skeleton } from 'components/Skeleton'
 import type {
   OmniContentCardBase,
   OmniContentCardDataWithModal,
 } from 'features/omni-kit/components/details-section'
+import type { SimulationYields } from 'features/omni-kit/hooks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import React from 'react'
 
 interface OmniCardDataNetApyParams extends OmniContentCardDataWithModal {
-  netApy?: BigNumber
+  simulations?: SimulationYields
+  simulationsChange?: SimulationYields
 }
 
 export function useOmniCardDataNetApy({
-  netApy,
   modal,
+  simulations,
+  simulationsChange,
 }: OmniCardDataNetApyParams): OmniContentCardBase {
   return {
     title: { key: 'omni-kit.content-card.net-apy.title' },
-    ...(!netApy
+    ...(!simulations?.apy
       ? {
           extra: <Skeleton width="120px" height="20px" sx={{ mt: 1 }} />,
         }
       : {
-          value: formatDecimalAsPercent(netApy),
+          value: formatDecimalAsPercent(simulations.apy?.div(100)),
+          change: simulationsChange?.apy
+            ? [formatDecimalAsPercent(simulationsChange.apy?.div(100))]
+            : undefined,
         }),
     modal,
   }

@@ -39,9 +39,6 @@ export const settingsV2: OmniProtocolSettings = {
   entryTokens: {
     [NetworkIds.MAINNET]: { 'STETH-ETH': 'ETH' },
   },
-  yieldLoopPairsWithData: {
-    [NetworkIds.MAINNET]: ['STETH-ETH'],
-  },
   availableAutomations: {
     [NetworkIds.MAINNET]: [],
   },
@@ -106,9 +103,6 @@ export const settingsV3: OmniProtocolSettings = {
   },
   entryTokens: {
     [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
-  },
-  yieldLoopPairsWithData: {
-    [NetworkIds.MAINNET]: ['WSTETH-ETH'],
   },
   availableAutomations: {
     [NetworkIds.MAINNET]: availableAaveV3Automations,

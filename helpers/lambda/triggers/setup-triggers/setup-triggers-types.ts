@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { SupportedLambdaProtocols } from 'helpers/triggers/common'
+import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers/common'
 
 export enum TriggersApiErrorCode {
   MinSellPriceIsNotSet = 'min-sell-price-is-not-set',

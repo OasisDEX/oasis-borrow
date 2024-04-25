@@ -6,7 +6,9 @@ import {
   useOmniCardDataBorrowRate,
   useOmniCardDataMultiple,
   useOmniCardDataTokensValue,
+  useOmniCardDataVariableAnnualFee,
 } from 'features/omni-kit/components/details-section'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   useAjnaCardDataBorrowRate,
   useAjnaCardDataPositionDebt,
@@ -41,6 +43,9 @@ export function AjnaContentFooterMultiply({
   quoteToken,
   simulation,
 }: AjnaContentFooterMultiplyProps) {
+  const {
+    environment: { isYieldLoopWithData },
+  } = useOmniGeneralContext()
   const commonContentCardData = {
     asFooter: true,
     changeVariant,
@@ -86,8 +91,24 @@ export function AjnaContentFooterMultiply({
     debtAmount: position.debtAmount,
     poolAddress: position.pool.poolAddress,
   })
+  const variableAnnualFeeContentCardCommonData = useOmniCardDataVariableAnnualFee({
+    variableAnnualFee: position.borrowRate,
+  })
 
-  return (
+  return isYieldLoopWithData ? (
+    <>
+      <OmniContentCard
+        {...commonContentCardData}
+        {...totalCollateralExposureContentCardCommonData}
+      />
+      <OmniContentCard
+        {...commonContentCardData}
+        {...positionDebtContentCardCommonData}
+        {...positionDebtContentCardAjnaData}
+      />
+      <OmniContentCard {...commonContentCardData} {...variableAnnualFeeContentCardCommonData} />
+    </>
+  ) : (
     <>
       <OmniContentCard
         asFooter

@@ -101,9 +101,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   return (
     <Container variant="vaultPageContainerStatic">
       {contextIsLoaded && !isOwner && !isOpening && (
-        <Box sx={{ mb: 4 }}>
-          <VaultOwnershipBanner controller={owner} account={walletAddress} />
-        </Box>
+        <VaultOwnershipBanner controller={owner} account={walletAddress} mb={4} />
       )}
       {positionBanner && <Box sx={{ mb: 4 }}>{positionBanner}</Box>}
       <VaultHeadline

@@ -1,4 +1,4 @@
-import type { NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { objectEntries } from 'helpers/objectEntries'
@@ -61,14 +61,21 @@ function generateInterestRateQueries(data: Record<LendingProtocol, string[]>): s
     })
   })
 
-  return `{ ${queries.join('')} }`
+  return `{ ${queries.join('')} }`.replaceAll(' ', '')
 }
 
 export const getRefinanceAaveLikeInterestRates = async (
   input: GetAaveLikeInterestRateInput,
 ): Promise<RefinanceInterestRatesMetadata> => {
+  // TODO for now even though we have input for all network and aave-like protocols
+  // we limit query only for spark, because query for mainnet for all protocols
+  // is to big and will require either changes on cloudfront level on different handling on UI
+  const resolvedInput = {
+    [NetworkIds.MAINNET]: { [LendingProtocol.SparkV3]: input[NetworkIds.MAINNET].sparkv3 },
+  } as GetAaveLikeInterestRateInput
+
   const response = await Promise.all(
-    objectEntries(input).map(async ([networkId, data]) => ({
+    objectEntries(resolvedInput).map(async ([networkId, data]) => ({
       [networkId]: (await loadSubgraph({
         subgraph: 'Aave',
         networkId,

@@ -111,6 +111,7 @@
   "position-apy": "Position APY",
   "average-apy-in-days": "Average APY - {{days}}d",
   "build-your-position": "Build your position",
+  "strategy": "Strategy",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -1089,6 +1090,8 @@
   "send-amount-exceed-balance": "Not enough {{ token }}",
   "send-to": "Send to",
   "sent": "Sent",
+  "off": "Off",
+  "on": "On",
   "seo": {
     "404": {
       "title": "Page not found 🥹 - Summer.fi",
@@ -2689,8 +2692,8 @@
           "spark-wsteth-eth": "Spark wstETH yield multiple",
           "spark-reth-eth": "Spark rETH yield multiple"
         },
-        "current-yield": "APY",
-        "90-day-avg-yield": "90 Day Avg",
+        "current-yield": "7 Day APY",
+        "90-day-avg-yield": "90 Day Avg APY",
         "total-value-locked": "Total value locked"
       },
       "vault-form": {
@@ -2973,7 +2976,7 @@
         "title": "{{days}} days average APY"
       },
       "apy": {
-        "title": "APY"
+        "title": "Current APY"
       },
       "est-break-even": {
         "title": "Est. break-even"
@@ -3812,7 +3815,7 @@
       },
       "whats-changing": {
         "title": "What's changing",
-        "description": "We are going to refinance your position. You can refinance back to your original position anytime you want, but it will cost gas and swap fees again.",
+        "description": "Your position is about to be refinanced. This operation is one way only, refinancing back will be released soon.",
         "highlighted": {
           "lowering-borrowing-cost": "Lowering Borrowing Cost",
           "increase-to-higher-ltv": "Increase to higher LTV",
@@ -3855,7 +3858,7 @@
     "mobile-not-available": "Refinance is not available on mobile. Please use desktop to Refinance your position.",
     "banner": {
       "title": "Refinance",
-      "description": "Refinance your position to a new one in one go. Move your funds between products becomes a breeze.",
+      "description": "Refinance your position to a new one in one go. Moving your funds between products becomes a breeze.",
       "button": "Get Started"
     }
   },

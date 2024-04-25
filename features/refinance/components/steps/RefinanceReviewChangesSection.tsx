@@ -38,7 +38,7 @@ const getChangeVariant = (
 export const RefinanceReviewChangesSection = () => {
   const { t } = useTranslation()
 
-  const { poolData, position, simulation } = useRefinanceContext()
+  const { poolData, position, simulation, automations } = useRefinanceContext()
 
   const ltv = new BigNumber(poolData.maxLtv.loanToValue)
   const liquidationPrice = new BigNumber(position.liquidationPrice)
@@ -49,6 +49,8 @@ export const RefinanceReviewChangesSection = () => {
     return null
   }
   const targetPosition = simulation.refinanceSimulation.targetPosition
+
+  const isAutomationEnabled = Object.values(automations).some((item) => item.enabled)
 
   const afterLtv = new BigNumber(
     simulation.liquidationThreshold ? simulation.liquidationThreshold.toProportion() : 0,
@@ -112,10 +114,10 @@ export const RefinanceReviewChangesSection = () => {
             },
             {
               label: t('system.automations'),
-              value: 'On',
+              value: t(isAutomationEnabled ? 'on' : 'off'),
               change: (
                 <Text as="span" sx={{ color: 'critical100' }}>
-                  Off
+                  {t('off')}
                 </Text>
               ),
             },
