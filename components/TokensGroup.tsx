@@ -47,7 +47,8 @@ export function TokensGroup({ forceSize, network, sx, tokens }: TokensGroupProps
                 '&:last-child': { mr: 0 },
               }}
             >
-              {Object.keys(tokensBySymbol).includes(resolvedToken) && !getTokenGuarded(resolvedToken)?.iconUnavailable ? (
+              {Object.keys(tokensBySymbol).includes(resolvedToken) &&
+              !getTokenGuarded(resolvedToken)?.iconUnavailable ? (
                 <Icon
                   size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
                   key={getToken(resolvedToken).name}

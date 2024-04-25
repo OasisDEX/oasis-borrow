@@ -987,7 +987,8 @@ export const tokenConfigs: TokenConfig[] = [
     coinGeckoTicker: 'usde',
     tags: [],
     rootToken: 'USD',
-  },  {
+  },
+  {
     symbol: 'PTWEETH',
     precision: 18,
     digits: 5,
