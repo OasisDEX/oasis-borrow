@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { isYieldLoopToken } from 'features/omni-kit/helpers'
 import type { GetYieldsParams, GetYieldsResponseMapped } from 'helpers/lambda/yields'
 import { getYieldsRequest } from 'helpers/lambda/yields'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
@@ -9,6 +10,14 @@ export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponseMap
 
   useDebouncedEffect(
     () => {
+      if (
+        params.collateralToken &&
+        params.quoteToken &&
+        !isYieldLoopToken(params.collateralToken) &&
+        !isYieldLoopToken(params.quoteToken)
+      ) {
+        return
+      }
       getYieldsRequest(params)
         .then((yieldsResponse) => {
           if (yieldsResponse?.results) {

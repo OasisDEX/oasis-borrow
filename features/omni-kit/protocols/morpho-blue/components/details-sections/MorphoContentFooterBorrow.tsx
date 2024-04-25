@@ -7,13 +7,24 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { MorphoCardDataBorrowRateModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { OmniProductType } from 'features/omni-kit/types'
-import React from 'react'
+import { zero } from 'helpers/zero'
+import React, { useMemo } from 'react'
 
 export function MorphoContentFooterBorrow() {
   const {
-    environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      quotePrice,
+      quoteToken,
+      network,
+      protocol,
+      quoteAddress,
+      collateralAddress,
+    },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -32,6 +43,17 @@ export function MorphoContentFooterBorrow() {
     .times(collateralPrice)
     .minus(simulation?.debtAmount.times(quotePrice))
 
+  const ltv = useMemo(() => position.riskRatio.loanToValue, [position])
+  const yields = useOmniEarnYields({
+    actionSource: 'MorphoContentFooterBorrow',
+    quoteTokenAddress: quoteAddress,
+    collateralTokenAddress: collateralAddress,
+    quoteToken: quoteToken,
+    collateralToken: collateralToken,
+    ltv,
+    networkId: network.id,
+    protocol,
+  })
   const commonContentCardData = {
     asFooter: true,
     changeVariant,
@@ -39,7 +61,7 @@ export function MorphoContentFooterBorrow() {
   }
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: interestRate,
+    borrowRate: interestRate.minus(yields?.apy.div(100) || zero),
     modal: (
       <MorphoCardDataBorrowRateModal
         borrowRate={interestRate}

@@ -1,6 +1,7 @@
 import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import { strategies as aaveStrategyList } from 'features/aave'
+import { ProductType } from 'features/aave/types'
 import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
@@ -48,12 +49,14 @@ export const getAaveLikeViewStrategyUrl = ({
       type,
       tokens: { collateral, debt },
     } = search
-    const resolvedType = isYieldLoopPair({
-      collateralToken: collateral,
-      debtToken: debt,
-    })
-      ? 'multiply'
-      : type
+    const resolvedType =
+      [ProductType.Earn, ProductType.Multiply].includes(type) &&
+      isYieldLoopPair({
+        collateralToken: collateral,
+        debtToken: debt,
+      })
+        ? 'multiply'
+        : type
     return `/${aaveLikeNetwork.toLocaleLowerCase()}/${
       {
         [LendingProtocol.AaveV3]: 'aave/v3',
@@ -106,10 +109,9 @@ export function getGenericPositionUrl({
         networkId,
       })
       const ajnaProductInUrl = isEarnProduct && isYieldLoop ? OmniProductType.Multiply : product[0]
-      const tokensInUrl =
-        isOracless && !isYieldLoopPair({ collateralToken, debtToken: quoteToken })
-          ? `${collateralAddress}-${quoteAddress}`
-          : `${collateralToken}-${quoteToken}`
+      const tokensInUrl = isOracless
+        ? `${collateralAddress}-${quoteAddress}`
+        : `${collateralToken}-${quoteToken}`
 
       return `/${network}/ajna/${ajnaProductInUrl}/${tokensInUrl}`
     case LendingProtocol.AaveV2:
