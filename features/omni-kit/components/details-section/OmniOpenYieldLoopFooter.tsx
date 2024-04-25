@@ -12,11 +12,11 @@ import { hundred } from 'helpers/zero'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
 
-interface AaveLikeContentFooterYieldLoopProps {
+interface OmniOpenContentFooterYieldLoopProps {
   getYields: () => GetYieldsResponseMapped | undefined
 }
 
-export const OmniOpenYieldLoopFooter: FC<AaveLikeContentFooterYieldLoopProps> = ({ getYields }) => {
+export const OmniOpenYieldLoopFooter: FC<OmniOpenContentFooterYieldLoopProps> = ({ getYields }) => {
   const {
     environment: { quoteToken },
   } = useOmniGeneralContext()

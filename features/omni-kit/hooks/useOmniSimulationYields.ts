@@ -16,18 +16,20 @@ type useSimulationYieldsParams = {
 
 export type SimulationYields = CalculateSimulationResult & { yields: GetYieldsResponseMapped }
 
+const yieldsSupportedProducts = [OmniProductType.Multiply]
+
 export function useOmniSimulationYields({
   amount,
   token,
   getYields,
 }: useSimulationYieldsParams): SimulationYields | undefined {
   const {
-    environment: { gasEstimation, quotePrice, gasPrice },
+    environment: { gasEstimation, quotePrice, gasPrice, productType },
   } = useOmniGeneralContext()
   const {
     position: { isSimulationLoading },
-  } = useOmniProductContext(OmniProductType.Multiply)
-  const yields = getYields()
+  } = useOmniProductContext(productType)
+  const yields = yieldsSupportedProducts.includes(productType) && getYields()
 
   const fees = gasEstimation?.usdValue.div(quotePrice)
   // estimated fees for simulation

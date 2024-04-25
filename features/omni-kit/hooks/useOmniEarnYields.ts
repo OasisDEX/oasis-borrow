@@ -14,6 +14,7 @@ export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponseMap
           if (yieldsResponse?.results) {
             setOmniYields({
               apy: new BigNumber(yieldsResponse.results.apy),
+              apy1d: new BigNumber(yieldsResponse.results.apy1d),
               apy7d: new BigNumber(yieldsResponse.results.apy7d),
               apy30d: new BigNumber(yieldsResponse.results.apy30d),
               apy90d: new BigNumber(yieldsResponse.results.apy90d),
