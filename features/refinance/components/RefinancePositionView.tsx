@@ -6,6 +6,7 @@ import type { ItemProps } from 'components/infoSection/Item'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { TokensGroup } from 'components/TokensGroup'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import { RefinanceAutomationSection, RefinanceCardWrapper } from 'features/refinance/components'
 import { RefinancePositionViewType } from 'features/refinance/types'
 import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
@@ -14,6 +15,7 @@ import {
   formatDecimalAsPercent,
   formatLtvDecimalAsPercent,
 } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -116,10 +118,18 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
     automations,
   } = props
 
+  const isShort = isShortPosition({ collateralToken: primaryToken })
+  const priceFormat = isShort
+    ? `${secondaryToken}/${primaryToken}`
+    : `${primaryToken}/${secondaryToken}`
+
   const formatted = {
     ltv: positionData?.ltv && formatLtvDecimalAsPercent(positionData.ltv),
     liquidationPrice:
-      positionData?.liquidationPrice && formatCryptoBalance(positionData.liquidationPrice),
+      positionData?.liquidationPrice &&
+      formatCryptoBalance(
+        isShort ? one.div(positionData.liquidationPrice) : positionData.liquidationPrice,
+      ),
     collateral: positionData?.collateral && (
       <ItemValueWithIcon tokens={[primaryToken]}>
         {formatCryptoBalance(positionData.collateral)}
@@ -149,7 +159,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
       isLoading,
     },
     {
-      label: `${t('system.liq-price-short')} (${primaryToken}/${secondaryToken})`,
+      label: `${t('system.liq-price-short')} (${priceFormat})`,
       value: formatted.liquidationPrice,
       isLoading,
     },
