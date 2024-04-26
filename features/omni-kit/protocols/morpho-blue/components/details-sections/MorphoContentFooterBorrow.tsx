@@ -61,7 +61,7 @@ export function MorphoContentFooterBorrow() {
   }
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: interestRate.minus(yields?.apy.div(100) || zero),
+    borrowRate: interestRate.minus(yields?.apy1d.div(100) || zero),
     modal: (
       <MorphoCardDataBorrowRateModal
         borrowRate={interestRate}

@@ -67,8 +67,8 @@ export function OmniCardDataNetApyModal({
         }}
       >
         <Text variant="boldParagraph2">
-          {simulations?.yields.apy ? (
-            formatPercent(simulations.yields.apy, { precision: 2 })
+          {simulations?.yields.apy1d ? (
+            formatPercent(simulations.yields.apy1d, { precision: 2 })
           ) : (
             <Skeleton />
           )}
@@ -81,18 +81,14 @@ export function OmniCardDataNetApyModal({
           )}
         </Text>
         <Text variant="boldParagraph2">
-          {simulations?.yields.apy30d ? (
-            formatPercent(simulations.yields.apy30d, { precision: 2 })
-          ) : (
-            <Skeleton />
-          )}
+          {simulations?.yields.apy30d
+            ? formatPercent(simulations.yields.apy30d, { precision: 2 })
+            : 'New!'}
         </Text>
         <Text variant="boldParagraph2">
-          {simulations?.yields.apy90d ? (
-            formatPercent(simulations.yields.apy90d, { precision: 2 })
-          ) : (
-            <Skeleton />
-          )}
+          {simulations?.yields.apy90d
+            ? formatPercent(simulations.yields.apy90d, { precision: 2 })
+            : 'New!'}
         </Text>
       </Grid>
     </DetailsSectionContentSimpleModal>

@@ -99,8 +99,8 @@ export function AaveLikeContentFooterMultiply() {
   })
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: position.borrowRate.minus(yields?.apy.div(100) || zero),
-    afterBorrowRate: simulation?.borrowRate.minus(yieldsAfter?.apy.div(100) || zero),
+    borrowRate: position.borrowRate.minus(yields?.apy1d.div(100) || zero),
+    afterBorrowRate: simulation?.borrowRate.minus(yieldsAfter?.apy1d.div(100) || zero),
     modal: (
       <AaveLikeCostToBorrowContentCardModal
         collateralAmount={position.collateralAmount}
@@ -112,7 +112,7 @@ export function AaveLikeContentFooterMultiply() {
         debtVariableBorrowRate={castedPosition.debtVariableBorrowRate}
         collateralLiquidityRate={castedPosition.collateralLiquidityRate}
         netValue={position.netValue}
-        apy={yields?.apy.div(100)}
+        apy={yields?.apy1d.div(100)}
       />
     ),
   })

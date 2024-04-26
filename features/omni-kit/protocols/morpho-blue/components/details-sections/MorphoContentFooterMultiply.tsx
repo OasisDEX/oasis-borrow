@@ -74,7 +74,7 @@ export function MorphoContentFooterMultiply() {
   })
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: position.borrowRate.minus(yields?.apy.div(100) || zero),
+    borrowRate: position.borrowRate.minus(yields?.apy1d.div(100) || zero),
   })
 
   return (
