@@ -95,7 +95,10 @@ export function useAaveLikeData({
 
   const [positionTriggersData] = useObservable(
     useMemo(
-      () => (dpmPositionData ? getTriggersRequest$({ dpm: dpmPositionData, networkId }) : EMPTY),
+      () =>
+        dpmPositionData
+          ? getTriggersRequest$({ dpmProxy: dpmPositionData.proxy, networkId })
+          : EMPTY,
       [dpmPositionData, networkId],
     ),
   )
