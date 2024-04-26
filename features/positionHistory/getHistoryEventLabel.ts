@@ -128,11 +128,6 @@ export const getHistoryEventLabel = ({
       return t('position-history.migrated-from-protocol', { protocol: 'Spark' })
     case 'MigrateAaveV3EOA':
       return t('position-history.migrated-from-protocol', { protocol: 'Aave' })
-    case 'Refinance':
-    case 'RefinanceDifPair':
-    case 'RefinanceDifDebt':
-    case 'RefinanceDifCol':
-      return t('refinance.title')
     default:
       return `${t('position-history.event')} ${kind || ''}`
   }
