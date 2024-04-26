@@ -1,4 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
 import type { NetworkIdsWithValues, OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -46,7 +47,13 @@ export const settings: OmniProtocolSettings = {
     [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
   },
   availableAutomations: {
-    [NetworkIds.MAINNET]: [],
+    [NetworkIds.MAINNET]: [
+      AutomationFeatures.AUTO_BUY,
+      AutomationFeatures.AUTO_SELL,
+      AutomationFeatures.PARTIAL_TAKE_PROFIT,
+      AutomationFeatures.STOP_LOSS,
+      AutomationFeatures.TRAILING_STOP_LOSS,
+    ],
   },
 }
 
