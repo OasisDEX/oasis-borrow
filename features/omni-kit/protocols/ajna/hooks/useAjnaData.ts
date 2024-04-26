@@ -1,5 +1,4 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import { useAjnaRedirect } from 'features/omni-kit/protocols/ajna/hooks'
 import { getAjnaPositionAggregatedData$ } from 'features/omni-kit/protocols/ajna/observables'
@@ -70,7 +69,6 @@ export function useAjnaData({
       aggregatedData: ajnaPositionAggregatedData,
       positionData: ajnaPositionData,
       protocolPricesData: tokenPriceUSDData,
-      positionTriggersData: omniPositionTriggersDataDefault,
     },
     errors: [ajnaPositionAggregatedError, ajnaPositionError],
   }

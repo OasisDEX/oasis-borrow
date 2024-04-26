@@ -10,6 +10,7 @@ import {
 } from 'features/exchange/exchange'
 import type { NetworkIdsWithValues } from 'features/omni-kit/types'
 import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { one, zero } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -99,7 +100,7 @@ export const omniDefaultOverviewSimulationDeposit = new BigNumber(100)
 export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)
 
 // Default response to avoid unnecessary API calls if automation is not available on given protocol
-export const omniPositionTriggersDataDefault = {
+export const omniPositionTriggersDataDefault: GetTriggersResponse = {
   triggers: {},
   flags: {
     isAaveStopLossEnabled: false,

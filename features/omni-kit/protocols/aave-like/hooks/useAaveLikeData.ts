@@ -3,11 +3,9 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { useAaveContext } from 'features/aave'
 import { getAaveHistoryEvents } from 'features/aave/services'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
-import { getTriggersRequest } from 'helpers/lambda/triggers'
 import { useObservable } from 'helpers/observableHook'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
-import { makeObservable } from 'lendingProtocols/pipelines'
 import { useMemo } from 'react'
 import { EMPTY, from } from 'rxjs'
 
@@ -18,7 +16,7 @@ export function useAaveLikeData({
   collateralToken,
   quoteToken,
 }: OmniProtocolHookProps) {
-  const { aaveLikePosition$, onEveryBlock$ } = useProductContext()
+  const { aaveLikePosition$ } = useProductContext()
 
   const networkName = networksById[networkId].name
 
@@ -91,14 +89,7 @@ export function useAaveLikeData({
       [dpmPositionData, aavePositionData, networkId],
     ),
   )
-  const getTriggersRequest$ = makeObservable(onEveryBlock$, getTriggersRequest)
 
-  const [positionTriggersData] = useObservable(
-    useMemo(
-      () => (dpmPositionData ? getTriggersRequest$({ dpm: dpmPositionData, networkId }) : EMPTY),
-      [dpmPositionData, networkId],
-    ),
-  )
   const historyEvents = aavePositionAggregatedData?.events
   const recentHistoryEvent = historyEvents?.[0]
 
@@ -116,7 +107,6 @@ export function useAaveLikeData({
               [quoteToken]: resolvedQuotePrice,
             }
           : undefined,
-      positionTriggersData,
     },
     errors: [
       aavePositionError,

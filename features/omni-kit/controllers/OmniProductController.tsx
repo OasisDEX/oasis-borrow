@@ -124,6 +124,7 @@ export const OmniProductController = <Auction, History, Position>({
       dpmPositionData,
       ethBalanceData,
       gasPriceData,
+      positionTriggersData,
       tokenPriceUSDData,
       tokensIconsData,
       userSettingsData,
@@ -133,6 +134,7 @@ export const OmniProductController = <Auction, History, Position>({
   } = useOmniProtocolData({
     collateralToken,
     extraTokens,
+    isOpening,
     isOracless,
     networkId,
     pairId,
@@ -141,10 +143,11 @@ export const OmniProductController = <Auction, History, Position>({
     protocol,
     protocolRaw,
     quoteToken,
+    settings,
   })
 
   const {
-    data: { aggregatedData, positionData, protocolPricesData, positionTriggersData },
+    data: { aggregatedData, positionData, protocolPricesData },
     errors: protocolDataErrors,
   } = protocolHook({
     collateralToken,
