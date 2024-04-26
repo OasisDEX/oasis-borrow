@@ -13,9 +13,17 @@ export const getHistoryEventLabel = ({
   isOpen?: boolean
 }) => {
   const { t } = useTranslation()
+
   const isAutomation = kind?.includes('Automation')
+
   if (isAutomation && kind) {
     return handleAutomationKinds(kind, t, collateralToken, quoteToken)
+  }
+
+  const isRefinance = kind?.includes('Refinance')
+
+  if (isRefinance) {
+    return t('refinance.title')
   }
 
   const kindWithoutVersion = kind?.split('_')[0]
@@ -120,6 +128,11 @@ export const getHistoryEventLabel = ({
       return t('position-history.migrated-from-protocol', { protocol: 'Spark' })
     case 'MigrateAaveV3EOA':
       return t('position-history.migrated-from-protocol', { protocol: 'Aave' })
+    case 'Refinance':
+    case 'RefinanceDifPair':
+    case 'RefinanceDifDebt':
+    case 'RefinanceDifCol':
+      return t('refinance.title')
     default:
       return `${t('position-history.event')} ${kind || ''}`
   }
