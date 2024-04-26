@@ -180,7 +180,7 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
   }
 
   const handlePositionOwner = (owner?: string) => {
-    setPositionOwner(owner)
+    setPositionOwner(owner?.toLowerCase())
   }
 
   const handleInterestRates = (interestRates?: RefinanceInterestRatesMetadata) => {

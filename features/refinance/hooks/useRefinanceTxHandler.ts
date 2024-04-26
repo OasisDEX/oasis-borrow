@@ -1,8 +1,8 @@
-import { type TxMeta, type TxState } from '@oasisdex/transactions'
+import { type TxMeta, type TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { estimateOmniGas$, sendOmniTransaction$ } from 'features/omni-kit/observables'
-import { useRefinanceContext } from 'features/refinance/contexts'
+import { useRefinanceContext, useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { mapTxInfoToOmniTxData } from 'features/refinance/helpers/mapTxInfoToOmniTxData'
 import { useSdkRefinanceTransaction } from 'features/refinance/hooks/useSdkTransaction'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -28,6 +28,10 @@ export const useRefinanceTxHandler = () => {
     steps: { currentStep },
     simulation: { refinanceSimulation, importPositionSimulation },
   } = useRefinanceContext()
+
+  const {
+    cache: { handlePositionOwner },
+  } = useRefinanceGeneralContext()
 
   useEffect(() => {
     setGasEstimation(undefined)
@@ -100,6 +104,11 @@ export const useRefinanceTxHandler = () => {
       sendAsSinger: true,
     }).subscribe((txState) => {
       const castedTxState = txState as TxState<TxMeta>
+
+      // Update in cache owner of position that is being refinanced
+      if (txState.status === TxStatus.Success && currentStep === RefinanceSidebarStep.Give) {
+        handlePositionOwner(dpm.address)
+      }
 
       void handleTransaction({
         txState: castedTxState,
