@@ -3759,6 +3759,7 @@
     }
   },
   "refinance": {
+    "title": "Refinance",
     "modal-title": "Refinance {{pair}} position",
     "close-prompt": "Are you sure you want to leave when transaction is in progress?",
     "position": {
