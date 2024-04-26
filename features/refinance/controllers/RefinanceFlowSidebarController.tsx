@@ -1,5 +1,4 @@
 import { FlowSidebar } from 'components/FlowSidebar'
-import { getOmniFilterConsumedProxy } from 'features/omni-kit/helpers'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useFlowState } from 'helpers/useFlowState'
@@ -9,7 +8,6 @@ import { Box } from 'theme-ui'
 
 export const RefinanceFlowSidebarController = () => {
   const {
-    metadata: { flowStateFilter },
     environment: { chainInfo },
     form: { updateState },
     poolData: { pairId },
@@ -23,16 +21,8 @@ export const RefinanceFlowSidebarController = () => {
     networkId: chainInfo.chainId,
     amount: zero,
     token: 'ETH',
-    filterConsumedProxy: async (events) => getOmniFilterConsumedProxy(events, flowStateFilter),
-    onProxiesAvailable: async (events) => {
-      const filteredEventsBooleanMap = await Promise.all(
-        events.map((event) => flowStateFilter({ event })),
-      )
-      const filteredEvents = events.filter(
-        (_event, eventIndex) => filteredEventsBooleanMap[eventIndex],
-      )
-      updateState('hasSimilarPosition', !!filteredEvents.length)
-    },
+    // Take only proxies without CreatePosition events
+    filterConsumedProxy: async (events) => events.length === 0,
     onEverythingReady: ({ availableProxies }) => {
       // Check if owner is already dpm and use it as dpm for refinance, if not fallback to first available dpm
       const dpm =
