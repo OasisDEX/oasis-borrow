@@ -2,11 +2,7 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import {
-  formatCryptoBalance,
-  formatDecimalAsPercent,
-  formatFiatBalance,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -55,9 +51,9 @@ export const RefinanceSwapSection = () => {
           {formatCryptoBalance(toTokenAmount)}
         </ItemValueWithIcon>
       ),
-      priceImpact: `${formatCryptoBalance(rawPrice)} (${formatDecimalAsPercent(priceImpact)})`,
+      priceImpact: `${formatCryptoBalance(rawPrice)} (${formatPercent(priceImpact, { precision: 2 })})`,
 
-      slippage: formatDecimalAsPercent(slippage),
+      slippage: formatPercent(slippage, { precision: 2 }),
       fee: `$${formatFiatBalance(fee)}`,
     }
 
