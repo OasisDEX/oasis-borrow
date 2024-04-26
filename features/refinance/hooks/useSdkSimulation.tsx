@@ -195,7 +195,7 @@ export function useSdkSimulation(): SDKSimulation {
       const refinanceParameters: IRefinanceParameters = {
         sourcePosition: _sourcePosition,
         targetPosition: _targetPosition,
-        slippage: Percentage.createFrom({ value: slippage }),
+        slippage: Percentage.createFrom({ value: slippage * 100 }),
       }
 
       const [_importPositionSimulation, _refinanceSimulation] = await Promise.all([
