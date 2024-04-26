@@ -1,7 +1,7 @@
 import type { GetTriggersParams } from './get-triggers-types'
 
-export const getTriggersConfig = ({ dpm, networkId }: GetTriggersParams) => {
+export const getTriggersConfig = ({ dpmProxy, networkId }: GetTriggersParams) => {
   return {
-    url: `/api/triggers?chainId=${networkId}&dpm=${dpm.proxy}&getDetails=true`,
+    url: `/api/triggers?chainId=${networkId}&dpm=${dpmProxy}&getDetails=true`,
   }
 }

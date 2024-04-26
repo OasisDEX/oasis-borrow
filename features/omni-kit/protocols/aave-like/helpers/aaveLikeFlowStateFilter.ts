@@ -4,7 +4,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3UserAccountData } from 'blockchain/spark-v3'
 import type { OmniFlowStateFilterParams } from 'features/omni-kit/types'
-import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import { getTriggersRequest } from 'helpers/lambda/triggers'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function aaveLikeFlowStateFilter({
@@ -13,12 +13,13 @@ export async function aaveLikeFlowStateFilter({
   networkId,
   protocol,
   quoteAddress,
-  positionTriggers,
 }: OmniFlowStateFilterParams & {
   networkId: NetworkIds
-  positionTriggers?: GetTriggersResponse
 }): Promise<boolean> {
-  // if theres triggers we should not allow
+  // TODO for now we are reading it on every event that exists for given user
+  // we should optimize it by sending only one request with list of dpms prior to flow state filter fn
+  const positionTriggers = await getTriggersRequest({ dpmProxy: event.proxyAddress, networkId })
+  // if there is triggers we should not allow
   // the user to open a new position with this DPM
   if (positionTriggers?.triggersCount && positionTriggers.triggersCount !== 0) {
     return Promise.resolve(false)
