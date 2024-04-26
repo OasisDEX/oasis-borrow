@@ -55,7 +55,7 @@ const HeaderRightSection: FC<HeaderRightSectionProps> = ({ walletAddress, showAb
             border: 'none',
             top: '55px',
             right: '50px',
-            zIndex: 3,
+            zIndex: 4,
           }}
         >
           <Flex
