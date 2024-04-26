@@ -36,7 +36,6 @@ export const RefinanceSimulation = () => {
   ].includes(currentStep) ? (
     <RefinancePositionView
       type={RefinancePositionViewType.SIMULATION}
-      // positionId={new BigNumber(18604)}
       primaryToken={strategy.primaryToken}
       secondaryToken={strategy.secondaryToken}
       protocolData={{
