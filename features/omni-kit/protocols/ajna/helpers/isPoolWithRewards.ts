@@ -101,16 +101,6 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       borrowShare: new BigNumber(0.05),
       earnShare: new BigNumber(0.95),
     },
-    'ENA-SDAI': {
-      amount: new BigNumber(0),
-      borrowShare: new BigNumber(0.4),
-      earnShare: new BigNumber(0.6),
-    },
-    'SDAI-ENA': {
-      amount: new BigNumber(0),
-      borrowShare: new BigNumber(0.4),
-      earnShare: new BigNumber(0.6),
-    },
   },
   [NetworkIds.BASEMAINNET]: {
     'CBETH-ETH': {
