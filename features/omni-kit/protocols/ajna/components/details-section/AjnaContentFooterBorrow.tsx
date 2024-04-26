@@ -73,10 +73,10 @@ export function AjnaContentFooterBorrow({
   })
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: position.pool.interestRate.minus(yields?.apy.div(100) || zero),
+    borrowRate: position.pool.interestRate.minus(yields?.apy1d.div(100) || zero),
   })
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
-    borrowRate: position.pool.interestRate.minus(yields?.apy.div(100) || zero),
+    borrowRate: position.pool.interestRate.minus(yields?.apy1d.div(100) || zero),
     collateralToken,
     debtAmount: position.debtAmount,
     isOwner,
