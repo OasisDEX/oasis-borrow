@@ -1,10 +1,13 @@
 import type BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export interface GetTriggersParams {
-  networkId: NetworkIds
   dpm: UserDpmAccount
+  networkId: NetworkIds
+  poolId?: string
+  protocol: LendingProtocol
 }
 
 export type AaveStopLossToCollateral = {

@@ -12,11 +12,11 @@ import { TriggersApiErrorCode } from './setup-triggers-types'
 export const setupAaveLikeStopLoss = async (
   params: SetupAaveStopLossParams,
 ): Promise<SetupBasicStopLossResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
+  const { common, url } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
-    dpm: params.dpm,
+    ...common,
     triggerData: {
       executionLTV: params.executionLTV
         .times(lambdaPercentageDenomination)
@@ -24,12 +24,6 @@ export const setupAaveLikeStopLoss = async (
         .toString(),
       token: params.executionToken,
     },
-    position: {
-      collateral: params.strategy.collateralAddress,
-      debt: params.strategy.debtAddress,
-    },
-    rpc: customRpc,
-    action: params.action,
   })
 
   let response: Response
@@ -41,7 +35,7 @@ export const setupAaveLikeStopLoss = async (
             'x-summer-skip-validation': '1',
           }
         : undefined,
-      body: body,
+      body,
     })
   } catch (error) {
     console.error('Error while setting up stop loss', error)

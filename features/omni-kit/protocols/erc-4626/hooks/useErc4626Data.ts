@@ -57,6 +57,7 @@ export function useErc4626Data({
           erc4626PositionAggregatedData?.history ?? [],
         ) as Erc4626HistoryEvent[],
       },
+      poolId: erc4626PositionData?.vault.address,
       positionData: erc4626PositionData,
       protocolPricesData: tokenPriceUSDData,
     },

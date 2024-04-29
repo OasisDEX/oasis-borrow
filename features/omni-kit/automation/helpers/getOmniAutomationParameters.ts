@@ -49,26 +49,30 @@ export type OmniGetAutomationDataParams =
       automationState: OmniAutomationPartialTakeProfitFormState
     }
 
+interface GetOmniAutomationParametersParams {
+  automation?: AutomationMetadataValues
+  collateralAddress: string
+  data: OmniGetAutomationDataParams
+  debtAddress: string
+  isShort: boolean
+  networkId: NetworkIds
+  poolId?: string
+  protocol: LendingProtocol
+  proxyAddress?: string
+}
+
 export const getOmniAutomationParameters =
   ({
     automation,
-    proxyAddress,
     collateralAddress,
-    debtAddress,
-    networkId,
-    protocol,
-    isShort,
     data,
-  }: {
-    automation?: AutomationMetadataValues
-    proxyAddress?: string
-    collateralAddress: string
-    debtAddress: string
-    networkId: NetworkIds
-    protocol: LendingProtocol
-    isShort: boolean
-    data: OmniGetAutomationDataParams
-  }) =>
+    debtAddress,
+    isShort,
+    networkId,
+    poolId,
+    protocol,
+    proxyAddress,
+  }: GetOmniAutomationParametersParams) =>
   (): Promise<OmniAutomationSimulationResponse | undefined> => {
     if (!proxyAddress) {
       return defaultAutomationActionPromise
@@ -77,6 +81,7 @@ export const getOmniAutomationParameters =
     const commonPayload: OmniAutomationCommonActionPayload = {
       dpm: proxyAddress,
       networkId,
+      poolId,
       protocol: protocol as SupportedLambdaProtocols,
       strategy: {
         collateralAddress,

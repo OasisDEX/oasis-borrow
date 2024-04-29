@@ -552,11 +552,16 @@ export const triggersAaveStateMachine = createMachine(
     },
     services: {
       getTriggers: async (context): Promise<GetTriggersResponse> => {
-        const { dpm, strategyConfig } = context
+        const {
+          dpm,
+          strategyConfig: { networkId, protocol },
+        } = context
+
         if (!dpm) {
           return omniPositionTriggersDataDefault
         }
-        return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
+
+        return await getTriggersRequest({ dpm, networkId, protocol })
       },
     },
   },

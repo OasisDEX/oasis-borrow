@@ -1,18 +1,11 @@
-import type { NetworkIds } from 'blockchain/networks'
 import { networkSetById } from 'blockchain/networks'
-import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers/common'
+import type { SetupAutomationCommonParams } from 'helpers/lambda/triggers'
+import type { SetupTriggerPath } from 'helpers/lambda/triggers/common'
 import { supportedLambdaProtocolsList } from 'helpers/lambda/triggers/common'
 import { LendingProtocol } from 'lendingProtocols'
 
-export interface GetSetupTriggerConfigParams {
-  networkId: NetworkIds
-  protocol: SupportedLambdaProtocols
-  path:
-    | 'auto-buy'
-    | 'auto-sell'
-    | 'dma-stop-loss'
-    | 'dma-trailing-stop-loss'
-    | 'dma-partial-take-profit'
+export interface GetSetupTriggerConfigParams extends SetupAutomationCommonParams {
+  path: SetupTriggerPath
 }
 
 export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
@@ -28,12 +21,23 @@ export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
   const rpc = networkConfig?.isCustomFork ? networkConfig.rpcUrl : undefined
 
   return {
+    common: {
+      dpm: params.dpm,
+      poolId: params.poolId,
+      protocol: params.protocol,
+      position: {
+        collateral: params.strategy.collateralAddress,
+        debt: params.strategy.debtAddress,
+      },
+      rpc,
+      action: params.action,
+    },
     url: `/api/triggers/${params.networkId}/${
       {
         [LendingProtocol.AaveV3]: 'aave3',
+        [LendingProtocol.MorphoBlue]: 'morphoblue',
         [LendingProtocol.SparkV3]: 'spark',
       }[params.protocol]
     }/${params.path}`,
-    customRpc: rpc,
   }
 }

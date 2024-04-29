@@ -7,11 +7,11 @@ import { TriggersApiErrorCode } from './setup-triggers-types'
 export const setupAaveAutoBuy = async (
   params: SetupAaveBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'auto-buy' })
+  const { common, url } = getSetupTriggerConfig({ ...params, path: 'auto-buy' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
-    dpm: params.dpm,
+    ...common,
     triggerData: {
       executionLTV: params.executionLTV.integerValue().toString(),
       targetLTV: params.targetLTV.integerValue().toString(),
@@ -19,12 +19,6 @@ export const setupAaveAutoBuy = async (
       maxBaseFee: params.maxBaseFee.integerValue().toString(),
       useMaxBuyPrice: params.usePrice,
     },
-    position: {
-      collateral: params.strategy.collateralAddress,
-      debt: params.strategy.debtAddress,
-    },
-    rpc: customRpc,
-    action: params.action,
   })
 
   let response: Response
@@ -36,7 +30,7 @@ export const setupAaveAutoBuy = async (
             'x-summer-skip-validation': '1',
           }
         : undefined,
-      body: body,
+      body,
     })
   } catch (error) {
     console.error('Error while setting up auto buy', error)

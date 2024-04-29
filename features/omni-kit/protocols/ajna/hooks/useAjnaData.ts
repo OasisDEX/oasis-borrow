@@ -67,6 +67,7 @@ export function useAjnaData({
   return {
     data: {
       aggregatedData: ajnaPositionAggregatedData,
+      poolId: ajnaPositionData?.pool.poolAddress,
       positionData: ajnaPositionData,
       protocolPricesData: tokenPriceUSDData,
     },

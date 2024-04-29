@@ -17,17 +17,21 @@ import { useState } from 'react'
 
 import { eth2weth } from '@oasisdex/utils/lib/src/utils'
 
-export const useLambdaDebouncedStopLoss = ({
-  state,
-  send,
-  stopLossLevel,
-  stopLossToken,
-  action,
-}: (OpenAaveStateProps | ManageAaveStateProps) & {
+type LambdaDebouncedStopLossParams = (OpenAaveStateProps | ManageAaveStateProps) & {
+  action: TriggerAction
+  poolId?: string
   stopLossLevel: BigNumber
   stopLossToken: string
-  action: TriggerAction
-}) => {
+}
+
+export const useLambdaDebouncedStopLoss = ({
+  action,
+  poolId,
+  send,
+  state,
+  stopLossLevel,
+  stopLossToken,
+}: LambdaDebouncedStopLossParams) => {
   const [isGettingStopLossTx, setIsGettingStopLossTx] = useState(false)
   const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
   const [errors, setErrors] = useState<TriggersApiError[]>([])
@@ -57,16 +61,17 @@ export const useLambdaDebouncedStopLoss = ({
 
       const stopLossTxDataPromise = cancelable(
         setupAaveLikeStopLoss({
+          action,
           dpm: dpmAccount,
           executionLTV: stopLossLevel,
-          networkId: strategyConfig.networkId,
           executionToken: stopLossToken === 'debt' ? debtAddress : collateralAddress,
+          networkId: strategyConfig.networkId,
+          poolId,
           protocol: strategyConfig.protocol as SupportedLambdaProtocols,
           strategy: {
             collateralAddress,
             debtAddress,
           },
-          action,
         }),
       )
       setStopLossTxCancelablePromise(stopLossTxDataPromise)
