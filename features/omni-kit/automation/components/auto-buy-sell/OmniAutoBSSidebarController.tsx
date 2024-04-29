@@ -92,8 +92,14 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
 
   const description = useMemo(() => {
     return getAutoBuyAutoSellDescription({
-      triggerLtv: new BigNumber(sliderValues.value0),
-      targetLtv: new BigNumber(sliderValues.value1),
+      triggerLtv:
+        type === AutomationFeatures.AUTO_BUY
+          ? new BigNumber(sliderValues.value0)
+          : new BigNumber(sliderValues.value1),
+      targetLtv:
+        type === AutomationFeatures.AUTO_BUY
+          ? new BigNumber(sliderValues.value1)
+          : new BigNumber(sliderValues.value0),
       automationFormState,
       t,
       position: castedPosition,
