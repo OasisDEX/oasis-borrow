@@ -208,6 +208,8 @@ async function getAjnaPoolData(
                 .toString()
             : lendApr.toString()
 
+          const lpApy = lendApr.toString()
+
           const primaryTokenGroup = getTokenGroup(collateralToken)
           const secondaryTokenGroup = getTokenGroup(quoteToken)
 
@@ -336,7 +338,7 @@ async function getAjnaPoolData(
                 liquidity,
                 managementType,
                 ...(isPoolNotEmpty && {
-                  weeklyNetApy,
+                  weeklyNetApy: lpApy,
                 }),
                 reverseTokens: true,
                 primaryTokenAddress: quoteTokenAddress.toLowerCase(),
