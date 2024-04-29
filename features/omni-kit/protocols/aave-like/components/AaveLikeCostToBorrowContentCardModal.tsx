@@ -1,4 +1,3 @@
-import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { isYieldLoopToken } from 'features/omni-kit/helpers'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -9,15 +8,11 @@ import React from 'react'
 import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export const AaveLikeCostToBorrowContentCardModal = ({
-  collateralAmount,
-  collateralPrice,
   collateralToken,
   debtAmount,
-  quotePrice,
   quoteToken,
   debtVariableBorrowRate,
   collateralLiquidityRate,
-  netValue,
   apy,
 }: {
   collateralAmount: BigNumber
@@ -33,14 +28,6 @@ export const AaveLikeCostToBorrowContentCardModal = ({
 }) => {
   const { t } = useTranslation()
 
-  const costOfBorrowingDebt = debtVariableBorrowRate.times(debtAmount).times(quotePrice)
-  const profitFromProvidingCollateral = collateralLiquidityRate
-    .times(collateralAmount)
-    .times(collateralPrice)
-  const netBorrowCostPercentage = normalizeValue(
-    costOfBorrowingDebt.minus(profitFromProvidingCollateral).div(netValue),
-  ).minus(apy || zero)
-
   const costToBorrow = debtAmount.times(NaNIsZero(debtVariableBorrowRate))
 
   return (
@@ -53,7 +40,7 @@ export const AaveLikeCostToBorrowContentCardModal = ({
         </Text>
       </Text>
       <Card as="p" variant="vaultDetailsCardModal">
-        {formatDecimalAsPercent(NaNIsZero(netBorrowCostPercentage))}
+        {formatDecimalAsPercent(NaNIsZero((apy || zero).negated()))}
       </Card>
       <Flex sx={{ justifyContent: 'space-around' }}>
         <Card variant="vaultDetailsCardModalDetail">
