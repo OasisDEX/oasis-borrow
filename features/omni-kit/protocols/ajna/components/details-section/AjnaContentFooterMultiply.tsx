@@ -86,7 +86,7 @@ export function AjnaContentFooterMultiply({
     multiple: position.riskRatio.multiple,
   })
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: position.pool.interestRate.minus(yields?.apy1d.div(100) || zero),
+    borrowRate: (yields?.apy1d.div(100) || zero).negated(),
   })
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
     collateralToken,
@@ -94,7 +94,7 @@ export function AjnaContentFooterMultiply({
     networkId,
     owner,
     quoteToken,
-    borrowRate: position.pool.interestRate.minus(yields?.apy1d.div(100) || zero),
+    borrowRate: (yields?.apy1d.div(100) || zero).negated(),
     ...(!isOracless && {
       quotePrice,
     }),

@@ -46,10 +46,7 @@ export function AaveLikeContentFooterMultiply() {
   const castedPosition = position as AaveLikePositionV2
 
   const ltv = useMemo(() => castedPosition.riskRatio.loanToValue, [castedPosition])
-  const ltvAfter = useMemo(
-    () => simulation?.riskRatio.loanToValue || castedPosition.riskRatio.loanToValue,
-    [simulation, castedPosition],
-  )
+  const ltvAfter = useMemo(() => simulation?.riskRatio.loanToValue, [simulation])
   const yields = useOmniEarnYields({
     actionSource: 'AaveLikeContentFooterYieldLoop',
     quoteTokenAddress: quoteAddress,
@@ -66,7 +63,7 @@ export function AaveLikeContentFooterMultiply() {
     collateralTokenAddress: collateralAddress,
     quoteToken: quoteToken,
     collateralToken: collateralToken,
-    ltv: ltvAfter,
+    ltv: ltvAfter ?? ltv,
     networkId: network.id,
     protocol,
   })
@@ -99,8 +96,8 @@ export function AaveLikeContentFooterMultiply() {
   })
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: position.borrowRate.minus(yields?.apy1d.div(100) || zero),
-    afterBorrowRate: simulation?.borrowRate.minus(yieldsAfter?.apy1d.div(100) || zero),
+    borrowRate: (yields?.apy1d.div(100) || zero).negated(),
+    afterBorrowRate: ltvAfter ? yieldsAfter?.apy1d.div(100).negated() : undefined,
     modal: (
       <AaveLikeCostToBorrowContentCardModal
         collateralAmount={position.collateralAmount}
