@@ -6,10 +6,7 @@ import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
-import type {
-  OmniProductType,
-  OmniSupportedNetworkIds,
-} from 'features/omni-kit/types'
+import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getTokenBalances$ } from 'features/shared/balanceInfo'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'

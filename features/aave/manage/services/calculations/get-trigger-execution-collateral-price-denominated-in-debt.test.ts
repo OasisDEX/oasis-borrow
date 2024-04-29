@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols';
+import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 
 import { getTriggerExecutionPrice } from './get-trigger-execution-price'
