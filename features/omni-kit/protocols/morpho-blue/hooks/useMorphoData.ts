@@ -61,6 +61,7 @@ export function useMorphoData({
   return {
     data: {
       aggregatedData: morphoPositionAggregatedData,
+      poolId: morphoPositionData?.marketParams.id,
       positionData: morphoPositionData,
       protocolPricesData: oraclePrices,
     },

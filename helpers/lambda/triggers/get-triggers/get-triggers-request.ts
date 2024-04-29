@@ -7,14 +7,23 @@ import type { GetTriggersParams, GetTriggersResponse } from './get-triggers-type
 export const getTriggersRequest = async ({
   dpm,
   networkId,
+  poolId,
+  protocol,
 }: GetTriggersParams): Promise<GetTriggersResponse> => {
   if (dpm.proxy && isZeroAddress(dpm.proxy)) {
     return omniPositionTriggersDataDefault
   }
-  const { url } = getTriggersConfig({ dpm, networkId })
+
+  const { url } = getTriggersConfig({
+    dpm,
+    networkId,
+    poolId,
+    protocol,
+  })
 
   try {
     const response = await fetch(url)
+
     return (await response.json()) as GetTriggersResponse
   } catch (e) {
     console.error('Failed to read data about triggers from server', e)
