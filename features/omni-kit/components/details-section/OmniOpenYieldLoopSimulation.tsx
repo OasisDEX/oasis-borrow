@@ -37,7 +37,7 @@ export function mapSimulation({
     ]
   }
 
-  return ['N/A', 'N/A']
+  return ['New', 'New']
 }
 
 export const OmniOpenYieldLoopSimulation: FC<OmniOpenYieldLoopSimulationProps> = ({
