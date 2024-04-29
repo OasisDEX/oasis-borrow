@@ -7,11 +7,11 @@ import { TriggersApiErrorCode } from './setup-triggers-types'
 export const setupAaveAutoSell = async (
   params: SetupAaveBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
+  const { common, url } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
-    dpm: params.dpm,
+    ...common,
     triggerData: {
       executionLTV: params.executionLTV.integerValue().toString(),
       targetLTV: params.targetLTV.integerValue().toString(),
@@ -19,12 +19,6 @@ export const setupAaveAutoSell = async (
       maxBaseFee: params.maxBaseFee.integerValue().toString(),
       useMinSellPrice: params.usePrice,
     },
-    position: {
-      collateral: params.strategy.collateralAddress,
-      debt: params.strategy.debtAddress,
-    },
-    rpc: customRpc,
-    action: params.action,
   })
 
   let response: Response

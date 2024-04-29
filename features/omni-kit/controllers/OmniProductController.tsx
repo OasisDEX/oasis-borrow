@@ -282,6 +282,7 @@ export const OmniProductController = <Auction, History, Position>({
                       networkId={networkId}
                       owner={dpmPosition.user}
                       pairId={pairId}
+                      poolId={poolId}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}

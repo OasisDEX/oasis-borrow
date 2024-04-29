@@ -11,11 +11,11 @@ import { TriggersApiErrorCode } from './setup-triggers-types'
 export const setupAaveLikePartialTakeProfit = async (
   params: SetupAavePartialTakeProfitParams,
 ): Promise<SetupPartialTakeProfitResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-partial-take-profit' })
+  const { common, url } = getSetupTriggerConfig({ ...params, path: 'dma-partial-take-profit' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
-    dpm: params.dpm,
+    ...common,
     triggerData: {
       withdrawToken: params.executionToken,
       executionLTV: params.triggerLtv.times(lambdaPercentageDenomination).integerValue().toString(),
@@ -38,12 +38,6 @@ export const setupAaveLikePartialTakeProfit = async (
         : undefined,
       // trailingStopLoss: params.trailingStopLoss, // possibly in the future
     },
-    position: {
-      collateral: params.strategy.collateralAddress,
-      debt: params.strategy.debtAddress,
-    },
-    rpc: customRpc,
-    action: params.action,
   })
 
   let response: Response
