@@ -5,11 +5,11 @@ import type { OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 
 const availableAaveV3Automations = [
+  AutomationFeatures.AUTO_BUY,
+  AutomationFeatures.AUTO_SELL,
+  AutomationFeatures.PARTIAL_TAKE_PROFIT,
   AutomationFeatures.STOP_LOSS,
   AutomationFeatures.TRAILING_STOP_LOSS,
-  AutomationFeatures.AUTO_SELL,
-  AutomationFeatures.AUTO_BUY,
-  AutomationFeatures.PARTIAL_TAKE_PROFIT,
 ]
 
 export const settingsV2: OmniProtocolSettings = {

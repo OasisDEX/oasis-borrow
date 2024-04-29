@@ -5,18 +5,26 @@ import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
+import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
-import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type {
+  OmniProductType,
+  OmniProtocolSettings,
+  OmniSupportedNetworkIds,
+} from 'features/omni-kit/types'
 import { getTokenBalances$ } from 'features/shared/balanceInfo'
+import { getTriggersRequest } from 'helpers/lambda/triggers'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { LendingProtocol } from 'lendingProtocols'
+import { makeObservable } from 'lendingProtocols/pipelines'
 import { useMemo } from 'react'
-import { EMPTY } from 'rxjs'
+import { EMPTY, of } from 'rxjs'
 
 interface OmniProtocolDataProps {
   collateralToken: string
   extraTokens?: string[]
+  isOpening: boolean
   isOracless?: boolean
   networkId: OmniSupportedNetworkIds
   pairId: number
@@ -25,11 +33,13 @@ interface OmniProtocolDataProps {
   protocol: LendingProtocol
   protocolRaw: string
   quoteToken: string
+  settings: OmniProtocolSettings
 }
 
 export function useOmniProtocolData({
   collateralToken,
   extraTokens = [],
+  isOpening,
   isOracless,
   networkId,
   pairId,
@@ -38,11 +48,14 @@ export function useOmniProtocolData({
   protocol,
   protocolRaw,
   quoteToken,
+  settings,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
   const { gasPriceOnNetwork$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
-  const { balancesFromAddressInfoArray$, dpmPositionDataV2$, tokenPriceUSD$ } = useProductContext()
+  const { balancesFromAddressInfoArray$, dpmPositionDataV2$, tokenPriceUSD$, onEveryBlock$ } =
+    useProductContext()
+  const getTriggersRequest$ = makeObservable(onEveryBlock$, getTriggersRequest)
 
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
   const [gasPriceData, gasPriceError] = useObservable(gasPriceOnNetwork$(networkId))
@@ -215,21 +228,35 @@ export function useOmniProtocolData({
           : undefined
   }, [identifiedTokensData, collateralToken, quoteToken, isOracless, dpmPositionData])
 
+  const [positionTriggersData, positionTriggersError] = useObservable(
+    useMemo(
+      () =>
+        !isOpening && settings.availableAutomations[networkId]?.length
+          ? dpmPositionData
+            ? getTriggersRequest$({ dpm: dpmPositionData, networkId })
+            : EMPTY
+          : of(omniPositionTriggersDataDefault),
+      [dpmPositionData, networkId, settings.availableAutomations],
+    ),
+  )
+
   return {
     data: {
       balancesInfoArrayData,
       dpmPositionData,
       ethBalanceData,
       gasPriceData,
+      positionTriggersData,
       tokenPriceUSDData,
-      userSettingsData,
       tokensIconsData,
+      userSettingsData,
     },
     errors: [
       balancesInfoArrayError,
       dpmPositionError,
       ethBalanceError,
       gasPriceError,
+      positionTriggersError,
       tokenPriceUSDError,
       userSettingsError,
     ],
