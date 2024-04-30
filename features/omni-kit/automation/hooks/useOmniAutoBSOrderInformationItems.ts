@@ -29,13 +29,13 @@ export const useOmniAutoBSOrderInformationItems = (): ItemProps[] => {
   const isAutoSell = type === AutomationFeatures.AUTO_SELL
 
   const {
-    afterTargetMultiply,
     afterTargetLtv,
+    afterTargetMultiply,
     afterTriggerLtv,
-    deviation,
     collateralAmountAfterExecution,
-    debtAmountAfterExecution,
     collateralToBuyOrSellOnExecution,
+    debtAmountAfterExecution,
+    deviation,
   } = useOmniAutoBSDataHandler({
     type,
   })

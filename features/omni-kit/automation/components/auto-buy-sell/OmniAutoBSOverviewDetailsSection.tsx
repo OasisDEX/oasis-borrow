@@ -17,10 +17,10 @@ export const OmniAutoBSOverviewDetailsSection: FC<OmniAutoBSOverviewDetailsSecti
   active,
 }) => {
   const {
-    resolvedTitle,
-    resolvedFlag,
     autoBSTriggerExecutionLtvContentCardCommonData,
     autoBSTriggerTargetLtvContentCardCommonData,
+    resolvedFlag,
+    resolvedTitle,
   } = useOmniAutoBSDataHandler({ type })
 
   return (

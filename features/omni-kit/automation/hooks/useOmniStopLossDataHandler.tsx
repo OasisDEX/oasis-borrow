@@ -48,11 +48,11 @@ export const useOmniStopLossDataHandler = () => {
   } = useOmniProductContext(productType)
 
   const {
-    debtAmount,
     collateralAmount,
+    debtAmount,
     liquidationPrice,
-    riskRatio: { loanToValue },
     maxRiskRatio: { loanToValue: maxLoanToValue },
+    riskRatio: { loanToValue },
   } = position as LendingPosition
 
   const isStopLossEnabled = !!automation?.flags.isStopLossEnabled

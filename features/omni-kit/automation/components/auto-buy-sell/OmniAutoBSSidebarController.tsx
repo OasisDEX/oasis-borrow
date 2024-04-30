@@ -9,6 +9,7 @@ import { autoBuySellConstants } from 'features/omni-kit/automation/constants'
 import { getAutoBuyAutoSellDescription } from 'features/omni-kit/automation/helpers'
 import { useOmniAutoBSDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
 import { isBoolean } from 'lodash'
@@ -23,18 +24,20 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     environment: { productType, collateralToken, quoteToken },
   } = useOmniGeneralContext()
   const {
+    position: {
+      currentPosition: { position },
+    },
     automation: { automationForms },
-  } = useOmniProductContext(productType)
+  } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
   const {
-    maxLtv,
-    currentLtv,
     afterTargetLtv,
     afterTriggerLtv,
-    currentExecutionLTV,
-    currentTargetLTV,
+    currentExecutionLtv,
+    currentTargetLtv,
+    loanToValue,
+    maxLoanToValue,
     pricesDenomination,
-    castedPosition,
     resolvedThresholdPrice,
     resolvedTrigger,
   } = useOmniAutoBSDataHandler({ type })
@@ -42,15 +45,15 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const defaultTriggerValues = useMemo(() => {
     if (type === AutomationFeatures.AUTO_BUY) {
       return {
-        triggerLtv: currentLtv.times(100),
-        targetLtv: currentLtv.times(100).plus(5),
+        triggerLtv: loanToValue.times(100),
+        targetLtv: loanToValue.times(100).plus(5),
       }
     }
     return {
-      targetLtv: currentLtv.times(100),
-      triggerLtv: currentLtv.times(100).plus(5),
+      targetLtv: loanToValue.times(100),
+      triggerLtv: loanToValue.times(100).plus(5),
     }
-  }, [currentLtv])
+  }, [loanToValue])
 
   const { state: automationFormState, updateState: updateFormState } = automationForms[type]
 
@@ -58,14 +61,14 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     const triggerValue = Number(
       (
         afterTriggerLtv ||
-        currentExecutionLTV?.times(100) ||
+        currentExecutionLtv?.times(100) ||
         defaultTriggerValues.triggerLtv
       ).toPrecision(2),
     )
     const targetValue = Number(
       (
         afterTargetLtv ||
-        currentTargetLTV?.times(100) ||
+        currentTargetLtv?.times(100) ||
         defaultTriggerValues.targetLtv
       ).toPrecision(2),
     )
@@ -84,28 +87,28 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   }, [
     afterTargetLtv,
     afterTriggerLtv,
-    currentExecutionLTV,
-    currentTargetLTV,
+    currentExecutionLtv,
+    currentTargetLtv,
     defaultTriggerValues,
     type,
   ])
 
   const description = useMemo(() => {
     return getAutoBuyAutoSellDescription({
-      triggerLtv: new BigNumber(sliderValues.value0),
-      targetLtv: new BigNumber(sliderValues.value1),
       automationFormState,
-      t,
-      position: castedPosition,
-      pricesDenomination,
       collateralToken,
+      position,
+      pricesDenomination,
       quoteToken,
+      t,
+      targetLtv: new BigNumber(sliderValues.value1),
+      triggerLtv: new BigNumber(sliderValues.value0),
       type,
     })
   }, [
     automationFormState,
-    castedPosition,
     collateralToken,
+    position,
     pricesDenomination,
     quoteToken,
     sliderValues.value0,
@@ -115,8 +118,8 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   ])
 
   const maxSliderValue = useMemo(() => {
-    return Number(maxLtv.times(100).toPrecision(2))
-  }, [maxLtv])
+    return Number(maxLoanToValue.times(100).toPrecision(2))
+  }, [maxLoanToValue])
 
   const sliderDescriptions = useMemo(() => {
     return {
