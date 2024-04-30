@@ -6,17 +6,13 @@ import {
   useOmniCardDataBorrowRate,
   useOmniCardDataMultiple,
   useOmniCardDataTokensValue,
-  useOmniCardDataVariableAnnualFee,
 } from 'features/omni-kit/components/details-section'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts'
-import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import {
   useAjnaCardDataBorrowRate,
   useAjnaCardDataPositionDebt,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React from 'react'
 
 interface AjnaContentFooterMultiplyProps {
   changeVariant?: ChangeVariantType
@@ -45,23 +41,11 @@ export function AjnaContentFooterMultiply({
   quoteToken,
   simulation,
 }: AjnaContentFooterMultiplyProps) {
-  const {
-    environment: { protocol, network, isYieldLoopWithData },
-  } = useOmniGeneralContext()
   const commonContentCardData = {
     asFooter: true,
     changeVariant,
     isLoading: isSimulationLoading,
   }
-
-  const ltv = useMemo(() => position.riskRatio.loanToValue, [position])
-  const yields = useOmniEarnYields({
-    actionSource: 'AjnaContentFooterMultiply',
-    ltv,
-    networkId: network.id,
-    protocol,
-    poolAddress: position.pool.poolAddress,
-  })
 
   const totalCollateralExposureContentCardCommonData = useOmniCardDataTokensValue({
     afterTokensAmount: simulation?.collateralAmount,
@@ -85,8 +69,9 @@ export function AjnaContentFooterMultiply({
     afterMultiple: simulation?.riskRatio.multiple,
     multiple: position.riskRatio.multiple,
   })
+
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: (yields?.apy1d.div(100) || zero).negated(),
+    borrowRate: position.pool.interestRate,
   })
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
     collateralToken,
@@ -94,31 +79,15 @@ export function AjnaContentFooterMultiply({
     networkId,
     owner,
     quoteToken,
-    borrowRate: (yields?.apy1d.div(100) || zero).negated(),
+    borrowRate: position.pool.interestRate,
     ...(!isOracless && {
       quotePrice,
     }),
     debtAmount: position.debtAmount,
     poolAddress: position.pool.poolAddress,
   })
-  const variableAnnualFeeContentCardCommonData = useOmniCardDataVariableAnnualFee({
-    variableAnnualFee: position.borrowRate,
-  })
 
-  return isYieldLoopWithData ? (
-    <>
-      <OmniContentCard
-        {...commonContentCardData}
-        {...totalCollateralExposureContentCardCommonData}
-      />
-      <OmniContentCard
-        {...commonContentCardData}
-        {...positionDebtContentCardCommonData}
-        {...positionDebtContentCardAjnaData}
-      />
-      <OmniContentCard {...commonContentCardData} {...variableAnnualFeeContentCardCommonData} />
-    </>
-  ) : (
+  return (
     <>
       <OmniContentCard
         asFooter
