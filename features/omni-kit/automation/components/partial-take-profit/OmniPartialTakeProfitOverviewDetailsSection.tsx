@@ -4,7 +4,8 @@ import { OmniPartialTakeProfitOverviewDetailsSectionFooter } from 'features/omni
 import { resolveActiveOrder } from 'features/omni-kit/automation/helpers'
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks'
 import { OmniContentCard } from 'features/omni-kit/components/details-section'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -18,22 +19,29 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
 > = ({ active = false }) => {
   const { t } = useTranslation()
   const {
-    environment: { priceFormat },
+    environment: { priceFormat, productType },
   } = useOmniGeneralContext()
+  const {
+    position: {
+      currentPosition: {
+        position: {
+          liquidationPrice,
+          riskRatio: { loanToValue, multiple },
+        },
+      },
+    },
+  } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
   const {
-    isPartialTakeProfitEnabled,
-    currentProfitAndLossCommonData,
-    realizedProfitCommonData,
-    liquidationPrice,
-    loanToValue,
-    multiple,
-    simpleView,
     chartView,
-    setChartView,
-    nextDynamicTriggerPriceCommonData,
+    currentProfitAndLossCommonData,
     estimatedToReceiveCommonData,
     isLoading,
+    isPartialTakeProfitEnabled,
+    isSimpleView,
+    nextDynamicTriggerPriceCommonData,
+    realizedProfitCommonData,
+    setChartView,
   } = useOmniPartialTakeProfitDataHandler()
 
   return (
@@ -51,13 +59,13 @@ export const OmniPartialTakeProfitOverviewDetailsSection: FC<
       }
       footer={
         <OmniPartialTakeProfitOverviewDetailsSectionFooter
+          chartView={chartView}
           liquidationPrice={liquidationPrice}
           loanToValue={loanToValue}
           multiple={multiple}
           priceFormat={priceFormat}
-          simpleView={simpleView}
-          chartView={chartView}
           setChartView={setChartView}
+          simpleView={isSimpleView}
         />
       }
     />

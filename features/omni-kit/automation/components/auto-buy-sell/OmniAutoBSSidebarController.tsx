@@ -35,12 +35,15 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     afterTriggerLtv,
     currentExecutionLtv,
     currentTargetLtv,
-    loanToValue,
-    maxLoanToValue,
     pricesDenomination,
     resolvedThresholdPrice,
     resolvedTrigger,
   } = useOmniAutoBSDataHandler({ type })
+
+  const {
+    maxRiskRatio: { loanToValue: maxLoanToValue },
+    riskRatio: { loanToValue },
+  } = position
 
   const defaultTriggerValues = useMemo(() => {
     if (type === AutomationFeatures.AUTO_BUY) {

@@ -41,8 +41,6 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
   const {
     collateralAmount,
     debtAmount,
-    maxRiskRatio: { loanToValue: maxLoanToValue },
-    riskRatio: { loanToValue },
   } = position as LendingPosition
   const {
     state: { triggerLtv: afterTriggerLtv, targetLtv: afterTargetLtv },
@@ -142,8 +140,6 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
     currentTargetLtv,
     debtAmountAfterExecution,
     deviation,
-    loanToValue,
-    maxLoanToValue,
     pricesDenomination,
     resolvedFlag,
     resolvedThresholdPrice,
