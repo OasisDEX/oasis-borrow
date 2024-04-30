@@ -5,22 +5,13 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { useAjnaCardDataPositionDebt } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
-import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React from 'react'
 
 export function MorphoContentFooterMultiply() {
   const {
-    environment: {
-      collateralToken,
-      quoteToken,
-      network,
-      protocol,
-      quoteAddress,
-      collateralAddress,
-    },
+    environment: { collateralToken, quoteToken },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -31,19 +22,6 @@ export function MorphoContentFooterMultiply() {
       values: { changeVariant },
     },
   } = useOmniProductContext(OmniProductType.Multiply)
-
-  const ltv = useMemo(() => position.riskRatio.loanToValue, [position])
-  const yields = useOmniEarnYields({
-    actionSource: 'MorphoContentFooterBorrow',
-    quoteTokenAddress: quoteAddress,
-    collateralTokenAddress: collateralAddress,
-    quoteToken: quoteToken,
-    collateralToken: collateralToken,
-    ltv,
-    networkId: network.id,
-    protocol,
-  })
-
   const commonContentCardData = {
     asFooter: true,
     changeVariant,
@@ -74,7 +52,7 @@ export function MorphoContentFooterMultiply() {
   })
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: (yields?.apy1d.div(100) || zero).negated(),
+    borrowRate: position.borrowRate,
   })
 
   return (

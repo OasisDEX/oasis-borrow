@@ -7,26 +7,14 @@ import {
   useOmniCardDataVariableAnnualFee,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { useOmniEarnYields } from 'features/omni-kit/hooks/useOmniEarnYields'
 import { AaveLikeCostToBorrowContentCardModal } from 'features/omni-kit/protocols/aave-like/components/AaveLikeCostToBorrowContentCardModal'
 import { useAjnaCardDataPositionDebt } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
-import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React from 'react'
 
 export function AaveLikeContentFooterMultiply() {
   const {
-    environment: {
-      collateralToken,
-      quoteToken,
-      quotePrice,
-      protocol,
-      collateralPrice,
-      isYieldLoopWithData,
-      quoteAddress,
-      collateralAddress,
-      network,
-    },
+    environment: { collateralToken, quoteToken, quotePrice, collateralPrice, isYieldLoopWithData },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -44,29 +32,6 @@ export function AaveLikeContentFooterMultiply() {
   }
 
   const castedPosition = position as AaveLikePositionV2
-
-  const ltv = useMemo(() => castedPosition.riskRatio.loanToValue, [castedPosition])
-  const ltvAfter = useMemo(() => simulation?.riskRatio.loanToValue, [simulation])
-  const yields = useOmniEarnYields({
-    actionSource: 'AaveLikeContentFooterYieldLoop',
-    quoteTokenAddress: quoteAddress,
-    collateralTokenAddress: collateralAddress,
-    quoteToken: quoteToken,
-    collateralToken: collateralToken,
-    ltv,
-    networkId: network.id,
-    protocol,
-  })
-  const yieldsAfter = useOmniEarnYields({
-    actionSource: 'AaveLikeContentFooterYieldLoop',
-    quoteTokenAddress: quoteAddress,
-    collateralTokenAddress: collateralAddress,
-    quoteToken: quoteToken,
-    collateralToken: collateralToken,
-    ltv: ltvAfter ?? ltv,
-    networkId: network.id,
-    protocol,
-  })
 
   const totalCollateralExposureContentCardCommonData = useOmniCardDataTokensValue({
     afterTokensAmount: simulation?.collateralAmount,
@@ -96,20 +61,18 @@ export function AaveLikeContentFooterMultiply() {
   })
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: (yields?.apy1d.div(100) || zero).negated(),
-    afterBorrowRate: ltvAfter ? yieldsAfter?.apy1d.div(100).negated() : undefined,
+    borrowRate: position.borrowRate,
+    afterBorrowRate: simulation?.borrowRate,
     modal: (
       <AaveLikeCostToBorrowContentCardModal
         collateralAmount={position.collateralAmount}
         collateralPrice={collateralPrice}
-        collateralToken={collateralToken}
         debtAmount={position.debtAmount}
         quotePrice={quotePrice}
         quoteToken={quoteToken}
         debtVariableBorrowRate={castedPosition.debtVariableBorrowRate}
         collateralLiquidityRate={castedPosition.collateralLiquidityRate}
         netValue={position.netValue}
-        apy={yields?.apy1d.div(100)}
       />
     ),
   })
