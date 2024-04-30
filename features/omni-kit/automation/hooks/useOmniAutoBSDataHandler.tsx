@@ -38,10 +38,7 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
     },
   } = useOmniProductContext(productType)
 
-  const {
-    collateralAmount,
-    debtAmount,
-  } = position as LendingPosition
+  const { collateralAmount, debtAmount } = position as LendingPosition
   const {
     state: { triggerLtv: afterTriggerLtv, targetLtv: afterTargetLtv },
   } = automationForms[type]

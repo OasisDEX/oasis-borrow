@@ -1,9 +1,7 @@
 import { AutomationFeatures } from 'features/automation/common/types'
 import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
-import type {
-  ProductContextAutomationForms,
-} from 'features/omni-kit/types'
+import type { ProductContextAutomationForms } from 'features/omni-kit/types'
 
 interface GetAutomationMetadataValuesParams {
   commonFormState: OmniAutomationFormState
