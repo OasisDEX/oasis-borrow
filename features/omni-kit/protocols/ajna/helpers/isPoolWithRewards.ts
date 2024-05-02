@@ -81,7 +81,7 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
     },
-    'UNI-V2-DAI': {
+    'UNIV2-DAI': {
       amount: new BigNumber(19680),
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
