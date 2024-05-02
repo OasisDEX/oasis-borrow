@@ -81,6 +81,11 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
     },
+    'UNI-V2-DAI': {
+      amount: new BigNumber(19680),
+      borrowShare: new BigNumber(0.4),
+      earnShare: new BigNumber(0.6),
+    },
     'MKR-DAI': {
       amount: new BigNumber(19680),
       borrowShare: new BigNumber(0.4),
@@ -92,12 +97,12 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       earnShare: new BigNumber(0.95),
     },
     'MWSTETHWPUNKS20-WSTETH': {
-      amount: new BigNumber(6560),
+      amount: new BigNumber(3280),
       borrowShare: new BigNumber(0.05),
       earnShare: new BigNumber(0.95),
     },
     'MWSTETHWPUNKS40-WSTETH': {
-      amount: new BigNumber(6560),
+      amount: new BigNumber(3280),
       borrowShare: new BigNumber(0.05),
       earnShare: new BigNumber(0.95),
     },
@@ -109,7 +114,7 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       earnShare: new BigNumber(0.95),
     },
     'ETH-USDC': {
-      amount: new BigNumber(52480),
+      amount: new BigNumber(39360),
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
     },
