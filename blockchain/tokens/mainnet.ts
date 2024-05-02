@@ -128,6 +128,7 @@ export const tokensMainnet = {
   AETHWBTC: contractDesc(erc20, mainnet.common.AETHWBTC),
   AWBTC: contractDesc(erc20, mainnet.common.AWBTC),
   ENA: contractDesc(erc20, mainnet.common.ENA),
+  UNIV2: contractDesc(erc20, mainnet.common['UNI-V2']),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'] as const

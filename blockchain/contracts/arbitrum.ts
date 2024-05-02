@@ -212,6 +212,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'APXETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_APXETHETH),
     'MPETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_CSETHWETH),
+    'UNIV2-DAI': contractDesc(ajnaPool, arbitrum.ajna['AjnaPoolPairs_UNI-V2DAI']),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),
