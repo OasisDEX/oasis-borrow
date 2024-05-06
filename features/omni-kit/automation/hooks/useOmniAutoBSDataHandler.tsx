@@ -13,13 +13,14 @@ import { useTranslation } from 'next-i18next'
 
 export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationTypes }) => {
   const { t } = useTranslation()
+
   const {
     environment: {
-      productType,
-      collateralToken,
-      priceFormat,
-      isShort,
       collateralPrecision,
+      collateralToken,
+      isShort,
+      priceFormat,
+      productType,
       quotePrecision,
     },
   } = useOmniGeneralContext()
@@ -37,32 +38,29 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
     },
   } = useOmniProductContext(productType)
 
-  const castedPosition = position as LendingPosition
+  const { collateralAmount, debtAmount } = position as LendingPosition
+  const {
+    state: { triggerLtv: afterTriggerLtv, targetLtv: afterTargetLtv },
+  } = automationForms[type]
 
   const isActive =
     commonState.uiDropdownProtection === AutomationFeatures.AUTO_SELL ||
     commonState.uiDropdownOptimization === AutomationFeatures.AUTO_BUY
 
-  const { state } = automationForms[type]
-
-  const afterTriggerLtv = state?.triggerLtv
-  const afterTargetLtv = state?.targetLtv
+  const pricesDenomination = isShort ? ('debt' as const) : ('collateral' as const)
 
   const resolvedTitle = {
     [AutomationFeatures.AUTO_SELL]: t('auto-sell.title'),
     [AutomationFeatures.AUTO_BUY]: t('auto-buy.title'),
   }[type]
-
   const resolvedFlag = {
     [AutomationFeatures.AUTO_SELL]: !!automation?.flags.isAutoSellEnabled,
     [AutomationFeatures.AUTO_BUY]: !!automation?.flags.isAutoBuyEnabled,
   }[type]
-
   const resolvedTrigger = {
     [AutomationFeatures.AUTO_SELL]: automation?.triggers.autoSell,
     [AutomationFeatures.AUTO_BUY]: automation?.triggers.autoBuy,
   }[type]
-
   const resolvedThresholdPrice = {
     [AutomationFeatures.AUTO_SELL]:
       automation?.triggers.autoSell &&
@@ -71,40 +69,34 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
       automation?.triggers.autoBuy && automation.triggers.autoBuy.decodedMappedParams.maxBuyPrice,
   }[type]
 
-  const currentExecutionLTV = resolvedTrigger && resolvedTrigger.decodedMappedParams.executionLtv
-  const currentTargetLTV = resolvedTrigger && resolvedTrigger.decodedMappedParams.targetLtv
+  const currentExecutionLtv = resolvedTrigger && resolvedTrigger.decodedMappedParams.executionLtv
+  const currentTargetLtv = resolvedTrigger && resolvedTrigger.decodedMappedParams.targetLtv
 
-  const debtToCollateralRatio =
-    currentExecutionLTV &&
-    castedPosition.debtAmount.div(castedPosition.collateralAmount.times(currentExecutionLTV))
-
-  const nextPrice = debtToCollateralRatio
+  const executionPrice =
+    currentExecutionLtv && debtAmount.div(collateralAmount.times(currentExecutionLtv))
+  const resolvedExecutionPrice = executionPrice
     ? isShort
-      ? one.div(debtToCollateralRatio)
-      : debtToCollateralRatio
+      ? one.div(executionPrice)
+      : executionPrice
     : undefined
 
   const autoBSTriggerExecutionLtvContentCardCommonData = useOmniCardDataAutoBSTriggerExecutionLtv({
+    afterTxExecutionLTV: isActive ? afterTriggerLtv?.div(100) : undefined,
     automationFeature: type,
     collateralToken: collateralToken,
-    currentExecutionLTV: currentExecutionLTV,
-    afterTxExecutionLTV: isActive ? afterTriggerLtv?.div(100) : undefined,
-    nextPrice: nextPrice,
+    currentExecutionLTV: currentExecutionLtv,
     denomination: priceFormat,
+    executionPrice: resolvedExecutionPrice,
   })
 
   const autoBSTriggerTargetLtvContentCardCommonData = useOmniCardDataAutoBSTriggerTargetLtv({
+    afterTxTargetLTV: isActive ? afterTargetLtv?.div(100) : undefined,
     automationFeature: type,
     collateralToken: collateralToken,
-    currentTargetLTV: currentTargetLTV,
-    afterTxTargetLTV: isActive ? afterTargetLtv?.div(100) : undefined,
-    thresholdPrice: resolvedThresholdPrice,
+    currentTargetLTV: currentTargetLtv,
     denomination: priceFormat,
+    thresholdPrice: resolvedThresholdPrice,
   })
-
-  const maxLtv = castedPosition.maxRiskRatio.loanToValue
-  const currentLtv = castedPosition.riskRatio.loanToValue
-  const pricesDenomination = isShort ? ('debt' as const) : ('collateral' as const)
 
   const afterTargetMultiply = afterTargetLtv
     ? new RiskRatio(afterTargetLtv.div(100), RiskRatio.TYPE.LTV).multiple
@@ -128,36 +120,27 @@ export const useOmniAutoBSDataHandler = ({ type }: { type: OmniAutoBSAutomationT
       : undefined
 
   const collateralToBuyOrSellOnExecution = {
-    [AutomationFeatures.AUTO_BUY]: collateralAmountAfterExecution?.minus(
-      castedPosition.collateralAmount,
-    ),
+    [AutomationFeatures.AUTO_BUY]: collateralAmountAfterExecution?.minus(collateralAmount),
     [AutomationFeatures.AUTO_SELL]:
-      collateralAmountAfterExecution &&
-      castedPosition.collateralAmount.minus(collateralAmountAfterExecution),
+      collateralAmountAfterExecution && collateralAmount.minus(collateralAmountAfterExecution),
   }[type]
 
   return {
-    castedPosition,
-    isActive,
-    maxLtv,
-    currentLtv,
-    pricesDenomination,
-    afterTriggerLtv,
     afterTargetLtv,
-    resolvedTitle,
-    resolvedFlag,
-    resolvedTrigger,
-    resolvedThresholdPrice,
-    currentExecutionLTV,
-    currentTargetLTV,
-    debtToCollateralRatio,
-    nextPrice,
+    afterTargetMultiply,
+    afterTriggerLtv,
     autoBSTriggerExecutionLtvContentCardCommonData,
     autoBSTriggerTargetLtvContentCardCommonData,
-    afterTargetMultiply,
-    deviation,
     collateralAmountAfterExecution,
-    debtAmountAfterExecution,
     collateralToBuyOrSellOnExecution,
+    currentExecutionLtv,
+    currentTargetLtv,
+    debtAmountAfterExecution,
+    deviation,
+    pricesDenomination,
+    resolvedFlag,
+    resolvedThresholdPrice,
+    resolvedTitle,
+    resolvedTrigger,
   }
 }

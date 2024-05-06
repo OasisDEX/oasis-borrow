@@ -14,7 +14,7 @@ export const useOmniTrailingStopLossOrderInformationItems = () => {
     automation: { automationForms },
   } = useOmniProductContext(productType)
 
-  const { savingCompareToLiquidation, isCollateralActive, afterMaxToken } =
+  const { afterMaxToken, isCollateralActive, savingCompareToLiquidation } =
     useOmniTrailingStopLossDataHandler()
 
   const closeToToken = isCollateralActive ? collateralToken : quoteToken

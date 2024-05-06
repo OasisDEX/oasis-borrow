@@ -17,11 +17,11 @@ export const OmniStopLossOverviewDetailsSection: FC<OmniStopLossOverviewDetailsS
   const { t } = useTranslation()
 
   const {
-    isStopLossEnabled,
-    stopLossLtvContentCardCommonData,
-    ltvContentCardCommonData,
     dynamicStopPriceContentCardCommonData,
     estTokenOnTriggerContentCardCommonData,
+    isStopLossEnabled,
+    ltvContentCardCommonData,
+    stopLossLtvContentCardCommonData,
   } = useOmniStopLossDataHandler()
 
   return (

@@ -5,21 +5,21 @@ import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/
 import { useTranslation } from 'react-i18next'
 
 interface OmniCardDataAutoBSTriggerExecutionLtvParams {
+  afterTxExecutionLTV?: BigNumber
   automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
   collateralToken: string
   currentExecutionLTV?: BigNumber
-  afterTxExecutionLTV?: BigNumber
-  nextPrice?: BigNumber
   denomination: string
+  executionPrice?: BigNumber
 }
 
 export function useOmniCardDataAutoBSTriggerExecutionLtv({
+  afterTxExecutionLTV,
   automationFeature,
   collateralToken,
   currentExecutionLTV,
-  afterTxExecutionLTV,
-  nextPrice,
   denomination,
+  executionPrice,
 }: OmniCardDataAutoBSTriggerExecutionLtvParams): OmniContentCardBase {
   const { t } = useTranslation()
 
@@ -34,14 +34,14 @@ export function useOmniCardDataAutoBSTriggerExecutionLtv({
     ...(afterTxExecutionLTV && {
       change: [formatDecimalAsPercent(afterTxExecutionLTV), t('system.cards.common.after')],
     }),
-    ...(nextPrice && {
+    ...(executionPrice && {
       footnote: [
         t(
           automationFeature === AutomationFeatures.AUTO_SELL
             ? 'auto-sell.next-sell-price'
             : 'auto-buy.next-buy-price',
           {
-            amount: nextPrice && `${formatCryptoBalance(nextPrice)} ${denomination}`,
+            amount: executionPrice && `${formatCryptoBalance(executionPrice)} ${denomination}`,
           },
         ),
       ],

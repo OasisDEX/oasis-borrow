@@ -27,11 +27,11 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
   } = useOmniProductContext(productType)
 
   const {
-    trailingDistanceContentCardCommonData,
     currentMarketPriceContentCardCommonData,
     dynamicStopPriceContentCardCommonData,
     estTokenOnTriggerContentCardCommonData,
-    simpleView,
+    isSimpleView,
+    trailingDistanceContentCardCommonData,
   } = useOmniTrailingStopLossDataHandler()
 
   return (
@@ -47,7 +47,7 @@ export const OmniTrailingStopLossOverviewDetailsSection: FC<
           <OmniContentCard {...estTokenOnTriggerContentCardCommonData} />
         </DetailsSectionContentCardWrapper>
       }
-      footer={!simpleView && <OmniTrailingStopLossOverviewDetailsSectionFooter />}
+      footer={!isSimpleView && <OmniTrailingStopLossOverviewDetailsSectionFooter />}
     />
   )
 }
