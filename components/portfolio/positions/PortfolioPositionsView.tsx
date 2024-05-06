@@ -156,6 +156,7 @@ export const PortfolioPositionsView = ({
         justifyContent: 'space-between',
         alignItems: ['flex-start', 'center'],
       }}
+      data-testid="portfolio-positions-controls"
     >
       <Flex sx={{ flexDirection: 'row', mt: [2, 0] }}>
         <PortfolioPositionsProductSelect onChange={updatePortfolioPositionsFilters('product')} />
