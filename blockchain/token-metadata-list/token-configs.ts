@@ -1302,6 +1302,16 @@ export const tokenConfigs: TokenConfig[] = [
     background: '',
     tags: [],
   },
+  {
+    symbol: 'UNIV2',
+    precision: 18,
+    digits: 5,
+    name: 'Uniswap V2',
+    icon: uni_circle_color,
+    iconCircle: uni_circle_color,
+    background: '',
+    tags: [],
+  },
   ...deprecatedTokens.map((deprecatedToken) => ({
     symbol: deprecatedToken,
     precision: 18,

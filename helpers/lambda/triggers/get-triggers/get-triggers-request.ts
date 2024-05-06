@@ -5,17 +5,17 @@ import { getTriggersConfig } from './get-triggers-config'
 import type { GetTriggersParams, GetTriggersResponse } from './get-triggers-types'
 
 export const getTriggersRequest = async ({
-  dpm,
+  dpmProxy,
   networkId,
   poolId,
   protocol,
 }: GetTriggersParams): Promise<GetTriggersResponse> => {
-  if (dpm.proxy && isZeroAddress(dpm.proxy)) {
+  if (dpmProxy && isZeroAddress(dpmProxy)) {
     return omniPositionTriggersDataDefault
   }
 
   const { url } = getTriggersConfig({
-    dpm,
+    dpmProxy,
     networkId,
     poolId,
     protocol,

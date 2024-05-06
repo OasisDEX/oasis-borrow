@@ -561,7 +561,7 @@ export const triggersAaveStateMachine = createMachine(
           return omniPositionTriggersDataDefault
         }
 
-        return await getTriggersRequest({ dpm, networkId, protocol })
+        return await getTriggersRequest({ dpmProxy: dpm.proxy, networkId, protocol })
       },
     },
   },

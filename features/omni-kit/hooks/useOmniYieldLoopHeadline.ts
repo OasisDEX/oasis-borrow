@@ -39,7 +39,7 @@ export const useOmniYieldLoopHeadline = ({
     })
   }
 
-  if (maxYields && maxYieldsOffset) {
+  if (maxYields?.apy90d && maxYieldsOffset?.apy90d) {
     const yield90DaysDiff = maxYieldsOffset.apy90d.minus(maxYields.apy90d)
     headlineDetails.push({
       label: t('open-earn.aave.product-header.90-day-avg-yield'),
@@ -57,7 +57,7 @@ export const useOmniYieldLoopHeadline = ({
   } else {
     headlineDetails.push({
       label: t('open-earn.aave.product-header.90-day-avg-yield'),
-      value: `n/a`,
+      value: `New!`,
     })
   }
 

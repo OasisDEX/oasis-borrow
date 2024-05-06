@@ -10,8 +10,7 @@ import type {
   RefinanceGeneralContextBase,
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
-import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/refinance/helpers'
-import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
+import { getRefinanceValidations } from 'features/refinance/helpers'
 import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -134,17 +133,9 @@ export const useInitializeRefinanceContext = ({
   if (!type) {
     throw new Error('Unsupported position type')
   }
-  const currentProductType = positionTypeToOmniProductType(type)
 
   const ctx: RefinanceGeneralContextBase = {
     metadata: {
-      flowStateFilter: ({ event, filterConsumed }) =>
-        getRefinanceFlowStateFilter({
-          event,
-          filterConsumed,
-          currentProductType,
-          formState: form.state,
-        }),
       validations: getRefinanceValidations({ state: form.state }),
       safetySwitch: isSafetySwitchEnabled,
       suppressValidation: isSuppressValidationEnabled,

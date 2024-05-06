@@ -54,9 +54,15 @@ async function getAjnaPoolData(
     tokens: pair.split('-'),
   }))
   const poolAddresses = [
-    ...Object.values(getNetworkContracts(networkId).ajnaPoolPairs),
-    ...Object.values(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
-  ].map((contract) => contract.address.toLowerCase())
+    ...Object.entries(getNetworkContracts(networkId).ajnaPoolPairs),
+    ...Object.entries(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
+  ].map(([key, contract]) => {
+    if (contract?.address === undefined) {
+      console.error('Contract address is undefined', { add: contract.address, key, networkId })
+      throw new Error('Contract address is undefined')
+    }
+    return contract.address.toLowerCase()
+  })
 
   const prices = uniq([
     'AJNA',
@@ -208,6 +214,8 @@ async function getAjnaPoolData(
                 .toString()
             : lendApr.toString()
 
+          const lpApy = lendApr.toString()
+
           const primaryTokenGroup = getTokenGroup(collateralToken)
           const secondaryTokenGroup = getTokenGroup(quoteToken)
 
@@ -336,7 +344,7 @@ async function getAjnaPoolData(
                 liquidity,
                 managementType,
                 ...(isPoolNotEmpty && {
-                  weeklyNetApy,
+                  weeklyNetApy: lpApy,
                 }),
                 reverseTokens: true,
                 primaryTokenAddress: quoteTokenAddress.toLowerCase(),

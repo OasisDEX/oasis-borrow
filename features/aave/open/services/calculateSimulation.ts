@@ -9,6 +9,7 @@ export interface Simulation {
   earningAfterFees: BigNumber
   netValue: BigNumber
   token: string
+  hasData: boolean
 }
 
 export interface CalculateSimulationResult {
@@ -100,5 +101,6 @@ function getSimulation({
     earningAfterFees: earnings,
     netValue: earnings.plus(amount),
     token,
+    hasData: true,
   }
 }

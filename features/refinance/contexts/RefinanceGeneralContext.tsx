@@ -2,7 +2,7 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
-import type { OmniFiltersParameters, OmniValidations } from 'features/omni-kit/types'
+import type { OmniValidations } from 'features/omni-kit/types'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers'
 import { useInitializeRefinanceContext } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
@@ -106,7 +106,6 @@ export type RefinanceGeneralContextBase = {
     pairId: number
   }
   metadata: {
-    flowStateFilter: (params: OmniFiltersParameters) => Promise<boolean>
     validations: OmniValidations
     safetySwitch: boolean
     suppressValidation: boolean

@@ -736,7 +736,7 @@
       "total-value-locked": "Total value locked"
     },
     "simulate": {
-      "header1": "Duration",
+      "header1": "Yield based on",
       "header2": "Earnings after fees",
       "header3": "Net value",
       "rowlabel1": "Previous 30 days*",
@@ -2833,7 +2833,7 @@
       "total-dai": "Total {{token}} {{action}}"
     },
     "simulation": {
-      "header1": "Duration",
+      "header1": "Yield based on",
       "header2": "Earnings after fees",
       "header3": "Net value",
       "rowlabel1": "Next 30 days",
@@ -3026,7 +3026,7 @@
     "position-page": {
       "earn": {
         "open": {
-          "duration": "Duration",
+          "duration": "Yield based on",
           "estimated-earnings": "Estimated earnings",
           "net-value": "Net value",
           "earnings-per-1d": "Projected earnings per day",
@@ -3759,6 +3759,7 @@
     }
   },
   "refinance": {
+    "title": "Refinance",
     "modal-title": "Refinance {{pair}} position",
     "close-prompt": "Are you sure you want to leave when transaction is in progress?",
     "position": {
