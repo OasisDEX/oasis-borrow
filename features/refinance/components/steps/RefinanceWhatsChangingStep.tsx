@@ -7,6 +7,7 @@ import { RefinanceReviewChangesSection } from 'features/refinance/components/ste
 import { RefinanceRouteSection } from 'features/refinance/components/steps/RefinanceRouteSection'
 import { RefinanceSwapSection } from 'features/refinance/components/steps/RefinanceSwapSection'
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { formatFiatBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
@@ -45,8 +46,12 @@ export const RefinanceWhatsChangingStep = () => {
           newId: dpm?.id,
           oldCollateralToken,
           oldDebtToken,
-          collateralToken: refinanceSimulation?.targetPosition.collateralAmount.token.symbol,
-          debtToken: refinanceSimulation?.targetPosition.debtAmount.token.symbol,
+          collateralToken:
+            refinanceSimulation &&
+            replaceETHWithWETH(refinanceSimulation.targetPosition.collateralAmount).token.symbol,
+          debtToken:
+            refinanceSimulation &&
+            replaceETHWithWETH(refinanceSimulation.targetPosition.debtAmount).token.symbol,
         })}
         <Flex sx={{ justifyContent: 'center', mt: 3 }}>
           <Image src={staticFilesRuntimeUrl('/static/img/refinance-tx.svg')} />

@@ -55,7 +55,7 @@ export const RefinanceFormView: FC = ({ children }) => {
       setNextStep,
       setPrevStep,
     },
-    simulation: { isLoading },
+    simulation: { isLoading, refinanceSimulation },
   } = useRefinanceContext()
 
   const txHandler = useRefinanceTxHandler()
@@ -105,6 +105,10 @@ export const RefinanceFormView: FC = ({ children }) => {
   if (!positionType) {
     throw new Error('Unsupported position type')
   }
+  if (!refinanceSimulation) {
+    throw new Error('Simulation data is missing')
+  }
+
   const currentType = positionTypeToOmniProductType(positionType)
 
   const productType = refinanceOption
@@ -154,8 +158,8 @@ export const RefinanceFormView: FC = ({ children }) => {
     text: getRefinanceStatusCopy({
       currentStep,
       protocol: strategy?.protocol,
-      collateralToken: collateralTokenData.token.symbol,
-      quoteToken: debtTokenData.token.symbol,
+      collateralToken: refinanceSimulation.targetPosition.collateralAmount.token.symbol,
+      quoteToken: refinanceSimulation.targetPosition.debtAmount.token.symbol,
       productType,
       isTxSuccess,
       t,
