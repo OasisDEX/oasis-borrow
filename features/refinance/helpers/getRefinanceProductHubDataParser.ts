@@ -6,6 +6,7 @@ import { isShortPosition } from 'features/omni-kit/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers/getRefinanceAaveLikeInterestRates'
 import { RefinanceOptions } from 'features/refinance/types'
+import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { moveItemsToFront } from 'helpers/moveItemsToFront'
 
 const availableLiquidityMapping = ({
@@ -34,13 +35,11 @@ const availableLiquidityMapping = ({
 const borrowRateMapping = ({
   table,
   interestRates,
-  collateralAmount,
-  debtAmount,
+  currentLTV,
 }: {
   table: ProductHubItem[]
   interestRates: RefinanceInterestRatesMetadata
-  collateralAmount: string
-  debtAmount: string
+  currentLTV: string
 }) =>
   table.map((item) => {
     const network = getNetworkByName(item.network)
@@ -50,33 +49,21 @@ const borrowRateMapping = ({
     const customDebtRates = interestRates[network.id]?.[protocol]?.[item.secondaryToken]
 
     if (customCollateralRates && customDebtRates) {
-      const collateralPrice = getTokenPrice(
-        item.primaryToken,
-        tokenPriceStore.prices,
-        'collateral price - borrowRateMapping',
-      )
-      const debtPrice = getTokenPrice(
-        item.secondaryToken,
-        tokenPriceStore.prices,
-        'debt price - borrowRateMapping',
-      )
+      const multiple = new BigNumber(1).div(new BigNumber(1).minus(currentLTV))
+      const borrowAPR = new BigNumber(customDebtRates.borrowVariable)
+      const borrowAPY = aaveLikeAprToApy(borrowAPR)
+      const supplyAPR = new BigNumber(customCollateralRates.lendVariable)
+      const supplyAPY = aaveLikeAprToApy(supplyAPR)
 
-      const netValue = new BigNumber(collateralAmount)
-        .times(collateralPrice)
-        .minus(new BigNumber(debtAmount).times(debtPrice))
+      const borrowRate = new BigNumber(multiple)
+        .times(supplyAPY)
+        .minus(new BigNumber(multiple).minus(1).times(borrowAPY))
+        .negated()
+        .toString()
 
       return {
         ...item,
-        fee: new BigNumber(customDebtRates.borrowVariable)
-          .times(debtAmount)
-          .times(debtPrice)
-          .minus(
-            new BigNumber(customCollateralRates.lendVariable)
-              .times(collateralAmount)
-              .times(collateralPrice),
-          )
-          .div(netValue)
-          .toString(),
+        fee: borrowRate,
       }
     }
 
@@ -113,12 +100,12 @@ const changeDirectionMapping = ({
 export const getRefinanceProductHubDataParser = ({
   table,
   interestRates,
-  collateralAmount,
   debtAmount,
   refinanceOption,
   isShort,
   collateralToken,
   debtToken,
+  currentLTV,
 }: {
   table: ProductHubItem[]
   interestRates: RefinanceInterestRatesMetadata
@@ -128,6 +115,7 @@ export const getRefinanceProductHubDataParser = ({
   isShort: boolean
   collateralToken: string
   debtToken: string
+  currentLTV: string
 }) => {
   // Map only items with enough liquidity to perform refinance
   const availableLiquidityMapped = availableLiquidityMapping({ table, debtAmount, debtToken })
@@ -136,8 +124,7 @@ export const getRefinanceProductHubDataParser = ({
   const borrowRatesMapped = borrowRateMapping({
     table: availableLiquidityMapped,
     interestRates,
-    collateralAmount,
-    debtAmount,
+    currentLTV,
   })
 
   // Sort per specific refinance option
