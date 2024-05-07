@@ -3,6 +3,11 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
 import type { NetworkIdsWithValues, OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
+import { getLocalAppConfig } from 'helpers/config'
+import { FeaturesEnum } from 'types/config'
+
+const automationFeatureFlags =
+  getLocalAppConfig('features')[FeaturesEnum.LambdaAutomations].MorphoBlue
 
 export const settings: OmniProtocolSettings = {
   rawName: {
@@ -48,11 +53,11 @@ export const settings: OmniProtocolSettings = {
   },
   availableAutomations: {
     [NetworkIds.MAINNET]: [
-      AutomationFeatures.AUTO_BUY,
-      AutomationFeatures.AUTO_SELL,
-      AutomationFeatures.PARTIAL_TAKE_PROFIT,
-      AutomationFeatures.STOP_LOSS,
-      AutomationFeatures.TRAILING_STOP_LOSS,
+      ...(automationFeatureFlags.autoBuy ? [AutomationFeatures.AUTO_BUY] : []),
+      ...(automationFeatureFlags.autoSell ? [AutomationFeatures.AUTO_SELL] : []),
+      ...(automationFeatureFlags.partialTakeProfit ? [AutomationFeatures.PARTIAL_TAKE_PROFIT] : []),
+      ...(automationFeatureFlags.stopLoss ? [AutomationFeatures.STOP_LOSS] : []),
+      ...(automationFeatureFlags.trailingStopLoss ? [AutomationFeatures.TRAILING_STOP_LOSS] : []),
     ],
   },
 }
