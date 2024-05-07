@@ -54,7 +54,11 @@ export function AaveManageTabBar({
   aaveReserveDataCollateralToken,
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
-  const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = useAppConfig('features')
+  const {
+    AaveV3Protection: aaveProtection,
+    AaveV3History: aaveHistory,
+    LambdaAutomations,
+  } = useAppConfig('features')
 
   const minNetValue = useMinNetValue(strategyConfig)
 
@@ -104,8 +108,14 @@ export function AaveManageTabBar({
   // get net value
   // get min net value from config
   // update banners
-  const isProtectionAvailable = netValue.gte(minNetValue) || hasActiveProtectionTrigger
-  const isOptimizationAvailable = netValue.gte(minNetValue) || hasActiveOptimizationTrigger
+  const isProtectionAvailable =
+    netValue.gte(minNetValue) ||
+    hasActiveProtectionTrigger ||
+    LambdaAutomations.DisableNetValueCheck
+  const isOptimizationAvailable =
+    netValue.gte(minNetValue) ||
+    hasActiveOptimizationTrigger ||
+    LambdaAutomations.DisableNetValueCheck
   const isExternalPosition = state.context.positionId.external
 
   const productType = {
