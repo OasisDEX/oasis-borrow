@@ -1,7 +1,9 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
-import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
+import {
+  getAutomationMetadataValues,
+} from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowishChangeVariant,
@@ -40,6 +42,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isYieldLoopWithData,
       networkId,
       pairId,
+      poolId,
       priceFormat,
       productType,
       protocol,
@@ -126,12 +129,13 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
-          automation: getMappedAutomationMetadataValues({
+          automation: getAutomationMetadataValues({
+            automationForms: productContext.automation.automationForms,
+            commonFormState: productContext.automation.commonForm.state,
+            hash,
+            poolId,
             positionTriggers: productContext.automation.positionTriggers,
             simulationResponse: productContext.automation.simulationData,
-            commonFormState: productContext.automation.commonForm.state,
-            automationForms: productContext.automation.automationForms,
-            hash,
           }),
         },
         elements: {

@@ -1,33 +1,22 @@
 import {
-  getAutomationMetadataValues,
   mapAutoBuyTriggers,
   mapAutoSellTriggers,
   mapPartialTakeProfitTriggers,
   mapStopLossTriggers,
   mapTrailingStopLossTriggers,
 } from 'features/omni-kit/automation/helpers'
-import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
-import type {
-  OmniAutomationSimulationResponse,
-  ProductContextAutomationForms,
-} from 'features/omni-kit/types'
+import type { OmniAutomationSimulationResponse } from 'features/omni-kit/types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 
 interface GetMappedAutomationMetadataValuesParams {
-  automationForms: ProductContextAutomationForms
-  commonFormState: OmniAutomationFormState
-  hash: string
   poolId?: string
   positionTriggers: GetTriggersResponse
   simulationResponse?: OmniAutomationSimulationResponse
 }
 
 export const getMappedAutomationMetadataValues = ({
-  automationForms,
-  commonFormState,
-  hash,
   poolId,
-  positionTriggers: {  flags, triggers },
+  positionTriggers: { flags, triggers },
   simulationResponse,
 }: GetMappedAutomationMetadataValuesParams) => {
   return {
@@ -82,6 +71,5 @@ export const getMappedAutomationMetadataValues = ({
       ),
     },
     simulation: simulationResponse?.simulation,
-    ...getAutomationMetadataValues({ commonFormState, automationForms, hash }),
   }
 }

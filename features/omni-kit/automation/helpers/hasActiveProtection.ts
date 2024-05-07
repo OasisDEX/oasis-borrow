@@ -14,53 +14,51 @@ export const hasActiveProtection = ({
   protocol,
 }: HasActiveProtectionParams): boolean => {
   switch (protocol) {
-    case LendingProtocol.AaveV3:
+    case LendingProtocol.AaveV3: {
       const {
-        aaveStopLossToCollateral,
-        aaveStopLossToDebt,
-        aaveBasicSell,
-        aaveStopLossToCollateralDMA,
-        aaveStopLossToDebtDMA,
-        aaveTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       } = triggers.aave3
 
       return isAnyValueDefined(
-        aaveStopLossToCollateral,
-        aaveStopLossToDebt,
-        aaveBasicSell,
-        aaveStopLossToCollateralDMA,
-        aaveStopLossToDebtDMA,
-        aaveTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       )
-    case LendingProtocol.MorphoBlue:
+    }
+    case LendingProtocol.MorphoBlue: {
       if (`morphoblue-${poolId}` in triggers) {
-        const { morphoBlueBasicSell, morphoBlueStopLoss, morphoBlueTrailingStopLoss } =
-          triggers[`morphoblue-${poolId}`]
+        const { basicSell, stopLoss, trailingStopLoss } = triggers[`morphoblue-${poolId}`]
 
-        return isAnyValueDefined(
-          morphoBlueBasicSell,
-          morphoBlueStopLoss,
-          morphoBlueTrailingStopLoss,
-        )
+        return isAnyValueDefined(basicSell, stopLoss, trailingStopLoss)
       } else return false
-    case LendingProtocol.SparkV3:
+    }
+    case LendingProtocol.SparkV3: {
       const {
-        sparkBasicSell,
-        sparkStopLossToCollateral,
-        sparkStopLossToDebt,
-        sparkStopLossToCollateralDMA,
-        sparkStopLossToDebtDMA,
-        sparkTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       } = triggers.spark
 
       return isAnyValueDefined(
-        sparkBasicSell,
-        sparkStopLossToCollateral,
-        sparkStopLossToDebt,
-        sparkStopLossToCollateralDMA,
-        sparkStopLossToDebtDMA,
-        sparkTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       )
+    }
     default:
       return false
   }

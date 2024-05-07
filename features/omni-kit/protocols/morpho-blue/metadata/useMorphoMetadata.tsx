@@ -3,7 +3,7 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
 import faqMultiply from 'features/content/faqs/morphoblue/multiply/en'
-import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
+import { getAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowDebtMax,
@@ -44,13 +44,14 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       collateralAddress,
       collateralPrecision,
       isOracless,
+      isYieldLoopWithData,
       pairId,
+      poolId,
       productType,
       protocol,
       quoteAddress,
       quoteBalance,
       quotePrecision,
-      isYieldLoopWithData,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -134,12 +135,13 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           }),
           footerColumns: isYieldLoopWithData ? 3 : 2,
           maxSliderAsMaxLtv: true,
-          automation: getMappedAutomationMetadataValues({
+          automation: getAutomationMetadataValues({
+            automationForms: productContext.automation.automationForms,
+            commonFormState: productContext.automation.commonForm.state,
+            hash,
+            poolId,
             positionTriggers: productContext.automation.positionTriggers,
             simulationResponse: productContext.automation.simulationData,
-            commonFormState: productContext.automation.commonForm.state,
-            automationForms: productContext.automation.automationForms,
-            hash,
           }),
         },
         elements: {

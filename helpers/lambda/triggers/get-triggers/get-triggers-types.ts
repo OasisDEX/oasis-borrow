@@ -335,6 +335,8 @@ export type DmaSparkPartialTakeProfit = {
 
 export type MorphoBlueStopLoss = Trigger & {
   triggerTypeName: 'MorphoBlueStopLossV2'
+  triggerId: string
+  triggerData: string
   triggerType: bigint
   decodedParams: {
     positionAddress: string
@@ -347,8 +349,10 @@ export type MorphoBlueStopLoss = Trigger & {
   }
 }
 
-export type MorphoBlueBasicBuy = Trigger & {
+export type MorphoBlueBasicBuy = {
   triggerTypeName: 'MorphoBlueBasicBuyV2'
+  triggerId: string
+  triggerData: string
   triggerType: bigint
   decodedParams: {
     positionAddress: string
@@ -365,8 +369,10 @@ export type MorphoBlueBasicBuy = Trigger & {
   }
 }
 
-export type MorphoBluePartialTakeProfit = Trigger & {
+export type MorphoBluePartialTakeProfit = {
   triggerTypeName: 'MorphoBluePartialTakeProfit'
+  triggerId: string
+  triggerData: string
   triggerType: bigint
   decodedParams: {
     positionAddress: string
@@ -386,8 +392,10 @@ export type MorphoBluePartialTakeProfit = Trigger & {
   }
 }
 
-export type MorphoBlueBasicSell = Trigger & {
+export type MorphoBlueBasicSell = {
   triggerTypeName: 'MorphoBlueBasicSellV2'
+  triggerId: string
+  triggerData: string
   triggerType: bigint
   decodedParams: {
     positionAddress: string
@@ -404,8 +412,10 @@ export type MorphoBlueBasicSell = Trigger & {
   }
 }
 
-export type MorphoBlueTrailingStopLoss = Trigger & {
+export type MorphoBlueTrailingStopLoss = {
   triggerTypeName: 'MorphoBlueTrailingStopLoss'
+  triggerId: string
+  triggerData: string
   triggerType: bigint
   decodedParams: {
     positionAddress: string

@@ -14,20 +14,23 @@ export const hasActiveOptimization = ({
   protocol,
 }: HasActiveOptimizationParams): boolean => {
   switch (protocol) {
-    case LendingProtocol.AaveV3:
-      const { aaveBasicBuy, aavePartialTakeProfit } = triggers.aave3
+    case LendingProtocol.AaveV3: {
+      const { basicBuy, partialTakeProfit } = triggers.aave3
 
-      return isAnyValueDefined(aaveBasicBuy, aavePartialTakeProfit)
-    case LendingProtocol.MorphoBlue:
+      return isAnyValueDefined(basicBuy, partialTakeProfit)
+    }
+    case LendingProtocol.MorphoBlue: {
       if (`morphoblue-${poolId}` in triggers) {
-        const { morphoBlueBasicBuy, morphoBluePartialTakeProfit } = triggers[`morphoblue-${poolId}`]
+        const { basicBuy, partialTakeProfit } = triggers[`morphoblue-${poolId}`]
 
-        return isAnyValueDefined(morphoBlueBasicBuy, morphoBluePartialTakeProfit)
+        return isAnyValueDefined(basicBuy, partialTakeProfit)
       } else return false
-    case LendingProtocol.SparkV3:
-      const { sparkBasicBuy, sparkPartialTakeProfit } = triggers.spark
+    }
+    case LendingProtocol.SparkV3: {
+      const { basicBuy, partialTakeProfit } = triggers.spark
 
-      return isAnyValueDefined(sparkBasicBuy, sparkPartialTakeProfit)
+      return isAnyValueDefined(basicBuy, partialTakeProfit)
+    }
     default:
       return false
   }
