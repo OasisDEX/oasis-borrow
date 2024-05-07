@@ -10,7 +10,7 @@ import type { FeaturesEnum } from 'types/config'
 function getLambdaProtectionFlag(
   protocol: LendingProtocol,
   networkId: NetworkIds,
-  features: Record<FeaturesEnum, boolean>,
+  features: Record<FeaturesEnum, boolean | {}>,
 ) {
   if (protocol === LendingProtocol.SparkV3) {
     return features.SparkProtectionLambdaEthereum
