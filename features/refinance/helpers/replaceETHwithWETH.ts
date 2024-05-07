@@ -10,10 +10,3 @@ export const replaceETHWithWETH = (tokenAmount: ITokenAmount) => {
   }
   return tokenAmount
 }
-
-export const replaceTokenSymbolWETHWithETH = (tokenSymbol: string) => {
-  if (tokenSymbol === 'WETH') {
-    return 'ETH'
-  }
-  return tokenSymbol
-}
