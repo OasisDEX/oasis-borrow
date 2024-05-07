@@ -17,7 +17,7 @@ const configFetcher = () =>
 export const emptyConfig = {
   features: Object.fromEntries(
     Object.values(FeaturesEnum).map((feature: FeaturesEnum) => [feature, false]),
-  ) as Record<FeaturesEnum, boolean>,
+  ) as Record<FeaturesEnum, boolean | {}>,
   parameters: {},
 } as ConfigResponseType
 

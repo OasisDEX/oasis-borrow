@@ -30,6 +30,7 @@ export const RefinanceProductTableStep = () => {
         amount: debtAmount,
         token: { symbol: debtToken },
       },
+      ltv,
       isShort,
     },
     steps: { setNextStep },
@@ -54,6 +55,8 @@ export const RefinanceProductTableStep = () => {
     [RefinanceOptions.SWITCH_TO_EARN]: OmniProductType.Earn,
   }[refinanceOption]
 
+  const currentLTV = ltv.loanToValue.toString()
+
   return (
     <ProductHubView
       product={product}
@@ -68,6 +71,7 @@ export const RefinanceProductTableStep = () => {
           debtAmount,
           isShort,
           refinanceOption,
+          currentLTV,
         })
       }
       hiddenProductTypeSelector
