@@ -1,36 +1,33 @@
-import { AutomationFeatures } from 'features/automation/common/types'
-import { isOmniAutomationFormEmpty } from 'features/omni-kit/automation/helpers'
+import {
+  getCommonAutomationMetadataValues,
+  getMappedAutomationMetadataValues,
+} from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common'
-import type { ProductContextAutomationForms } from 'features/omni-kit/types'
+import type {
+  OmniAutomationSimulationResponse,
+  ProductContextAutomationForms,
+} from 'features/omni-kit/types'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 
 interface GetAutomationMetadataValuesParams {
-  commonFormState: OmniAutomationFormState
   automationForms: ProductContextAutomationForms
+  commonFormState: OmniAutomationFormState
   hash: string
+  poolId?: string
+  positionTriggers: GetTriggersResponse
+  simulationResponse?: OmniAutomationSimulationResponse
 }
 
 export const getAutomationMetadataValues = ({
-  commonFormState,
   automationForms,
+  commonFormState,
   hash,
+  poolId,
+  positionTriggers,
+  simulationResponse,
 }: GetAutomationMetadataValuesParams) => {
-  const isProtection = hash === 'protection'
-  const isOptimization = hash === 'optimization'
-
-  const activeUiDropdown = isProtection
-    ? commonFormState.uiDropdownProtection || AutomationFeatures.TRAILING_STOP_LOSS
-    : commonFormState.uiDropdownOptimization || AutomationFeatures.PARTIAL_TAKE_PROFIT
-
-  const activeForm = automationForms[activeUiDropdown as `${AutomationFeatures}`]
-  const isFormEmpty = isOmniAutomationFormEmpty(activeForm.state, activeUiDropdown)
-
   return {
-    resolved: {
-      activeUiDropdown,
-      activeForm,
-      isProtection,
-      isOptimization,
-      isFormEmpty,
-    },
+    ...getMappedAutomationMetadataValues({ poolId, positionTriggers, simulationResponse }),
+    ...getCommonAutomationMetadataValues({ commonFormState, automationForms, hash }),
   }
 }

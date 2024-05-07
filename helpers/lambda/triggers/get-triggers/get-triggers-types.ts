@@ -9,6 +9,15 @@ export interface GetTriggersParams {
   protocol: LendingProtocol
 }
 
+// This interface is available also in monorepo, at some point we should probably import it from there
+type Trigger = {
+  triggerId: string
+  triggerData: string
+  triggerType: bigint
+  decodedParams: unknown
+  dynamicParams?: unknown
+}
+
 export type AaveStopLossToCollateral = {
   triggerTypeName: 'AaveStopLossToCollateralV2'
   triggerType: bigint
@@ -324,55 +333,178 @@ export type DmaSparkPartialTakeProfit = {
   }
 }
 
-export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
-
-// This interface is available also in monorepo, at some point we should probably import it from there
-type Trigger = {
+export type MorphoBlueStopLoss = Trigger & {
+  triggerTypeName: 'MorphoBlueStopLossV2'
   triggerId: string
   triggerData: string
   triggerType: bigint
-  decodedParams: unknown
-  dynamicParams?: unknown
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    executionLtv: string
+    ltv: string
+  }
 }
+
+export type MorphoBlueBasicBuy = {
+  triggerTypeName: 'MorphoBlueBasicBuyV2'
+  triggerId: string
+  triggerData: string
+  triggerType: bigint
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    executionLtv: string
+    targetLtv: string
+    maxBuyPrice: string
+    deviation: string
+    maxBaseFeeInGwei: string
+  }
+}
+
+export type MorphoBluePartialTakeProfit = {
+  triggerTypeName: 'MorphoBluePartialTakeProfit'
+  triggerId: string
+  triggerData: string
+  triggerType: bigint
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    executionLtv: string
+    targetLtv: string
+    executionPrice: string
+    deviation: string
+    withdrawToDebt: string
+  }
+  dynamicParams?: {
+    nextProfit: NextProfitDynamicParam
+  }
+}
+
+export type MorphoBlueBasicSell = {
+  triggerTypeName: 'MorphoBlueBasicSellV2'
+  triggerId: string
+  triggerData: string
+  triggerType: bigint
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    executionLtv: string
+    targetLtv: string
+    minSellPrice: string
+    deviation: string
+    maxBaseFeeInGwei: string
+  }
+}
+
+export type MorphoBlueTrailingStopLoss = {
+  triggerTypeName: 'MorphoBlueTrailingStopLoss'
+  triggerId: string
+  triggerData: string
+  triggerType: bigint
+  decodedParams: {
+    positionAddress: string
+    triggerType: string
+    maxCoverage: string
+    debtToken: string
+    collateralToken: string
+    operationName: string
+    collateralOracle: string
+    collateralAddedRoundId: string
+    debtOracle: string
+    debtAddedRoundId: string
+    trailingDistance: string
+    closeToCollateral: string
+  }
+  dynamicParams: {
+    executionPrice?: string
+    originalExecutionPrice?: string
+  }
+}
+
+export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 // This interface is available also in monorepo, at some point we should probably import it from there
 export type GetTriggersResponse = {
   triggers: {
-    aaveStopLossToCollateral?: AaveStopLossToCollateral
-    aaveStopLossToCollateralDMA?: AaveStopLossToCollateralDMA
-    aaveStopLossToDebt?: AaveStopLossToDebt
-    aaveStopLossToDebtDMA?: AaveStopLossToDebtDMA
-    sparkStopLossToCollateral?: SparkStopLossToCollateral
-    sparkStopLossToCollateralDMA?: SparkStopLossToCollateralDMA
-    sparkStopLossToDebt?: SparkStopLossToDebt
-    sparkStopLossToDebtDMA?: SparkStopLossToDebtDMA
-    aaveBasicBuy?: DmaAaveBasicBuy
-    aaveBasicSell?: DmaAaveBasicSell
-    sparkBasicBuy?: DmaSparkBasicBuy
-    sparkBasicSell?: DmaSparkBasicSell
-    aaveTrailingStopLossDMA?: DmaAaveTrailingStopLoss
-    sparkTrailingStopLossDMA?: DmaSparkTrailingStopLoss
-    aavePartialTakeProfit?: DmaAavePartialTakeProfit
-    sparkPartialTakeProfit?: DmaSparkPartialTakeProfit
+    aave3: {
+      basicBuy?: DmaAaveBasicBuy
+      basicSell?: DmaAaveBasicSell
+      partialTakeProfit?: DmaAavePartialTakeProfit
+      stopLossToCollateral?: AaveStopLossToCollateral
+      stopLossToCollateralDMA?: AaveStopLossToCollateralDMA
+      stopLossToDebt?: AaveStopLossToDebt
+      stopLossToDebtDMA?: AaveStopLossToDebtDMA
+      trailingStopLossDMA?: DmaAaveTrailingStopLoss
+    }
+    spark: {
+      basicBuy?: DmaSparkBasicBuy
+      basicSell?: DmaSparkBasicSell
+      partialTakeProfit?: DmaSparkPartialTakeProfit
+      stopLossToCollateral?: SparkStopLossToCollateral
+      stopLossToCollateralDMA?: SparkStopLossToCollateralDMA
+      stopLossToDebt?: SparkStopLossToDebt
+      stopLossToDebtDMA?: SparkStopLossToDebtDMA
+      trailingStopLossDMA?: DmaSparkTrailingStopLoss
+    }
+    [key: `morphoblue-${string}`]: {
+      basicBuy?: MorphoBlueBasicBuy
+      basicSell?: MorphoBlueBasicSell
+      partialTakeProfit?: MorphoBluePartialTakeProfit
+      stopLoss?: MorphoBlueStopLoss
+      trailingStopLoss?: MorphoBlueTrailingStopLoss
+    }
   }
   flags: {
-    isAaveStopLossEnabled: boolean
-    isSparkStopLossEnabled: boolean
-    isAaveBasicBuyEnabled: boolean
-    isAaveBasicSellEnabled: boolean
-    isSparkBasicBuyEnabled: boolean
-    isSparkBasicSellEnabled: boolean
-    isAavePartialTakeProfitEnabled: boolean
-    isSparkPartialTakeProfitEnabled: boolean
+    aave3: {
+      isBasicBuyEnabled: boolean
+      isBasicSellEnabled: boolean
+      isPartialTakeProfitEnabled: boolean
+      isStopLossEnabled: boolean
+      isTrailingStopLossEnabled: boolean
+    }
+    spark: {
+      isBasicBuyEnabled: boolean
+      isBasicSellEnabled: boolean
+      isPartialTakeProfitEnabled: boolean
+      isStopLossEnabled: boolean
+      isTrailingStopLossEnabled: boolean
+    }
+    [key: `morphoblue-${string}`]: {
+      isBasicBuyEnabled: boolean
+      isBasicSellEnabled: boolean
+      isPartialTakeProfitEnabled: boolean
+      isStopLossEnabled: boolean
+      isTrailingStopLossEnabled: boolean
+    }
   }
   triggerGroup: {
-    aaveStopLoss?: Trigger
-    sparkStopLoss?: Trigger
     aaveBasicBuy?: Trigger
     aaveBasicSell?: Trigger
+    aavePartialTakeProfit?: Trigger
+    aaveStopLoss?: Trigger
     sparkBasicBuy?: Trigger
     sparkBasicSell?: Trigger
-    aavePartialTakeProfit?: Trigger
     sparkPartialTakeProfit?: Trigger
+    sparkStopLoss?: Trigger
+    morphoBlueBasicBuy?: Trigger
+    morphoBlueBasicSell?: Trigger
+    morphoBluePartialTakeProfit?: Trigger
+    morphoBlueStopLoss?: Trigger
   }
   triggersCount: number
   additionalData?: Record<string, unknown>
@@ -425,27 +557,25 @@ export type StopLossTriggers =
   | SparkStopLossToCollateralDMA
   | SparkStopLossToDebt
   | SparkStopLossToDebtDMA
+  | MorphoBlueStopLoss
+export type StopLossTriggersWithDecodedParams = StopLossTriggers & WithMappedStopLossDecodedParams
 
-export type TrailingStopLossTriggers = DmaAaveTrailingStopLoss | DmaSparkTrailingStopLoss
-export type AutoSellTriggers = DmaAaveBasicSell | DmaSparkBasicSell
-export type AutoBuyTriggers = DmaAaveBasicBuy | DmaSparkBasicBuy
-export type PartialTakeProfitTriggers = DmaAavePartialTakeProfit | DmaSparkPartialTakeProfit
-
-export type StopLossTriggersWithDecodedParams = (
-  | AaveStopLossToCollateral
-  | AaveStopLossToCollateralDMA
-  | AaveStopLossToDebt
-  | AaveStopLossToDebtDMA
-  | SparkStopLossToCollateral
-  | SparkStopLossToCollateralDMA
-  | SparkStopLossToDebt
-  | SparkStopLossToDebtDMA
-) &
-  WithMappedStopLossDecodedParams
-export type AutoSellTriggersWithDecodedParams = AutoSellTriggers & WithMappedAutoSellDecodedParams
-export type AutoBuyTriggersWithDecodedParams = AutoBuyTriggers & WithMappedAutoBuyDecodedParams
+export type TrailingStopLossTriggers =
+  | DmaAaveTrailingStopLoss
+  | DmaSparkTrailingStopLoss
+  | MorphoBlueTrailingStopLoss
 export type TrailingStopLossTriggersWithDecodedParams = TrailingStopLossTriggers &
   WithMappedTrailingStopLossDecodedParams
 
+export type AutoSellTriggers = DmaAaveBasicSell | DmaSparkBasicSell | MorphoBlueBasicSell
+export type AutoSellTriggersWithDecodedParams = AutoSellTriggers & WithMappedAutoSellDecodedParams
+
+export type AutoBuyTriggers = DmaAaveBasicBuy | DmaSparkBasicBuy | MorphoBlueBasicBuy
+export type AutoBuyTriggersWithDecodedParams = AutoBuyTriggers & WithMappedAutoBuyDecodedParams
+
+export type PartialTakeProfitTriggers =
+  | DmaAavePartialTakeProfit
+  | DmaSparkPartialTakeProfit
+  | MorphoBluePartialTakeProfit
 export type PartialTakeProfitTriggersWithDecodedParams = PartialTakeProfitTriggers &
   WithMappedPartialTakeProfitDecodedParams

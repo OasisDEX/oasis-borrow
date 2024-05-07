@@ -1,14 +1,20 @@
-import { getAaveLikeAutomationMetadataCommonValues } from 'features/omni-kit/protocols/aave-like/helpers'
+import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationStopLossFormState } from 'features/omni-kit/state/automation/stop-loss/automationStopLossFormReducto.types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { TriggerAction } from 'helpers/lambda/triggers'
 
-export const getAutomationStopLossFormDefaults = (
-  positionTriggers: GetTriggersResponse,
-): OmniAutomationStopLossFormState => {
+interface GetAutomationStopLossFormDefaultsParams {
+  poolId?: string
+  positionTriggers: GetTriggersResponse
+}
+
+export const getAutomationStopLossFormDefaults = ({
+  poolId,
+  positionTriggers,
+}: GetAutomationStopLossFormDefaultsParams): OmniAutomationStopLossFormState => {
   const {
     flags: { isStopLossEnabled },
-  } = getAaveLikeAutomationMetadataCommonValues({ positionTriggers })
+  } = getMappedAutomationMetadataValues({ poolId, positionTriggers })
 
   return {
     action: isStopLossEnabled ? TriggerAction.Update : TriggerAction.Add,

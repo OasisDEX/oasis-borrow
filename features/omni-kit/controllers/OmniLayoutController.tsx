@@ -55,6 +55,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       networkId,
       owner,
       pairId,
+      poolId,
       positionId,
       priceFormat,
       productType,
@@ -189,7 +190,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           : undefined,
                         tag: {
                           include: true,
-                          active: hasActiveProtection(positionTriggers, protocol),
+                          active: hasActiveProtection({ poolId, positionTriggers, protocol }),
                         },
                         label: t('system.protection'),
                         content: netValue?.gt(minNetValue) ? (
@@ -216,7 +217,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           : undefined,
                         tag: {
                           include: true,
-                          active: hasActiveOptimization(positionTriggers, protocol),
+                          active: hasActiveOptimization({ poolId, positionTriggers, protocol }),
                         },
                         label: t('system.optimization'),
                         content: netValue?.gt(minNetValue) ? (

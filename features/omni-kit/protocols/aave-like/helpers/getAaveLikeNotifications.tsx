@@ -5,24 +5,35 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { nbsp } from 'helpers/nbsp'
+import type { LendingProtocol } from 'lendingProtocols'
 import { bell } from 'theme/icons'
 
-export function getAaveLikeNotifications({
-  productType,
-  triggers,
-  priceFormat,
-}: {
+interface GetAaveLikeNotificationsParams {
   auction?: AaveLikeHistoryEvent
-  productType: OmniProductType
-  triggers?: GetTriggersResponse
+  poolId?: string
   priceFormat: string
-}) {
+  productType: OmniProductType
+  protocol: LendingProtocol
+  positionTriggers: GetTriggersResponse
+}
+
+export function getAaveLikeNotifications({
+  poolId,
+  positionTriggers: { triggers },
+  priceFormat,
+  productType,
+  protocol,
+}: GetAaveLikeNotificationsParams) {
   const notifications: DetailsSectionNotificationItem[] = []
 
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
-      const mappedLambdaData = mapTrailingStopLossFromLambda(triggers?.triggers)
+      const mappedLambdaData = mapTrailingStopLossFromLambda({
+        poolId,
+        protocol,
+        triggers,
+      })
       const executionPrice = mappedLambdaData?.dynamicParams?.executionPrice
       const originalExecutionPrice = mappedLambdaData?.dynamicParams?.originalExecutionPrice
       if (executionPrice && originalExecutionPrice && executionPrice.gt(originalExecutionPrice)) {

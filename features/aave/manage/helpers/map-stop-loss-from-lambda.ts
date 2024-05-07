@@ -1,44 +1,70 @@
 import BigNumber from 'bignumber.js'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import { LendingProtocol } from 'lendingProtocols'
 
-type StopLossTriggers = Pick<
-  GetTriggersResponse['triggers'],
-  | 'aaveStopLossToCollateral'
-  | 'aaveStopLossToCollateralDMA'
-  | 'aaveStopLossToDebt'
-  | 'aaveStopLossToDebtDMA'
-  | 'sparkStopLossToCollateral'
-  | 'sparkStopLossToCollateralDMA'
-  | 'sparkStopLossToDebt'
-  | 'sparkStopLossToDebtDMA'
->
+interface MapStopLossFromLambdaParams {
+  poolId?: string
+  protocol: LendingProtocol
+  triggers?: GetTriggersResponse['triggers']
+}
 
-export const mapStopLossFromLambda = (triggers?: StopLossTriggers) => {
-  if (!triggers) {
-    return {}
+const getTrigger = ({ protocol, triggers, poolId }: MapStopLossFromLambdaParams) => {
+  if (!triggers) return []
+
+  switch (protocol) {
+    case LendingProtocol.AaveV3: {
+      return [
+        triggers.aave3.stopLossToCollateral,
+        triggers.aave3.stopLossToCollateralDMA,
+        triggers.aave3.stopLossToDebt,
+        triggers.aave3.stopLossToDebtDMA,
+      ]
+    }
+    case LendingProtocol.MorphoBlue: {
+      if (`morphoblue-${poolId}` in triggers) return [triggers[`morphoblue-${poolId}`].stopLoss]
+      else return []
+    }
+    case LendingProtocol.SparkV3: {
+      return [
+        triggers.spark.stopLossToCollateral,
+        triggers.spark.stopLossToCollateralDMA,
+        triggers.spark.stopLossToDebt,
+        triggers.spark.stopLossToDebtDMA,
+      ]
+    }
+    default:
+      return []
   }
-  const stopLossTriggersNames = Object.keys(triggers).filter((triggerName) =>
-    triggerName.includes('StopLoss'),
+}
+
+export const mapStopLossFromLambda = ({
+  poolId,
+  protocol,
+  triggers,
+}: MapStopLossFromLambdaParams) => {
+  if (!triggers) return {}
+
+  const triggersList = getTrigger({ poolId, protocol, triggers }).filter(
+    (item) => item !== undefined,
   )
-  if (stopLossTriggersNames.length > 1) {
-    console.warn('Warning: more than one Stop-Loss trigger found:', stopLossTriggersNames)
+  const trigger = triggersList[0]
+
+  if (triggersList.length > 1) {
+    console.warn('Warning: more than one Stop-Loss trigger found:', triggersList)
   }
-  const stopLossTriggerName = stopLossTriggersNames[0] as keyof StopLossTriggers
-  const trigger = triggers[stopLossTriggerName]
+
   if (trigger) {
     const stopLossLevel = trigger.decodedParams.executionLtv || trigger.decodedParams.ltv
     return {
       stopLossLevel: stopLossLevel
         ? new BigNumber(Number(stopLossLevel)).div(lambdaPercentageDenomination)
         : undefined,
-      stopLossToken: stopLossTriggerName.includes('Debt')
+      stopLossToken: trigger.triggerTypeName.includes('Debt')
         ? ('debt' as const)
         : ('collateral' as const),
       stopLossData: trigger,
       triggerId: trigger.triggerId,
-      stopLossTriggerName,
     }
-  }
-  return {}
+  } else return {}
 }

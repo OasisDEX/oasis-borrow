@@ -1,30 +1,46 @@
 import BigNumber from 'bignumber.js'
 import { lambdaPriceDenomination } from 'features/aave/constants'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import { LendingProtocol } from 'lendingProtocols'
 
-type TrailingStopLossTriggers = Pick<
-  GetTriggersResponse['triggers'],
-  'aaveTrailingStopLossDMA' | 'sparkTrailingStopLossDMA'
->
+interface MapTrailingStopLossFromLambdaParams {
+  poolId?: string
+  protocol: LendingProtocol
+  triggers?: GetTriggersResponse['triggers']
+}
 
-const denominate = (value: string) => new BigNumber(Number(value)).div(lambdaPriceDenomination)
+const denominate = (value: string | number) =>
+  new BigNumber(Number(value)).div(lambdaPriceDenomination)
 
-export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTriggers) => {
-  if (!triggers) {
-    return {}
+const getTrigger = ({ protocol, triggers, poolId }: MapTrailingStopLossFromLambdaParams) => {
+  if (!triggers) return undefined
+
+  switch (protocol) {
+    case LendingProtocol.AaveV3: {
+      return triggers.aave3.trailingStopLossDMA
+    }
+    case LendingProtocol.MorphoBlue: {
+      if (`morphoblue-${poolId}` in triggers)
+        return triggers[`morphoblue-${poolId}`].trailingStopLoss
+      else return undefined
+    }
+    case LendingProtocol.SparkV3: {
+      return triggers.spark.trailingStopLossDMA
+    }
+    default:
+      return undefined
   }
-  const trailingStopLossTriggersNames = Object.keys(triggers).filter((triggerName) =>
-    triggerName.includes('TrailingStopLoss'),
-  )
-  if (trailingStopLossTriggersNames.length > 1) {
-    console.warn(
-      'Warning: more than one trailing Stop-Loss trigger found:',
-      trailingStopLossTriggersNames,
-    )
-  }
-  const trailingStopLossTriggerName =
-    trailingStopLossTriggersNames[0] as keyof TrailingStopLossTriggers
-  const trigger = triggers[trailingStopLossTriggerName]
+}
+
+export const mapTrailingStopLossFromLambda = ({
+  poolId,
+  protocol,
+  triggers,
+}: MapTrailingStopLossFromLambdaParams) => {
+  if (!triggers) return {}
+
+  const trigger = getTrigger({ poolId, protocol, triggers })
+
   if (trigger) {
     return {
       trailingDistance: denominate(trigger.decodedParams.trailingDistance),
@@ -34,11 +50,9 @@ export const mapTrailingStopLossFromLambda = (triggers?: TrailingStopLossTrigger
       trailingStopLossData: trigger,
       triggerId: trigger.triggerId,
       dynamicParams: {
-        executionPrice: denominate(trigger.dynamicParams.executionPrice),
-        originalExecutionPrice: denominate(trigger.dynamicParams.originalExecutionPrice),
+        executionPrice: denominate(trigger.dynamicParams.executionPrice ?? 0),
+        originalExecutionPrice: denominate(trigger.dynamicParams.originalExecutionPrice ?? 0),
       },
-      trailingStopLossTriggerName,
     }
-  }
-  return {}
+  } else return {}
 }

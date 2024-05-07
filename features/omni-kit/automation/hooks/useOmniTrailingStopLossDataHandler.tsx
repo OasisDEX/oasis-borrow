@@ -43,12 +43,14 @@ export const useOmniTrailingStopLossDataHandler = () => {
   const { t } = useTranslation()
   const {
     environment: {
-      productType,
-      isShort,
       collateralPrice,
-      quotePrice,
-      priceFormat,
       collateralToken,
+      isShort,
+      poolId,
+      priceFormat,
+      productType,
+      protocol,
+      quotePrice,
       quoteToken,
     },
   } = useOmniGeneralContext()
@@ -65,7 +67,7 @@ export const useOmniTrailingStopLossDataHandler = () => {
       commonForm: {
         state: { uiDropdownProtection },
       },
-      positionTriggers,
+      positionTriggers: { triggers },
     },
     position: {
       currentPosition: { position },
@@ -82,8 +84,13 @@ export const useOmniTrailingStopLossDataHandler = () => {
   } = position as LendingPosition
 
   const trailingStopLossLambdaData = useMemo(
-    () => mapTrailingStopLossFromLambda(positionTriggers.triggers),
-    [positionTriggers.triggers],
+    () =>
+      mapTrailingStopLossFromLambda({
+        poolId,
+        protocol,
+        triggers,
+      }),
+    [poolId, protocol, triggers],
   )
 
   const isActive = uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS
