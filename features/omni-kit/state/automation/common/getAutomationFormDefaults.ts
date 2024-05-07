@@ -1,11 +1,17 @@
 import { AutomationFeatures } from 'features/automation/common/types'
-import { getAaveLikeAutomationMetadataCommonValues } from 'features/omni-kit/protocols/aave-like/helpers'
+import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common/automationFormReducto.types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 
-export const getAutomationFormDefaults = (
-  positionTriggers: GetTriggersResponse,
-): OmniAutomationFormState => {
+interface GetAutomationFormDefaultsParams {
+  poolId?: string
+  positionTriggers: GetTriggersResponse
+}
+
+export const getAutomationFormDefaults = ({
+  poolId,
+  positionTriggers,
+}: GetAutomationFormDefaultsParams): OmniAutomationFormState => {
   const {
     flags: {
       isStopLossEnabled,
@@ -14,7 +20,7 @@ export const getAutomationFormDefaults = (
       isAutoBuyEnabled,
       isPartialTakeProfitEnabled,
     },
-  } = getAaveLikeAutomationMetadataCommonValues({ positionTriggers })
+  } = getMappedAutomationMetadataValues({ poolId, positionTriggers })
 
   return {
     uiDropdownProtection: isTrailingStopLossEnabled

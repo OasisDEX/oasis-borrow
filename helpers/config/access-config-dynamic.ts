@@ -1,5 +1,5 @@
-import { emptyConfig } from 'components/context/PreloadAppDataContextProvider'
 import { isServer } from 'helpers/isServer'
+import { emptyConfig } from 'types/config'
 
 import { getRemoteConfigWithCache } from './access-config-backend'
 import { loadConfigFromLocalStorage } from './access-config-context'

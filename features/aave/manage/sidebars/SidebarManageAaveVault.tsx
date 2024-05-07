@@ -518,7 +518,10 @@ export function SidebarManageAaveVault({
       stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
     },
   } = useAutomationContext()
-  const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
+  const stopLossLambdaData = mapStopLossFromLambda({
+    protocol: state.context.strategyConfig.protocol,
+    triggers: triggersState?.context.currentTriggers.triggers,
+  })
   const finalIsStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined || isStopLossEnabled
   const finalStopLossLevel =
     (stopLossLambdaData.stopLossLevel && stopLossLambdaData.stopLossLevel.div(100)) || stopLossLevel

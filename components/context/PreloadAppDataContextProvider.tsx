@@ -4,7 +4,6 @@ import { configCacheTime, getLocalAppConfig, saveConfigToLocalStorage } from 'he
 import { LendingProtocol } from 'lendingProtocols'
 import type { PropsWithChildren } from 'react'
 import React, { useContext, useEffect, useState } from 'react'
-import { FeaturesEnum } from 'types/config'
 
 const configFetcher = () =>
   fetch(`/api/config`, {
@@ -13,13 +12,6 @@ const configFetcher = () =>
       'Content-Type': 'application/json',
     },
   })
-
-export const emptyConfig = {
-  features: Object.fromEntries(
-    Object.values(FeaturesEnum).map((feature: FeaturesEnum) => [feature, false]),
-  ) as Record<FeaturesEnum, boolean | {}>,
-  parameters: {},
-} as ConfigResponseType
 
 export const preloadAppDataContext = React.createContext<PreloadAppDataContext | undefined>(
   undefined,

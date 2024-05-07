@@ -30,7 +30,18 @@ const getInterfaces = (configObject = { features: {} }) => {
     const featuresEnum = `export enum FeaturesEnum {
 ${featuresList.map((feature) => `  ${feature} = '${feature}',`).join('\n')}
 }`
-    return `${interfaces}\n${featuresEnum}`
+    const emptyConfig = `export const emptyConfig = {
+  features: ${JSON.stringify(configObject.features, null, 4)
+    .split('\n')
+    .map((line) => line.replace('true', 'false'))
+    .join('\n')},
+    parameters: {},
+    navigation: {},
+    rpcConfig: {},
+} as AppConfigType & {
+  error?: string
+}`
+    return `${interfaces}\n${featuresEnum}\n${emptyConfig}`
   } catch (error) {
     console.error(`Error generating config types: ${error}`)
     return ''

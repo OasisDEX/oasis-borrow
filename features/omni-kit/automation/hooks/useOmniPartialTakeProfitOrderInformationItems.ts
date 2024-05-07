@@ -15,10 +15,10 @@ export const useOmniPartialTakeProfitOrderInformationItems = () => {
   } = useOmniProductContext(productType)
 
   const {
+    afterNextDynamicTriggerPrice,
     afterResolvedEstimatedToReceive,
     resolveToToken,
     startingTakeProfitPrice,
-    afterNextDynamicTriggerPrice,
   } = useOmniPartialTakeProfitDataHandler()
 
   const nextTriggerPrice = afterNextDynamicTriggerPrice || startingTakeProfitPrice

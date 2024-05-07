@@ -18,7 +18,11 @@ export async function aaveLikeFlowStateFilter({
 }): Promise<boolean> {
   // TODO for now we are reading it on every event that exists for given user
   // we should optimize it by sending only one request with list of dpms prior to flow state filter fn
-  const positionTriggers = await getTriggersRequest({ dpmProxy: event.proxyAddress, networkId })
+  const positionTriggers = await getTriggersRequest({
+    dpmProxy: event.proxyAddress,
+    networkId,
+    protocol,
+  })
   // if there is triggers we should not allow
   // the user to open a new position with this DPM
   if (positionTriggers?.triggersCount && positionTriggers.triggersCount !== 0) {

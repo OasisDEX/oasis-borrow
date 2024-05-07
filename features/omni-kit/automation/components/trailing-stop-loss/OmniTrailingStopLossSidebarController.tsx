@@ -24,14 +24,14 @@ export const OmniTrailingStopLossSidebarController: FC = () => {
   } = useOmniProductContext(productType)
 
   const {
-    sliderStep,
+    dynamicStopPriceChange,
+    isCollateralActive,
     sliderMax,
     sliderMin,
     sliderPercentageFill,
+    sliderStep,
     trailingDistance,
-    dynamicStopPriceChange,
     trailingDistanceForTx,
-    isCollateralActive,
   } = useOmniTrailingStopLossDataHandler()
 
   const { leftFormatter, rightFormatter } = getTrailingStopLossFormatters({

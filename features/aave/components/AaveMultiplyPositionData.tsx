@@ -88,10 +88,15 @@ export function AaveMultiplyPositionData({
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
-  const stopLossLambdaData = mapStopLossFromLambda(triggersState?.context.currentTriggers.triggers)
-  const trailingStopLossLambdaData = mapTrailingStopLossFromLambda(
-    triggersState?.context.currentTriggers.triggers,
-  )
+
+  const stopLossLambdaData = mapStopLossFromLambda({
+    protocol: lendingProtocol,
+    triggers: triggersState?.context.currentTriggers.triggers,
+  })
+  const trailingStopLossLambdaData = mapTrailingStopLossFromLambda({
+    protocol: lendingProtocol,
+    triggers: triggersState?.context.currentTriggers.triggers,
+  })
   const {
     triggerData: {
       stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
@@ -269,7 +274,7 @@ export function AaveMultiplyPositionData({
   const netValueContentCardAaveData = useAaveCardDataNetValueLending(netValuePnlModalData)
 
   const automationData = useMemo(() => {
-    if (trailingStopLossLambdaData.trailingStopLossTriggerName) {
+    if (trailingStopLossLambdaData.trailingStopLossData) {
       const collateral = amountFromWei(
         currentPosition.collateral.amount || zero,
         currentPosition.collateral.precision,
@@ -287,7 +292,7 @@ export function AaveMultiplyPositionData({
         isTrailingStopLoss: true,
       }
     }
-    if (stopLossLambdaData.stopLossTriggerName) {
+    if (stopLossLambdaData.stopLossData) {
       return {
         isAutomationAvailable: true,
         stopLossLevel: stopLossLambdaData.stopLossLevel?.div(lambdaPercentageDenomination), // still needs to be divided by 100
@@ -309,15 +314,15 @@ export function AaveMultiplyPositionData({
     isAutomationAvailable,
     isAutomationDataLoaded,
     isStopLossEnabled,
+    stopLossLambdaData.stopLossData,
     stopLossLambdaData.stopLossLevel,
-    stopLossLambdaData.stopLossTriggerName,
     stopLossLevel,
     trailingStopLossLambdaData.dynamicParams?.executionPrice,
-    trailingStopLossLambdaData.trailingStopLossTriggerName,
+    trailingStopLossLambdaData.trailingStopLossData,
   ])
 
   const trailingStopLossnotifications = useMemo<DetailsSectionNotificationItem[]>(() => {
-    if (trailingStopLossLambdaData.trailingStopLossTriggerName) {
+    if (trailingStopLossLambdaData.trailingStopLossData) {
       const { executionPrice, originalExecutionPrice } = trailingStopLossLambdaData.dynamicParams
       if (executionPrice.gt(originalExecutionPrice)) {
         return [
@@ -344,9 +349,9 @@ export function AaveMultiplyPositionData({
     }
     return []
   }, [
-    currentPosition.debt.symbol,
+    priceFormat,
     trailingStopLossLambdaData.dynamicParams,
-    trailingStopLossLambdaData.trailingStopLossTriggerName,
+    trailingStopLossLambdaData.trailingStopLossData,
   ])
 
   return (

@@ -9,6 +9,7 @@ import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
 export type OmniAutomationCommonActionPayload = {
   dpm: string
   networkId: NetworkIds
+  poolId?: string
   protocol: SupportedLambdaProtocols
   strategy: {
     collateralAddress: string
