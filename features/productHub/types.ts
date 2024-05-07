@@ -75,6 +75,7 @@ export interface ProductHubItemDetails {
   depositToken?: string
   earnStrategy?: EarnStrategies
   earnStrategyDescription?: string
+  // borrow rate
   fee?: string
   hasRewards?: boolean
   liquidity?: string
