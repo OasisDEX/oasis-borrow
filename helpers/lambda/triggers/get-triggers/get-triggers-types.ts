@@ -431,7 +431,7 @@ export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 // This interface is available also in monorepo, at some point we should probably import it from there
 export type GetTriggersResponse = {
   triggers: {
-    [LendingProtocol.AaveV3]: {
+    aave3: {
       aaveStopLossToCollateral?: AaveStopLossToCollateral
       aaveStopLossToCollateralDMA?: AaveStopLossToCollateralDMA
       aaveStopLossToDebt?: AaveStopLossToDebt
@@ -441,7 +441,7 @@ export type GetTriggersResponse = {
       aaveTrailingStopLossDMA?: DmaAaveTrailingStopLoss
       aavePartialTakeProfit?: DmaAavePartialTakeProfit
     }
-    [LendingProtocol.SparkV3]: {
+    spark: {
       sparkStopLossToCollateral?: SparkStopLossToCollateral
       sparkStopLossToCollateralDMA?: SparkStopLossToCollateralDMA
       sparkStopLossToDebt?: SparkStopLossToDebt
@@ -451,14 +451,12 @@ export type GetTriggersResponse = {
       sparkTrailingStopLossDMA?: DmaSparkTrailingStopLoss
       sparkPartialTakeProfit?: DmaSparkPartialTakeProfit
     }
-    [LendingProtocol.MorphoBlue]: {
-      [key: string]: {
-        stopLoss?: MorphoBlueStopLoss
-        basicBuy?: MorphoBlueBasicBuy
-        basicSell?: MorphoBlueBasicSell
-        trailingStopLoss?: MorphoBlueTrailingStopLoss
-        partialTakeProfit?: MorphoBluePartialTakeProfit
-      }
+    [key: `morphoblue-${string}`]: {
+      morphoBlueStopLoss?: MorphoBlueStopLoss
+      morphoBlueBasicBuy?: MorphoBlueBasicBuy
+      morphoBlueBasicSell?: MorphoBlueBasicSell
+      morphoBlueTrailingStopLoss?: MorphoBlueTrailingStopLoss
+      morphoBluePartialTakeProfit?: MorphoBluePartialTakeProfit
     }
   }
   flags: {
@@ -470,10 +468,12 @@ export type GetTriggersResponse = {
     isSparkBasicSellEnabled: boolean
     isSparkPartialTakeProfitEnabled: boolean
     isSparkStopLossEnabled: boolean
-    isMorphoBlueBasicBuyEnabled: boolean
-    isMorphoBlueBasicSellEnabled: boolean
-    isMorphoBluePartialTakeProfitEnabled: boolean
-    isMorphoBlueStopLossEnabled: boolean
+    [key: `morphoblue-${string}`]: {
+      isMorphoBlueBasicBuyEnabled: boolean
+      isMorphoBlueBasicSellEnabled: boolean
+      isMorphoBluePartialTakeProfitEnabled: boolean
+      isMorphoBlueStopLossEnabled: boolean
+    }
   }
   triggerGroup: {
     aaveBasicBuy?: Trigger
