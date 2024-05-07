@@ -11,83 +11,87 @@ import { StrategyType } from 'features/aave/types'
 import { formatPercent } from 'helpers/formatters/format'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { nbsp } from 'helpers/nbsp'
-import { useMemo } from 'react'
+import { LendingProtocol } from 'lendingProtocols'
 
-export const mapPartialTakeProfitFromLambda = (
-  strategyConfig: IStrategyConfig,
-  triggers?: GetTriggersResponse['triggers'],
-) => {
-  if (!triggers) {
-    return {}
+interface MapPartialTakeProfitFromLambdaParams {
+  poolId?: string
+  protocol: LendingProtocol
+  strategyConfig: IStrategyConfig
+  triggers?: GetTriggersResponse['triggers']
+}
+
+const getTrigger = ({ protocol, triggers, poolId }: MapPartialTakeProfitFromLambdaParams) => {
+  if (!triggers) return undefined
+
+  switch (protocol) {
+    case LendingProtocol.AaveV3: {
+      return triggers.aave3.partialTakeProfit
+    }
+    case LendingProtocol.MorphoBlue: {
+      if (`morphoblue-${poolId}` in triggers)
+        return triggers[`morphoblue-${poolId}`].partialTakeProfit
+      else return undefined
+    }
+    case LendingProtocol.SparkV3: {
+      return triggers.spark.partialTakeProfit
+    }
+    default:
+      return undefined
   }
-  const isShort = strategyConfig.strategyType === StrategyType.Short
+}
 
-  const partialTakeProfitTriggersNames = Object.keys(triggers).filter((triggerName) =>
-    triggerName.includes('PartialTakeProfit'),
-  )
-  if (partialTakeProfitTriggersNames.length > 1) {
-    console.warn(
-      'Warning: more than one partial take profit trigger found:',
-      partialTakeProfitTriggersNames,
+export const mapPartialTakeProfitFromLambda = ({
+  poolId,
+  protocol,
+  strategyConfig,
+  triggers,
+}: MapPartialTakeProfitFromLambdaParams) => {
+  if (!triggers) return {}
+
+  const trigger = getTrigger({ poolId, protocol, strategyConfig, triggers })
+
+  if (trigger) {
+    const isShort = strategyConfig.strategyType === StrategyType.Short
+    const hasStopLoss = hasActiveStopLossFromTriggers({ triggers, protocol })
+    const hasTrailingStopLoss = hasActiveTrailingStopLossFromTriggers({ triggers, protocol })
+
+    const currentStopLossLevel = mapStopLossFromLambda({ poolId, protocol, triggers }).stopLossLevel
+    const trailingStopLossData = mapTrailingStopLossFromLambda({ poolId, protocol, triggers })
+
+    const stopLossTokenLabel = isShort
+      ? `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
+      : `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
+
+    const triggerLtv = new BigNumber(Number(trigger.decodedParams.executionLtv)).div(
+      lambdaPercentageDenomination,
     )
-  }
-  const partialTakeProfitTriggerName = partialTakeProfitTriggersNames[0] as
-    | 'sparkPartialTakeProfit'
-    | 'aavePartialTakeProfit'
-  const selectedTrigger = triggers[partialTakeProfitTriggerName]
+    const startingTakeProfitPriceLong = new BigNumber(
+      Number(trigger.decodedParams.executionPrice),
+    ).div(lambdaPriceDenomination)
+    const startingTakeProfitPriceShort = new BigNumber(lambdaPriceDenomination).div(
+      new BigNumber(Number(trigger.decodedParams.executionPrice)),
+    )
+    const withdrawalLtv = new BigNumber(Number(trigger.decodedParams.targetLtv))
+      .minus(new BigNumber(Number(trigger.decodedParams.executionLtv)))
+      .div(lambdaPercentageDenomination)
 
-  const hasStopLoss = hasActiveStopLossFromTriggers({ triggers, protocol: strategyConfig.protocol })
-  const hasTrailingStopLoss = hasActiveTrailingStopLossFromTriggers({
-    triggers,
-    protocol: strategyConfig.protocol,
-  })
-  const currentStopLossLevel = useMemo(() => {
-    return mapStopLossFromLambda(triggers).stopLossLevel
-  }, [triggers])
-  const trailingStopLossData = mapTrailingStopLossFromLambda(triggers)
-  const stopLossTokenLabel = isShort
-    ? `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
-    : `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
+    const partialTakeProfitToken =
+      trigger.decodedParams.withdrawToDebt === 'true' ? ('debt' as const) : ('collateral' as const)
 
-  const triggerLtv = selectedTrigger?.decodedParams.executionLtv
-    ? new BigNumber(Number(selectedTrigger.decodedParams.executionLtv)).div(
-        lambdaPercentageDenomination,
-      )
-    : undefined
-  const startingTakeProfitPriceLong = selectedTrigger?.decodedParams.executionPrice
-    ? new BigNumber(Number(selectedTrigger.decodedParams.executionPrice)).div(
-        lambdaPriceDenomination,
-      )
-    : undefined
-  const startingTakeProfitPriceShort = selectedTrigger?.decodedParams.executionPrice
-    ? new BigNumber(lambdaPriceDenomination).div(
-        new BigNumber(Number(selectedTrigger.decodedParams.executionPrice)),
-      )
-    : undefined
-  const withdrawalLtv =
-    selectedTrigger?.decodedParams.targetLtv && selectedTrigger?.decodedParams.executionLtv
-      ? new BigNumber(Number(selectedTrigger.decodedParams.targetLtv))
-          .minus(new BigNumber(Number(selectedTrigger?.decodedParams.executionLtv)))
-          .div(lambdaPercentageDenomination)
-      : undefined
-  const partialTakeProfitToken =
-    selectedTrigger?.decodedParams.withdrawToDebt === 'true'
-      ? ('debt' as const)
-      : ('collateral' as const)
-
-  return {
-    triggerId: selectedTrigger?.triggerId,
-    triggerLtv,
-    startingTakeProfitPrice: isShort ? startingTakeProfitPriceShort : startingTakeProfitPriceLong,
-    withdrawalLtv,
-    partialTakeProfitToken,
-    hasStopLoss: hasStopLoss || hasTrailingStopLoss,
-    currentStopLossLevel,
-    currentTrailingDistance: trailingStopLossData.trailingDistance,
-    stopLossLevelLabel:
-      hasStopLoss && currentStopLossLevel ? `${formatPercent(currentStopLossLevel)}` : '',
-    trailingStopLossDistanceLabel: hasTrailingStopLoss
-      ? `${trailingStopLossData.trailingDistance}${nbsp}${stopLossTokenLabel}`
-      : '',
-  }
+    return {
+      triggerId: trigger.triggerId,
+      triggerLtv,
+      startingTakeProfitPrice: isShort ? startingTakeProfitPriceShort : startingTakeProfitPriceLong,
+      withdrawalLtv,
+      partialTakeProfitToken,
+      hasStopLoss: hasStopLoss || hasTrailingStopLoss,
+      currentStopLossLevel,
+      currentTrailingDistance: trailingStopLossData.trailingDistance,
+      stopLossLevelLabel:
+        hasStopLoss && currentStopLossLevel ? `${formatPercent(currentStopLossLevel)}` : '',
+      trailingStopLossDistanceLabel: hasTrailingStopLoss
+        ? `${trailingStopLossData.trailingDistance}${nbsp}${stopLossTokenLabel}`
+        : '',
+    }
+  } else return {}
 }

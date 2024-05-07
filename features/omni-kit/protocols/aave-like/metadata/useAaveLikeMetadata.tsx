@@ -1,9 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
-import {
-  getAutomationMetadataValues,
-} from 'features/omni-kit/automation/helpers'
+import { getAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowishChangeVariant,
@@ -65,10 +63,12 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
-    productType,
     auction: productContext.position.positionAuction as AaveLikeHistoryEvent,
-    triggers: productContext.automation.positionTriggers,
+    poolId,
+    positionTriggers: productContext.automation.positionTriggers,
     priceFormat,
+    productType,
+    protocol,
   })
 
   switch (productType) {

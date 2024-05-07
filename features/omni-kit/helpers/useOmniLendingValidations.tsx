@@ -16,7 +16,7 @@ import React from 'react'
 
 interface GetOmniValidationsParams {
   isOpening: boolean
-  poolId?: string,
+  poolId?: string
   position: OmniGenericPosition
   positionTriggers: GetTriggersResponse
   protocolLabel: LendingProtocolLabel
