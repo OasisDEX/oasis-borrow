@@ -4,10 +4,11 @@ import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
-import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers/getRefinanceAaveLikeInterestRates'
+import type { RefinanceInterestRatesMetadata } from 'features/refinance/graph/getRefinanceAaveLikeInterestRates'
 import { RefinanceOptions } from 'features/refinance/types'
-import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { moveItemsToFront } from 'helpers/moveItemsToFront'
+
+import { getNetAPY } from './getBorrowRate'
 
 const availableLiquidityMapping = ({
   table,
@@ -43,31 +44,24 @@ const borrowRateMapping = ({
 }) =>
   table.map((item) => {
     const network = getNetworkByName(item.network)
-    const protocol = item.protocol
 
-    const customCollateralRates = interestRates[network.id]?.[protocol]?.[item.primaryToken]
-    const customDebtRates = interestRates[network.id]?.[protocol]?.[item.secondaryToken]
+    const customCollateralRates = interestRates[network.id]?.[item.protocol]?.[item.primaryToken]
+    const customDebtRates = interestRates[network.id]?.[item.protocol]?.[item.secondaryToken]
 
-    if (customCollateralRates && customDebtRates) {
-      const multiple = new BigNumber(1).div(new BigNumber(1).minus(currentLTV))
-      const borrowAPR = new BigNumber(customDebtRates.borrowVariable)
-      const borrowAPY = aaveLikeAprToApy(borrowAPR)
-      const supplyAPR = new BigNumber(customCollateralRates.lendVariable)
-      const supplyAPY = aaveLikeAprToApy(supplyAPR)
-
-      const borrowRate = new BigNumber(multiple)
-        .times(supplyAPY)
-        .minus(new BigNumber(multiple).minus(1).times(borrowAPY))
-        .negated()
-        .toString()
-
-      return {
-        ...item,
-        fee: borrowRate,
-      }
+    if (!customCollateralRates || !customDebtRates) {
+      return item
     }
 
-    return item
+    const borrowRate = getNetAPY(
+      currentLTV,
+      customDebtRates.borrowVariable,
+      customCollateralRates.lendVariable,
+    )
+
+    return {
+      ...item,
+      fee: borrowRate,
+    }
   })
 
 const sortMapping = ({ refinanceOption }: { refinanceOption: RefinanceOptions }) =>

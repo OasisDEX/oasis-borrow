@@ -11,7 +11,7 @@ import type {
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceValidations } from 'features/refinance/helpers'
-import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useAppConfig } from 'helpers/config'
@@ -27,7 +27,7 @@ const steps = [
   RefinanceSidebarStep.Changes,
 ]
 
-export const useInitializeRefinanceContext = ({
+export const useInitializeRefinanceContextBase = ({
   contextInput,
   defaultCtx,
 }: {
@@ -72,7 +72,7 @@ export const useInitializeRefinanceContext = ({
 
   const {
     environment: { slippage, address, isOwner },
-    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
+    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, maxLtv, pairId },
     position: {
       collateralAmount,
       debtAmount,
@@ -81,6 +81,8 @@ export const useInitializeRefinanceContext = ({
       ltv,
       positionType: type,
       lendingProtocol,
+      borrowRate,
+      supplyRate,
       protocolPrices,
     },
     automations,
@@ -157,6 +159,8 @@ export const useInitializeRefinanceContext = ({
       positionType: type,
       isShort,
       lendingProtocol,
+      borrowRate: borrowRate,
+      supplyRate: supplyRate,
       protocolPrices: {
         collateralPrice,
         debtPrice,
@@ -166,7 +170,6 @@ export const useInitializeRefinanceContext = ({
     poolData: {
       poolId,
       pairId,
-      borrowRate,
       maxLtv,
     },
     automations,

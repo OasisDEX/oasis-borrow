@@ -8,8 +8,8 @@ import React from 'react'
 
 export const RefinancePosition = () => {
   const {
-    position: { positionId, liquidationPrice, debtTokenData, collateralTokenData, ltv },
-    poolData: { borrowRate, maxLtv },
+    position: { positionId, liquidationPrice, debtTokenData, collateralTokenData, ltv, netApy },
+    poolData: { maxLtv },
     tx: { isTxSuccess },
     steps: { currentStep },
     automations,
@@ -38,7 +38,7 @@ export const RefinancePosition = () => {
       }}
       poolData={{
         maxLtv: new BigNumber(maxLtv.loanToValue),
-        borrowRate: new BigNumber(borrowRate),
+        borrowRate: new BigNumber(netApy),
       }}
       positionData={{
         ltv: new BigNumber(ltv.loanToValue),
