@@ -1,6 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
+import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowishChangeVariant,
@@ -15,7 +16,6 @@ import {
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
   aaveLikeFlowStateFilter,
-  getAaveLikeAutomationMetadataValues,
   getAaveLikeBanner,
   getAaveLikeFaq,
   getAaveLikeFeatureToggle,
@@ -50,6 +50,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+
   const [hash] = useHash()
 
   const featureToggles = getAaveLikeFeatureToggle(protocol)
@@ -125,7 +126,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
-          automation: getAaveLikeAutomationMetadataValues({
+          automation: getMappedAutomationMetadataValues({
             positionTriggers: productContext.automation.positionTriggers,
             simulationResponse: productContext.automation.simulationData,
             commonFormState: productContext.automation.commonForm.state,
