@@ -10,3 +10,13 @@ export const replaceETHWithWETH = (tokenAmount: ITokenAmount) => {
   }
   return tokenAmount
 }
+
+export const replaceWETHWithETH = (tokenAmount: ITokenAmount) => {
+  if (tokenAmount.token.symbol === 'WETH') {
+    return TokenAmount.createFrom({
+      token: mapTokenToSdkToken(tokenAmount.token.chainInfo, 'ETH'),
+      amount: tokenAmount.amount,
+    })
+  }
+  return tokenAmount
+}
