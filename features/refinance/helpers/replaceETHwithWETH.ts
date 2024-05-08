@@ -1,4 +1,4 @@
-import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { type ITokenAmount, TokenAmount } from 'summerfi-sdk-common'
 
 export const replaceETHWithWETH = (tokenAmount: ITokenAmount) => {

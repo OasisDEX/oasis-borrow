@@ -16,6 +16,7 @@ import {
   getRefinanceInterestRatesInputParams,
   getRefinancePositionOwner,
 } from 'features/refinance/helpers'
+import { getNetAPY } from 'features/refinance/helpers/getBorrowRate'
 import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -74,13 +75,30 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   // If needed we should extend it with other network & protocols and map to the same interface
   const interestRates = useMemo(
     () =>
-      !cache.interestRatesMetadata
+      !cache.interestRates
         ? from(getRefinanceAaveLikeInterestRates(interestRatesInput))
-        : of(cache.interestRatesMetadata),
-    [cache.interestRatesMetadata],
+        : of(cache.interestRates),
+    [cache.interestRates],
   )
+
   const [positionOwnerData, positionOwnerError] = useObservable(positionOwner)
   const [interestRatesData, interestRatesError] = useObservable(interestRates)
+
+  // cache data
+  useEffect(() => {
+    if (positionOwnerData) cache.setPositionOwner(positionOwnerData)
+  }, [positionOwnerData])
+  useEffect(() => {
+    if (interestRatesData) cache.setInterestRates(interestRatesData)
+  }, [interestRatesData])
+
+  const netAPY =
+    ctx &&
+    getNetAPY(
+      ctx?.position.ltv.loanToValue.toString(),
+      ctx?.position.borrowRate,
+      ctx?.position.supplyRate,
+    )
 
   const onClose = () => {
     if (isTxInProgress) {
@@ -96,22 +114,14 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   }
   const simulation = useSdkSimulation()
 
-  useEffect(() => {
-    if (positionOwnerData) cache.handlePositionOwner(positionOwnerData)
-  }, [positionOwnerData])
-
-  useEffect(() => {
-    if (interestRatesData) cache.handleInterestRates(interestRatesData)
-  }, [interestRatesData])
-
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose} variant="modalAutoWidth">
       <WithErrorHandler error={[positionOwnerError, interestRatesError, tokenPriceUSDError]}>
         <WithLoadingIndicator
-          value={[ctx, positionOwnerData, interestRatesData, tokenPriceUSDData]}
+          value={[ctx, positionOwnerData, interestRatesData, tokenPriceUSDData, netAPY]}
           customLoader={<RefinanceModalSkeleton onClose={onClose} />}
         >
-          {([_ctx, _owner, _interestRates, _tokenPriceUSD]) => (
+          {([_ctx, _owner, _interestRates, _tokenPriceUSD, _netApy]) => (
             <RefinanceContextProvider
               ctx={{
                 ..._ctx,
@@ -128,6 +138,10 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
                 position: {
                   ..._ctx.position,
                   owner: _owner,
+                  netApy: _netApy,
+                },
+                poolData: {
+                  ..._ctx.poolData,
                 },
                 simulation,
               }}

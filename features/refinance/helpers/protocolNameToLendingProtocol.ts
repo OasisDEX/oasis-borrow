@@ -1,7 +1,7 @@
 import { LendingProtocol } from 'lendingProtocols'
 import { ProtocolName } from 'summerfi-sdk-common'
 
-export function protocolNameToLendingProtocol(name: ProtocolName) {
+export function getLendingProtocolByProtocolName(name: ProtocolName) {
   return {
     [ProtocolName.Spark]: LendingProtocol.SparkV3,
     [ProtocolName.Maker]: LendingProtocol.Maker,
