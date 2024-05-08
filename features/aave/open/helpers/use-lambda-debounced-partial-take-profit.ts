@@ -15,11 +15,29 @@ import type {
   TriggersApiError,
   TriggersApiWarning,
 } from 'helpers/lambda/triggers/setup-triggers'
-import { setupAaveLikePartialTakeProfit } from 'helpers/lambda/triggers/setup-triggers/setup-aave-partial-take-profit'
+import { setupLambdaPartialTakeProfit } from 'helpers/lambda/triggers/setup-triggers/setup-partial-take-profit'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 
 import { eth2weth } from '@oasisdex/utils/lib/src/utils'
+
+type LambdaDebouncedPartialTakeProfitParams = (OpenAaveStateProps | ManageAaveStateProps) & {
+  action: TriggerAction
+  newStopLossAction: TriggerAction.Add | TriggerAction.Update
+  newStopLossLtv?: BigNumber
+  partialTakeProfitToken: string
+  poolId?: string
+  startingTakeProfitPrice: BigNumber
+  transactionStep:
+    | 'prepare'
+    | 'preparedRemove'
+    | 'addInProgress'
+    | 'updateInProgress'
+    | 'removeInProgress'
+    | 'finished'
+  triggerLtv: BigNumber
+  withdrawalLtv: BigNumber
+}
 
 export const mapProfits = (
   simulation: SetupPartialTakeProfitResponse['simulation'],
@@ -54,32 +72,18 @@ export const mapProfits = (
 }
 
 export const useLambdaDebouncedPartialTakeProfit = ({
-  state,
+  action,
+  newStopLossAction,
+  newStopLossLtv,
+  partialTakeProfitToken,
+  poolId,
   send,
+  startingTakeProfitPrice,
+  state,
+  transactionStep,
   triggerLtv,
   withdrawalLtv,
-  newStopLossLtv,
-  newStopLossAction,
-  startingTakeProfitPrice,
-  partialTakeProfitToken,
-  action,
-  transactionStep,
-}: (OpenAaveStateProps | ManageAaveStateProps) & {
-  triggerLtv: BigNumber
-  newStopLossLtv?: BigNumber
-  withdrawalLtv: BigNumber
-  startingTakeProfitPrice: BigNumber
-  partialTakeProfitToken: string
-  action: TriggerAction
-  newStopLossAction: TriggerAction.Add | TriggerAction.Update
-  transactionStep:
-    | 'prepare'
-    | 'preparedRemove'
-    | 'addInProgress'
-    | 'updateInProgress'
-    | 'removeInProgress'
-    | 'finished'
-}) => {
+}: LambdaDebouncedPartialTakeProfitParams) => {
   const [isGettingPartialTakeProfitTx, setIsGettingPartialTakeProfitTx] = useState(false)
   const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
   const [errors, setErrors] = useState<TriggersApiError[]>([])
@@ -131,20 +135,20 @@ export const useLambdaDebouncedPartialTakeProfit = ({
       }
       const isShort = strategyConfig.strategyType === StrategyType.Short
       const partialTakeProfitTxDataPromise = cancelable(
-        setupAaveLikePartialTakeProfit({
+        setupLambdaPartialTakeProfit({
+          action,
           dpm: dpmAccount,
-          networkId: strategyConfig.networkId,
           executionToken: partialTakeProfitToken === 'debt' ? debtAddress : collateralAddress,
+          networkId: strategyConfig.networkId,
+          poolId,
           protocol: strategyConfig.protocol as SupportedLambdaProtocols,
-          triggerLtv,
-          withdrawalLtv,
-          startingTakeProfitPrice: isShort
-            ? new BigNumber(lambdaPriceDenomination).div(startingTakeProfitPrice)
-            : startingTakeProfitPrice.times(lambdaPriceDenomination),
           strategy: {
             collateralAddress,
             debtAddress,
           },
+          startingTakeProfitPrice: isShort
+            ? new BigNumber(lambdaPriceDenomination).div(startingTakeProfitPrice)
+            : startingTakeProfitPrice.times(lambdaPriceDenomination),
           stopLoss: newStopLossLtv
             ? {
                 triggerData: {
@@ -154,7 +158,8 @@ export const useLambdaDebouncedPartialTakeProfit = ({
                 action: newStopLossAction,
               }
             : undefined,
-          action,
+          triggerLtv,
+          withdrawalLtv,
         }),
       )
       setProfits(undefined)

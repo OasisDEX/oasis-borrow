@@ -1,8 +1,5 @@
 'use client'
-import {
-  emptyConfig,
-  preloadAppDataContext,
-} from 'components/context/PreloadAppDataContextProvider'
+import { preloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { cleanObjectFromNull, cleanObjectToNull } from 'helpers/clean-object'
 import type {
   ConfigResponseType,
@@ -12,6 +9,7 @@ import type {
 import { configLSKey } from 'helpers/config'
 import { merge } from 'lodash'
 import { useContext } from 'react'
+import { emptyConfig } from 'types/config'
 
 import { configLSOverridesKey } from './constants'
 

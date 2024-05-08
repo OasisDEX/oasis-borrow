@@ -3,6 +3,7 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
 import faqMultiply from 'features/content/faqs/morphoblue/multiply/en'
+import { getAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowDebtMax,
@@ -27,6 +28,7 @@ import type {
 } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
+import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
@@ -42,17 +44,20 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       collateralAddress,
       collateralPrecision,
       isOracless,
+      isYieldLoopWithData,
       pairId,
+      poolId,
       productType,
       protocol,
       quoteAddress,
       quoteBalance,
       quotePrecision,
-      isYieldLoopWithData,
     },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+
+  const [hash] = useHash()
 
   const validations = productContext.position.simulationCommon.getValidations({
     safetySwitchOn: morphoSafetySwitchOn,
@@ -130,6 +135,14 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           }),
           footerColumns: isYieldLoopWithData ? 3 : 2,
           maxSliderAsMaxLtv: true,
+          automation: getAutomationMetadataValues({
+            automationForms: productContext.automation.automationForms,
+            commonFormState: productContext.automation.commonForm.state,
+            hash,
+            poolId,
+            positionTriggers: productContext.automation.positionTriggers,
+            simulationResponse: productContext.automation.simulationData,
+          }),
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,

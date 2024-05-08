@@ -12,13 +12,13 @@ export function useOptimizationSidebarDropdown(
 ): SidebarSectionHeaderDropdown {
   const { t } = useTranslation()
 
-  const hasAaveAutoBuyEnabled = state.context.currentTriggers.triggers.aaveBasicBuy !== undefined
-  const hasSparkAutoBuyEnabled = state.context.currentTriggers.triggers.sparkBasicBuy !== undefined
+  const hasAaveAutoBuyEnabled = state.context.currentTriggers.triggers.aave3.basicBuy !== undefined
+  const hasSparkAutoBuyEnabled = state.context.currentTriggers.triggers.spark.basicBuy !== undefined
 
   const hasAavePartialTakeProfitEnabled =
-    state.context.currentTriggers.triggers.aavePartialTakeProfit !== undefined
+    state.context.currentTriggers.triggers.aave3.partialTakeProfit !== undefined
   const hasSparkPartialTakeProfitEnabled =
-    state.context.currentTriggers.triggers.sparkPartialTakeProfit !== undefined
+    state.context.currentTriggers.triggers.spark.partialTakeProfit !== undefined
 
   const currentPanel = useMemo(() => {
     return {

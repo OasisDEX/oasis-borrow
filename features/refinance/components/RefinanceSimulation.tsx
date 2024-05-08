@@ -12,7 +12,8 @@ export const RefinanceSimulation = () => {
     form: {
       state: { strategy },
     },
-    poolData: { maxLtv: currentMaxLtv, borrowRate: currentBorrowRate },
+    poolData: { maxLtv: currentMaxLtv },
+    position: { netApy: currentBorrowRate },
   } = useRefinanceContext()
 
   const positionData = useSimulationPositionData()

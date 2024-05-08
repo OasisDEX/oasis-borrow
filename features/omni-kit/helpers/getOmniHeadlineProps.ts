@@ -5,6 +5,8 @@ import type { LendingProtocol } from 'lendingProtocols'
 import { uniq, upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 
+import { getTokenNameForHeadline } from './getTokenNameForHeadline'
+
 interface OmniHeadlinePropsParams {
   collateralAddress?: string
   collateralIcon?: string
@@ -52,12 +54,15 @@ export function getOmniHeadlineProps({
     ? t('omni-kit.headline.yield-multiple')
     : upperFirst(productType)
 
+  const collateralTokenHeaderName = getTokenNameForHeadline({ token: collateralToken })
+  const quoteTokenHeaderName = getTokenNameForHeadline({ token: quoteToken })
+
   const title =
     headline ??
     t('omni-kit.headline.title', {
-      collateralToken,
+      collateralToken: collateralTokenHeaderName,
       productType: resolvedProductType,
-      quoteToken,
+      quoteToken: quoteTokenHeaderName,
       pairId: resolvedPairId,
     })
 

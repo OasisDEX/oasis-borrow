@@ -88,17 +88,21 @@ export type TriggerTransaction = {
   to: string
 }
 
-export interface SetupAaveBasicAutomationParams {
-  price: BigNumber | undefined
-  executionLTV: BigNumber
-  targetLTV: BigNumber
-  maxBaseFee: BigNumber
-  usePrice: boolean
-  dpm: string
-  strategy: StrategyLike
-  networkId: number
-  protocol: SupportedLambdaProtocols
+export interface SetupAutomationCommonParams {
   action: TriggerAction
+  dpm: string
+  networkId: number
+  poolId?: string
+  protocol: SupportedLambdaProtocols
+  strategy: StrategyLike
+}
+
+export interface SetupBasicAutomationParams extends SetupAutomationCommonParams {
+  executionLTV: BigNumber
+  maxBaseFee: BigNumber
+  price: BigNumber | undefined
+  targetLTV: BigNumber
+  usePrice: boolean
 }
 
 export type SetupBasicAutoResponse = ResponseCommon & {
@@ -127,24 +131,14 @@ export type SetupBasicStopLossResponse = ResponseCommon & {
   transaction?: TriggerTransaction
 }
 
-export interface SetupAaveStopLossParams {
-  executionToken: string
+export interface SetupStopLossParams extends SetupAutomationCommonParams {
   executionLTV: BigNumber
-  dpm: string
-  strategy: StrategyLike
-  networkId: number
-  protocol: SupportedLambdaProtocols
-  action: TriggerAction
+  executionToken: string
 }
 
-export interface SetupAaveTrailingStopLossParams {
-  dpm: string
+export interface SetupTrailingStopLossParams extends SetupAutomationCommonParams {
   executionToken: string
   trailingDistance: BigNumber
-  networkId: number
-  strategy: StrategyLike
-  protocol: SupportedLambdaProtocols
-  action: TriggerAction
 }
 
 export type SetupTrailingStopLossResponse = ResponseCommon & {
@@ -155,11 +149,8 @@ export type SetupTrailingStopLossResponse = ResponseCommon & {
   transaction?: TriggerTransaction
 }
 
-export interface SetupAavePartialTakeProfitParams {
-  dpm: string
+export interface SetupPartialTakeProfitParams extends SetupAutomationCommonParams {
   executionToken: string
-  triggerLtv: BigNumber
-  withdrawalLtv: BigNumber
   startingTakeProfitPrice: BigNumber
   stopLoss?: {
     triggerData: {
@@ -169,10 +160,8 @@ export interface SetupAavePartialTakeProfitParams {
     action: TriggerAction.Add | TriggerAction.Update
   }
   trailingStopLoss?: BigNumber
-  networkId: number
-  strategy: StrategyLike
-  protocol: SupportedLambdaProtocols
-  action: TriggerAction
+  triggerLtv: BigNumber
+  withdrawalLtv: BigNumber
 }
 
 interface ProfitsSimulationToken {

@@ -3,32 +3,30 @@ import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
-  SetupAaveTrailingStopLossParams,
+  SetupTrailingStopLossParams,
   SetupTrailingStopLossResponse,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikeTrailingStopLoss = async (
-  params: SetupAaveTrailingStopLossParams,
+export const setupLambdaTrailingStopLoss = async (
+  params: SetupTrailingStopLossParams,
 ): Promise<SetupTrailingStopLossResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-trailing-stop-loss' })
+  const { common, poolId, url } = getSetupTriggerConfig({
+    ...params,
+    path: 'dma-trailing-stop-loss',
+  })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
-    dpm: params.dpm,
+    ...common,
     triggerData: {
       trailingDistance: params.trailingDistance
         .times(lambdaPriceDenomination)
         .integerValue()
         .toString(),
+      poolId,
       token: params.executionToken,
     },
-    position: {
-      collateral: params.strategy.collateralAddress,
-      debt: params.strategy.debtAddress,
-    },
-    rpc: customRpc,
-    action: params.action,
   })
 
   let response: Response

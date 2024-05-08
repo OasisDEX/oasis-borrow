@@ -20,6 +20,7 @@ import {
 import { partialTakeProfitConstants } from 'features/omni-kit/automation/constants'
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -52,7 +53,15 @@ export const OmniPartialTakeProfitSidebarController = () => {
     dynamicMetadata: {
       values: { automation },
     },
-  } = useOmniProductContext(productType)
+    position: {
+      currentPosition: {
+        position: {
+          marketPrice,
+          riskRatio: { loanToValue },
+        },
+      },
+    },
+  } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
   if (!automation) {
     throw new Error('Automation dynamic metadata not available')
@@ -63,25 +72,23 @@ export const OmniPartialTakeProfitSidebarController = () => {
     automation.simulation as SetupPartialTakeProfitResponse['simulation']
 
   const {
-    startingTakeProfitPrice,
-    partialTakeProfitToken,
-    positionPriceRatio,
-    resolvedTriggerLtv,
-    triggerLtvSliderConfig,
-    withdrawalLtvSliderConfig,
-    castedPosition,
-    resolvedWithdrawalLtv,
+    currentStopLossLevel,
+    dynamicStopLossPrice,
+    extraTriggerLtv,
     hasStopLoss,
     hasTrailingStopLoss,
-    stopLossLevelLabel,
-    currentStopLossLevel,
-    trailingStopLossDistanceLabel,
-    dynamicStopLossPrice,
-    selectedPartialTakeProfitToken,
-    extraTriggerLtv,
     newStopLossSliderConfig,
-    partialTakeProfitTokenData,
     partialTakeProfitSecondTokenData,
+    partialTakeProfitToken,
+    partialTakeProfitTokenData,
+    resolvedTriggerLtv,
+    resolvedWithdrawalLtv,
+    selectedPartialTakeProfitToken,
+    startingTakeProfitPrice,
+    stopLossLevelLabel,
+    trailingStopLossDistanceLabel,
+    triggerLtvSliderConfig,
+    withdrawalLtvSliderConfig,
   } = useOmniPartialTakeProfitDataHandler()
 
   const [isFocus, setStartingPriceInputFocus] = useState<boolean>(false)
@@ -105,7 +112,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
     return (
       automationFormState.triggerLtv ||
       resolvedTriggerLtv?.times(100) ||
-      castedPosition.riskRatio.loanToValue
+      loanToValue
         .minus(partialTakeProfitConfig.defaultTriggelLtvOffset.div(100))
         .times(100)
         .decimalPlaces(0, BigNumber.ROUND_DOWN)
@@ -124,6 +131,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
     const riskRatio = new RiskRatio(ltv.div(hundred), RiskRatio.TYPE.LTV)
     return `${riskRatio.multiple.toFixed(2)}x`
   }, [])
+  const positionPriceRatio = isShort ? one.div(marketPrice) : marketPrice
 
   useEffect(() => {
     // if the custom percentage is set, calculate the next price and update it
@@ -380,15 +388,14 @@ export const OmniPartialTakeProfitSidebarController = () => {
           {...triggerLtvSliderConfig}
           customSliderProps={{
             marks: {
-              [castedPosition.riskRatio.loanToValue.times(lambdaPercentageDenomination).toFixed()]:
-                (
-                  <Text
-                    variant="boldParagraph3"
-                    sx={{ fontSize: '10px', textTransform: 'uppercase' }}
-                  >
-                    {t('protection.partial-take-profit-sidebar.current-ltv')}
-                  </Text>
-                ),
+              [loanToValue.times(lambdaPercentageDenomination).toFixed()]: (
+                <Text
+                  variant="boldParagraph3"
+                  sx={{ fontSize: '10px', textTransform: 'uppercase' }}
+                >
+                  {t('protection.partial-take-profit-sidebar.current-ltv')}
+                </Text>
+              ),
             },
           }}
         />

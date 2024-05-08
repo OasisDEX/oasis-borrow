@@ -89,10 +89,14 @@ export function ProtectionControlWrapper({
   const [state, send] = useActor(stateMachine)
 
   const [autoSellState, sendAutoSellEvent] = useActor(triggersState.context.autoSellTrigger)
-  const stopLossLambdaData = mapStopLossFromLambda(triggersState.context.currentTriggers.triggers)
-  const trailingStopLossLambdaData = mapTrailingStopLossFromLambda(
-    triggersState.context.currentTriggers.triggers,
-  )
+  const stopLossLambdaData = mapStopLossFromLambda({
+    protocol: state.context.strategyConfig.protocol,
+    triggers: triggersState.context.currentTriggers.triggers,
+  })
+  const trailingStopLossLambdaData = mapTrailingStopLossFromLambda({
+    protocol: state.context.strategyConfig.protocol,
+    triggers: triggersState.context.currentTriggers.triggers,
+  })
   const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>(
     stopLossLambdaData.stopLossToken ?? 'debt',
   )

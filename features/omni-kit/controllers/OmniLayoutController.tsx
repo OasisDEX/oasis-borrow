@@ -34,7 +34,7 @@ import React from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
 export function OmniLayoutController({ txHandler }: { txHandler: () => () => void }) {
-  const { ProxyReveal: proxyReveal } = useAppConfig('features')
+  const { ProxyReveal: proxyReveal, LambdaAutomations } = useAppConfig('features')
 
   const { t } = useTranslation()
 
@@ -55,6 +55,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       networkId,
       owner,
       pairId,
+      poolId,
       positionId,
       priceFormat,
       productType,
@@ -189,17 +190,18 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           : undefined,
                         tag: {
                           include: true,
-                          active: hasActiveProtection(positionTriggers, protocol),
+                          active: hasActiveProtection({ poolId, positionTriggers, protocol }),
                         },
                         label: t('system.protection'),
-                        content: netValue?.gt(minNetValue) ? (
-                          <Grid variant="vaultContainer">
-                            <OmniProtectionOverviewController />
-                            {uiDropdownProtection && <OmniAutomationFormController />}
-                          </Grid>
-                        ) : (
-                          <DisabledProtectionControl minNetValue={minNetValue} />
-                        ),
+                        content:
+                          netValue?.gt(minNetValue) || LambdaAutomations.DisableNetValueCheck ? (
+                            <Grid variant="vaultContainer">
+                              <OmniProtectionOverviewController />
+                              {uiDropdownProtection && <OmniAutomationFormController />}
+                            </Grid>
+                          ) : (
+                            <DisabledProtectionControl minNetValue={minNetValue} />
+                          ),
                       },
                     ]
                   : []),
@@ -216,17 +218,18 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           : undefined,
                         tag: {
                           include: true,
-                          active: hasActiveOptimization(positionTriggers, protocol),
+                          active: hasActiveOptimization({ poolId, positionTriggers, protocol }),
                         },
                         label: t('system.optimization'),
-                        content: netValue?.gt(minNetValue) ? (
-                          <Grid variant="vaultContainer">
-                            <OmniOptimizationOverviewController />
-                            {uiDropdownOptimization && <OmniAutomationFormController />}
-                          </Grid>
-                        ) : (
-                          <DisabledOptimizationControl minNetValue={minNetValue} />
-                        ),
+                        content:
+                          netValue?.gt(minNetValue) || LambdaAutomations.DisableNetValueCheck ? (
+                            <Grid variant="vaultContainer">
+                              <OmniOptimizationOverviewController />
+                              {uiDropdownOptimization && <OmniAutomationFormController />}
+                            </Grid>
+                          ) : (
+                            <DisabledOptimizationControl minNetValue={minNetValue} />
+                          ),
                       },
                     ]
                   : []),

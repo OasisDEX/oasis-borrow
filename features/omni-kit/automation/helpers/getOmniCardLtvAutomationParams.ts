@@ -19,7 +19,7 @@ export const getOmniCardLtvAutomationParams = ({
 
   if (automationMetadata.triggers.trailingStopLoss) {
     const executionPrice = new BigNumber(
-      automationMetadata.triggers.trailingStopLoss.dynamicParams.executionPrice,
+      automationMetadata.triggers.trailingStopLoss.dynamicParams.executionPrice ?? 0,
     )
 
     return {

@@ -2,44 +2,63 @@ import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const hasActiveProtection = (
-  positionTriggers: GetTriggersResponse,
-  protocol: LendingProtocol,
-): boolean => {
-  const {
-    aaveStopLossToCollateral,
-    sparkStopLossToCollateral,
-    aaveStopLossToCollateralDMA,
-    aaveStopLossToDebtDMA,
-    sparkStopLossToCollateralDMA,
-    sparkStopLossToDebtDMA,
-    sparkStopLossToDebt,
-    aaveStopLossToDebt,
-    aaveBasicSell,
-    sparkBasicSell,
-    aaveTrailingStopLossDMA,
-    sparkTrailingStopLossDMA,
-  } = positionTriggers.triggers
+interface HasActiveProtectionParams {
+  poolId?: string
+  positionTriggers: GetTriggersResponse
+  protocol: LendingProtocol
+}
 
+export const hasActiveProtection = ({
+  poolId,
+  positionTriggers: { triggers },
+  protocol,
+}: HasActiveProtectionParams): boolean => {
   switch (protocol) {
-    case LendingProtocol.AaveV3:
+    case LendingProtocol.AaveV3: {
+      const {
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
+      } = triggers.aave3
+
       return isAnyValueDefined(
-        aaveStopLossToCollateral,
-        aaveStopLossToDebt,
-        aaveBasicSell,
-        aaveStopLossToCollateralDMA,
-        aaveStopLossToDebtDMA,
-        aaveTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       )
-    case LendingProtocol.SparkV3:
+    }
+    case LendingProtocol.MorphoBlue: {
+      if (`morphoblue-${poolId}` in triggers) {
+        const { basicSell, stopLoss, trailingStopLoss } = triggers[`morphoblue-${poolId}`]
+
+        return isAnyValueDefined(basicSell, stopLoss, trailingStopLoss)
+      } else return false
+    }
+    case LendingProtocol.SparkV3: {
+      const {
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
+      } = triggers.spark
+
       return isAnyValueDefined(
-        sparkBasicSell,
-        sparkStopLossToCollateral,
-        sparkStopLossToDebt,
-        sparkStopLossToCollateralDMA,
-        sparkStopLossToDebtDMA,
-        sparkTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       )
+    }
     default:
       return false
   }

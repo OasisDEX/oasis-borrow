@@ -222,8 +222,8 @@ export function useOmniProtocolData({
       ethBalanceData,
       gasPriceData,
       tokenPriceUSDData,
-      userSettingsData,
       tokensIconsData,
+      userSettingsData,
     },
     errors: [
       balancesInfoArrayError,

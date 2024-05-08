@@ -7,7 +7,7 @@ import { autoBuySellConstants } from 'features/omni-kit/automation/constants'
 import type { OmniAutomationCommonActionPayload } from 'features/omni-kit/automation/types'
 import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
 import type { AutomationMetadataValues } from 'features/omni-kit/types'
-import { setupAaveAutoBuy, setupAaveAutoSell } from 'helpers/lambda/triggers'
+import { setupLambdaAutoBuy, setupLambdaAutoSell } from 'helpers/lambda/triggers'
 import { isBoolean } from 'lodash'
 
 export const setupAutoBS = ({
@@ -69,8 +69,8 @@ export const setupAutoBS = ({
   }
 
   const setupFnMap = {
-    [AutomationFeatures.AUTO_SELL]: setupAaveAutoSell,
-    [AutomationFeatures.AUTO_BUY]: setupAaveAutoBuy,
+    [AutomationFeatures.AUTO_SELL]: setupLambdaAutoSell,
+    [AutomationFeatures.AUTO_BUY]: setupLambdaAutoBuy,
   }[uiDropdown]
 
   return setupFnMap({

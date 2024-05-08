@@ -281,18 +281,19 @@ export interface GetOmniValidationsParams {
   ethPrice: BigNumber
   gasEstimationUsd?: BigNumber
   isOpening: boolean
+  poolId?: string
   position: OmniGenericPosition
-  simulation?: OmniGenericPosition
+  positionTriggers: GetTriggersResponse
   productType: OmniProductType
   protocol: LendingProtocol
   quoteBalance: BigNumber
   quoteToken: string
+  simulation?: OmniGenericPosition
   simulationErrors?: SimulationValidations
   simulationNotices?: SimulationValidations
   simulationSuccesses?: SimulationValidations
   simulationWarnings?: SimulationValidations
   state: OmniFormState
-  positionTriggers: GetTriggersResponse
   txError?: TxError
 }
 

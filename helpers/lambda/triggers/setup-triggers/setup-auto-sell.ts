@@ -1,30 +1,25 @@
 import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
-import type { SetupAaveBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
+import type { SetupBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveAutoSell = async (
-  params: SetupAaveBasicAutomationParams,
+export const setupLambdaAutoSell = async (
+  params: SetupBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
+  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
-    dpm: params.dpm,
+    ...common,
     triggerData: {
       executionLTV: params.executionLTV.integerValue().toString(),
-      targetLTV: params.targetLTV.integerValue().toString(),
-      minSellPrice: params.price?.integerValue().toString(),
       maxBaseFee: params.maxBaseFee.integerValue().toString(),
+      minSellPrice: params.price?.integerValue().toString(),
+      poolId,
+      targetLTV: params.targetLTV.integerValue().toString(),
       useMinSellPrice: params.usePrice,
     },
-    position: {
-      collateral: params.strategy.collateralAddress,
-      debt: params.strategy.debtAddress,
-    },
-    rpc: customRpc,
-    action: params.action,
   })
 
   let response: Response

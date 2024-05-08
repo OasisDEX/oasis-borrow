@@ -13,7 +13,7 @@ import {
   getOmniRawProtocol,
 } from 'features/omni-kit/helpers'
 import { isYieldLoopPair } from 'features/omni-kit/helpers/isYieldLoopPair'
-import { useOmniProtocolData } from 'features/omni-kit/hooks'
+import { useOmniProtocolData, useOmniTriggersData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import {
   getAutomationFormDefaults,
@@ -34,7 +34,6 @@ import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAs
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { useAccount } from 'helpers/useAccount'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
@@ -68,10 +67,10 @@ interface OmniProductControllerProps<Auction, History, Position> {
   protocol: OmniSupportedProtocols
   protocolHook: (params: OmniProtocolHookProps) => {
     data: {
-      aggregatedData: { auction: Auction; history: History } | undefined
-      positionData: Position | undefined
-      protocolPricesData: Tickers | undefined
-      positionTriggersData: GetTriggersResponse | undefined
+      aggregatedData?: { auction: Auction; history: History }
+      poolId?: string
+      positionData?: Position
+      protocolPricesData?: Tickers
     }
     errors: string[]
   }
@@ -144,7 +143,7 @@ export const OmniProductController = <Auction, History, Position>({
   })
 
   const {
-    data: { aggregatedData, positionData, protocolPricesData, positionTriggersData },
+    data: { aggregatedData, poolId, positionData, protocolPricesData },
     errors: protocolDataErrors,
   } = protocolHook({
     collateralToken,
@@ -156,6 +155,18 @@ export const OmniProductController = <Auction, History, Position>({
     quoteToken,
     tokenPriceUSDData,
     tokensPrecision,
+  })
+
+  const {
+    data: { positionTriggersData },
+    errors: triggersDataErrors,
+  } = useOmniTriggersData({
+    dpmPositionData,
+    isOpening,
+    networkId,
+    poolId,
+    protocol,
+    settings,
   })
 
   useEffect(() => {
@@ -172,7 +183,7 @@ export const OmniProductController = <Auction, History, Position>({
     <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
-          <WithErrorHandler error={[...errors, ...protocolDataErrors]}>
+          <WithErrorHandler error={[...errors, ...protocolDataErrors, ...triggersDataErrors]}>
             <WithLoadingIndicator
               value={[
                 aggregatedData,
@@ -271,6 +282,7 @@ export const OmniProductController = <Auction, History, Position>({
                       networkId={networkId}
                       owner={dpmPosition.user}
                       pairId={pairId}
+                      poolId={poolId}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
@@ -314,7 +326,10 @@ export const OmniProductController = <Auction, History, Position>({
                             positionHistory: _aggregatedData.history as PositionHistoryEvent[],
                             positionTriggers: positionTriggers,
                             automationFormReducto: useOmniAutomationFormReducto,
-                            automationFormDefaults: getAutomationFormDefaults(positionTriggers),
+                            automationFormDefaults: getAutomationFormDefaults({
+                              poolId,
+                              positionTriggers,
+                            }),
                           }
                           const omniProductContextProviderData = getOmniProductContextProviderData({
                             formDefaults,

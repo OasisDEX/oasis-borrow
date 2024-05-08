@@ -30,7 +30,7 @@ export const useRefinanceTxHandler = () => {
   } = useRefinanceContext()
 
   const {
-    cache: { handlePositionOwner },
+    cache: { setPositionOwner: handlePositionOwner },
   } = useRefinanceGeneralContext()
 
   useEffect(() => {
