@@ -3777,7 +3777,7 @@
         "description": "Your old {{pair}} position is closed."
       },
       "footer": {
-        "canceled-automation": "*Automations will be canceled on new position. You can set it up again once the new position is created."
+        "canceled-automation": "*Automations will be canceled on the new position. You can set it up again once the new position is created."
       },
       "tooltips": {
         "max-ltv": "The Max Loan to Value indicates the amount that can be borrowed to the value of the collateral.",
