@@ -11,7 +11,7 @@ import type {
   TriggersApiError,
   TriggersApiWarning,
 } from 'helpers/lambda/triggers/setup-triggers'
-import { setupTrailingStopLoss } from 'helpers/lambda/triggers/setup-triggers/setup-trailing-stop-loss'
+import { setupLambdaTrailingStopLoss } from 'helpers/lambda/triggers/setup-triggers/setup-trailing-stop-loss'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 
@@ -61,7 +61,7 @@ export const useLambdaDebouncedTrailingStopLoss = ({
         clearWarningsAndErrors()
       }
       const trailingStopLossTxDataPromise = cancelable(
-        setupTrailingStopLoss({
+        setupLambdaTrailingStopLoss({
           action,
           dpm: dpmAccount,
           executionToken: trailingStopLossToken === 'debt' ? debtAddress : collateralAddress,

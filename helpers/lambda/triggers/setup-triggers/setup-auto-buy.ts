@@ -4,7 +4,7 @@ import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type { SetupBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAutoBuy = async (
+export const setupLambdaAutoBuy = async (
   params: SetupBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
   const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'auto-buy' })

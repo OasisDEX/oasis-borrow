@@ -9,7 +9,7 @@ import type {
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupStopLoss = async (
+export const setupLambdaStopLoss = async (
   params: SetupStopLossParams,
 ): Promise<SetupBasicStopLossResponse> => {
   const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })

@@ -8,7 +8,7 @@ import type {
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupPartialTakeProfit = async (
+export const setupLambdaPartialTakeProfit = async (
   params: SetupPartialTakeProfitParams,
 ): Promise<SetupPartialTakeProfitResponse> => {
   const { common, poolId, url } = getSetupTriggerConfig({

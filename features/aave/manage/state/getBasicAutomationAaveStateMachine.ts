@@ -30,8 +30,8 @@ import {
   getLtvNumberFromDecodedParam,
   hasTransaction,
   parsePriceFromDecodedParam,
-  setupAutoBuy,
-  setupAutoSell,
+  setupLambdaAutoBuy,
+  setupLambdaAutoSell,
   TriggerAction,
   TRIGGERS_PRICE_DECIMALS,
 } from 'helpers/lambda/triggers'
@@ -700,11 +700,11 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
 
 export const autoBuyTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<
   DmaAaveBasicBuy | DmaSparkBasicBuy
->(AutomationFeatures.AUTO_BUY, setupAutoBuy)
+>(AutomationFeatures.AUTO_BUY, setupLambdaAutoBuy)
 
 export const autoSellTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<
   DmaAaveBasicSell | DmaSparkBasicSell
->(AutomationFeatures.AUTO_SELL, setupAutoSell)
+>(AutomationFeatures.AUTO_SELL, setupLambdaAutoSell)
 
 export type AutoBuyTriggerAaveContext = BasicAutomationAaveContext<
   DmaAaveBasicBuy | DmaSparkBasicBuy

@@ -8,7 +8,7 @@ import type {
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupTrailingStopLoss = async (
+export const setupLambdaTrailingStopLoss = async (
   params: SetupTrailingStopLossParams,
 ): Promise<SetupTrailingStopLossResponse> => {
   const { common, poolId, url } = getSetupTriggerConfig({

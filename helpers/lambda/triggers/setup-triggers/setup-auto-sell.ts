@@ -4,7 +4,7 @@ import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type { SetupBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAutoSell = async (
+export const setupLambdaAutoSell = async (
   params: SetupBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
   const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
