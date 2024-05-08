@@ -19,10 +19,10 @@ const options = [
     label: 'refinance.sidebar.why-refinance.list.item-3',
     value: RefinanceOptions.CHANGE_DIRECTION,
   },
-  {
-    label: 'refinance.sidebar.why-refinance.list.item-4',
-    value: RefinanceOptions.SWITCH_TO_EARN,
-  },
+  // {
+  //   label: 'refinance.sidebar.why-refinance.list.item-4',
+  //   value: RefinanceOptions.SWITCH_TO_EARN,
+  // },
 ]
 
 export const RefinanceStrategyStep = () => {
