@@ -1,29 +1,24 @@
-import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
-import type {
-  SetupAaveStopLossParams,
-  SetupBasicAutoResponse,
-  SetupBasicStopLossResponse,
-} from './setup-triggers-types'
+import type { SetupBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikeStopLoss = async (
-  params: SetupAaveStopLossParams,
-): Promise<SetupBasicStopLossResponse> => {
-  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
+export const setupAutoSell = async (
+  params: SetupBasicAutomationParams,
+): Promise<SetupBasicAutoResponse> => {
+  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
     ...common,
     triggerData: {
-      executionLTV: params.executionLTV
-        .times(lambdaPercentageDenomination)
-        .integerValue()
-        .toString(),
+      executionLTV: params.executionLTV.integerValue().toString(),
+      maxBaseFee: params.maxBaseFee.integerValue().toString(),
+      minSellPrice: params.price?.integerValue().toString(),
       poolId,
-      token: params.executionToken,
+      targetLTV: params.targetLTV.integerValue().toString(),
+      useMinSellPrice: params.usePrice,
     },
   })
 
@@ -36,10 +31,10 @@ export const setupAaveLikeStopLoss = async (
             'x-summer-skip-validation': '1',
           }
         : undefined,
-      body,
+      body: body,
     })
   } catch (error) {
-    console.error('Error while setting up stop loss', error)
+    console.error('Error while setting up auto buy', error)
     return {
       errors: [
         {

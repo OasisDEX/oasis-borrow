@@ -1,24 +1,31 @@
+import { lambdaPriceDenomination } from 'features/aave/constants'
 import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
-import type { SetupAaveBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
+import type {
+  SetupTrailingStopLossParams,
+  SetupTrailingStopLossResponse,
+} from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveAutoBuy = async (
-  params: SetupAaveBasicAutomationParams,
-): Promise<SetupBasicAutoResponse> => {
-  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'auto-buy' })
+export const setupTrailingStopLoss = async (
+  params: SetupTrailingStopLossParams,
+): Promise<SetupTrailingStopLossResponse> => {
+  const { common, poolId, url } = getSetupTriggerConfig({
+    ...params,
+    path: 'dma-trailing-stop-loss',
+  })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
     ...common,
     triggerData: {
-      executionLTV: params.executionLTV.integerValue().toString(),
-      maxBaseFee: params.maxBaseFee.integerValue().toString(),
-      maxBuyPrice: params.price?.integerValue().toString(),
+      trailingDistance: params.trailingDistance
+        .times(lambdaPriceDenomination)
+        .integerValue()
+        .toString(),
       poolId,
-      targetLTV: params.targetLTV.integerValue().toString(),
-      useMaxBuyPrice: params.usePrice,
+      token: params.executionToken,
     },
   })
 
@@ -31,10 +38,10 @@ export const setupAaveAutoBuy = async (
             'x-summer-skip-validation': '1',
           }
         : undefined,
-      body,
+      body: body,
     })
   } catch (error) {
-    console.error('Error while setting up auto buy', error)
+    console.error('Error while setting up stop loss', error)
     return {
       errors: [
         {
@@ -46,11 +53,11 @@ export const setupAaveAutoBuy = async (
   }
 
   if (response.status === 400) {
-    return (await response.json()) as Pick<SetupBasicAutoResponse, 'errors'>
+    return (await response.json()) as Pick<SetupTrailingStopLossResponse, 'errors'>
   }
 
   if (response.status === 200) {
-    return (await response.json()) as Omit<SetupBasicAutoResponse, 'errors'>
+    return (await response.json()) as Omit<SetupTrailingStopLossResponse, 'errors'>
   }
 
   const responseBody = await response.text()

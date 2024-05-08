@@ -3,13 +3,13 @@ import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
-  SetupAavePartialTakeProfitParams,
+  SetupPartialTakeProfitParams,
   SetupPartialTakeProfitResponse,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikePartialTakeProfit = async (
-  params: SetupAavePartialTakeProfitParams,
+export const setupPartialTakeProfit = async (
+  params: SetupPartialTakeProfitParams,
 ): Promise<SetupPartialTakeProfitResponse> => {
   const { common, poolId, url } = getSetupTriggerConfig({
     ...params,

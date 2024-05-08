@@ -15,7 +15,7 @@ import type {
   TriggersApiError,
   TriggersApiWarning,
 } from 'helpers/lambda/triggers/setup-triggers'
-import { setupAaveLikePartialTakeProfit } from 'helpers/lambda/triggers/setup-triggers/setup-aave-partial-take-profit'
+import { setupPartialTakeProfit } from 'helpers/lambda/triggers/setup-triggers/setup-partial-take-profit'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 
@@ -135,7 +135,7 @@ export const useLambdaDebouncedPartialTakeProfit = ({
       }
       const isShort = strategyConfig.strategyType === StrategyType.Short
       const partialTakeProfitTxDataPromise = cancelable(
-        setupAaveLikePartialTakeProfit({
+        setupPartialTakeProfit({
           action,
           dpm: dpmAccount,
           executionToken: partialTakeProfitToken === 'debt' ? debtAddress : collateralAddress,

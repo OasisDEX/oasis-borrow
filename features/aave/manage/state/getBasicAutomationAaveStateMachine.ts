@@ -18,7 +18,7 @@ import type {
   DmaAaveBasicSell,
   DmaSparkBasicBuy,
   DmaSparkBasicSell,
-  SetupAaveBasicAutomationParams,
+  SetupBasicAutomationParams,
   SetupBasicAutoResponse,
   SetupBasicAutoResponseWithRequiredTransaction,
   SparkStopLossToCollateral,
@@ -30,8 +30,8 @@ import {
   getLtvNumberFromDecodedParam,
   hasTransaction,
   parsePriceFromDecodedParam,
-  setupAaveAutoBuy,
-  setupAaveAutoSell,
+  setupAutoBuy,
+  setupAutoSell,
   TriggerAction,
   TRIGGERS_PRICE_DECIMALS,
 } from 'helpers/lambda/triggers'
@@ -262,7 +262,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
     | AutomationFeatures.AUTO_BUY
     | AutomationFeatures.AUTO_SELL
     | AutomationFeatures.STOP_LOSS,
-  action: (params: SetupAaveBasicAutomationParams) => Promise<SetupBasicAutoResponse>,
+  action: (params: SetupBasicAutomationParams) => Promise<SetupBasicAutoResponse>,
 ) =>
   createMachine(
     {
@@ -566,7 +566,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
 
           onReceive((event) => {
             if (isInternalRequestEvent(event) && areInternalRequestParamsValid(event.params)) {
-              const request: SetupAaveBasicAutomationParams = {
+              const request: SetupBasicAutomationParams = {
                 dpm: event.params.position.dpm,
                 executionLTV: new BigNumber(event.params.executionTriggerLTV).times(
                   lambdaPercentageDenomination,
@@ -700,11 +700,11 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
 
 export const autoBuyTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<
   DmaAaveBasicBuy | DmaSparkBasicBuy
->(AutomationFeatures.AUTO_BUY, setupAaveAutoBuy)
+>(AutomationFeatures.AUTO_BUY, setupAutoBuy)
 
 export const autoSellTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<
   DmaAaveBasicSell | DmaSparkBasicSell
->(AutomationFeatures.AUTO_SELL, setupAaveAutoSell)
+>(AutomationFeatures.AUTO_SELL, setupAutoSell)
 
 export type AutoBuyTriggerAaveContext = BasicAutomationAaveContext<
   DmaAaveBasicBuy | DmaSparkBasicBuy

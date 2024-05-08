@@ -1,27 +1,25 @@
-import { lambdaPriceDenomination } from 'features/aave/constants'
+import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
-  SetupAaveTrailingStopLossParams,
-  SetupTrailingStopLossResponse,
+  SetupBasicAutoResponse,
+  SetupBasicStopLossResponse,
+  SetupStopLossParams,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikeTrailingStopLoss = async (
-  params: SetupAaveTrailingStopLossParams,
-): Promise<SetupTrailingStopLossResponse> => {
-  const { common, poolId, url } = getSetupTriggerConfig({
-    ...params,
-    path: 'dma-trailing-stop-loss',
-  })
+export const setupStopLoss = async (
+  params: SetupStopLossParams,
+): Promise<SetupBasicStopLossResponse> => {
+  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
     ...common,
     triggerData: {
-      trailingDistance: params.trailingDistance
-        .times(lambdaPriceDenomination)
+      executionLTV: params.executionLTV
+        .times(lambdaPercentageDenomination)
         .integerValue()
         .toString(),
       poolId,
@@ -38,7 +36,7 @@ export const setupAaveLikeTrailingStopLoss = async (
             'x-summer-skip-validation': '1',
           }
         : undefined,
-      body: body,
+      body,
     })
   } catch (error) {
     console.error('Error while setting up stop loss', error)
@@ -53,11 +51,11 @@ export const setupAaveLikeTrailingStopLoss = async (
   }
 
   if (response.status === 400) {
-    return (await response.json()) as Pick<SetupTrailingStopLossResponse, 'errors'>
+    return (await response.json()) as Pick<SetupBasicAutoResponse, 'errors'>
   }
 
   if (response.status === 200) {
-    return (await response.json()) as Omit<SetupTrailingStopLossResponse, 'errors'>
+    return (await response.json()) as Omit<SetupBasicAutoResponse, 'errors'>
   }
 
   const responseBody = await response.text()

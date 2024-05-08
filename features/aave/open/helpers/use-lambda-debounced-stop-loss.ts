@@ -11,7 +11,7 @@ import type {
   TriggersApiError,
   TriggersApiWarning,
 } from 'helpers/lambda/triggers/setup-triggers'
-import { setupAaveLikeStopLoss } from 'helpers/lambda/triggers/setup-triggers'
+import { setupStopLoss } from 'helpers/lambda/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 
@@ -60,7 +60,7 @@ export const useLambdaDebouncedStopLoss = ({
       }
 
       const stopLossTxDataPromise = cancelable(
-        setupAaveLikeStopLoss({
+        setupStopLoss({
           action,
           dpm: dpmAccount,
           executionLTV: stopLossLevel,

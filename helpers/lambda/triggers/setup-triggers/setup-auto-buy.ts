@@ -1,13 +1,13 @@
 import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
-import type { SetupAaveBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
+import type { SetupBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveAutoSell = async (
-  params: SetupAaveBasicAutomationParams,
+export const setupAutoBuy = async (
+  params: SetupBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
-  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
+  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'auto-buy' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
@@ -15,10 +15,10 @@ export const setupAaveAutoSell = async (
     triggerData: {
       executionLTV: params.executionLTV.integerValue().toString(),
       maxBaseFee: params.maxBaseFee.integerValue().toString(),
-      minSellPrice: params.price?.integerValue().toString(),
+      maxBuyPrice: params.price?.integerValue().toString(),
       poolId,
       targetLTV: params.targetLTV.integerValue().toString(),
-      useMinSellPrice: params.usePrice,
+      useMaxBuyPrice: params.usePrice,
     },
   })
 
@@ -31,7 +31,7 @@ export const setupAaveAutoSell = async (
             'x-summer-skip-validation': '1',
           }
         : undefined,
-      body: body,
+      body,
     })
   } catch (error) {
     console.error('Error while setting up auto buy', error)
