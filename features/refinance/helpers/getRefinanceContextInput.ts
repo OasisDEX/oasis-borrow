@@ -9,7 +9,7 @@ import type {
 import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
 import type { PositionType } from 'summerfi-sdk-common'
 
-import { protocolNameToLendingProtocol } from './protocolNameToLendingProtocol'
+import { getLendingProtocolByProtocolName } from './protocolNameToLendingProtocol'
 
 export const getRefinanceContextInput = ({
   borrowRate,
@@ -56,11 +56,10 @@ export const getRefinanceContextInput = ({
   isOwner: boolean
   positionType: PositionType
 }): RefinanceContextInput => {
-  const lendingProtocol = protocolNameToLendingProtocol(poolId.protocol.name)
+  const lendingProtocol = getLendingProtocolByProtocolName(poolId.protocol.name)
 
   return {
     poolData: {
-      borrowRate,
       collateralTokenSymbol: primaryToken,
       debtTokenSymbol: secondaryToken,
       maxLtv: new RiskRatio(new BigNumber(maxLtv), RiskRatio.TYPE.LTV),
@@ -81,6 +80,8 @@ export const getRefinanceContextInput = ({
       liquidationPrice: liquidationPrice,
       ltv: new RiskRatio(new BigNumber(ltv), RiskRatio.TYPE.LTV),
       positionType,
+      borrowRate,
+      supplyRate: '0', // Refinance: for Maker we hardcode 0% supply rate, other protocols we need to get it from chain
       protocolPrices: {
         [primaryToken]: collateralPrice,
         [secondaryToken]: debtPrice,
