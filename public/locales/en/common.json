@@ -3683,9 +3683,9 @@
     "allowance-form": {
       "title": "Approve Summer.fi to access your position",
       "title-short": "Approve permission",
-      "description": "Summer.fi needs your permission to access your position. This will allow you to manage your position on the website.",
+      "description": "Permission is needed to swap your position. After completing this step, you can do the position swap or revoke the permission.",
       "status": {
-        "in-progress": "Giving Summer.fi permission to access your position.",
+        "in-progress": "Giving permission to swap your position.",
         "success": "All required permissions has been set."
       }
     },
