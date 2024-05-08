@@ -117,10 +117,10 @@
     "advanced-automation": "Advanced Automation"
   },
   "refinance": {
-    "title": "Refinance",
+    "title": "Swap Position",
     "banner": {
-      "default": "Your position #{{id}} can get refinanced",
-      "lowerLiquidationPrice": "Your position #{{id}} can get refinanced to lower your liquidation price by {{value}}"
+      "default": "Your position #{{id}} can get swapped",
+      "lowerLiquidationPrice": "Your position #{{id}} can get swapped to lower your liquidation price by {{value}}"
     }
   }
 }
