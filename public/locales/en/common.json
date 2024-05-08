@@ -682,8 +682,8 @@
           "cta": "Know more about security"
         },
         "refinance": {
-          "title": "Move seamlessly between protocols with SummerFi refinance tool",
-          "cta": "Refinance"
+          "title": "Move seamlessly between protocols with Summer.Fi Position Swap",
+          "cta": "Swap Positions"
         }
       },
       "image-labels": {
@@ -3759,8 +3759,8 @@
     }
   },
   "refinance": {
-    "title": "Refinance",
-    "modal-title": "Refinance {{pair}} position",
+    "title": "Position Swap",
+    "modal-title": "Swap your {{pair}} position",
     "close-prompt": "Are you sure you want to leave when transaction is in progress?",
     "position": {
       "title": {
@@ -3777,18 +3777,18 @@
         "description": "Your old {{pair}} position is closed."
       },
       "footer": {
-        "canceled-automation": "*Automations will be canceled on new position. You can set it up again once the new position is created."
+        "canceled-automation": "*Automations will be canceled on the new position. You can set it up again once the new position is created."
       },
       "tooltips": {
         "max-ltv": "The Max Loan to Value indicates the amount that can be borrowed to the value of the collateral.",
-        "borrow-rate": "The annual percent rate for borrowing in this position.",
+        "borrow-rate": "This borrow rate is the net APY of your position based on your current LTV. This is taking any supply APY into account, and borrow APY, and using your current LTV to determine the net APY you are paying (or receiving when positive) on your net value.",
         "automations": "This indicates which automation features are available for you on this position."
       }
     },
     "about": {
-      "title": "About Refinance",
-      "description": "With this refinance tool you can close your position, and open a new position in one go. Moving your funds between products becomes a breeze.",
-      "list-title": "Refinance on Summer.fi",
+      "title": "About Position Swap",
+      "description": "With this Position Swap tool you can close your position, and open a new position in one go. Moving your funds between products becomes a breeze.",
+      "list-title": "Swap your Position on Summer.fi",
       "bullet-points": [
         "Easily move your collateral and debt between protocols",
         "Always stay in the cheapest rate",
@@ -3803,8 +3803,8 @@
     },
     "sidebar": {
       "why-refinance": {
-        "title": "Why refinance",
-        "description": "Choose why you want to refinance your position and then Summer.fi will show some suitable positions for you in the next step. <1>Learn more about Refinance -></1>",
+        "title": "Why Swap your Position",
+        "description": "Choose why you want to swap your position and then Summer.fi will show some suitable positions for you in the next step. <1>Learn more about Position Swap -></1>",
         "list": {
           "title": "I want to",
           "item-1": "Switch to higher max Loan To Value",
@@ -3815,7 +3815,7 @@
       },
       "whats-changing": {
         "title": "What's changing",
-        "description": "Your position is about to be refinanced. This operation is one way only, refinancing back will be released soon.",
+        "description": "Your position is about to be swapped. This operation is currently one way only.",
         "highlighted": {
           "lowering-borrowing-cost": "Lowering Borrowing Cost",
           "increase-to-higher-ltv": "Increase to higher LTV",
@@ -3853,21 +3853,21 @@
       "transaction": {
         "title": {
           "success": "It's Done!",
-          "in-progress": "Refinancing..."
+          "in-progress": "Swapping Positions..."
         },
         "description": {
-          "success": "Your {{oldCollateralToken}}/{{oldDebtToken}} position (#{{oldId}}) refinanced to new {{collateralToken}}/{{debtToken}} position (#{{newId}}) successfully.",
-          "in-progress": "Refinancing your position."
+          "success": "Your {{oldCollateralToken}}/{{oldDebtToken}} position (#{{oldId}}) swapped to new {{collateralToken}}/{{debtToken}} position (#{{newId}}) successfully.",
+          "in-progress": "Swapping your position."
         }
       }
     },
     "validations": {
       "similar-position": "You already have similar {{collateralToken}}/{{quoteToken}} position on {{protocol}}. You can check it in the portfolio."
     },
-    "mobile-not-available": "Refinance is not available on mobile. Please use desktop to Refinance your position.",
+    "mobile-not-available": "Position Swap is not available on mobile. Please use desktop to swap your position.",
     "banner": {
-      "title": "Refinance",
-      "description": "Refinance your position to a new one in one go. Moving your funds between products becomes a breeze.",
+      "title": "Position Swap",
+      "description": "Swap your position to a new one in a simple flow. Moving your funds between products becomes a breeze.",
       "button": "Get Started"
     }
   },
