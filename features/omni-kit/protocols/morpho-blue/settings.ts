@@ -98,3 +98,11 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'PTWEETH-USDA': ['0xcc7b191903e4750ad71898a1594d912adbb5bb1c6effcde9c38f0a798112edd1'],
   },
 }
+
+export const morphoMarketsWithAutomation = [
+  morphoMarkets[NetworkIds.MAINNET]?.['WSTETH-ETH'][0],
+  morphoMarkets[NetworkIds.MAINNET]?.['SUSDE-DAI'][0],
+  morphoMarkets[NetworkIds.MAINNET]?.['SUSDE-DAI'][1],
+  morphoMarkets[NetworkIds.MAINNET]?.['SUSDE-DAI'][2],
+  morphoMarkets[NetworkIds.MAINNET]?.['SUSDE-DAI'][3],
+]
