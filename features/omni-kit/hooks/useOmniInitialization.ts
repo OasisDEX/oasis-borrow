@@ -26,24 +26,34 @@ import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { useState } from 'react'
 
 export function useOmniInitialization<OmniPositionType>({
+  poolId,
   positionTriggers,
 }: {
+  poolId?: string
   positionTriggers: GetTriggersResponse
 }) {
   const stopLossForm = useOmniStopLossAutomationFormReducto(
-    getAutomationStopLossFormDefaults(positionTriggers),
+    getAutomationStopLossFormDefaults({ poolId, positionTriggers }),
   )
   const trailingStopLossForm = useOmniAutomationTrailingStopLossFormReducto(
-    getAutomationTrailingStopLossFormDefaults(positionTriggers),
+    getAutomationTrailingStopLossFormDefaults({ poolId, positionTriggers }),
   )
   const autoSellForm = useOmniAutomationAutoBSFormReducto(
-    getAutomationAutoBSFormDefaults(positionTriggers, AutomationFeatures.AUTO_SELL),
+    getAutomationAutoBSFormDefaults({
+      poolId,
+      positionTriggers,
+      type: AutomationFeatures.AUTO_SELL,
+    }),
   )
   const autoBuyForm = useOmniAutomationAutoBSFormReducto(
-    getAutomationAutoBSFormDefaults(positionTriggers, AutomationFeatures.AUTO_BUY),
+    getAutomationAutoBSFormDefaults({
+      poolId,
+      positionTriggers,
+      type: AutomationFeatures.AUTO_BUY,
+    }),
   )
   const partialTakeProfitForm = useOmniAutomationPartialTakeProfitFormReducto(
-    getAutomationPartialTakeProfitFormDefaults(positionTriggers),
+    getAutomationPartialTakeProfitFormDefaults({ poolId, positionTriggers }),
   )
 
   const [cachedPosition, setCachedPosition] = useState<OmniPositionSet<OmniPositionType>>()
@@ -67,19 +77,19 @@ export function useOmniInitialization<OmniPositionType>({
       constantMultiple: partialTakeProfitForm,
       autoTakeProfit: partialTakeProfitForm,
     },
-    cachedPosition,
-    setCachedPosition,
-    cachedSwap,
-    setCachedSwap,
-    simulation,
-    setSimulation,
-    isSimulationLoading,
-    setIsLoadingSimulation,
     automationSimulationData,
-    setAutomationSimulationData,
-    isAutomationSimulationLoading,
-    setAutomationIsLoadingSimulation,
     cachedAutomationOrderInfoItems,
+    cachedPosition,
+    cachedSwap,
+    isAutomationSimulationLoading,
+    isSimulationLoading,
+    setAutomationIsLoadingSimulation,
+    setAutomationSimulationData,
     setCachedAutomationOrderInfoItems,
+    setCachedPosition,
+    setCachedSwap,
+    setIsLoadingSimulation,
+    setSimulation,
+    simulation,
   }
 }

@@ -2,8 +2,8 @@ import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
-import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
 import { RefinanceSidebarStep, type SparkPoolId } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, Protocol, User } from 'summerfi-sdk-client'
@@ -195,7 +195,7 @@ export function useSdkSimulation(): SDKSimulation {
       const refinanceParameters: IRefinanceParameters = {
         sourcePosition: _sourcePosition,
         targetPosition: _targetPosition,
-        slippage: Percentage.createFrom({ value: slippage }),
+        slippage: Percentage.createFrom({ value: slippage * 100 }),
       }
 
       const [_importPositionSimulation, _refinanceSimulation] = await Promise.all([

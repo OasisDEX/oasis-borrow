@@ -24,18 +24,18 @@ export interface GetYieldsResponse {
     referenceDate: string
   }
   results: {
-    apy: number
+    apy?: number
     apy1d: number
     apy7d: number
-    apy30d: number
-    apy90d: number
+    apy30d?: number
+    apy90d?: number
   }
 }
 
 export interface GetYieldsResponseMapped {
-  apy: BigNumber
+  apy365d?: BigNumber
   apy1d: BigNumber
   apy7d: BigNumber
-  apy30d: BigNumber
-  apy90d: BigNumber
+  apy30d?: BigNumber
+  apy90d?: BigNumber
 }

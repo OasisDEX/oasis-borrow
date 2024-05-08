@@ -46,16 +46,19 @@ export function DsrSimulationSection({
       earningAfterFees: amount.times(one.plus(next30dayRate)).minus(amount),
       netValue: amount.times(one.plus(next30dayRate)),
       token: 'DAI',
+      hasData: true,
     },
     next90Days: {
       earningAfterFees: amount.times(one.plus(next90dayRate)).minus(amount),
       netValue: amount.times(one.plus(next90dayRate)),
       token: 'DAI',
+      hasData: true,
     },
     next1Year: {
       earningAfterFees: amount.times(one.plus(next1yearRate)).minus(amount),
       netValue: amount.times(one.plus(next1yearRate)),
       token: 'DAI',
+      hasData: true,
     },
   }
 

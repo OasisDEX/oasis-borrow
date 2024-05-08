@@ -1,5 +1,4 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { mapErc4626Events } from 'features/omni-kit/protocols/erc-4626/history/mapErc4626Events'
 import type { Erc4626HistoryEvent } from 'features/omni-kit/protocols/erc-4626/history/types'
 import { getErc4626PositionAggregatedData$ } from 'features/omni-kit/protocols/erc-4626/observables/getErc4626AggregatedData'
@@ -58,9 +57,9 @@ export function useErc4626Data({
           erc4626PositionAggregatedData?.history ?? [],
         ) as Erc4626HistoryEvent[],
       },
+      poolId: erc4626PositionData?.vault.address,
       positionData: erc4626PositionData,
       protocolPricesData: tokenPriceUSDData,
-      positionTriggersData: omniPositionTriggersDataDefault,
     },
     errors: [erc4626PositionError, erc2626PositionAggregatedError],
   }

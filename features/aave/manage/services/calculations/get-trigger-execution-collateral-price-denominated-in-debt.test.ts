@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { SupportedLambdaProtocols } from 'helpers/lambda/triggers'
+import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 
 import { getTriggerExecutionPrice } from './get-trigger-execution-price'
@@ -33,7 +33,7 @@ describe('get-trigger-execution-collateral-price-denominated-in-debt', () => {
         },
         amount: new BigNumber(1400),
       },
-      protocol: LendingProtocol.AaveV3 as SupportedLambdaProtocols,
+      protocol: LendingProtocol.AaveV3 as AaveLendingProtocol | SparkLendingProtocol,
       dpm: '0x0',
       pricesDenomination: 'collateral' as const,
     }

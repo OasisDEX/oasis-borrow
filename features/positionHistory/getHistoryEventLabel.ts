@@ -13,9 +13,17 @@ export const getHistoryEventLabel = ({
   isOpen?: boolean
 }) => {
   const { t } = useTranslation()
+
   const isAutomation = kind?.includes('Automation')
+
   if (isAutomation && kind) {
     return handleAutomationKinds(kind, t, collateralToken, quoteToken)
+  }
+
+  const isRefinance = kind?.includes('Refinance')
+
+  if (isRefinance) {
+    return t('refinance.title')
   }
 
   const kindWithoutVersion = kind?.split('_')[0]

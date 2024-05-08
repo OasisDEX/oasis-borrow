@@ -30,10 +30,14 @@ export function mapSimulation({
       <Skeleton width="70%" sx={{ marginLeft: '30%' }} />,
       <Skeleton width="70%" sx={{ marginLeft: '30%' }} />,
     ]
-  return [
-    `${formatCryptoBalance(simulation.earningAfterFees.times(multiplier || one))} ${simulation.token}`,
-    `${formatCryptoBalance(simulation.netValue.times(multiplier || one))} ${simulation.token}`,
-  ]
+  if (simulation.hasData) {
+    return [
+      `${formatCryptoBalance(simulation.earningAfterFees.times(multiplier || one))} ${simulation.token}`,
+      `${formatCryptoBalance(simulation.netValue.times(multiplier || one))} ${simulation.token}`,
+    ]
+  }
+
+  return ['New', 'New']
 }
 
 export const OmniOpenYieldLoopSimulation: FC<OmniOpenYieldLoopSimulationProps> = ({

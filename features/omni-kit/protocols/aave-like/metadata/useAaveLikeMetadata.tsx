@@ -1,6 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
+import { getAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowishChangeVariant,
@@ -15,7 +16,6 @@ import {
 } from 'features/omni-kit/protocols/aave-like/components'
 import {
   aaveLikeFlowStateFilter,
-  getAaveLikeAutomationMetadataValues,
   getAaveLikeBanner,
   getAaveLikeFaq,
   getAaveLikeFeatureToggle,
@@ -40,6 +40,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       isYieldLoopWithData,
       networkId,
       pairId,
+      poolId,
       priceFormat,
       productType,
       protocol,
@@ -50,6 +51,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+
   const [hash] = useHash()
 
   const featureToggles = getAaveLikeFeatureToggle(protocol)
@@ -61,10 +63,12 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const notifications: DetailsSectionNotificationItem[] = getAaveLikeNotifications({
-    productType,
     auction: productContext.position.positionAuction as AaveLikeHistoryEvent,
-    triggers: productContext.automation.positionTriggers,
+    poolId,
+    positionTriggers: productContext.automation.positionTriggers,
     priceFormat,
+    productType,
+    protocol,
   })
 
   switch (productType) {
@@ -97,7 +101,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
               productType,
               protocol,
               quoteAddress,
-              positionTriggers: productContext.automation.positionTriggers,
             }),
         },
         values: {
@@ -126,12 +129,13 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           maxSliderAsMaxLtv: true,
           headlineDetails,
           isHeadlineDetailsLoading,
-          automation: getAaveLikeAutomationMetadataValues({
+          automation: getAutomationMetadataValues({
+            automationForms: productContext.automation.automationForms,
+            commonFormState: productContext.automation.commonForm.state,
+            hash,
+            poolId,
             positionTriggers: productContext.automation.positionTriggers,
             simulationResponse: productContext.automation.simulationData,
-            commonFormState: productContext.automation.commonForm.state,
-            automationForms: productContext.automation.automationForms,
-            hash,
           }),
         },
         elements: {

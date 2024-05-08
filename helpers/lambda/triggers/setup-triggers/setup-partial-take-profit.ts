@@ -3,27 +3,26 @@ import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
-  SetupAavePartialTakeProfitParams,
+  SetupPartialTakeProfitParams,
   SetupPartialTakeProfitResponse,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikePartialTakeProfit = async (
-  params: SetupAavePartialTakeProfitParams,
+export const setupLambdaPartialTakeProfit = async (
+  params: SetupPartialTakeProfitParams,
 ): Promise<SetupPartialTakeProfitResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-partial-take-profit' })
+  const { common, poolId, url } = getSetupTriggerConfig({
+    ...params,
+    path: 'dma-partial-take-profit',
+  })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
-    dpm: params.dpm,
+    ...common,
     triggerData: {
-      withdrawToken: params.executionToken,
       executionLTV: params.triggerLtv.times(lambdaPercentageDenomination).integerValue().toString(),
-      withdrawStep: params.withdrawalLtv
-        .times(lambdaPercentageDenomination)
-        .integerValue()
-        .toString(),
       executionPrice: params.startingTakeProfitPrice.integerValue().toString(),
+      poolId,
       stopLoss: params.stopLoss
         ? {
             triggerData: {
@@ -36,14 +35,13 @@ export const setupAaveLikePartialTakeProfit = async (
             action: params.stopLoss.action,
           }
         : undefined,
+      withdrawToken: params.executionToken,
+      withdrawStep: params.withdrawalLtv
+        .times(lambdaPercentageDenomination)
+        .integerValue()
+        .toString(),
       // trailingStopLoss: params.trailingStopLoss, // possibly in the future
     },
-    position: {
-      collateral: params.strategy.collateralAddress,
-      debt: params.strategy.debtAddress,
-    },
-    rpc: customRpc,
-    action: params.action,
   })
 
   let response: Response

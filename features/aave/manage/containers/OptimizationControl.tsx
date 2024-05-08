@@ -94,10 +94,11 @@ export function OptimizationControl({
   )
 
   // maps the lambda data
-  const aaveLikePartialTakeProfitLambdaData = mapPartialTakeProfitFromLambda(
-    state.context.strategyConfig,
-    triggersState.context.currentTriggers.triggers,
-  )
+  const aaveLikePartialTakeProfitLambdaData = mapPartialTakeProfitFromLambda({
+    protocol: state.context.strategyConfig.protocol,
+    strategyConfig: state.context.strategyConfig,
+    triggers: triggersState.context.currentTriggers.triggers,
+  })
   // calculates the partial take profit params + stores user inputs
   const aaveLikePartialTakeProfitParams = getAaveLikePartialTakeProfitParams.manage({
     state,
@@ -120,11 +121,13 @@ export function OptimizationControl({
   const dropdown = useOptimizationSidebarDropdown(triggersState, sendTriggerEvent)
 
   const {
-    isAaveBasicBuyEnabled,
-    isSparkBasicBuyEnabled,
-    isAavePartialTakeProfitEnabled,
-    isSparkPartialTakeProfitEnabled,
-  } = triggersState.context.currentTriggers.flags
+    isBasicBuyEnabled: isAaveBasicBuyEnabled,
+    isPartialTakeProfitEnabled: isAavePartialTakeProfitEnabled,
+  } = triggersState.context.currentTriggers.flags.aave3
+  const {
+    isBasicBuyEnabled: isSparkBasicBuyEnabled,
+    isPartialTakeProfitEnabled: isSparkPartialTakeProfitEnabled,
+  } = triggersState.context.currentTriggers.flags.spark
 
   const autoBuyEnabled = isAaveBasicBuyEnabled || isSparkBasicBuyEnabled
   const partialTakeProfitEnabled = isAavePartialTakeProfitEnabled || isSparkPartialTakeProfitEnabled

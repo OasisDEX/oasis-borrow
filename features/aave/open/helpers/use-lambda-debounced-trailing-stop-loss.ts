@@ -11,25 +11,29 @@ import type {
   TriggersApiError,
   TriggersApiWarning,
 } from 'helpers/lambda/triggers/setup-triggers'
-import { setupAaveLikeTrailingStopLoss } from 'helpers/lambda/triggers/setup-triggers/setup-aave-trailing-stop-loss'
+import { setupLambdaTrailingStopLoss } from 'helpers/lambda/triggers/setup-triggers/setup-trailing-stop-loss'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useState } from 'react'
 
 import { eth2weth } from '@oasisdex/utils/lib/src/utils'
 
-export const useLambdaDebouncedTrailingStopLoss = ({
-  state,
-  send,
-  trailingDistance,
-  trailingDistanceValue,
-  trailingStopLossToken,
-  action,
-}: (OpenAaveStateProps | ManageAaveStateProps) & {
+type LambdaDebouncedTrailingStopLossParams = (OpenAaveStateProps | ManageAaveStateProps) & {
+  action: TriggerAction
+  poolId?: string
   trailingDistance: BigNumber
   trailingDistanceValue: BigNumber
   trailingStopLossToken: string
-  action: TriggerAction
-}) => {
+}
+
+export const useLambdaDebouncedTrailingStopLoss = ({
+  action,
+  poolId,
+  send,
+  state,
+  trailingDistance,
+  trailingDistanceValue,
+  trailingStopLossToken,
+}: LambdaDebouncedTrailingStopLossParams) => {
   const [isGettingTrailingStopLossTx, setIsGettingTrailingStopLossTx] = useState(false)
   const [warnings, setWarnings] = useState<TriggersApiWarning[]>([])
   const [errors, setErrors] = useState<TriggersApiError[]>([])
@@ -57,17 +61,18 @@ export const useLambdaDebouncedTrailingStopLoss = ({
         clearWarningsAndErrors()
       }
       const trailingStopLossTxDataPromise = cancelable(
-        setupAaveLikeTrailingStopLoss({
+        setupLambdaTrailingStopLoss({
+          action,
           dpm: dpmAccount,
-          trailingDistance: trailingDistanceValue,
-          networkId: strategyConfig.networkId,
           executionToken: trailingStopLossToken === 'debt' ? debtAddress : collateralAddress,
+          networkId: strategyConfig.networkId,
+          poolId,
           protocol: strategyConfig.protocol as SupportedLambdaProtocols,
           strategy: {
             collateralAddress,
             debtAddress,
           },
-          action,
+          trailingDistance: trailingDistanceValue,
         }),
       )
 

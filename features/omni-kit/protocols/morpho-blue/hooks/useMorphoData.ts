@@ -1,5 +1,4 @@
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { omniPositionTriggersDataDefault } from 'features/omni-kit/constants'
 import { useMorphoOraclePrices } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { getMorphoPositionAggregatedData$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
@@ -62,9 +61,9 @@ export function useMorphoData({
   return {
     data: {
       aggregatedData: morphoPositionAggregatedData,
+      poolId: morphoPositionData?.marketParams.id,
       positionData: morphoPositionData,
       protocolPricesData: oraclePrices,
-      positionTriggersData: omniPositionTriggersDataDefault,
     },
     errors: [morphoPositionError, morphoPositionAggregatedError],
   }

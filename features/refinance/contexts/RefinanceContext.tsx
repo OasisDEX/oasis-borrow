@@ -12,6 +12,7 @@ export type RefinanceContext = {
   }
   position: RefinanceGeneralContextBase['position'] & {
     owner: string
+    netApy: string
   }
   simulation: SDKSimulation
   poolData: RefinanceGeneralContextBase['poolData']

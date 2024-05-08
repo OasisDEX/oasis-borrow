@@ -6,6 +6,7 @@ export interface Simulation {
   earningAfterFees: BigNumber
   netValue: BigNumber
   token: string
+  hasData: boolean
 }
 
 export interface CalculateSimulationResult {
@@ -55,7 +56,7 @@ export function calculateOmniYieldsSimulation({
         days: 30,
       }),
     previous90Days:
-      yields.apy90d &&
+      yields.apy1d &&
       getSimulation({
         amount,
         annualizedYield: yields.apy90d,
@@ -63,10 +64,10 @@ export function calculateOmniYieldsSimulation({
         days: 90,
       }),
     previous1Year:
-      yields.apy &&
+      yields.apy1d &&
       getSimulation({
         amount,
-        annualizedYield: yields.apy,
+        annualizedYield: yields.apy365d,
         token,
         days: 365,
       }),
@@ -80,15 +81,24 @@ function getSimulation({
   days,
 }: {
   amount: BigNumber
-  annualizedYield: BigNumber
+  annualizedYield?: BigNumber
   token: string
   days: number
 }): Simulation {
+  if (!annualizedYield) {
+    return {
+      earningAfterFees: zero,
+      netValue: amount,
+      token,
+      hasData: false,
+    }
+  }
   const earningsPerDay = amount.times(annualizedYield.div(100).plus(one)).minus(amount).div(365)
   const earnings = earningsPerDay.times(days)
   return {
     earningAfterFees: earnings,
     netValue: earnings.plus(amount),
     token,
+    hasData: true,
   }
 }

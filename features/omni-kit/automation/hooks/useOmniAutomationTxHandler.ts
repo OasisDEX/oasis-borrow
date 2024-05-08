@@ -26,14 +26,15 @@ export const useOmniAutomationTxHandler = () => {
   const {
     tx: { setTxDetails, setGasEstimation },
     environment: {
-      ethPrice,
-      productType,
-      networkId,
-      protocol,
       collateralAddress,
-      quoteAddress,
       dpmProxy,
+      ethPrice,
       isShort,
+      networkId,
+      poolId,
+      productType,
+      protocol,
+      quoteAddress,
     },
   } = useOmniGeneralContext()
   const {
@@ -64,17 +65,18 @@ export const useOmniAutomationTxHandler = () => {
     useState<CancelablePromise<OmniAutomationSimulationResponse | undefined>>()
 
   const automationParameters = getOmniAutomationParameters({
-    proxyAddress: dpmProxy,
-    networkId,
-    protocol,
-    collateralAddress,
-    debtAddress: quoteAddress,
     automation,
+    collateralAddress,
     data: {
       activeUiDropdown,
       automationState: state,
     } as OmniGetAutomationDataParams,
+    debtAddress: quoteAddress,
     isShort,
+    networkId,
+    poolId,
+    protocol,
+    proxyAddress: dpmProxy,
   })
 
   useEffect(() => {

@@ -77,6 +77,11 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       earnShare: new BigNumber(0.6),
     },
     'AJNA-DAI': {
+      amount: new BigNumber(22960),
+      borrowShare: new BigNumber(0.4),
+      earnShare: new BigNumber(0.6),
+    },
+    'UNIV2-DAI': {
       amount: new BigNumber(19680),
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
@@ -92,34 +97,24 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       earnShare: new BigNumber(0.95),
     },
     'MWSTETHWPUNKS20-WSTETH': {
-      amount: new BigNumber(13120),
+      amount: new BigNumber(3280),
       borrowShare: new BigNumber(0.05),
       earnShare: new BigNumber(0.95),
     },
     'MWSTETHWPUNKS40-WSTETH': {
-      amount: new BigNumber(13120),
+      amount: new BigNumber(3280),
       borrowShare: new BigNumber(0.05),
       earnShare: new BigNumber(0.95),
-    },
-    'ENA-SDAI': {
-      amount: new BigNumber(4920),
-      borrowShare: new BigNumber(0.4),
-      earnShare: new BigNumber(0.6),
-    },
-    'SDAI-ENA': {
-      amount: new BigNumber(4920),
-      borrowShare: new BigNumber(0.4),
-      earnShare: new BigNumber(0.6),
     },
   },
   [NetworkIds.BASEMAINNET]: {
     'CBETH-ETH': {
-      amount: new BigNumber(24600),
+      amount: new BigNumber(32800),
       borrowShare: new BigNumber(0.05),
       earnShare: new BigNumber(0.95),
     },
     'ETH-USDC': {
-      amount: new BigNumber(24600),
+      amount: new BigNumber(39360),
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
     },
@@ -134,7 +129,7 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       earnShare: new BigNumber(0.6),
     },
     'USDC-DEGEN': {
-      amount: new BigNumber(24600),
+      amount: new BigNumber(9840),
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
     },
@@ -149,7 +144,7 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       earnShare: new BigNumber(0.6),
     },
     'AERO-USDC': {
-      amount: new BigNumber(11480),
+      amount: new BigNumber(9840),
       borrowShare: new BigNumber(0.4),
       earnShare: new BigNumber(0.6),
     },

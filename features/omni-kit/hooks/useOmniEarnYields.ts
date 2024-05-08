@@ -22,11 +22,17 @@ export function useOmniEarnYields(params: GetYieldsParams): GetYieldsResponseMap
         .then((yieldsResponse) => {
           if (yieldsResponse?.results) {
             setOmniYields({
-              apy: new BigNumber(yieldsResponse.results.apy),
+              apy365d: yieldsResponse.results.apy
+                ? new BigNumber(yieldsResponse.results.apy)
+                : undefined,
               apy1d: new BigNumber(yieldsResponse.results.apy1d),
               apy7d: new BigNumber(yieldsResponse.results.apy7d),
-              apy30d: new BigNumber(yieldsResponse.results.apy30d),
-              apy90d: new BigNumber(yieldsResponse.results.apy90d),
+              apy30d: yieldsResponse.results.apy30d
+                ? new BigNumber(yieldsResponse.results.apy30d)
+                : undefined,
+              apy90d: yieldsResponse.results.apy90d
+                ? new BigNumber(yieldsResponse.results.apy90d)
+                : undefined,
             })
           }
         })

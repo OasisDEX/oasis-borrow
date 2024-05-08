@@ -1,4 +1,4 @@
-import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
+import type { AaveLikePositionV2, LendingPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
@@ -128,33 +128,26 @@ export const useOmniPartialTakeProfitDataHandler = () => {
 
   const castedPosition = position as AaveLikePositionV2
 
+  const {
+    debtAmount,
+    collateralAmount,
+    liquidationPrice,
+    riskRatio: { loanToValue },
+    maxRiskRatio: { loanToValue: maxLoanToValue },
+  } = position as LendingPosition
+
+  const isPartialTakeProfitEnabled = !!automationDynamicValues?.flags.isPartialTakeProfitEnabled
   const isCollateralActive = state.resolveTo
     ? state.resolveTo === 'collateral'
     : automationDynamicValues?.triggers.partialTakeProfit?.decodedParams.withdrawToDebt === 'false'
+  const isSimpleView = commonState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
 
-  const simpleView = commonState.uiDropdownOptimization !== AutomationFeatures.PARTIAL_TAKE_PROFIT
-  const maxMultiple = castedPosition?.category.maxLoanToValue || zero
-  const loanToValue = castedPosition.riskRatio.loanToValue
-  const liquidationRatio = castedPosition.category.liquidationThreshold
-
-  const isPartialTakeProfitEnabled = !!automationDynamicValues?.flags.isPartialTakeProfitEnabled
+  const liquidationPriceLtv = debtAmount.div(collateralAmount.times(liquidationPrice))
 
   const resolvedTrigger = automationDynamicValues?.triggers.partialTakeProfit
   const resolvedStopLossTrigger = automationDynamicValues?.triggers.stopLoss
   const resolvedTrailingStopLossTrigger = automationDynamicValues?.triggers.trailingStopLoss
-
   const resolvedTriggerLtv = resolvedTrigger?.decodedMappedParams.executionLtv
-
-  const startingTakeProfitPriceLong = resolvedTrigger?.dynamicParams?.nextProfit
-    ? new BigNumber(resolvedTrigger.dynamicParams.nextProfit.triggerPrice).div(
-        lambdaPriceDenomination,
-      )
-    : undefined
-
-  const startingTakeProfitPriceShort = startingTakeProfitPriceLong
-    ? one.div(startingTakeProfitPriceLong)
-    : undefined
-
   const resolvedWithdrawalLtv =
     resolvedTrigger?.decodedMappedParams.ltvStep &&
     resolvedTrigger?.decodedMappedParams.executionLtv
@@ -167,6 +160,15 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     resolvedTrigger?.decodedParams.withdrawToDebt === 'true'
       ? ('quote' as const)
       : ('collateral' as const)
+
+  const startingTakeProfitPriceLong = resolvedTrigger?.dynamicParams?.nextProfit
+    ? new BigNumber(resolvedTrigger.dynamicParams.nextProfit.triggerPrice).div(
+        lambdaPriceDenomination,
+      )
+    : undefined
+  const startingTakeProfitPriceShort = startingTakeProfitPriceLong
+    ? one.div(startingTakeProfitPriceLong)
+    : undefined
 
   const selectedPartialTakeProfitToken =
     state.resolveTo || partialTakeProfitToken || partialTakeProfitConstants.defaultResolveTo
@@ -191,14 +193,14 @@ export const useOmniPartialTakeProfitDataHandler = () => {
   const secondaryRealizedProfit = realizedProfitMap[partialTakeProfitSecondTokenData.symbol]
 
   const pnlConfig = {
-    cumulatives: mapBorrowCumulativesToOmniCumulatives(castedPosition.pnl.cumulatives),
-    productType: OmniProductType.Multiply,
+    collateralToken,
     collateralTokenPrice: collateralPrice,
+    cumulatives: mapBorrowCumulativesToOmniCumulatives(castedPosition.pnl.cumulatives),
+    debtToken: quoteToken,
     debtTokenPrice: quotePrice,
     netValueInCollateralToken: castedPosition.netValue.div(collateralPrice),
     netValueInDebtToken: castedPosition.netValue.div(quotePrice),
-    collateralToken,
-    debtToken: quoteToken,
+    productType: OmniProductType.Multiply,
   }
 
   const netValuePnlDataMap = {
@@ -214,8 +216,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
 
   const currentProfitAndLossCommonData = useOmniCardDataCurrentProfitAndLoss({
     primaryPnlValue: isPartialTakeProfitEnabled ? primaryPnlValue : undefined,
-    secondaryPnLValue: isPartialTakeProfitEnabled ? secondaryPnLValue : undefined,
     primaryUnit: partialTakeProfitTokenData.symbol,
+    secondaryPnLValue: isPartialTakeProfitEnabled ? secondaryPnLValue : undefined,
     secondaryUnit: partialTakeProfitSecondTokenData.symbol,
     modal: (
       <DetailsSectionContentSimpleModal
@@ -227,8 +229,8 @@ export const useOmniPartialTakeProfitDataHandler = () => {
 
   const realizedProfitCommonData = useOmniCardDataRealizedProfit({
     primaryRealizedProfit: isPartialTakeProfitEnabled ? primaryRealizedProfit : undefined,
-    secondaryRealizedProfit: isPartialTakeProfitEnabled ? secondaryRealizedProfit : undefined,
     primaryUnit: partialTakeProfitTokenData.symbol,
+    secondaryRealizedProfit: isPartialTakeProfitEnabled ? secondaryRealizedProfit : undefined,
     secondaryUnit: partialTakeProfitSecondTokenData.symbol,
     modal: (
       <DetailsSectionContentSimpleModal
@@ -238,47 +240,41 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     ),
   })
 
-  const positionPriceRatio = useMemo(() => {
-    return isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice)
-  }, [collateralPrice, isShort, quotePrice])
-
   const triggerLtvSliderConfig = getTriggerLtvSliderConfig({
-    triggerLtv: state.triggerLtv || resolvedTriggerLtv?.times(100) || zero,
-    maxMultiple: maxMultiple.times(hundred),
+    maxMultiple: maxLoanToValue.times(hundred),
+    triggerLtv: state.triggerLtv ?? resolvedTriggerLtv?.times(100) ?? zero,
   })
 
   const withdrawalLtvSliderConfig = getWithdrawalLtvSliderConfig({
-    withdrawalLtv: state.ltvStep || resolvedWithdrawalLtv?.times(100) || zero,
-    maxMultiple: maxMultiple.times(hundred),
-    triggerLtv: state.triggerLtv || resolvedTriggerLtv?.times(100) || zero,
+    maxMultiple: maxLoanToValue.times(hundred),
+    triggerLtv: state.triggerLtv ?? resolvedTriggerLtv?.times(100) ?? zero,
+    withdrawalLtv: state.ltvStep ?? resolvedWithdrawalLtv?.times(100) ?? zero,
   })
 
   const hasStopLoss = hasActiveStopLossFromTriggers({
-    triggers: positionTriggers.triggers,
     protocol,
+    triggers: positionTriggers.triggers,
   })
   const hasTrailingStopLoss = hasActiveTrailingStopLossFromTriggers({
-    triggers: positionTriggers.triggers,
     protocol,
+    triggers: positionTriggers.triggers,
   })
 
   const currentStopLossLevel = useMemo(() => {
-    if (resolvedStopLossTrigger) {
-      return new BigNumber(
-        Number(
-          resolvedStopLossTrigger.decodedMappedParams.executionLtv ||
-            resolvedStopLossTrigger.decodedMappedParams.ltv,
-        ),
-      )
-    }
-    return undefined
+    return resolvedStopLossTrigger
+      ? new BigNumber(
+          Number(
+            resolvedStopLossTrigger.decodedMappedParams.executionLtv ??
+              resolvedStopLossTrigger.decodedMappedParams.ltv,
+          ),
+        )
+      : undefined
   }, [resolvedStopLossTrigger])
 
   const currentTrailingStopLossDistance = useMemo(() => {
-    if (resolvedTrailingStopLossTrigger) {
-      return resolvedTrailingStopLossTrigger.decodedMappedParams.trailingDistance
-    }
-    return undefined
+    return resolvedTrailingStopLossTrigger
+      ? resolvedTrailingStopLossTrigger.decodedMappedParams.trailingDistance
+      : undefined
   }, [resolvedTrailingStopLossTrigger])
 
   const stopLossLevelLabel =
@@ -293,13 +289,13 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     .times(100)
 
   const extraTriggerLtv =
-    state.extraTriggerLtv || currentStopLossLevel?.times(100) || defaultStopLossLevel
+    state.extraTriggerLtv ?? currentStopLossLevel?.times(100) ?? defaultStopLossLevel
 
   const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice: castedPosition.debtAmount.div(
-      castedPosition.collateralAmount.times(liquidationRatio),
+      castedPosition.collateralAmount.times(liquidationPriceLtv),
     ),
-    liquidationRatio: one.div(liquidationRatio),
+    liquidationRatio: one.div(liquidationPriceLtv),
     stopLossLevel: one.div(extraTriggerLtv.div(100)).times(100),
   })
 
@@ -307,7 +303,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     const sliderMin = new BigNumber(
       loanToValue.plus(stopLossConstants.offsets.min).times(100).toFixed(0, BigNumber.ROUND_UP),
     )
-    const sliderMax = liquidationRatio.minus(stopLossConstants.offsets.max).times(100)
+    const sliderMax = liquidationPriceLtv.minus(stopLossConstants.offsets.max).times(100)
     const sliderPercentageFill = getSliderPercentageFill({
       min: sliderMin,
       max: sliderMax,
@@ -319,7 +315,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       maxBoundry: sliderMax,
       step: 0.1,
     }
-  }, [extraTriggerLtv, liquidationRatio, loanToValue])
+  }, [extraTriggerLtv, liquidationPriceLtv, loanToValue])
 
   const startingTakeProfitPrice = isShort
     ? startingTakeProfitPriceShort
@@ -335,9 +331,9 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     : undefined
 
   const nextDynamicTriggerPriceCommonData = useOmniCardDataNextDynamicTriggerPrice({
-    priceFormat,
-    nextDynamicTriggerPrice: startingTakeProfitPrice,
     afterNextDynamicTriggerPrice,
+    nextDynamicTriggerPrice: startingTakeProfitPrice,
+    priceFormat,
     triggerLtv: resolvedTriggerLtv,
     modal: (
       <DetailsSectionContentSimpleModal
@@ -386,9 +382,9 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       : undefined
 
   const estimatedToReceiveCommonData = useOmniCardDataEstToReceive({
+    afterEstimatedToReceive: afterResolvedEstimatedToReceive,
     estimatedToReceive: resolvedEstimatedToReceive,
     estimatedToReceiveFooter: resolvedEstimatedToReceiveFooter,
-    afterEstimatedToReceive: afterResolvedEstimatedToReceive,
     primaryUnit: isCollateralActive ? collateralToken : quoteToken,
     secondaryUnit: !isCollateralActive ? collateralToken : quoteToken,
     modal: (
@@ -399,55 +395,35 @@ export const useOmniPartialTakeProfitDataHandler = () => {
     ),
   })
 
-  const resolveToToken = isCollateralActive ? collateralToken : quoteToken
-
   return {
-    castedPosition,
-    loanToValue,
-    liquidationPrice: castedPosition.debtAmount.div(
-      castedPosition.collateralAmount.times(liquidationRatio),
-    ),
-    multiple: castedPosition.riskRatio.multiple,
-    startingTakeProfitPrice,
     afterNextDynamicTriggerPrice,
-    resolvedWithdrawalLtv,
-    resolvedTriggerLtv,
-    positionPriceRatio,
-    simpleView,
-    isPartialTakeProfitEnabled,
-    partialTakeProfitSecondTokenData,
-    partialTakeProfitTokenData,
-    partialTakeProfitToken,
-    realizedProfit,
-    realizedProfitMap,
-    primaryRealizedProfit,
-    secondaryRealizedProfit,
-    pnlConfig,
-    netValuePnlDataMap,
-    primaryPnlValue,
-    secondaryPnLValue,
-    currentProfitAndLossCommonData,
-    realizedProfitCommonData,
+    afterResolvedEstimatedToReceive,
     chartView,
-    setChartView,
-    triggerLtvSliderConfig,
-    withdrawalLtvSliderConfig,
+    currentProfitAndLossCommonData,
+    currentStopLossLevel,
+    dynamicStopLossPrice,
+    estimatedToReceiveCommonData,
+    extraTriggerLtv,
     hasStopLoss,
     hasTrailingStopLoss,
-    dynamicStopLossPrice,
-    selectedPartialTakeProfitToken,
-    newStopLossSliderConfig,
-    extraTriggerLtv,
-    stopLossLevelLabel,
-    defaultStopLossLevel,
-    currentStopLossLevel,
-    currentTrailingStopLossDistance,
-    trailingStopLossDistanceLabel,
-    nextDynamicTriggerPriceCommonData,
-    estimatedToReceiveCommonData,
     isLoading: isSimulationLoading && isAddOrUpdateAction,
-    isCollateralActive,
-    afterResolvedEstimatedToReceive,
-    resolveToToken,
+    isPartialTakeProfitEnabled,
+    newStopLossSliderConfig,
+    nextDynamicTriggerPriceCommonData,
+    partialTakeProfitSecondTokenData,
+    partialTakeProfitToken,
+    partialTakeProfitTokenData,
+    realizedProfitCommonData,
+    resolvedTriggerLtv,
+    resolvedWithdrawalLtv,
+    resolveToToken: isCollateralActive ? collateralToken : quoteToken,
+    selectedPartialTakeProfitToken,
+    setChartView,
+    isSimpleView,
+    startingTakeProfitPrice,
+    stopLossLevelLabel,
+    trailingStopLossDistanceLabel,
+    triggerLtvSliderConfig,
+    withdrawalLtvSliderConfig,
   }
 }

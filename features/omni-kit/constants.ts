@@ -10,6 +10,7 @@ import {
 } from 'features/exchange/exchange'
 import type { NetworkIdsWithValues } from 'features/omni-kit/types'
 import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { one, zero } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -99,17 +100,26 @@ export const omniDefaultOverviewSimulationDeposit = new BigNumber(100)
 export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)
 
 // Default response to avoid unnecessary API calls if automation is not available on given protocol
-export const omniPositionTriggersDataDefault = {
-  triggers: {},
+export const omniPositionTriggersDataDefault: GetTriggersResponse = {
+  triggers: {
+    aave3: {},
+    spark: {},
+  },
   flags: {
-    isAaveStopLossEnabled: false,
-    isSparkStopLossEnabled: false,
-    isAaveBasicBuyEnabled: false,
-    isAaveBasicSellEnabled: false,
-    isSparkBasicBuyEnabled: false,
-    isSparkBasicSellEnabled: false,
-    isAavePartialTakeProfitEnabled: false,
-    isSparkPartialTakeProfitEnabled: false,
+    aave3: {
+      isBasicBuyEnabled: false,
+      isBasicSellEnabled: false,
+      isPartialTakeProfitEnabled: false,
+      isStopLossEnabled: false,
+      isTrailingStopLossEnabled: false,
+    },
+    spark: {
+      isBasicBuyEnabled: false,
+      isBasicSellEnabled: false,
+      isPartialTakeProfitEnabled: false,
+      isStopLossEnabled: false,
+      isTrailingStopLossEnabled: false,
+    },
   },
   triggerGroup: {},
   triggersCount: 0,

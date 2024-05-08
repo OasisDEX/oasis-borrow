@@ -12,7 +12,8 @@ export const RefinanceSimulation = () => {
     form: {
       state: { strategy },
     },
-    poolData: { maxLtv: currentMaxLtv, borrowRate: currentBorrowRate },
+    poolData: { maxLtv: currentMaxLtv },
+    position: { netApy: currentBorrowRate },
   } = useRefinanceContext()
 
   const positionData = useSimulationPositionData()
@@ -36,7 +37,6 @@ export const RefinanceSimulation = () => {
   ].includes(currentStep) ? (
     <RefinancePositionView
       type={RefinancePositionViewType.SIMULATION}
-      // positionId={new BigNumber(18604)}
       primaryToken={strategy.primaryToken}
       secondaryToken={strategy.secondaryToken}
       protocolData={{

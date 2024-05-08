@@ -10,9 +10,8 @@ import type {
   RefinanceGeneralContextBase,
   RefinanceSteps,
 } from 'features/refinance/contexts/RefinanceGeneralContext'
-import { getRefinanceFlowStateFilter, getRefinanceValidations } from 'features/refinance/helpers'
-import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
-import { mapTokenToSdkToken } from 'features/refinance/mapTokenToSdkToken'
+import { getRefinanceValidations } from 'features/refinance/helpers'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useAppConfig } from 'helpers/config'
@@ -28,7 +27,7 @@ const steps = [
   RefinanceSidebarStep.Changes,
 ]
 
-export const useInitializeRefinanceContext = ({
+export const useInitializeRefinanceContextBase = ({
   contextInput,
   defaultCtx,
 }: {
@@ -73,7 +72,7 @@ export const useInitializeRefinanceContext = ({
 
   const {
     environment: { slippage, address, isOwner },
-    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, borrowRate, maxLtv, pairId },
+    poolData: { collateralTokenSymbol, debtTokenSymbol, poolId, maxLtv, pairId },
     position: {
       collateralAmount,
       debtAmount,
@@ -82,6 +81,8 @@ export const useInitializeRefinanceContext = ({
       ltv,
       positionType: type,
       lendingProtocol,
+      borrowRate,
+      supplyRate,
       protocolPrices,
     },
     automations,
@@ -134,17 +135,9 @@ export const useInitializeRefinanceContext = ({
   if (!type) {
     throw new Error('Unsupported position type')
   }
-  const currentProductType = positionTypeToOmniProductType(type)
 
   const ctx: RefinanceGeneralContextBase = {
     metadata: {
-      flowStateFilter: ({ event, filterConsumed }) =>
-        getRefinanceFlowStateFilter({
-          event,
-          filterConsumed,
-          currentProductType,
-          formState: form.state,
-        }),
       validations: getRefinanceValidations({ state: form.state }),
       safetySwitch: isSafetySwitchEnabled,
       suppressValidation: isSuppressValidationEnabled,
@@ -166,6 +159,8 @@ export const useInitializeRefinanceContext = ({
       positionType: type,
       isShort,
       lendingProtocol,
+      borrowRate: borrowRate,
+      supplyRate: supplyRate,
       protocolPrices: {
         collateralPrice,
         debtPrice,
@@ -175,7 +170,6 @@ export const useInitializeRefinanceContext = ({
     poolData: {
       poolId,
       pairId,
-      borrowRate,
       maxLtv,
     },
     automations,

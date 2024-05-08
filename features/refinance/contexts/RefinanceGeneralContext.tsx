@@ -2,9 +2,9 @@ import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
-import type { OmniFiltersParameters, OmniValidations } from 'features/omni-kit/types'
+import type { OmniValidations } from 'features/omni-kit/types'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers'
-import { useInitializeRefinanceContext } from 'features/refinance/hooks'
+import { useInitializeRefinanceContextBase } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -49,7 +49,6 @@ export type RefinanceContextInputAutomations = {
 export type RefinanceContextInput = {
   poolData: {
     poolId: IPoolId
-    borrowRate: string
     collateralTokenSymbol: string
     debtTokenSymbol: string
     maxLtv: RiskRatio
@@ -69,6 +68,8 @@ export type RefinanceContextInput = {
     ltv: RiskRatio
     positionType: PositionType
     lendingProtocol: LendingProtocol
+    borrowRate: string
+    supplyRate: string
     protocolPrices: Record<string, string>
   }
   automations: RefinanceContextInputAutomations
@@ -93,6 +94,8 @@ export type RefinanceGeneralContextBase = {
     positionType: PositionType
     isShort: boolean
     lendingProtocol: LendingProtocol
+    borrowRate: string
+    supplyRate: string
     protocolPrices: {
       collateralPrice: string
       debtPrice: string
@@ -101,12 +104,10 @@ export type RefinanceGeneralContextBase = {
   }
   poolData: {
     poolId: IPoolId
-    borrowRate: string
     maxLtv: RiskRatio
     pairId: number
   }
   metadata: {
-    flowStateFilter: (params: OmniFiltersParameters) => Promise<boolean>
     validations: OmniValidations
     safetySwitch: boolean
     suppressValidation: boolean
@@ -118,10 +119,10 @@ export type RefinanceGeneralContextBase = {
 }
 
 interface RefinanceGeneralContextCache {
-  handlePositionOwner: (owner?: string) => void
+  setPositionOwner: (owner?: string) => void
   positionOwner?: string
-  handleInterestRates: (interestRates?: RefinanceInterestRatesMetadata) => void
-  interestRatesMetadata?: RefinanceInterestRatesMetadata
+  setInterestRates: (interestRates?: RefinanceInterestRatesMetadata) => void
+  interestRates?: RefinanceInterestRatesMetadata
 }
 
 type RefinanceContexts = Record<string, RefinanceGeneralContextBase>
@@ -156,7 +157,7 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
   const [interestRatesMetadata, setInterestRatesMetadata] =
     useState<RefinanceInterestRatesMetadata>()
 
-  const { ctx, reset } = useInitializeRefinanceContext({
+  const { ctx, reset } = useInitializeRefinanceContextBase({
     contextInput: contextInput,
     defaultCtx: contexts[currentContext],
   })
@@ -165,6 +166,7 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
     // Reset cache
     if (currentContext !== init.contextId) {
       setPositionOwner(undefined)
+      setInterestRatesMetadata(undefined)
     }
 
     // Load context
@@ -180,7 +182,7 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
   }
 
   const handlePositionOwner = (owner?: string) => {
-    setPositionOwner(owner)
+    setPositionOwner(owner?.toLowerCase())
   }
 
   const handleInterestRates = (interestRates?: RefinanceInterestRatesMetadata) => {
@@ -192,10 +194,10 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
       value={{
         ctx,
         cache: {
-          handlePositionOwner,
+          setPositionOwner: handlePositionOwner,
           positionOwner,
-          handleInterestRates,
-          interestRatesMetadata,
+          setInterestRates: handleInterestRates,
+          interestRates: interestRatesMetadata,
         },
         handleSetContext,
         handleOnClose,

@@ -20,17 +20,18 @@ export const getOmniValidations =
     ethPrice,
     gasEstimationUsd,
     isOpening,
+    poolId,
     position,
-    simulation,
+    positionTriggers,
     productType,
     protocol,
     quoteBalance,
     quoteToken,
+    simulation,
     simulationErrors = [],
     simulationNotices = [],
     simulationSuccesses = [],
     simulationWarnings = [],
-    positionTriggers,
     state,
     txError,
   }: GetOmniValidationsParams) =>
@@ -62,12 +63,13 @@ export const getOmniValidations =
 
     const lendingValidations = useOmniLendingValidations({
       isOpening,
+      poolId,
       position,
-      simulation,
+      positionTriggers,
       protocolLabel,
       quoteBalance,
       safetySwitchOn,
-      positionTriggers,
+      simulation,
       state,
     })
 

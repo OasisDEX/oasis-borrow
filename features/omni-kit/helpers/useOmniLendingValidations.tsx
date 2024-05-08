@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { omniAutomationTranslationKeyMap } from 'features/omni-kit/automation/constants'
+import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { OmniSafetyOnMessage } from 'features/omni-kit/components'
-import { getAaveLikeAutomationMetadataCommonValues } from 'features/omni-kit/protocols/aave-like/helpers'
 import type {
   OmniFormState,
   OmniGenericPosition,
@@ -15,32 +15,34 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface GetOmniValidationsParams {
-  safetySwitchOn: boolean
   isOpening: boolean
+  poolId?: string
   position: OmniGenericPosition
-  simulation?: OmniGenericPosition
-  quoteBalance: BigNumber
-  state: OmniFormState
-  protocolLabel: LendingProtocolLabel
   positionTriggers: GetTriggersResponse
+  protocolLabel: LendingProtocolLabel
+  quoteBalance: BigNumber
+  safetySwitchOn: boolean
+  simulation?: OmniGenericPosition
+  state: OmniFormState
 }
 
 export function useOmniLendingValidations({
-  safetySwitchOn,
   isOpening,
+  poolId,
   position,
-  simulation,
-  quoteBalance,
-  state,
-  protocolLabel,
   positionTriggers,
+  protocolLabel,
+  quoteBalance,
+  safetySwitchOn,
+  simulation,
+  state,
 }: GetOmniValidationsParams): OmniPartialValidations {
   const localErrors: OmniValidationItem[] = []
   const { t } = useTranslation()
 
   const {
     triggers: { stopLoss, autoSell, autoBuy },
-  } = getAaveLikeAutomationMetadataCommonValues({ positionTriggers })
+  } = getMappedAutomationMetadataValues({ poolId, positionTriggers })
 
   const isCloseAction = state.uiDropdown === 'close'
 

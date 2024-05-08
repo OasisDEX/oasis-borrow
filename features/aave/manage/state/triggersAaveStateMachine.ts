@@ -71,10 +71,10 @@ export const isAutoSellEnabled = ({
 export const getCurrentOptimizationView = ({
   triggers,
 }: GetTriggersResponse): 'auto-buy' | 'partial-take-profit' | undefined => {
-  if (triggers.aaveBasicBuy || triggers.sparkBasicBuy) {
+  if (triggers.aave3.basicBuy || triggers.spark.basicBuy) {
     return 'auto-buy'
   }
-  if (triggers.aavePartialTakeProfit || triggers.sparkPartialTakeProfit) {
+  if (triggers.aave3.partialTakeProfit || triggers.spark.partialTakeProfit) {
     return 'partial-take-profit'
   }
   return undefined
@@ -84,23 +84,23 @@ export const getCurrentProtectionView = ({
   triggers,
 }: GetTriggersResponse): 'auto-sell' | 'stop-loss' | 'trailing-stop-loss' | undefined => {
   if (
-    triggers.aaveStopLossToDebt ||
-    triggers.aaveStopLossToCollateral ||
-    triggers.aaveStopLossToCollateralDMA ||
-    triggers.aaveStopLossToDebtDMA ||
-    triggers.sparkStopLossToDebt ||
-    triggers.sparkStopLossToCollateral ||
-    triggers.sparkStopLossToCollateralDMA ||
-    triggers.sparkStopLossToDebtDMA
+    triggers.aave3.stopLossToCollateral ||
+    triggers.aave3.stopLossToCollateralDMA ||
+    triggers.aave3.stopLossToDebt ||
+    triggers.aave3.stopLossToDebtDMA ||
+    triggers.spark.stopLossToCollateral ||
+    triggers.spark.stopLossToCollateralDMA ||
+    triggers.spark.stopLossToDebt ||
+    triggers.spark.stopLossToDebtDMA
   ) {
     return 'stop-loss'
   }
 
-  if (triggers.aaveBasicSell || triggers.sparkBasicSell) {
+  if (triggers.aave3.basicSell || triggers.spark.basicSell) {
     return 'auto-sell'
   }
 
-  if (triggers.aaveTrailingStopLossDMA || triggers.sparkTrailingStopLossDMA) {
+  if (triggers.aave3.trailingStopLossDMA || triggers.spark.trailingStopLossDMA) {
     return 'trailing-stop-loss'
   }
 
@@ -114,13 +114,13 @@ export const areTriggersLoading = (state: StateFrom<typeof triggersAaveStateMach
 export const hasActiveOptimization = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
-  const hasAaveAutoBuyEnabled = context.currentTriggers.triggers.aaveBasicBuy !== undefined
-  const hasSparkAutoBuyEnabled = context.currentTriggers.triggers.sparkBasicBuy !== undefined
+  const hasAaveAutoBuyEnabled = context.currentTriggers.triggers.aave3.basicBuy !== undefined
+  const hasSparkAutoBuyEnabled = context.currentTriggers.triggers.spark.basicBuy !== undefined
 
   const hasAavePartialTakeProfitEnabled =
-    context.currentTriggers.triggers.aavePartialTakeProfit !== undefined
+    context.currentTriggers.triggers.aave3.partialTakeProfit !== undefined
   const hasSparkPartialTakeProfitEnabled =
-    context.currentTriggers.triggers.sparkPartialTakeProfit !== undefined
+    context.currentTriggers.triggers.spark.partialTakeProfit !== undefined
 
   return (
     hasAaveAutoBuyEnabled ||
@@ -134,39 +134,46 @@ export const hasActiveProtection = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const {
-    aaveStopLossToCollateral,
-    sparkStopLossToCollateral,
-    aaveStopLossToCollateralDMA,
-    aaveStopLossToDebtDMA,
-    sparkStopLossToCollateralDMA,
-    sparkStopLossToDebtDMA,
-    sparkStopLossToDebt,
-    aaveStopLossToDebt,
-    aaveBasicSell,
-    sparkBasicSell,
-    aaveTrailingStopLossDMA,
-    sparkTrailingStopLossDMA,
-  } = context.currentTriggers.triggers
+
   switch (protocol) {
-    case LendingProtocol.AaveV3:
+    case LendingProtocol.AaveV3: {
+      const {
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
+      } = context.currentTriggers.triggers.aave3
+
       return isAnyValueDefined(
-        aaveStopLossToCollateral,
-        aaveStopLossToDebt,
-        aaveBasicSell,
-        aaveStopLossToCollateralDMA,
-        aaveStopLossToDebtDMA,
-        aaveTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       )
-    case LendingProtocol.SparkV3:
+    }
+    case LendingProtocol.SparkV3: {
+      const {
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
+      } = context.currentTriggers.triggers.spark
+
       return isAnyValueDefined(
-        sparkBasicSell,
-        sparkStopLossToCollateral,
-        sparkStopLossToDebt,
-        sparkStopLossToCollateralDMA,
-        sparkStopLossToDebtDMA,
-        sparkTrailingStopLossDMA,
+        basicSell,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
+        trailingStopLossDMA,
       )
+    }
     case LendingProtocol.AaveV2:
       return false
   }
@@ -179,31 +186,29 @@ export const hasActiveStopLossFromTriggers = ({
   triggers: GetTriggersResponse['triggers']
   protocol: LendingProtocol
 }) => {
-  const {
-    aaveStopLossToCollateral,
-    sparkStopLossToCollateral,
-    aaveStopLossToCollateralDMA,
-    aaveStopLossToDebtDMA,
-    sparkStopLossToCollateralDMA,
-    sparkStopLossToDebtDMA,
-    sparkStopLossToDebt,
-    aaveStopLossToDebt,
-  } = triggers
   switch (protocol) {
-    case LendingProtocol.AaveV3:
+    case LendingProtocol.AaveV3: {
+      const { stopLossToCollateral, stopLossToCollateralDMA, stopLossToDebt, stopLossToDebtDMA } =
+        triggers.aave3
+
       return isAnyValueDefined(
-        aaveStopLossToCollateral,
-        aaveStopLossToDebt,
-        aaveStopLossToCollateralDMA,
-        aaveStopLossToDebtDMA,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
       )
-    case LendingProtocol.SparkV3:
+    }
+    case LendingProtocol.SparkV3: {
+      const { stopLossToCollateral, stopLossToCollateralDMA, stopLossToDebt, stopLossToDebtDMA } =
+        triggers.spark
+
       return isAnyValueDefined(
-        sparkStopLossToCollateral,
-        sparkStopLossToDebt,
-        sparkStopLossToCollateralDMA,
-        sparkStopLossToDebtDMA,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
       )
+    }
     case LendingProtocol.AaveV2:
       return false
   }
@@ -214,31 +219,30 @@ export const hasActiveStopLossFromContext = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const {
-    aaveStopLossToCollateral,
-    sparkStopLossToCollateral,
-    aaveStopLossToCollateralDMA,
-    aaveStopLossToDebtDMA,
-    sparkStopLossToCollateralDMA,
-    sparkStopLossToDebtDMA,
-    sparkStopLossToDebt,
-    aaveStopLossToDebt,
-  } = context.currentTriggers.triggers
+
   switch (protocol) {
-    case LendingProtocol.AaveV3:
+    case LendingProtocol.AaveV3: {
+      const { stopLossToCollateral, stopLossToCollateralDMA, stopLossToDebt, stopLossToDebtDMA } =
+        context.currentTriggers.triggers.aave3
+
       return isAnyValueDefined(
-        aaveStopLossToCollateral,
-        aaveStopLossToDebt,
-        aaveStopLossToCollateralDMA,
-        aaveStopLossToDebtDMA,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
       )
-    case LendingProtocol.SparkV3:
+    }
+    case LendingProtocol.SparkV3: {
+      const { stopLossToCollateral, stopLossToCollateralDMA, stopLossToDebt, stopLossToDebtDMA } =
+        context.currentTriggers.triggers.spark
+
       return isAnyValueDefined(
-        sparkStopLossToCollateral,
-        sparkStopLossToDebt,
-        sparkStopLossToCollateralDMA,
-        sparkStopLossToDebtDMA,
+        stopLossToCollateral,
+        stopLossToCollateralDMA,
+        stopLossToDebt,
+        stopLossToDebtDMA,
       )
+    }
     case LendingProtocol.AaveV2:
       return false
   }
@@ -251,12 +255,17 @@ export const hasActiveTrailingStopLossFromTriggers = ({
   triggers: GetTriggersResponse['triggers']
   protocol: LendingProtocol
 }) => {
-  const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = triggers
   switch (protocol) {
-    case LendingProtocol.AaveV3:
-      return isAnyValueDefined(aaveTrailingStopLossDMA)
-    case LendingProtocol.SparkV3:
-      return isAnyValueDefined(sparkTrailingStopLossDMA)
+    case LendingProtocol.AaveV3: {
+      const { trailingStopLossDMA } = triggers.aave3
+
+      return isAnyValueDefined(trailingStopLossDMA)
+    }
+    case LendingProtocol.SparkV3: {
+      const { trailingStopLossDMA } = triggers.spark
+
+      return isAnyValueDefined(trailingStopLossDMA)
+    }
     case LendingProtocol.AaveV2:
       return false
   }
@@ -267,12 +276,18 @@ export const hasActiveTrailingStopLossFromContext = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const { aaveTrailingStopLossDMA, sparkTrailingStopLossDMA } = context.currentTriggers.triggers
+
   switch (protocol) {
-    case LendingProtocol.AaveV3:
-      return isAnyValueDefined(aaveTrailingStopLossDMA)
-    case LendingProtocol.SparkV3:
-      return isAnyValueDefined(sparkTrailingStopLossDMA)
+    case LendingProtocol.AaveV3: {
+      const { trailingStopLossDMA } = context.currentTriggers.triggers.aave3
+
+      return isAnyValueDefined(trailingStopLossDMA)
+    }
+    case LendingProtocol.SparkV3: {
+      const { trailingStopLossDMA } = context.currentTriggers.triggers.spark
+
+      return isAnyValueDefined(trailingStopLossDMA)
+    }
     case LendingProtocol.AaveV2:
       return false
   }
@@ -282,12 +297,18 @@ export const hasActiveAutoSell = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const { aaveBasicSell, sparkBasicSell } = context.currentTriggers.triggers
+
   switch (protocol) {
-    case LendingProtocol.AaveV3:
-      return isAnyValueDefined(aaveBasicSell)
-    case LendingProtocol.SparkV3:
-      return isAnyValueDefined(sparkBasicSell)
+    case LendingProtocol.AaveV3: {
+      const { basicSell } = context.currentTriggers.triggers.aave3
+
+      return isAnyValueDefined(basicSell)
+    }
+    case LendingProtocol.SparkV3: {
+      const { basicSell } = context.currentTriggers.triggers.spark
+
+      return isAnyValueDefined(basicSell)
+    }
     case LendingProtocol.AaveV2:
       return false
   }
@@ -297,12 +318,18 @@ export const hasActivePartialTakeProfit = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   const protocol = context.strategyConfig.protocol
-  const { aavePartialTakeProfit, sparkPartialTakeProfit } = context.currentTriggers.triggers
+
   switch (protocol) {
-    case LendingProtocol.AaveV3:
-      return isAnyValueDefined(aavePartialTakeProfit)
-    case LendingProtocol.SparkV3:
-      return isAnyValueDefined(sparkPartialTakeProfit)
+    case LendingProtocol.AaveV3: {
+      const { partialTakeProfit } = context.currentTriggers.triggers.aave3
+
+      return isAnyValueDefined(partialTakeProfit)
+    }
+    case LendingProtocol.SparkV3: {
+      const { partialTakeProfit } = context.currentTriggers.triggers.spark
+
+      return isAnyValueDefined(partialTakeProfit)
+    }
     case LendingProtocol.AaveV2:
       return false
   }
@@ -515,7 +542,8 @@ export const triggersAaveStateMachine = createMachine(
         (_, event) => {
           return {
             type: 'CURRENT_TRIGGER_RECEIVED',
-            currentTrigger: event.data.triggers.aaveBasicBuy || event.data.triggers.sparkBasicBuy,
+            currentTrigger:
+              event.data.triggers.aave3.basicBuy || event.data.triggers.spark.basicBuy,
           }
         },
       ),
@@ -524,7 +552,8 @@ export const triggersAaveStateMachine = createMachine(
         (_, event) => {
           return {
             type: 'CURRENT_TRIGGER_RECEIVED',
-            currentTrigger: event.data.triggers.aaveBasicSell || event.data.triggers.sparkBasicSell,
+            currentTrigger:
+              event.data.triggers.aave3.basicSell || event.data.triggers.spark.basicSell,
           }
         },
       ),
@@ -552,11 +581,16 @@ export const triggersAaveStateMachine = createMachine(
     },
     services: {
       getTriggers: async (context): Promise<GetTriggersResponse> => {
-        const { dpm, strategyConfig } = context
+        const {
+          dpm,
+          strategyConfig: { networkId, protocol },
+        } = context
+
         if (!dpm) {
           return omniPositionTriggersDataDefault
         }
-        return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
+
+        return await getTriggersRequest({ dpmProxy: dpm.proxy, networkId, protocol })
       },
     },
   },

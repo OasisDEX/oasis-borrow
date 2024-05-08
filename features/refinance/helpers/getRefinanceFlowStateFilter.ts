@@ -14,6 +14,7 @@ import type { RefinanceFormState } from 'features/refinance/state/refinanceFormR
 import { getPairIdFromLabel } from 'helpers/getPairIdFromLabel'
 import { LendingProtocol } from 'lendingProtocols'
 
+// not used for now, but we may use it (with some adjustments) in future
 export const getRefinanceFlowStateFilter = ({
   filterConsumed,
   event,

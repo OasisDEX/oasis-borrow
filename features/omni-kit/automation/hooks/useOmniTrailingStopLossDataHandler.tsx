@@ -1,4 +1,4 @@
-import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
+import type { LendingPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -43,12 +43,14 @@ export const useOmniTrailingStopLossDataHandler = () => {
   const { t } = useTranslation()
   const {
     environment: {
-      productType,
-      isShort,
       collateralPrice,
-      quotePrice,
-      priceFormat,
       collateralToken,
+      isShort,
+      poolId,
+      priceFormat,
+      productType,
+      protocol,
+      quotePrice,
       quoteToken,
     },
   } = useOmniGeneralContext()
@@ -58,52 +60,55 @@ export const useOmniTrailingStopLossDataHandler = () => {
     },
     automation: {
       automationForms: {
-        trailingStopLoss: { state },
+        trailingStopLoss: {
+          state: { price, resolveTo },
+        },
       },
-      commonForm: { state: commonState },
-      positionTriggers,
+      commonForm: {
+        state: { uiDropdownProtection },
+      },
+      positionTriggers: { triggers },
     },
     position: {
       currentPosition: { position },
     },
   } = useOmniProductContext(productType)
 
+  const {
+    // riskRatio: { loanToValue },
+    collateralAmount,
+    debtAmount,
+    liquidationPrice,
+    marketPrice,
+    maxRiskRatio: { loanToValue: maxLoanToValue },
+  } = position as LendingPosition
+
   const trailingStopLossLambdaData = useMemo(
-    () => mapTrailingStopLossFromLambda(positionTriggers.triggers),
-    [positionTriggers.triggers],
+    () =>
+      mapTrailingStopLossFromLambda({
+        poolId,
+        protocol,
+        triggers,
+      }),
+    [poolId, protocol, triggers],
   )
 
-  // during clean up extend LendingPosition with common properties
-  const castedPosition = position as AaveLikePositionV2
-
-  const isActive = commonState.uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS
-
-  const closeTo = automation?.triggers.trailingStopLoss?.decodedParams?.closeToCollateral
-    ? 'collateral'
-    : 'debt'
-
+  const isActive = uiDropdownProtection === AutomationFeatures.TRAILING_STOP_LOSS
   const isTrailingStopLossEnabled = !!automation?.flags.isTrailingStopLossEnabled
-
-  const currentMarketPrice = isShort
-    ? quotePrice.div(collateralPrice)
-    : collateralPrice.div(quotePrice)
-
-  const lambdaIsCloseToCollateral =
+  const isLambdaCloseToCollateral =
     automation?.triggers.trailingStopLoss?.decodedParams.closeToCollateral === 'true'
+  const isCollateralActive = resolveTo ? resolveTo === 'collateral' : isLambdaCloseToCollateral
+  const isSimpleView = uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS
 
-  const isCollateralActive = state.resolveTo
-    ? state.resolveTo === 'collateral'
-    : lambdaIsCloseToCollateral
+  const liquidationPenalty =
+    'liquidationPenalty' in position ? (position.liquidationPenalty as BigNumber) : zero
 
-  const closeToToken = lambdaIsCloseToCollateral ? collateralToken : quoteToken
+  const maxLtvPrice = debtAmount.div(collateralAmount.times(maxLoanToValue))
 
+  const closeToToken = isLambdaCloseToCollateral ? collateralToken : quoteToken
   const resolvedCloseToToken = isCollateralActive ? collateralToken : quoteToken
 
-  const afterTraillingDistance = state.price
-  const liquidationPrice =
-    castedPosition.debtAmount.div(
-      castedPosition.collateralAmount.times(castedPosition.maxRiskRatio.loanToValue),
-    ) || zero
+  const afterTraillingDistance = price
 
   const priceRatio = useMemo(() => {
     if (trailingStopLossLambdaData.dynamicParams?.executionPrice) {
@@ -111,39 +116,38 @@ export const useOmniTrailingStopLossDataHandler = () => {
         trailingStopLossLambdaData.dynamicParams.executionPrice.plus(
           trailingStopLossLambdaData.trailingDistance,
         )
-      if (isShort) {
-        return one.div(trailingPricePlusDistance).div(collateralPrice)
-      }
-      return trailingPricePlusDistance.div(quotePrice)
+
+      return isShort
+        ? one.div(trailingPricePlusDistance).div(collateralPrice)
+        : trailingPricePlusDistance.div(quotePrice)
     }
-    if (isShort) {
-      return quotePrice.div(collateralPrice)
-    }
-    return collateralPrice.div(quotePrice)
+
+    return isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice)
   }, [
     collateralPrice,
-    quotePrice,
     isShort,
+    quotePrice,
     trailingStopLossLambdaData.dynamicParams,
     trailingStopLossLambdaData.trailingDistance,
   ])
+
   const sliderStep = getSliderStep(isShort ? quotePrice : collateralPrice)
   const sliderMin = new BigNumber(
-    (liquidationPrice || one).div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
+    maxLtvPrice.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
   ).times(sliderStep)
-
   const sliderMax = new BigNumber(
     priceRatio.div(sliderStep).toFixed(0, BigNumber.ROUND_DOWN),
   ).times(sliderStep)
+
   // then the trailing distance - if it's lower (by default) than the slider min, I'm setting it to the slider min
   // the actual value of the trailing distance used in the TX is called "trailingDistanceValue"
   const trailingDistance = useMemo(() => {
-    if (afterTraillingDistance) {
+    if (afterTraillingDistance)
       return afterTraillingDistance.lt(sliderMin) ? sliderMin : afterTraillingDistance
-    }
-    if (trailingStopLossLambdaData.trailingDistance) {
+
+    if (trailingStopLossLambdaData.trailingDistance)
       return sliderMax.minus(trailingStopLossLambdaData.trailingDistance)
-    }
+
     return sliderMax
   }, [afterTraillingDistance, sliderMax, sliderMin, trailingStopLossLambdaData.trailingDistance])
   const trailingDistanceValue = useMemo(
@@ -153,90 +157,70 @@ export const useOmniTrailingStopLossDataHandler = () => {
     () => sliderMax.minus(trailingDistance),
     [sliderMax, trailingDistance],
   )
+
   const sliderPercentageFill = getSliderPercentageFill({
     min: sliderMin,
     max: sliderMax.minus(sliderStep),
     value: trailingDistance,
   })
+
   const currentTrailingDistanceValue = useMemo(() => {
     const distance = trailingStopLossLambdaData.trailingDistance ?? zero
     if (isShort) {
       const oppositePrice = one.div(priceRatio)
       const executionPrice = oppositePrice.minus(distance)
       const executionHumanReadable = one.div(executionPrice)
+
       return priceRatio.minus(executionHumanReadable).abs()
     }
+
     return distance
-  }, [trailingStopLossLambdaData, isShort, priceRatio])
+  }, [isShort, priceRatio, trailingStopLossLambdaData.trailingDistance])
+
   const dynamicStopPrice = useMemo(() => {
     const lambdaDistanceValue = currentTrailingDistanceValue
-    if (isShort) {
-      return priceRatio.times(collateralPrice).plus(lambdaDistanceValue)
-    }
-    return priceRatio.times(quotePrice).minus(lambdaDistanceValue)
-  }, [collateralPrice, currentTrailingDistanceValue, quotePrice, isShort, priceRatio])
+
+    return isShort
+      ? priceRatio.times(collateralPrice).plus(lambdaDistanceValue)
+      : priceRatio.times(quotePrice).minus(lambdaDistanceValue)
+  }, [collateralPrice, currentTrailingDistanceValue, isShort, priceRatio, quotePrice])
   const dynamicStopPriceChange = useMemo(() => {
-    if (isShort) {
-      return priceRatio.times(collateralPrice).plus(trailingDistanceValue)
-    }
-    return priceRatio.times(quotePrice).minus(trailingDistanceValue)
-  }, [isShort, priceRatio, trailingDistanceValue, quotePrice, collateralPrice])
+    return isShort
+      ? priceRatio.times(collateralPrice).plus(trailingDistanceValue)
+      : priceRatio.times(quotePrice).minus(trailingDistanceValue)
+  }, [collateralPrice, isShort, priceRatio, quotePrice, trailingDistanceValue])
+
   const estimatedTokenOnSLTrigger = useMemo(() => {
-    if (isShort) {
-      return lambdaIsCloseToCollateral
-        ? castedPosition.collateralAmount
+    if (isShort)
+      return isLambdaCloseToCollateral
+        ? collateralAmount
             .times(one.div(dynamicStopPrice))
-            .minus(castedPosition.debtAmount)
+            .minus(debtAmount)
             .div(one.div(dynamicStopPrice))
-        : castedPosition.collateralAmount
-            .times(one.div(dynamicStopPrice))
-            .minus(castedPosition.debtAmount)
-    }
-    return lambdaIsCloseToCollateral
-      ? castedPosition.collateralAmount
-          .times(dynamicStopPrice)
-          .minus(castedPosition.debtAmount)
-          .div(dynamicStopPrice)
-      : castedPosition.collateralAmount.times(dynamicStopPrice).minus(castedPosition.debtAmount)
-  }, [
-    castedPosition.debtAmount,
-    dynamicStopPrice,
-    lambdaIsCloseToCollateral,
-    isShort,
-    castedPosition.collateralAmount,
-  ])
+        : collateralAmount.times(one.div(dynamicStopPrice)).minus(debtAmount)
+
+    return isLambdaCloseToCollateral
+      ? collateralAmount.times(dynamicStopPrice).minus(debtAmount).div(dynamicStopPrice)
+      : collateralAmount.times(dynamicStopPrice).minus(debtAmount)
+  }, [collateralAmount, debtAmount, dynamicStopPrice, isLambdaCloseToCollateral, isShort])
   const estimatedTokenOnSLTriggerChange = useMemo(() => {
-    if (isShort) {
+    if (isShort)
       return isCollateralActive
-        ? castedPosition.collateralAmount
+        ? collateralAmount
             .times(one.div(dynamicStopPriceChange))
-            .minus(castedPosition.debtAmount)
+            .minus(debtAmount)
             .div(one.div(dynamicStopPriceChange))
-        : castedPosition.collateralAmount
-            .times(one.div(dynamicStopPriceChange))
-            .minus(castedPosition.debtAmount)
-    }
+        : collateralAmount.times(one.div(dynamicStopPriceChange)).minus(debtAmount)
 
     return isCollateralActive
-      ? castedPosition.collateralAmount
-          .times(dynamicStopPriceChange)
-          .minus(castedPosition.debtAmount)
-          .div(dynamicStopPriceChange)
-      : castedPosition.collateralAmount
-          .times(dynamicStopPriceChange)
-          .minus(castedPosition.debtAmount)
-  }, [
-    castedPosition.debtAmount,
-    dynamicStopPriceChange,
-    isCollateralActive,
-    isShort,
-    castedPosition.collateralAmount,
-  ])
+      ? collateralAmount.times(dynamicStopPriceChange).minus(debtAmount).div(dynamicStopPriceChange)
+      : collateralAmount.times(dynamicStopPriceChange).minus(debtAmount)
+  }, [isShort, isCollateralActive, collateralAmount, dynamicStopPriceChange, debtAmount])
 
   const trailingDistanceContentCardCommonData = useOmniCardTrailingDistance({
-    trailingDistance: isTrailingStopLossEnabled ? currentTrailingDistanceValue : undefined,
     afterTrailingDistance: afterTraillingDistance && isActive ? trailingDistanceValue : undefined,
     priceFormat,
+    trailingDistance: isTrailingStopLossEnabled ? currentTrailingDistanceValue : undefined,
   })
 
   const resolvedDynamicStopLossPrice = isTrailingStopLossEnabled ? dynamicStopPrice : undefined
@@ -244,10 +228,10 @@ export const useOmniTrailingStopLossDataHandler = () => {
     afterTraillingDistance && isActive ? dynamicStopPriceChange : undefined
 
   const dynamicStopPriceContentCardCommonData = useOmniCardDataDynamicStopLossPrice({
-    dynamicStopPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopPrice: resolvedAfterDynamicStopLossPrice,
+    dynamicStopPrice: resolvedDynamicStopLossPrice,
     priceFormat,
-    ratioToLiquidationPrice: resolvedDynamicStopLossPrice?.minus(castedPosition.liquidationPrice),
+    ratioToLiquidationPrice: resolvedDynamicStopLossPrice?.minus(liquidationPrice),
     modal: (
       <OmniCardDataDynamicStopLossPriceModal
         dynamicStopLossPrice={resolvedDynamicStopLossPrice}
@@ -261,84 +245,61 @@ export const useOmniTrailingStopLossDataHandler = () => {
     afterTraillingDistance && isActive ? estimatedTokenOnSLTriggerChange : undefined
 
   const collateralDuringLiquidation = getCollateralDuringLiquidation({
-    lockedCollateral: castedPosition.collateralAmount,
-    debt: castedPosition.debtAmount,
-    liquidationPrice,
-    liquidationPenalty: castedPosition.liquidationPenalty,
+    debt: debtAmount,
+    liquidationPenalty,
+    liquidationPrice: maxLtvPrice,
+    lockedCollateral: collateralAmount,
   })
-
   const savingCompareToLiquidation = getSavingCompareToLiquidation({
-    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
-    maxToken,
     afterMaxToken,
-    isCollateralActive,
     collateralDuringLiquidation,
+    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
+    isCollateralActive,
+    maxToken,
   })
 
   const estTokenOnTriggerContentCardCommonData = useOmniCardDataEstTokenOnTrigger({
-    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
-    closeToToken,
-    stateCloseToToken: resolvedCloseToToken,
-    maxToken,
     afterMaxToken,
+    closeToToken,
+    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
+    maxToken,
     savingCompareToLiquidation,
+    stateCloseToToken: resolvedCloseToToken,
     modal: (
       <OmniCardDataEstTokenOnTriggerModal
         token={closeToToken}
-        liquidationPenalty={castedPosition.liquidationPenalty}
+        liquidationPenalty={liquidationPenalty}
       />
     ),
   })
 
   const currentMarketPriceContentCardCommonData = {
     title: t('protection.current-market-price'),
-    value: `${formatCryptoBalance(currentMarketPrice)}`,
     unit: priceFormat,
+    value: `${formatCryptoBalance(isShort ? one.div(marketPrice) : marketPrice)}`,
   }
-
-  const simpleView = commonState.uiDropdownProtection !== AutomationFeatures.TRAILING_STOP_LOSS
 
   const trailingDistanceForTx = trailingDistanceValue.eq(zero)
     ? currentTrailingDistanceValue
     : trailingDistanceValue
 
   return {
-    trailingStopLossLambdaData,
-    castedPosition,
-    isActive,
-    closeTo,
-    isTrailingStopLossEnabled,
-    isCloseToCollateral: isCollateralActive,
-    currentMarketPrice,
-    isCollateralActive,
-    closeToToken,
-    resolvedCloseToToken,
-    afterTraillingDistance,
-    liquidationPrice,
-    priceRatio,
-    sliderStep,
-    sliderMin,
-    sliderMax,
-    sliderPercentageFill,
-    trailingDistance,
-    trailingDistanceValue,
-    currentTrailingDistanceValue,
-    dynamicStopPrice,
+    afterMaxToken,
+    currentMarketPriceContentCardCommonData,
     dynamicStopPriceChange,
-    estimatedTokenOnSLTrigger,
-    estimatedTokenOnSLTriggerChange,
-    trailingDistanceContentCardCommonData,
-    resolvedDynamicStopLossPrice,
-    resolvedAfterDynamicStopLossPrice,
     dynamicStopPriceContentCardCommonData,
     estTokenOnTriggerContentCardCommonData,
-    currentMarketPriceContentCardCommonData,
-    trailingDistanceForTx,
-    simpleView,
+    isCollateralActive,
+    isSimpleView,
     savingCompareToLiquidation,
-    maxToken,
-    afterMaxToken,
+    sliderMax,
+    sliderMin,
+    sliderPercentageFill,
+    sliderStep,
+    trailingDistance,
+    trailingDistanceContentCardCommonData,
+    trailingDistanceForTx,
   }
 }

@@ -16,6 +16,7 @@ import {
 } from 'features/refinance/helpers'
 import { getRefinanceSidebarButtonsStatus } from 'features/refinance/helpers/getRefinanceSidebarButtonStatus'
 import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
+import { replaceTokenSymbolWETHWithETH } from 'features/refinance/helpers/replaceTokenSymbolWETHWithETH'
 import { useRefinanceTxHandler } from 'features/refinance/hooks'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -55,7 +56,7 @@ export const RefinanceFormView: FC = ({ children }) => {
       setNextStep,
       setPrevStep,
     },
-    simulation: { isLoading },
+    simulation: { isLoading, refinanceSimulation },
   } = useRefinanceContext()
 
   const txHandler = useRefinanceTxHandler()
@@ -154,8 +155,18 @@ export const RefinanceFormView: FC = ({ children }) => {
     text: getRefinanceStatusCopy({
       currentStep,
       protocol: strategy?.protocol,
-      collateralToken: collateralTokenData.token.symbol,
-      quoteToken: debtTokenData.token.symbol,
+      collateralToken:
+        (refinanceSimulation &&
+          replaceTokenSymbolWETHWithETH(
+            refinanceSimulation.targetPosition.collateralAmount.token.symbol,
+          )) ||
+        '',
+      quoteToken:
+        (refinanceSimulation &&
+          replaceTokenSymbolWETHWithETH(
+            refinanceSimulation.targetPosition.debtAmount.token.symbol,
+          )) ||
+        '',
       productType,
       isTxSuccess,
       t,

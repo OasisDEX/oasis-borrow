@@ -1,4 +1,5 @@
-import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
+import { type LendingPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   getCollateralDuringLiquidation,
@@ -20,7 +21,7 @@ import {
   useOmniCardDataStopLossLtv,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 export const useOmniStopLossDataHandler = () => {
@@ -32,47 +33,52 @@ export const useOmniStopLossDataHandler = () => {
       values: { automation },
     },
     automation: {
-      commonForm: { state: commonState },
+      commonForm: {
+        state: { uiDropdownProtection },
+      },
       automationForms: {
-        stopLoss: { state },
+        stopLoss: {
+          state: { triggerLtv, resolveTo },
+        },
       },
     },
     position: {
       currentPosition: { position },
     },
   } = useOmniProductContext(productType)
+
+  const {
+    collateralAmount,
+    debtAmount,
+    liquidationPrice,
+    maxRiskRatio: { loanToValue: maxLoanToValue },
+    riskRatio: { loanToValue },
+  } = position as LendingPosition
+
   const isStopLossEnabled = !!automation?.flags.isStopLossEnabled
-  const castedPosition = position as AaveLikePositionV2
+  const isActive = uiDropdownProtection === AutomationFeatures.STOP_LOSS
+  const isWithCollateral = automation?.triggers.stopLoss?.triggerTypeName
+    .toLowerCase()
+    .includes('collateral')
+  const isCollateralActive = resolveTo ? resolveTo === 'collateral' : !!isWithCollateral
 
   // maybe we could always resolve it to either ltv or executionLtv
   const currentTriggerLtv =
     automation?.triggers.stopLoss?.decodedMappedParams?.ltv ||
     automation?.triggers.stopLoss?.decodedMappedParams?.executionLtv
 
-  const liquidationPrice = castedPosition.liquidationPrice
-  const positionLtv = castedPosition.riskRatio.loanToValue
-  const positionMaxLtv = castedPosition.category.liquidationThreshold
-  const liquidationRatio = one.div(positionMaxLtv)
-  const positionLiquidationPenalty = castedPosition.liquidationPenalty
+  const liquidationPriceLtv = debtAmount.div(collateralAmount.times(liquidationPrice))
+  const liquidationRatio = one.div(liquidationPriceLtv)
+  const liquidationPenalty =
+    'liquidationPenalty' in position ? (position.liquidationPenalty as BigNumber) : zero
 
-  const defaultStopLossLevel = useMemo(
-    () => castedPosition.category.maxLoanToValue.minus(stopLossConstants.offsets.max),
-    [castedPosition.category.maxLoanToValue],
-  )
-  const isActive = commonState.uiDropdownProtection === AutomationFeatures.STOP_LOSS
+  const defaultStopLossLevel = maxLoanToValue.minus(stopLossConstants.offsets.max)
   const stopLossLevel = currentTriggerLtv
-  const afterStopLossLevel = state.triggerLtv
+  const afterStopLossLevel = triggerLtv
   const resolvedAfterStopLossLevel = isActive ? afterStopLossLevel : undefined
-
   const displayStopLossLevel = afterStopLossLevel || stopLossLevel || defaultStopLossLevel
 
-  const isCollateralActive = state.resolveTo
-    ? state.resolveTo === 'collateral'
-    : !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
-
-  const closeToToken = automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral')
-    ? collateralToken
-    : quoteToken
+  const closeToToken = isWithCollateral ? collateralToken : quoteToken
   const resolvedCloseToToken = isCollateralActive ? collateralToken : quoteToken
 
   const dynamicStopLossPrice =
@@ -102,18 +108,18 @@ export const useOmniStopLossDataHandler = () => {
     : undefined
 
   const stopLossLtvContentCardCommonData = useOmniCardDataStopLossLtv({
-    stopLossLtv: stopLossLevel,
     afterStopLossLtv: resolvedAfterStopLossLevel,
-    loanToValue: positionLtv,
-    ratioToPositionLtv: stopLossLevel?.minus(positionLtv),
+    loanToValue: loanToValue,
+    ratioToPositionLtv: stopLossLevel?.minus(loanToValue),
+    stopLossLtv: stopLossLevel,
     modal: <OmniCardDataStopLossLtvModal stopLossLtv={stopLossLevel} />,
   })
 
   const dynamicStopPriceContentCardCommonData = useOmniCardDataDynamicStopLossPrice({
-    dynamicStopPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopPrice: resolvedAfterDynamicStopLossPrice,
+    dynamicStopPrice: resolvedDynamicStopLossPrice,
     priceFormat,
-    ratioToLiquidationPrice: resolvedDynamicStopLossPrice?.minus(castedPosition.liquidationPrice),
+    ratioToLiquidationPrice: resolvedDynamicStopLossPrice?.minus(liquidationPrice),
     modal: (
       <OmniCardDataDynamicStopLossPriceModal
         dynamicStopLossPrice={resolvedDynamicStopLossPrice}
@@ -125,53 +131,53 @@ export const useOmniStopLossDataHandler = () => {
   const maxToken =
     stopLossLevel &&
     getMaxToken({
-      stopLossLevel: one.div(stopLossLevel).times(100),
-      lockedCollateral: castedPosition.collateralAmount,
-      liquidationRatio,
+      debt: debtAmount,
+      isCollateralActive,
       liquidationPrice,
-      debt: castedPosition.debtAmount,
-      isCollateralActive: !!automation?.triggers.stopLoss?.triggerTypeName.includes('Collateral'),
+      liquidationRatio,
+      lockedCollateral: collateralAmount,
+      stopLossLevel: one.div(stopLossLevel).times(100),
     })
 
   const afterMaxToken =
     resolvedAfterStopLossLevel &&
     getMaxToken({
-      stopLossLevel: one.div(resolvedAfterStopLossLevel).times(100),
-      lockedCollateral: castedPosition.collateralAmount,
-      liquidationRatio,
-      liquidationPrice,
+      debt: debtAmount,
       isCollateralActive,
-      debt: castedPosition.debtAmount,
+      liquidationPrice,
+      liquidationRatio,
+      lockedCollateral: collateralAmount,
+      stopLossLevel: one.div(resolvedAfterStopLossLevel).times(100),
     })
 
   const collateralDuringLiquidation = getCollateralDuringLiquidation({
-    lockedCollateral: castedPosition.collateralAmount,
-    debt: castedPosition.debtAmount,
+    debt: debtAmount,
+    liquidationPenalty,
     liquidationPrice,
-    liquidationPenalty: positionLiquidationPenalty,
+    lockedCollateral: collateralAmount,
   })
 
   const savingCompareToLiquidation = getSavingCompareToLiquidation({
-    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
-    maxToken,
     afterMaxToken,
-    isCollateralActive,
     collateralDuringLiquidation,
+    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
+    isCollateralActive,
+    maxToken,
   })
 
   const estTokenOnTriggerContentCardCommonData = useOmniCardDataEstTokenOnTrigger({
-    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
     afterDynamicStopLossPrice: resolvedAfterDynamicStopLossPrice,
-    closeToToken,
-    stateCloseToToken: resolvedCloseToToken,
-    maxToken,
     afterMaxToken,
+    closeToToken,
+    dynamicStopLossPrice: resolvedDynamicStopLossPrice,
+    maxToken,
     savingCompareToLiquidation,
+    stateCloseToToken: resolvedCloseToToken,
     modal: (
       <OmniCardDataEstTokenOnTriggerModal
         token={closeToToken}
-        liquidationPenalty={positionLiquidationPenalty}
+        liquidationPenalty={liquidationPenalty}
       />
     ),
   })
@@ -183,21 +189,21 @@ export const useOmniStopLossDataHandler = () => {
   }
 
   const ltvContentCardCommonData = useOmniCardDataLtv({
-    ltv: positionLtv,
-    maxLtv: positionMaxLtv,
     automation: omniCardLtvAutomationData,
+    ltv: loanToValue,
+    maxLtv: liquidationPriceLtv,
     modal: (
       <OmniCardDataLtvModal
-        ltv={positionLtv}
-        maxLtv={positionMaxLtv}
+        ltv={loanToValue}
+        maxLtv={liquidationPriceLtv}
         automation={omniCardLtvAutomationData}
       />
     ),
   })
-  const sliderMin = useMemo(() => positionLtv.plus(stopLossConstants.offsets.min), [positionLtv])
+  const sliderMin = useMemo(() => loanToValue.plus(stopLossConstants.offsets.min), [loanToValue])
   const sliderMax = useMemo(
-    () => positionMaxLtv.minus(stopLossConstants.offsets.max),
-    [positionMaxLtv],
+    () => liquidationPriceLtv.minus(stopLossConstants.offsets.max),
+    [liquidationPriceLtv],
   )
 
   const sliderPercentageFill = useMemo(
@@ -209,36 +215,22 @@ export const useOmniStopLossDataHandler = () => {
       }),
     [sliderMax, sliderMin, displayStopLossLevel],
   )
-  const sliderStep = stopLossConstants.sliderStep
+
   return {
-    isStopLossEnabled,
-    castedPosition,
-    currentTriggerLtv,
-    stopLossLevel,
-    afterStopLossLevel,
-    defaultStopLossLevel,
-    /**
-     * Contains the stop loss level in order: afterStopLossLevel, stopLossLevel, defaultStopLossLevel
-     */
+    afterMaxToken,
     displayStopLossLevel,
+    dynamicStopPriceContentCardCommonData,
+    estTokenOnTriggerContentCardCommonData,
     isCollateralActive,
-    closeToToken,
-    resolvedCloseToToken,
-    dynamicStopLossPrice,
-    afterDynamicStopLossPrice,
+    isStopLossEnabled,
+    ltvContentCardCommonData,
     resolvedAfterDynamicStopLossPrice,
     resolvedDynamicStopLossPrice,
-    stopLossLtvContentCardCommonData,
-    dynamicStopPriceContentCardCommonData,
-    maxToken,
-    afterMaxToken,
-    estTokenOnTriggerContentCardCommonData,
-    omniCardLtvAutomationData,
-    ltvContentCardCommonData,
-    sliderMin,
-    sliderMax,
-    sliderPercentageFill,
-    sliderStep,
     savingCompareToLiquidation,
+    sliderMax,
+    sliderMin,
+    sliderPercentageFill,
+    sliderStep: stopLossConstants.sliderStep,
+    stopLossLtvContentCardCommonData,
   }
 }
