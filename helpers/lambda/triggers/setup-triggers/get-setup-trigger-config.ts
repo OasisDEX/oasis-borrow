@@ -23,7 +23,6 @@ export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
   return {
     common: {
       dpm: params.dpm,
-      poolId: params.poolId,
       protocol: params.protocol,
       position: {
         collateral: params.strategy.collateralAddress,
@@ -32,6 +31,7 @@ export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
       rpc,
       action: params.action,
     },
+    poolId: params.poolId,
     url: `/api/triggers/${params.networkId}/${
       {
         [LendingProtocol.AaveV3]: 'aave3',

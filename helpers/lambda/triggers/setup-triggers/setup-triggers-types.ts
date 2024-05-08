@@ -97,7 +97,7 @@ export interface SetupAutomationCommonParams {
   strategy: StrategyLike
 }
 
-export interface SetupAaveBasicAutomationParams extends SetupAutomationCommonParams {
+export interface SetupBasicAutomationParams extends SetupAutomationCommonParams {
   executionLTV: BigNumber
   maxBaseFee: BigNumber
   price: BigNumber | undefined
@@ -131,12 +131,12 @@ export type SetupBasicStopLossResponse = ResponseCommon & {
   transaction?: TriggerTransaction
 }
 
-export interface SetupAaveStopLossParams extends SetupAutomationCommonParams {
+export interface SetupStopLossParams extends SetupAutomationCommonParams {
   executionLTV: BigNumber
   executionToken: string
 }
 
-export interface SetupAaveTrailingStopLossParams extends SetupAutomationCommonParams {
+export interface SetupTrailingStopLossParams extends SetupAutomationCommonParams {
   executionToken: string
   trailingDistance: BigNumber
 }
@@ -149,7 +149,7 @@ export type SetupTrailingStopLossResponse = ResponseCommon & {
   transaction?: TriggerTransaction
 }
 
-export interface SetupAavePartialTakeProfitParams extends SetupAutomationCommonParams {
+export interface SetupPartialTakeProfitParams extends SetupAutomationCommonParams {
   executionToken: string
   startingTakeProfitPrice: BigNumber
   stopLoss?: {

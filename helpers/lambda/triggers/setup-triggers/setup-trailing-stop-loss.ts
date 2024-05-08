@@ -3,15 +3,18 @@ import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
-  SetupAaveTrailingStopLossParams,
+  SetupTrailingStopLossParams,
   SetupTrailingStopLossResponse,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikeTrailingStopLoss = async (
-  params: SetupAaveTrailingStopLossParams,
+export const setupLambdaTrailingStopLoss = async (
+  params: SetupTrailingStopLossParams,
 ): Promise<SetupTrailingStopLossResponse> => {
-  const { common, url } = getSetupTriggerConfig({ ...params, path: 'dma-trailing-stop-loss' })
+  const { common, poolId, url } = getSetupTriggerConfig({
+    ...params,
+    path: 'dma-trailing-stop-loss',
+  })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
@@ -21,6 +24,7 @@ export const setupAaveLikeTrailingStopLoss = async (
         .times(lambdaPriceDenomination)
         .integerValue()
         .toString(),
+      poolId,
       token: params.executionToken,
     },
   })

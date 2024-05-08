@@ -3,16 +3,16 @@ import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
-  SetupAaveStopLossParams,
   SetupBasicAutoResponse,
   SetupBasicStopLossResponse,
+  SetupStopLossParams,
 } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveLikeStopLoss = async (
-  params: SetupAaveStopLossParams,
+export const setupLambdaStopLoss = async (
+  params: SetupStopLossParams,
 ): Promise<SetupBasicStopLossResponse> => {
-  const { common, url } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
+  const { common, poolId, url } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
@@ -22,6 +22,7 @@ export const setupAaveLikeStopLoss = async (
         .times(lambdaPercentageDenomination)
         .integerValue()
         .toString(),
+      poolId,
       token: params.executionToken,
     },
   })
