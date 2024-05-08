@@ -11,7 +11,10 @@ import { TriggersApiErrorCode } from './setup-triggers-types'
 export const setupAaveLikeTrailingStopLoss = async (
   params: SetupAaveTrailingStopLossParams,
 ): Promise<SetupTrailingStopLossResponse> => {
-  const { common, url } = getSetupTriggerConfig({ ...params, path: 'dma-trailing-stop-loss' })
+  const { common, poolId, url } = getSetupTriggerConfig({
+    ...params,
+    path: 'dma-trailing-stop-loss',
+  })
   const shouldSkipValidation = getLocalAppConfig('features').AaveV3LambdaSuppressValidation
 
   const body = JSON.stringify({
@@ -21,6 +24,7 @@ export const setupAaveLikeTrailingStopLoss = async (
         .times(lambdaPriceDenomination)
         .integerValue()
         .toString(),
+      poolId,
       token: params.executionToken,
     },
   })
