@@ -6,6 +6,7 @@ import { isShortPosition } from 'features/omni-kit/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/graph/getRefinanceAaveLikeInterestRates'
 import { RefinanceOptions } from 'features/refinance/types'
+import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { moveItemsToFront } from 'helpers/moveItemsToFront'
 
 import { getNetAPY } from './getBorrowRate'
@@ -54,8 +55,8 @@ const borrowRateMapping = ({
 
     const borrowRate = getNetAPY(
       currentLTV,
-      customDebtRates.borrowVariable,
-      customCollateralRates.lendVariable,
+      aaveLikeAprToApy(customDebtRates.borrowVariable),
+      aaveLikeAprToApy(customCollateralRates.lendVariable),
     )
 
     return {

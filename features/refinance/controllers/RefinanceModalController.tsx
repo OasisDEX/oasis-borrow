@@ -100,13 +100,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
       ctx?.position.supplyRate,
     )
 
-  console.log('RefinanceModalController.tsx: borrowRate:', netAPY)
-  console.log(
-    'RefinanceModalController.tsx: rates:',
-    ctx?.position.borrowRate,
-    ctx?.position.supplyRate,
-  )
-
   const onClose = () => {
     if (isTxInProgress) {
       if (window.confirm(t('refinance.close-prompt'))) {
