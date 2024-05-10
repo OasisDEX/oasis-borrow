@@ -125,8 +125,10 @@ async function getMorphoPositions({
             triggers:
               morphoPositionsAutomations
                 .map((automation) => automation.triggers)
-                .filter(({ decodedAndMappedData }) => decodedAndMappedData.poolId === marketId) ??
-              [],
+                .filter(
+                  ({ decodedAndMappedData, account }) =>
+                    decodedAndMappedData.poolId === marketId && account === proxyAddress,
+                ) ?? [],
             defaultList: emptyAutomations,
           })
 
