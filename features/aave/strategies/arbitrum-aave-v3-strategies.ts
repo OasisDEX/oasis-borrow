@@ -274,31 +274,6 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
-    collateral: 'WEETH',
-    debt: 'ETH',
-    strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Earn]: {
-        featureToggle: FeaturesEnum.AaveV3ArbitrumEarn,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
-        additionalManageActions: [
-          {
-            action: 'switch-to-earn',
-            featureToggle: FeaturesEnum.AaveV3ArbitrumEarn,
-          },
-        ],
-      },
-    },
-  },
-  {
     collateral: 'DAI',
     debt: 'ETH',
     strategyType: StrategyType.Short,
