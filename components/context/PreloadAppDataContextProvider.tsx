@@ -1,17 +1,10 @@
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
-import type { ConfigResponseType, PreloadAppDataContext } from 'helpers/config'
+import type { PreloadAppDataContext } from 'helpers/config'
 import { configCacheTime, getLocalAppConfig, saveConfigToLocalStorage } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import type { PropsWithChildren } from 'react'
 import React, { useContext, useEffect, useState } from 'react'
-
-const configFetcher = () =>
-  fetch(`/api/config`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+import type { AppConfigType } from 'types/config'
 
 export const preloadAppDataContext = React.createContext<PreloadAppDataContext | undefined>(
   undefined,
@@ -31,7 +24,7 @@ export function PreloadAppDataContextProvider({ children }: PropsWithChildren<{}
   const [context, setContext] = useState<PreloadAppDataContext | undefined>(undefined)
   const { AjnaSafetySwitch, MorphoSafetySwitch } = getLocalAppConfig('features')
 
-  const [config, setConfig] = useState<ConfigResponseType | undefined>(undefined)
+  const [config, setConfig] = useState<AppConfigType | undefined>(undefined)
   const { data: productHub } = useProductHubData({
     protocols: [
       ...(AjnaSafetySwitch ? [] : [LendingProtocol.Ajna]),
@@ -47,18 +40,24 @@ export function PreloadAppDataContextProvider({ children }: PropsWithChildren<{}
     const setup = async () => {
       const fetchConfig = async () => {
         try {
-          const response = await configFetcher()
-          const configResponse = (await response.json()) as ConfigResponseType
-          if (!configResponse || configResponse.error) {
-            throw new Error(`Error fetching preload app data: ${configResponse.error}`)
-          }
-          setConfig(configResponse)
-          saveConfigToLocalStorage(configResponse)
+          const response = await fetch(`/api/prerequisites`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          const data = (await response.json()) as PreloadAppDataContext
+
+          if (!data) throw new Error('Error fetching preload app data')
+
+          setConfig(data.config)
+          saveConfigToLocalStorage(data.config)
         } catch (error) {
           console.error(`Error fetching preload app data context: ${error}`)
         }
       }
       await fetchConfig()
+
       setInterval(fetchConfig, 1000 * configCacheTime.frontend)
     }
     setup().catch((error) => {

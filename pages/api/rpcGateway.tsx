@@ -1,6 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
-import { getRemoteConfigWithCache } from 'helpers/config'
-import { configCacheTime, type ConfigResponseType } from 'helpers/config'
+import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { AppConfigType } from 'types/config'
 
@@ -47,9 +46,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     res.status(400).send({ error: 'Missing network query' })
     return
   }
-  const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
-    1000 * configCacheTime.backend,
-  )
+  const appConfig = await getRemoteConfigWithCache(1000 * configCacheTime.backend)
   const rpcBase = getRpcGatewayBaseUrl()
 
   const network = networkQuery.toString() as NetworkNames

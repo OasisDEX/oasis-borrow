@@ -1,10 +1,11 @@
 import { isServer } from 'helpers/isServer'
+import type { AppConfigType } from 'types/config'
 import { emptyConfig } from 'types/config'
 
 import { getRemoteConfigWithCache } from './access-config-backend'
 import { loadConfigFromLocalStorage } from './access-config-context'
 import { configCacheTime } from './constants'
-import type { ConfigResponseType, ConfigResponseTypeKey } from './types'
+import type { AppConfigTypeKey } from './types'
 
 export const configFetcher = async () => {
   const response = await fetch(`/api/config`, {
@@ -19,12 +20,12 @@ export const configFetcher = async () => {
     return emptyConfig
   }
 
-  return (await response.json()) as ConfigResponseType
+  return (await response.json()) as AppConfigType
 }
 
-export async function accessConfigDynamic<T extends ConfigResponseTypeKey>(
+export async function accessConfigDynamic<T extends AppConfigTypeKey>(
   configKey: T,
-): Promise<ConfigResponseType[T]> {
+): Promise<AppConfigType[T]> {
   if (isServer()) {
     const result = await getRemoteConfigWithCache(configCacheTime.backend)
     return result[configKey]
