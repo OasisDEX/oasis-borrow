@@ -1,64 +1,38 @@
-import { EarnStrategies, type Prisma, type PrismaPromise, type Protocol } from '@prisma/client'
+import { type Prisma, type PrismaPromise, type Protocol, EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { filterTableData, getMissingHandlers, measureTime } from 'handlers/product-hub/helpers'
-import type {
-  HandleGetProductHubDataProps,
-  HandleUpdateProductHubDataProps,
-} from 'handlers/product-hub/types'
+import type { HandleUpdateProductHubDataProps } from 'handlers/product-hub/types'
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import { flatten, uniq } from 'lodash'
 import type { NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
-export async function handleGetProductHubData(
-  req: HandleGetProductHubDataProps,
-  res: NextApiResponse,
-) {
-  const { protocols, testnet = false } = req.body
-  if (!protocols || !protocols.length) {
-    return res.status(400).json({
-      errorMessage: 'Missing required parameter (protocols), check error object for more details',
-      error: {
-        protocols: JSON.stringify(protocols),
-      },
-    })
-  }
-
+export async function getProductHubData(protocols: string[], testnet = false) {
   const network = networks
     .filter(({ testnet: isTestnet }) => isTestnet === testnet)
     .map(({ name }) => name)
 
-  await prisma.productHubItems
-    .findMany({
-      where: {
-        OR: protocols.map((protocol) => ({
-          protocol: {
-            equals: protocol as Protocol,
-          },
-          network: {
-            in: network,
-          },
-        })),
-      },
-    })
-    .then((rawTable) => {
-      const table = rawTable.map(filterTableData) as ProductHubItem[]
+  const response = await prisma.productHubItems.findMany({
+    where: {
+      OR: protocols.map((protocol) => ({
+        protocol: {
+          equals: protocol as Protocol,
+        },
+        network: {
+          in: network,
+        },
+      })),
+    },
+  })
 
-      return res.status(200).json({
-        table,
-      })
-    })
-    .catch((error) => {
-      return res.status(500).json({
-        errorMessage: 'Error getting product hub data',
-        error: error.toString(),
-      })
-    })
+  return {
+    table: response.map(filterTableData) as ProductHubItem[],
+  }
 }
 
 type ProtocolError = {
