@@ -64,7 +64,11 @@ export const settings: OmniProtocolSettings = {
 
 export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = {
   [NetworkIds.MAINNET]: {
-    'WSTETH-ETH': ['0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41'],
+    'WSTETH-ETH': [
+      '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+      '0xb8fc70e82bc5bb53e773626fcc6a23f7eefa036918d7ef216ecfb1950a94a85e',
+      '0xd0e50cdac92fe2172043f5e0c36532c6369d24947e40968f34a5e8819ca9ec5d',
+    ],
     'WEETH-ETH': ['0x698fe98247a40c5771537b5786b2f3f9d78eb487b4ce4d75533cd0e94d88a115'],
     'WSTETH-USDC': ['0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc'],
     'ETH-USDC': [
