@@ -10,7 +10,6 @@ import { LendingProtocol } from 'lendingProtocols'
 
 interface IsSupportingAutomationParams {
   collateralToken: string
-  isYieldLoop: boolean
   networkId: OmniSupportedNetworkIds
   poolId?: string
   protocol: LendingProtocol
@@ -30,7 +29,6 @@ const defaultIsSupportingAutomationResponse: IsSupportingAutomationResponse = {
 
 export function isSupportingAutomation({
   collateralToken,
-  isYieldLoop,
   networkId,
   poolId,
   protocol,
@@ -46,7 +44,7 @@ export function isSupportingAutomation({
     supportedTokens,
   })
 
-  if (!isMultiplySupported || isYieldLoop) return defaultIsSupportingAutomationResponse
+  if (!isMultiplySupported) return defaultIsSupportingAutomationResponse
   else {
     const isSupportingAutomationResponse = {
       isSupportingProtection: hasCommonElement(

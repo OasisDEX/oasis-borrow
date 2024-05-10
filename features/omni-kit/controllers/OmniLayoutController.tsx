@@ -47,7 +47,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       isOracless,
       isOwner,
       isShort,
-      isYieldLoop,
       isYieldLoopWithData,
       network,
       networkId,
@@ -86,7 +85,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
 
   const { isSupportingOptimization, isSupportingProtection } = isSupportingAutomation({
     collateralToken,
-    isYieldLoop,
     networkId,
     poolId,
     protocol,
