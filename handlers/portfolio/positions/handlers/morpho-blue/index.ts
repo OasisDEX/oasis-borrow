@@ -12,7 +12,10 @@ import {
   getMorphoPositionDetails,
   getMorphoPositionInfo,
 } from 'handlers/portfolio/positions/handlers/morpho-blue/helpers'
-import { type TokensPricesList } from 'handlers/portfolio/positions/helpers'
+import {
+  getPositionsAutomations,
+  type TokensPricesList,
+} from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type {
   PortfolioPosition,
@@ -31,6 +34,8 @@ interface GetMorphoPositionsParams {
   positionsCount?: boolean
 }
 import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
+import { emptyAutomations } from 'handlers/portfolio/constants'
+import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 
 async function getMorphoPositions({
   apiVaults,
@@ -57,6 +62,13 @@ async function getMorphoPositions({
         positionId,
       })),
   )
+
+  const [morphoPositionsAutomations] = await Promise.all([
+    getAutomationData({
+      addresses: positionsArray.map(({ proxyAddress }) => proxyAddress),
+      network: NetworkIds.MAINNET,
+    }),
+  ])
 
   if (positionsCount || !apiVaults) {
     return {
@@ -109,10 +121,18 @@ async function getMorphoPositions({
               provider: getRpcProvider(networkId),
             },
           )
+          const automations = getPositionsAutomations({
+            triggers:
+              morphoPositionsAutomations
+                .map((automation) => automation.triggers)
+                .filter(({ decodedAndMappedData }) => decodedAndMappedData.poolId === marketId) ??
+              [],
+            defaultList: emptyAutomations,
+          })
 
           return {
             availableToMigrate: false,
-            automations: {},
+            automations,
             details: getMorphoPositionDetails({
               liquidationRatio: new BigNumber(liquidationRatio).shiftedBy(NEGATIVE_WAD_PRECISION),
               position,
