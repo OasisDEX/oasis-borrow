@@ -13,6 +13,7 @@ const triggerTypesMap = {
     TriggerType.MakerBasicBuyV2,
     TriggerType.DmaAaveBasicBuyV2,
     TriggerType.DmaSparkBasicBuyV2,
+    TriggerType.DmaMorphoBlueBasicBuyV2,
   ],
   autoSell: [
     TriggerType.BasicSell,
@@ -20,6 +21,7 @@ const triggerTypesMap = {
     TriggerType.SimpleAAVESell,
     TriggerType.DmaAaveBasicSellV2,
     TriggerType.DmaSparkBasicSellV2,
+    TriggerType.DmaMorphoBlueBasicSellV2,
   ],
   stopLoss: [
     TriggerType.AaveStopLossToCollateral,
@@ -44,6 +46,8 @@ const triggerTypesMap = {
     124, // legacy: aave stop loss to debt
     125, // legacy: spark stop loss to collateral
     126, // legacy: spark stop loss to debt
+    TriggerType.DmaMorphoBlueStopLossV2,
+    TriggerType.DmaMorphoBlueTrailingStopLossV2,
   ],
   takeProfit: [
     TriggerType.AutoTakeProfitToCollateral,
@@ -52,6 +56,7 @@ const triggerTypesMap = {
     TriggerType.MakerAutoTakeProfitToDaiV2,
     TriggerType.DmaAavePartialTakeProfitV2,
     TriggerType.DmaSparkPartialTakeProfitV2,
+    TriggerType.DmaMorphoBluePartialTakeProfitV2,
   ],
 }
 
