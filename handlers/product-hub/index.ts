@@ -1,4 +1,4 @@
-import { type Prisma, type PrismaPromise, type Protocol, EarnStrategies } from '@prisma/client'
+import { EarnStrategies, type Prisma, type PrismaPromise, type Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'

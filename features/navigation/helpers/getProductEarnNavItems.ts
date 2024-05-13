@@ -10,7 +10,6 @@ export const getProductEarnNavItems = (productHub: ProductHubItem[]) => {
     filters: {
       products: featuredEarnNavigationProducts,
     },
-    product: OmniProductType.Earn,
     rows: productHub,
   })
     .map((product) => ({

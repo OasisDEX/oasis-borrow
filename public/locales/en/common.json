@@ -960,7 +960,7 @@
     "earn-on-your-simple": "Earn on your {{token}}",
     "earn-on-other-strategy": "Earn on your {{token}} with {{earnStrategyDescription}}",
     "earn-on-yield-loop-strategy": "Yield Loop {{token}} on {{protocol}}",
-    "earn-on-liquidity-provision-strategy": "Lend {{token}} on {{protocol}}",
+    "earn-on-generic-strategy": "Lend {{token}} on {{protocol}}",
     "multiply-get-up-to": "Get up to {{maxMultiply}}x on your {{collateralToken}}",
     "multiply-exposure": "Multiply exposure to {{collateralToken}} against {{debtToken}}",
     "borrow-up-to-ltv": "Borrow up to {{maxLtv}} LTV",

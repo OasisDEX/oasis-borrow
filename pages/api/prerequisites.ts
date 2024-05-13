@@ -1,4 +1,8 @@
+import { fetchContentfulGraphQL } from 'contentful/api'
 import { configFetcherBackend } from 'handlers/config'
+import type { NavigationResponse } from 'handlers/navigation'
+import { parseNavigationResponse } from 'handlers/navigation/helpers'
+import { navigationQuery } from 'handlers/navigation/query'
 import { getProductHubData } from 'handlers/product-hub'
 import { configCacheTime } from 'helpers/config'
 import type { NextApiHandler } from 'next'
@@ -16,13 +20,17 @@ const handler: NextApiHandler = async ({ method, query }, res) => {
       : query.protocols.split(',')
     : []
 
-  const [config, productHub] = await Promise.all([
+  const [config, productHub, navigationResponse] = await Promise.all([
     configFetcherBackend(),
     getProductHubData(protocols),
+    fetchContentfulGraphQL<NavigationResponse>(navigationQuery),
   ])
+
+  const navigation = parseNavigationResponse({ navigationResponse, productHub })
 
   res.setHeader('Cache-Control', `s-maxage=${configCacheTime.frontend}, stale-while-revalidate`)
   res.status(200).json({
+    navigation,
     config,
     productHub,
   })

@@ -4,39 +4,29 @@ import { Navigation } from 'components/navigation/Navigation'
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
 import { NavigationActionsController } from 'features/navigation/controls/NavigationActionsController'
-import { getNavProductsPanel } from 'features/navigation/panels/getNavProductsPanel'
-import { getNavProtocolsPanel } from 'features/navigation/panels/getNavProtocolsPanel'
-import { getNavTokensPanel } from 'features/navigation/panels/getNavTokensPanel'
-import { getNavUseCasesPanel } from 'features/navigation/panels/getNavUseCasesPanel'
-import { useConnection } from 'features/web3OnBoard/useConnection'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useAccount } from 'helpers/useAccount'
-import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 
 export function NavigationController() {
-  const { t } = useTranslation()
-  const {
-    productHub,
-    config: { navigation },
-  } = usePreloadAppDataContext()
+  const { navigation } = usePreloadAppDataContext()
   const { isConnected, walletAddress } = useAccount()
-  const { connect } = useConnection()
+  // const { connect } = useConnection()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
 
-  const productHubItems = productHub.table
+  // const productHubItems = productHub.table
 
-  const navProductsPanel = useMemo(
-    () => getNavProductsPanel({ t, productHubItems, isConnected, connect }),
-    [t, productHubItems, isConnected, connect],
-  )
-  const navProtocolsPanel = useMemo(() => getNavProtocolsPanel({ t, navigation }), [t, navigation])
-  const navTokensPanel = useMemo(
-    () => getNavTokensPanel({ t, navigation, productHubItems }),
-    [t, navigation, productHubItems],
-  )
-  const navUseCasesPanel = useMemo(() => getNavUseCasesPanel({ t }), [t])
+  // const navProductsPanel = useMemo(
+  //   () => getNavProductsPanel({ t, productHubItems, isConnected, connect }),
+  //   [t, productHubItems, isConnected, connect],
+  // )
+  // const navProtocolsPanel = useMemo(() => getNavProtocolsPanel({ t, navigation }), [t, navigation])
+  // const navTokensPanel = useMemo(
+  //   () => getNavTokensPanel({ t, navigation, productHubItems }),
+  //   [t, navigation, productHubItems],
+  // )
+  // const navUseCasesPanel = useMemo(() => getNavUseCasesPanel({ t }), [t])
 
   return (
     <>
@@ -51,7 +41,7 @@ export function NavigationController() {
               ]
             : []),
         ]}
-        panels={[navProductsPanel, navProtocolsPanel, navTokensPanel, navUseCasesPanel]}
+        panels={navigation}
         actions={<NavigationActionsController isConnected={isConnected} />}
       />
       <SwapWidgetShowHide />

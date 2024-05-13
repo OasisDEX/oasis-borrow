@@ -1,8 +1,8 @@
-import { fetchGraphQL } from 'contentful/api'
+import { fetchContentfulGraphQL } from 'contentful/api'
 import type { LandingPageRawResponse } from 'contentful/types'
 
 export async function getLandingPageBySlug(slug: string, preview: boolean) {
-  return await fetchGraphQL<LandingPageRawResponse>(
+  return await fetchContentfulGraphQL<LandingPageRawResponse>(
     `
       {
         landingPageCollection(
