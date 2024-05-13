@@ -1,34 +1,36 @@
 const NAVIGATION_ID = '5u6VVriDSkPjUGRWRZ5oD9'
 
 const navigationLinkQuery = `
-  label
   description
-  protocol {
-    name
-    slug
-  }
-  token
-  link
   featureFlag
-  star
-`
-const navigationFeaturedPosition = `
-  network {
-    name
-    slug
-  }
+  label
+  link
   protocol {
-    name
     slug
   }
-  product {
-    name
+  star
+  token
+`
+const navigationFeaturedProductQuery = `
+  detailedFilters
+  label
+  network {
     slug
   }
   primaryToken
+  product {
+    slug
+  }
+  protocol {
+    slug
+  }
   secondaryToken
-  label
-  detailedFilters
+`
+
+const navigationTopProductsQuery = `
+  product {
+    slug
+  }
 `
 
 export const navigationQuery = `
@@ -56,14 +58,20 @@ export const navigationQuery = `
                           ${navigationLinkQuery}
                         }
                         ... on FeaturedProduct {
-                          ${navigationFeaturedPosition}
+                          ${navigationFeaturedProductQuery}
+                        }
+                        ... on NavigationTopProducts {
+                          ${navigationTopProductsQuery}
                         }
                       }
                     }
                   }
                 }
                 ... on FeaturedProduct {
-                  ${navigationFeaturedPosition}
+                  ${navigationFeaturedProductQuery}
+                }
+                ... on NavigationTopProducts {
+                  ${navigationTopProductsQuery}
                 }
               }
             }

@@ -2,12 +2,13 @@ import type { NavigationMenuPanelListItem } from 'components/navigation/Navigati
 import { OmniProductType } from 'features/omni-kit/types'
 import { filterFeaturedProducts } from 'features/productHub/helpers'
 import type { ProductHubData } from 'features/productHub/types'
-import type { NavigationLinkTypes } from 'handlers/navigation'
 import {
   mapFeaturedEarnProduct,
   mapFeaturedMultiplyProduct,
   mapFeaturedProductToFilterCriteria,
+  mapTopBorrowProduct,
 } from 'handlers/navigation/helpers'
+import type { NavigationLinkTypes } from 'handlers/navigation/types'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
 interface PapNavigationLinkItemParams {
@@ -72,6 +73,15 @@ export function mapNavigationLinkItem({
           }
           case OmniProductType.Earn: {
             return mapFeaturedEarnProduct(filteredProducts)
+          }
+        }
+
+        return [] as NavigationMenuPanelListItem[]
+      }
+      case 'NavigationTopProducts': {
+        switch (item.product.slug) {
+          case OmniProductType.Borrow: {
+            return mapTopBorrowProduct(productHub.table)
           }
         }
 

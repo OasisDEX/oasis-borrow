@@ -10,8 +10,7 @@ interface NavigationLink {
   label: string
   link?: string
   protocol?: {
-    name: LendingProtocol
-    slug: string
+    slug: LendingProtocol
   }
   token?: string
   star: boolean
@@ -22,7 +21,7 @@ interface NavigationLinkWithNestedLinks extends NavigationLink {
     title: string
     displayTitle: boolean
     linksListCollection: {
-      items: (NavigationLink | FeaturedProduct)[]
+      items: (NavigationLink | NavigationFeaturedProduct)[]
     }
     link?: {
       label: string
@@ -31,7 +30,7 @@ interface NavigationLinkWithNestedLinks extends NavigationLink {
   }
 }
 
-export interface FeaturedProduct {
+export interface NavigationFeaturedProduct {
   __typename: 'FeaturedProduct'
   detailedFilters?: {
     id: string
@@ -40,22 +39,30 @@ export interface FeaturedProduct {
   }[]
   label?: string
   network: {
-    name: string
     slug: ProductHubSupportedNetworks
   }
   primaryToken: string
   secondaryToken: string
   protocol: {
-    name: string
     slug: LendingProtocol
   }
   product: {
-    name: string
     slug: OmniProductType
   }
 }
 
-export type NavigationLinkTypes = NavigationLink | NavigationLinkWithNestedLinks | FeaturedProduct
+export interface NavigationTopProducts {
+  __typename: 'NavigationTopProducts'
+  product: {
+    slug: OmniProductType
+  }
+}
+
+export type NavigationLinkTypes =
+  | NavigationLink
+  | NavigationLinkWithNestedLinks
+  | NavigationFeaturedProduct
+  | NavigationTopProducts
 
 export interface NavigationResponse {
   data: {
@@ -68,7 +75,11 @@ export interface NavigationResponse {
               title: string
               displayTitle: boolean
               linksListCollection: {
-                items: (NavigationLinkWithNestedLinks | FeaturedProduct)[]
+                items: (
+                  | NavigationLinkWithNestedLinks
+                  | NavigationFeaturedProduct
+                  | NavigationTopProducts
+                )[]
               }
               link?: {
                 label: string

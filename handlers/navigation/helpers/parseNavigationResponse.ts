@@ -1,7 +1,7 @@
 import type { NavigationMenuPanelType } from 'components/navigation/Navigation.types'
 import type { ProductHubData } from 'features/productHub/types'
-import type { NavigationResponse } from 'handlers/navigation'
 import { mapNavigationLinkItem } from 'handlers/navigation/helpers'
+import type { NavigationResponse } from 'handlers/navigation/types'
 
 interface ParseNavigationResponseParams {
   navigationResponse: NavigationResponse

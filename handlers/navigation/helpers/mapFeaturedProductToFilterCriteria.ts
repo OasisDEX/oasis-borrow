@@ -1,6 +1,6 @@
-import type { FeaturedProduct } from 'handlers/navigation/types'
+import type { NavigationFeaturedProduct } from 'handlers/navigation/types'
 
-export function mapFeaturedProductToFilterCriteria(item: FeaturedProduct) {
+export function mapFeaturedProductToFilterCriteria(item: NavigationFeaturedProduct) {
   const {
     primaryToken,
     secondaryToken,
