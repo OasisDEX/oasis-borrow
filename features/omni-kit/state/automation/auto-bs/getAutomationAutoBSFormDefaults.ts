@@ -3,21 +3,24 @@ import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/
 import type { OmniAutomationAutoBSFormState } from 'features/omni-kit/state/automation/auto-bs'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { TriggerAction } from 'helpers/lambda/triggers'
+import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetAutomationAutoBSFormDefaultsParams {
   poolId?: string
   positionTriggers: GetTriggersResponse
   type: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
+  protocol: LendingProtocol
 }
 
 export const getAutomationAutoBSFormDefaults = ({
   poolId,
   positionTriggers,
   type,
+  protocol,
 }: GetAutomationAutoBSFormDefaultsParams): OmniAutomationAutoBSFormState => {
   const {
     flags: { isAutoSellEnabled, isAutoBuyEnabled },
-  } = getMappedAutomationMetadataValues({ poolId, positionTriggers })
+  } = getMappedAutomationMetadataValues({ poolId, positionTriggers, protocol })
 
   const isEnabled = {
     [AutomationFeatures.AUTO_SELL]: isAutoSellEnabled,

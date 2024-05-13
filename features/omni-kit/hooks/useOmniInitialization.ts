@@ -23,26 +23,30 @@ import type {
   OmniSimulationSwap,
 } from 'features/omni-kit/types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import type { LendingProtocol } from 'lendingProtocols'
 import { useState } from 'react'
 
 export function useOmniInitialization<OmniPositionType>({
   poolId,
   positionTriggers,
+  protocol,
 }: {
   poolId?: string
   positionTriggers: GetTriggersResponse
+  protocol: LendingProtocol
 }) {
   const stopLossForm = useOmniStopLossAutomationFormReducto(
-    getAutomationStopLossFormDefaults({ poolId, positionTriggers }),
+    getAutomationStopLossFormDefaults({ poolId, positionTriggers, protocol }),
   )
   const trailingStopLossForm = useOmniAutomationTrailingStopLossFormReducto(
-    getAutomationTrailingStopLossFormDefaults({ poolId, positionTriggers }),
+    getAutomationTrailingStopLossFormDefaults({ poolId, positionTriggers, protocol }),
   )
   const autoSellForm = useOmniAutomationAutoBSFormReducto(
     getAutomationAutoBSFormDefaults({
       poolId,
       positionTriggers,
       type: AutomationFeatures.AUTO_SELL,
+      protocol,
     }),
   )
   const autoBuyForm = useOmniAutomationAutoBSFormReducto(
@@ -50,10 +54,11 @@ export function useOmniInitialization<OmniPositionType>({
       poolId,
       positionTriggers,
       type: AutomationFeatures.AUTO_BUY,
+      protocol,
     }),
   )
   const partialTakeProfitForm = useOmniAutomationPartialTakeProfitFormReducto(
-    getAutomationPartialTakeProfitFormDefaults({ poolId, positionTriggers }),
+    getAutomationPartialTakeProfitFormDefaults({ poolId, positionTriggers, protocol }),
   )
 
   const [cachedPosition, setCachedPosition] = useState<OmniPositionSet<OmniPositionType>>()

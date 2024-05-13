@@ -7,67 +7,65 @@ import {
 } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationSimulationResponse } from 'features/omni-kit/types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetMappedAutomationMetadataValuesParams {
   poolId?: string
   positionTriggers: GetTriggersResponse
   simulationResponse?: OmniAutomationSimulationResponse
+  protocol: LendingProtocol
 }
 
 export const getMappedAutomationMetadataValues = ({
   poolId,
   positionTriggers: { flags, triggers },
   simulationResponse,
+  protocol,
 }: GetMappedAutomationMetadataValuesParams) => {
+  const flagSelector = (
+    poolId ? `${protocol}-${poolId}` : protocol.replace('aavev3', 'aave3')
+  ) as keyof typeof flags // thanks for "aave3"... 🙄
+  const selectedFlags = flags[flagSelector]
   return {
     flags: {
-      isStopLossEnabled: Object.keys(flags).some(
-        (key) => flags[key as keyof typeof flags].isStopLossEnabled,
-      ),
-      isTrailingStopLossEnabled: Object.keys(flags).some(
-        (key) => flags[key as keyof typeof flags].isTrailingStopLossEnabled,
-      ),
-      isAutoSellEnabled: Object.keys(flags).some(
-        (key) => flags[key as keyof typeof flags].isBasicSellEnabled,
-      ),
-      isAutoBuyEnabled: Object.keys(flags).some(
-        (key) => flags[key as keyof typeof flags].isBasicBuyEnabled,
-      ),
-      isPartialTakeProfitEnabled: Object.keys(flags).some(
-        (key) => flags[key as keyof typeof flags].isPartialTakeProfitEnabled,
-      ),
+      isStopLossEnabled: selectedFlags?.isStopLossEnabled,
+      isTrailingStopLossEnabled: selectedFlags?.isTrailingStopLossEnabled,
+      isAutoSellEnabled: selectedFlags?.isBasicSellEnabled,
+      isAutoBuyEnabled: selectedFlags?.isBasicBuyEnabled,
+      isPartialTakeProfitEnabled: selectedFlags?.isPartialTakeProfitEnabled,
     },
     triggers: {
       stopLoss: mapStopLossTriggers(
-        triggers.aave3.stopLossToCollateral ||
-          triggers.aave3.stopLossToCollateralDMA ||
-          triggers.aave3.stopLossToDebt ||
-          triggers.aave3.stopLossToDebtDMA ||
-          triggers.spark.stopLossToCollateral ||
-          triggers.spark.stopLossToCollateralDMA ||
-          triggers.spark.stopLossToDebt ||
-          triggers.spark.stopLossToDebtDMA ||
-          triggers[`morphoblue-${poolId}`]?.stopLoss,
+        poolId
+          ? triggers[`morphoblue-${poolId}`]?.stopLoss
+          : triggers.aave3.stopLossToCollateral ||
+              triggers.aave3.stopLossToCollateralDMA ||
+              triggers.aave3.stopLossToDebt ||
+              triggers.aave3.stopLossToDebtDMA ||
+              triggers.spark.stopLossToCollateral ||
+              triggers.spark.stopLossToCollateralDMA ||
+              triggers.spark.stopLossToDebt ||
+              triggers.spark.stopLossToDebtDMA,
       ),
       trailingStopLoss: mapTrailingStopLossTriggers(
-        triggers.aave3.trailingStopLossDMA ||
-          triggers.spark.trailingStopLossDMA ||
-          triggers[`morphoblue-${poolId}`]?.trailingStopLoss,
+        poolId
+          ? triggers[`morphoblue-${poolId}`]?.trailingStopLoss
+          : triggers.aave3.trailingStopLossDMA || triggers.spark.trailingStopLossDMA,
       ),
       autoSell: mapAutoSellTriggers(
-        triggers.aave3.basicSell ||
-          triggers.spark.basicSell ||
-          triggers[`morphoblue-${poolId}`]?.basicSell,
+        poolId
+          ? triggers[`morphoblue-${poolId}`]?.basicSell
+          : triggers.aave3.basicSell || triggers.spark.basicSell,
       ),
       autoBuy: mapAutoBuyTriggers(
-        triggers.aave3.basicBuy ||
-          triggers.spark.basicBuy ||
-          triggers[`morphoblue-${poolId}`]?.basicBuy,
+        poolId
+          ? triggers[`morphoblue-${poolId}`]?.basicBuy
+          : triggers.aave3.basicBuy || triggers.spark.basicBuy,
       ),
       partialTakeProfit: mapPartialTakeProfitTriggers(
-        triggers.aave3.partialTakeProfit ||
-          triggers.spark.partialTakeProfit ||
-          triggers[`morphoblue-${poolId}`]?.partialTakeProfit,
+        poolId
+          ? triggers[`morphoblue-${poolId}`]?.partialTakeProfit
+          : triggers.aave3.partialTakeProfit || triggers.spark.partialTakeProfit,
       ),
     },
     simulation: simulationResponse?.simulation,

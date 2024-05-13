@@ -62,6 +62,7 @@ export const getOmniValidations =
     })
 
     const lendingValidations = useOmniLendingValidations({
+      protocol,
       isOpening,
       poolId,
       position,

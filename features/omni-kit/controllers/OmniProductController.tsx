@@ -329,6 +329,7 @@ export const OmniProductController = <Auction, History, Position>({
                             automationFormDefaults: getAutomationFormDefaults({
                               poolId,
                               positionTriggers,
+                              protocol,
                             }),
                           }
                           const omniProductContextProviderData = getOmniProductContextProviderData({
