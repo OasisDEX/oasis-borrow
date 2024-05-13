@@ -3,7 +3,7 @@ import type { ProductHubSupportedNetworks } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { FeaturesEnum } from 'types/config'
 
-interface NavigationLink {
+export interface NavigationLink {
   __typename: 'NavigationLink'
   description: string
   featureFlag?: FeaturesEnum
@@ -17,12 +17,12 @@ interface NavigationLink {
   star: boolean
 }
 
-interface NavigationLinkWithNestedLinks extends NavigationLink {
+export interface NavigationLinkWithNestedLinks extends NavigationLink {
   nestedLinks: {
     title: string
     displayTitle: boolean
     linksListCollection: {
-      items: (NavigationLink | FeaturedProduct)[]
+      items: (NavigationLink | NavigationFeaturedProductLink)[]
     }
     link?: {
       label: string
@@ -31,7 +31,7 @@ interface NavigationLinkWithNestedLinks extends NavigationLink {
   }
 }
 
-interface FeaturedProduct {
+export interface NavigationFeaturedProductLink {
   __typename: 'FeaturedProduct'
   detailedFilters?: {
     id: string
@@ -55,7 +55,7 @@ interface FeaturedProduct {
   }
 }
 
-export type NavigationLinkTypes = NavigationLink | NavigationLinkWithNestedLinks | FeaturedProduct
+export type NavigationLinkTypes = NavigationLink | NavigationLinkWithNestedLinks | NavigationFeaturedProductLink
 
 export interface NavigationResponse {
   data: {
@@ -68,7 +68,7 @@ export interface NavigationResponse {
               title: string
               displayTitle: boolean
               linksListCollection: {
-                items: (NavigationLinkWithNestedLinks | FeaturedProduct)[]
+                items: (NavigationLinkWithNestedLinks | NavigationFeaturedProductLink)[]
               }
               link?: {
                 label: string

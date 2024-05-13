@@ -5,6 +5,7 @@ import type { ProductHubData } from 'features/productHub/types'
 import type { NavigationLinkTypes } from 'handlers/navigation'
 import {
   mapFeaturedEarnProduct,
+  mapFeaturedMultiplyProduct,
   mapFeaturedProductToFilterCriteria,
 } from 'handlers/navigation/helpers'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
@@ -66,14 +67,15 @@ export function mapNavigationLinkItem({
         })
 
         switch (item.product.slug) {
+          case OmniProductType.Multiply: {
+            return mapFeaturedMultiplyProduct(filteredProducts)
+          }
           case OmniProductType.Earn: {
             return mapFeaturedEarnProduct(filteredProducts)
           }
         }
 
-        return {
-          title: 'a',
-        }
+        return [] as NavigationMenuPanelListItem[]
       }
     }
   })
