@@ -51,7 +51,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       network,
       networkId,
       owner,
-      pairId,
       poolId,
       positionId,
       priceFormat,
@@ -93,6 +92,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   })
 
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
+  const maxLtv = 'maxRiskRatio' in position ? position.maxRiskRatio.loanToValue : undefined
   const netValue = 'netValue' in position ? position.netValue : undefined
   const minNetValue = useOmniMinNetAutomationValue({ protocol, networkId })
 
@@ -110,12 +110,12 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           headline,
           isYieldLoopWithData,
           networkName: network.name,
-          pairId,
           positionId,
           productType,
           protocol,
           quoteIcon,
           quoteToken,
+          maxLtv,
         })}
         details={[
           ...(headlineDetails || []),
