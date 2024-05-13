@@ -21,6 +21,7 @@ import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { getYieldsRequest } from 'helpers/lambda/yields'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -79,9 +80,7 @@ async function getMorphoMarketData(
         const label = `${collateralToken}/${quoteToken}${pairId}`
         const network = networksById[networkId].name as ProductHubSupportedNetworks
         const protocol = LendingProtocol.MorphoBlue
-        const maxLtv = new BigNumber(marketParams.lltv.toString())
-          .shiftedBy(NEGATIVE_WAD_PRECISION)
-          .toString()
+        const maxLtv = new BigNumber(marketParams.lltv.toString()).shiftedBy(NEGATIVE_WAD_PRECISION)
         const liquidity = totalSupplyAssets.minus(totalBorrowAssets).times(quotePrice).toString()
         const fee = getMarketRate(rate.toString()).toString()
         const primaryTokenAddress = marketParams.collateralToken.toLowerCase()
@@ -109,18 +108,19 @@ async function getMorphoMarketData(
                 collateralToken,
                 networkId,
                 protocol: LendingProtocol.MorphoBlue,
-                ltv: new BigNumber(maxLtv),
+                ltv: maxLtv,
               },
               process.env.FUNCTIONS_API_URL,
             )
           : Promise.resolve(null))
+
         const weeklyNetApy = new BigNumber(weeklyNetApyCall?.results?.apy7d || zero)
           .div(lambdaPercentageDenomination)
           .toString()
 
         const isShort = isShortPosition({ collateralToken })
         const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
-        const earnStrategyDescription = `${collateralToken}/${quoteToken} Yield Loop`
+        const earnStrategyDescription = `${collateralToken}/${quoteToken} ${formatDecimalAsPercent(maxLtv)} LTV Loop`
         const multiplyStrategyType = isShort ? 'short' : 'long'
         const maxMultiply = BigNumber.max(
           one.plus(one.div(one.div(maxLtv).minus(one))),
@@ -145,7 +145,7 @@ async function getMorphoMarketData(
               depositToken: collateralToken,
               fee,
               liquidity,
-              maxLtv,
+              maxLtv: maxLtv.toString(),
               maxMultiply,
               weeklyNetApy,
               primaryTokenAddress,
