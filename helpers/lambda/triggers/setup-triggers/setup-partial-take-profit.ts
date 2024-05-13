@@ -31,6 +31,7 @@ export const setupLambdaPartialTakeProfit = async (
                 .integerValue()
                 .toString(),
               token: params.stopLoss.triggerData.token,
+              poolId,
             },
             action: params.stopLoss.action,
           }
