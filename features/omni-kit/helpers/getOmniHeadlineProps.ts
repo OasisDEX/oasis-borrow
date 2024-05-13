@@ -1,6 +1,8 @@
+import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { shouldShowPairId } from 'features/omni-kit/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import type { LendingProtocol } from 'lendingProtocols'
 import { uniq, upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -14,13 +16,13 @@ interface OmniHeadlinePropsParams {
   headline?: string
   isYieldLoopWithData?: boolean
   networkName: NetworkNames
-  pairId: number
   positionId?: string
   productType?: OmniProductType
   protocol: LendingProtocol
   quoteAddress?: string
   quoteIcon?: string
   quoteToken?: string
+  maxLtv?: BigNumber
 }
 
 export function getOmniHeadlineProps({
@@ -29,26 +31,27 @@ export function getOmniHeadlineProps({
   headline,
   isYieldLoopWithData,
   networkName,
-  pairId,
   positionId,
   productType,
   protocol,
   quoteIcon,
   quoteToken,
+  maxLtv,
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
   const resolvedPositionId = positionId ? ` #${positionId}` : ''
-  const resolvedPairId =
+  const resolvedMaxLtv =
     collateralToken &&
     quoteToken &&
+    maxLtv &&
     shouldShowPairId({
       collateralToken,
       networkName,
       protocol,
       quoteToken,
     })
-      ? `-${pairId}`
+      ? ` ${formatDecimalAsPercent(maxLtv)}`
       : ''
   const resolvedProductType = isYieldLoopWithData
     ? t('omni-kit.headline.yield-multiple')
@@ -63,7 +66,9 @@ export function getOmniHeadlineProps({
       collateralToken: collateralTokenHeaderName,
       productType: resolvedProductType,
       quoteToken: quoteTokenHeaderName,
-      pairId: resolvedPairId,
+      // ux stuff, we are using max ltv as pair id here, so it's easy from user
+      // perspective to distinguish between markets instead of using 1,2,3 etc.
+      pairId: resolvedMaxLtv,
     })
 
   return {

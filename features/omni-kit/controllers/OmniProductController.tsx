@@ -205,7 +205,6 @@ export const OmniProductController = <Auction, History, Position>({
                     collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
                     headline: label,
-                    pairId,
                     positionId,
                     productType: dpmPositionData?.product as OmniProductType,
                     protocol,
