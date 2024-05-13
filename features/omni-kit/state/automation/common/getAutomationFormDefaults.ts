@@ -2,15 +2,18 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { getMappedAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationFormState } from 'features/omni-kit/state/automation/common/automationFormReducto.types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetAutomationFormDefaultsParams {
   poolId?: string
   positionTriggers: GetTriggersResponse
+  protocol: LendingProtocol
 }
 
 export const getAutomationFormDefaults = ({
   poolId,
   positionTriggers,
+  protocol,
 }: GetAutomationFormDefaultsParams): OmniAutomationFormState => {
   const {
     flags: {
@@ -20,7 +23,7 @@ export const getAutomationFormDefaults = ({
       isAutoBuyEnabled,
       isPartialTakeProfitEnabled,
     },
-  } = getMappedAutomationMetadataValues({ poolId, positionTriggers })
+  } = getMappedAutomationMetadataValues({ poolId, positionTriggers, protocol })
 
   return {
     uiDropdownProtection: isTrailingStopLossEnabled

@@ -136,6 +136,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             poolId,
             positionTriggers: productContext.automation.positionTriggers,
             simulationResponse: productContext.automation.simulationData,
+            protocol,
           }),
         },
         elements: {
