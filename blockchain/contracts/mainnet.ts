@@ -242,6 +242,10 @@ export const mainnetContracts = {
     'MPETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CSETHWETH),
     'UNIV2-DAI': contractDesc(ajnaPool, mainnet.ajna['AjnaPoolPairs_UNI-V2DAI']),
+    'MOOAURAGYROAUSDCN/AUSDTNU-USDC': contractDesc(
+      ajnaPool,
+      mainnet.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
+    ),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, mainnet.ajna.AjnaRewardsReedemer),
