@@ -3,19 +3,15 @@ import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
-import type { MakerPoolId } from 'features/refinance/types'
-import {
-  getChainInfoByChainId,
-  PositionId,
-  type PositionType,
-  ProtocolName,
-} from 'summerfi-sdk-common'
+import { getMakerPoolId } from 'features/refinance/helpers/getPoolId'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
+import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
 
 export const useMakerRefinanceContextInputs = ({
   address,
   chainId,
   collateralAmount,
-  collateralToken,
+  collateralTokenSymbol,
   debtAmount,
   id,
   slippage,
@@ -32,7 +28,7 @@ export const useMakerRefinanceContextInputs = ({
   address?: string
   chainId: NetworkIds
   collateralAmount: string
-  collateralToken: string
+  collateralTokenSymbol: string
   debtAmount: string
   id: string
   slippage: number
@@ -48,24 +44,16 @@ export const useMakerRefinanceContextInputs = ({
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 
-  const chainInfo = getChainInfoByChainId(chainId)
+  const chainFamily = getChainInfoByChainId(chainId)
 
-  if (!chainInfo) {
+  if (!chainFamily) {
     throw new Error(`ChainId ${chainId} is not supported`)
   }
-  const positionId: PositionId = PositionId.createFrom({ id })
-
-  const poolId: MakerPoolId = {
-    protocol: {
-      name: ProtocolName.Maker,
-      chainInfo,
-    },
-    vaultId: positionId.id,
-    ilkType: ilkType,
-  }
-  const collateralTokenSymbol = collateralToken
   const debtTokenSymbol = 'DAI'
+  const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
+  const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
 
+  const poolId = getMakerPoolId(chainFamily, ilkType, collateralToken, debtToken)
   const automations = {
     stopLoss: {
       enabled: triggerData.stopLossTriggerData.isStopLossEnabled,

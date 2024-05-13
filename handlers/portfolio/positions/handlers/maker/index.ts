@@ -5,7 +5,8 @@ import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { amountFromRay } from 'blockchain/utils'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { MakerPoolId } from 'features/refinance/types'
+import { getMakerPoolId } from 'features/refinance/helpers/getPoolId'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {
@@ -17,7 +18,7 @@ import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/ge
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { getChainInfoByChainId, ProtocolName } from 'summerfi-sdk-common'
+import { getChainInfoByChainId } from 'summerfi-sdk-common'
 
 export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
@@ -87,16 +88,14 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
 
         const borrowRate = new BigNumber(ilk.stabilityFee).minus(one)
         const maxRiskRatio = new RiskRatio(one.div(minCollRatio), RiskRatio.TYPE.LTV)
-        const chainInfo = getChainInfoByChainId(NetworkIds.MAINNET)!
-
-        const poolId: MakerPoolId = {
-          protocol: {
-            name: ProtocolName.Maker,
-            chainInfo,
-          },
-          vaultId: cdp,
-          ilkType: ilk.ilk,
+        const chainInfo = getChainInfoByChainId(NetworkIds.MAINNET)
+        if (!chainInfo) {
+          throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
         }
+
+        const collateralToken = mapTokenToSdkToken(chainInfo.chainInfo, primaryToken)
+        const debtToken = mapTokenToSdkToken(chainInfo.chainInfo, secondaryToken)
+        const poolId = getMakerPoolId(chainInfo, ilk.ilk, collateralToken, debtToken)
 
         return {
           availableToMigrate: false,

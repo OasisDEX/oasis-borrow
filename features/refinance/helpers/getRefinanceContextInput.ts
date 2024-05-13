@@ -6,8 +6,7 @@ import type {
   RefinanceContextInput,
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
-import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
-import type { PositionType } from 'summerfi-sdk-common'
+import type { ILendingPoolId, PositionType } from 'summerfi-sdk-common'
 
 import { getLendingProtocolByProtocolName } from './protocolNameToLendingProtocol'
 
@@ -40,7 +39,7 @@ export const getRefinanceContextInput = ({
   collateralPrice: string
   debtPrice: string
   ethPrice: string
-  poolId: MakerPoolId | SparkPoolId
+  poolId: ILendingPoolId
   pairId: number
   network: NetworkNames
   address?: string

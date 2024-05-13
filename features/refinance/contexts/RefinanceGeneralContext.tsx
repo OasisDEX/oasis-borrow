@@ -14,9 +14,9 @@ import type {
   AddressValue,
   ChainInfo,
   IPoolId,
+  ITokenAmount,
   PositionId,
   PositionType,
-  TokenAmount,
 } from 'summerfi-sdk-common'
 
 export interface RefinanceSteps {
@@ -87,8 +87,8 @@ export type RefinanceGeneralContextBase = {
   }
   position: {
     positionId: PositionId
-    collateralTokenData: TokenAmount
-    debtTokenData: TokenAmount
+    collateralTokenData: ITokenAmount
+    debtTokenData: ITokenAmount
     liquidationPrice: string
     ltv: RiskRatio
     positionType: PositionType

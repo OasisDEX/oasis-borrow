@@ -2,17 +2,19 @@ import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
+import { getSparkPoolId } from 'features/refinance/helpers/getPoolId'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
-import { RefinanceSidebarStep, type SparkPoolId } from 'features/refinance/types'
+import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
-import type { Chain, Protocol, User } from 'summerfi-sdk-client'
+import type { Chain, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
 import type {
   IImportPositionParameters,
   IPosition,
   IRefinanceParameters,
   ISimulation,
+  Position,
   SimulationType,
 } from 'summerfi-sdk-common'
 import {
@@ -20,7 +22,6 @@ import {
   AddressType,
   ExternalPositionType,
   Percentage,
-  Position,
   ProtocolName,
   TokenAmount,
   Wallet,
@@ -109,13 +110,12 @@ export function useSdkSimulation(): SDKSimulation {
 
     const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
-      const targetPoolId: SparkPoolId = {
-        protocol: {
-          name: ProtocolName.Spark,
-          chainInfo,
-        },
+      const targetPoolId = getSparkPoolId(
+        chainInfo,
         emodeType,
-      }
+        collateralTokenData.token,
+        debtTokenData.token,
+      )
 
       if (address === undefined) {
         throw new Error('Wallet is not connected')
@@ -136,13 +136,13 @@ export function useSdkSimulation(): SDKSimulation {
       })
       setUser(_user)
 
-      const makerProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
+      const makerProtocol = await _chain.protocols.getProtocol({
         name: ProtocolName.Maker,
       })
       if (!makerProtocol) {
         throw new Error(`Protocol ${ProtocolName.Maker} is not found`)
       }
-      const sparkProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
+      const sparkProtocol = await _chain.protocols.getProtocol({
         name: ProtocolName.Spark,
       })
       if (!sparkProtocol) {
@@ -154,17 +154,17 @@ export function useSdkSimulation(): SDKSimulation {
         sparkProtocol.getPool({ poolId: targetPoolId }),
       ])
 
-      const _sourcePosition = Position.createFrom({
-        positionId,
+      const _sourcePosition: Position = {
+        id: positionId,
         pool: sourcePool,
         collateralAmount: replaceETHWithWETH(collateralTokenData),
         debtAmount: replaceETHWithWETH(debtTokenData),
         type: positionType,
-      })
+      }
       setSourcePosition(_sourcePosition)
 
-      const _targetPosition = Position.createFrom({
-        positionId: { id: 'newEmptyPositionFromPool' },
+      const _targetPosition: Position = {
+        id: { id: 'newEmptyPositionFromPool' },
         pool: targetPool,
         collateralAmount: replaceETHWithWETH(
           TokenAmount.createFrom({
@@ -179,7 +179,7 @@ export function useSdkSimulation(): SDKSimulation {
           }),
         ),
         type: positionType,
-      })
+      }
 
       const importPositionParameters: IImportPositionParameters = {
         externalPosition: {
