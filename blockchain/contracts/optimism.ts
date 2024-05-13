@@ -235,6 +235,10 @@ export const optimismContracts: OptimismContracts = {
     'MPETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CSETHWETH),
     'UNIV2-DAI': contractDesc(ajnaPool, optimism.ajna['AjnaPoolPairs_UNI-V2DAI']),
+    'MOOAURAGYROAUSDCN/AUSDTNU-USDC': contractDesc(
+      ajnaPool,
+      optimism.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
+    ),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, optimism.ajna.AjnaRewardsReedemer),
