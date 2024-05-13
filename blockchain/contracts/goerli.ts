@@ -230,6 +230,10 @@ export const goerliContracts: MainnetContractsWithOptional = {
     'MPETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CSETHWETH),
     'UNIV2-DAI': contractDesc(ajnaPool, goerli.ajna['AjnaPoolPairs_UNI-V2DAI']),
+    'MOOAURAGYROAUSDCN/AUSDTNU-USDC': contractDesc(
+      ajnaPool,
+      goerli.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
+    ),
   },
 
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
