@@ -5,18 +5,18 @@
  * @throws An error if there was an issue fetching the configuration data.
  */
 import { configFetcherBackend } from 'handlers/config'
-import type { ConfigResponseType } from 'helpers/config'
+import type { AppConfigType } from 'types/config'
 
-let cachedConfig: ConfigResponseType | undefined
+let cachedConfig: AppConfigType | undefined
 let cacheExpirationTime: number | undefined
 
-export async function getRemoteConfigWithCache(cacheTime = 0): Promise<ConfigResponseType> {
+export async function getRemoteConfigWithCache(cacheTime = 0): Promise<AppConfigType> {
   if (cachedConfig && cacheExpirationTime && Date.now() < cacheExpirationTime) {
     return cachedConfig
   }
   const configResponse = await configFetcherBackend()
-  if (!configResponse || configResponse.error) {
-    throw new Error(`Error fetching config data: ${configResponse.error}`)
+  if (!configResponse) {
+    throw new Error('Error fetching config data')
   }
   cachedConfig = configResponse
   cacheExpirationTime = Date.now() + cacheTime

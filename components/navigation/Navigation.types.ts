@@ -1,10 +1,7 @@
 import type { IconProps } from 'components/Icon.types'
 import type { ReactNode } from 'react'
 
-export interface NavigationMenuPanelAsset {
-  token: string
-  link: string
-}
+export type NavigationModule = 'swap' | 'bridge'
 
 export interface NavigationMenuPanelLink {
   icon: IconProps['icon']
@@ -97,11 +94,11 @@ export interface NavigationMenuPanelListItem {
   hoverColor?: string
   icon?: NavigationMenuPanelIcon
   list?: NavigationMenuPanelList
+  navigationModule?: NavigationModule
   promoted?: boolean
   tags?: NavigationMenuPanelListTags
   title: ReactNode
   url?: string
-  callback?: () => void
 }
 export interface NavigationMenuPanelType {
   label: string

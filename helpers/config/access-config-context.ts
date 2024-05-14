@@ -1,14 +1,11 @@
 'use client'
 import { preloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { cleanObjectFromNull, cleanObjectToNull } from 'helpers/clean-object'
-import type {
-  ConfigResponseType,
-  ConfigResponseTypeKey,
-  PreloadAppDataContext,
-} from 'helpers/config'
+import type { AppConfigTypeKey, PreloadAppDataContext } from 'helpers/config'
 import { configLSKey } from 'helpers/config'
 import { merge } from 'lodash'
 import { useContext } from 'react'
+import type { AppConfigType } from 'types/config'
 import { emptyConfig } from 'types/config'
 
 import { configLSOverridesKey } from './constants'
@@ -17,9 +14,9 @@ import { configLSOverridesKey } from './constants'
  * Returns config from context. If context is not available, returns empty config.
  * This gets updated when config changes (polling every configCacheTime)
  * @param configKey
- * @returns ConfigResponseType[T] or empty config
+ * @returns AppConfigType[T] or empty config
  */
-export function useAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
+export function useAppConfig<T extends AppConfigTypeKey>(configKey: T): AppConfigType[T] {
   try {
     const ac = useContext(preloadAppDataContext)
     if (!ac) {
@@ -48,7 +45,7 @@ export function useAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
  * @param config
  * @returns void
  */
-export function updateConfigOverrides(config: ConfigResponseType): void {
+export function updateConfigOverrides(config: AppConfigType): void {
   if (!window?.localStorage) return
   let overrideConfigRaw = localStorage.getItem(configLSOverridesKey)
   if (!overrideConfigRaw) {
@@ -68,7 +65,7 @@ export function updateConfigOverrides(config: ConfigResponseType): void {
  * @param config
  * @returns void
  */
-export function saveConfigToLocalStorage(config: ConfigResponseType) {
+export function saveConfigToLocalStorage(config: AppConfigType) {
   if (!window?.localStorage) return
   localStorage.setItem(configLSKey, JSON.stringify(config))
   updateConfigOverrides(config)
@@ -77,7 +74,7 @@ export function saveConfigToLocalStorage(config: ConfigResponseType) {
 /**
  * Returns currently saved config from localStorage
  * PLEASE NOTE THAT THIS IS NOT DYNAMIC, IT WILL NOT UPDATE WHEN CONFIG CHANGES (only after a refresh)
- * @returns ConfigResponseType or empty config
+ * @returns AppConfigType or empty config
  */
 export function loadConfigFromLocalStorage() {
   if (typeof localStorage === 'undefined' || !localStorage || !window?.localStorage) {
@@ -93,7 +90,7 @@ export function loadConfigFromLocalStorage() {
       JSON.parse(configRaw),
       cleanObjectFromNull(JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}')),
     )
-    return config as ConfigResponseType
+    return config as AppConfigType
   } catch (error) {
     console.error('loadConfigFromLocalStorage: Error parsing config from localStorage', error)
     return emptyConfig
@@ -104,11 +101,9 @@ export function loadConfigFromLocalStorage() {
  * Returns currently saved config from localStorage
  * PLEASE NOTE THAT THIS IS NOT DYNAMIC, IT WILL NOT UPDATE WHEN CONFIG CHANGES (only after a refresh)
  * @param configKey
- * @returns ConfigResponseType[T] or empty config
+ * @returns AppConfigType[T] or empty config
  */
-export function getLocalAppConfig<T extends ConfigResponseTypeKey>(
-  configKey: T,
-): ConfigResponseType[T] {
+export function getLocalAppConfig<T extends AppConfigTypeKey>(configKey: T): AppConfigType[T] {
   if (typeof localStorage === 'undefined' || !localStorage || !window?.localStorage) {
     return emptyConfig[configKey]
   }

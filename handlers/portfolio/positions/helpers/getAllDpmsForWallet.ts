@@ -1,7 +1,6 @@
 import { NetworkIds } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import request, { gql } from 'graphql-request'
-import type { ConfigResponseType } from 'helpers/config'
 import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 import { uniq } from 'ramda'
 
@@ -82,9 +81,7 @@ const subgraphListDict = {
 } as Record<DpmSupportedNetworks, string>
 
 export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
-  const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
-    1000 * configCacheTime.backend,
-  )
+  const appConfig = await getRemoteConfigWithCache(1000 * configCacheTime.backend)
   const dpmCallList = dpmListSupportedNetworks.map((networkId) => {
     const subgraphUrl = `${appConfig.parameters.subgraphs.baseShortUrl}/${
       subgraphListDict[networkId as DpmSupportedNetworks]

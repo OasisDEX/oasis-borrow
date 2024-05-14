@@ -6,7 +6,6 @@ import type {
   SubgraphsResponses,
 } from 'features/subgraphLoader/types'
 import request from 'graphql-request'
-import type { ConfigResponseType } from 'helpers/config'
 import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
@@ -128,9 +127,7 @@ export function useSubgraphLoader<
  * @returns The URL of the subgraph.
  */
 export async function getSubgraphUrl(subgraph: keyof typeof subgraphsRecord, networkId: number) {
-  const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
-    1000 * configCacheTime.backend,
-  )
+  const appConfig = await getRemoteConfigWithCache(1000 * configCacheTime.backend)
   const subgraphBaseUrl = appConfig.parameters.subgraphs.baseShortUrl
   const subgraphName = subgraphsRecord[subgraph][networkId as NetworkIds]
   // special case for Ajna goerli subgraph

@@ -11,11 +11,7 @@ export type ProductHubDataParams = {
   testnet?: boolean
   dryRun?: boolean
 }
-export interface HandleGetProductHubDataProps extends NextApiRequest {
-  body: ProductHubDataParams & {
-    promoCardsCollection: PromoCardsCollection
-  }
-}
+
 export interface HandleUpdateProductHubDataProps extends NextApiRequest {
   body: ProductHubDataParams
 }

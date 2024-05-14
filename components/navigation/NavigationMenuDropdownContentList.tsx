@@ -1,3 +1,5 @@
+import { NavigationModuleBridge } from 'components/navigation/content/NavigationModuleBridge'
+import { NavigationModuleSwap } from 'components/navigation/content/NavigationModuleSwap'
 import type { NavigationMenuPanelList } from 'components/navigation/Navigation.types'
 import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
 import { WithArrow } from 'components/WithArrow'
@@ -65,7 +67,7 @@ export function NavigationMenuDropdownContentList({
           p: 0,
         }}
       >
-        {items.map(({ callback, hoverColor, url, ...item }, i) => (
+        {items.map(({ hoverColor, url, navigationModule, ...item }, i) => (
           <Box
             key={i}
             as="li"
@@ -77,7 +79,7 @@ export function NavigationMenuDropdownContentList({
                   cursor: 'default',
                   ...itemHoverEffect,
                 }),
-              ...((url || onClick || callback) && {
+              ...((url || onClick || navigationModule) && {
                 cursor: 'pointer',
                 '&:hover': itemHoverEffect,
               }),
@@ -94,8 +96,19 @@ export function NavigationMenuDropdownContentList({
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </Link>
             ) : (
-              <Box sx={{ ...itemInnerPadding }} onClick={callback}>
-                <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
+              <Box sx={{ ...itemInnerPadding }}>
+                {navigationModule ? (
+                  <>
+                    {
+                      {
+                        swap: <NavigationModuleSwap />,
+                        bridge: <NavigationModuleBridge />,
+                      }[navigationModule]
+                    }
+                  </>
+                ) : (
+                  <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
+                )}
               </Box>
             )}
           </Box>
