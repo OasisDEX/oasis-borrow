@@ -3,18 +3,19 @@ import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { getSparkPoolId } from 'features/refinance/helpers/getPoolId'
+import { getPosition } from 'features/refinance/helpers/getPosition'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
-import type { Chain, User } from 'summerfi-sdk-client'
+import type { Chain, ProtocolClient, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
 import type {
   IImportPositionParameters,
   IPosition,
   IRefinanceParameters,
   ISimulation,
-  Position,
+  Maybe,
   SimulationType,
 } from 'summerfi-sdk-common'
 import {
@@ -78,8 +79,8 @@ export function useSdkSimulation(): SDKSimulation {
     }
     const {
       environment: { slippage, chainInfo, address },
-      position: { positionId, collateralTokenData, debtTokenData, positionType },
-      poolData: { poolId },
+      position: { positionId, collateralTokenData, debtTokenData, positionType, lendingProtocol },
+      poolData: { poolId: sourcePoolId },
       form: {
         state: { strategy },
       },
@@ -94,6 +95,9 @@ export function useSdkSimulation(): SDKSimulation {
     if (!positionType) {
       throw new Error('Unsupported position type.')
     }
+
+    const sourceProtocolName = lendingProtocol
+    const targetProtocolName = strategy.protocol
 
     const _debtPrice = getTokenPrice(
       debtTokenData.token.symbol,
@@ -136,34 +140,32 @@ export function useSdkSimulation(): SDKSimulation {
       })
       setUser(_user)
 
-      const makerProtocol = await _chain.protocols.getProtocol({
-        name: ProtocolName.Maker,
+      const makerProtocol: Maybe<ProtocolClient> = await _chain.protocols.getProtocol({
+        name: sourceProtocolName,
       })
       if (!makerProtocol) {
         throw new Error(`Protocol ${ProtocolName.Maker} is not found`)
       }
-      const sparkProtocol = await _chain.protocols.getProtocol({
-        name: ProtocolName.Spark,
+      const sparkProtocol: Maybe<ProtocolClient> = await _chain.protocols.getProtocol({
+        name: targetProtocolName,
       })
       if (!sparkProtocol) {
         throw new Error(`Protocol ${ProtocolName.Spark} is not supported`)
       }
 
       const [sourcePool, targetPool] = await Promise.all([
-        makerProtocol.getPool({ poolId }),
-        sparkProtocol.getPool({ poolId: targetPoolId }),
+        makerProtocol.getLendingPool({ poolId: sourcePoolId }),
+        sparkProtocol.getLendingPool({ poolId: targetPoolId }),
       ])
 
-      const _sourcePosition: Position = {
+      const _sourcePosition = getPosition(sourceProtocolName, {
         id: positionId,
         pool: sourcePool,
         collateralAmount: replaceETHWithWETH(collateralTokenData),
         debtAmount: replaceETHWithWETH(debtTokenData),
         type: positionType,
-      }
-      setSourcePosition(_sourcePosition)
-
-      const _targetPosition: Position = {
+      })
+      const _targetPosition = getPosition(targetProtocolName, {
         id: { id: 'newEmptyPositionFromPool' },
         pool: targetPool,
         collateralAmount: replaceETHWithWETH(
@@ -179,7 +181,9 @@ export function useSdkSimulation(): SDKSimulation {
           }),
         ),
         type: positionType,
-      }
+      })
+
+      setSourcePosition(_sourcePosition)
 
       const importPositionParameters: IImportPositionParameters = {
         externalPosition: {

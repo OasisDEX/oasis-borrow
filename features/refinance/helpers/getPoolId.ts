@@ -1,13 +1,8 @@
 import { type EmodeType, MakerLendingPoolId, SparkLendingPoolId } from 'summerfi-sdk-client'
-import {
-  type ChainFamilyInfo,
-  type ChainInfo,
-  type IToken,
-  ProtocolName,
-} from 'summerfi-sdk-common'
+import { type ChainInfo, type IToken, ProtocolName } from 'summerfi-sdk-common'
 
 export const getMakerPoolId = (
-  chainInfo: ChainFamilyInfo,
+  chainInfo: ChainInfo,
   ilkType: string,
   collateralToken: IToken,
   debtToken: IToken,
@@ -24,7 +19,7 @@ export const getMakerPoolId = (
 }
 
 export const getSparkPoolId = (
-  chainInfo: ChainFamilyInfo | ChainInfo,
+  chainInfo: ChainInfo,
   emodeType: EmodeType,
   collateralToken: IToken,
   debtToken: IToken,

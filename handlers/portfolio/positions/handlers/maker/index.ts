@@ -88,14 +88,14 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
 
         const borrowRate = new BigNumber(ilk.stabilityFee).minus(one)
         const maxRiskRatio = new RiskRatio(one.div(minCollRatio), RiskRatio.TYPE.LTV)
-        const chainInfo = getChainInfoByChainId(NetworkIds.MAINNET)
-        if (!chainInfo) {
+        const chainFamily = getChainInfoByChainId(NetworkIds.MAINNET)
+        if (!chainFamily) {
           throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
         }
 
-        const collateralToken = mapTokenToSdkToken(chainInfo.chainInfo, primaryToken)
-        const debtToken = mapTokenToSdkToken(chainInfo.chainInfo, secondaryToken)
-        const poolId = getMakerPoolId(chainInfo, ilk.ilk, collateralToken, debtToken)
+        const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, primaryToken)
+        const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, secondaryToken)
+        const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
 
         return {
           availableToMigrate: false,

@@ -45,7 +45,6 @@ export const useMakerRefinanceContextInputs = ({
   const { triggerData } = useAutomationContext()
 
   const chainFamily = getChainInfoByChainId(chainId)
-
   if (!chainFamily) {
     throw new Error(`ChainId ${chainId} is not supported`)
   }
@@ -53,7 +52,7 @@ export const useMakerRefinanceContextInputs = ({
   const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
   const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
 
-  const poolId = getMakerPoolId(chainFamily, ilkType, collateralToken, debtToken)
+  const poolId = getMakerPoolId(chainFamily.chainInfo, ilkType, collateralToken, debtToken)
   const automations = {
     stopLoss: {
       enabled: triggerData.stopLossTriggerData.isStopLossEnabled,
