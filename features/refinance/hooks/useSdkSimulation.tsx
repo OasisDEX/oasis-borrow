@@ -80,7 +80,7 @@ export function useSdkSimulation(): SDKSimulation {
     const {
       environment: { slippage, chainInfo, address },
       position: { positionId, collateralTokenData, debtTokenData, positionType, lendingProtocol },
-      poolData: { poolId: sourcePoolId },
+      poolData: { poolId },
       form: {
         state: { strategy },
       },
@@ -113,14 +113,20 @@ export function useSdkSimulation(): SDKSimulation {
     setCollateralPrice(_collateralPrice)
 
     const emodeType = getEmode(collateralTokenData, debtTokenData)
-    const fetchData = async () => {
-      const targetPoolId = getSparkPoolId(
-        chainInfo,
-        emodeType,
-        collateralTokenData.token,
-        debtTokenData.token,
-      )
+    // TODO ref: this sould be resolved with helper based on the protocol and position
+    const sourcePoolId = {
+      ...poolId,
+      collateralTokenData: replaceETHWithWETH(collateralTokenData),
+      debtTokenData: replaceETHWithWETH(debtTokenData),
+    }
+    const targetPoolId = getSparkPoolId(
+      chainInfo,
+      emodeType,
+      replaceETHWithWETH(collateralTokenData).token,
+      replaceETHWithWETH(debtTokenData).token,
+    )
 
+    const fetchData = async () => {
       if (address === undefined) {
         throw new Error('Wallet is not connected')
       }
