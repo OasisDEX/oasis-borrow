@@ -12,21 +12,7 @@ import { useMediaQuery } from 'usehooks-ts'
 export function NavigationController() {
   const { navigation } = usePreloadAppDataContext()
   const { isConnected, walletAddress } = useAccount()
-  // const { connect } = useConnection()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
-
-  // const productHubItems = productHub.table
-
-  // const navProductsPanel = useMemo(
-  //   () => getNavProductsPanel({ t, productHubItems, isConnected, connect }),
-  //   [t, productHubItems, isConnected, connect],
-  // )
-  // const navProtocolsPanel = useMemo(() => getNavProtocolsPanel({ t, navigation }), [t, navigation])
-  // const navTokensPanel = useMemo(
-  //   () => getNavTokensPanel({ t, navigation, productHubItems }),
-  //   [t, navigation, productHubItems],
-  // )
-  // const navUseCasesPanel = useMemo(() => getNavUseCasesPanel({ t }), [t])
 
   return (
     <>
