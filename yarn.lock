@@ -14904,10 +14904,10 @@ summerfi-sdk-client@^0.1.2:
     superjson "^1.13.3"
     viem "^2.7.9"
 
-summerfi-sdk-common@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/summerfi-sdk-common/-/summerfi-sdk-common-0.1.2.tgz#f86c345e236d16662a2d1abd3db80a5895fbe47e"
-  integrity sha512-IIpT2uSdUnNjtnhVbgLKswma4eW22R3r0vYIM8hqoLofNX3VdL3PeVBjpoA106e5iv7zQXMWqhcXzrPoY4gR2g==
+summerfi-sdk-common@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-common/-/summerfi-sdk-common-0.1.4.tgz#c5651acc7166cd46648318e1d94774e5dbb32b0f"
+  integrity sha512-RL7WVDGmj7Eo4VG3sgyfSSgNuB1TbHtKfS9meceLY5voEcJg37bsozCSq+XSNyHT8NzkldKUw42LCFrGBlyQ9A==
   dependencies:
     bignumber.js "9.0.1"
     superjson "^1.13.3"
