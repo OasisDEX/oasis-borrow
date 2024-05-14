@@ -22,6 +22,7 @@ export function parseNavigationResponse({
       ...(list.link && {
         link: list.link,
       }),
+      tight: list.tight,
     })),
   }))
 }

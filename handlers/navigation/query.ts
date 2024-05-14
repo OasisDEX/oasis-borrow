@@ -1,5 +1,15 @@
 const NAVIGATION_ID = '5u6VVriDSkPjUGRWRZ5oD9'
 
+const navigationListOfLinksQuery = `
+  title
+  displayTitle
+  link {
+    label
+    url
+  }
+  tight
+`
+
 const navigationLinkQuery = `
   description
   featureFlag
@@ -43,18 +53,16 @@ export const navigationQuery = `
     listOfPanelsCollection(limit: 5) {
       items {
         label
-        listsOfLinksCollection(limit: 5) {
+        listsOfLinksCollection(limit: 3) {
           items {
-            title
-            displayTitle
+            ${navigationListOfLinksQuery}
             linksListCollection(limit: 10) {
               items {
                 __typename
                 ... on NavigationLink {
                   ${navigationLinkQuery}
                   nestedLinks {
-                    title
-                    displayTitle
+                    ${navigationListOfLinksQuery}
                     linksListCollection(limit: 10) {
                       items {
                         __typename
@@ -84,10 +92,6 @@ export const navigationQuery = `
                   ${navigationTopTokensQuery}
                 }
               }
-            }
-            link {
-              label
-              url
             }
           }
         }

@@ -21,12 +21,18 @@ interface NavigationLinkWithNestedLinks extends NavigationLink {
     title: string
     displayTitle: boolean
     linksListCollection: {
-      items: (NavigationLink | NavigationFeaturedProduct)[]
+      items: (
+        | NavigationLink
+        | NavigationFeaturedProduct
+        | NavigationTopProducts
+        | NavigationTopToken
+      )[]
     }
     link?: {
       label: string
       url: string
     }
+    tight: boolean
   }
 }
 
@@ -92,6 +98,7 @@ export interface NavigationResponse {
                 label: string
                 url: string
               }
+              tight: boolean
             }[]
           }
         }[]

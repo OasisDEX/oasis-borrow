@@ -58,6 +58,7 @@ export function mapNavigationLinkItem({
                 ...(item.nestedLinks.link && {
                   link: item.nestedLinks.link,
                 }),
+                tight: item.nestedLinks.tight,
               },
             }),
         }
