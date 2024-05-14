@@ -9,6 +9,49 @@ import { FeaturesEnum } from 'types/config'
 const automationFeatureFlags =
   getLocalAppConfig('features')[FeaturesEnum.LambdaAutomations].MorphoBlue
 
+export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = {
+  // if you add any market here, check if it should support automation (only on chainlink v1)
+  // and these are arrays so WATCH OUT for the order
+  [NetworkIds.MAINNET]: {
+    'WSTETH-ETH': [
+      '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41', // chainlink v1
+      '0xb8fc70e82bc5bb53e773626fcc6a23f7eefa036918d7ef216ecfb1950a94a85e', // chainlink v2
+      '0xd0e50cdac92fe2172043f5e0c36532c6369d24947e40968f34a5e8819ca9ec5d', // chainlink v2
+    ],
+    'WEETH-ETH': ['0x698fe98247a40c5771537b5786b2f3f9d78eb487b4ce4d75533cd0e94d88a115'], // chainlink v1
+    'WSTETH-USDC': ['0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc'], // chainlink v1
+    'ETH-USDC': [
+      '0xf9acc677910cc17f650416a22e2a14d5da7ccb9626db18f1bf94efe64f92b372', // chainlink v1
+      '0x7dde86a1e94561d9690ec678db673c1a6396365f7d1d65e129c5fff0990ff758', // chainlink v1
+    ],
+    'WBTC-USDC': ['0x3a85e619751152991742810df6ec69ce473daef99e28a64ab2340d7b7ccfee49'], // chainlink v1
+    //'SDAI-USDC': ['0x06f2842602373d247c4934f7656e513955ccc4c377f0febc0d9ca2c3bcc191b1'], // chainlink v1
+    //'SDAI-USDT': ['0xf213843ac8ce2c8408182fc80c9e8f9911b420cce24adec8ea105ae44de087ad'], // chainlink v1
+    'OSETH-ETH': ['0xd5211d0e3f4a30d5c98653d988585792bb7812221f04801be73a44ceecb11e89'], // chainlink v1
+    'WBTC-USDT': ['0xa921ef34e2fc7a27ccc50ae7e4b154e16c9799d3387076c421423ef52ac4df99'], // chainlink v1
+    'WSTETH-USDT': ['0xe7e9694b754c4d4f7e21faf7223f6fa71abaeb10296a4c43a54a7977149687d2'], // chainlink v1
+    'ETH-USDT': ['0xdbffac82c2dc7e8aa781bd05746530b0068d80929f23ac1628580e27810bc0c5'], // chainlink v1
+    //'RETH-ETH': ['0x3c83f77bde9541f8d3d82533b19bbc1f97eb2f1098bb991728acbfbede09cc5d'], // chainlink v1
+    'EZETH-ETH': ['0x49bb2d114be9041a787432952927f6f144f05ad3e83196a7d062f374ee11d0ee'], // chainlink v1
+    'SUSDE-DAI': [
+      '0x1247f1c237eceae0602eab1470a5061a6dd8f734ba88c7cdc5d6109fb0026b28', // chainlink v2
+      '0x39d11026eae1c6ec02aa4c0910778664089cdd97c3fd23f68f7cd05e2e95af48', // chainlink v2
+      '0xe475337d11be1db07f7c5a156e511f05d1844308e66e17d2ba5da0839d3b34d9', // chainlink v2
+      '0x42dcfb38bb98767afb6e38ccf90d59d0d3f0aa216beb3a234f12850323d17536', // chainlink v2
+    ],
+    'USDE-DAI': [
+      '0x8e6aeb10c401de3279ac79b4b2ea15fc94b7d9cfc098d6c2a1ff7b2b26d9d02c', // chainlink v2
+      '0xdb760246f6859780f6c1b272d47a8f64710777121118e56e0cdb4b8b744a3094', // chainlink v2
+      '0xc581c5f70bd1afa283eed57d1418c6432cbff1d862f94eaf58fdd4e46afbb67f', // chainlink v2
+      '0xfd8493f09eb6203615221378d89f53fcd92ff4f7d62cca87eece9a2fff59e86f', // chainlink v2
+    ],
+    'SUSDE-USDT': ['0xdc5333039bcf15f1237133f74d5806675d83d9cf19cfd4cfdd9be674842651bf'], // chainlink v2
+    'MKR-DAI': ['0x578996c3c3ac4f100c4284b5c239673b04840e07945d04b681763c7b3401997c'], // ???
+    'WSTETH-USDA': ['0x423cb007534ac88febb8ce39f544ab303e8b757f8415ed891fc76550f8f4c965'], // chainlink v2
+    'PTWEETH-USDA': ['0xcc7b191903e4750ad71898a1594d912adbb5bb1c6effcde9c38f0a798112edd1'], // chainlink v2
+  },
+}
+
 export const settings: OmniProtocolSettings = {
   rawName: {
     [NetworkIds.MAINNET]: 'MorphoBlue',
@@ -57,49 +100,7 @@ export const settings: OmniProtocolSettings = {
       ...(automationFeatureFlags.trailingStopLoss ? [AutomationFeatures.TRAILING_STOP_LOSS] : []),
     ],
   },
-}
-
-export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = {
-  // if you add any market here, check if it should support automation (only on chainlink v1)
-  // and these are arrays so WATCH OUT for the order
-  [NetworkIds.MAINNET]: {
-    'WSTETH-ETH': [
-      '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41', // chainlink v1
-      '0xb8fc70e82bc5bb53e773626fcc6a23f7eefa036918d7ef216ecfb1950a94a85e', // chainlink v2
-      '0xd0e50cdac92fe2172043f5e0c36532c6369d24947e40968f34a5e8819ca9ec5d', // chainlink v2
-    ],
-    'WEETH-ETH': ['0x698fe98247a40c5771537b5786b2f3f9d78eb487b4ce4d75533cd0e94d88a115'], // chainlink v1
-    'WSTETH-USDC': ['0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc'], // chainlink v1
-    'ETH-USDC': [
-      '0xf9acc677910cc17f650416a22e2a14d5da7ccb9626db18f1bf94efe64f92b372', // chainlink v1
-      '0x7dde86a1e94561d9690ec678db673c1a6396365f7d1d65e129c5fff0990ff758', // chainlink v1
-    ],
-    'WBTC-USDC': ['0x3a85e619751152991742810df6ec69ce473daef99e28a64ab2340d7b7ccfee49'], // chainlink v1
-    //'SDAI-USDC': ['0x06f2842602373d247c4934f7656e513955ccc4c377f0febc0d9ca2c3bcc191b1'], // chainlink v1
-    //'SDAI-USDT': ['0xf213843ac8ce2c8408182fc80c9e8f9911b420cce24adec8ea105ae44de087ad'], // chainlink v1
-    'OSETH-ETH': ['0xd5211d0e3f4a30d5c98653d988585792bb7812221f04801be73a44ceecb11e89'], // chainlink v1
-    'WBTC-USDT': ['0xa921ef34e2fc7a27ccc50ae7e4b154e16c9799d3387076c421423ef52ac4df99'], // chainlink v1
-    'WSTETH-USDT': ['0xe7e9694b754c4d4f7e21faf7223f6fa71abaeb10296a4c43a54a7977149687d2'], // chainlink v1
-    'ETH-USDT': ['0xdbffac82c2dc7e8aa781bd05746530b0068d80929f23ac1628580e27810bc0c5'], // chainlink v1
-    //'RETH-ETH': ['0x3c83f77bde9541f8d3d82533b19bbc1f97eb2f1098bb991728acbfbede09cc5d'], // chainlink v1
-    'EZETH-ETH': ['0x49bb2d114be9041a787432952927f6f144f05ad3e83196a7d062f374ee11d0ee'], // chainlink v1
-    'SUSDE-DAI': [
-      '0x1247f1c237eceae0602eab1470a5061a6dd8f734ba88c7cdc5d6109fb0026b28', // chainlink v2
-      '0x39d11026eae1c6ec02aa4c0910778664089cdd97c3fd23f68f7cd05e2e95af48', // chainlink v2
-      '0xe475337d11be1db07f7c5a156e511f05d1844308e66e17d2ba5da0839d3b34d9', // chainlink v2
-      '0x42dcfb38bb98767afb6e38ccf90d59d0d3f0aa216beb3a234f12850323d17536', // chainlink v2
-    ],
-    'USDE-DAI': [
-      '0x8e6aeb10c401de3279ac79b4b2ea15fc94b7d9cfc098d6c2a1ff7b2b26d9d02c', // chainlink v2
-      '0xdb760246f6859780f6c1b272d47a8f64710777121118e56e0cdb4b8b744a3094', // chainlink v2
-      '0xc581c5f70bd1afa283eed57d1418c6432cbff1d862f94eaf58fdd4e46afbb67f', // chainlink v2
-      '0xfd8493f09eb6203615221378d89f53fcd92ff4f7d62cca87eece9a2fff59e86f', // chainlink v2
-    ],
-    'SUSDE-USDT': ['0xdc5333039bcf15f1237133f74d5806675d83d9cf19cfd4cfdd9be674842651bf'], // chainlink v2
-    'MKR-DAI': ['0x578996c3c3ac4f100c4284b5c239673b04840e07945d04b681763c7b3401997c'], // ???
-    'WSTETH-USDA': ['0x423cb007534ac88febb8ce39f544ab303e8b757f8415ed891fc76550f8f4c965'], // chainlink v2
-    'PTWEETH-USDA': ['0xcc7b191903e4750ad71898a1594d912adbb5bb1c6effcde9c38f0a798112edd1'], // chainlink v2
-  },
+  markets: morphoMarkets,
 }
 
 export const morphoMarketsWithAutomation = [
