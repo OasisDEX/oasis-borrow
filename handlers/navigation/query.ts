@@ -47,6 +47,10 @@ const navigationTopTokensQuery = `
   token
 `
 
+const NavigationSpecialModuleQuery = `
+  moduleName
+`
+
 export const navigationQuery = `
 {
   navigation(id: "${NAVIGATION_ID}") {
@@ -78,6 +82,9 @@ export const navigationQuery = `
                         ... on NavigationTopToken {
                           ${navigationTopTokensQuery}
                         }
+                        ... on NavigationSpecialModule {
+                          ${NavigationSpecialModuleQuery}
+                        }
                       }
                     }
                   }
@@ -90,6 +97,9 @@ export const navigationQuery = `
                 }
                 ... on NavigationTopToken {
                   ${navigationTopTokensQuery}
+                }
+                ... on NavigationSpecialModule {
+                  ${NavigationSpecialModuleQuery}
                 }
               }
             }

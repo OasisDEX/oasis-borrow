@@ -1,3 +1,4 @@
+import type { NavigationModule } from 'components/navigation/Navigation.types'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { ProductHubSupportedNetworks } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -26,6 +27,7 @@ interface NavigationLinkWithNestedLinks extends NavigationLink {
         | NavigationFeaturedProduct
         | NavigationTopProducts
         | NavigationTopToken
+        | NavigationSpecialModule
       )[]
     }
     link?: {
@@ -69,12 +71,18 @@ export interface NavigationTopToken {
   token: string
 }
 
+export interface NavigationSpecialModule {
+  __typename: 'NavigationSpecialModule'
+  moduleName: NavigationModule[]
+}
+
 export type NavigationLinkTypes =
   | NavigationLink
   | NavigationLinkWithNestedLinks
   | NavigationFeaturedProduct
   | NavigationTopProducts
   | NavigationTopToken
+  | NavigationSpecialModule
 
 export interface NavigationResponse {
   data: {
@@ -92,6 +100,7 @@ export interface NavigationResponse {
                   | NavigationFeaturedProduct
                   | NavigationTopProducts
                   | NavigationTopToken
+                  | NavigationSpecialModule
                 )[]
               }
               link?: {

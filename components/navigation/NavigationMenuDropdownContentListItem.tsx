@@ -7,13 +7,15 @@ import { Box, Flex, Heading, Text } from 'theme-ui'
 
 import type { NavigationMenuPanelList } from './Navigation.types'
 
-type NavigationMenuDropdownContentListItemProps =
-  NavigationMenuPanelList['items'] extends readonly (infer ElementType)[] ? ElementType : never
+type NavigationMenuDropdownContentListItemProps = {
+  onClick?: () => void
+} & (NavigationMenuPanelList['items'] extends readonly (infer ElementType)[] ? ElementType : never)
 
 export function NavigationMenuDropdownContentListItem({
   description,
   hoverColor,
   icon,
+  onClick,
   promoted,
   tags,
   title,
@@ -29,7 +31,10 @@ export function NavigationMenuDropdownContentListItem({
   }
 
   return (
-    <Flex sx={{ alignItems: 'center', columnGap: '12px', lineHeight: '24px' }}>
+    <Flex
+      sx={{ alignItems: 'center', columnGap: '12px', lineHeight: '24px' }}
+      {...(onClick && { onClick })}
+    >
       {icon && icon.position === 'global' && <NavigationMenuDropdownContentIcon {...icon} />}
       <Box>
         <Flex sx={{ alignItems: 'center', columnGap: 2 }}>

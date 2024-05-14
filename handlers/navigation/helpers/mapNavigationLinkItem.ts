@@ -92,6 +92,12 @@ export function mapNavigationLinkItem({
       case 'NavigationTopToken': {
         return mapTopTokens(item.token, productHub.table)
       }
+      case 'NavigationSpecialModule': {
+        return {
+          title: 'Navigation module',
+          navigationModule: item.moduleName[0],
+        }
+      }
     }
   })
 }
