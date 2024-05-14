@@ -13,6 +13,8 @@ const automationQuery = gql`
       triggerType
       owner
       executedBlock
+      decodedData
+      decodedDataNames
     }
   }
 `
@@ -26,8 +28,23 @@ type AutomationQueryResponse = {
     triggerType: string
     executedBlock: string
     owner: string
+    decodedData: string[]
+    decodedDataNames: string[]
   }[]
 }
+
+type DecodedDataTypes =
+  | 'positionAddress'
+  | 'triggerType'
+  | 'maxCoverage'
+  | 'debtToken'
+  | 'collateralToken'
+  | 'operationName'
+  | 'poolId'
+  | 'quoteDecimals'
+  | 'collateralDecimals'
+  | 'executionLtv'
+  | 'closeToCollateral'
 
 type AutomationSupportedNetworks =
   | NetworkIds.MAINNET
@@ -44,6 +61,9 @@ export type AutomationResponse = {
     triggerType: string
     executedBlock: string
     owner: string
+    decodedData: string[]
+    decodedDataNames: string[]
+    decodedAndMappedData: Partial<Record<DecodedDataTypes, string>>
   }
 }[]
 
@@ -82,7 +102,16 @@ export const getAutomationData = async ({
       .map((triggerList) => {
         return {
           networkId,
-          triggers: triggerList,
+          triggers: {
+            ...triggerList,
+            decodedAndMappedData: triggerList.decodedData.reduce(
+              (acc, data, index) => ({
+                ...acc,
+                [triggerList.decodedDataNames[index]]: data,
+              }),
+              {},
+            ),
+          },
         }
       })
       .flat()

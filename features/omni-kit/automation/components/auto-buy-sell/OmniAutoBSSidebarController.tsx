@@ -48,15 +48,15 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const defaultTriggerValues = useMemo(() => {
     if (type === AutomationFeatures.AUTO_BUY) {
       return {
-        triggerLtv: loanToValue.times(100),
-        targetLtv: loanToValue.times(100).plus(5),
+        triggerLtv: loanToValue.times(100).minus(5),
+        targetLtv: loanToValue.times(100),
       }
     }
     return {
-      targetLtv: loanToValue.times(100),
-      triggerLtv: loanToValue.times(100).plus(5),
+      targetLtv: loanToValue.times(100).minus(5),
+      triggerLtv: loanToValue.times(100),
     }
-  }, [loanToValue])
+  }, [loanToValue, type])
 
   const { state: automationFormState, updateState: updateFormState } = automationForms[type]
 

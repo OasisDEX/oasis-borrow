@@ -13,7 +13,7 @@ interface OmniTriggersDataProps {
   dpmPositionData?: DpmPositionData
   isOpening: boolean
   networkId: OmniSupportedNetworkIds
-  poolId?: string
+  pairId: number
   protocol: LendingProtocol
   settings: OmniProtocolSettings
 }
@@ -22,13 +22,18 @@ export function useOmniTriggersData({
   dpmPositionData,
   isOpening,
   networkId,
-  poolId,
+  pairId,
   protocol,
   settings,
 }: OmniTriggersDataProps) {
   const { onEveryBlock$ } = useProductContext()
 
   const getTriggersRequest$ = makeObservable(onEveryBlock$, getTriggersRequest)
+
+  const poolId =
+    settings.markets?.[networkId]?.[
+      `${dpmPositionData?.collateralToken}-${dpmPositionData?.quoteToken}`
+    ]?.[pairId - 1]
 
   const [positionTriggersData, positionTriggersError] = useObservable(
     useMemo(

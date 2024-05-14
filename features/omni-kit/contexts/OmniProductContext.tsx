@@ -109,6 +109,7 @@ export function OmniProductContextProvider({
   } = useOmniInitialization<typeof position>({
     poolId,
     positionTriggers,
+    protocol,
   })
 
   const { state } = form

@@ -7,6 +7,8 @@ export const omniProductTypeToSDKType = (type: OmniProductType): PositionType =>
       return PositionType.Borrow
     case OmniProductType.Multiply:
       return PositionType.Multiply
+    case OmniProductType.Earn:
+      return PositionType.Earn
     default:
       throw new Error(`Unknown vault type: ${type}`)
   }

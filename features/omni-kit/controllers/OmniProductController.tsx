@@ -164,7 +164,7 @@ export const OmniProductController = <Auction, History, Position>({
     dpmPositionData,
     isOpening,
     networkId,
-    poolId,
+    pairId,
     protocol,
     settings,
   })
@@ -205,7 +205,6 @@ export const OmniProductController = <Auction, History, Position>({
                     collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
                     headline: label,
-                    pairId,
                     positionId,
                     productType: dpmPositionData?.product as OmniProductType,
                     protocol,
@@ -329,6 +328,7 @@ export const OmniProductController = <Auction, History, Position>({
                             automationFormDefaults: getAutomationFormDefaults({
                               poolId,
                               positionTriggers,
+                              protocol,
                             }),
                           }
                           const omniProductContextProviderData = getOmniProductContextProviderData({

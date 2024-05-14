@@ -284,9 +284,7 @@ export const useOmniPartialTakeProfitDataHandler = () => {
       ? `${formatCryptoBalance(currentTrailingStopLossDistance.div(10000))}${nbsp}${priceFormat}`
       : ''
 
-  const defaultStopLossLevel = castedPosition.category.maxLoanToValue
-    .minus(stopLossConstants.offsets.max)
-    .times(100)
+  const defaultStopLossLevel = maxLoanToValue.minus(stopLossConstants.offsets.max).times(100)
 
   const extraTriggerLtv =
     state.extraTriggerLtv ?? currentStopLossLevel?.times(100) ?? defaultStopLossLevel

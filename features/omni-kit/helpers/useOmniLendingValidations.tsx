@@ -10,7 +10,7 @@ import type {
 } from 'features/omni-kit/types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { zero } from 'helpers/zero'
-import type { LendingProtocolLabel } from 'lendingProtocols'
+import type { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -24,9 +24,11 @@ interface GetOmniValidationsParams {
   safetySwitchOn: boolean
   simulation?: OmniGenericPosition
   state: OmniFormState
+  protocol: LendingProtocol
 }
 
 export function useOmniLendingValidations({
+  protocol,
   isOpening,
   poolId,
   position,
@@ -42,7 +44,7 @@ export function useOmniLendingValidations({
 
   const {
     triggers: { stopLoss, autoSell, autoBuy },
-  } = getMappedAutomationMetadataValues({ poolId, positionTriggers })
+  } = getMappedAutomationMetadataValues({ poolId, positionTriggers, protocol })
 
   const isCloseAction = state.uiDropdown === 'close'
 

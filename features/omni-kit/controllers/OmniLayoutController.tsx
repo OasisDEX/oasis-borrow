@@ -4,12 +4,12 @@ import { DisabledProtectionControl } from 'components/vault/DisabledProtectionCo
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { OmniAutomationFormController } from 'features/omni-kit/automation/controllers/'
-import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
-import { useOmniMinNetAutomationValue } from 'features/omni-kit/automation/hooks'
 import {
-  omniOptimizationLikeAutomationFeatures,
-  omniProtectionLikeAutomationFeatures,
-} from 'features/omni-kit/constants'
+  hasActiveOptimization,
+  hasActiveProtection,
+  isSupportingAutomation,
+} from 'features/omni-kit/automation/helpers'
+import { useOmniMinNetAutomationValue } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   OmniFaqController,
@@ -22,11 +22,9 @@ import { OmniBorrowFormController } from 'features/omni-kit/controllers/borrow'
 import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
-import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
-import { hasCommonElement } from 'helpers/hasCommonElement'
 import { useAccount } from 'helpers/useAccount'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -49,12 +47,10 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       isOracless,
       isOwner,
       isShort,
-      isYieldLoop,
       isYieldLoopWithData,
       network,
       networkId,
       owner,
-      pairId,
       poolId,
       positionId,
       priceFormat,
@@ -86,15 +82,17 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
 
   const automationFormStateDispatch = automation?.resolved.activeForm.dispatch
 
-  const isMultiplySupported = isPoolSupportingMultiply({
+  const { isSupportingOptimization, isSupportingProtection } = isSupportingAutomation({
     collateralToken,
+    networkId,
+    poolId,
+    protocol,
     quoteToken,
-    supportedTokens: settings.supportedMultiplyTokens[networkId],
+    settings,
   })
-  const automationFeatures =
-    isMultiplySupported && !isYieldLoop ? settings.availableAutomations?.[networkId] || [] : []
 
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
+  const maxLtv = 'maxRiskRatio' in position ? position.maxRiskRatio.loanToValue : undefined
   const netValue = 'netValue' in position ? position.netValue : undefined
   const minNetValue = useOmniMinNetAutomationValue({ protocol, networkId })
 
@@ -112,12 +110,12 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           headline,
           isYieldLoopWithData,
           networkName: network.name,
-          pairId,
           positionId,
           productType,
           protocol,
           quoteIcon,
           quoteToken,
+          maxLtv,
         })}
         details={[
           ...(headlineDetails || []),
@@ -177,7 +175,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           },
           ...(!isOpening
             ? [
-                ...(hasCommonElement(automationFeatures, omniProtectionLikeAutomationFeatures)
+                ...(isSupportingProtection
                   ? [
                       {
                         value: 'protection',
@@ -205,7 +203,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                       },
                     ]
                   : []),
-                ...(hasCommonElement(automationFeatures, omniOptimizationLikeAutomationFeatures)
+                ...(isSupportingOptimization
                   ? [
                       {
                         value: 'optimization',

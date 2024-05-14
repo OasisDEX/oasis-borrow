@@ -202,6 +202,10 @@ export const baseContracts: MainnetContractsWithOptional = {
     'MPETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_MPETHWETH),
     'CSETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_CSETHWETH),
     'UNIV2-DAI': contractDesc(ajnaPool, base.ajna['AjnaPoolPairs_UNI-V2DAI']),
+    'MOOAURAGYROAUSDCN/AUSDTNU-USDC': contractDesc(
+      ajnaPool,
+      base.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
+    ),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, base.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),

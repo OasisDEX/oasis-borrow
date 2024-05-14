@@ -8,6 +8,7 @@ import type {
   ProductContextAutomationForms,
 } from 'features/omni-kit/types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetAutomationMetadataValuesParams {
   automationForms: ProductContextAutomationForms
@@ -16,6 +17,7 @@ interface GetAutomationMetadataValuesParams {
   poolId?: string
   positionTriggers: GetTriggersResponse
   simulationResponse?: OmniAutomationSimulationResponse
+  protocol: LendingProtocol
 }
 
 export const getAutomationMetadataValues = ({
@@ -25,9 +27,15 @@ export const getAutomationMetadataValues = ({
   poolId,
   positionTriggers,
   simulationResponse,
+  protocol,
 }: GetAutomationMetadataValuesParams) => {
   return {
-    ...getMappedAutomationMetadataValues({ poolId, positionTriggers, simulationResponse }),
+    ...getMappedAutomationMetadataValues({
+      poolId,
+      positionTriggers,
+      simulationResponse,
+      protocol,
+    }),
     ...getCommonAutomationMetadataValues({ commonFormState, automationForms, hash }),
   }
 }

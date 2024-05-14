@@ -115,6 +115,7 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
       positions: [
         {
           ...commonData,
+          url: `/${commonData.network.toLowerCase()}/old/aave/v2/${address}`,
           lendingType: stEthPosition.debt.amount.gt(zero) ? 'loop' : 'passive',
           details: [
             {
