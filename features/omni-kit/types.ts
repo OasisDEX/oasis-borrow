@@ -120,6 +120,7 @@ export interface OmniProtocolSettings {
   supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
   availableAutomations: NetworkIdsWithValues<AutomationFeatures[]>
+  markets?: NetworkIdsWithValues<{ [key: string]: string[] }>
 }
 
 export type OmniProtocolsSettings = {

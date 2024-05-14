@@ -164,7 +164,7 @@ export const OmniProductController = <Auction, History, Position>({
     dpmPositionData,
     isOpening,
     networkId,
-    poolId,
+    pairId,
     protocol,
     settings,
   })
