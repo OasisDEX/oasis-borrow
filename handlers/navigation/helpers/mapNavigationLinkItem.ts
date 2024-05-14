@@ -7,6 +7,7 @@ import {
   mapFeaturedMultiplyProduct,
   mapFeaturedProductToFilterCriteria,
   mapTopBorrowProduct,
+  mapTopTokens,
 } from 'handlers/navigation/helpers'
 import type { NavigationLinkTypes } from 'handlers/navigation/types'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
@@ -86,6 +87,9 @@ export function mapNavigationLinkItem({
         }
 
         return [] as NavigationMenuPanelListItem[]
+      }
+      case 'NavigationTopToken': {
+        return mapTopTokens(item.token, productHub.table)
       }
     }
   })

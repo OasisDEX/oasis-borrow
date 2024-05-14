@@ -33,6 +33,10 @@ const navigationTopProductsQuery = `
   }
 `
 
+const navigationTopTokensQuery = `
+  token
+`
+
 export const navigationQuery = `
 {
   navigation(id: "${NAVIGATION_ID}") {
@@ -63,6 +67,9 @@ export const navigationQuery = `
                         ... on NavigationTopProducts {
                           ${navigationTopProductsQuery}
                         }
+                        ... on NavigationTopToken {
+                          ${navigationTopTokensQuery}
+                        }
                       }
                     }
                   }
@@ -72,6 +79,9 @@ export const navigationQuery = `
                 }
                 ... on NavigationTopProducts {
                   ${navigationTopProductsQuery}
+                }
+                ... on NavigationTopToken {
+                  ${navigationTopTokensQuery}
                 }
               }
             }

@@ -17,7 +17,6 @@ import { i18n } from 'next-i18next'
 export function mapFeaturedEarnProduct(items: ProductHubItem[]): NavigationMenuPanelListItem[] {
   return items.map((item) => {
     const {
-      depositToken,
       earnStrategy,
       earnStrategyDescription,
       network,
@@ -33,7 +32,7 @@ export function mapFeaturedEarnProduct(items: ProductHubItem[]): NavigationMenuP
     }
 
     const title = i18n.t(weeklyNetApy ? 'nav.earn-on-your' : 'nav.earn-on-your-simple', {
-      token: depositToken,
+      token: primaryToken,
       apy: formatDecimalAsPercent(weeklyNetApy ? new BigNumber(weeklyNetApy) : zero),
     })
     const description = i18n.t(
@@ -45,7 +44,7 @@ export function mapFeaturedEarnProduct(items: ProductHubItem[]): NavigationMenuP
       {
         earnStrategyDescription,
         protocol: lendingProtocolsByName[protocol].label.toUpperCase(),
-        token: depositToken,
+        token: primaryToken,
       },
     )
 

@@ -58,11 +58,17 @@ export interface NavigationTopProducts {
   }
 }
 
+export interface NavigationTopToken {
+  __typename: 'NavigationTopToken'
+  token: string
+}
+
 export type NavigationLinkTypes =
   | NavigationLink
   | NavigationLinkWithNestedLinks
   | NavigationFeaturedProduct
   | NavigationTopProducts
+  | NavigationTopToken
 
 export interface NavigationResponse {
   data: {
@@ -79,6 +85,7 @@ export interface NavigationResponse {
                   | NavigationLinkWithNestedLinks
                   | NavigationFeaturedProduct
                   | NavigationTopProducts
+                  | NavigationTopToken
                 )[]
               }
               link?: {

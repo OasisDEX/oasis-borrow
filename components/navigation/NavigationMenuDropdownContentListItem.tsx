@@ -66,7 +66,11 @@ export function NavigationMenuDropdownContentListItem({
             variant="paragraph4"
             sx={{ mt: 1, color: 'neutral80', em: { color: 'primary100', fontStyle: 'normal' } }}
           >
-            {description}
+            {typeof description === 'string' ? (
+              <span dangerouslySetInnerHTML={{ __html: description.replace(/\n/giu, '<br />') }} />
+            ) : (
+              description
+            )}
           </Text>
         )}
         {tags && (
