@@ -3,7 +3,7 @@ import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
-import { getMakerPoolId } from 'features/refinance/helpers/getPoolId'
+import { getMakerPoolId } from 'features/refinance/helpers/getMakerPoolId'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
 

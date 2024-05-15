@@ -5,7 +5,7 @@ import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { HistoryResponse } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { LendingProtocol } from 'lendingProtocols'
-import type { MakerLendingPoolId } from 'summerfi-sdk-client'
+import type { IPoolId } from 'summerfi-sdk-common'
 
 type AutomationType = {
   enabled: boolean
@@ -37,7 +37,7 @@ export type PortfolioPosition = {
     ltv: string
     maxLtv: string
     borrowRate: string
-    poolId: MakerLendingPoolId // TODO ref
+    poolId: IPoolId
     pairId: number
   }
   /*

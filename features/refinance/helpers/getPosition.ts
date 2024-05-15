@@ -1,6 +1,6 @@
 import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
 import type { LendingProtocol } from 'lendingProtocols'
-import { AaveV3Position, MakerPosition, SparkPosition } from 'summerfi-sdk-client'
+import { AaveV3Position, MakerPosition, MorphoPosition, SparkPosition } from 'summerfi-sdk-client'
 import { type IPosition, ProtocolName } from 'summerfi-sdk-common'
 
 export const getPosition = (lendingProtocol: LendingProtocol, position: IPosition): IPosition => {
@@ -14,8 +14,8 @@ export const getPosition = (lendingProtocol: LendingProtocol, position: IPositio
       return AaveV3Position.createFrom(position)
     case ProtocolName.AAVEv2:
       throw new Error('AAVEv2 is not supported')
-    case ProtocolName.MorphoBlue:
-      throw new Error('MorphoBlue is not supported')
+    case ProtocolName.Morpho:
+      throw MorphoPosition.createFrom(position)
 
     default:
       throw new Error(`Unsupported protocol name: ${protocolName}`)
