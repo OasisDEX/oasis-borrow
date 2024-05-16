@@ -44,6 +44,21 @@ export function getAaveLikePositionUrl({
   protocol,
   network,
   userDpmAccount: { vaultId },
-}: Pick<AaveVersionProps, 'protocol' | 'network'> & { userDpmAccount: UserDpmAccount }) {
-  return `/${network}/${mapAaveLikeProtocolSlug(protocol)}/${mapAaveLikeProtocolVersion(protocol)}/${vaultId}`
+  type,
+  collateralToken,
+  debtToken,
+}: Pick<AaveVersionProps, 'protocol' | 'network'> & {
+  userDpmAccount: UserDpmAccount
+  type: ProductType
+  collateralToken: string
+  debtToken: string
+}) {
+  // split to ensure correct links while using fork
+  return `/${network.split('-test')[0]}/${
+    {
+      aavev3: 'aave/v3',
+      aavev2: 'aave/v2',
+      sparkv3: 'spark',
+    }[protocol]
+  }/${type.toLowerCase()}/${collateralToken.toUpperCase()}-${debtToken.toUpperCase()}/${vaultId}`
 }
