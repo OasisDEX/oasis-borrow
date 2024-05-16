@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { PositionHistoryEvent } from 'features/positionHistory/types'
+import type { PositionHistoryEvent, Trigger } from 'features/positionHistory/types'
 
 export interface MorphoBorrowerEventsResponse {
   id: string
@@ -15,4 +15,10 @@ type MorphoLiquidationEventExtension = {
   quoteRepaid: BigNumber
 }
 
-export type MorphoHistoryEvent = PositionHistoryEvent & MorphoLiquidationEventExtension
+type MorphoTriggerEventExension = {
+  trigger?: Trigger
+}
+
+export type MorphoHistoryEvent = PositionHistoryEvent &
+  MorphoLiquidationEventExtension &
+  MorphoTriggerEventExension

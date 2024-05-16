@@ -22,6 +22,7 @@ import type {
   AaveCumulativesResponse,
   AavePositionHistoryResponse,
   PositionHistoryResponse,
+  TriggerEvent,
 } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { GetAaveLikeInterestRatesResponse } from 'features/refinance/graph/getRefinanceAaveLikeInterestRates'
@@ -76,6 +77,13 @@ export type Subgraphs = {
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
+  }
+  Automation: {
+    getAutomationEvents: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      debtAddress: string
+    }
   }
 }
 
@@ -177,6 +185,9 @@ export type SubgraphsResponses = {
       claimeds: ClaimedReferralRewards[]
     }>
   }
+  Automation: {
+    getAutomationEvents: SubgraphBaseResponse<{ triggerEvents: TriggerEvent[] }>
+  }
 }
 
 export type SubgraphsRecord = {
@@ -202,5 +213,6 @@ export type SubgraphMethodsRecord = {
     Subgraphs['Discover'] &
     Subgraphs['Morpho'] &
     Subgraphs['Erc4626'] &
+    Subgraphs['Automation'] &
     Subgraphs['Referral'])]: string
 }

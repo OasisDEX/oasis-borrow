@@ -34,6 +34,17 @@ export const mapMorphoLendingEvents = (
 
     const eventKindWithoutVersion = event.kind.split('_')[0]
 
+    if (eventKindWithoutVersion.includes('Automation')) {
+      return {
+        trigger: event.trigger,
+        txHash: event.txHash,
+        timestamp: event.timestamp,
+        kind: event.kind,
+        collateralToken: event.collateralToken,
+        debtToken: event.debtToken,
+      }
+    }
+
     switch (eventKindWithoutVersion) {
       case 'MorphoBlueDeposit':
       case 'MorphoBlueWithdraw':
