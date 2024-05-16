@@ -12,16 +12,17 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import type { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
+import { LendingProtocol } from 'lendingProtocols'
 import { isBoolean } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Text } from 'theme-ui'
 
 export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }> = ({ type }) => {
   const { t } = useTranslation()
   const {
-    environment: { productType, collateralToken, quoteToken },
+    environment: { productType, collateralToken, quoteToken, protocol },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -191,6 +192,13 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     automationFormState.maxGasFee || autoBuySellConstants.defaultGasFee,
   )
 
+  //  TODO we default to not use thershold price for morpho since backend is not ready to handle specific prices */
+  useEffect(() => {
+    if (protocol === LendingProtocol.MorphoBlue) {
+      updateFormState('useThreshold', false)
+    }
+  }, [])
+
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -223,39 +231,42 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         otherDependencies={[defaultPrice?.toString(), defaultMaxGasFee.toString()]}
         {...thumbColors}
       />
-      <VaultActionInput
-        action={
-          {
-            [AutomationFeatures.AUTO_BUY]: t('auto-buy.set-max-buy-price'),
-            [AutomationFeatures.AUTO_SELL]: t('auto-sell.set-min-sell-price'),
-          }[type]
-        }
-        amount={defaultPrice}
-        hasAuxiliary={false}
-        hasError={false}
-        currencyCode={pricesDenomination === 'collateral' ? quoteToken : collateralToken}
-        onChange={handleNumericInput((price) => {
-          updateFormState('price', price)
-          updateFormState('maxGasFee', defaultMaxGasFee)
-          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
-        })}
-        onToggle={(flag) => {
-          updateFormState('useThreshold', flag)
-          if (!flag) {
-            updateFormState('price', undefined)
-          } else {
-            updateFormState('price', defaultPrice)
+      {/* TODO we are hiding price input for morpho specifically since backend is not ready to handle it */}
+      {protocol !== LendingProtocol.MorphoBlue && (
+        <VaultActionInput
+          action={
+            {
+              [AutomationFeatures.AUTO_BUY]: t('auto-buy.set-max-buy-price'),
+              [AutomationFeatures.AUTO_SELL]: t('auto-sell.set-min-sell-price'),
+            }[type]
           }
+          amount={defaultPrice}
+          hasAuxiliary={false}
+          hasError={false}
+          currencyCode={pricesDenomination === 'collateral' ? quoteToken : collateralToken}
+          onChange={handleNumericInput((price) => {
+            updateFormState('price', price)
+            updateFormState('maxGasFee', defaultMaxGasFee)
+            resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+          })}
+          onToggle={(flag) => {
+            updateFormState('useThreshold', flag)
+            if (!flag) {
+              updateFormState('price', undefined)
+            } else {
+              updateFormState('price', defaultPrice)
+            }
 
-          updateFormState('maxGasFee', defaultMaxGasFee)
-          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
-        }}
-        showToggle={true}
-        toggleOnLabel={t('protection.set-no-threshold')}
-        toggleOffLabel={t('protection.set-threshold')}
-        toggleOffPlaceholder={t('protection.no-threshold')}
-        defaultToggle={defaultToggle}
-      />
+            updateFormState('maxGasFee', defaultMaxGasFee)
+            resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+          }}
+          showToggle={true}
+          toggleOnLabel={t('protection.set-no-threshold')}
+          toggleOffLabel={t('protection.set-threshold')}
+          toggleOffPlaceholder={t('protection.no-threshold')}
+          defaultToggle={defaultToggle}
+        />
+      )}
       <MaxGasPriceSection
         onChange={(value) => {
           updateFormState('maxGasFee', new BigNumber(value))
