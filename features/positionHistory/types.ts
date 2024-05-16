@@ -130,12 +130,24 @@ export interface AavePositionHistoryResponse {
   trigger: Trigger | null
 }
 
-export interface Trigger {
-  id: string
-  decodedData: string[]
-  decodedDataNames: string[]
+export interface TriggerEvent {
+  eventType: string
+  trigger: Trigger
+  transaction: string
+  timestamp: string
 }
 
+export interface Trigger {
+  executedTransaction: string
+  decodedDataNames: string[]
+  decodedData: string[]
+  tokens: {
+    symbol: string
+    address: string
+  }[]
+  kind: string
+  simpleName: string
+}
 export type PositionHistoryEvent = {
   depositAmount: BigNumber
   withdrawAmount: BigNumber

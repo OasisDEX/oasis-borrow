@@ -52,6 +52,7 @@ export function useMorphoData({
           ? getMorphoPositionAggregatedData$({
               dpmPositionData,
               networkId,
+              poolId: morphoPositionData.marketParams.id,
             })
           : EMPTY,
       [dpmPositionData, morphoPositionData, networkId],

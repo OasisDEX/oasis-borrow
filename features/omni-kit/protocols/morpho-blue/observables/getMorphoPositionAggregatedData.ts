@@ -23,9 +23,11 @@ function parseAggregatedDataHistory({
 export const getMorphoPositionAggregatedData$ = ({
   dpmPositionData,
   networkId,
+  poolId,
 }: {
   dpmPositionData: DpmPositionData
   networkId: OmniSupportedNetworkIds
+  poolId: string
 }): Observable<MorphoPositionAggregatedDataResponse> => {
   const { proxy } = dpmPositionData
 
@@ -35,6 +37,7 @@ export const getMorphoPositionAggregatedData$ = ({
       networkId,
       dpmPositionData.collateralTokenAddress,
       dpmPositionData.quoteTokenAddress,
+      poolId,
     ),
   ).pipe(
     map(({ auction, history }) => ({
