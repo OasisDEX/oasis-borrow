@@ -6,7 +6,7 @@ import type {
   RefinanceContextInput,
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
-import type { ILendingPoolId, PositionType } from 'summerfi-sdk-common'
+import type { ILendingPoolId, IPositionId, PositionType } from 'summerfi-sdk-common'
 
 import { getLendingProtocolByProtocolName } from './protocolNameToLendingProtocol'
 
@@ -51,7 +51,7 @@ export const getRefinanceContextInput = ({
   maxLtv: string
   automations: RefinanceContextInputAutomations
   contextId: string
-  positionId: string | number
+  positionId: IPositionId
   isOwner: boolean
   positionType: PositionType
 }): RefinanceContextInput => {
@@ -73,7 +73,7 @@ export const getRefinanceContextInput = ({
     },
     position: {
       lendingProtocol,
-      positionId: { id: positionId.toString() },
+      positionId,
       collateralAmount: collateral,
       debtAmount: debt,
       liquidationPrice: liquidationPrice,

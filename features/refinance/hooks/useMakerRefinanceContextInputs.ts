@@ -4,6 +4,7 @@ import { useAutomationContext } from 'components/context/AutomationContextProvid
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
 import { getMakerPoolId } from 'features/refinance/helpers/getMakerPoolId'
+import { getMakerPositionId } from 'features/refinance/helpers/getMakerPositionId'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
 
@@ -53,6 +54,8 @@ export const useMakerRefinanceContextInputs = ({
   const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
 
   const poolId = getMakerPoolId(chainFamily.chainInfo, ilkType, collateralToken, debtToken)
+  const positionId = getMakerPositionId(id, id)
+
   const automations = {
     stopLoss: {
       enabled: triggerData.stopLossTriggerData.isStopLossEnabled,
@@ -87,7 +90,7 @@ export const useMakerRefinanceContextInputs = ({
     slippage,
     collateral: collateralAmount,
     debt: debtAmount,
-    positionId: id,
+    positionId,
     liquidationPrice,
     ltv,
     maxLtv,

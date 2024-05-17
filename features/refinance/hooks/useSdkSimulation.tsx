@@ -2,6 +2,7 @@ import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getPosition } from 'features/refinance/helpers/getPosition'
+import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
 import { getTargetPoolId } from 'features/refinance/helpers/getTargetPoolId'
 import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -87,8 +88,8 @@ export function useSdkSimulation(): SDKSimulation {
       throw new Error('Unsupported position type.')
     }
 
-    const sourceProtocolName = lendingProtocol
-    const targetProtocolName = strategy.protocol
+    const sourceProtocolName = getProtocolNameByLendingProtocol(lendingProtocol)
+    const targetProtocolName = getProtocolNameByLendingProtocol(strategy.protocol)
 
     const _debtPrice = getTokenPrice(
       debtTokenData.token.symbol,
@@ -183,14 +184,16 @@ export function useSdkSimulation(): SDKSimulation {
           },
         },
       }
-      const [_refinanceSimulation, _importPositionSimulation] = await Promise.all([
-        sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters),
-        isMaker
-          ? sdk.simulator.importing.simulateImportPosition(importPositionParameters)
-          : Promise.resolve(null),
-      ])
-      setImportPositionSimulation(_importPositionSimulation)
+
+      const _refinanceSimulation =
+        await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
       setRefinanceSimulation(_refinanceSimulation)
+
+      if (isMaker) {
+        const _importPositionSimulation =
+          await sdk.simulator.importing.simulateImportPosition(importPositionParameters)
+        setImportPositionSimulation(_importPositionSimulation)
+      }
 
       const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
         liquidationThreshold: _liquidationThreshold,

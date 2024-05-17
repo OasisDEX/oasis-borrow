@@ -1,5 +1,7 @@
 import type { RefinanceGeneralContextBase } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
+import { replaceTokenSymbolWETHWithETH } from 'features/refinance/helpers/replaceTokenSymbolWETHWithETH'
 import {
   MorphoLendingPoolId,
   SparkLendingPoolId,
@@ -9,17 +11,35 @@ import { type IPoolId, type IProtocol, ProtocolName } from 'summerfi-sdk-common'
 
 export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContextBase): IPoolId => {
   const {
-    position: { collateralTokenData, debtTokenData },
+    environment: { chainInfo },
+    form: {
+      state: { strategy },
+    },
   } = ctx
+  if (!strategy?.primaryToken) {
+    throw new Error('Primary token is required')
+  }
+  if (!strategy?.secondaryToken) {
+    throw new Error('Secondary token is required')
+  }
+  const collateralToken = mapTokenToSdkToken(
+    chainInfo,
+    replaceTokenSymbolWETHWithETH(strategy?.primaryToken),
+  )
+  const debtToken = mapTokenToSdkToken(
+    chainInfo,
+    replaceTokenSymbolWETHWithETH(strategy?.secondaryToken),
+  )
+
   switch (protocol.name) {
     case ProtocolName.Maker:
       throw new Error('Maker is not supported as a target protocol')
     case ProtocolName.Spark:
       return SparkLendingPoolId.createFrom({
         protocol,
-        emodeType: getEmode(collateralTokenData, debtTokenData),
-        collateralToken: collateralTokenData.token,
-        debtToken: debtTokenData.token,
+        emodeType: getEmode(collateralToken, debtToken),
+        collateralToken,
+        debtToken,
       })
     // case ProtocolName.AAVEv3:
     //   return AaveV3LendingPoolId.createFrom({

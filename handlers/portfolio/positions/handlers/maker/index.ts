@@ -6,6 +6,7 @@ import { amountFromRay } from 'blockchain/utils'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { OmniProductType } from 'features/omni-kit/types'
 import { getMakerPoolId } from 'features/refinance/helpers/getMakerPoolId'
+import { getMakerPositionId } from 'features/refinance/helpers/getMakerPositionId'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -96,6 +97,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
         const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, primaryToken)
         const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, secondaryToken)
         const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
+        const positionId = getMakerPositionId(cdp, cdp)
 
         return {
           availableToMigrate: false,
@@ -145,6 +147,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             maxLtv: maxRiskRatio.loanToValue.toString(),
             borrowRate: borrowRate.toString(),
             poolId,
+            positionId,
             pairId: 1,
           },
           ...(type === OmniProductType.Earn && { lendingType: 'passive' }),

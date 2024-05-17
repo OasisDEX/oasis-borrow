@@ -1,10 +1,7 @@
-import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
-import type { LendingProtocol } from 'lendingProtocols'
 import { AaveV3Position, MakerPosition, MorphoPosition, SparkPosition } from 'summerfi-sdk-client'
 import { type IPosition, ProtocolName } from 'summerfi-sdk-common'
 
-export const getPosition = (lendingProtocol: LendingProtocol, position: IPosition): IPosition => {
-  const protocolName = getProtocolNameByLendingProtocol(lendingProtocol)
+export const getPosition = (protocolName: ProtocolName, position: IPosition): IPosition => {
   switch (protocolName) {
     case ProtocolName.Maker:
       return MakerPosition.createFrom(position)

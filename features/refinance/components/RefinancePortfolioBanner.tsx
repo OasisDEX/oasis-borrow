@@ -95,7 +95,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     network,
     primaryToken,
     secondaryToken,
-    positionId,
+    positionId: vaultId,
     automations,
     protocol,
     type: productType,
@@ -106,6 +106,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     maxLtv,
     ltv,
     poolId,
+    positionId,
     pairId,
     collateral,
     collateralPrice,
@@ -129,7 +130,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     [LendingProtocol.Maker]: (
       <Text as="span" variant="boldParagraph3" color="primary100">
         {tPortfolio('refinance.banner.default', {
-          id: positionId,
+          id: vaultId,
         })}
       </Text>
     ),
@@ -140,7 +141,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     [LendingProtocol.MorphoBlue]: null,
   }[protocol]
 
-  const contextId = `${positionId}${primaryToken}${secondaryToken}`.toLowerCase()
+  const contextId = `${vaultId}${primaryToken}${secondaryToken}`.toLowerCase()
 
   const isDisabled =
     refinanceGeneralContext?.ctx?.environment?.contextId !== contextId &&
