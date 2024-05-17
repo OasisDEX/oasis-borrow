@@ -1,4 +1,4 @@
-import { fetchGraphQL } from 'contentful/api'
+import { fetchContentfulGraphQL } from 'contentful/api'
 import { landingPageContentsChunkSize } from 'contentful/constants'
 import type { EntryRawResponse } from 'contentful/types'
 import { splitArrayToSameSizeChunks } from 'helpers/splitArrayToSameSizeChunks'
@@ -8,7 +8,7 @@ export const getLandingPageContentByIds = async (collectionIds: string[], previe
     await Promise.all(
       splitArrayToSameSizeChunks(collectionIds, landingPageContentsChunkSize).map(
         (collectionIdsChunk) =>
-          fetchGraphQL<EntryRawResponse>(
+          fetchContentfulGraphQL<EntryRawResponse>(
             `
             {
               entryCollection(

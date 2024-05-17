@@ -104,6 +104,20 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.BASEGOERLI]: 'summer-referrals-optimism',
     [NetworkIds.EMPTYNET]: '',
   },
+  Automation: {
+    [NetworkIds.MAINNET]: 'summer-automation',
+    [NetworkIds.HARDHAT]: 'summer-automation',
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: 'summer-automation-arbitrum',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.BASEMAINNET]: 'summer-automation-base',
+    [NetworkIds.BASEGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: 'summer-automation-optimism',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
 }
 
 export const subgraphMethodsRecord: SubgraphMethodsRecord = {
@@ -839,6 +853,34 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
             symbol
           }
           id
+        }
+      }
+    }
+  `,
+  getAutomationEvents: gql`
+    query getAutomationEvents(
+      $dpmProxyAddress: ID!
+      $collateralAddress: String!
+      $debtAddress: String!
+    ) {
+      triggerEvents(
+        where: {
+          account: $dpmProxyAddress
+          trigger_: { decodedData_contains: [$collateralAddress, $debtAddress] }
+        }
+      ) {
+        eventType
+        transaction
+        timestamp
+        trigger {
+          kind
+          simpleName
+          tokens {
+            symbol
+            address
+          }
+          decodedData
+          decodedDataNames
         }
       }
     }

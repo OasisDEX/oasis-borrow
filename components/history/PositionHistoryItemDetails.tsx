@@ -19,7 +19,7 @@ import {
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import { PositionHistoryRow } from './PositionHistoryRow'
 
@@ -71,7 +71,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
     switch (name) {
       case AutomationName.minSellPrice:
         return (
-          <PositionHistoryRow label={t('position-history.min-sell-price')} key={name}>
+          <PositionHistoryRow label={t('position-history.min-sell-price')}>
             {`${value && formatCryptoBalance(new BigNumber(value).div(100000000))} ${
               historyEvent.collateralToken
             }/${historyEvent.debtToken}`}
@@ -85,32 +85,32 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           }/${historyEvent.debtToken}`
         }
         return (
-          <PositionHistoryRow label={t('position-history.max-buy-price')} key={name}>
+          <PositionHistoryRow label={t('position-history.max-buy-price')}>
             {limit}
           </PositionHistoryRow>
         )
 
       case AutomationName.slLevel:
         return (
-          <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
+          <PositionHistoryRow label={t('position-history.sl-level')}>
             {value && formatPercent(new BigNumber(value).div(100))}
           </PositionHistoryRow>
         )
       case AutomationName.executionLtv:
         return (
-          <PositionHistoryRow label={t('position-history.execution-ltv')} key={name}>
+          <PositionHistoryRow label={t('position-history.execution-ltv')}>
             {value && formatPercent(new BigNumber(value).div(100))}
           </PositionHistoryRow>
         )
       case AutomationName.targetLtv:
         return (
-          <PositionHistoryRow label={t('position-history.target-ltv')} key={name}>
+          <PositionHistoryRow label={t('position-history.target-ltv')}>
             {value && formatPercent(new BigNumber(value).div(100))}
           </PositionHistoryRow>
         )
       case AutomationName.trailingDistance:
         return (
-          <PositionHistoryRow label={t('position-history.trailing-distance')} key={name}>
+          <PositionHistoryRow label={t('position-history.trailing-distance')}>
             {`${value && formatCryptoBalance(new BigNumber(value).div(100000000))} ${
               historyEvent.collateralToken
             }/${historyEvent.debtToken}`}
@@ -119,7 +119,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       case AutomationName.executionPrice:
       case AutomationName.excutionPrice:
         return (
-          <PositionHistoryRow label={t('position-history.execution-price')} key={name}>
+          <PositionHistoryRow label={t('position-history.execution-price')}>
             {`${value && formatCryptoBalance(new BigNumber(value).div(100000000))} ${
               historyEvent.collateralToken
             }/${historyEvent.debtToken}`}
@@ -140,9 +140,9 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         {event.trigger?.decodedDataNames
           ?.map((name, index) => [name, event.trigger?.decodedData[index]] as const)
           ?.filter(([name]) => Object.values(AutomationName).includes(name as AutomationName))
-          ?.map(([name, value]) => {
-            return getPositionHistoryRow(name, value, event)
-          })}
+          ?.map(([name, value]) => (
+            <Fragment key={name}>{getPositionHistoryRow(name, value, event)}</Fragment>
+          ))}
       </DefinitionList>
     )
   }

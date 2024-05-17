@@ -16,7 +16,7 @@ export function filterByUserFilters(
   selectedProduct: OmniProductType,
   featured: ProductHubFeaturedProducts,
 ): ProductHubItem[] {
-  const stickiedRows = filterFeaturedProducts({ filters: featured, product: selectedProduct, rows })
+  const stickiedRows = filterFeaturedProducts({ filters: featured, rows })
 
   return rows.filter((row) =>
     featured.isStickied && stickiedRows.some((_row) => isEqual(_row, row))

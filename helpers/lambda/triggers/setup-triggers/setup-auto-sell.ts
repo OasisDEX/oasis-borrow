@@ -2,7 +2,7 @@ import { getLocalAppConfig } from 'helpers/config'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type { SetupBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
-import { TriggersApiErrorCode } from './setup-triggers-types'
+import { TriggerAction, TriggersApiErrorCode } from './setup-triggers-types'
 
 export const setupLambdaAutoSell = async (
   params: SetupBasicAutomationParams,
@@ -18,7 +18,7 @@ export const setupLambdaAutoSell = async (
       minSellPrice: params.price?.integerValue().toString(),
       poolId,
       targetLTV: params.targetLTV.integerValue().toString(),
-      useMinSellPrice: params.usePrice,
+      useMinSellPrice: params.action === TriggerAction.Remove ? false : params.usePrice,
     },
   })
 

@@ -13,10 +13,23 @@ import type { MigrateAaveStateProps } from './migrateAaveStateProps'
 
 export function MigrateAaveSuccessStateView({ state }: MigrateAaveStateProps) {
   const { t } = useTranslation()
+
   const userDpmAccount = state.context.userDpmAccount
-  const { protocol, network } = state.context.strategyConfig
+  const {
+    protocol,
+    network,
+    type,
+    tokens: { collateral, debt },
+  } = state.context.strategyConfig
   const url = userDpmAccount
-    ? getAaveLikePositionUrl({ protocol, network, userDpmAccount })
+    ? getAaveLikePositionUrl({
+        protocol,
+        network,
+        userDpmAccount,
+        type,
+        collateralToken: collateral,
+        debtToken: debt,
+      })
     : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {

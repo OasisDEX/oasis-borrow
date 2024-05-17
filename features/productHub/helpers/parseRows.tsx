@@ -40,7 +40,7 @@ export function parseRows({
   rows,
 }: ParseRowsParams): AssetsTableRowData[] {
   const isDebugEnabled = getLocalAppConfig('features')[FeaturesEnum.ProductHubDebug]
-  const featuredRows = filterFeaturedProducts({ filters: featured, product, rows })
+  const featuredRows = filterFeaturedProducts({ filters: featured, rows })
 
   return rows.map((row) => {
     const {

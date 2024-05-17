@@ -2,6 +2,7 @@ import { mapMorphoLiquidationResponseEvent } from 'features/omni-kit/protocols/m
 import { morphoDefaultHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/morphoDefaultHistoryEvent'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { getAutomationEvents } from 'features/positionHistory/helpers'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -15,7 +16,8 @@ export const getMorpoPositionAggregatedData = async (
   proxy: string,
   networkId: OmniSupportedNetworkIds,
   collateralTokenAddress: string,
-  quoteTokenAddress: string,
+  debtTokenAddress: string,
+  poolId: string,
 ): Promise<MorphoPositionAggregatedData> => {
   const { response } = (await loadSubgraph({
     subgraph: 'Morpho',
@@ -24,9 +26,18 @@ export const getMorpoPositionAggregatedData = async (
     params: {
       dpmProxyAddress: proxy.toLowerCase(),
       collateralAddress: collateralTokenAddress.toLowerCase(),
-      quoteAddress: quoteTokenAddress.toLowerCase(),
+      quoteAddress: debtTokenAddress.toLowerCase(),
     },
   })) as SubgraphsResponses['Morpho']['getMorphoPositionAggregatedData']
+
+  const automationEvents = await getAutomationEvents({
+    networkId,
+    proxy,
+    collateralTokenAddress,
+    debtTokenAddress,
+    poolId,
+  })
+
   const errors = []
 
   if (!response.summerEvents || !response.borrowerEvents) errors.push('No history data found')
@@ -44,6 +55,7 @@ export const getMorpoPositionAggregatedData = async (
         ...morphoDefaultHistoryEvent,
         ...mapMorphoLiquidationResponseEvent(event),
       })),
+    ...automationEvents.map((item) => ({ ...morphoDefaultHistoryEvent, ...item })),
   ].sort((a, b) => b.timestamp - a.timestamp)
 
   // assumption that when liquidation happen there won't be any events afterward

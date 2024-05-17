@@ -1,12 +1,12 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { AdjustRiskViewConfig } from 'features/aave/components'
-import type { ConfigResponseType } from 'helpers/config'
 import { getLocalAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
+import type { AppConfigType } from 'types/config'
 
-const getRiskRatio = (type: keyof ConfigResponseType['parameters']['aaveLike']['riskRatios']) => {
+const getRiskRatio = (type: keyof AppConfigType['parameters']['aaveLike']['riskRatios']) => {
   const { aaveLike } = getLocalAppConfig('parameters')
   return new BigNumber(aaveLike?.riskRatios?.[type] ?? 5) // 5 as fallback, optional for the tests to pass
 }

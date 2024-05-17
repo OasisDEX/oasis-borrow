@@ -7,6 +7,8 @@ export const vaultTypeToSDKType = (vaultType: VaultType): PositionType => {
       return PositionType.Borrow
     case VaultType.Multiply:
       return PositionType.Multiply
+    case VaultType.Earn:
+      return PositionType.Earn
     default:
       throw new Error(`Unknown vault type: ${vaultType}`)
   }
