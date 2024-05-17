@@ -66,12 +66,19 @@ function generateInterestRateQueries(data: Record<LendingProtocol, string[]>): s
 
 export const getRefinanceAaveLikeInterestRates = async (
   input: GetAaveLikeInterestRateInput,
+  lendingProtocol: LendingProtocol,
 ): Promise<RefinanceInterestRatesMetadata> => {
-  // TODO for now even though we have input for all network and aave-like protocols
-  // we limit query only for spark, because query for mainnet for all protocols
-  // is to big and will require either changes on cloudfront level on different handling on UI
+  // TODO ref: based on the source protocol we should get available target protocols
+  // const targetLendingProtocols = getTargetLendingProtocols(LendingProtocol)
+  const targetLendingProtocols = [lendingProtocol]
+
   const resolvedInput = {
-    [NetworkIds.MAINNET]: { [LendingProtocol.SparkV3]: input[NetworkIds.MAINNET].sparkv3 },
+    [NetworkIds.MAINNET]: targetLendingProtocols.reduce((acc, targetLendingProtocol) => {
+      return {
+        ...acc,
+        [targetLendingProtocol]: input[NetworkIds.MAINNET][targetLendingProtocol],
+      }
+    }, {}),
   } as GetAaveLikeInterestRateInput
 
   const response = await Promise.all(

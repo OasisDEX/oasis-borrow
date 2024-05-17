@@ -76,7 +76,12 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const interestRates = useMemo(
     () =>
       !cache.interestRates
-        ? from(getRefinanceAaveLikeInterestRates(interestRatesInput))
+        ? from(
+            getRefinanceAaveLikeInterestRates(
+              interestRatesInput,
+              contextInput.position.lendingProtocol,
+            ),
+          )
         : of(cache.interestRates),
     [cache.interestRates],
   )
