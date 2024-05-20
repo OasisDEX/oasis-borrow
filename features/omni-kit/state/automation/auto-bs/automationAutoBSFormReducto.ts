@@ -52,6 +52,11 @@ export function useOmniAutomationAutoBSFormReducto({ ...rest }: OmniAutomationAu
             ...prevState,
             action: action.action,
           }
+        case 'update-percentage-offset':
+          return {
+            ...prevState,
+            percentageOffset: action.percentageOffset,
+          }
         case 'reset':
           return { ...prevState, ...omniAutomationAutoBSFormReset, ...rest }
         default:
