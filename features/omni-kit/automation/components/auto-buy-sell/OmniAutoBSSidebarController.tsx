@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
+import {
+  getPriceIncreasedByPercentage,
+  SidebarInputWithOffsets,
+} from 'components/sidebar/SidebarInputWithOffsets'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { OmniAutoBSAutomationTypes } from 'features/omni-kit/automation/components/auto-buy-sell/types'
@@ -12,17 +15,26 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import type { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
-import { LendingProtocol } from 'lendingProtocols'
+import { one } from 'helpers/zero'
 import { isBoolean } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
+import { createNumberMask } from 'text-mask-addons'
 import { Text } from 'theme-ui'
 
 export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }> = ({ type }) => {
   const { t } = useTranslation()
   const {
-    environment: { productType, collateralToken, quoteToken, protocol },
+    environment: {
+      productType,
+      collateralToken,
+      quoteToken,
+      priceFormat,
+      isShort,
+      collateralDigits,
+      quoteDigits,
+    },
   } = useOmniGeneralContext()
   const {
     position: {
@@ -44,6 +56,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   const {
     maxRiskRatio: { loanToValue: maxLoanToValue },
     riskRatio: { loanToValue },
+    marketPrice,
   } = position
 
   const defaultTriggerValues = useMemo(() => {
@@ -192,12 +205,13 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     automationFormState.maxGasFee || autoBuySellConstants.defaultGasFee,
   )
 
-  //  TODO we default to not use thershold price for morpho since backend is not ready to handle specific prices */
-  useEffect(() => {
-    if (protocol === LendingProtocol.MorphoBlue) {
-      updateFormState('useThreshold', false)
-    }
-  }, [])
+  const positionPriceRatio = isShort ? one.div(marketPrice) : marketPrice
+
+  const inputMask = createNumberMask({
+    allowDecimal: true,
+    prefix: '',
+    decimalLimit: Math.max(collateralDigits, quoteDigits),
+  })
 
   return (
     <>
@@ -231,42 +245,52 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         otherDependencies={[defaultPrice?.toString(), defaultMaxGasFee.toString()]}
         {...thumbColors}
       />
-      {/* TODO we are hiding price input for morpho specifically since backend is not ready to handle it */}
-      {protocol !== LendingProtocol.MorphoBlue && (
-        <VaultActionInput
-          action={
-            {
-              [AutomationFeatures.AUTO_BUY]: t('auto-buy.set-max-buy-price'),
-              [AutomationFeatures.AUTO_SELL]: t('auto-sell.set-min-sell-price'),
-            }[type]
-          }
-          amount={defaultPrice}
-          hasAuxiliary={false}
-          hasError={false}
-          currencyCode={pricesDenomination === 'collateral' ? quoteToken : collateralToken}
-          onChange={handleNumericInput((price) => {
-            updateFormState('price', price)
-            updateFormState('maxGasFee', defaultMaxGasFee)
-            resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
-          })}
-          onToggle={(flag) => {
-            updateFormState('useThreshold', flag)
-            if (!flag) {
-              updateFormState('price', undefined)
-            } else {
-              updateFormState('price', defaultPrice)
-            }
+      <SidebarInputWithOffsets
+        useNegativeOffset={type === AutomationFeatures.AUTO_SELL}
+        priceFormat={priceFormat}
+        positionPriceRatio={positionPriceRatio}
+        inputMask={inputMask}
+        inputValue={defaultPrice === undefined ? '' : defaultPrice?.toString()}
+        label={
+          {
+            [AutomationFeatures.AUTO_BUY]: t('auto-buy.set-max-buy-price'),
+            [AutomationFeatures.AUTO_SELL]: t('auto-sell.set-min-sell-price'),
+          }[type]
+        }
+        updateInputValue={handleNumericInput((price) => {
+          updateFormState('price', price)
+          updateFormState('maxGasFee', defaultMaxGasFee)
+          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+        })}
+        updateOffset={(percentage) => {
+          updateFormState('percentageOffset', percentage)
 
-            updateFormState('maxGasFee', defaultMaxGasFee)
-            resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
-          }}
-          showToggle={true}
-          toggleOnLabel={t('protection.set-no-threshold')}
-          toggleOffLabel={t('protection.set-threshold')}
-          toggleOffPlaceholder={t('protection.no-threshold')}
-          defaultToggle={defaultToggle}
-        />
-      )}
+          updateFormState(
+            'price',
+            getPriceIncreasedByPercentage(positionPriceRatio, percentage?.toNumber() || 0),
+          )
+          updateFormState('maxGasFee', defaultMaxGasFee)
+          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+        }}
+        percentageOffset={automationFormState.percentageOffset}
+        showToggle={true}
+        toggleOnLabel={t('protection.set-no-threshold')}
+        toggleOffLabel={t('protection.set-threshold')}
+        toggleOffPlaceholder={t('protection.no-threshold')}
+        defaultToggle={defaultToggle}
+        onToggle={(flag) => {
+          updateFormState('useThreshold', flag)
+          if (!flag) {
+            updateFormState('price', undefined)
+          } else {
+            updateFormState('price', defaultPrice)
+          }
+
+          updateFormState('percentageOffset', undefined)
+          updateFormState('maxGasFee', defaultMaxGasFee)
+          resolveSliderDefaultUpdate({ value0: sliderValues.value0, value1: sliderValues.value1 })
+        }}
+      />
       <MaxGasPriceSection
         onChange={(value) => {
           updateFormState('maxGasFee', new BigNumber(value))

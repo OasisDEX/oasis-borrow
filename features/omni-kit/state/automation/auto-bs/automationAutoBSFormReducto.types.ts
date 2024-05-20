@@ -3,6 +3,7 @@ import type { FormActionsReset } from 'features/omni-kit/state'
 import type {
   AutomationFormActionsUpdateAction,
   AutomationFormActionsUpdateMaxGasFee,
+  AutomationFormActionsUpdatePercentageOffset,
   AutomationFormActionsUpdatePrice,
   AutomationFormActionsUpdateTargetLtv,
   AutomationFormActionsUpdateTriggerLtv,
@@ -17,6 +18,7 @@ export interface OmniAutomationAutoBSFormState {
   price?: BigNumber
   maxGasFee?: BigNumber
   useThreshold?: boolean
+  percentageOffset?: BigNumber
   action: TriggerAction
 }
 
@@ -27,6 +29,7 @@ export type OmniAutomationAutoBSFormActions = ReductoActions<
   | AutomationFormActionsUpdatePrice
   | AutomationFormActionsUpdateMaxGasFee
   | AutomationFormActionsUpdateUseThreshold
+  | AutomationFormActionsUpdatePercentageOffset
   | AutomationFormActionsUpdateAction
   | FormActionsReset
 >
