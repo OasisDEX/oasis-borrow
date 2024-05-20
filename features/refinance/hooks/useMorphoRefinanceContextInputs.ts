@@ -1,0 +1,104 @@
+import type { NetworkIds } from 'blockchain/networks'
+import { getNetworkById } from 'blockchain/networks'
+import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
+import { getRefinanceContextInput } from 'features/refinance/helpers'
+import { getMakerPositionId } from 'features/refinance/helpers/getMakerPositionId'
+import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
+
+export const useMorphoRefinanceContextInputs = ({
+  address,
+  networkId,
+  collateralTokenSymbol,
+  debtTokenSymbol,
+  collateralAmount,
+  debtAmount,
+  vaultId,
+  slippage,
+  collateralPrice,
+  debtPrice,
+  ethPrice,
+  borrowRate,
+  liquidationPrice,
+  ltv,
+  maxLtv,
+  marketId,
+  positionType,
+  isOwner,
+  pairId,
+  // triggerData,
+}: {
+  address?: string
+  networkId: NetworkIds
+  collateralTokenSymbol: string
+  debtTokenSymbol: string
+  collateralAmount: string
+  debtAmount: string
+  vaultId: string
+  slippage: number
+  collateralPrice: string
+  debtPrice: string
+  ethPrice: string
+  liquidationPrice: string
+  borrowRate: string
+  ltv: string
+  maxLtv: string
+  marketId: string
+  isOwner: boolean
+  positionType: PositionType
+  pairId: number
+  triggerData: GetTriggersResponse
+}): RefinanceContextInput => {
+  const chainFamily = getChainInfoByChainId(networkId)
+  if (!chainFamily) {
+    throw new Error(`ChainId ${networkId} is not supported`)
+  }
+
+  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
+  const positionId = getMakerPositionId(vaultId, vaultId)
+
+  const automations = {
+    stopLoss: {
+      enabled: false,
+    },
+    autoSell: {
+      enabled: false,
+    },
+    autoBuy: {
+      enabled: false,
+    },
+    takeProfit: {
+      enabled: false,
+    },
+    constantMultiple: {
+      enabled: false,
+    },
+  }
+
+  const network = getNetworkById(networkId).name
+
+  return getRefinanceContextInput({
+    borrowRate,
+    primaryToken: collateralTokenSymbol,
+    secondaryToken: debtTokenSymbol,
+    collateralPrice,
+    debtPrice,
+    ethPrice,
+    poolId,
+    pairId,
+    network,
+    address,
+    slippage,
+    collateral: collateralAmount,
+    debt: debtAmount,
+    positionId: positionId,
+    liquidationPrice,
+    ltv,
+    maxLtv,
+    automations,
+    contextId: vaultId,
+    positionType,
+    isOwner,
+  })
+}
