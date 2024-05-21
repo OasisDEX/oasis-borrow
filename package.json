@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "12.23.3",
+  "version": "12.23.4",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.19"
