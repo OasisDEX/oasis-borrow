@@ -8,7 +8,7 @@ export const stopLossConstants = {
   defaultResolveTo: 'collateral' as OmniCloseTo,
   offsets: {
     min: new BigNumber(0.01),
-    max: new BigNumber(0.025),
+    max: new BigNumber(0.01), // we have 1% offset from max ltv in contracts
   },
 }
 

@@ -26,7 +26,7 @@ import React, { useMemo } from 'react'
 
 export const useOmniStopLossDataHandler = () => {
   const {
-    environment: { productType, collateralToken, quoteToken, isShort, priceFormat },
+    environment: { productType, collateralToken, quoteToken, isShort, priceFormat, isYieldLoop },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -200,7 +200,10 @@ export const useOmniStopLossDataHandler = () => {
       />
     ),
   })
-  const sliderMin = useMemo(() => loanToValue.plus(stopLossConstants.offsets.min), [loanToValue])
+  const sliderMin = useMemo(
+    () => loanToValue.plus(isYieldLoop ? zero : stopLossConstants.offsets.min),
+    [loanToValue],
+  )
   const sliderMax = useMemo(
     () => liquidationPriceLtv.minus(stopLossConstants.offsets.max),
     [liquidationPriceLtv],
