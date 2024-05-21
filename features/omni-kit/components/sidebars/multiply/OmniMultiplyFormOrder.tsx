@@ -144,10 +144,17 @@ export function OmniMultiplyFormOrder() {
 
       oasisFee = amountFromWei(swapData.tokenFee, feeToken.precision).multipliedBy(price)
     } else {
-      oasisFee = amountFromWei(
-        swapData.tokenFee,
-        swapData.collectFeeFrom === 'targetToken' ? collateralPrecision : quotePrecision,
-      ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? collateralPrice : quotePrice)
+      let feePrecision, feePrice
+      if (swapData.collectFeeFrom === 'targetToken') {
+        feePrecision = withBuying ? collateralPrecision : quotePrecision
+        feePrice = withBuying ? collateralPrice : quotePrice
+      } else if (swapData.collectFeeFrom === 'sourceToken') {
+        feePrecision = withBuying ? quotePrecision : collateralPrecision
+        feePrice = withBuying ? quotePrice : collateralPrice
+      } else {
+        throw new Error(`Invalid fee source: ${swapData.collectFeeFrom}`)
+      }
+      oasisFee = amountFromWei(swapData.tokenFee, feePrecision).multipliedBy(feePrice)
     }
   }
 
