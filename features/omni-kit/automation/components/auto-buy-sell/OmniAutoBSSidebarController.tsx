@@ -141,7 +141,7 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
   ])
 
   const maxSliderValue = useMemo(() => {
-    return Number(maxLoanToValue.times(100).toPrecision(2))
+    return Number(maxLoanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN).times(100))
   }, [maxLoanToValue])
 
   const sliderDescriptions = useMemo(() => {
