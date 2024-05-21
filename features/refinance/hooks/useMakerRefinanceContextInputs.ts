@@ -98,5 +98,6 @@ export const useMakerRefinanceContextInputs = ({
     contextId: id,
     positionType: type,
     isOwner,
+    owner: undefined,
   })
 }

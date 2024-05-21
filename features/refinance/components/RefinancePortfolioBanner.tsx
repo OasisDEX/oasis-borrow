@@ -193,6 +193,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
             positionType: omniProductTypeToSDKType(productType),
             pairId,
             isOwner: wallet?.address.toLowerCase() === portfolioAddress?.toLowerCase(),
+            owner: undefined,
           })
 
           handleSetContext(contextInput)

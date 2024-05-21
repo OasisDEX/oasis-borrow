@@ -81,6 +81,7 @@ export function OmniRefinanceContextProvider({
         isOwner,
         pairId,
         triggerData: positionTriggers,
+        owner: position.owner,
       })
 
   let refinanceInput: RefinanceContextInput | undefined

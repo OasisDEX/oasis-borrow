@@ -1,6 +1,6 @@
 import { getNetworkByName } from 'blockchain/networks'
 import type { ProductHubItem } from 'features/productHub/types'
-import type { GetAaveLikeInterestRateInput } from 'features/refinance/graph/getRefinanceAaveLikeInterestRates'
+import type { GetAaveLikeInterestRateInput } from 'features/refinance/graph/getRefinanceTargetInterestRates'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 

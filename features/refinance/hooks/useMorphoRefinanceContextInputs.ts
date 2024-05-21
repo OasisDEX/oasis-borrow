@@ -27,6 +27,7 @@ export const useMorphoRefinanceContextInputs = ({
   positionType,
   isOwner,
   pairId,
+  owner,
   // triggerData,
 }: {
   address?: string
@@ -48,6 +49,7 @@ export const useMorphoRefinanceContextInputs = ({
   isOwner: boolean
   positionType: PositionType
   pairId: number
+  owner: string
   triggerData: GetTriggersResponse
 }): RefinanceContextInput => {
   const chainFamily = getChainInfoByChainId(networkId)
@@ -100,5 +102,6 @@ export const useMorphoRefinanceContextInputs = ({
     contextId: vaultId,
     positionType,
     isOwner,
+    owner,
   })
 }

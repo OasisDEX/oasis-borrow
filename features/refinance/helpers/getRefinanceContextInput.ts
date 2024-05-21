@@ -31,6 +31,7 @@ export const getRefinanceContextInput = ({
   contextId,
   positionId,
   positionType,
+  owner,
   isOwner,
 }: {
   borrowRate: string
@@ -52,9 +53,11 @@ export const getRefinanceContextInput = ({
   automations: RefinanceContextInputAutomations
   contextId: string
   positionId: IPositionId
+  owner: string | undefined
   isOwner: boolean
   positionType: PositionType
 }): RefinanceContextInput => {
+  const chainId = networkNameToIdMap[network]
   const lendingProtocol = getLendingProtocolByProtocolName(poolId.protocol.name)
 
   return {
@@ -66,7 +69,7 @@ export const getRefinanceContextInput = ({
       pairId,
     },
     environment: {
-      chainId: networkNameToIdMap[network],
+      chainId,
       slippage,
       address,
       isOwner,
@@ -86,6 +89,7 @@ export const getRefinanceContextInput = ({
         [secondaryToken]: debtPrice,
         ETH: ethPrice,
       },
+      owner: owner,
     },
     automations: automations,
     contextId,

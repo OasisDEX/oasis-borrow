@@ -30,7 +30,6 @@ import type {
 } from 'features/omni-kit/types'
 import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
-import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'

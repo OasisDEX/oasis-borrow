@@ -71,6 +71,7 @@ export type RefinanceContextInput = {
     borrowRate: string
     supplyRate: string
     protocolPrices: Record<string, string>
+    owner?: string
   }
   automations: RefinanceContextInputAutomations
   contextId: string

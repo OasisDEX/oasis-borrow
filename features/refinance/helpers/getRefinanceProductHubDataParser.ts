@@ -4,10 +4,11 @@ import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
-import type { RefinanceInterestRatesMetadata } from 'features/refinance/graph/getRefinanceAaveLikeInterestRates'
+import type { RefinanceInterestRatesMetadata } from 'features/refinance/graph/getRefinanceTargetInterestRates'
 import { RefinanceOptions } from 'features/refinance/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { moveItemsToFront } from 'helpers/moveItemsToFront'
+import { LendingProtocol } from 'lendingProtocols'
 
 import { getNetAPY } from './getBorrowRate'
 
@@ -44,6 +45,11 @@ const borrowRateMapping = ({
   currentLTV: string
 }) =>
   table.map((item) => {
+    // for Morho use PH rates
+    if (item.protocol === LendingProtocol.MorphoBlue) {
+      return item
+    }
+
     const network = getNetworkByName(item.network)
 
     const customCollateralRates = interestRates[network.id]?.[item.protocol]?.[item.primaryToken]
