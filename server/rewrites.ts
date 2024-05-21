@@ -30,6 +30,10 @@ const rewriteRules = () => [
     source: '/api/apy/:path*',
     destination: `${process.env.FUNCTIONS_API_URL}/api/apy/:path*`,
   },
+  {
+    source: '/api/portfolio/:path*',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/portfolio/:path*`,
+  },
   // ... other rules
 ]
 
