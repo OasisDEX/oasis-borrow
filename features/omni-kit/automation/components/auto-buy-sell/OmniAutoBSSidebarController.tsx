@@ -59,6 +59,10 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     marketPrice,
   } = position
 
+  const maxSliderValue = useMemo(() => {
+    return Number(maxLoanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN).times(100))
+  }, [maxLoanToValue])
+
   const defaultTriggerValues = useMemo(() => {
     if (type === AutomationFeatures.AUTO_BUY) {
       return {
@@ -66,9 +70,14 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
         targetLtv: loanToValue.times(100),
       }
     }
+
+    // a special handling for auto sell and yield loops where position ltv may be close to max ltv
+    const triggerLtv = loanToValue.times(100).plus(5)
+    const resolvedTriggerLtv = triggerLtv.gt(maxSliderValue) ? maxSliderValue : triggerLtv
+
     return {
       targetLtv: loanToValue.times(100),
-      triggerLtv: loanToValue.times(100).plus(5),
+      triggerLtv: resolvedTriggerLtv,
     }
   }, [loanToValue, type])
 
@@ -139,10 +148,6 @@ export const OmniAutoBSSidebarController: FC<{ type: OmniAutoBSAutomationTypes }
     t,
     type,
   ])
-
-  const maxSliderValue = useMemo(() => {
-    return Number(maxLoanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN).times(100))
-  }, [maxLoanToValue])
 
   const sliderDescriptions = useMemo(() => {
     return {
