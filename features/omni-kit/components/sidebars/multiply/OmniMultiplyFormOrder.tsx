@@ -93,19 +93,19 @@ export function OmniMultiplyFormOrder() {
 
   const withSlippage = action && actionsWithSlippage.includes(action)
 
-  const withBuying =
+  const withBuyingCollateral =
     action === OmniMultiplyFormAction.OpenMultiply ||
     (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.gt(positionData.riskRatio.loanToValue))
 
-  const withSelling =
+  const withSellingCollateral =
     action === OmniMultiplyFormAction.CloseMultiply ||
     (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
 
-  const quoteAction = withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL'
+  const quoteAction = withBuyingCollateral ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL'
   // use ~1$ worth amount of collateral or quote token
-  const quoteAmount = one.div(withBuying ? quotePrice : collateralPrice)
+  const quoteAmount = one.div(withBuyingCollateral ? quotePrice : collateralPrice)
 
   const initialQuote$ = useMemo(
     () =>
@@ -124,7 +124,7 @@ export function OmniMultiplyFormOrder() {
   const [initialQuote] = useObservable(initialQuote$)
 
   const buyingOrSellingCollateral = swapData
-    ? withBuying
+    ? withBuyingCollateral
       ? swapData.minToTokenAmount
       : swapData.fromTokenAmount
     : zero
@@ -144,10 +144,19 @@ export function OmniMultiplyFormOrder() {
 
       oasisFee = amountFromWei(swapData.tokenFee, feeToken.precision).multipliedBy(price)
     } else {
-      oasisFee = amountFromWei(
-        swapData.tokenFee,
-        swapData.collectFeeFrom === 'targetToken' ? collateralPrecision : quotePrecision,
-      ).multipliedBy(swapData.collectFeeFrom === 'targetToken' ? collateralPrice : quotePrice)
+      let feePrecision = quotePrecision
+      let feePrice = quotePrice
+      const collectingFromTarget = swapData.collectFeeFrom === 'targetToken'
+      // buying collateral means the target token is the collateral token
+      if (withBuyingCollateral) {
+        feePrecision = collectingFromTarget ? collateralPrecision : quotePrecision
+        feePrice = collectingFromTarget ? collateralPrice : quotePrice
+        // selling collateral means the target token is the quote token
+      } else if (withSellingCollateral) {
+        feePrecision = collectingFromTarget ? quotePrecision : collateralPrecision
+        feePrice = collectingFromTarget ? quotePrice : collateralPrice
+      }
+      oasisFee = amountFromWei(swapData.tokenFee, feePrecision).multipliedBy(feePrice)
     }
   }
 
@@ -197,7 +206,7 @@ export function OmniMultiplyFormOrder() {
     <InfoSection
       title={t('vault-changes.order-information')}
       items={[
-        ...(withBuying
+        ...(withBuyingCollateral
           ? [
               {
                 label: t('vault-changes.buying-token', { token: collateralToken }),
@@ -209,7 +218,7 @@ export function OmniMultiplyFormOrder() {
               },
             ]
           : []),
-        ...(withSelling
+        ...(withSellingCollateral
           ? [
               {
                 label: t('vault-changes.selling-token', { token: collateralToken }),
@@ -227,7 +236,7 @@ export function OmniMultiplyFormOrder() {
           change: formatted.afterTotalExposure,
           isLoading,
         },
-        ...(withBuying || withSelling
+        ...(withBuyingCollateral || withSellingCollateral
           ? [
               {
                 label: t('vault-changes.price-impact', {

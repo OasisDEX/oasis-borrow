@@ -6,6 +6,7 @@ export const omniAutomationAutoBSFormReset = {
   price: undefined,
   maxGasFee: undefined,
   useThreshold: undefined,
+  percentageOffset: undefined,
 }
 
 export const omniAutomationAutoBSFormDefault: Partial<OmniAutomationAutoBSFormState> = {

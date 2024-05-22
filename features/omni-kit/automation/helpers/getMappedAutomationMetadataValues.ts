@@ -23,8 +23,11 @@ export const getMappedAutomationMetadataValues = ({
   protocol,
 }: GetMappedAutomationMetadataValuesParams) => {
   const flagSelector = (
-    poolId ? `${protocol}-${poolId}` : protocol.replace('aavev3', 'aave3')
-  ) as keyof typeof flags // thanks for "aave3"... 🙄
+    poolId
+      ? `${protocol}-${poolId}`
+      : protocol.replace('aavev3', 'aave3').replace('sparkv3', 'spark')
+  ) as keyof typeof flags // thanks for "aave3" and "spark"... 🙄
+
   const selectedFlags = flags[flagSelector]
   return {
     flags: {

@@ -7,6 +7,7 @@ import { FormatPercentWithSmallPercentCharacter } from 'components/FormatPercent
 import { Icon } from 'components/Icon'
 import { InfoSectionTable } from 'components/infoSection/InfoSectionTable'
 import { MessageCard } from 'components/MessageCard'
+import { SidebarInputWithOffsets } from 'components/sidebar/SidebarInputWithOffsets'
 import { SidebarAccordion } from 'components/SidebarAccordion'
 import { StatefulTooltip } from 'components/Tooltip'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
@@ -21,18 +22,17 @@ import { partialTakeProfitConstants } from 'features/omni-kit/automation/constan
 import { useOmniPartialTakeProfitDataHandler } from 'features/omni-kit/automation/hooks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import type { OmniProductType } from 'features/omni-kit/types'
-import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import type { SetupPartialTakeProfitResponse } from 'helpers/lambda/triggers'
 import { nbsp } from 'helpers/nbsp'
 import { hundred, one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { createNumberMask } from 'text-mask-addons'
 import { question_o } from 'theme/icons'
-import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
+import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
 const getPriceIncreasedByPercentage = (price: BigNumber, percentage: number) => {
   return price.plus(price.times(percentage))
@@ -91,8 +91,6 @@ export const OmniPartialTakeProfitSidebarController = () => {
     withdrawalLtvSliderConfig,
   } = useOmniPartialTakeProfitDataHandler()
 
-  const [isFocus, setStartingPriceInputFocus] = useState<boolean>(false)
-
   const inputMask = useMemo(() => {
     const selectedResolveToTokenData = getToken(
       automationFormState.resolveTo === 'collateral' ? collateralToken : quoteToken,
@@ -132,23 +130,6 @@ export const OmniPartialTakeProfitSidebarController = () => {
     return `${riskRatio.multiple.toFixed(2)}x`
   }, [])
   const positionPriceRatio = isShort ? one.div(marketPrice) : marketPrice
-
-  useEffect(() => {
-    // if the custom percentage is set, calculate the next price and update it
-    if (automationFormState.percentageOffset) {
-      const probableNextprice = getPriceIncreasedByPercentage(
-        positionPriceRatio,
-        automationFormState.percentageOffset.toNumber(),
-      )
-      if (!startingTakeProfitPriceValue.eq(probableNextprice)) {
-        automationUpdateState('price', probableNextprice)
-        automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
-        automationUpdateState('triggerLtv', triggerLtvValue)
-        automationUpdateState('ltvStep', targetLtvValue)
-        !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
-      }
-    }
-  }, [automationUpdateState, positionPriceRatio, startingTakeProfitPriceValue])
 
   const parsedProfits = useMemo(() => {
     return mapProfits(partialTakeProfitSimulation, isShort).map((profit) => {
@@ -242,124 +223,46 @@ export const OmniPartialTakeProfitSidebarController = () => {
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.partial-take-profit-sidebar.main-description')}
       </Text>
-      <Box
-        sx={{
-          padding: 3,
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          mt: 2,
-          border: '1px solid',
-          borderRadius: 'medium',
-          transition: 'border-color 200ms',
-          borderColor: isFocus ? 'neutral70' : 'neutral20',
-        }}
-      >
-        <Text variant="boldParagraph3" color="neutral80">
-          {isShort
+      <SidebarInputWithOffsets
+        label={
+          isShort
             ? t('protection.partial-take-profit-sidebar.set-maximum-take-profit-price')
-            : t('protection.partial-take-profit-sidebar.set-minimum-take-profit-price')}
-          <StatefulTooltip
-            tooltip={
-              <Text variant="paragraph4">
-                {isShort
-                  ? t('protection.partial-take-profit-sidebar.tooltips.take-profit-price-highest')
-                  : t('protection.partial-take-profit-sidebar.tooltips.take-profit-price-lowest')}
-              </Text>
-            }
-            containerSx={{ display: 'inline' }}
-            inline
-            tooltipSx={{ maxWidth: '350px' }}
-          >
-            <Icon
-              color={'neutral80'}
-              icon={question_o}
-              size="auto"
-              width="14px"
-              height="14px"
-              sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
-            />
-          </StatefulTooltip>
-        </Text>
-        <Box
-          sx={{
-            position: 'relative',
-            variant: 'text.boldParagraph3',
-            '::after': {
-              position: 'absolute',
-              right: '5px',
-              top: '15px',
-              content: `"${priceFormat}"`,
-              pointerEvents: 'none',
-              opacity: '0.6',
-            },
-          }}
-        >
-          <BigNumberInput
-            type="text"
-            mask={inputMask}
-            onFocus={() => {
-              setStartingPriceInputFocus(true)
-            }}
-            onBlur={() => {
-              setStartingPriceInputFocus(false)
-            }}
-            value={`${formatCryptoBalance(startingTakeProfitPriceValue)}`}
-            onChange={handleNumericInput((value) => {
-              if (value) {
-                automationUpdateState('price', value)
-                // Initialize state
-                automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
-                automationUpdateState('triggerLtv', triggerLtvValue)
-                automationUpdateState('ltvStep', targetLtvValue)
-                automationUpdateState('percentageOffset', undefined)
-                !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
-              }
-            })}
-            sx={{
-              fontSize: 5,
-              border: 'none',
-              pl: 0,
-              transition: 'opacity 200ms',
-            }}
-          />
-        </Box>
-        <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
-          Now: {formatCryptoBalance(positionPriceRatio)} {priceFormat}
-        </Text>
-      </Box>
-      <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        {(isShort
-          ? partialTakeProfitConstants.startingPercentageOptionsShort
-          : partialTakeProfitConstants.startingPercentageOptionsLong
-        ).map((percentage) => (
-          <Button
-            key={percentage.toString()}
-            variant="bean"
-            sx={{
-              color: 'neutral80',
-              transition: 'color 200ms, background-color 200ms',
-              '&:hover': {
-                backgroundColor: 'neutral80',
-                color: 'secondary60',
-              },
-              ...(automationFormState.percentageOffset?.toNumber() === percentage
-                ? {
-                    backgroundColor: 'neutral80',
-                    color: 'secondary60',
-                  }
-                : {}),
-            }}
-            disabled={automationFormState.percentageOffset?.toNumber() === percentage}
-            onClick={() => {
-              automationUpdateState('percentageOffset', new BigNumber(percentage))
-            }}
-          >
-            {percentage === 0
-              ? 'current'
-              : `${isShort ? '' : '+'}${formatPercent(new BigNumber(percentage).times(100))}`}
-          </Button>
-        ))}
-      </Flex>
+            : t('protection.partial-take-profit-sidebar.set-minimum-take-profit-price')
+        }
+        tooltip={
+          isShort
+            ? t('protection.partial-take-profit-sidebar.tooltips.take-profit-price-highest')
+            : t('protection.partial-take-profit-sidebar.tooltips.take-profit-price-lowest')
+        }
+        useNegativeOffset={isShort}
+        priceFormat={priceFormat}
+        positionPriceRatio={positionPriceRatio}
+        inputMask={inputMask}
+        inputValue={startingTakeProfitPriceValue.toString()}
+        updateInputValue={handleNumericInput((value) => {
+          if (value) {
+            automationUpdateState('price', value)
+            // Initialize state
+            automationUpdateState('resolveTo', selectedPartialTakeProfitToken)
+            automationUpdateState('triggerLtv', triggerLtvValue)
+            automationUpdateState('ltvStep', targetLtvValue)
+            automationUpdateState('percentageOffset', undefined)
+            !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
+          }
+        })}
+        updateOffset={(percentage) => {
+          automationUpdateState('percentageOffset', percentage)
+
+          automationUpdateState(
+            'price',
+            getPriceIncreasedByPercentage(positionPriceRatio, percentage?.toNumber() || 0),
+          )
+          automationUpdateState('triggerLtv', triggerLtvValue)
+          automationUpdateState('ltvStep', targetLtvValue)
+          !hasTrailingStopLoss && automationUpdateState('extraTriggerLtv', extraTriggerLtv)
+        }}
+        percentageOffset={automationFormState.percentageOffset}
+      />
       <Divider />
       <Text variant="boldParagraph2">
         {t('protection.partial-take-profit-sidebar.configure-trigger-loan-to-value')}
