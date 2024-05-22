@@ -4,7 +4,10 @@ import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getPosition } from 'features/refinance/helpers/getPosition'
 import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
 import { getTargetPoolId } from 'features/refinance/helpers/getTargetPoolId'
-import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
+import {
+  replacePoolIdETHWithWETH,
+  replaceTokenAmountETHWithWETH,
+} from 'features/refinance/helpers/replaceETHwithWETH'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import type { Chain, ProtocolClient, User } from 'summerfi-sdk-client'
@@ -129,11 +132,8 @@ export function useSdkSimulation(): SDKSimulation {
       if (!sourceProtocol) {
         throw new Error(`Protocol ${sourceProtocolName} is not found`)
       }
-      const sourcePoolId = {
-        ...poolId,
-        collateralTokenData: replaceETHWithWETH(collateralTokenData),
-        debtTokenData: replaceETHWithWETH(debtTokenData),
-      }
+
+      const sourcePoolId = replacePoolIdETHWithWETH(poolId)
 
       const targetProtocol: Maybe<ProtocolClient> = await _chain.protocols.getProtocol({
         name: targetProtocolName,
@@ -142,7 +142,6 @@ export function useSdkSimulation(): SDKSimulation {
         throw new Error(`Protocol ${targetProtocolName} is not found`)
       }
       const targetPoolId = getTargetPoolId(targetProtocol, ctx)
-
       const [sourcePool, targetPool, targetPoolInfo] = await Promise.all([
         sourceProtocol.getLendingPool({ poolId: sourcePoolId }),
         targetProtocol.getLendingPool({ poolId: targetPoolId }),
@@ -152,8 +151,8 @@ export function useSdkSimulation(): SDKSimulation {
       const _sourcePosition = getPosition(sourceProtocolName, {
         id: positionId,
         pool: sourcePool,
-        collateralAmount: replaceETHWithWETH(collateralTokenData),
-        debtAmount: replaceETHWithWETH(debtTokenData),
+        collateralAmount: replaceTokenAmountETHWithWETH(collateralTokenData),
+        debtAmount: replaceTokenAmountETHWithWETH(debtTokenData),
         type: positionType,
       })
       setSourcePosition(_sourcePosition)
@@ -172,24 +171,23 @@ export function useSdkSimulation(): SDKSimulation {
         slippage: Percentage.createFrom({ value: slippage * 100 }),
       }
 
-      const isMaker = poolId.protocol.name === ProtocolName.Maker
-      const importPositionParameters: IImportPositionParameters = {
-        externalPosition: {
-          position: _sourcePosition,
-          externalId: {
-            address: Address.createFromEthereum({
-              value: owner as `0x${string}`,
-            }),
-            type: ExternalPositionType.DS_PROXY,
-          },
-        },
-      }
-
       const _refinanceSimulation =
         await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
       setRefinanceSimulation(_refinanceSimulation)
 
+      const isMaker = poolId.protocol.name === ProtocolName.Maker
       if (isMaker) {
+        const importPositionParameters: IImportPositionParameters = {
+          externalPosition: {
+            position: _sourcePosition,
+            externalId: {
+              address: Address.createFromEthereum({
+                value: owner as `0x${string}`,
+              }),
+              type: ExternalPositionType.DS_PROXY,
+            },
+          },
+        }
         const _importPositionSimulation =
           await sdk.simulator.importing.simulateImportPosition(importPositionParameters)
         setImportPositionSimulation(_importPositionSimulation)

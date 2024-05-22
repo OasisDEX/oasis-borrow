@@ -12,7 +12,7 @@ export const getPosition = (protocolName: ProtocolName, position: IPosition): IP
     case ProtocolName.AAVEv2:
       throw new Error('AAVEv2 is not supported')
     case ProtocolName.Morpho:
-      throw MorphoPosition.createFrom(position)
+      return MorphoPosition.createFrom(position)
 
     default:
       throw new Error(`Unsupported protocol name: ${protocolName}`)

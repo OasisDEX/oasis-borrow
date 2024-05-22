@@ -29,8 +29,6 @@ export function OmniRefinanceContextProvider({
     environment: {
       collateralToken,
       quoteToken,
-      collateralBalance,
-      quoteBalance,
       collateralPrice,
       quotePrice,
       ethPrice,
@@ -55,9 +53,18 @@ export function OmniRefinanceContextProvider({
   const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
   const maxLtv = 'maxRiskRatio' in position ? position.maxRiskRatio.loanToValue : undefined
   const liquidationPrice = 'liquidationPrice' in position ? position.liquidationPrice : undefined
+  const collateralAmount = 'collateralAmount' in position ? position.collateralAmount : undefined
+  const debtAmount = 'debtAmount' in position ? position.debtAmount : undefined
 
   const refinanceHasAllData =
-    positionId && borrowRate && poolId && ltv && maxLtv && liquidationPrice
+    positionId &&
+    borrowRate &&
+    poolId &&
+    ltv &&
+    maxLtv &&
+    liquidationPrice &&
+    collateralAmount &&
+    debtAmount
   const morphoRefinanceInput = !refinanceHasAllData
     ? undefined
     : useMorphoRefinanceContextInputs({
@@ -65,8 +72,8 @@ export function OmniRefinanceContextProvider({
         networkId,
         collateralTokenSymbol: collateralToken,
         debtTokenSymbol: quoteToken,
-        collateralAmount: collateralBalance.toString(),
-        debtAmount: quoteBalance.toString(),
+        collateralAmount: collateralAmount.toString(),
+        debtAmount: debtAmount.toString(),
         vaultId: positionId,
         slippage: slippage.toNumber(),
         collateralPrice: collateralPrice.toString(),

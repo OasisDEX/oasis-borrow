@@ -1,7 +1,7 @@
 import type { RefinanceGeneralContextBase } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
-import { replaceTokenSymbolWETHWithETH } from 'features/refinance/helpers/replaceTokenSymbolWETHWithETH'
+import { replaceTokenSymbolETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import {
   MorphoLendingPoolId,
   SparkLendingPoolId,
@@ -24,11 +24,11 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
   }
   const collateralToken = mapTokenToSdkToken(
     chainInfo,
-    replaceTokenSymbolWETHWithETH(strategy?.primaryToken),
+    replaceTokenSymbolETHWithWETH(strategy?.primaryToken),
   )
   const debtToken = mapTokenToSdkToken(
     chainInfo,
-    replaceTokenSymbolWETHWithETH(strategy?.secondaryToken),
+    replaceTokenSymbolETHWithWETH(strategy?.secondaryToken),
   )
 
   switch (protocol.name) {

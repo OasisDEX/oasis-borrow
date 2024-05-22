@@ -66,6 +66,8 @@ function generateInterestRateQueries(data: Record<LendingProtocol, string[]>): s
 
 const getTargetLendingProtocols = (sourceLendingProtocol: LendingProtocol) => {
   switch (sourceLendingProtocol) {
+    case LendingProtocol.Maker:
+      return [LendingProtocol.SparkV3]
     case LendingProtocol.AaveV3:
       return [LendingProtocol.SparkV3]
     case LendingProtocol.SparkV3:
