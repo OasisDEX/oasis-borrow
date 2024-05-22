@@ -24,7 +24,7 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
           break
         case 'overview':
         case 'assets':
-          callUrl = `${baseUrl}/portfolio-${section}?address=${address}`
+          callUrl = `/api/portfolio/${section}?address=${address}`
           break
         default:
           throw new Error('Invalid usePortfolioClient section')
