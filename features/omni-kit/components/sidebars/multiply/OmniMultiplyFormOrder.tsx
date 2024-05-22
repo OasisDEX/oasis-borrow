@@ -144,7 +144,8 @@ export function OmniMultiplyFormOrder() {
 
       oasisFee = amountFromWei(swapData.tokenFee, feeToken.precision).multipliedBy(price)
     } else {
-      let feePrecision, feePrice
+      let feePrecision = quotePrecision
+      let feePrice = quotePrice
       const collectingFromTarget = swapData.collectFeeFrom === 'targetToken'
       // buying collateral means the target token is the collateral token
       if (withBuyingCollateral) {
@@ -154,8 +155,6 @@ export function OmniMultiplyFormOrder() {
       } else if (withSellingCollateral) {
         feePrecision = collectingFromTarget ? quotePrecision : collateralPrecision
         feePrice = collectingFromTarget ? quotePrice : collateralPrice
-      } else {
-        throw new Error(`Invalid fee source: ${swapData.collectFeeFrom}`)
       }
       oasisFee = amountFromWei(swapData.tokenFee, feePrecision).multipliedBy(feePrice)
     }
