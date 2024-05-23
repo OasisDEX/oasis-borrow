@@ -19,7 +19,13 @@ export function OmniOverviewController() {
   const {
     dynamicMetadata: {
       values: { footerColumns },
-      elements: { overviewBanner, overviewContent, overviewFooter, overviewWithSimulation },
+      elements: {
+        overviewBanner,
+        overviewContent,
+        overviewFooter,
+        overviewWithSimulation,
+        renderOverviewBanner,
+      },
       notifications,
     },
   } = useOmniProductContext(productType)
@@ -53,6 +59,7 @@ export function OmniOverviewController() {
         }
       />
       {overviewBanner}
+      {renderOverviewBanner?.()}
       <OmniDetailSectionErc20Claims />
     </Grid>
   )
