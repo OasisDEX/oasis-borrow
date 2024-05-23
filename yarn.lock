@@ -14894,10 +14894,10 @@ stylis@^4.0.6:
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.3.0.tgz#abe305a669fc3d8777e10eefcfc73ad861c5588c"
   integrity sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==
 
-summerfi-sdk-client@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/summerfi-sdk-client/-/summerfi-sdk-client-0.2.2.tgz#d13f3660d98d22f79399a7495717e953957ca626"
-  integrity sha512-kPH/rqN00Ljr1XrHJaV+DKcxRURg3hNURGLXznToGN20QBIcraxD9Tjdpztc3KWZH+WJlpfNDaIQz4aCIkCSqA==
+summerfi-sdk-client@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-client/-/summerfi-sdk-client-0.2.4.tgz#0d9b8a6aa550e036883e07af7c22e7a03e3edb64"
+  integrity sha512-thyUgGQDbOEiCwD79F7EUTTt4ruDcsZOPWxcFmepvdGzbE9kCKaaw94gm0kCiUKeHRin3d38K+Dn0ZFgJnbSkA==
   dependencies:
     "@trpc/client" "11.0.0-next-beta.264"
     superjson "^1.13.3"
