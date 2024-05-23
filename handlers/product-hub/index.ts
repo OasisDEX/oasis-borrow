@@ -175,7 +175,7 @@ type HandlerResult<T> = {
   name: LendingProtocol
   warnings: any
   data: T
-  processingTime?: number
+  processingTime: number
 }
 
 async function getDataHandlersPromiseList<T>(
@@ -217,8 +217,8 @@ async function getDataHandlersPromiseList<T>(
   )
 
   const fulfilledResults = results
-    .filter((p): p is PromiseFulfilledResult<HandlerResult<T>> => p.status === 'fulfilled')
-    .map((p) => p.value)
+    .filter((p): p is PromiseSettledResult<HandlerResult<T>> => p.status === 'fulfilled')
+    .map((p) => (p as PromiseFulfilledResult<HandlerResult<T>>).value)
 
   return fulfilledResults
 }
