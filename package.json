@@ -114,7 +114,7 @@
     "sass": "^1.49.4",
     "snowflake-sdk": "^1.6.10",
     "summerfi-sdk-client": "^0.2.2",
-    "summerfi-sdk-common": "^0.2.2",
+    "summerfi-sdk-common": "^0.2.3",
     "terser-webpack-plugin": "^5.3.9",
     "text-mask-addons": "^3.7.2",
     "theme-ui": "^0.16.1",
