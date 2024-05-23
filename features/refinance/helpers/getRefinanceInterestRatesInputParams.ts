@@ -1,16 +1,14 @@
 import { getNetworkByName } from 'blockchain/networks'
+import { aaveLikeProtocols } from 'features/aave/constants'
 import type { ProductHubItem } from 'features/productHub/types'
-import type { GetAaveLikeInterestRateInput } from 'features/refinance/graph/getRefinanceTargetInterestRates'
-import { LendingProtocol } from 'lendingProtocols'
+import type { GetAaveLikeInterestRateInput } from 'features/refinance/graph/getRefinanceAaveLikeInterestRates'
 import { uniq } from 'lodash'
-
-const protocols = [LendingProtocol.AaveV3, LendingProtocol.SparkV3]
 
 export const getRefinanceInterestRatesInputParams = (
   table: ProductHubItem[],
 ): GetAaveLikeInterestRateInput =>
   table
-    .filter((item) => protocols.includes(item.protocol))
+    .filter((item) => aaveLikeProtocols.includes(item.protocol))
     .reduce((acc, curr) => {
       const networkConfig = getNetworkByName(curr.network)
       const chainID = networkConfig.id

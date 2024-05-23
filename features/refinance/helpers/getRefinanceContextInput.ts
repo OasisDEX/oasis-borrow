@@ -6,7 +6,8 @@ import type {
   RefinanceContextInput,
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
-import type { ILendingPoolId, IPositionId, PositionType } from 'summerfi-sdk-common'
+import type { MakerPoolId, SparkPoolId } from 'features/refinance/types'
+import type { PositionType } from 'summerfi-sdk-common'
 
 import { getLendingProtocolByProtocolName } from './protocolNameToLendingProtocol'
 
@@ -31,7 +32,6 @@ export const getRefinanceContextInput = ({
   contextId,
   positionId,
   positionType,
-  owner,
   isOwner,
 }: {
   borrowRate: string
@@ -40,7 +40,7 @@ export const getRefinanceContextInput = ({
   collateralPrice: string
   debtPrice: string
   ethPrice: string
-  poolId: ILendingPoolId
+  poolId: MakerPoolId | SparkPoolId
   pairId: number
   network: NetworkNames
   address?: string
@@ -52,12 +52,10 @@ export const getRefinanceContextInput = ({
   maxLtv: string
   automations: RefinanceContextInputAutomations
   contextId: string
-  positionId: IPositionId
-  owner: string | undefined
+  positionId: string | number
   isOwner: boolean
   positionType: PositionType
 }): RefinanceContextInput => {
-  const chainId = networkNameToIdMap[network]
   const lendingProtocol = getLendingProtocolByProtocolName(poolId.protocol.name)
 
   return {
@@ -69,14 +67,14 @@ export const getRefinanceContextInput = ({
       pairId,
     },
     environment: {
-      chainId,
+      chainId: networkNameToIdMap[network],
       slippage,
       address,
       isOwner,
     },
     position: {
       lendingProtocol,
-      positionId,
+      positionId: { id: positionId.toString() },
       collateralAmount: collateral,
       debtAmount: debt,
       liquidationPrice: liquidationPrice,
@@ -89,7 +87,6 @@ export const getRefinanceContextInput = ({
         [secondaryToken]: debtPrice,
         ETH: ethPrice,
       },
-      owner: owner,
     },
     automations: automations,
     contextId,

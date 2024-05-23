@@ -10,8 +10,6 @@ import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metad
 import { settings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
-import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
-import { ModalProvider } from 'helpers/modalHook'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import React from 'react'
@@ -23,23 +21,19 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
     <AppLayout>
       <MorphoWrapper>
         <ProductContextHandler>
-          <RefinanceGeneralContextProvider>
-            <ModalProvider>
-              <OmniProductController<MorphoHistoryEvent, MorphoHistoryEvent[], MorphoBluePosition>
-                {...props}
-                customState={({ children }) =>
-                  children({
-                    useDynamicMetadata: useMorphoMetadata,
-                    useTxHandler: useMorphoTxHandler,
-                  })
-                }
-                protocol={LendingProtocol.MorphoBlue}
-                protocolHook={useMorphoData}
-                seoTags={morphoSeoTags}
-                settings={settings}
-              />
-            </ModalProvider>
-          </RefinanceGeneralContextProvider>
+          <OmniProductController<MorphoHistoryEvent, MorphoHistoryEvent[], MorphoBluePosition>
+            {...props}
+            customState={({ children }) =>
+              children({
+                useDynamicMetadata: useMorphoMetadata,
+                useTxHandler: useMorphoTxHandler,
+              })
+            }
+            protocol={LendingProtocol.MorphoBlue}
+            protocolHook={useMorphoData}
+            seoTags={morphoSeoTags}
+            settings={settings}
+          />
         </ProductContextHandler>
       </MorphoWrapper>
     </AppLayout>
