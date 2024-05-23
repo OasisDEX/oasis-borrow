@@ -77,7 +77,7 @@ export const useMorphoRefinanceContextInputs = ({
       enabled: false,
     },
   }
-triggerData.
+
   const network = getNetworkById(networkId).name
 
   return getRefinanceContextInput({
