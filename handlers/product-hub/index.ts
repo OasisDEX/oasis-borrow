@@ -8,6 +8,7 @@ import { filterTableData, getMissingHandlers, measureTime } from 'handlers/produ
 import type { HandleUpdateProductHubDataProps } from 'handlers/product-hub/types'
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
 import { tokenTickers } from 'helpers/api/tokenTickers'
+import type { LendingProtocol } from 'lendingProtocols'
 import { flatten, uniq } from 'lodash'
 import type { NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
@@ -100,34 +101,10 @@ export async function updateProductHubData(
       return acc
     }, {} as Tickers)
 
-    const dataHandlersPromiseList = await Promise.all(
-      handlersList.map(({ name, call }) => {
-        const startTime = Date.now()
-        return call(parsedTickers)
-          .then(({ table, warnings }) => ({
-            name, // protocol name
-            warnings,
-            data: table,
-            processingTime: measureTime ? Date.now() - startTime : undefined,
-          }))
-          .catch((error) => {
-            const wrappedError: ProtocolError = {
-              protocol: name,
-              message: `Error processing data for protocol "${name}"`,
-              error: error,
-              stack: undefined,
-              cause: undefined,
-            }
-
-            if (error instanceof Error) {
-              wrappedError.cause = error.cause
-              wrappedError.stack = error.stack
-              wrappedError.error = error
-            }
-
-            throw wrappedError
-          })
-      }),
+    const dataHandlersPromiseList = await getDataHandlersPromiseList(
+      handlersList,
+      parsedTickers,
+      measureTime,
     )
 
     const createData = flatten([
@@ -192,4 +169,56 @@ export async function updateProductHubData(
       dryRun: body.dryRun,
     })
   }
+}
+
+type HandlerResult<T> = {
+  name: LendingProtocol
+  warnings: any
+  data: T
+  processingTime?: number
+}
+
+async function getDataHandlersPromiseList<T>(
+  handlersList: {
+    name: LendingProtocol
+    call: (parsedTickers: any) => Promise<{ table: T; warnings: any }>
+  }[],
+  parsedTickers: any,
+  measureTime?: boolean,
+): Promise<HandlerResult<T>[]> {
+  const results = await Promise.allSettled(
+    handlersList.map(({ name, call }) => {
+      const startTime = Date.now()
+      return call(parsedTickers)
+        .then(({ table, warnings }) => ({
+          name,
+          warnings,
+          data: table,
+          processingTime: measureTime ? Date.now() - startTime : undefined,
+        }))
+        .catch((error) => {
+          const wrappedError: ProtocolError = {
+            protocol: name,
+            message: `Error processing data for protocol "${name}"`,
+            error: error,
+            stack: undefined,
+            cause: undefined,
+          }
+
+          if (error instanceof Error) {
+            wrappedError.cause = error.cause
+            wrappedError.stack = error.stack
+            wrappedError.error = error
+          }
+
+          throw wrappedError
+        })
+    }),
+  )
+
+  const fulfilledResults = results
+    .filter((p): p is PromiseFulfilledResult<HandlerResult<T>> => p.status === 'fulfilled')
+    .map((p) => p.value)
+
+  return fulfilledResults
 }
