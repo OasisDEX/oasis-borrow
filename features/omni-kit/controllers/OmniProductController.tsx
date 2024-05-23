@@ -4,7 +4,6 @@ import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
-import { OmniRefinanceContextProvider } from 'features/omni-kit/contexts/OmniRefinanceContext'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
 import {
   getOmniExtraTokenData,
@@ -344,9 +343,7 @@ export const OmniProductController = <Auction, History, Position>({
                               {...omniProductContextProviderCommons}
                               {...omniProductContextProviderData}
                             >
-                              <OmniRefinanceContextProvider>
-                                <OmniLayoutController txHandler={useTxHandler} />
-                              </OmniRefinanceContextProvider>
+                              <OmniLayoutController txHandler={useTxHandler} />
                             </OmniProductContextProvider>
                           )
                         },

@@ -16,7 +16,7 @@ import {
 } from 'features/refinance/helpers'
 import { getRefinanceSidebarButtonsStatus } from 'features/refinance/helpers/getRefinanceSidebarButtonStatus'
 import { positionTypeToOmniProductType } from 'features/refinance/helpers/positionTypeToOmniProductType'
-import { replaceTokenSymbolWETHWithETH } from 'features/refinance/helpers/replaceWETHWithETH'
+import { replaceTokenSymbolWETHWithETH } from 'features/refinance/helpers/replaceTokenSymbolWETHWithETH'
 import { useRefinanceTxHandler } from 'features/refinance/hooks'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
