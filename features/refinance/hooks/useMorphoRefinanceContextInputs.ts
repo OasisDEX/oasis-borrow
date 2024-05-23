@@ -28,7 +28,7 @@ export const useMorphoRefinanceContextInputs = ({
   isOwner,
   pairId,
   owner,
-  // triggerData,
+  triggerData,
 }: {
   address?: string
   networkId: NetworkIds
@@ -56,22 +56,23 @@ export const useMorphoRefinanceContextInputs = ({
   if (!chainFamily) {
     throw new Error(`ChainId ${networkId} is not supported`)
   }
-
   const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
   const positionId = getMakerPositionId(vaultId)
 
+  const morphoTriggerId: `morphoblue-${string}` = `morphoblue-${marketId}`
+
   const automations = {
     stopLoss: {
-      enabled: false,
+      enabled: triggerData.flags[morphoTriggerId].isStopLossEnabled,
     },
     autoSell: {
-      enabled: false,
+      enabled: triggerData.flags[morphoTriggerId].isBasicSellEnabled,
     },
     autoBuy: {
-      enabled: false,
+      enabled: triggerData.flags[morphoTriggerId].isBasicBuyEnabled,
     },
     takeProfit: {
-      enabled: false,
+      enabled: triggerData.flags[morphoTriggerId].isPartialTakeProfitEnabled,
     },
     constantMultiple: {
       enabled: false,

@@ -2,12 +2,7 @@ import type { RefinanceGeneralContextBase } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { replaceTokenSymbolETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
-import {
-  AaveV3LendingPoolId,
-  MorphoLendingPoolId,
-  SparkLendingPoolId,
-  // AaveV3LendingPoolId,
-} from 'summerfi-sdk-client'
+import { AaveV3LendingPoolId, MorphoLendingPoolId, SparkLendingPoolId } from 'summerfi-sdk-client'
 import { type IPoolId, type IProtocol, ProtocolName } from 'summerfi-sdk-common'
 
 export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContextBase): IPoolId => {
@@ -16,6 +11,7 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
     form: {
       state: { strategy },
     },
+    poolData: { poolId },
   } = ctx
   if (!strategy?.primaryToken) {
     throw new Error('Primary token is required')
@@ -57,7 +53,7 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
     case ProtocolName.Morpho:
       return MorphoLendingPoolId.createFrom({
         protocol,
-        marketId: '', // TODO ref: get marketId
+        marketId: (poolId as typeof MorphoLendingPoolId).marketId,
       })
 
     default:
