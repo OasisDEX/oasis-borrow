@@ -97,7 +97,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
         const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, primaryToken)
         const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, secondaryToken)
         const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
-        const positionId = getMakerPositionId(cdp, cdp)
+        const positionId = getMakerPositionId(cdp)
 
         return {
           availableToMigrate: false,

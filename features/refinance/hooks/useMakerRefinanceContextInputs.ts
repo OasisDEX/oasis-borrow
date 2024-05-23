@@ -54,7 +54,7 @@ export const useMakerRefinanceContextInputs = ({
   const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
 
   const poolId = getMakerPoolId(chainFamily.chainInfo, ilkType, collateralToken, debtToken)
-  const positionId = getMakerPositionId(id, id)
+  const positionId = getMakerPositionId(id)
 
   const automations = {
     stopLoss: {

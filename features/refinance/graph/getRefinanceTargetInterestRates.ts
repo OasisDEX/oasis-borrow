@@ -64,6 +64,7 @@ function generateInterestRateQueries(data: Record<LendingProtocol, string[]>): s
   return `{ ${queries.join('')} }`.replaceAll(' ', '')
 }
 
+// TODO: WIP not all cases added
 const getTargetLendingProtocols = (sourceLendingProtocol: LendingProtocol) => {
   switch (sourceLendingProtocol) {
     case LendingProtocol.Maker:

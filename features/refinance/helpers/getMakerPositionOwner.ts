@@ -5,7 +5,7 @@ import { DssCdpManager__factory } from 'types/ethers-contracts'
 
 // in general, it should be provided by sdk as the rest of current position data
 /**
- * gets a dpm address which is a position owner
+ * gets an address of a position owner
  */
 export const getMakerPositionOwner = async ({
   chainId,

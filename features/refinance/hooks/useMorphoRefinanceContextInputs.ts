@@ -58,7 +58,7 @@ export const useMorphoRefinanceContextInputs = ({
   }
 
   const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
-  const positionId = getMakerPositionId(vaultId, vaultId)
+  const positionId = getMakerPositionId(vaultId)
 
   const automations = {
     stopLoss: {
@@ -77,7 +77,7 @@ export const useMorphoRefinanceContextInputs = ({
       enabled: false,
     },
   }
-
+triggerData.
   const network = getNetworkById(networkId).name
 
   return getRefinanceContextInput({

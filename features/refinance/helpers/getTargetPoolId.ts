@@ -3,6 +3,7 @@ import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { replaceTokenSymbolETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import {
+  AaveV3LendingPoolId,
   MorphoLendingPoolId,
   SparkLendingPoolId,
   // AaveV3LendingPoolId,
@@ -41,16 +42,16 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
         collateralToken,
         debtToken,
       })
-    // case ProtocolName.AAVEv3:
-    //   return AaveV3LendingPoolId.createFrom({
-    //     protocol: {
-    //       name: ProtocolName.Spark,
-    //       chainInfo,
-    //     },
-    //     emodeType,
-    //     collateralToken,
-    //     debtToken,
-    //   })
+    case ProtocolName.AAVEv3:
+      return AaveV3LendingPoolId.createFrom({
+        protocol: {
+          name: ProtocolName.AAVEv3,
+          chainInfo,
+        },
+        emodeType: getEmode(collateralToken, debtToken),
+        collateralToken,
+        debtToken,
+      })
     case ProtocolName.AAVEv2:
       throw new Error('AAVEv2 is not supported as a target protocol')
     case ProtocolName.Morpho:
