@@ -51,7 +51,6 @@ const baseConfig = {
           terserOptions: {
             mangle: false,
             compress: {
-              defaults: false,
               dead_code: false,
             },
           },
