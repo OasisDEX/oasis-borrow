@@ -45,8 +45,8 @@ export function useSdkRefinanceTransaction({
     if (
       !strategy ||
       !dpm?.address ||
-      refinanceSimulation == null ||
-      importPositionSimulation == null
+      refinanceSimulation == null
+      // || importPositionSimulation == null // it should be based on condition including protocol
     ) {
       return
     }
