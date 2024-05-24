@@ -61,18 +61,23 @@ export const useMorphoRefinanceContextInputs = ({
 
   const morphoTriggerId: `morphoblue-${string}` = `morphoblue-${marketId}`
 
+  const triggerFlags = triggerData.flags[morphoTriggerId]
+  if (!triggerFlags) {
+    throw new Error(`Trigger flags for Morpho ${morphoTriggerId} are undefined`)
+  }
+
   const automations = {
     stopLoss: {
-      enabled: triggerData.flags[morphoTriggerId].isStopLossEnabled,
+      enabled: triggerFlags.isStopLossEnabled,
     },
     autoSell: {
-      enabled: triggerData.flags[morphoTriggerId].isBasicSellEnabled,
+      enabled: triggerFlags.isBasicSellEnabled,
     },
     autoBuy: {
-      enabled: triggerData.flags[morphoTriggerId].isBasicBuyEnabled,
+      enabled: triggerFlags.isBasicBuyEnabled,
     },
     takeProfit: {
-      enabled: triggerData.flags[morphoTriggerId].isPartialTakeProfitEnabled,
+      enabled: triggerFlags.isPartialTakeProfitEnabled,
     },
     constantMultiple: {
       enabled: false,
