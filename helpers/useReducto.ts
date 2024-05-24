@@ -26,8 +26,7 @@ export function useReducto<S, R extends object>({
     dispatch({ type: 'partial-update', state: { [key]: value } as unknown as Partial<S> })
   }
 
-  console.log('defaults', defaults)
   const [state, dispatch] = useReducer(combinedReducer, defaults)
-  console.log('state', state)
+
   return { dispatch, state, updateState }
 }
