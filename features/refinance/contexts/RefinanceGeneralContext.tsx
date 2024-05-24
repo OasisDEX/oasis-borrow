@@ -6,6 +6,7 @@ import type { OmniValidations } from 'features/omni-kit/types'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers'
 import { useInitializeRefinanceContextBase } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
+import type { DpmFormState } from 'features/refinance/state/refinanceFormReducto.types'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, FC, SetStateAction } from 'react'
@@ -72,12 +73,9 @@ export type RefinanceContextInput = {
     supplyRate: string
     protocolPrices: Record<string, string>
     owner?: string
-    // Current position DPM (Morpho and all other protocols that uses dpm since we can't do transfer of ownership of dpm)
+    // Current position DPM (all dpm protocols) that uses dpm since we can't do transfer of ownership of dpm)
     // it should be used as dpm for refinance
-    dpm?: {
-      id: string
-      address: string
-    }
+    dpm?: DpmFormState
   }
   automations: RefinanceContextInputAutomations
   contextId: string

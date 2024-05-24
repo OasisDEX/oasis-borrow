@@ -6,11 +6,12 @@ import { getAaveLikePoolId } from 'features/refinance/helpers/getAaveLikePoolId'
 import { getAaveLikePositionId } from 'features/refinance/helpers/getAaveLikePositionId'
 import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
+import type { DpmFormState } from 'features/refinance/state/refinanceFormReducto.types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import type { LendingProtocol } from 'lendingProtocols'
 import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
 
-export const useAaveSparkRefinanceContextInputs = ({
+export const useAaveLikeRefinanceContextInputs = ({
   address,
   networkId,
   collateralTokenSymbol,
@@ -26,7 +27,6 @@ export const useAaveSparkRefinanceContextInputs = ({
   liquidationPrice,
   ltv,
   maxLtv,
-  marketId,
   positionType,
   isOwner,
   pairId,
@@ -49,13 +49,13 @@ export const useAaveSparkRefinanceContextInputs = ({
   borrowRate: string
   ltv: string
   maxLtv: string
-  marketId: string
   isOwner: boolean
   positionType: PositionType
   pairId: number
   owner: string
   triggerData: GetTriggersResponse
   lendingProtocol: LendingProtocol
+  dpm?: DpmFormState
 }): RefinanceContextInput => {
   const chainFamily = getChainInfoByChainId(networkId)
   if (!chainFamily) {
@@ -74,11 +74,9 @@ export const useAaveSparkRefinanceContextInputs = ({
   )
   const positionId = getAaveLikePositionId(lendingProtocol, vaultId)
 
-  const morphoTriggerId: `morphoblue-${string}` = `morphoblue-${marketId}`
-
   const triggerFlags = triggerData.flags.aave3
   if (!triggerFlags) {
-    throw new Error(`Trigger flags for Morpho ${morphoTriggerId} are undefined`)
+    throw new Error(`Trigger flags for AaveV3 are undefined`)
   }
 
   const automations = {

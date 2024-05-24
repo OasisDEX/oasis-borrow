@@ -16,6 +16,7 @@ import { useRefinanceFormReducto } from 'features/refinance/state'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useAppConfig } from 'helpers/config'
 import type { TxDetails } from 'helpers/handleTransaction'
+import { LendingProtocol } from 'lendingProtocols'
 import { useState } from 'react'
 import { type AddressValue, TokenAmount } from 'summerfi-sdk-common'
 
@@ -29,20 +30,17 @@ export const useInitializeRefinanceContextBase = ({
   ctx: RefinanceGeneralContextBase | undefined
   reset: (resetData: RefinanceGeneralContextBase) => void
 } => {
-  // filter dynamically based on protocol
-  const steps = [
-    RefinanceSidebarStep.Option,
-    RefinanceSidebarStep.Strategy,
-    // RefinanceSidebarStep.Dpm,
-    // RefinanceSidebarStep.Give,
-    RefinanceSidebarStep.Changes,
-  ]
   const {
     RefinanceSafetySwitch: isSafetySwitchEnabled,
     RefinanceSuppressValidation: isSuppressValidationEnabled,
   } = useAppConfig('features')
+
+  // filter dynamically based on protocol
+
+  const initialStep = RefinanceSidebarStep.Option
+
   const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
-    defaultCtx?.steps.currentStep || steps[0],
+    defaultCtx?.steps.currentStep || initialStep,
   )
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(
     defaultCtx?.steps.isFlowStateReady || false,
@@ -56,21 +54,15 @@ export const useInitializeRefinanceContextBase = ({
   const form = useRefinanceFormReducto({})
 
   const reset = (resetData: RefinanceGeneralContextBase) => {
-    console.log('here')
-    setCurrentStep(resetData?.steps.currentStep || steps[0])
+    setCurrentStep(resetData?.steps.currentStep || initialStep)
     setIsFlowStateReady(resetData?.steps.isFlowStateReady || false)
     setTxDetails(resetData?.tx.txDetails)
     setGasEstimation(resetData?.environment.gasEstimation)
 
     form.updateState('refinanceOption', resetData?.form.state.refinanceOption)
     form.updateState('strategy', resetData?.form.state.strategy)
-    form.updateState(
-      'dpm',
-      contextInput?.position?.dpm || {
-        address: '0x302a28d7968824f386f278a72368856bc4d82ba4',
-        id: '1467',
-      },
-    )
+    // use dpm value from ctx if set to ovveride the form data
+    form.updateState('dpm', contextInput?.position?.dpm || resetData?.form.state.dpm)
   }
 
   if (!contextInput) {
@@ -111,6 +103,19 @@ export const useInitializeRefinanceContextBase = ({
   const ethPrice = protocolPrices['ETH']
 
   const parsedAddress = address as AddressValue
+
+  const steps = [
+    initialStep,
+    RefinanceSidebarStep.Strategy,
+    // RefinanceSidebarStep.Dpm,
+    // RefinanceSidebarStep.Give,
+    RefinanceSidebarStep.Changes,
+  ]
+  // if maker add additional steps dpm & give
+  if (lendingProtocol === LendingProtocol.Maker) {
+    steps.splice(2, 0, RefinanceSidebarStep.Dpm)
+    steps.splice(3, 0, RefinanceSidebarStep.Give)
+  }
 
   const setupStepManager = (): RefinanceSteps => {
     return {

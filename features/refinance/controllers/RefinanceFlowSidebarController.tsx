@@ -28,7 +28,12 @@ export const RefinanceFlowSidebarController = () => {
       const dpm =
         availableProxies.find((item) => item.address.toLowerCase() === owner) || availableProxies[0]
 
-      updateState('dpm', dpm)
+      if (dpm != null) {
+        if (dpm.address == null) {
+          throw new Error('DPM address is not set')
+        }
+        updateState('dpm', dpm)
+      }
 
       // If position owner is dpm that will be used for refinance
       // skip to refinance tx

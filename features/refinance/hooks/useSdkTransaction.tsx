@@ -3,7 +3,7 @@ import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
 import { makeSDK } from 'summerfi-sdk-client'
 import type { ISimulation, Order, SimulationType } from 'summerfi-sdk-common'
-import { Address, AddressType, Wallet } from 'summerfi-sdk-common'
+import { Address, AddressType, PositionsManager, Wallet } from 'summerfi-sdk-common'
 
 export function useSdkRefinanceTransaction({
   refinanceSimulation,
@@ -42,12 +42,7 @@ export function useSdkRefinanceTransaction({
   }, [currentStep])
 
   useEffect(() => {
-    if (
-      !strategy ||
-      !dpm?.address ||
-      refinanceSimulation == null
-      // || importPositionSimulation == null // it should be based on condition including protocol
-    ) {
+    if (!strategy || !dpm?.address || refinanceSimulation == null) {
       return
     }
     const fetchData = async () => {
@@ -62,26 +57,28 @@ export function useSdkRefinanceTransaction({
         walletAddress: wallet.address,
       })
 
-      const [_importPositionOrder, _refinanceOrder] = await Promise.all([
-        user.newOrder({
-          positionsManager: {
-            address: Address.createFromEthereum({
-              value: dpm.address as `0x${string}`,
-            }),
-          },
-          simulation: importPositionSimulation,
+      const _refinanceOrder = await user.newOrder({
+        positionsManager: PositionsManager.createFrom({
+          address: Address.createFromEthereum({
+            value: dpm.address as `0x${string}`,
+          }),
         }),
-        user.newOrder({
-          positionsManager: {
-            address: Address.createFromEthereum({
-              value: dpm.address as `0x${string}`,
-            }),
-          },
-          simulation: refinanceSimulation,
-        }),
-      ])
-      setTxImportPosition(_importPositionOrder)
+        simulation: refinanceSimulation,
+      })
       setTxRefinance(_refinanceOrder)
+
+      // for maker
+      if (importPositionSimulation) {
+        const _importPositionOrder = await user.newOrder({
+          positionsManager: PositionsManager.createFrom({
+            address: Address.createFromEthereum({
+              value: dpm.address as `0x${string}`,
+            }),
+          }),
+          simulation: importPositionSimulation,
+        })
+        setTxImportPosition(_importPositionOrder)
+      }
     }
     void fetchData().catch((err) => {
       setError(err.message)

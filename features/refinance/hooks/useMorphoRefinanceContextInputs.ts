@@ -4,6 +4,7 @@ import type { RefinanceContextInput } from 'features/refinance/contexts/Refinanc
 import { getRefinanceContextInput } from 'features/refinance/helpers'
 import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
 import { getMorphoPositionId } from 'features/refinance/helpers/getMorphoPositionId'
+import type { DpmFormState } from 'features/refinance/state/refinanceFormReducto.types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
 
@@ -51,6 +52,7 @@ export const useMorphoRefinanceContextInputs = ({
   pairId: number
   owner: string
   triggerData: GetTriggersResponse
+  dpm?: DpmFormState
 }): RefinanceContextInput => {
   const chainFamily = getChainInfoByChainId(networkId)
   if (!chainFamily) {
