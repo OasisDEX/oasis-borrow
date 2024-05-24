@@ -2,12 +2,15 @@ import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
-import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
-import { getMorphoPositionId } from 'features/refinance/helpers/getMorphoPositionId'
+import { getAaveLikePoolId } from 'features/refinance/helpers/getAaveLikePoolId'
+import { getAaveLikePositionId } from 'features/refinance/helpers/getAaveLikePositionId'
+import { getEmode } from 'features/refinance/helpers/getEmode'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import type { LendingProtocol } from 'lendingProtocols'
 import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
 
-export const useMorphoRefinanceContextInputs = ({
+export const useAaveSparkRefinanceContextInputs = ({
   address,
   networkId,
   collateralTokenSymbol,
@@ -29,6 +32,7 @@ export const useMorphoRefinanceContextInputs = ({
   pairId,
   owner,
   triggerData,
+  lendingProtocol,
 }: {
   address?: string
   networkId: NetworkIds
@@ -51,17 +55,28 @@ export const useMorphoRefinanceContextInputs = ({
   pairId: number
   owner: string
   triggerData: GetTriggersResponse
+  lendingProtocol: LendingProtocol
 }): RefinanceContextInput => {
   const chainFamily = getChainInfoByChainId(networkId)
   if (!chainFamily) {
     throw new Error(`ChainId ${networkId} is not supported`)
   }
-  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
-  const positionId = getMorphoPositionId(vaultId)
+  const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
+  const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
+  const emodeType = getEmode(collateralToken, debtToken)
+
+  const poolId = getAaveLikePoolId(
+    lendingProtocol,
+    chainFamily.chainInfo,
+    collateralToken,
+    debtToken,
+    emodeType,
+  )
+  const positionId = getAaveLikePositionId(lendingProtocol, vaultId)
 
   const morphoTriggerId: `morphoblue-${string}` = `morphoblue-${marketId}`
 
-  const triggerFlags = triggerData.flags[morphoTriggerId]
+  const triggerFlags = triggerData.flags.aave3
   if (!triggerFlags) {
     throw new Error(`Trigger flags for Morpho ${morphoTriggerId} are undefined`)
   }
