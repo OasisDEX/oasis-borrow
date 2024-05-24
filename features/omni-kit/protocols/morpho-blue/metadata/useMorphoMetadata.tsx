@@ -21,6 +21,7 @@ import {
   morphoFlowStateFilter,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
+import { useMorphoBanner } from 'features/omni-kit/protocols/morpho-blue/hooks/useMorphoBanner'
 import type {
   GetOmniMetadata,
   LendingMetadata,
@@ -86,6 +87,8 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
 
+      const { renderOverviewBanner } = useMorphoBanner()
+
       return {
         notifications,
         validations,
@@ -150,6 +153,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           overviewContent: <MorphoDetailsSectionContentWrapper />,
           overviewFooter: <MorphoDetailsSectionFooter />,
           overviewWithSimulation: isYieldLoopWithData,
+          renderOverviewBanner,
         },
         featureToggles: {
           safetySwitch: morphoSafetySwitchOn,
