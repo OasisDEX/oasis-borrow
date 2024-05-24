@@ -19,14 +19,6 @@ import type { TxDetails } from 'helpers/handleTransaction'
 import { useState } from 'react'
 import { type AddressValue, TokenAmount } from 'summerfi-sdk-common'
 
-const steps = [
-  RefinanceSidebarStep.Option,
-  RefinanceSidebarStep.Strategy,
-  RefinanceSidebarStep.Dpm,
-  RefinanceSidebarStep.Give,
-  RefinanceSidebarStep.Changes,
-]
-
 export const useInitializeRefinanceContextBase = ({
   contextInput,
   defaultCtx,
@@ -37,6 +29,14 @@ export const useInitializeRefinanceContextBase = ({
   ctx: RefinanceGeneralContextBase | undefined
   reset: (resetData: RefinanceGeneralContextBase) => void
 } => {
+  // filter dynamically based on protocol
+  const steps = [
+    RefinanceSidebarStep.Option,
+    RefinanceSidebarStep.Strategy,
+    // RefinanceSidebarStep.Dpm,
+    // RefinanceSidebarStep.Give,
+    RefinanceSidebarStep.Changes,
+  ]
   const {
     RefinanceSafetySwitch: isSafetySwitchEnabled,
     RefinanceSuppressValidation: isSuppressValidationEnabled,
@@ -56,6 +56,7 @@ export const useInitializeRefinanceContextBase = ({
   const form = useRefinanceFormReducto({})
 
   const reset = (resetData: RefinanceGeneralContextBase) => {
+    console.log('here')
     setCurrentStep(resetData?.steps.currentStep || steps[0])
     setIsFlowStateReady(resetData?.steps.isFlowStateReady || false)
     setTxDetails(resetData?.tx.txDetails)
@@ -63,7 +64,13 @@ export const useInitializeRefinanceContextBase = ({
 
     form.updateState('refinanceOption', resetData?.form.state.refinanceOption)
     form.updateState('strategy', resetData?.form.state.strategy)
-    form.updateState('dpm', resetData?.form.state.dpm)
+    form.updateState(
+      'dpm',
+      contextInput?.position?.dpm || {
+        address: '0x302a28d7968824f386f278a72368856bc4d82ba4',
+        id: '1467',
+      },
+    )
   }
 
   if (!contextInput) {

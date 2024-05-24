@@ -72,6 +72,12 @@ export type RefinanceContextInput = {
     supplyRate: string
     protocolPrices: Record<string, string>
     owner?: string
+    // Current position DPM (Morpho and all other protocols that uses dpm since we can't do transfer of ownership of dpm)
+    // it should be used as dpm for refinance
+    dpm?: {
+      id: string
+      address: string
+    }
   }
   automations: RefinanceContextInputAutomations
   contextId: string
