@@ -25,7 +25,7 @@ import type {
   TriggerEvent,
 } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
-import type { GetAaveLikeInterestRatesResponse } from 'features/refinance/graph/getRefinanceTargetInterestRates'
+import type { GetAaveLikeInterestRatesResponse } from 'features/refinance/graph/getRefinanceAaveLikeInterestRates'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { Erc4626DpmPositionsResponse } from 'handlers/portfolio/positions/handlers/erc-4626/types'
 import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'

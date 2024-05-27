@@ -64,51 +64,25 @@ function generateInterestRateQueries(data: Record<LendingProtocol, string[]>): s
   return `{ ${queries.join('')} }`.replaceAll(' ', '')
 }
 
-// TODO: WIP not all cases added
-const getTargetLendingProtocols = (sourceLendingProtocol: LendingProtocol) => {
-  switch (sourceLendingProtocol) {
-    case LendingProtocol.Maker:
-      return [LendingProtocol.SparkV3]
-    case LendingProtocol.AaveV3:
-      return [LendingProtocol.SparkV3]
-    case LendingProtocol.SparkV3:
-      return [LendingProtocol.AaveV3]
-    case LendingProtocol.MorphoBlue:
-      return [LendingProtocol.SparkV3]
-    default:
-      throw new Error(`Unsupported refinance source protocol ${sourceLendingProtocol}`)
-  }
-}
-
-export const getRefinanceTargetInterestRates = async (
+export const getRefinanceAaveLikeInterestRates = async (
   input: GetAaveLikeInterestRateInput,
-  sourceLendingProtocol: LendingProtocol,
 ): Promise<RefinanceInterestRatesMetadata> => {
-  // based on the source protocol we should get available target protocols
-  const targetLendingProtocols = getTargetLendingProtocols(sourceLendingProtocol)
-  const targetNetwork = NetworkIds.MAINNET
-
+  // TODO for now even though we have input for all network and aave-like protocols
+  // we limit query only for spark, because query for mainnet for all protocols
+  // is to big and will require either changes on cloudfront level on different handling on UI
   const resolvedInput = {
-    [targetNetwork]: targetLendingProtocols.reduce((acc, targetLendingProtocol) => {
-      // we don't need to fetch rates for Morpho, they are already available
-      if (targetLendingProtocol === LendingProtocol.MorphoBlue) {
-        return acc
-      }
-      return {
-        ...acc,
-        [targetLendingProtocol]: input[targetNetwork][targetLendingProtocol],
-      }
-    }, {}),
+    [NetworkIds.MAINNET]: { [LendingProtocol.SparkV3]: input[NetworkIds.MAINNET].sparkv3 },
   } as GetAaveLikeInterestRateInput
 
-  const requests = objectEntries(resolvedInput).map(async ([networkId, data]) => ({
-    [networkId]: (await loadSubgraph({
-      subgraph: 'Aave',
-      networkId,
-      rawQuery: generateInterestRateQueries(data),
-    })) as SubgraphsResponses['Aave']['getAaveLikeInterestRates'],
-  }))
-  const response = await Promise.all(requests)
+  const response = await Promise.all(
+    objectEntries(resolvedInput).map(async ([networkId, data]) => ({
+      [networkId]: (await loadSubgraph({
+        subgraph: 'Aave',
+        networkId,
+        rawQuery: generateInterestRateQueries(data),
+      })) as SubgraphsResponses['Aave']['getAaveLikeInterestRates'],
+    })),
+  )
 
   const reduced = response.reduce((acc, curr) => ({ ...acc, ...curr }))
 

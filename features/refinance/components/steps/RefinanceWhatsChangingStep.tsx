@@ -7,7 +7,7 @@ import { RefinanceReviewChangesSection } from 'features/refinance/components/ste
 import { RefinanceRouteSection } from 'features/refinance/components/steps/RefinanceRouteSection'
 import { RefinanceSwapSection } from 'features/refinance/components/steps/RefinanceSwapSection'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import { replaceTokenSymbolWETHWithETH } from 'features/refinance/helpers/replaceWETHWithETH'
+import { replaceTokenSymbolWETHWithETH } from 'features/refinance/helpers/replaceTokenSymbolWETHWithETH'
 import { formatFiatBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'

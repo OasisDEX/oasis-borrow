@@ -34,7 +34,7 @@ export const RefinanceSwapSection = () => {
     const toToken = swap.toTokenAmount.token.symbol
     const toTokenAmount = new BigNumber(swap.toTokenAmount.amount)
 
-    const priceImpact = new BigNumber(swap.priceImpact.value).div(100)
+    const priceImpact = new BigNumber(swap.priceImpact.value)
     const slippage = new BigNumber(swap.slippage.value)
     const feePrice = new BigNumber(isCollateral ? collateralPrice : debtPrice)
     const fee = new BigNumber(swap.summerFee.amount).times(feePrice)

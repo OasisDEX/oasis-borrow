@@ -405,7 +405,6 @@ interface CommonMetadataValues {
 interface CommonMetadataElements {
   faq: ReactNode
   overviewBanner?: ReactNode
-  renderOverviewBanner?: () => ReactNode
   positionBanner?: ReactNode
   overviewContent: ReactNode
   overviewFooter: ReactNode

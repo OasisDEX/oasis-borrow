@@ -8,6 +8,6 @@ export function getLendingProtocolByProtocolName(name: ProtocolName) {
     [ProtocolName.AAVEv2]: LendingProtocol.AaveV2,
     [ProtocolName.AAVEv3]: LendingProtocol.AaveV3,
     [ProtocolName.Ajna]: LendingProtocol.Ajna,
-    [ProtocolName.Morpho]: LendingProtocol.MorphoBlue,
+    [ProtocolName.MorphoBlue]: LendingProtocol.MorphoBlue,
   }[name]
 }

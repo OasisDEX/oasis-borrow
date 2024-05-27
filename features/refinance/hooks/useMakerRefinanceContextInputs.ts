@@ -3,16 +3,19 @@ import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getRefinanceContextInput } from 'features/refinance/helpers'
-import { getMakerPoolId } from 'features/refinance/helpers/getMakerPoolId'
-import { getMakerPositionId } from 'features/refinance/helpers/getMakerPositionId'
-import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
-import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
+import type { MakerPoolId } from 'features/refinance/types'
+import {
+  getChainInfoByChainId,
+  PositionId,
+  type PositionType,
+  ProtocolName,
+} from 'summerfi-sdk-common'
 
 export const useMakerRefinanceContextInputs = ({
   address,
   chainId,
   collateralAmount,
-  collateralTokenSymbol,
+  collateralToken,
   debtAmount,
   id,
   slippage,
@@ -29,7 +32,7 @@ export const useMakerRefinanceContextInputs = ({
   address?: string
   chainId: NetworkIds
   collateralAmount: string
-  collateralTokenSymbol: string
+  collateralToken: string
   debtAmount: string
   id: string
   slippage: number
@@ -45,16 +48,23 @@ export const useMakerRefinanceContextInputs = ({
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 
-  const chainFamily = getChainInfoByChainId(chainId)
-  if (!chainFamily) {
+  const chainInfo = getChainInfoByChainId(chainId)
+
+  if (!chainInfo) {
     throw new Error(`ChainId ${chainId} is not supported`)
   }
-  const debtTokenSymbol = 'DAI'
-  const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
-  const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
+  const positionId: PositionId = PositionId.createFrom({ id })
 
-  const poolId = getMakerPoolId(chainFamily.chainInfo, ilkType, collateralToken, debtToken)
-  const positionId = getMakerPositionId(id)
+  const poolId: MakerPoolId = {
+    protocol: {
+      name: ProtocolName.Maker,
+      chainInfo,
+    },
+    vaultId: positionId.id,
+    ilkType: ilkType,
+  }
+  const collateralTokenSymbol = collateralToken
+  const debtTokenSymbol = 'DAI'
 
   const automations = {
     stopLoss: {
@@ -90,7 +100,7 @@ export const useMakerRefinanceContextInputs = ({
     slippage,
     collateral: collateralAmount,
     debt: debtAmount,
-    positionId,
+    positionId: id,
     liquidationPrice,
     ltv,
     maxLtv,
@@ -98,6 +108,5 @@ export const useMakerRefinanceContextInputs = ({
     contextId: id,
     positionType: type,
     isOwner,
-    owner: undefined,
   })
 }
