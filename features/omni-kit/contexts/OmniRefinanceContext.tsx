@@ -65,36 +65,36 @@ export function OmniRefinanceContextProvider({
     liquidationPrice &&
     collateralAmount &&
     debtAmount
-  const morphoRefinanceInput = !refinanceHasAllData
-    ? undefined
-    : useMorphoRefinanceContextInputs({
-        address: walletAddress,
-        networkId,
-        collateralTokenSymbol: collateralToken,
-        debtTokenSymbol: quoteToken,
-        collateralAmount: collateralAmount.toString(),
-        debtAmount: debtAmount.toString(),
-        vaultId: positionId,
-        slippage: slippage.toNumber(),
-        collateralPrice: collateralPrice.toString(),
-        debtPrice: quotePrice.toString(),
-        ethPrice: ethPrice.toString(),
-        borrowRate: borrowRate.toString(),
-        liquidationPrice: liquidationPrice.toString(),
-        ltv: ltv.toString(),
-        maxLtv: maxLtv.toString(),
-        marketId: poolId,
-        positionType: omniProductTypeToSDKType(productType),
-        isOwner,
-        pairId,
-        triggerData: positionTriggers,
-        owner: position.owner,
-      })
 
   let refinanceInput: RefinanceContextInput | undefined
   // TODO: Add support for other protocols
   switch (protocol) {
     case LendingProtocol.MorphoBlue:
+      const morphoRefinanceInput = !refinanceHasAllData
+        ? undefined
+        : useMorphoRefinanceContextInputs({
+            address: walletAddress,
+            networkId,
+            collateralTokenSymbol: collateralToken,
+            debtTokenSymbol: quoteToken,
+            collateralAmount: collateralAmount.toString(),
+            debtAmount: debtAmount.toString(),
+            vaultId: positionId,
+            slippage: slippage.toNumber(),
+            collateralPrice: collateralPrice.toString(),
+            debtPrice: quotePrice.toString(),
+            ethPrice: ethPrice.toString(),
+            borrowRate: borrowRate.toString(),
+            liquidationPrice: liquidationPrice.toString(),
+            ltv: ltv.toString(),
+            maxLtv: maxLtv.toString(),
+            marketId: poolId,
+            positionType: omniProductTypeToSDKType(productType),
+            isOwner,
+            pairId,
+            triggerData: positionTriggers,
+            owner: position.owner,
+          })
       refinanceInput = morphoRefinanceInput
       break
   }
