@@ -1,5 +1,5 @@
-import { EmodeType } from 'summerfi-sdk-client'
-import type { IToken } from 'summerfi-sdk-common'
+import { EmodeType } from 'features/refinance/types'
+import type { TokenAmount } from 'summerfi-sdk-common'
 
 const stablecoinTokens = [
   'ADAI',
@@ -51,19 +51,13 @@ const ethCorrelated = [
   'WSTETH',
 ]
 
-export function getEmode(collateralToken: IToken, debtToken: IToken) {
-  const collateralTokenSymbol = collateralToken.symbol
-  const debtTokenSymbol = debtToken.symbol
+export function getEmode(collateralTokenData: TokenAmount, debtTokenData: TokenAmount) {
+  const collateralToken = collateralTokenData.token.symbol
+  const debtToken = debtTokenData.token.symbol
 
-  if (
-    stablecoinTokens.includes(collateralTokenSymbol) &&
-    stablecoinTokens.includes(debtTokenSymbol)
-  ) {
+  if (stablecoinTokens.includes(collateralToken) && stablecoinTokens.includes(debtToken)) {
     return EmodeType.Stablecoins
-  } else if (
-    ethCorrelated.includes(collateralTokenSymbol) &&
-    ethCorrelated.includes(debtTokenSymbol)
-  ) {
+  } else if (ethCorrelated.includes(collateralToken) && ethCorrelated.includes(debtToken)) {
     return EmodeType.ETHCorrelated
   }
 

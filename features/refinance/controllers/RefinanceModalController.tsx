@@ -12,9 +12,9 @@ import type { RefinanceContextInput } from 'features/refinance/contexts/Refinanc
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { RefinanceFormController } from 'features/refinance/controllers/index'
 import {
-  getMakerPositionOwner,
+  getRefinanceAaveLikeInterestRates,
   getRefinanceInterestRatesInputParams,
-  getRefinanceTargetInterestRates,
+  getRefinancePositionOwner,
 } from 'features/refinance/helpers'
 import { getNetAPY } from 'features/refinance/helpers/getBorrowRate'
 import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
@@ -55,33 +55,28 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
 
   const positionOwner = useMemo(
     () =>
-      cache.positionOwner !== undefined
-        ? of(cache.positionOwner)
-        : contextInput.position.owner !== undefined
-          ? of(contextInput.position.owner)
-          : from(
-              getMakerPositionOwner({
-                positionId: contextInput.position.positionId.id,
-                chainId: contextInput.environment.chainId,
-              }),
-            ),
+      !cache.positionOwner
+        ? from(
+            getRefinancePositionOwner({
+              protocol: contextInput.position.lendingProtocol,
+              positionId: contextInput.position.positionId.id,
+              chainId: contextInput.environment.chainId,
+            }),
+          )
+        : of(cache.positionOwner),
     [
       cache.positionOwner,
       contextInput.environment.chainId,
-      contextInput.position.owner,
+      contextInput.position.lendingProtocol,
       contextInput.position.positionId.id,
     ],
   )
 
+  // If needed we should extend it with other network & protocols and map to the same interface
   const interestRates = useMemo(
     () =>
       !cache.interestRates
-        ? from(
-            getRefinanceTargetInterestRates(
-              interestRatesInput,
-              contextInput.position.lendingProtocol,
-            ),
-          )
+        ? from(getRefinanceAaveLikeInterestRates(interestRatesInput))
         : of(cache.interestRates),
     [cache.interestRates],
   )
