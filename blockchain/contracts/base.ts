@@ -206,6 +206,7 @@ export const baseContracts: MainnetContractsWithOptional = {
       ajnaPool,
       base.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
+    'SUSDCY-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SUSDCYUSDC),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, base.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),
