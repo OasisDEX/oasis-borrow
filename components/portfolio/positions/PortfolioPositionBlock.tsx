@@ -101,7 +101,9 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
     >
       {position.availableToRefinance &&
         isRefinanceEnabled &&
-        position.netValue >= emptyPortfolioPositionNetValueThreshold && (
+        position.netValue >= emptyPortfolioPositionNetValueThreshold &&
+        // Position handler only supports Maker for now, we need to add support in other protocol handlers
+        position.protocol === LendingProtocol.Maker && (
           <RefinancePortfolioBanner position={position} />
         )}
       <AppLink href={position.url}>

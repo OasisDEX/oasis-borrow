@@ -59,7 +59,7 @@ export function GeneralManageLayout({
     address: account,
     chainId,
     collateralAmount: vault.lockedCollateral.toString(),
-    collateralToken: vault.token,
+    collateralTokenSymbol: vault.token,
     debtAmount: vault.debt.toString(),
     id: vault.id.toString(),
     slippage: generalManageVault.state.slippage.toNumber(),
