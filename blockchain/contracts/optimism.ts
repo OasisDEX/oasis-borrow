@@ -239,6 +239,7 @@ export const optimismContracts: OptimismContracts = {
       ajnaPool,
       optimism.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
+    'SUSDCY-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SUSDCYUSDC),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, optimism.ajna.AjnaRewardsReedemer),

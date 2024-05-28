@@ -1,30 +1,27 @@
 import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
-import { getEmode } from 'features/refinance/helpers/getEmode'
-import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
-import { replaceETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
-import { RefinanceSidebarStep, type SparkPoolId } from 'features/refinance/types'
+import { getPosition } from 'features/refinance/helpers/getPosition'
+import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
+import { getTargetPoolId } from 'features/refinance/helpers/getTargetPoolId'
+import {
+  replacePoolIdETHWithWETH,
+  replaceTokenAmountETHWithWETH,
+} from 'features/refinance/helpers/replaceETHwithWETH'
+import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
-import type { Chain, Protocol, User } from 'summerfi-sdk-client'
+import type { Chain, ProtocolClient, User } from 'summerfi-sdk-client'
 import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
 import type {
   IImportPositionParameters,
+  ILendingPoolInfo,
   IPosition,
   IRefinanceParameters,
   ISimulation,
+  Maybe,
   SimulationType,
 } from 'summerfi-sdk-common'
-import {
-  Address,
-  AddressType,
-  ExternalPositionType,
-  Percentage,
-  Position,
-  ProtocolName,
-  TokenAmount,
-  Wallet,
-} from 'summerfi-sdk-common'
+import { Address, ExternalPositionType, Percentage, ProtocolName } from 'summerfi-sdk-common'
 
 export type SDKSimulation = {
   error: string | null
@@ -77,7 +74,7 @@ export function useSdkSimulation(): SDKSimulation {
     }
     const {
       environment: { slippage, chainInfo, address },
-      position: { positionId, collateralTokenData, debtTokenData, positionType },
+      position: { positionId, collateralTokenData, debtTokenData, positionType, lendingProtocol },
       poolData: { poolId },
       form: {
         state: { strategy },
@@ -94,6 +91,9 @@ export function useSdkSimulation(): SDKSimulation {
       throw new Error('Unsupported position type.')
     }
 
+    const sourceProtocolName = getProtocolNameByLendingProtocol(lendingProtocol)
+    const targetProtocolName = getProtocolNameByLendingProtocol(strategy.protocol)
+
     const _debtPrice = getTokenPrice(
       debtTokenData.token.symbol,
       tokenPriceStore.prices,
@@ -107,127 +107,96 @@ export function useSdkSimulation(): SDKSimulation {
     ).toString()
     setCollateralPrice(_collateralPrice)
 
-    const emodeType = getEmode(collateralTokenData, debtTokenData)
     const fetchData = async () => {
-      const targetPoolId: SparkPoolId = {
-        protocol: {
-          name: ProtocolName.Spark,
-          chainInfo,
-        },
-        emodeType,
-      }
-
       if (address === undefined) {
         throw new Error('Wallet is not connected')
       }
-      const wallet = Wallet.createFrom({
-        address: Address.createFrom({ value: address, type: AddressType.Ethereum }),
+      const walletAddress = Address.createFromEthereum({
+        value: address,
       })
+
+      const _user = await sdk.users.getUser({
+        chainInfo,
+        walletAddress,
+      })
+      setUser(_user)
 
       const _chain: Chain | undefined = await sdk.chains.getChain({ chainInfo })
       if (!_chain) {
         throw new Error(`ChainId ${chainInfo.chainId} is not found`)
       }
       setChain(_chain)
-
-      const _user = await sdk.users.getUser({
-        chainInfo,
-        walletAddress: wallet.address,
+      const sourceProtocol: Maybe<ProtocolClient> = await _chain.protocols.getProtocol({
+        name: sourceProtocolName,
       })
-      setUser(_user)
-
-      const makerProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
-        name: ProtocolName.Maker,
-      })
-      if (!makerProtocol) {
-        throw new Error(`Protocol ${ProtocolName.Maker} is not found`)
-      }
-      const sparkProtocol: Protocol | undefined = await _chain.protocols.getProtocol({
-        name: ProtocolName.Spark,
-      })
-      if (!sparkProtocol) {
-        throw new Error(`Protocol ${ProtocolName.Spark} is not supported`)
+      if (!sourceProtocol) {
+        throw new Error(`Protocol ${sourceProtocolName} is not found`)
       }
 
-      const [sourcePool, targetPool] = await Promise.all([
-        makerProtocol.getPool({ poolId }),
-        sparkProtocol.getPool({ poolId: targetPoolId }),
+      const sourcePoolId = replacePoolIdETHWithWETH(poolId)
+
+      const targetProtocol: Maybe<ProtocolClient> = await _chain.protocols.getProtocol({
+        name: targetProtocolName,
+      })
+      if (!targetProtocol) {
+        throw new Error(`Protocol ${targetProtocolName} is not found`)
+      }
+      const targetPoolId = getTargetPoolId(targetProtocol, ctx)
+      const [sourcePool, targetPool, targetPoolInfo] = await Promise.all([
+        sourceProtocol.getLendingPool({ poolId: sourcePoolId }),
+        targetProtocol.getLendingPool({ poolId: targetPoolId }),
+        targetProtocol.getLendingPoolInfo({ poolId: targetPoolId }),
       ])
 
-      const _sourcePosition = Position.createFrom({
-        positionId,
+      const _sourcePosition = getPosition(sourceProtocolName, {
+        id: positionId,
         pool: sourcePool,
-        collateralAmount: replaceETHWithWETH(collateralTokenData),
-        debtAmount: replaceETHWithWETH(debtTokenData),
+        collateralAmount: replaceTokenAmountETHWithWETH(collateralTokenData),
+        debtAmount: replaceTokenAmountETHWithWETH(debtTokenData),
         type: positionType,
       })
       setSourcePosition(_sourcePosition)
 
-      const _targetPosition = Position.createFrom({
-        positionId: { id: 'newEmptyPositionFromPool' },
-        pool: targetPool,
-        collateralAmount: replaceETHWithWETH(
-          TokenAmount.createFrom({
-            amount: '0',
-            token: mapTokenToSdkToken(chainInfo, strategy.primaryToken),
-          }),
-        ),
-        debtAmount: replaceETHWithWETH(
-          TokenAmount.createFrom({
-            amount: '0',
-            token: mapTokenToSdkToken(chainInfo, strategy.secondaryToken),
-          }),
-        ),
-        type: positionType,
-      })
-
-      const importPositionParameters: IImportPositionParameters = {
-        externalPosition: {
-          position: _sourcePosition,
-          externalId: {
-            address: Address.createFromEthereum({
-              value: owner as `0x${string}`,
-            }),
-            type: ExternalPositionType.DS_PROXY,
-          },
-        },
-      }
-      const refinanceParameters: IRefinanceParameters = {
-        sourcePosition: _sourcePosition,
-        targetPosition: _targetPosition,
-        slippage: Percentage.createFrom({ value: slippage * 100 }),
-      }
-
-      const [_importPositionSimulation, _refinanceSimulation] = await Promise.all([
-        sdk.simulator.importing.simulateImportPosition(importPositionParameters),
-        sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters),
-      ])
-      setImportPositionSimulation(_importPositionSimulation)
-      setRefinanceSimulation(_refinanceSimulation)
-
-      // TECH DEBT: This is a temporary fix to get the liquidation threshold from SDK as there is no other way currently
-      const _simulatedPosition = _refinanceSimulation?.targetPosition
-      if (_simulatedPosition == null) {
-        return
-      }
-      let _liquidationThreshold: Percentage | null = null
-      try {
-        _liquidationThreshold = _simulatedPosition.pool.collaterals.get({
-          token: _simulatedPosition.collateralAmount.token,
-        })?.maxLtv?.ratio
-      } catch (e) {
-        console.error('Error getting liquidation threshold', e)
-      }
+      const _liquidationThreshold = (
+        targetPoolInfo as ILendingPoolInfo
+      ).collateral.liquidationThreshold.toLTV()
       if (_liquidationThreshold == null) {
         return
       }
-      // TECH DEBT END
       setLiquidationThreshold(_liquidationThreshold)
+
+      const refinanceParameters: IRefinanceParameters = {
+        sourcePosition: _sourcePosition,
+        targetPool: targetPool,
+        slippage: Percentage.createFrom({ value: slippage * 100 }),
+      }
+
+      const _refinanceSimulation =
+        await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
+      setRefinanceSimulation(_refinanceSimulation)
+
+      const isMaker = poolId.protocol.name === ProtocolName.Maker
+      if (isMaker) {
+        const importPositionParameters: IImportPositionParameters = {
+          externalPosition: {
+            position: _sourcePosition,
+            externalId: {
+              address: Address.createFromEthereum({
+                value: owner as `0x${string}`,
+              }),
+              type: ExternalPositionType.DS_PROXY,
+            },
+          },
+        }
+        const _importPositionSimulation =
+          await sdk.simulator.importing.simulateImportPosition(importPositionParameters)
+        setImportPositionSimulation(_importPositionSimulation)
+      }
 
       const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
         liquidationThreshold: _liquidationThreshold,
         debtPriceInUsd: _debtPrice,
-        position: _simulatedPosition,
+        position: _refinanceSimulation?.targetPosition,
       })
       setLiquidationPrice(afterLiquidationPriceInUsd)
     }
