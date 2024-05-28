@@ -60,9 +60,6 @@ export const AaveLikeCostToBorrowContentCardModal = ({
             rate: formatDecimalAsPercent(collateralLiquidityRate),
           })}
         </Text>
-        <Text as="span" variant="paragraph3" sx={{ mb: 1 }}>
-          {t('aave-position-modal.net-borrow-cost.supply-apy-note')}
-        </Text>
       </Text>
       <Heading variant="header4">
         {t('aave-position-modal.net-borrow-cost.second-header', {

@@ -1,9 +1,9 @@
 import type { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
-  const baseUrl = process.env.FUNCTIONS_API_URL
+  const baseUrl = process.env.SDK_API_URL
   if (!baseUrl) {
-    return res.status(500).json({ error: 'FUNCTIONS_API_URL is not set' })
+    return res.status(500).json({ error: 'SDK_API_URL is not set' })
   }
 
   const url = baseUrl + req.url

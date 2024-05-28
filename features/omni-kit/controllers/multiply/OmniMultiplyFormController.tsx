@@ -32,6 +32,11 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
     dynamicMetadata: {
       elements: { riskSidebar },
     },
+    position: {
+      currentPosition: {
+        position: { debtAmount },
+      },
+    },
   } = useOmniProductContext(OmniProductType.Multiply)
 
   return (
@@ -92,18 +97,22 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
                 updateState('action', OmniMultiplyFormAction.SwitchMultiply)
               },
             },
-            {
-              label: t('system.actions.common.close-position'),
-              icon: circle_close,
-              iconShrink: 2,
-              panel: OmniMultiplyPanel.Close,
-              action: () => {
-                dispatch({ type: 'reset' })
-                updateState('uiDropdown', OmniMultiplyPanel.Close)
-                updateState('closeTo', 'collateral')
-                updateState('action', OmniMultiplyFormAction.CloseMultiply)
-              },
-            },
+            ...(!debtAmount.isZero()
+              ? [
+                  {
+                    label: t('system.actions.common.close-position'),
+                    icon: circle_close,
+                    iconShrink: 2,
+                    panel: OmniMultiplyPanel.Close,
+                    action: () => {
+                      dispatch({ type: 'reset' })
+                      updateState('uiDropdown', OmniMultiplyPanel.Close)
+                      updateState('closeTo', 'collateral')
+                      updateState('action', OmniMultiplyFormAction.CloseMultiply)
+                    },
+                  },
+                ]
+              : []),
           ],
         },
       })}
