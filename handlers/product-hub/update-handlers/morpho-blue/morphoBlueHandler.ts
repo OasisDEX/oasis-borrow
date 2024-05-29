@@ -118,9 +118,15 @@ async function getMorphoMarketData(
           .div(lambdaPercentageDenomination)
           .toString()
 
+        if (weeklyNetApy && new BigNumber(weeklyNetApy).eq(0)) {
+          throw new Error('Should not process update with APY of zero')
+        }
+
         const isShort = isShortPosition({ collateralToken })
         const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
-        const earnStrategyDescription = `${collateralToken}/${quoteToken} ${formatDecimalAsPercent(maxLtv)} LTV Loop`
+        const earnStrategyDescription = `${collateralToken}/${quoteToken} ${formatDecimalAsPercent(
+          maxLtv,
+        )} LTV Loop`
         const multiplyStrategyType = isShort ? 'short' : 'long'
         const maxMultiply = BigNumber.max(
           one.plus(one.div(one.div(maxLtv).minus(one))),
