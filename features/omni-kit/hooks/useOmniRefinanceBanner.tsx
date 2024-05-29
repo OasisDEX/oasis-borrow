@@ -1,4 +1,4 @@
-import { OmniRefinanceBanner } from 'features/omni-kit/components'
+import { OmniRefinanceBanner } from 'features/omni-kit/components/OmniRefinanceBanner'
 import React from 'react'
 
 export const useOmniRefinanceBanner = () => {

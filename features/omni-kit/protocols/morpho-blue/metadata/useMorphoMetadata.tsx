@@ -12,7 +12,7 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import { useOmniRefinanceBanner } from 'features/omni-kit/hooks'
+import { useOmniRefinanceBanner } from 'features/omni-kit/hooks/useOmniRefinanceBanner'
 import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { MorphoDetailsSectionContentWrapper } from 'features/omni-kit/protocols/morpho-blue/components/details-sections/MorphoDetailsSectionContentWrapper'
