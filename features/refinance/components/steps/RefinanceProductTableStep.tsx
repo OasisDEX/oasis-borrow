@@ -83,11 +83,6 @@ export const RefinanceProductTableStep = () => {
   const currentLTV = ltv.loanToValue.toString()
   const network = getNetworkById(chainInfo.chainId)
 
-  const optionalProps =
-    lendingProtocol === LendingProtocol.Maker
-      ? { hiddenProtocolFilter: true } // hiding protocol filter as maker can only refinance to spark
-      : { customFiltersOptions }
-
   return (
     <ProductHubView
       product={product}
@@ -124,7 +119,7 @@ export const RefinanceProductTableStep = () => {
       onRowClick={onRowClick}
       wrapperSx={{ mt: 0 }}
       separator={(table) => getRefinanceProductHubSeparator({ table, collateralToken, debtToken })}
-      {...optionalProps}
+      customFiltersOptions={customFiltersOptions}
     />
   )
 }
