@@ -88,6 +88,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
         ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
 
+      // aave v2 is not allowed for refinance
       const refinanceBanner =
         [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol) && !isOpening
           ? useOmniRefinanceBanner()
