@@ -15,6 +15,7 @@ jobs:
       SERVICE_NAME: summer-fi-prod
       CLUSTER_NAME: summer-fi-prod
       CONFIG_URL: ${{ secrets.CONFIG_URL }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
       - name: Checkout
