@@ -9,7 +9,6 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import { useOmniRefinanceBanner } from 'features/omni-kit/hooks'
 import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import {
   AaveLikeDetailsSectionContent,
@@ -29,6 +28,7 @@ import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
+import { useOmniRefinanceBanner } from 'features/omni-kit/hooks/useOmniRefinanceBanner'
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
   const {
