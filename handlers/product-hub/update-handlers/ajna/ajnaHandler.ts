@@ -214,6 +214,10 @@ async function getAjnaPoolData(
                 .toString()
             : lendApr.toString()
 
+          if (weeklyNetApy && new BigNumber(weeklyNetApy).eq(0)) {
+            throw new Error('Should not process update with APY of zero')
+          }
+
           const lpApy = lendApr.toString()
 
           const primaryTokenGroup = getTokenGroup(collateralToken)
