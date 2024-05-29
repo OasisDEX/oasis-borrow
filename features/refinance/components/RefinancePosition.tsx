@@ -1,18 +1,26 @@
 import BigNumber from 'bignumber.js'
-import { NetworkNames } from 'blockchain/networks'
+import { getNetworkById } from 'blockchain/networks'
 import { RefinancePositionView } from 'features/refinance/components/RefinancePositionView'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinancePositionViewType, RefinanceSidebarStep } from 'features/refinance/types'
-import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 
 export const RefinancePosition = () => {
   const {
-    position: { positionId, liquidationPrice, debtTokenData, collateralTokenData, ltv, netApy },
+    position: {
+      positionId,
+      liquidationPrice,
+      debtTokenData,
+      collateralTokenData,
+      ltv,
+      borrowRate,
+      lendingProtocol,
+    },
     poolData: { maxLtv },
     tx: { isTxSuccess },
     steps: { currentStep },
     automations,
+    environment: { chainInfo },
   } = useRefinanceContext()
 
   if (isTxSuccess && currentStep === RefinanceSidebarStep.Changes) {
@@ -26,6 +34,8 @@ export const RefinancePosition = () => {
     )
   }
 
+  const network = getNetworkById(chainInfo.chainId)
+
   return (
     <RefinancePositionView
       type={RefinancePositionViewType.CURRENT}
@@ -33,12 +43,12 @@ export const RefinancePosition = () => {
       primaryToken={collateralTokenData.token.symbol}
       secondaryToken={debtTokenData.token.symbol}
       protocolData={{
-        network: NetworkNames.ethereumMainnet,
-        protocol: LendingProtocol.Maker,
+        network: network.name,
+        protocol: lendingProtocol,
       }}
       poolData={{
         maxLtv: new BigNumber(maxLtv.loanToValue),
-        borrowRate: new BigNumber(netApy),
+        borrowRate: new BigNumber(borrowRate),
       }}
       positionData={{
         ltv: new BigNumber(ltv.loanToValue),

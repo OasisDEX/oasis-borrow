@@ -3,13 +3,15 @@ import type { ProductHubItem } from 'features/productHub/types'
 import type { RefinanceOptions } from 'features/refinance/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
+export type DpmRefinanceFormState = {
+  address: string
+  id: string
+}
+
 export interface RefinanceFormState {
   refinanceOption?: RefinanceOptions
   strategy?: ProductHubItem // strip to bare minimum during clean up
-  dpm?: {
-    address: string
-    id: string
-  }
+  dpm?: DpmRefinanceFormState
   hasSimilarPosition?: boolean
 }
 

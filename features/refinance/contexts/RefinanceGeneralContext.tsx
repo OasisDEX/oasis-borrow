@@ -6,6 +6,7 @@ import type { OmniValidations } from 'features/omni-kit/types'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers'
 import { useInitializeRefinanceContextBase } from 'features/refinance/hooks'
 import type { useRefinanceFormReducto } from 'features/refinance/state'
+import type { DpmRefinanceFormState } from 'features/refinance/state/refinanceFormReducto.types'
 import type { RefinanceSidebarStep } from 'features/refinance/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, FC, SetStateAction } from 'react'
@@ -72,6 +73,9 @@ export type RefinanceContextInput = {
     supplyRate: string
     protocolPrices: Record<string, string>
     owner?: string
+    // dpm should be passed as parameter only for positions (protocols) that already uses DPM for position creation
+    // so in general only in the scope of Maker we shouldn't pass here dpm
+    dpm?: DpmRefinanceFormState
   }
   automations: RefinanceContextInputAutomations
   contextId: string
@@ -173,7 +177,10 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
     // Load context
     setContextInput(init)
     setCurrentContext(init.contextId)
-    reset(contexts[init.contextId])
+    // reset is being triggered on each modal open window
+    // therefore we define defaults here instead of using reducto
+    // default state handling
+    reset(contexts[init.contextId], init.position.dpm)
   }
 
   const handleOnClose = (id: string) => {

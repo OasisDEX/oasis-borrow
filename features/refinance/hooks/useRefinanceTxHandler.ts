@@ -92,7 +92,13 @@ export const useRefinanceTxHandler = () => {
   ])
 
   if (!txData || !dpm || !signer?.provider || !proxyAddress) {
-    return () => console.warn('no txData or proxyAddress or signer provider')
+    return () =>
+      console.warn('no txData or proxyAddress or signer provider', {
+        txData,
+        dpm,
+        signer,
+        proxyAddress,
+      })
   }
 
   return () =>
