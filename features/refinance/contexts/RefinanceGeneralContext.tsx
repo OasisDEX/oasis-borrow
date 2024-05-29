@@ -179,7 +179,10 @@ export const RefinanceGeneralContextProvider: FC = ({ children }) => {
     // Load context
     setContextInput(init)
     setCurrentContext(init.contextId)
-    reset(contexts[init.contextId])
+    // reset is being triggered on each modal open window
+    // therefore we define defaults here instead of using reducto
+    // default state handling
+    reset(contexts[init.contextId], init.position.dpm)
   }
 
   const handleOnClose = (id: string) => {

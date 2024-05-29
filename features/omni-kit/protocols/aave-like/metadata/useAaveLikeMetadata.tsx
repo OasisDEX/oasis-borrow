@@ -9,6 +9,7 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import { useOmniRefinanceBanner } from 'features/omni-kit/hooks'
 import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import {
   AaveLikeDetailsSectionContent,
@@ -26,7 +27,7 @@ import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
-import { LendingProtocolLabel } from 'lendingProtocols'
+import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 
 export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
@@ -86,6 +87,11 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       const { headlineDetails, isLoading: isHeadlineDetailsLoading } = useYieldLoopHeadlineDetails({
         ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
+
+      const refinanceBanner =
+        [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol) && !isOpening
+          ? useOmniRefinanceBanner()
+          : undefined
 
       return {
         notifications,
@@ -153,6 +159,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           positionBanner: productContext.position.positionAuction ? (
             <AaveLiquidatedNotice isPositionController={isOwner} />
           ) : undefined,
+          renderOverviewBanner: refinanceBanner?.renderOverviewBanner,
           overviewWithSimulation: isYieldLoopWithData,
         },
         featureToggles,

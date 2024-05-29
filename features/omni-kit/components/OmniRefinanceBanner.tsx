@@ -3,7 +3,7 @@ import { RefinanceBanner } from 'features/refinance/components'
 import { useAppConfig } from 'helpers/config'
 import React from 'react'
 
-export const OverviewBanner = () => {
+export const OmniRefinanceBanner = () => {
   const omniRefinance = useOmniRefinanceContext()
   const { EnableRefinance: refinanceEnabled } = useAppConfig('features')
 

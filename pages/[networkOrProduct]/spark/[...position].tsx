@@ -15,6 +15,8 @@ import { sparkSeoTags } from 'features/omni-kit/protocols/spark/actions/constant
 import { settings } from 'features/omni-kit/protocols/spark/settings'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
+import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
+import { ModalProvider } from 'helpers/modalHook'
 import type { SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
@@ -30,23 +32,27 @@ function SparkPositionPage(props: SparkPositionPageProps) {
         <AaveContextProvider>
           <DeferedContextProvider context={aaveContext}>
             <AaveLikeDeprecatedLinkHandler {...props}>
-              <OmniProductController<
-                AaveLikeHistoryEvent | undefined,
-                AaveLikeHistoryEvent[],
-                AaveLikePositionV2
-              >
-                {...props}
-                customState={({ children }) =>
-                  children({
-                    useDynamicMetadata: useAaveLikeMetadata,
-                    useTxHandler: useAaveLikeTxHandler,
-                  })
-                }
-                protocol={props.protocol}
-                protocolHook={useAaveLikeData}
-                seoTags={sparkSeoTags}
-                settings={settings}
-              />
+              <RefinanceGeneralContextProvider>
+                <ModalProvider>
+                  <OmniProductController<
+                    AaveLikeHistoryEvent | undefined,
+                    AaveLikeHistoryEvent[],
+                    AaveLikePositionV2
+                  >
+                    {...props}
+                    customState={({ children }) =>
+                      children({
+                        useDynamicMetadata: useAaveLikeMetadata,
+                        useTxHandler: useAaveLikeTxHandler,
+                      })
+                    }
+                    protocol={props.protocol}
+                    protocolHook={useAaveLikeData}
+                    seoTags={sparkSeoTags}
+                    settings={settings}
+                  />
+                </ModalProvider>
+              </RefinanceGeneralContextProvider>
             </AaveLikeDeprecatedLinkHandler>
           </DeferedContextProvider>
         </AaveContextProvider>

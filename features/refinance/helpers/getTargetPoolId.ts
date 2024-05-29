@@ -33,24 +33,27 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
       throw new Error('Maker is not supported as a target protocol')
     case ProtocolName.Spark:
       return SparkLendingPoolId.createFrom({
-        protocol,
-        emodeType: getEmode(collateralToken, debtToken),
-        collateralToken,
-        debtToken,
-      })
-    case ProtocolName.AAVEv3:
-      return AaveV3LendingPoolId.createFrom({
         protocol: {
-          name: ProtocolName.AAVEv3,
+          name: 'Spark',
           chainInfo,
         },
         emodeType: getEmode(collateralToken, debtToken),
         collateralToken,
         debtToken,
       })
-    case ProtocolName.AAVEv2:
+    case ProtocolName.AaveV3:
+      return AaveV3LendingPoolId.createFrom({
+        protocol: {
+          name: 'AaveV3',
+          chainInfo,
+        },
+        emodeType: getEmode(collateralToken, debtToken),
+        collateralToken,
+        debtToken,
+      })
+    case ProtocolName.AaveV2:
       throw new Error('AAVEv2 is not supported as a target protocol')
-    case ProtocolName.Morpho:
+    case ProtocolName.MorphoBlue:
       return MorphoLendingPoolId.createFrom({
         protocol,
         marketId: (poolId as typeof MorphoLendingPoolId).marketId,

@@ -2,6 +2,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubHelp } from 'features/productHub/components'
+import type { ProductHubCustomFiltersOptions } from 'features/productHub/hooks/useProductHubFilters'
 import { useProductHubFilters } from 'features/productHub/hooks/useProductHubFilters'
 import type { ProductHubFilters, ProductHubItem } from 'features/productHub/types'
 import React, { type FC } from 'react'
@@ -15,6 +16,7 @@ interface ProductHubFiltersControllerProps {
   onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
   selectedProduct: OmniProductType
+  customFiltersOptions?: ProductHubCustomFiltersOptions
 }
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
@@ -26,6 +28,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
   selectedProduct,
   hiddenProtocolFilter,
   hiddenNetworkFilter,
+  customFiltersOptions,
 }) => {
   const {
     collateralTokenFilter,
@@ -38,6 +41,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
     onChange,
     selectedFilters,
     networkId,
+    customFiltersOptions,
   })
 
   return (

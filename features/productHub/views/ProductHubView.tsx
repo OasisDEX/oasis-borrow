@@ -11,6 +11,7 @@ import {
   ProductHubProductTypeController,
 } from 'features/productHub/controls'
 import { parseQueryString, shuffleFiltersOrder } from 'features/productHub/helpers'
+import type { ProductHubCustomFiltersOptions } from 'features/productHub/hooks/useProductHubFilters'
 import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRouter'
 import { MIN_LIQUIDITY } from 'features/productHub/meta'
 import type {
@@ -50,6 +51,7 @@ interface ProductHubViewProps {
   separator?: AssetsTableSeparator
   url?: string
   wrapperSx?: ThemeUIStyleObject
+  customFiltersOptions?: ProductHubCustomFiltersOptions
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
@@ -74,6 +76,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   separator,
   url,
   wrapperSx,
+  customFiltersOptions,
 }) => {
   const { productHub: data } = usePreloadAppDataContext()
   const table = useMemo(() => dataParser(data.table), [])
@@ -157,6 +160,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 tableData={table}
                 hiddenNetworkFilter={hiddenNetworkFilter}
                 hiddenProtocolFilter={hiddenProtocolFilter}
+                customFiltersOptions={customFiltersOptions}
               />
               {limitRows && limitRows > 0 && (
                 <ProductHubViewAll query={query} selectedProduct={selectedProduct} />

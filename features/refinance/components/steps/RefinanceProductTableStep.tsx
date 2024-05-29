@@ -1,4 +1,4 @@
-import { NetworkNames } from 'blockchain/networks'
+import { getNetworkById } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubView } from 'features/productHub/views'
 import {
@@ -12,7 +12,30 @@ import {
 } from 'features/refinance/helpers'
 import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
+import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import React, { useCallback } from 'react'
+import { FeaturesEnum } from 'types/config'
+
+const customFiltersOptions = {
+  protocols: [
+    {
+      label: lendingProtocolsByName[LendingProtocol.AaveV3].label,
+      value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
+      image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
+    },
+    {
+      label: lendingProtocolsByName[LendingProtocol.MorphoBlue].label,
+      value: lendingProtocolsByName[LendingProtocol.MorphoBlue].name,
+      image: lendingProtocolsByName[LendingProtocol.MorphoBlue].icon,
+      featureFlag: FeaturesEnum.MorphoBlue,
+    },
+    {
+      label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
+      value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+      image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
+    },
+  ],
+}
 
 export const RefinanceProductTableStep = () => {
   const {
@@ -32,8 +55,10 @@ export const RefinanceProductTableStep = () => {
       },
       ltv,
       isShort,
+      lendingProtocol,
     },
     steps: { setNextStep },
+    environment: { chainInfo },
   } = useRefinanceContext()
 
   const onRowClick = useCallback(
@@ -56,6 +81,12 @@ export const RefinanceProductTableStep = () => {
   }[refinanceOption]
 
   const currentLTV = ltv.loanToValue.toString()
+  const network = getNetworkById(chainInfo.chainId)
+
+  const optionalProps =
+    lendingProtocol === LendingProtocol.Maker
+      ? { hiddenProtocolFilter: true } // hiding protocol filter as maker can only refinance to spark
+      : { customFiltersOptions }
 
   return (
     <ProductHubView
@@ -78,18 +109,22 @@ export const RefinanceProductTableStep = () => {
       hiddenCategories
       hiddenHelp
       hiddenTags
-      hiddenProtocolFilter
       hiddenNetworkFilter
       perPage={refinanceProductHubItemsPerPage}
       hiddenBanners
       initialFilters={{
-        protocol: [LendingProtocol.SparkV3],
-        network: [NetworkNames.ethereumMainnet],
+        protocol: [
+          lendingProtocol === LendingProtocol.SparkV3
+            ? LendingProtocol.AaveV3
+            : LendingProtocol.SparkV3,
+        ],
+        network: [network.name],
       }}
       hiddenColumns={refinanceProductHubHiddenColumns}
       onRowClick={onRowClick}
       wrapperSx={{ mt: 0 }}
       separator={(table) => getRefinanceProductHubSeparator({ table, collateralToken, debtToken })}
+      {...optionalProps}
     />
   )
 }

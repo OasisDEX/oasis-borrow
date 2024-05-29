@@ -1,5 +1,6 @@
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinanceSidebarStep } from 'features/refinance/types'
+import { LendingProtocol } from 'lendingProtocols'
 import { useEffect, useMemo, useState } from 'react'
 import { makeSDK } from 'summerfi-sdk-client'
 import type { ISimulation, Order, SimulationType } from 'summerfi-sdk-common'
@@ -23,7 +24,7 @@ export function useSdkRefinanceTransaction({
       marketPrices: { ethPrice },
       address,
     },
-    position: { positionId, collateralTokenData, debtTokenData, positionType },
+    position: { positionId, collateralTokenData, debtTokenData, positionType, lendingProtocol },
     poolData: { poolId },
     form: {
       state: { strategy, dpm },
@@ -45,8 +46,8 @@ export function useSdkRefinanceTransaction({
     if (
       !strategy ||
       !dpm?.address ||
-      refinanceSimulation == null
-      // || importPositionSimulation == null // it should be based on condition including protocol
+      refinanceSimulation == null ||
+      (importPositionSimulation == null && lendingProtocol === LendingProtocol.Maker)
     ) {
       return
     }
@@ -63,14 +64,16 @@ export function useSdkRefinanceTransaction({
       })
 
       const [_importPositionOrder, _refinanceOrder] = await Promise.all([
-        user.newOrder({
-          positionsManager: {
-            address: Address.createFromEthereum({
-              value: dpm.address as `0x${string}`,
-            }),
-          },
-          simulation: importPositionSimulation,
-        }),
+        lendingProtocol === LendingProtocol.Maker
+          ? user.newOrder({
+              positionsManager: {
+                address: Address.createFromEthereum({
+                  value: dpm.address as `0x${string}`,
+                }),
+              },
+              simulation: importPositionSimulation,
+            })
+          : Promise.resolve(null),
         user.newOrder({
           positionsManager: {
             address: Address.createFromEthereum({

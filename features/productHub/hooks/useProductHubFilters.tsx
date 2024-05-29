@@ -1,7 +1,7 @@
 import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelProductHubChangeFilter } from 'analytics/types'
 import { isTestnetNetworkId, NetworkIds } from 'blockchain/networks'
-import { GenericMultiselect } from 'components/GenericMultiselect'
+import { GenericMultiselect, type GenericMultiselectOption } from 'components/GenericMultiselect'
 import { TOKENS_STABLE_GROUPS } from 'features/productHub/filterGroups'
 import { getTokensFilterOptions } from 'features/productHub/helpers'
 import {
@@ -15,11 +15,16 @@ import { intersectionWith } from 'lodash'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+export interface ProductHubCustomFiltersOptions {
+  protocols: GenericMultiselectOption[]
+}
+
 export interface ProductHubFiltersParams {
   data: ProductHubItem[]
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters) => void
   selectedFilters: ProductHubFilters
+  customFiltersOptions?: ProductHubCustomFiltersOptions
 }
 
 export const useProductHubFilters = ({
@@ -27,6 +32,7 @@ export const useProductHubFilters = ({
   networkId,
   onChange,
   selectedFilters,
+  customFiltersOptions,
 }: ProductHubFiltersParams) => {
   const { t } = useTranslation()
 
@@ -223,7 +229,7 @@ export const useProductHubFilters = ({
       <GenericMultiselect
         initialValues={selectedFilters['protocol'] ?? []}
         label={protocolFilterLabel}
-        options={productHubProtocolFilter}
+        options={customFiltersOptions?.protocols || productHubProtocolFilter}
         onChange={(value) => {
           onChange({
             ...selectedFilters,

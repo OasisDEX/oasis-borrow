@@ -18,6 +18,7 @@ import {
   sortByDefault,
 } from 'features/productHub/helpers'
 import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
+import type { ProductHubCustomFiltersOptions } from 'features/productHub/hooks/useProductHubFilters'
 import type {
   ProductHubColumnKey,
   ProductHubDatabaseQuery,
@@ -49,6 +50,7 @@ interface ProductHubContentControllerProps {
   selectedProduct: OmniProductType
   separator?: AssetsTableSeparator
   tableData: ProductHubItem[]
+  customFiltersOptions?: ProductHubCustomFiltersOptions
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
@@ -71,6 +73,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedProduct,
   separator,
   tableData,
+  customFiltersOptions,
 }) => {
   const {
     AjnaBase: ajnaBaseEnabled,
@@ -167,6 +170,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           selectedProduct={selectedProduct}
           hiddenProtocolFilter={hiddenProtocolFilter}
           hiddenNetworkFilter={hiddenNetworkFilter}
+          customFiltersOptions={customFiltersOptions}
         />
         {!hiddenTags && (
           <ProductHubTagsController

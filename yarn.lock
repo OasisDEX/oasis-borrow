@@ -14904,10 +14904,10 @@ stylis@^4.0.6:
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.3.0.tgz#abe305a669fc3d8777e10eefcfc73ad861c5588c"
   integrity sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==
 
-summerfi-sdk-client@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/summerfi-sdk-client/-/summerfi-sdk-client-0.2.6.tgz#72bfbb2526e6006478bc374953035a7a3a6f94d2"
-  integrity sha512-nozQn+gQJfaXOLeP5xKTbdAFS2dSLWM9L9Q+w6U/WhoixdS3gVRwXO4/NXzQL+ebfCJ6gLUErWHRd0QEklj7Kg==
+summerfi-sdk-client@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-client/-/summerfi-sdk-client-0.2.7.tgz#601f1d793408c687a562f0cb19291a75e97e9975"
+  integrity sha512-w0gHFw2Db4NJ+0IiHgQlkoSqrMXY7raJZNr96lYUNjGDGrtQU0tbbkhUG4p7XSjDc2whUI6qIcUMhv7C0AXTqQ==
   dependencies:
     "@trpc/client" "11.0.0-next-beta.264"
     "@trpc/server" "11.0.0-next-beta.264"
@@ -14917,10 +14917,10 @@ summerfi-sdk-client@^0.2.6:
     viem "2.9.19"
     zod "^3.22.4"
 
-summerfi-sdk-common@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/summerfi-sdk-common/-/summerfi-sdk-common-0.2.5.tgz#ae4ec5d2e50f61f29cdbff0573e26c17b9f5515a"
-  integrity sha512-wyc4dOJrjI/oPR2SQGlwYxFJelbk3lmo9G4kmCe1xtjuc6z6efgc8qSIEYIUJLgc2R/5XJjh2/YfDOenHK7ozw==
+summerfi-sdk-common@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/summerfi-sdk-common/-/summerfi-sdk-common-0.2.6.tgz#b0434297a5fcb5d8ec90d3692bd95a675511126e"
+  integrity sha512-1ZL22lnlNecAqVToOtEv1YV5wkY97qB2L+1K9N/mfoMankCS3UbXBJq08fuWOwtrIk/W+RsLkE0i9NW/6FGP8w==
   dependencies:
     bignumber.js "^9.1.2"
     superjson "^1.13.3"
