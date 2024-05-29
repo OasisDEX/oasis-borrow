@@ -223,12 +223,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         const { tokens } = contracts
 
-        const weeklyNetApy = flattenYields[`${label}-${network}`]?.toString()
-
-        if (weeklyNetApy && new BigNumber(weeklyNetApy).eq(0)) {
-          throw new Error('Should not process update with APY of zero')
-        }
-
         return {
           ...product,
           product: [isMultiply && isYieldLoop ? OmniProductType.Earn : product.product[0]],
@@ -244,7 +238,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),
-          weeklyNetApy,
+          weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards: product.hasRewards ?? false,
           automationFeatures: !product.product.includes(OmniProductType.Earn)
             ? settingsV3.availableAutomations[
