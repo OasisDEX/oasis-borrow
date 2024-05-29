@@ -83,6 +83,7 @@ export function OmniRefinanceContextProvider({
         triggerData: positionTriggers,
         owner: position.owner,
         position,
+        dpmProxy,
       })
       refinanceInput = morphoRefinanceInput
       break

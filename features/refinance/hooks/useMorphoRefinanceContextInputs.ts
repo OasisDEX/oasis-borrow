@@ -24,6 +24,7 @@ export const useMorphoRefinanceContextInputs = ({
   owner,
   triggerData,
   position,
+  dpmProxy,
 }: {
   address?: string
   networkId: NetworkIds
@@ -41,6 +42,7 @@ export const useMorphoRefinanceContextInputs = ({
   owner: string
   triggerData: GetTriggersResponse
   position: LendingPosition
+  dpmProxy?: string
 }): RefinanceContextInput => {
   const castedPosition = position as MorphoBluePosition
 
@@ -58,6 +60,10 @@ export const useMorphoRefinanceContextInputs = ({
 
   if (!marketId) {
     throw new Error(`Market Id not defined`)
+  }
+
+  if (!dpmProxy) {
+    throw new Error(`Dpm proxy not defined`)
   }
 
   const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
@@ -113,5 +119,9 @@ export const useMorphoRefinanceContextInputs = ({
     positionType,
     isOwner,
     owner,
+    dpm: {
+      id: positionId.id,
+      address: dpmProxy,
+    },
   })
 }
