@@ -53,6 +53,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      isOpening,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -87,7 +88,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
 
-      const { renderOverviewBanner } = useOmniRefinanceBanner()
+      const refinanceBanner = !isOpening ? useOmniRefinanceBanner() : undefined
 
       return {
         notifications,
@@ -153,7 +154,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           overviewContent: <MorphoDetailsSectionContentWrapper />,
           overviewFooter: <MorphoDetailsSectionFooter />,
           overviewWithSimulation: isYieldLoopWithData,
-          renderOverviewBanner,
+          renderOverviewBanner: refinanceBanner?.renderOverviewBanner,
         },
         featureToggles: {
           safetySwitch: morphoSafetySwitchOn,
