@@ -74,6 +74,7 @@ export function OmniRefinanceContextProvider({
     liquidationPrice &&
     collateralAmount &&
     debtAmount
+
   const morphoRefinanceInput = !refinanceHasAllData
     ? undefined
     : useMorphoRefinanceContextInputs({

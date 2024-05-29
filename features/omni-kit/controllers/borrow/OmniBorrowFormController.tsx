@@ -41,6 +41,11 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
     dynamicMetadata: {
       elements: { riskSidebar },
     },
+    position: {
+      currentPosition: {
+        position: { debtAmount },
+      },
+    },
   } = useOmniProductContext(OmniProductType.Borrow)
 
   return (
@@ -95,18 +100,22 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
                       updateState('action', OmniBorrowFormAction.SwitchBorrow)
                     },
                   },
-                  {
-                    label: t('system.actions.common.close-position'),
-                    icon: circle_close,
-                    iconShrink: 2,
-                    panel: OmniSidebarBorrowPanel.Close,
-                    action: () => {
-                      dispatch({ type: 'reset' })
-                      updateState('uiDropdown', OmniSidebarBorrowPanel.Close)
-                      updateState('closeTo', 'collateral')
-                      updateState('action', OmniBorrowFormAction.CloseBorrow)
-                    },
-                  },
+                  ...(!debtAmount.isZero()
+                    ? [
+                        {
+                          label: t('system.actions.common.close-position'),
+                          icon: circle_close,
+                          iconShrink: 2,
+                          panel: OmniSidebarBorrowPanel.Close,
+                          action: () => {
+                            dispatch({ type: 'reset' })
+                            updateState('uiDropdown', OmniSidebarBorrowPanel.Close)
+                            updateState('closeTo', 'collateral')
+                            updateState('action', OmniBorrowFormAction.CloseBorrow)
+                          },
+                        },
+                      ]
+                    : []),
                 ]
               : []),
           ],

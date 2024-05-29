@@ -91,9 +91,11 @@ export function createUserReferral$(
               switchMap(({ sendWithGasEstimation }) => {
                 return sendWithGasEstimation(claimMultiple, {
                   kind: TxMetaKind.claimReferralFees,
-                  weeks: claimsOut.weeks,
-                  amounts: claimsOut.amounts,
-                  proofs: claimsOut.proofs,
+                  weeks: claimsOut.weeks ? claimsOut.weeks.map((week) => week.toString()) : [],
+                  amounts: claimsOut.amounts
+                    ? claimsOut.amounts.map((amount) => amount.toString())
+                    : [],
+                  proofs: claimsOut.proofs ? claimsOut.proofs : [],
                 })
               }),
               map((txnState: TxState<ClaimMultipleData>): ClaimTxnState => {

@@ -204,6 +204,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           ['ETH', 'BTC'].includes(primaryTokenGroup) &&
           secondaryToken === 'DAI'
 
+        const weeklyNetApy = flattenYields[`${label}-${network}`]?.toString()
+
+        if (weeklyNetApy && new BigNumber(weeklyNetApy).eq(0)) {
+          throw new Error('Should not process update with APY of zero')
+        }
+
         return {
           ...product,
           primaryTokenAddress: tokensAddresses[primaryToken].address,
@@ -215,7 +221,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           tooltips: {
             fee: hasRewards ? productHubSparkRewardsTooltip : undefined,
           },
-          weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
+          weeklyNetApy,
           hasRewards,
           automationFeatures: !product.product.includes(OmniProductType.Earn)
             ? settings.availableAutomations[

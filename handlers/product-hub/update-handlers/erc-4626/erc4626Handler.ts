@@ -52,6 +52,10 @@ async function getErc4626VaultData({
           .toString()
       : undefined
 
+    if (weeklyNetApy && new BigNumber(weeklyNetApy).eq(0)) {
+      throw new Error('Should not process update with APY of zero')
+    }
+
     return {
       table: [
         {
