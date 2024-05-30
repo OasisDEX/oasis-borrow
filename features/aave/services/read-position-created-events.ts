@@ -89,6 +89,7 @@ export function extractLendingProtocolFromPositionCreatedEvent(protocol: string)
     case 'AaveV2':
       return LendingProtocol.AaveV2
     case 'AAVE_V3':
+    case 'AaveV3':
       return LendingProtocol.AaveV3
     case 'Spark':
       return LendingProtocol.SparkV3

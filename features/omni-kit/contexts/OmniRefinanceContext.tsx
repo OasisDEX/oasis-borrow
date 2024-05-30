@@ -1,8 +1,12 @@
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { isLendingPosition } from 'features/omni-kit/helpers'
 import type { RefinanceContextInput } from 'features/refinance/contexts'
 import { omniProductTypeToSDKType } from 'features/refinance/helpers/omniProductTypeToSDKType'
-import { useMorphoRefinanceContextInputs } from 'features/refinance/hooks/useMorphoRefinanceContextInputs'
+import {
+  useAaveLikeRefinanceContextInputs,
+  useMorphoRefinanceContextInputs,
+} from 'features/refinance/hooks'
 import { useAccount } from 'helpers/useAccount'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { type PropsWithChildren, useContext, useMemo } from 'react'
@@ -40,6 +44,7 @@ export function OmniRefinanceContextProvider({
       productType,
       protocol,
       slippage,
+      dpmProxy,
     },
   } = useOmniGeneralContext()
   const {
@@ -49,57 +54,65 @@ export function OmniRefinanceContextProvider({
     automation: { positionTriggers },
   } = useOmniProductContext(productType)
 
-  const borrowRate = 'borrowRate' in position ? position.borrowRate : undefined
-  const ltv = 'riskRatio' in position ? position.riskRatio.loanToValue : undefined
-  const maxLtv = 'maxRiskRatio' in position ? position.maxRiskRatio.loanToValue : undefined
-  const liquidationPrice = 'liquidationPrice' in position ? position.liquidationPrice : undefined
-  const collateralAmount = 'collateralAmount' in position ? position.collateralAmount : undefined
-  const debtAmount = 'debtAmount' in position ? position.debtAmount : undefined
-
-  const refinanceHasAllData =
-    positionId &&
-    borrowRate &&
-    poolId &&
-    ltv &&
-    maxLtv &&
-    liquidationPrice &&
-    collateralAmount &&
-    debtAmount
-
   let refinanceInput: RefinanceContextInput | undefined
-  // TODO: Add support for other protocols
+
+  // only lending positions are currently allowed for refinance
+  // positionId at this point should be already defined (manage view)
+  if (!isLendingPosition(position) || !positionId) {
+    return (
+      <omniRefinanceContext.Provider value={undefined}>{children}</omniRefinanceContext.Provider>
+    )
+  }
+
   switch (protocol) {
     case LendingProtocol.MorphoBlue:
-      const morphoRefinanceInput = !refinanceHasAllData
-        ? undefined
-        : useMorphoRefinanceContextInputs({
-            address: walletAddress,
-            networkId,
-            collateralTokenSymbol: collateralToken,
-            debtTokenSymbol: quoteToken,
-            collateralAmount: collateralAmount.toString(),
-            debtAmount: debtAmount.toString(),
-            vaultId: positionId,
-            slippage: slippage.toNumber(),
-            collateralPrice: collateralPrice.toString(),
-            debtPrice: quotePrice.toString(),
-            ethPrice: ethPrice.toString(),
-            borrowRate: borrowRate.toString(),
-            liquidationPrice: liquidationPrice.toString(),
-            ltv: ltv.toString(),
-            maxLtv: maxLtv.toString(),
-            marketId: poolId,
-            positionType: omniProductTypeToSDKType(productType),
-            isOwner,
-            pairId,
-            triggerData: positionTriggers,
-            owner: position.owner,
-          })
+      const morphoRefinanceInput = useMorphoRefinanceContextInputs({
+        address: walletAddress,
+        networkId,
+        collateralTokenSymbol: collateralToken,
+        debtTokenSymbol: quoteToken,
+        vaultId: positionId,
+        slippage: slippage.toNumber(),
+        collateralPrice: collateralPrice.toString(),
+        debtPrice: quotePrice.toString(),
+        ethPrice: ethPrice.toString(),
+        marketId: poolId,
+        positionType: omniProductTypeToSDKType(productType),
+        isOwner,
+        pairId,
+        triggerData: positionTriggers,
+        owner: position.owner,
+        position,
+        dpmProxy,
+      })
       refinanceInput = morphoRefinanceInput
+      break
+    case LendingProtocol.AaveV3:
+    case LendingProtocol.SparkV3:
+      const aaveLikeRefinanceInput = useAaveLikeRefinanceContextInputs({
+        address: walletAddress,
+        networkId,
+        collateralTokenSymbol: collateralToken,
+        debtTokenSymbol: quoteToken,
+        vaultId: positionId,
+        slippage: slippage.toNumber(),
+        collateralPrice: collateralPrice.toString(),
+        debtPrice: quotePrice.toString(),
+        ethPrice: ethPrice.toString(),
+        positionType: omniProductTypeToSDKType(productType),
+        isOwner,
+        pairId,
+        triggerData: positionTriggers,
+        owner: position.owner,
+        lendingProtocol: protocol,
+        position,
+        dpmProxy,
+      })
+      refinanceInput = aaveLikeRefinanceInput
       break
   }
 
-  const refinanceContextInput = !refinanceHasAllData ? undefined : refinanceInput
+  const refinanceContextInput = refinanceInput
 
   const context: OmniRefinanceContext = useMemo(() => {
     return {

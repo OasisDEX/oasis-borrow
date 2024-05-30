@@ -6,10 +6,22 @@ import type {
   RefinanceContextInput,
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
+import type { DpmRefinanceFormState } from 'features/refinance/state/refinanceFormReducto.types'
 import type { ILendingPoolId, IPositionId, PositionType } from 'summerfi-sdk-common'
 
 import { getLendingProtocolByProtocolName } from './protocolNameToLendingProtocol'
 
+/**
+ *
+ * @remarks
+ * This method is part of the refinance feature
+ *
+ * @param dpm - dpm should be passed as parameter only for positions (protocols) that already uses DPM for position creation
+ *    so in general only in the scope of Maker we shouldn't pass here dpm
+ *
+ * @returns Refinance context input needed to initialize refinance UI
+ *
+ */
 export const getRefinanceContextInput = ({
   borrowRate,
   primaryToken,
@@ -33,6 +45,7 @@ export const getRefinanceContextInput = ({
   positionType,
   owner,
   isOwner,
+  dpm,
 }: {
   borrowRate: string
   primaryToken: string
@@ -56,6 +69,7 @@ export const getRefinanceContextInput = ({
   owner: string | undefined
   isOwner: boolean
   positionType: PositionType
+  dpm?: DpmRefinanceFormState
 }): RefinanceContextInput => {
   const chainId = networkNameToIdMap[network]
   const lendingProtocol = getLendingProtocolByProtocolName(poolId.protocol.name)
@@ -90,6 +104,7 @@ export const getRefinanceContextInput = ({
         ETH: ethPrice,
       },
       owner: owner,
+      dpm,
     },
     automations: automations,
     contextId,

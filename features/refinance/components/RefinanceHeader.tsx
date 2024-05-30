@@ -1,4 +1,4 @@
-import { NetworkNames } from 'blockchain/networks'
+import { getNetworkById } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { ModalCloseIcon } from 'components/Modal'
 import { ProtocolLabel } from 'components/ProtocolLabel'
@@ -6,7 +6,6 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { RefinanceAbout } from 'features/refinance/components/RefinanceAbout'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { formatAddress } from 'helpers/formatters/format'
-import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -87,27 +86,28 @@ export const RefinanceHeader: FC<RefinanceHeaderProps> = ({ onClose }) => {
   const { t } = useTranslation()
   const isMobile = useOnMobile()
 
-  const ctx = useRefinanceContext()
-
   const {
     position: {
       positionId: { id },
       debtTokenData,
       collateralTokenData,
+      lendingProtocol,
     },
     form: {
       state: { strategy, dpm },
     },
-  } = ctx
+    environment: { chainInfo },
+  } = useRefinanceContext()
 
-  // use refinance context to eventually get this data
+  const network = getNetworkById(chainInfo.chainId)
+
   const { primaryToken, secondaryToken, positionId, fromProtocol, toProtocol } = {
     primaryToken: collateralTokenData.token.symbol,
     secondaryToken: debtTokenData.token.symbol,
     positionId: id,
     fromProtocol: {
-      network: NetworkNames.ethereumMainnet,
-      protocol: LendingProtocol.Maker,
+      network: network.name,
+      protocol: lendingProtocol,
     },
     ...(strategy
       ? {

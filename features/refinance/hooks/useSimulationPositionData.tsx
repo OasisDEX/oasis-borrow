@@ -24,13 +24,13 @@ export const useSimulationPositionData = () => {
   const { collateralAmount, debtAmount } = targetPosition
 
   const collateralPrice = getTokenPrice(
-    collateralAmount.token.symbol,
+    collateralAmount.token.symbol.toUpperCase(),
     tokenPriceStore.prices,
     'collateral price - refinance modal controller',
   ).toString()
 
   const debtPrice = getTokenPrice(
-    debtAmount.token.symbol,
+    debtAmount.token.symbol.toUpperCase(),
     tokenPriceStore.prices,
     'debt price - refinance modal controller',
   ).toString()

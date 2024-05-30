@@ -12,6 +12,7 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import { useOmniRefinanceBanner } from 'features/omni-kit/hooks/useOmniRefinanceBanner'
 import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { MorphoDetailsSectionContentWrapper } from 'features/omni-kit/protocols/morpho-blue/components/details-sections/MorphoDetailsSectionContentWrapper'
@@ -21,7 +22,6 @@ import {
   morphoFlowStateFilter,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
-import { useMorphoBanner } from 'features/omni-kit/protocols/morpho-blue/hooks/useMorphoBanner'
 import type {
   GetOmniMetadata,
   LendingMetadata,
@@ -53,6 +53,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      isOpening,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -87,7 +88,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
 
-      const { renderOverviewBanner } = useMorphoBanner()
+      const refinanceBanner = !isOpening ? useOmniRefinanceBanner() : undefined
 
       return {
         notifications,
@@ -153,7 +154,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           overviewContent: <MorphoDetailsSectionContentWrapper />,
           overviewFooter: <MorphoDetailsSectionFooter />,
           overviewWithSimulation: isYieldLoopWithData,
-          renderOverviewBanner,
+          renderOverviewBanner: refinanceBanner?.renderOverviewBanner,
         },
         featureToggles: {
           safetySwitch: morphoSafetySwitchOn,

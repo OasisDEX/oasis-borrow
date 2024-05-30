@@ -5,6 +5,7 @@ import {
   shiftOmniStep,
 } from 'features/omni-kit/contexts'
 import { isShortPosition } from 'features/omni-kit/helpers'
+import { refinanceMakerSteps, refinanceStepsWithoutDpm } from 'features/refinance/constants'
 import type {
   RefinanceContextInput,
   RefinanceGeneralContextBase,
@@ -13,19 +14,13 @@ import type {
 import { getRefinanceValidations } from 'features/refinance/helpers'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { useRefinanceFormReducto } from 'features/refinance/state'
+import type { DpmRefinanceFormState } from 'features/refinance/state/refinanceFormReducto.types'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useAppConfig } from 'helpers/config'
 import type { TxDetails } from 'helpers/handleTransaction'
+import { LendingProtocol } from 'lendingProtocols'
 import { useState } from 'react'
 import { type AddressValue, TokenAmount } from 'summerfi-sdk-common'
-
-const steps = [
-  RefinanceSidebarStep.Option,
-  RefinanceSidebarStep.Strategy,
-  RefinanceSidebarStep.Dpm,
-  RefinanceSidebarStep.Give,
-  RefinanceSidebarStep.Changes,
-]
 
 export const useInitializeRefinanceContextBase = ({
   contextInput,
@@ -35,14 +30,14 @@ export const useInitializeRefinanceContextBase = ({
   defaultCtx?: RefinanceGeneralContextBase
 }): {
   ctx: RefinanceGeneralContextBase | undefined
-  reset: (resetData: RefinanceGeneralContextBase) => void
+  reset: (resetData: RefinanceGeneralContextBase, defaultDpm?: DpmRefinanceFormState) => void
 } => {
   const {
     RefinanceSafetySwitch: isSafetySwitchEnabled,
     RefinanceSuppressValidation: isSuppressValidationEnabled,
   } = useAppConfig('features')
   const [currentStep, setCurrentStep] = useState<RefinanceSidebarStep>(
-    defaultCtx?.steps.currentStep || steps[0],
+    defaultCtx?.steps.currentStep || RefinanceSidebarStep.Option,
   )
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(
     defaultCtx?.steps.isFlowStateReady || false,
@@ -55,20 +50,30 @@ export const useInitializeRefinanceContextBase = ({
 
   const form = useRefinanceFormReducto({})
 
-  const reset = (resetData: RefinanceGeneralContextBase) => {
-    setCurrentStep(resetData?.steps.currentStep || steps[0])
+  const reset = (resetData: RefinanceGeneralContextBase, defaultDpm?: DpmRefinanceFormState) => {
+    setCurrentStep(resetData?.steps.currentStep || RefinanceSidebarStep.Option)
     setIsFlowStateReady(resetData?.steps.isFlowStateReady || false)
     setTxDetails(resetData?.tx.txDetails)
     setGasEstimation(resetData?.environment.gasEstimation)
 
     form.updateState('refinanceOption', resetData?.form.state.refinanceOption)
     form.updateState('strategy', resetData?.form.state.strategy)
-    form.updateState('dpm', resetData?.form.state.dpm)
+    form.updateState('dpm', defaultDpm)
   }
 
   if (!contextInput) {
     return { ctx: undefined, reset }
   }
+
+  const steps = {
+    [LendingProtocol.Maker]: refinanceMakerSteps,
+    [LendingProtocol.AaveV3]: refinanceStepsWithoutDpm,
+    [LendingProtocol.SparkV3]: refinanceStepsWithoutDpm,
+    [LendingProtocol.MorphoBlue]: refinanceStepsWithoutDpm,
+    // not handled
+    [LendingProtocol.AaveV2]: [],
+    [LendingProtocol.Ajna]: [],
+  }[contextInput.position.lendingProtocol]
 
   const {
     environment: { slippage, address, isOwner },

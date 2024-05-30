@@ -2,10 +2,10 @@ import { LendingProtocol } from 'lendingProtocols'
 import { ProtocolName } from 'summerfi-sdk-common'
 
 const ProtocolNameByLendingProtocol: Record<LendingProtocol, ProtocolName> = {
-  [LendingProtocol.AaveV2]: ProtocolName.AAVEv2,
-  [LendingProtocol.AaveV3]: ProtocolName.AAVEv3,
+  [LendingProtocol.AaveV2]: ProtocolName.AaveV2,
+  [LendingProtocol.AaveV3]: ProtocolName.AaveV3,
   [LendingProtocol.Ajna]: ProtocolName.Ajna,
-  [LendingProtocol.MorphoBlue]: ProtocolName.Morpho,
+  [LendingProtocol.MorphoBlue]: ProtocolName.MorphoBlue,
   [LendingProtocol.SparkV3]: ProtocolName.Spark,
   [LendingProtocol.Maker]: ProtocolName.Maker,
 }

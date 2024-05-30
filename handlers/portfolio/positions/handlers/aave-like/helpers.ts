@@ -29,6 +29,7 @@ export const getReserveDataCall = (dpm: DpmSubgraphData, token: string) => {
   switch (dpm.protocol) {
     case 'AAVE_V3':
     case 'aavev3':
+    case 'AaveV3':
       return getAaveV3ReserveData({
         networkId: dpm.networkId as AaveV3SupportedNetwork,
         token,
@@ -52,6 +53,7 @@ export const getReserveConfigurationDataCall = (dpm: DpmSubgraphData, token: str
   switch (dpm.protocol) {
     case 'AAVE_V3':
     case 'aavev3':
+    case 'AaveV3':
       return getAaveV3ReserveConfigurationData({
         networkId: dpm.networkId as AaveV3SupportedNetwork,
         token,

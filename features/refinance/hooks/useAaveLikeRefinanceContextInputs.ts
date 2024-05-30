@@ -1,13 +1,19 @@
-import type { LendingPosition, MorphoBluePosition } from '@oasisdex/dma-library'
+import type { AaveLikePositionV2, LendingPosition } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
-import { getMorphoPositionId, getRefinanceContextInput } from 'features/refinance/helpers'
-import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
+import {
+  getAaveLikePoolId,
+  getAaveLikePositionId,
+  getRefinanceContextInput,
+} from 'features/refinance/helpers'
+import { getEmode } from 'features/refinance/helpers/getEmode'
+import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import { LendingProtocol } from 'lendingProtocols'
 import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
 
-export const useMorphoRefinanceContextInputs = ({
+export const useAaveLikeRefinanceContextInputs = ({
   address,
   networkId,
   collateralTokenSymbol,
@@ -17,12 +23,12 @@ export const useMorphoRefinanceContextInputs = ({
   collateralPrice,
   debtPrice,
   ethPrice,
-  marketId,
   positionType,
   isOwner,
   pairId,
   owner,
   triggerData,
+  lendingProtocol,
   position,
   dpmProxy,
 }: {
@@ -35,45 +41,55 @@ export const useMorphoRefinanceContextInputs = ({
   collateralPrice: string
   debtPrice: string
   ethPrice: string
-  marketId?: string
   isOwner: boolean
   positionType: PositionType
   pairId: number
   owner: string
   triggerData: GetTriggersResponse
+  lendingProtocol: LendingProtocol.AaveV3 | LendingProtocol.SparkV3
   position: LendingPosition
   dpmProxy?: string
 }): RefinanceContextInput => {
-  const castedPosition = position as MorphoBluePosition
+  const chainFamily = getChainInfoByChainId(networkId)
+  if (!chainFamily) {
+    throw new Error(`ChainId ${networkId} is not supported`)
+  }
 
-  const borrowRate = castedPosition.borrowRate.toString()
+  const castedPosition = position as AaveLikePositionV2
+
+  const borrowRate = castedPosition.category.liquidationThreshold.toString()
   const ltv = castedPosition.riskRatio.loanToValue.toString()
   const maxLtv = castedPosition.maxRiskRatio.loanToValue.toString()
   const liquidationPrice = castedPosition.liquidationPrice.toString()
   const collateralAmount = castedPosition.collateralAmount.toString()
   const debtAmount = castedPosition.debtAmount.toString()
 
-  const chainFamily = getChainInfoByChainId(networkId)
-  if (!chainFamily) {
-    throw new Error(`ChainId ${networkId} is not supported`)
-  }
+  const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
+  const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
+  const emodeType = getEmode(collateralToken, debtToken)
 
-  if (!marketId) {
-    throw new Error(`Market Id not defined`)
+  const poolId = getAaveLikePoolId(
+    lendingProtocol,
+    chainFamily.chainInfo,
+    collateralToken,
+    debtToken,
+    emodeType,
+  )
+
+  const positionId = getAaveLikePositionId(lendingProtocol, vaultId)
+
+  const flag = {
+    [LendingProtocol.AaveV3]: 'aave3',
+    [LendingProtocol.SparkV3]: 'spark',
+  }[lendingProtocol]
+
+  const triggerFlags = triggerData.flags[flag as 'aave3' | 'spark']
+  if (!triggerFlags) {
+    throw new Error(`Trigger flags for ${lendingProtocol} are undefined`)
   }
 
   if (!dpmProxy) {
     throw new Error(`Dpm proxy not defined`)
-  }
-
-  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
-  const positionId = getMorphoPositionId(vaultId)
-
-  const morphoTriggerId: `morphoblue-${string}` = `morphoblue-${marketId}`
-
-  const triggerFlags = triggerData.flags[morphoTriggerId]
-  if (!triggerFlags) {
-    throw new Error(`Trigger flags for Morpho ${morphoTriggerId} are undefined`)
   }
 
   const automations = {

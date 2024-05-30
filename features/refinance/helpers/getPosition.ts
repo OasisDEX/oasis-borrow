@@ -7,11 +7,11 @@ export const getPosition = (protocolName: ProtocolName, position: IPosition): IP
       return MakerPosition.createFrom(position)
     case ProtocolName.Spark:
       return SparkPosition.createFrom(position)
-    case ProtocolName.AAVEv3:
+    case ProtocolName.AaveV3:
       return AaveV3Position.createFrom(position)
-    case ProtocolName.AAVEv2:
+    case ProtocolName.AaveV2:
       throw new Error('AAVEv2 is not supported')
-    case ProtocolName.Morpho:
+    case ProtocolName.MorphoBlue:
       return MorphoPosition.createFrom(position)
 
     default:
