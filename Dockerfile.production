@@ -12,6 +12,8 @@ WORKDIR /usr/src/app
 
 ARG CONFIG_URL=''
 ENV CONFIG_URL=$CONFIG_URL
+ARG NPM_TOKEN=''
+ENV NPM_TOKEN=$NPM_TOKEN
 
 RUN yarn --no-progress --non-interactive --frozen-lockfile
 
