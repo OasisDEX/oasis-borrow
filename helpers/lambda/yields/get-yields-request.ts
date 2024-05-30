@@ -29,7 +29,7 @@ export const getYieldsRequest = async (
     })
     const data = (await response.json()) as GetYieldsResponse
     // Store the response in the cache
-    cache[cacheKey] = { data, timestamp: now };
+    cache[cacheKey] = { data, timestamp: now }
     return data
   } catch (e) {
     console.error('Failed to read data about yields from server', e)
