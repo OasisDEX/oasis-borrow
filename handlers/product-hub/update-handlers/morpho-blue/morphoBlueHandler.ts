@@ -58,6 +58,7 @@ async function getMorphoMarketData(
   try {
     return await markets.reduce<Promise<ProductHubHandlerResponseData>>(
       async (v, { marketId, pair }) => {
+        const acc = await v
         const [collateralToken, quoteToken] = pair.split('-')
         const pairId =
           networkMarkets[pair].length > 1 ? `-${networkMarkets[pair].indexOf(marketId) + 1}` : ''
@@ -128,7 +129,7 @@ async function getMorphoMarketData(
         ).toString()
         return {
           table: [
-            ...(await v).table,
+            ...acc.table,
             {
               label,
               network,
