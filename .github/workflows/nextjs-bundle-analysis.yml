@@ -13,6 +13,9 @@ defaults:
   run:
     working-directory: ./
 
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
 permissions:
   contents: read # for checkout repository
   actions: read # for fetching base branch bundle stats

@@ -10,6 +10,7 @@ env:
   SERVICE_NAME: summer-fi-staging
   CLUSTER_NAME: summer-fi-staging
   CONFIG_URL: ${{ secrets.CONFIG_URL }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   deploy:

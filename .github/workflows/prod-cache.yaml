@@ -1,6 +1,7 @@
 name: Create modules cache (main)
 env:
   CONFIG_URL: ${{ secrets.CONFIG_URL }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 on:
   push:
