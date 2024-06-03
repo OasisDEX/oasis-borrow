@@ -1,5 +1,5 @@
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { PositionType } from '@summer_fi/summerfi-sdk-common'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 export const vaultTypeToSDKType = (vaultType: VaultType): PositionType => {
   switch (vaultType) {

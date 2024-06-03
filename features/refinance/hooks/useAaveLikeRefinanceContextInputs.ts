@@ -1,4 +1,5 @@
 import type { AaveLikePositionV2, LendingPosition } from '@oasisdex/dma-library'
+import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
@@ -11,7 +12,6 @@ import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { LendingProtocol } from 'lendingProtocols'
-import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
 
 export const useAaveLikeRefinanceContextInputs = ({
   address,

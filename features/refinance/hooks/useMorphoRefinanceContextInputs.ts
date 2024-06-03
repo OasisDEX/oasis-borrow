@@ -1,11 +1,11 @@
 import type { LendingPosition, MorphoBluePosition } from '@oasisdex/dma-library'
+import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { getMorphoPositionId, getRefinanceContextInput } from 'features/refinance/helpers'
 import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
-import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
 
 export const useMorphoRefinanceContextInputs = ({
   address,

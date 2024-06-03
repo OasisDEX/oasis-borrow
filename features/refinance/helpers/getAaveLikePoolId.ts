@@ -1,10 +1,10 @@
-import { LendingProtocol } from 'lendingProtocols'
 import {
   AaveV3LendingPoolId,
   type EmodeType,
   SparkLendingPoolId,
 } from '@summer_fi/summerfi-sdk-client'
 import { type ChainInfo, type IToken, ProtocolName } from '@summer_fi/summerfi-sdk-common'
+import { LendingProtocol } from 'lendingProtocols'
 
 export const getAaveLikePoolId = (
   lendingProtocol: LendingProtocol,

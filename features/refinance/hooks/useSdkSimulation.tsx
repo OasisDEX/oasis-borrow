@@ -1,15 +1,3 @@
-import { getTokenPrice } from 'blockchain/prices'
-import { tokenPriceStore } from 'blockchain/prices.constants'
-import { useRefinanceGeneralContext } from 'features/refinance/contexts'
-import { getPosition } from 'features/refinance/helpers/getPosition'
-import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
-import { getTargetPoolId } from 'features/refinance/helpers/getTargetPoolId'
-import {
-  replacePoolIdETHWithWETH,
-  replaceTokenAmountETHWithWETH,
-} from 'features/refinance/helpers/replaceETHwithWETH'
-import { RefinanceSidebarStep } from 'features/refinance/types'
-import { useEffect, useMemo, useState } from 'react'
 import type { Chain, ProtocolClient, User } from '@summer_fi/summerfi-sdk-client'
 import { makeSDK, PositionUtils } from '@summer_fi/summerfi-sdk-client'
 import type {
@@ -27,6 +15,18 @@ import {
   Percentage,
   ProtocolName,
 } from '@summer_fi/summerfi-sdk-common'
+import { getTokenPrice } from 'blockchain/prices'
+import { tokenPriceStore } from 'blockchain/prices.constants'
+import { useRefinanceGeneralContext } from 'features/refinance/contexts'
+import { getPosition } from 'features/refinance/helpers/getPosition'
+import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
+import { getTargetPoolId } from 'features/refinance/helpers/getTargetPoolId'
+import {
+  replacePoolIdETHWithWETH,
+  replaceTokenAmountETHWithWETH,
+} from 'features/refinance/helpers/replaceETHwithWETH'
+import { RefinanceSidebarStep } from 'features/refinance/types'
+import { useEffect, useMemo, useState } from 'react'
 
 export type SDKSimulation = {
   error: string | null
