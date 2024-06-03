@@ -3368,9 +3368,9 @@
     "@styled-system/css" "^5.1.5"
 
 "@summer_fi/summerfi-sdk-client@^0.2.8":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@summer_fi/summerfi-sdk-client/-/summerfi-sdk-client-0.2.7.tgz#dfb65f2bec154996202e942fa16aecbd7387be8b"
-  integrity sha512-Q5PiUbFTh1xPIw37VgOUOakLJqgEgI8NnZlNsC9Gqudi7CAekXNJg110izkizvHDPZIaER/h7frp2umO0oL2Mg==
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@summer_fi/summerfi-sdk-client/-/summerfi-sdk-client-0.2.8.tgz#5ceb4ee6b1d9b100ef2134f1d21028ccc0a38efc"
+  integrity sha512-OMnoosPg+vWPRJZznuLjysRb/Jca/VupJ/Wkq1fZysxe5at1fSZPcAmJiDxB17HOZU2CElY5m4VUls8Q8xxcGQ==
   dependencies:
     "@trpc/client" "11.0.0-next-beta.264"
     "@trpc/server" "11.0.0-next-beta.264"
@@ -3381,9 +3381,9 @@
     zod "^3.22.4"
 
 "@summer_fi/summerfi-sdk-common@^0.2.7":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@summer_fi/summerfi-sdk-common/-/summerfi-sdk-common-0.2.6.tgz#c5dd754c805b1d349004ba441b2a884cf74349e8"
-  integrity sha512-DmWRyIhx1qUT8jbCDkFg6z2jmh3OVTfcz2Mo+qtRO+FQUC4v06yLY4Rrlr7qfLsYdOq4NdvYWo9KH5/Tb5X5BA==
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@summer_fi/summerfi-sdk-common/-/summerfi-sdk-common-0.2.7.tgz#537902ff0bb1f795adc4bb9e707cc8237c1711be"
+  integrity sha512-6gYAlpsu4pWW+UKLiLOZqwZ2S1uw5gjf/4W0S39Kcp8E2uhNAwTpINVPz7e//zhzu01RQdDJa6JNoJkZAy0kMg==
   dependencies:
     bignumber.js "^9.1.2"
     superjson "^1.13.3"
