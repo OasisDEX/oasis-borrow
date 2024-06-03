@@ -258,6 +258,7 @@ export interface OmniFormDefaults {
 export interface OmniFlowStateFilterParams {
   collateralAddress: string
   event: PositionFromUrl
+  allEvents?: PositionFromUrl[]
   filterConsumed?: boolean
   pairId: number
   productType: OmniProductType
@@ -344,6 +345,7 @@ interface OmniFeatureToggles {
 
 export interface OmniFiltersParameters {
   event: PositionFromUrl
+  allEvents: PositionFromUrl[]
   filterConsumed?: boolean
 }
 
