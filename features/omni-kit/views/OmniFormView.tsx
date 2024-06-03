@@ -128,7 +128,7 @@ export function OmniFormView({
     filterConsumedProxy: async (events) => getOmniFilterConsumedProxy(events, omniProxyFilter),
     onProxiesAvailable: async (events, dpmAccounts) => {
       const filteredEventsBooleanMap = await Promise.all(
-        events.map((event) => omniProxyFilter({ event })),
+        events.map((event) => omniProxyFilter({ event, allEvents: events })),
       )
       const filteredEvents = events.filter(
         (_event, eventIndex) => filteredEventsBooleanMap[eventIndex],

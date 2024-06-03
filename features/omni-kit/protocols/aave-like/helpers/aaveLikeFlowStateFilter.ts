@@ -10,12 +10,23 @@ import { LendingProtocol } from 'lendingProtocols'
 export async function aaveLikeFlowStateFilter({
   collateralAddress,
   event,
+  allEvents,
   networkId,
   protocol,
   quoteAddress,
 }: OmniFlowStateFilterParams & {
   networkId: NetworkIds
 }): Promise<boolean> {
+  // if event is aave or spark we need to check if there is already additional aave or spark position on given dpm
+  // since single dpm can have only 1 aave and 1 spark position
+  if (
+    ((protocol === LendingProtocol.AaveV3 && event.protocol === LendingProtocol.SparkV3) ||
+      (protocol === LendingProtocol.SparkV3 && event.protocol === LendingProtocol.AaveV3)) &&
+    !allEvents?.find((item) => item.protocol === protocol)
+  ) {
+    return Promise.resolve(true)
+  }
+
   // TODO for now we are reading it on every event that exists for given user
   // we should optimize it by sending only one request with list of dpms prior to flow state filter fn
   const positionTriggers = await getTriggersRequest({
@@ -29,13 +40,6 @@ export async function aaveLikeFlowStateFilter({
     return Promise.resolve(false)
   }
 
-  // if its spark/aave we need to check that because we cant mix them
-  if (
-    (protocol === LendingProtocol.AaveV3 && event.protocol === LendingProtocol.SparkV3) ||
-    (protocol === LendingProtocol.SparkV3 && event.protocol === LendingProtocol.AaveV3)
-  ) {
-    return Promise.resolve(false)
-  }
   if (
     event.protocol === protocol &&
     collateralAddress.toLowerCase() === event.collateralTokenAddress.toLowerCase() &&
