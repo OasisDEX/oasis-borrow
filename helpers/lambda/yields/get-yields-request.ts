@@ -1,7 +1,13 @@
 import { getYieldsConfig } from './get-yields-config'
 import type { GetYieldsParams, GetYieldsResponse } from './get-yields-types'
 
-const cache: Record<string, GetYieldsResponse | null> = {}
+interface CacheEntry {
+  data: GetYieldsResponse | null
+  timestamp: number
+}
+
+const cache: Record<string, CacheEntry> = {}
+const CACHE_DURATION_MS = 5 * 60 * 1000
 
 export const getYieldsRequest = async (
   params: GetYieldsParams,
@@ -11,9 +17,11 @@ export const getYieldsRequest = async (
   // Use params.ltv as the cache key
   const cacheKey = `${params.ltv.toFixed(4).toString()}-${params.collateralToken}-${params.quoteToken}-${params.networkId}`
 
-  // If the response is in the cache, return it
-  if (cacheKey in cache) {
-    return cache[cacheKey]
+  const cachedEntry = cache[cacheKey]
+  const now = Date.now()
+
+  if (cachedEntry && now - cachedEntry.timestamp < CACHE_DURATION_MS) {
+    return cachedEntry.data
   }
   try {
     const response = await fetch(`${urlPrefix ?? ''}${url}`, {
@@ -21,7 +29,7 @@ export const getYieldsRequest = async (
     })
     const data = (await response.json()) as GetYieldsResponse
     // Store the response in the cache
-    cache[cacheKey] = data
+    cache[cacheKey] = { data, timestamp: now }
     return data
   } catch (e) {
     console.error('Failed to read data about yields from server', e)
