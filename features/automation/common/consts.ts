@@ -1,5 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import type { FixedSizeArray } from 'helpers/types'
@@ -120,3 +121,23 @@ export const aaveTokenPairsAllowedAutomation = [
 export const vaultIdsThatAutoBuyTriggerShouldBeRecreated = [
   10804, 29568, 29186, 30084, 29628, 29928, 29574, 29643,
 ]
+
+export const faultyTakeProfitTriggerIdsByNetwork: Partial<Record<NetworkIds, number[]>> = {
+  [NetworkIds.BASEMAINNET]: [
+    10000000122, 10000000221, 10000000224, 10000000232, 10000000243, 10000000268, 10000000309,
+    10000000335, 10000000348,
+  ],
+  [NetworkIds.MAINNET]: [
+    10000000135, 10000000139, 10000000141, 10000000159, 10000000164, 10000000172, 10000000181,
+    10000000201, 10000000208, 10000000239, 10000000253, 10000000255,
+  ],
+  [NetworkIds.OPTIMISMMAINNET]: [
+    10000000168, 10000000167, 10000000163, 10000000161, 10000000149, 10000000143, 10000000141,
+    10000000136, 10000000105, 10000000089, 10000000075,
+  ],
+  [NetworkIds.ARBITRUMMAINNET]: [
+    10000000098, 10000000124, 10000000127, 10000000140, 10000000166, 10000000171, 10000000193,
+    10000000194, 10000000200, 10000000208, 10000000214, 10000000231, 10000000239, 10000000244,
+    10000000255,
+  ],
+}

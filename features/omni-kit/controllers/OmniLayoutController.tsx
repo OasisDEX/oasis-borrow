@@ -1,7 +1,9 @@
+import { MessageCard } from 'components/MessageCard'
 import { TabBar } from 'components/TabBar'
 import { DisabledOptimizationControl } from 'components/vault/DisabledOptimizationControl'
 import { DisabledProtectionControl } from 'components/vault/DisabledProtectionControl'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
+import { faultyTakeProfitTriggerIdsByNetwork } from 'features/automation/common/consts'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { OmniAutomationFormController } from 'features/omni-kit/automation/controllers/'
 import {
@@ -96,11 +98,28 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   const netValue = 'netValue' in position ? position.netValue : undefined
   const minNetValue = useOmniMinNetAutomationValue({ protocol, networkId })
 
+  const partialProfitTiggerId = automation?.triggers.partialTakeProfit?.triggerId
+  const faultyTakeProfitTriggerIds = faultyTakeProfitTriggerIdsByNetwork[networkId]
+  const shouldShowOverrideTakeProfit =
+    faultyTakeProfitTriggerIds && partialProfitTiggerId
+      ? faultyTakeProfitTriggerIds.includes(Number(partialProfitTiggerId))
+      : false
+
   return (
     <Container variant="vaultPageContainerStatic">
       {contextIsLoaded && !isOwner && !isOpening && (
         <VaultOwnershipBanner controller={owner} account={walletAddress} mb={4} />
       )}
+      {shouldShowOverrideTakeProfit && (
+        <Box mb={4}>
+          <MessageCard
+            type="warning"
+            messages={[t('vault-warnings.partial-take-profit-override')]}
+            withBullet={false}
+          />
+        </Box>
+      )}
+
       {positionBanner && <Box sx={{ mb: 4 }}>{positionBanner}</Box>}
       <VaultHeadline
         loading={isHeadlineDetailsLoading}

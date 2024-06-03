@@ -54,7 +54,12 @@ export type Subgraphs = {
     }
   }
   Aave: {
-    getAaveHistory: { dpmProxyAddress: string; collateralAddress: string; quoteAddress: string }
+    getAaveHistory: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      quoteAddress: string
+      protocol: string
+    }
   }
   Discover: {
     getMakerDiscoverPositions: { walletAddress: string }

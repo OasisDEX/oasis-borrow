@@ -7,6 +7,8 @@ import type { NetworkIds } from 'blockchain/networks'
 import { networksById } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3ReserveConfigurationData, getSparkV3ReserveData } from 'blockchain/spark-v3'
+import { aaveV3RawProtocolName } from 'features/omni-kit/protocols/aave/settings'
+import { sparkRawProtocolName } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { emptyAutomations } from 'handlers/portfolio/constants'
@@ -166,8 +168,8 @@ export const commonDataMapper = ({
 }
 
 export const aaveLikeProtocolNames = {
-  [LendingProtocol.AaveV3]: 'AAVE_V3',
-  [LendingProtocol.SparkV3]: 'Spark',
+  [LendingProtocol.AaveV3]: aaveV3RawProtocolName,
+  [LendingProtocol.SparkV3]: sparkRawProtocolName,
 }
 
 export const uniqueTokensReducer = (

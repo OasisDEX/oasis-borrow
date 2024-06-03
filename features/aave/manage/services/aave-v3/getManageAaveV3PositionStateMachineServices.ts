@@ -30,6 +30,7 @@ import type { UserSettingsState } from 'features/userSettings/userSettings.types
 import { allDefined } from 'helpers/allDefined'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { productToVaultType } from 'helpers/productToVaultType'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -53,6 +54,7 @@ export function getManageAaveV3PositionStateMachineServices(
     networkId: NetworkIds,
     collateralAddress: string,
     debtAddress: string,
+    protocol: AaveLikeLendingProtocol,
   ) => Promise<{
     events: AaveLikeHistoryEvent[]
     positionCumulatives?: AaveLikeCumulativeData
@@ -263,6 +265,7 @@ export function getManageAaveV3PositionStateMachineServices(
             context.strategyConfig.networkId,
             context.tokens.collateral,
             context.tokens.debt,
+            context.strategyConfig.protocol,
           )
           callback({
             type: 'HISTORY_UPDATED',

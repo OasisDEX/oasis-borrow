@@ -8,7 +8,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { getAaveHistoryEvents } from 'features/aave/services'
 import { getReserveDataCall } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
-import { LendingProtocol } from 'lendingProtocols'
+import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common'
 import type { Observable } from 'rxjs'
 import { combineLatest, from } from 'rxjs'
@@ -28,6 +28,9 @@ export function getAaveLikePositionData$({
   debtPrice: BigNumber
   services: AaveLikeServices
 }): Observable<AaveLikePositionV2> {
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
   const provider = getRpcProvider(networkId)
 
   const _collateralToken = {
@@ -48,7 +51,7 @@ export function getAaveLikePositionData$({
   return combineLatest(
     from(getReserveDataCall(dpm, collateralToken)),
     from(getReserveDataCall(dpm, debtToken)),
-    from(getAaveHistoryEvents(proxyAddress, networkId, collateralToken, debtToken)),
+    from(getAaveHistoryEvents(proxyAddress, networkId, collateralToken, debtToken, protocol)),
     from(
       services.aaveLikeReserveConfigurationData$({
         collateralToken,

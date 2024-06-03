@@ -7,7 +7,7 @@ export const getOmniFilterConsumedProxy = async (
 ) => {
   // leaving this all separate as it's easier for debugging
   const filterConsumedProxiesPromisesList = events.map((event) =>
-    filterFn({ event, filterConsumed: true }),
+    filterFn({ event, allEvents: events, filterConsumed: true }),
   )
   const filteredConsumedProxies = await Promise.all(filterConsumedProxiesPromisesList)
   return filteredConsumedProxies.every(Boolean)
