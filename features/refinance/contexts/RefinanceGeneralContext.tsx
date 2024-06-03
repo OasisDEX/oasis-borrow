@@ -1,5 +1,13 @@
 import type { RiskRatio } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
+import type {
+  AddressValue,
+  ChainInfo,
+  IPoolId,
+  ITokenAmount,
+  PositionId,
+  PositionType,
+} from '@summer_fi/summerfi-sdk-common'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
 import type { OmniValidations } from 'features/omni-kit/types'
@@ -11,14 +19,6 @@ import type { RefinanceSidebarStep } from 'features/refinance/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, FC, SetStateAction } from 'react'
 import React, { useContext, useState } from 'react'
-import type {
-  AddressValue,
-  ChainInfo,
-  IPoolId,
-  ITokenAmount,
-  PositionId,
-  PositionType,
-} from 'summerfi-sdk-common'
 
 export interface RefinanceSteps {
   currentStep: RefinanceSidebarStep

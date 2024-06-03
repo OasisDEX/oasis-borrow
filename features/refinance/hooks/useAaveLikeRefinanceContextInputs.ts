@@ -11,7 +11,7 @@ import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
 import { LendingProtocol } from 'lendingProtocols'
-import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
+import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
 
 export const useAaveLikeRefinanceContextInputs = ({
   address,

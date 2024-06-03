@@ -4,8 +4,12 @@ import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { replaceTokenSymbolETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
-import { AaveV3LendingPoolId, MorphoLendingPoolId, SparkLendingPoolId } from 'summerfi-sdk-client'
-import { type IPoolId, type IProtocol, ProtocolName } from 'summerfi-sdk-common'
+import {
+  AaveV3LendingPoolId,
+  MorphoLendingPoolId,
+  SparkLendingPoolId,
+} from '@summer_fi/summerfi-sdk-client'
+import { type IPoolId, type IProtocol, ProtocolName } from '@summer_fi/summerfi-sdk-common'
 
 export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContextBase): IPoolId => {
   const {

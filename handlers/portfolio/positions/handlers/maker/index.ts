@@ -19,7 +19,7 @@ import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/ge
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { getChainInfoByChainId } from 'summerfi-sdk-common'
+import { getChainInfoByChainId } from '@summer_fi/summerfi-sdk-common'
 
 export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,

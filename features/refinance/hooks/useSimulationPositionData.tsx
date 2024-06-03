@@ -4,7 +4,7 @@ import { tokenPriceStore } from 'blockchain/prices.constants'
 import type { RefinancePositionViewProps } from 'features/refinance/components'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import type { RefinancePositionViewType } from 'features/refinance/types'
-import { PositionUtils } from 'summerfi-sdk-client'
+import { PositionUtils } from '@summer_fi/summerfi-sdk-client'
 
 export const useSimulationPositionData = () => {
   const { simulation } = useRefinanceContext()

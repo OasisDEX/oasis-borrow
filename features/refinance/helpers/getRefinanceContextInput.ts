@@ -7,7 +7,7 @@ import type {
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
 import type { DpmRefinanceFormState } from 'features/refinance/state/refinanceFormReducto.types'
-import type { ILendingPoolId, IPositionId, PositionType } from 'summerfi-sdk-common'
+import type { ILendingPoolId, IPositionId, PositionType } from '@summer_fi/summerfi-sdk-common'
 
 import { getLendingProtocolByProtocolName } from './protocolNameToLendingProtocol'
 

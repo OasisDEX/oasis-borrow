@@ -6,7 +6,7 @@ import { getRefinanceContextInput } from 'features/refinance/helpers'
 import { getMakerPoolId } from 'features/refinance/helpers/getMakerPoolId'
 import { getMakerPositionId } from 'features/refinance/helpers/getMakerPositionId'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
-import { getChainInfoByChainId, type PositionType } from 'summerfi-sdk-common'
+import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
 
 export const useMakerRefinanceContextInputs = ({
   address,

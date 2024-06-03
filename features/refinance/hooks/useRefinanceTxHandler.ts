@@ -9,7 +9,7 @@ import { RefinanceSidebarStep } from 'features/refinance/types'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useEffect, useMemo } from 'react'
-import type { TransactionInfo } from 'summerfi-sdk-common'
+import type { TransactionInfo } from '@summer_fi/summerfi-sdk-common'
 
 export const useRefinanceTxHandler = () => {
   const { connectedContext$ } = useMainContext()

@@ -1,5 +1,5 @@
-import { EmodeType } from 'summerfi-sdk-client'
-import type { IToken } from 'summerfi-sdk-common'
+import { EmodeType } from '@summer_fi/summerfi-sdk-client'
+import type { IToken } from '@summer_fi/summerfi-sdk-common'
 
 const stablecoinTokens = [
   'ADAI',

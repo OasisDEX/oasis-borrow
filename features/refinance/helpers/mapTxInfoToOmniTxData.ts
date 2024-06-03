@@ -1,5 +1,5 @@
 import type { OmniTxData } from 'features/omni-kit/hooks'
-import type { TransactionInfo } from 'summerfi-sdk-common'
+import type { TransactionInfo } from '@summer_fi/summerfi-sdk-common'
 
 export function mapTxInfoToOmniTxData(txInfo: TransactionInfo | undefined): OmniTxData | undefined {
   if (txInfo == null) {

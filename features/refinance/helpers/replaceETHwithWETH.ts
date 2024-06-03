@@ -1,11 +1,11 @@
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
-import type { MakerLendingPoolId } from 'summerfi-sdk-client'
+import type { MakerLendingPoolId } from '@summer_fi/summerfi-sdk-client'
 import {
   isAaveV3LendingPoolId,
   isMakerLendingPoolId,
   isSparkLendingPoolId,
-} from 'summerfi-sdk-client'
-import { type IPoolId, type ITokenAmount, TokenAmount } from 'summerfi-sdk-common'
+} from '@summer_fi/summerfi-sdk-client'
+import { type IPoolId, type ITokenAmount, TokenAmount } from '@summer_fi/summerfi-sdk-common'
 
 export const replaceTokenAmountETHWithWETH = (tokenAmount: ITokenAmount): ITokenAmount => {
   if (tokenAmount.token.symbol === 'ETH') {

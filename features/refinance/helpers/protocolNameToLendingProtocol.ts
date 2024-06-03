@@ -1,5 +1,5 @@
 import { LendingProtocol } from 'lendingProtocols'
-import { ProtocolName } from 'summerfi-sdk-common'
+import { ProtocolName } from '@summer_fi/summerfi-sdk-common'
 
 export function getLendingProtocolByProtocolName(name: ProtocolName) {
   return {
