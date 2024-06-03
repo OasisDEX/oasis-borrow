@@ -1,5 +1,5 @@
-import { MorphoLendingPoolId } from 'summerfi-sdk-client'
-import { type ChainInfo, ProtocolName } from 'summerfi-sdk-common'
+import { MorphoLendingPoolId } from '@summer_fi/summerfi-sdk-client'
+import { type ChainInfo, ProtocolName } from '@summer_fi/summerfi-sdk-common'
 
 export const getMorphoPoolId = (chainInfo: ChainInfo, marketId: string) => {
   return MorphoLendingPoolId.createFrom({

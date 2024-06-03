@@ -1,5 +1,5 @@
+import { AaveV3PositionId, SparkPositionId } from '@summer_fi/summerfi-sdk-client'
 import { LendingProtocol } from 'lendingProtocols'
-import { AaveV3PositionId, SparkPositionId } from 'summerfi-sdk-client'
 
 export const getAaveLikePositionId = (lendingProtocol: LendingProtocol, vaultId: string) => {
   switch (lendingProtocol) {

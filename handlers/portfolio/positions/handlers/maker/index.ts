@@ -1,5 +1,6 @@
 import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/dma-library'
+import { getChainInfoByChainId } from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { amountFromRay } from 'blockchain/utils'
@@ -19,7 +20,6 @@ import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/ge
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { getChainInfoByChainId } from 'summerfi-sdk-common'
 
 export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,

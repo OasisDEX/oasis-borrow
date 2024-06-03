@@ -1,3 +1,20 @@
+import type { Chain, ProtocolClient, User } from '@summer_fi/summerfi-sdk-client'
+import { makeSDK, PositionUtils } from '@summer_fi/summerfi-sdk-client'
+import type {
+  IImportPositionParameters,
+  ILendingPoolInfo,
+  IPosition,
+  IRefinanceParameters,
+  ISimulation,
+  Maybe,
+  SimulationType,
+} from '@summer_fi/summerfi-sdk-common'
+import {
+  Address,
+  ExternalPositionType,
+  Percentage,
+  ProtocolName,
+} from '@summer_fi/summerfi-sdk-common'
 import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
@@ -10,18 +27,6 @@ import {
 } from 'features/refinance/helpers/replaceETHwithWETH'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useEffect, useMemo, useState } from 'react'
-import type { Chain, ProtocolClient, User } from 'summerfi-sdk-client'
-import { makeSDK, PositionUtils } from 'summerfi-sdk-client'
-import type {
-  IImportPositionParameters,
-  ILendingPoolInfo,
-  IPosition,
-  IRefinanceParameters,
-  ISimulation,
-  Maybe,
-  SimulationType,
-} from 'summerfi-sdk-common'
-import { Address, ExternalPositionType, Percentage, ProtocolName } from 'summerfi-sdk-common'
 
 export type SDKSimulation = {
   error: string | null

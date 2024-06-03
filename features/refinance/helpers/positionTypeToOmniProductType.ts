@@ -1,5 +1,5 @@
+import { PositionType } from '@summer_fi/summerfi-sdk-common'
 import { OmniProductType } from 'features/omni-kit/types'
-import { PositionType } from 'summerfi-sdk-common'
 
 export const positionTypeToOmniProductType = (vaultType: PositionType): OmniProductType => {
   switch (vaultType) {

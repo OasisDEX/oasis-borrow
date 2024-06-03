@@ -1,4 +1,5 @@
 import { RiskRatio } from '@oasisdex/dma-library'
+import type { ILendingPoolId, IPositionId, PositionType } from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { networkNameToIdMap } from 'blockchain/networks'
@@ -7,7 +8,6 @@ import type {
   RefinanceContextInputAutomations,
 } from 'features/refinance/contexts'
 import type { DpmRefinanceFormState } from 'features/refinance/state/refinanceFormReducto.types'
-import type { ILendingPoolId, IPositionId, PositionType } from 'summerfi-sdk-common'
 
 import { getLendingProtocolByProtocolName } from './protocolNameToLendingProtocol'
 

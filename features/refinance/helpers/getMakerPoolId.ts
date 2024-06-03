@@ -1,5 +1,5 @@
-import { MakerLendingPoolId } from 'summerfi-sdk-client'
-import { type ChainInfo, type IToken, ProtocolName } from 'summerfi-sdk-common'
+import { MakerLendingPoolId } from '@summer_fi/summerfi-sdk-client'
+import { type ChainInfo, type IToken, ProtocolName } from '@summer_fi/summerfi-sdk-common'
 
 export const getMakerPoolId = (
   chainInfo: ChainInfo,

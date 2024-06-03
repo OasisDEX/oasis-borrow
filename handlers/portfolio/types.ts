@@ -1,11 +1,11 @@
 import type { Vault } from '@prisma/client'
+import type { IPoolId, IPositionId } from '@summer_fi/summerfi-sdk-common'
 import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { HistoryResponse } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { LendingProtocol } from 'lendingProtocols'
-import type { IPoolId, IPositionId } from 'summerfi-sdk-common'
 
 type AutomationType = {
   enabled: boolean

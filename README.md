@@ -34,7 +34,11 @@ git clone https://github.com/OasisDEX/oasis-borrow.git
 
 Navigate to the project folder and install all dependencies
 
+NOTE: to install private packages from NPM you need to have an env variable called `NPM_TOKEN` containing your personal NPM access token.
+We recommend to set `NPM_TOKEN` in your `.env` file using our `.env.template`, this way you can just `source .env` before install.
+
 ```sh
+source .env
 yarn
 ```
 

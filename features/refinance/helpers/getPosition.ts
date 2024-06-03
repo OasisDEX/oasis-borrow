@@ -1,5 +1,10 @@
-import { AaveV3Position, MakerPosition, MorphoPosition, SparkPosition } from 'summerfi-sdk-client'
-import { type IPosition, ProtocolName } from 'summerfi-sdk-common'
+import {
+  AaveV3Position,
+  MakerPosition,
+  MorphoPosition,
+  SparkPosition,
+} from '@summer_fi/summerfi-sdk-client'
+import { type IPosition, ProtocolName } from '@summer_fi/summerfi-sdk-common'
 
 export const getPosition = (protocolName: ProtocolName, position: IPosition): IPosition => {
   switch (protocolName) {
