@@ -4,8 +4,7 @@ import { useAaveContext } from 'features/aave'
 import { getAaveHistoryEvents } from 'features/aave/services'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols'
-import { LendingProtocol } from 'lendingProtocols'
+import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { useMemo } from 'react'
 import { EMPTY, from } from 'rxjs'
 
@@ -16,12 +15,16 @@ export function useAaveLikeData({
   collateralToken,
   quoteToken,
 }: OmniProtocolHookProps) {
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
   const { aaveLikePosition$ } = useProductContext()
 
   const networkName = networksById[networkId].name
 
   const { getAaveLikeAssetsPrices$, chainLinkETHUSDOraclePrice$ } = useAaveContext(
-    protocol as AaveLikeLendingProtocol,
+    protocol,
     networkName,
   )
 
@@ -83,7 +86,13 @@ export function useAaveLikeData({
       () =>
         dpmPositionData && aavePositionData
           ? from(
-              getAaveHistoryEvents(dpmPositionData.proxy, networkId, collateralToken, quoteToken),
+              getAaveHistoryEvents(
+                dpmPositionData.proxy,
+                networkId,
+                collateralToken,
+                quoteToken,
+                protocol,
+              ),
             )
           : EMPTY,
       [dpmPositionData, aavePositionData, networkId],
