@@ -12,9 +12,11 @@ const availableAaveV3Automations = [
   AutomationFeatures.TRAILING_STOP_LOSS,
 ]
 
+export const aaveV2RawProtocolName = 'AAVE'
+
 export const settingsV2: OmniProtocolSettings = {
   rawName: {
-    [NetworkIds.MAINNET]: 'AAVE',
+    [NetworkIds.MAINNET]: aaveV2RawProtocolName,
   },
   supportedNetworkIds: [NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
@@ -44,12 +46,14 @@ export const settingsV2: OmniProtocolSettings = {
   },
 }
 
+export const aaveV3RawProtocolName = 'AAVE_V3'
+
 export const settingsV3: OmniProtocolSettings = {
   rawName: {
-    [NetworkIds.MAINNET]: 'AAVE_V3',
-    [NetworkIds.ARBITRUMMAINNET]: 'AAVE_V3',
-    [NetworkIds.OPTIMISMMAINNET]: 'AAVE_V3',
-    [NetworkIds.BASEMAINNET]: 'AAVE_V3',
+    [NetworkIds.MAINNET]: aaveV3RawProtocolName,
+    [NetworkIds.ARBITRUMMAINNET]: aaveV3RawProtocolName,
+    [NetworkIds.OPTIMISMMAINNET]: aaveV3RawProtocolName,
+    [NetworkIds.BASEMAINNET]: aaveV3RawProtocolName,
   },
   supportedNetworkIds: [
     NetworkIds.MAINNET,

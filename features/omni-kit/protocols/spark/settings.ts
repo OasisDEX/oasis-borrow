@@ -12,9 +12,11 @@ const availableSparkAutomations = [
   AutomationFeatures.PARTIAL_TAKE_PROFIT,
 ]
 
+export const sparkRawProtocolName = 'Spark'
+
 export const settings: OmniProtocolSettings = {
   rawName: {
-    [NetworkIds.MAINNET]: 'Spark',
+    [NetworkIds.MAINNET]: sparkRawProtocolName,
   },
   supportedNetworkIds: [NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],

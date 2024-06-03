@@ -1,14 +1,21 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
+import {
+  aaveV2RawProtocolName,
+  aaveV3RawProtocolName,
+} from 'features/omni-kit/protocols/aave/settings'
 import type {
   AaveLikeCumulativeData,
   AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
+import { sparkRawProtocolName } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 const sumStringNumbersArray = (numbersArray: { amount: string }[]): BigNumber =>
   numbersArray
@@ -22,10 +29,17 @@ export async function getAaveHistoryEvents(
   _networkId: NetworkIds,
   collateralToken: string,
   quoteToken: string,
+  protocol: AaveLikeLendingProtocol,
 ): Promise<{
   events: AaveLikeHistoryEvent[]
   positionCumulatives?: AaveLikeCumulativeData
 }> {
+  const subgraphProtocol = {
+    [LendingProtocol.AaveV2]: aaveV2RawProtocolName,
+    [LendingProtocol.AaveV3]: aaveV3RawProtocolName,
+    [LendingProtocol.SparkV3]: sparkRawProtocolName,
+  }[protocol]
+
   const tokens = getNetworkContracts(_networkId as OmniSupportedNetworkIds).tokens
   const response = (await loadSubgraph({
     subgraph: 'Aave',
@@ -35,6 +49,7 @@ export async function getAaveHistoryEvents(
       dpmProxyAddress: _proxyAdrress,
       collateralAddress: tokens[collateralToken.toUpperCase()].address.toLowerCase(),
       quoteAddress: tokens[quoteToken.toUpperCase()].address.toLowerCase(),
+      protocol: subgraphProtocol,
     },
   })) as SubgraphsResponses['Aave']['getAaveHistory']
 
@@ -101,10 +116,6 @@ export async function getAaveHistoryEvents(
             trigger: event.trigger ?? undefined,
           }),
         )
-        // Ajna & Morpho have additional mapping later (mapLendingEvents.ts), so there is no issue with
-        // overlapping events from different protocols. Aave & Spark doesn't so this one-liner will do the job
-        // until we will rewrite it to omni-kit
-        .filter((item) => !item.kind.includes('Ajna'))
         .sort((a, b) => b.timestamp - a.timestamp),
       positionCumulatives: positions[0]
         ? {
