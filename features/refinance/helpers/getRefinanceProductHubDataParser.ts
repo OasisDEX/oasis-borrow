@@ -118,8 +118,15 @@ export const getRefinanceProductHubDataParser = ({
   debtToken: string
   currentLTV: string
 }) => {
+  // Filter ajna as it's not supported in refinance
+  const filteredAjna = table.filter((item) => item.protocol !== LendingProtocol.Ajna)
+
   // Map only items with enough liquidity to perform refinance
-  const availableLiquidityMapped = availableLiquidityMapping({ table, debtAmount, debtToken })
+  const availableLiquidityMapped = availableLiquidityMapping({
+    table: filteredAjna,
+    debtAmount,
+    debtToken,
+  })
 
   // Overwrite borrow rates from PH (which are per pool, not per position) for aave-like protocols
   const borrowRatesMapped = borrowRateMapping({
