@@ -1,21 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
-import {
-  aaveV2RawProtocolName,
-  aaveV3RawProtocolName,
-} from 'features/omni-kit/protocols/aave/settings'
 import type {
   AaveLikeCumulativeData,
   AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
-import { sparkRawProtocolName } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+import { getAaveLikeSubgraphProtocol } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
-import { LendingProtocol } from 'lendingProtocols'
 
 const sumStringNumbersArray = (numbersArray: { amount: string }[]): BigNumber =>
   numbersArray
@@ -34,11 +29,7 @@ export async function getAaveHistoryEvents(
   events: AaveLikeHistoryEvent[]
   positionCumulatives?: AaveLikeCumulativeData
 }> {
-  const subgraphProtocol = {
-    [LendingProtocol.AaveV2]: aaveV2RawProtocolName,
-    [LendingProtocol.AaveV3]: aaveV3RawProtocolName,
-    [LendingProtocol.SparkV3]: sparkRawProtocolName,
-  }[protocol]
+  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
 
   const tokens = getNetworkContracts(_networkId as OmniSupportedNetworkIds).tokens
   const response = (await loadSubgraph({

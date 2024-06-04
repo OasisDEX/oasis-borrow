@@ -14,6 +14,7 @@ import {
   commonDataMapper,
   filterAutomation,
   formatBigNumberDebugData,
+  getFilteredAaveLikePortfolioPositionHistory,
   getReserveConfigurationDataCall,
   getReserveDataCall,
   uniqueTokensReducer,
@@ -29,7 +30,7 @@ import {
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
 const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
@@ -136,6 +137,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     allOraclePrices,
     debug,
   })
+
+  const protocol = commonData.protocol
+
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -149,7 +153,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
       networkId: dpm.networkId,
       collateralToken: commonData.primaryToken,
       debtToken: commonData.secondaryToken,
-      protocol: commonData.protocol,
+      protocol,
       proxyAddress: dpm.id.toLowerCase(),
     }),
   ])
@@ -165,9 +169,16 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     primaryTokenReserveConfiguration.ltv,
     RiskRatio.TYPE.LTV,
   )
-  const positionHistory = allPositionsHistory.filter(
-    (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
-  )[0]
+
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
+  const positionHistory = getFilteredAaveLikePortfolioPositionHistory({
+    history: allPositionsHistory,
+    protocol,
+    proxy: dpm.id,
+  })
   const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
   const tokensLabel = isShort
     ? `${commonData.secondaryToken}/${commonData.primaryToken}`
@@ -285,9 +296,18 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
       ['7Days'],
     )
   }
-  const positionHistory = allPositionsHistory.filter(
-    (position) => position.id === dpm.id.toLowerCase(),
-  )[0]
+
+  const protocol = commonData.protocol
+
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
+  const positionHistory = getFilteredAaveLikePortfolioPositionHistory({
+    history: allPositionsHistory,
+    protocol,
+    proxy: dpm.id,
+  })
 
   const netValuePnlModalData = getOmniNetValuePnlData({
     cumulatives: {

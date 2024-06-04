@@ -8,7 +8,10 @@ import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
-import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
+import {
+  commonDataMapper,
+  getFilteredAaveLikePortfolioPositionHistory,
+} from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import {
@@ -21,6 +24,7 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { DsProxyRegistry__factory } from 'types/ethers-contracts'
+
 const DsProxyFactory = DsProxyRegistry__factory
 
 export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ address, prices }) => {
@@ -39,9 +43,12 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
     network: NetworkIds.MAINNET,
     addresses: [dsProxyAddress],
   })
-  const positionHistory = allPositionsHistory.filter(
-    (position) => position.id.toLowerCase() === dsProxyAddress.toLowerCase(),
-  )[0]
+
+  const positionHistory = getFilteredAaveLikePortfolioPositionHistory({
+    history: allPositionsHistory,
+    protocol: LendingProtocol.AaveV2,
+    proxy: dsProxyAddress,
+  })
 
   const stEthPosition = await getOnChainPosition({
     networkId: NetworkIds.MAINNET,

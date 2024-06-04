@@ -7,7 +7,10 @@ import { calculateViewValuesForPosition } from 'features/aave/services'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
-import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
+import {
+  commonDataMapper,
+  getFilteredAaveLikePortfolioPositionHistory,
+} from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
 import { getAaveV2DsProxyPosition } from 'handlers/portfolio/positions/handlers/aave-v2/ds-proxy-position'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
@@ -18,6 +21,7 @@ import {
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { isAaveLikeLendingProtocol } from 'lendingProtocols'
 
 const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
@@ -54,9 +58,18 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
     primaryTokenReserveConfiguration.ltv,
     RiskRatio.TYPE.LTV,
   )
-  const positionHistory = allPositionsHistory.filter(
-    (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
-  )[0]
+  const protocol = commonData.protocol
+
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
+  const positionHistory = getFilteredAaveLikePortfolioPositionHistory({
+    history: allPositionsHistory,
+    protocol,
+    proxy: dpm.id,
+  })
+
   const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
   const netValuePnlModalData = getOmniNetValuePnlData({
     cumulatives: {
