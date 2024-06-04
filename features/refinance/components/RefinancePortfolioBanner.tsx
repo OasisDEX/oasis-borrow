@@ -1,3 +1,4 @@
+import { ProtocolName } from '@summer_fi/summerfi-sdk-common'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { RefinanceModalController } from 'features/refinance/controllers'
@@ -131,14 +132,30 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
       <Text as="span" variant="boldParagraph3" color="primary100">
         {tPortfolio('refinance.banner.default', {
           id: vaultId,
+          protocol: ProtocolName.Maker,
         })}
       </Text>
     ),
     [LendingProtocol.Ajna]: null,
-    [LendingProtocol.AaveV3]: null,
+    [LendingProtocol.AaveV3]: <Text as="span" variant="boldParagraph3" color="primary100">
+    {tPortfolio('refinance.banner.default', {
+      id: vaultId,
+      protocol: ProtocolName.AaveV3,
+    })}
+  </Text>,
     [LendingProtocol.AaveV2]: null,
-    [LendingProtocol.SparkV3]: null,
-    [LendingProtocol.MorphoBlue]: null,
+    [LendingProtocol.SparkV3]: <Text as="span" variant="boldParagraph3" color="primary100">
+    {tPortfolio('refinance.banner.default', {
+      id: vaultId,
+      protocol: ProtocolName.Spark,
+    })}
+  </Text>,
+    [LendingProtocol.MorphoBlue]: <Text as="span" variant="boldParagraph3" color="primary100">
+    {tPortfolio('refinance.banner.default', {
+      id: vaultId,
+      protocol: ProtocolName.MorphoBlue,
+    })}
+  </Text>,
   }[protocol]
 
   const contextId = `${vaultId}${primaryToken}${secondaryToken}`.toLowerCase()

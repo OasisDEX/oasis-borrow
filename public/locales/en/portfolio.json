@@ -119,7 +119,7 @@
   "refinance": {
     "title": "Swap Position",
     "banner": {
-      "default": "Your Maker position #{{id}} can be swapped to Spark",
+      "default": "Your #{{protocol}} position #{{id}} can be swapped",
       "lowerLiquidationPrice": "Your position #{{id}} can get swapped to lower your liquidation price by {{value}}"
     }
   }
