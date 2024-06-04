@@ -38,14 +38,16 @@ const getChangeVariant = (
 export const RefinanceReviewChangesSection = () => {
   const { t } = useTranslation()
 
-  const { poolData, position, simulation, automations } = useRefinanceContext()
+  const { poolData, position, simulation, automations, form: {
+    state: { strategy },
+  } } = useRefinanceContext()
 
   const ltv = new BigNumber(poolData.maxLtv.loanToValue)
   const liquidationPrice = new BigNumber(position.liquidationPrice)
   const debt = new BigNumber(position.debtTokenData.amount)
   const debtToken = position.debtTokenData.token.symbol
 
-  if (!simulation.refinanceSimulation) {
+  if (!simulation.refinanceSimulation || !strategy?.maxLtv) {
     return null
   }
   const targetPosition = simulation.refinanceSimulation.targetPosition
@@ -53,7 +55,7 @@ export const RefinanceReviewChangesSection = () => {
   const isAutomationEnabled = Object.values(automations).some((item) => item.enabled)
 
   const afterLtv = new BigNumber(
-    simulation.liquidationThreshold ? simulation.liquidationThreshold.toProportion() : 0,
+    strategy.maxLtv
   )
 
   const afterLiquidationPriceInUsd = simulation.liquidationPrice

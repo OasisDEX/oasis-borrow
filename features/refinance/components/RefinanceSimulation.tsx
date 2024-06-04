@@ -27,7 +27,7 @@ export const RefinanceSimulation = () => {
   }
 
   const maxLtv = strategy.maxLtv ? new BigNumber(strategy.maxLtv) : zero
-  const borrowRate = strategy.fee ? new BigNumber(strategy.fee) : zero
+  const borrowRate = strategy.fee ? new BigNumber(strategy.fee).times(100) : zero
 
   return [
     RefinanceSidebarStep.Give,
