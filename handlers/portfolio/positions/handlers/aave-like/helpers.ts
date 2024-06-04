@@ -215,9 +215,6 @@ export const getAaveLikeSubgraphProtocol = (protocol: AaveLikeLendingProtocol) =
 /**
  * Method for getting history per given aave-like position needed in portfolio to calculate PnL etc.
  *
- * @remarks
- * This method is part of the {@link core-library#Statistics | Statistics subsystem}.
- *
  * @param history - all user positions history
  * @param proxy - dpm or dsproxy address
  * @param protocol - aave-like lending protocol
