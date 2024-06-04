@@ -57,7 +57,6 @@ export const useAaveLikeRefinanceContextInputs = ({
 
   const castedPosition = position as AaveLikePositionV2
 
-  // wrong
   const borrowRate = castedPosition.borrowRate.toString()
   const ltv = castedPosition.riskRatio.loanToValue.toString()
   const maxLtv = castedPosition.maxRiskRatio.loanToValue.toString()
