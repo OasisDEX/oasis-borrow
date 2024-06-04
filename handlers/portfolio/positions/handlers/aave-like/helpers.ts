@@ -7,7 +7,10 @@ import type { NetworkIds } from 'blockchain/networks'
 import { networksById } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3ReserveConfigurationData, getSparkV3ReserveData } from 'blockchain/spark-v3'
-import { aaveV3RawProtocolName } from 'features/omni-kit/protocols/aave/settings'
+import {
+  aaveV2RawProtocolName,
+  aaveV3RawProtocolName,
+} from 'features/omni-kit/protocols/aave/settings'
 import { sparkRawProtocolName } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -22,7 +25,7 @@ import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAl
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getTokenName } from 'handlers/portfolio/positions/helpers/getTokenName'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
-import { LendingProtocol } from 'lendingProtocols'
+import { type AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 export const filterAutomation = (dpm: DpmSubgraphData) => (position: AutomationResponse[number]) =>
   position.triggers.account.toLowerCase() === dpm.id.toLowerCase()
@@ -199,3 +202,11 @@ export const formatBigNumberDebugData = (data: Record<string, any>) =>
       BigNumber.isBigNumber(value) ? value.toString() : value,
     ]),
   )
+
+export const getAaveLikeSubgraphProtocol = (protocol: AaveLikeLendingProtocol) => {
+  return {
+    [LendingProtocol.AaveV2]: aaveV2RawProtocolName,
+    [LendingProtocol.AaveV3]: aaveV3RawProtocolName,
+    [LendingProtocol.SparkV3]: sparkRawProtocolName,
+  }[protocol]
+}

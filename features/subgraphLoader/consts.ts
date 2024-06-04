@@ -35,6 +35,7 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: '',
   },
   Aave: {
+    // TODO remove version once testing on staging will be finished
     [NetworkIds.MAINNET]: 'summer-oasis-history/version/0.9.1-separate-positions-fix-automation',
     [NetworkIds.HARDHAT]: 'summer-oasis-history',
     [NetworkIds.GOERLI]: '',

@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
-import { calculateViewValuesForPosition, getAaveLikeSubgraphProtocol } from 'features/aave/services'
+import { calculateViewValuesForPosition } from 'features/aave/services'
 import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
@@ -14,6 +14,7 @@ import {
   commonDataMapper,
   filterAutomation,
   formatBigNumberDebugData,
+  getAaveLikeSubgraphProtocol,
   getReserveConfigurationDataCall,
   getReserveDataCall,
   uniqueTokensReducer,
