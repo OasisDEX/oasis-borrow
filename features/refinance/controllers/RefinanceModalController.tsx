@@ -1,7 +1,7 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Modal } from 'components/Modal'
-import { getPositionsFromUlrDataWithTriggers } from 'features/omni-kit/observables'
+import { getPositionsFromUrlDataWithTriggers } from 'features/omni-kit/observables'
 import {
   RefinanceHeader,
   RefinanceModalSkeleton,
@@ -77,7 +77,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const dpmEvents = useMemo(
     () =>
       from(
-        getPositionsFromUlrDataWithTriggers({
+        getPositionsFromUrlDataWithTriggers({
           networkId: contextInput.environment.chainId,
           pairId: contextInput.poolData.pairId,
           positionId: Number(contextInput.position.positionId.id),

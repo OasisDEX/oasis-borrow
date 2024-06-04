@@ -143,7 +143,7 @@ export async function getPositionsFromUrlData({
   } else return emptyResponse
 }
 
-export async function getPositionsFromUlrDataWithTriggers({
+export async function getPositionsFromUrlDataWithTriggers({
   networkId,
   pairId,
   positionId,
