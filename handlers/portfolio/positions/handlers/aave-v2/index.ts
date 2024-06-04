@@ -3,7 +3,7 @@ import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { NetworkIds } from 'blockchain/networks'
-import { calculateViewValuesForPosition } from 'features/aave/services'
+import { calculateViewValuesForPosition, getAaveLikeSubgraphProtocol } from 'features/aave/services'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -18,6 +18,7 @@ import {
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { isAaveLikeLendingProtocol } from 'lendingProtocols'
 
 const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
@@ -54,8 +55,16 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
     primaryTokenReserveConfiguration.ltv,
     RiskRatio.TYPE.LTV,
   )
+  const protocol = commonData.protocol
+
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
+  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
+
   const positionHistory = allPositionsHistory.filter(
-    (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
+    (position) => position.id.toLowerCase() === `${dpm.id}-${subgraphProtocol}`.toLowerCase(),
   )[0]
   const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
   const netValuePnlModalData = getOmniNetValuePnlData({

@@ -35,16 +35,19 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: '',
   },
   Aave: {
-    [NetworkIds.MAINNET]: 'summer-oasis-history',
+    [NetworkIds.MAINNET]: 'summer-oasis-history/version/0.9.1-separate-positions-fix-automation',
     [NetworkIds.HARDHAT]: 'summer-oasis-history',
     [NetworkIds.GOERLI]: '',
-    [NetworkIds.ARBITRUMMAINNET]: 'summer-oasis-history-arbitrum',
+    [NetworkIds.ARBITRUMMAINNET]:
+      'summer-oasis-history-arbitrum/version/0.9.1-separate-positions-fix-automation',
     [NetworkIds.ARBITRUMGOERLI]: '',
-    [NetworkIds.BASEMAINNET]: 'summer-oasis-history-base',
+    [NetworkIds.BASEMAINNET]:
+      'summer-oasis-history-base/version/0.9.1-separate-positions-fix-automation',
     [NetworkIds.BASEGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
     [NetworkIds.POLYGONMUMBAI]: '',
-    [NetworkIds.OPTIMISMMAINNET]: 'summer-oasis-history-optimism',
+    [NetworkIds.OPTIMISMMAINNET]:
+      'summer-oasis-history-optimism/version/0.9.1-separate-positions-fix-automation',
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
@@ -449,12 +452,14 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       $dpmProxyAddress: String
       $collateralAddress: String
       $quoteAddress: String
+      $protocol: String
     ) {
       positions(
         where: {
           account: $dpmProxyAddress
           collateralAddress: $collateralAddress
           debtAddress: $quoteAddress
+          protocol: $protocol
         }
       ) {
         id
@@ -473,6 +478,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           account: $dpmProxyAddress
           collateralToken_: { address: $collateralAddress }
           debtToken_: { address: $quoteAddress }
+          position_: { protocol: $protocol }
         }
       ) {
         depositTransfers {

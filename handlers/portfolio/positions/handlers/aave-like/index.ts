@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
-import { calculateViewValuesForPosition } from 'features/aave/services'
+import { calculateViewValuesForPosition, getAaveLikeSubgraphProtocol } from 'features/aave/services'
 import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
@@ -29,7 +29,7 @@ import {
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
 const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
@@ -136,6 +136,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     allOraclePrices,
     debug,
   })
+
+  const protocol = commonData.protocol
+
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -149,7 +152,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
       networkId: dpm.networkId,
       collateralToken: commonData.primaryToken,
       debtToken: commonData.secondaryToken,
-      protocol: commonData.protocol,
+      protocol,
       proxyAddress: dpm.id.toLowerCase(),
     }),
   ])
@@ -165,8 +168,15 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     primaryTokenReserveConfiguration.ltv,
     RiskRatio.TYPE.LTV,
   )
+
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
+  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
+
   const positionHistory = allPositionsHistory.filter(
-    (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
+    (position) => position.id.toLowerCase() === `${dpm.id}-${subgraphProtocol}`.toLowerCase(),
   )[0]
   const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
   const tokensLabel = isShort
@@ -285,8 +295,17 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
       ['7Days'],
     )
   }
+
+  const protocol = commonData.protocol
+
+  if (!isAaveLikeLendingProtocol(protocol)) {
+    throw Error('Given protocol is not aave-like')
+  }
+
+  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
+
   const positionHistory = allPositionsHistory.filter(
-    (position) => position.id === dpm.id.toLowerCase(),
+    (position) => position.id.toLowerCase() === `${dpm.id}-${subgraphProtocol}`.toLowerCase(),
   )[0]
 
   const netValuePnlModalData = getOmniNetValuePnlData({

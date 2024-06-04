@@ -24,6 +24,14 @@ const sumStringNumbersArray = (numbersArray: { amount: string }[]): BigNumber =>
       return new BigNumber(acc).plus(curr)
     }, new BigNumber(0))
 
+export const getAaveLikeSubgraphProtocol = (protocol: AaveLikeLendingProtocol) => {
+  return {
+    [LendingProtocol.AaveV2]: aaveV2RawProtocolName,
+    [LendingProtocol.AaveV3]: aaveV3RawProtocolName,
+    [LendingProtocol.SparkV3]: sparkRawProtocolName,
+  }[protocol]
+}
+
 export async function getAaveHistoryEvents(
   _proxyAdrress: string,
   _networkId: NetworkIds,
@@ -34,11 +42,7 @@ export async function getAaveHistoryEvents(
   events: AaveLikeHistoryEvent[]
   positionCumulatives?: AaveLikeCumulativeData
 }> {
-  const subgraphProtocol = {
-    [LendingProtocol.AaveV2]: aaveV2RawProtocolName,
-    [LendingProtocol.AaveV3]: aaveV3RawProtocolName,
-    [LendingProtocol.SparkV3]: sparkRawProtocolName,
-  }[protocol]
+  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
 
   const tokens = getNetworkContracts(_networkId as OmniSupportedNetworkIds).tokens
   const response = (await loadSubgraph({
