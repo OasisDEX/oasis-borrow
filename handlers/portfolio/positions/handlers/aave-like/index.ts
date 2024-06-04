@@ -14,7 +14,7 @@ import {
   commonDataMapper,
   filterAutomation,
   formatBigNumberDebugData,
-  getAaveLikeSubgraphProtocol,
+  getFilteredAaveLikePortfolioPositionHistory,
   getReserveConfigurationDataCall,
   getReserveDataCall,
   uniqueTokensReducer,
@@ -174,11 +174,11 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     throw Error('Given protocol is not aave-like')
   }
 
-  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
-
-  const positionHistory = allPositionsHistory.filter(
-    (position) => position.id.toLowerCase() === `${dpm.id}-${subgraphProtocol}`.toLowerCase(),
-  )[0]
+  const positionHistory = getFilteredAaveLikePortfolioPositionHistory({
+    history: allPositionsHistory,
+    protocol,
+    proxy: dpm.id,
+  })
   const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
   const tokensLabel = isShort
     ? `${commonData.secondaryToken}/${commonData.primaryToken}`
@@ -303,11 +303,11 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     throw Error('Given protocol is not aave-like')
   }
 
-  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
-
-  const positionHistory = allPositionsHistory.filter(
-    (position) => position.id.toLowerCase() === `${dpm.id}-${subgraphProtocol}`.toLowerCase(),
-  )[0]
+  const positionHistory = getFilteredAaveLikePortfolioPositionHistory({
+    history: allPositionsHistory,
+    protocol,
+    proxy: dpm.id,
+  })
 
   const netValuePnlModalData = getOmniNetValuePnlData({
     cumulatives: {

@@ -23,6 +23,7 @@ import {
 } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
+import type { HistoryResponse } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import { getTokenName } from 'handlers/portfolio/positions/helpers/getTokenName'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { type AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
@@ -209,4 +210,34 @@ export const getAaveLikeSubgraphProtocol = (protocol: AaveLikeLendingProtocol) =
     [LendingProtocol.AaveV3]: aaveV3RawProtocolName,
     [LendingProtocol.SparkV3]: sparkRawProtocolName,
   }[protocol]
+}
+
+/**
+ * Method for getting history per given aave-like position needed in portfolio to calculate PnL etc.
+ *
+ * @remarks
+ * This method is part of the {@link core-library#Statistics | Statistics subsystem}.
+ *
+ * @param history - all user positions history
+ * @param proxy - dpm or dsproxy address
+ * @param protocol - aave-like lending protocol
+ * @returns Returns history per given proxy (dpm or dsproxy) and protocol
+ *
+ */
+export const getFilteredAaveLikePortfolioPositionHistory = ({
+  history,
+  proxy,
+  protocol,
+}: {
+  history: HistoryResponse
+  proxy: string
+  protocol: AaveLikeLendingProtocol
+}) => {
+  // subgraph protocol is needed here since all position ids from subgraph consists of proxy address and protocol
+  // i.e. 0x302a28d7968824f386f278a72368856bc4d82ba4-Spark
+  const subgraphProtocol = getAaveLikeSubgraphProtocol(protocol)
+
+  return history.filter(
+    (position) => position.id.toLowerCase() === `${proxy}-${subgraphProtocol}`.toLowerCase(),
+  )[0]
 }
