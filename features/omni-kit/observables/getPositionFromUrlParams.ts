@@ -11,6 +11,8 @@ import {
 } from 'features/aave/services'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+import type { GetTriggersResponse } from 'helpers/lambda/triggers'
+import { getTriggersRequest } from 'helpers/lambda/triggers'
 import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 
@@ -59,6 +61,11 @@ export interface PositionFromUrl extends PositionCreated {
   pairId: number
 }
 
+export interface PositionFromUrlWithTriggers extends PositionCreated {
+  pairId: number
+  triggers: GetTriggersResponse
+}
+
 interface GetPositionFromUrlDataParams {
   networkId: number
   pairId: number
@@ -72,10 +79,16 @@ interface GetAccountByPositionIdParams {
   positionId: number
 }
 
-interface GetPositionFromUrlDataResponse {
+export interface GetPositionFromUrlDataResponse {
   dpmAddress: string
   owner: string
   positions: PositionFromUrl[]
+}
+
+export interface GetPositionFromUrlDataWithTriggersResponse {
+  dpmAddress: string
+  owner: string
+  positions: PositionFromUrlWithTriggers[]
 }
 
 const emptyResponse = {
@@ -128,6 +141,35 @@ export async function getPositionsFromUrlData({
       ),
     }
   } else return emptyResponse
+}
+
+export async function getPositionsFromUrlDataWithTriggers({
+  networkId,
+  pairId,
+  positionId,
+  protocol,
+}: GetPositionFromUrlDataParams): Promise<GetPositionFromUrlDataWithTriggersResponse> {
+  const positionFromUrl = await getPositionsFromUrlData({
+    networkId,
+    pairId,
+    positionId,
+    protocol,
+  })
+
+  const triggers = await Promise.all(
+    positionFromUrl.positions.map((event) =>
+      getTriggersRequest({
+        dpmProxy: event.proxyAddress,
+        networkId,
+        protocol: event.protocol,
+      }),
+    ),
+  )
+
+  return {
+    ...positionFromUrl,
+    positions: positionFromUrl.positions.map((item, idx) => ({ ...item, triggers: triggers[idx] })),
+  }
 }
 
 /**

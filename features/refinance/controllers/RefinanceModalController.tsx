@@ -1,6 +1,7 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Modal } from 'components/Modal'
+import { getPositionsFromUrlDataWithTriggers } from 'features/omni-kit/observables'
 import {
   RefinanceHeader,
   RefinanceModalSkeleton,
@@ -73,6 +74,19 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     ],
   )
 
+  const dpmEvents = useMemo(
+    () =>
+      from(
+        getPositionsFromUrlDataWithTriggers({
+          networkId: contextInput.environment.chainId,
+          pairId: contextInput.poolData.pairId,
+          positionId: Number(contextInput.position.positionId.id),
+          protocol: contextInput.position.lendingProtocol,
+        }),
+      ),
+    [contextInput.position.positionId.id],
+  )
+
   const interestRates = useMemo(
     () =>
       !cache.interestRates
@@ -88,6 +102,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
 
   const [positionOwnerData, positionOwnerError] = useObservable(positionOwner)
   const [interestRatesData, interestRatesError] = useObservable(interestRates)
+  const [dpmEventsData, dpmEventsError] = useObservable(dpmEvents)
 
   // cache data
   useEffect(() => {
@@ -121,17 +136,27 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
 
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose} variant="modalAutoWidth">
-      <WithErrorHandler error={[positionOwnerError, interestRatesError, tokenPriceUSDError]}>
+      <WithErrorHandler
+        error={[positionOwnerError, interestRatesError, tokenPriceUSDError, dpmEventsError]}
+      >
         <WithLoadingIndicator
-          value={[ctx, positionOwnerData, interestRatesData, tokenPriceUSDData, netAPY]}
+          value={[
+            ctx,
+            positionOwnerData,
+            interestRatesData,
+            tokenPriceUSDData,
+            netAPY,
+            dpmEventsData,
+          ]}
           customLoader={<RefinanceModalSkeleton onClose={onClose} />}
         >
-          {([_ctx, _owner, _interestRates, _tokenPriceUSD, _netApy]) => (
+          {([_ctx, _owner, _interestRates, _tokenPriceUSD, _netApy, _dpmEvents]) => (
             <RefinanceContextProvider
               ctx={{
                 ..._ctx,
                 environment: {
                   ..._ctx.environment,
+                  dpmEvents: _dpmEvents,
                   marketPrices: {
                     ethPrice: _tokenPriceUSD['ETH'].toString(),
                   },

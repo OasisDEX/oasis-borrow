@@ -1,3 +1,4 @@
+import type { GetPositionFromUrlDataWithTriggersResponse } from 'features/omni-kit/observables'
 import type { RefinanceGeneralContextBase } from 'features/refinance/contexts/RefinanceGeneralContext'
 import type { RefinanceInterestRatesMetadata } from 'features/refinance/helpers'
 import type { SDKSimulation } from 'features/refinance/hooks/useSdkSimulation'
@@ -9,6 +10,7 @@ export type RefinanceContext = {
     marketPrices: {
       ethPrice: string
     }
+    dpmEvents: GetPositionFromUrlDataWithTriggersResponse
   }
   position: RefinanceGeneralContextBase['position'] & {
     owner: string

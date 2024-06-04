@@ -2,6 +2,7 @@ import { getNetworkById } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { ProductHubView } from 'features/productHub/views'
 import {
+  refinanceCustomProductHubFiltersOptions,
   refinanceProductHubHiddenColumns,
   refinanceProductHubItemsPerPage,
 } from 'features/refinance/constants'
@@ -10,32 +11,10 @@ import {
   getRefinanceProductHubDataParser,
   getRefinanceProductHubSeparator,
 } from 'features/refinance/helpers'
+import { getRefinanceStrategiesToBeFiltered } from 'features/refinance/helpers/getRefinanceStrategiesToBeFiltered'
 import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
-import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import React, { useCallback } from 'react'
-import { FeaturesEnum } from 'types/config'
-
-const customFiltersOptions = {
-  protocols: [
-    {
-      label: lendingProtocolsByName[LendingProtocol.AaveV3].label,
-      value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
-      image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
-    },
-    {
-      label: lendingProtocolsByName[LendingProtocol.MorphoBlue].label,
-      value: lendingProtocolsByName[LendingProtocol.MorphoBlue].name,
-      image: lendingProtocolsByName[LendingProtocol.MorphoBlue].icon,
-      featureFlag: FeaturesEnum.MorphoBlue,
-    },
-    {
-      label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
-      value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
-      image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
-    },
-  ],
-}
 
 export const RefinanceProductTableStep = () => {
   const {
@@ -58,7 +37,7 @@ export const RefinanceProductTableStep = () => {
       lendingProtocol,
     },
     steps: { setNextStep },
-    environment: { chainInfo },
+    environment: { chainInfo, dpmEvents },
   } = useRefinanceContext()
 
   const onRowClick = useCallback(
@@ -89,7 +68,7 @@ export const RefinanceProductTableStep = () => {
       customSortByDefault={(table) => table}
       dataParser={(table) =>
         getRefinanceProductHubDataParser({
-          table,
+          table: getRefinanceStrategiesToBeFiltered({ events: dpmEvents.positions, table }),
           interestRates,
           collateralToken,
           collateralAmount,
@@ -119,7 +98,7 @@ export const RefinanceProductTableStep = () => {
       onRowClick={onRowClick}
       wrapperSx={{ mt: 0 }}
       separator={(table) => getRefinanceProductHubSeparator({ table, collateralToken, debtToken })}
-      customFiltersOptions={customFiltersOptions}
+      customFiltersOptions={refinanceCustomProductHubFiltersOptions[lendingProtocol]}
     />
   )
 }
