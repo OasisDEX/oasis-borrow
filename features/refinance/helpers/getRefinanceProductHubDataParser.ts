@@ -118,12 +118,15 @@ export const getRefinanceProductHubDataParser = ({
   debtToken: string
   currentLTV: string
 }) => {
-  // Filter ajna as it's not supported in refinance
-  const filteredAjna = table.filter((item) => item.protocol !== LendingProtocol.Ajna)
+  const filteredRowsByProtocol = table
+    // filter Ajna as it's not supported in refinance
+    .filter((item) => item.protocol !== LendingProtocol.Ajna)
+    // filter Maker as it's not supported as target in refinance
+    .filter((item) => item.protocol !== LendingProtocol.Maker)
 
   // Map only items with enough liquidity to perform refinance
   const availableLiquidityMapped = availableLiquidityMapping({
-    table: filteredAjna,
+    table: filteredRowsByProtocol,
     debtAmount,
     debtToken,
   })

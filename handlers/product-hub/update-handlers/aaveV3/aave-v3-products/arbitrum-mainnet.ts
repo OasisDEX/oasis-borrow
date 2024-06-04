@@ -91,6 +91,12 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     strategyType: 'short',
     types: ['borrow', 'multiply'],
   },
+  {
+    collateral: 'WEETH',
+    debt: 'ETH',
+    strategyType: 'long',
+    types: ['earn'],
+  },
 ]
 
 const borrowProducts = aaveSeed
