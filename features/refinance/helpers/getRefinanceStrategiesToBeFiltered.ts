@@ -70,7 +70,12 @@ export const getRefinanceStrategiesToBeFiltered = ({
       case LendingProtocol.MorphoBlue:
         const pairId = Number(item.label.split('-')[1] || 1)
 
-        return pairId !== existingPosition.pairId
+        return !(
+          pairId === existingPosition.pairId &&
+          item.primaryToken.toLowerCase() ===
+            existingPosition.collateralTokenSymbol.toLowerCase() &&
+          item.secondaryToken.toLowerCase() === existingPosition.debtTokenSymbol.toLowerCase()
+        )
       default:
         return true
     }
