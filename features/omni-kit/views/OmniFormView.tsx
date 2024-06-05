@@ -130,9 +130,14 @@ export function OmniFormView({
       const filteredEventsBooleanMap = await Promise.all(
         events.map((event) => omniProxyFilter({ event, allEvents: events })),
       )
-      const filteredEvents = events.filter(
-        (_event, eventIndex) => filteredEventsBooleanMap[eventIndex],
-      )
+      const filteredEvents = events
+        .filter((_event, eventIndex) => filteredEventsBooleanMap[eventIndex])
+        .filter(
+          (event) =>
+            event.collateralTokenAddress.toLowerCase() === collateralAddress.toLowerCase() &&
+            event.debtTokenAddress.toLowerCase() === quoteAddress.toLowerCase(),
+        )
+
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
         openModal(OmniDupePositionModal, {

@@ -57,11 +57,10 @@ export type HistorySupportedNetworks =
   | NetworkIds.BASEMAINNET
 
 const subgraphListDict = {
-  // TODO remove version once testing on staging will be finished
-  [NetworkIds.MAINNET]: 'summer-oasis-history/version/0.9.3-proxy-relations',
-  [NetworkIds.ARBITRUMMAINNET]: 'summer-oasis-history-arbitrum/version/0.9.3-proxy-relations',
-  [NetworkIds.OPTIMISMMAINNET]: 'summer-oasis-history-optimism/version/0.9.3-proxy-relations',
-  [NetworkIds.BASEMAINNET]: 'summer-oasis-history-base/version/0.9.3-proxy-relations',
+  [NetworkIds.MAINNET]: 'summer-oasis-history',
+  [NetworkIds.ARBITRUMMAINNET]: 'summer-oasis-history-arbitrum',
+  [NetworkIds.OPTIMISMMAINNET]: 'summer-oasis-history-optimism',
+  [NetworkIds.BASEMAINNET]: 'summer-oasis-history-base',
 } as Record<HistorySupportedNetworks, string>
 
 export const getHistoryData = async ({

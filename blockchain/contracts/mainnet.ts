@@ -227,6 +227,7 @@ export const mainnetContracts = {
     'AERO-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_AEROUSDC),
     'PRIME-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_PRIMEUSDC),
     'SAFE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SAFEDAI),
+    'WOETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WOETHETH),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
