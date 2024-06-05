@@ -43,11 +43,7 @@ export function useSdkRefinanceTransaction({
   }, [currentStep])
 
   useEffect(() => {
-    if (
-      !strategy ||
-      !dpm?.address ||
-      refinanceSimulation == null
-    ) {
+    if (!strategy || !dpm?.address || refinanceSimulation == null) {
       return
     }
     const fetchData = async () => {

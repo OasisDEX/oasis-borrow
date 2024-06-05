@@ -137,25 +137,31 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
       </Text>
     ),
     [LendingProtocol.Ajna]: null,
-    [LendingProtocol.AaveV3]: <Text as="span" variant="boldParagraph3" color="primary100">
-    {tPortfolio('refinance.banner.default', {
-      id: vaultId,
-      protocol: ProtocolName.AaveV3,
-    })}
-  </Text>,
+    [LendingProtocol.AaveV3]: (
+      <Text as="span" variant="boldParagraph3" color="primary100">
+        {tPortfolio('refinance.banner.default', {
+          id: vaultId,
+          protocol: ProtocolName.AaveV3,
+        })}
+      </Text>
+    ),
     [LendingProtocol.AaveV2]: null,
-    [LendingProtocol.SparkV3]: <Text as="span" variant="boldParagraph3" color="primary100">
-    {tPortfolio('refinance.banner.default', {
-      id: vaultId,
-      protocol: ProtocolName.Spark,
-    })}
-  </Text>,
-    [LendingProtocol.MorphoBlue]: <Text as="span" variant="boldParagraph3" color="primary100">
-    {tPortfolio('refinance.banner.default', {
-      id: vaultId,
-      protocol: ProtocolName.MorphoBlue,
-    })}
-  </Text>,
+    [LendingProtocol.SparkV3]: (
+      <Text as="span" variant="boldParagraph3" color="primary100">
+        {tPortfolio('refinance.banner.default', {
+          id: vaultId,
+          protocol: ProtocolName.Spark,
+        })}
+      </Text>
+    ),
+    [LendingProtocol.MorphoBlue]: (
+      <Text as="span" variant="boldParagraph3" color="primary100">
+        {tPortfolio('refinance.banner.default', {
+          id: vaultId,
+          protocol: ProtocolName.MorphoBlue,
+        })}
+      </Text>
+    ),
   }[protocol]
 
   const contextId = `${vaultId}${primaryToken}${secondaryToken}`.toLowerCase()

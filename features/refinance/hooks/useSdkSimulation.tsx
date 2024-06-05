@@ -210,8 +210,12 @@ export function useSdkSimulation(): SDKSimulation {
         debtPriceInUsd: targetDebtPrice,
         position: _refinanceSimulation.targetPosition,
       })
-      const targetIsShort = isShortPosition({ collateralToken: _refinanceSimulation?.targetPosition.collateralAmount.token.symbol })
-      const _liquidationPrice = targetIsShort ? one.div(targetLiquidationPriceInUsd).toString() : targetLiquidationPriceInUsd
+      const targetIsShort = isShortPosition({
+        collateralToken: _refinanceSimulation?.targetPosition.collateralAmount.token.symbol,
+      })
+      const _liquidationPrice = targetIsShort
+        ? one.div(targetLiquidationPriceInUsd).toString()
+        : targetLiquidationPriceInUsd
       setLiquidationPrice(_liquidationPrice)
     }
     void fetchData().catch((err) => {

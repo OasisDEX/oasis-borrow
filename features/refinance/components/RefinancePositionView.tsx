@@ -125,10 +125,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
   const formatted = {
     ltv: positionData?.ltv && formatLtvDecimalAsPercent(positionData.ltv),
     liquidationPrice:
-      positionData?.liquidationPrice &&
-      formatCryptoBalance(
-        positionData.liquidationPrice,
-      ),
+      positionData?.liquidationPrice && formatCryptoBalance(positionData.liquidationPrice),
     collateral: positionData?.collateral && (
       <ItemValueWithIcon tokens={[primaryToken]}>
         {formatCryptoBalance(positionData.collateral)}
