@@ -49,6 +49,7 @@ const ethCorrelatedUpperCase = [
   'WEETH',
   'WETH',
   'WSTETH',
+  'WOETH',
 ]
 
 export function getEmode(collateralToken: IToken, debtToken: IToken) {

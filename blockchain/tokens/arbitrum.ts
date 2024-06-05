@@ -33,6 +33,7 @@ export const tokensArbitrum = {
   WETH: contractDesc(erc20, arbitrum.common.WETH),
   WLD: contractDesc(erc20, arbitrum.common.WLD),
   WSTETH: contractDesc(erc20, arbitrum.common.WSTETH),
+  WOETH: contractDesc(erc20, arbitrum.common.WOETH),
   YIELDBTC: contractDesc(erc20, arbitrum.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, arbitrum.common.YIELDETH),
 } as Record<string, ContractDesc>

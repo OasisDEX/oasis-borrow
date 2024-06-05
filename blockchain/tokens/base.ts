@@ -30,6 +30,7 @@ export const tokensBase = {
   WETH: contractDesc(erc20, base.common.WETH),
   WLD: contractDesc(erc20, base.common.WLD),
   WSTETH: contractDesc(erc20, base.common.WSTETH),
+  WOETH: contractDesc(erc20, base.common.WOETH),
   YIELDBTC: contractDesc(erc20, base.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, base.common.YIELDETH),
   DEGEN: contractDesc(erc20, base.common.DEGEN),
