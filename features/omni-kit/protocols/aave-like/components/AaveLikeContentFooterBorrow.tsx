@@ -84,11 +84,7 @@ export function AaveLikeContentFooterBorrow() {
 
   return (
     <>
-      <OmniContentCard
-        asFooter
-        changeVariant={changeVariant}
-        {...borrowRateContentCardCommonData}
-      />
+      <OmniContentCard {...commonContentCardData} {...borrowRateContentCardCommonData} />
       <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
       <OmniContentCard {...commonContentCardData} {...availableToWithdrawContentCardCommonData} />
       <OmniContentCard {...commonContentCardData} {...availableToBorrowContentCardCommonData} />

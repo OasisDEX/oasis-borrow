@@ -14,6 +14,7 @@ export async function aaveLikeFlowStateFilter({
   networkId,
   protocol,
   quoteAddress,
+  filterConsumed,
 }: OmniFlowStateFilterParams & {
   networkId: NetworkIds
 }): Promise<boolean> {
@@ -24,7 +25,7 @@ export async function aaveLikeFlowStateFilter({
       (protocol === LendingProtocol.SparkV3 && event.protocol === LendingProtocol.AaveV3)) &&
     !allEvents?.find((item) => item.protocol === protocol)
   ) {
-    return Promise.resolve(true)
+    return Promise.resolve(!!filterConsumed)
   }
 
   // TODO for now we are reading it on every event that exists for given user
@@ -37,7 +38,7 @@ export async function aaveLikeFlowStateFilter({
   // if there is triggers we should not allow
   // the user to open a new position with this DPM
   if (positionTriggers?.triggersCount && positionTriggers.triggersCount !== 0) {
-    return Promise.resolve(false)
+    return Promise.resolve(!filterConsumed)
   }
 
   if (
@@ -55,8 +56,9 @@ export async function aaveLikeFlowStateFilter({
             address: event.proxyAddress,
             networkId: networkId as SparkV3SupportedNetwork,
           })
-    return userData.totalDebtBase.isZero()
+    const filterValue = userData.totalDebtBase.isZero()
+    return filterConsumed ? filterValue : !filterValue
   }
 
-  return Promise.resolve(false)
+  return Promise.resolve(!filterConsumed)
 }
