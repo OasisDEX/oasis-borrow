@@ -205,18 +205,21 @@ export function useSdkSimulation(): SDKSimulation {
         tokenPriceStore.prices,
         'target debt price - useSdkSimulation',
       ).toString()
+
       const targetLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
         liquidationThreshold: _targetLiquidationThreshold,
         debtPriceInUsd: targetDebtPrice,
         position: _refinanceSimulation.targetPosition,
       })
-      const targetIsShort = isShortPosition({
-        collateralToken: _refinanceSimulation?.targetPosition.collateralAmount.token.symbol,
-      })
-      const _liquidationPrice = targetIsShort
-        ? one.div(targetLiquidationPriceInUsd).toString()
-        : targetLiquidationPriceInUsd
-      setLiquidationPrice(_liquidationPrice)
+      setLiquidationPrice(targetLiquidationPriceInUsd)
+      console.log(
+        {
+          liquidationThreshold: _targetLiquidationThreshold,
+          debtPriceInUsd: targetDebtPrice,
+          position: _refinanceSimulation.targetPosition,
+        },
+        targetLiquidationPriceInUsd,
+      )
     }
     void fetchData().catch((err) => {
       setError(err.message)
