@@ -36,19 +36,16 @@ export const subgraphsRecord: SubgraphsRecord = {
   },
   Aave: {
     // TODO remove version once testing on staging will be finished
-    [NetworkIds.MAINNET]: 'summer-oasis-history/version/0.9.1-separate-positions-fix-automation',
+    [NetworkIds.MAINNET]: 'summer-oasis-history/version/0.9.3-proxy-relations',
     [NetworkIds.HARDHAT]: 'summer-oasis-history',
     [NetworkIds.GOERLI]: '',
-    [NetworkIds.ARBITRUMMAINNET]:
-      'summer-oasis-history-arbitrum/version/0.9.1-separate-positions-fix-automation',
+    [NetworkIds.ARBITRUMMAINNET]: 'summer-oasis-history-arbitrum/version/0.9.3-proxy-relations',
     [NetworkIds.ARBITRUMGOERLI]: '',
-    [NetworkIds.BASEMAINNET]:
-      'summer-oasis-history-base/version/0.9.1-separate-positions-fix-automation',
+    [NetworkIds.BASEMAINNET]: 'summer-oasis-history-base/version/0.9.3-proxy-relations',
     [NetworkIds.BASEGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
     [NetworkIds.POLYGONMUMBAI]: '',
-    [NetworkIds.OPTIMISMMAINNET]:
-      'summer-oasis-history-optimism/version/0.9.1-separate-positions-fix-automation',
+    [NetworkIds.OPTIMISMMAINNET]: 'summer-oasis-history-optimism/version/0.9.3-proxy-relations',
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
