@@ -7,7 +7,7 @@ import {
 } from 'features/omni-kit/automation/helpers'
 import type { OmniAutomationSimulationResponse } from 'features/omni-kit/types'
 import type { GetTriggersResponse } from 'helpers/lambda/triggers'
-import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 interface GetMappedAutomationMetadataValuesParams {
   poolId?: string
@@ -15,6 +15,15 @@ interface GetMappedAutomationMetadataValuesParams {
   simulationResponse?: OmniAutomationSimulationResponse
   protocol: LendingProtocol
 }
+
+type MorphoBlueFlag = `morphoblue-${string}`
+type AaveLikeFlag = 'aave3' | 'spark'
+
+const morphoBlueFlagGuard = (flag: MorphoBlueFlag | AaveLikeFlag): flag is MorphoBlueFlag =>
+  flag.includes('morphoblue')
+
+const aaveLikeFlagGuard = (flag: MorphoBlueFlag | AaveLikeFlag): flag is AaveLikeFlag =>
+  flag.includes('aave3') || flag.includes('spark')
 
 export const getMappedAutomationMetadataValues = ({
   poolId,
@@ -29,48 +38,67 @@ export const getMappedAutomationMetadataValues = ({
   ) as keyof typeof flags // thanks for "aave3" and "spark"... 🙄
 
   const selectedFlags = flags[flagSelector]
-  return {
-    flags: {
-      isStopLossEnabled: selectedFlags?.isStopLossEnabled,
-      isTrailingStopLossEnabled: selectedFlags?.isTrailingStopLossEnabled,
-      isAutoSellEnabled: selectedFlags?.isBasicSellEnabled,
-      isAutoBuyEnabled: selectedFlags?.isBasicBuyEnabled,
-      isPartialTakeProfitEnabled: selectedFlags?.isPartialTakeProfitEnabled,
-    },
-    triggers: {
-      stopLoss: mapStopLossTriggers(
-        poolId
-          ? triggers[`morphoblue-${poolId}`]?.stopLoss
-          : triggers.aave3.stopLossToCollateral ||
-              triggers.aave3.stopLossToCollateralDMA ||
-              triggers.aave3.stopLossToDebt ||
-              triggers.aave3.stopLossToDebtDMA ||
-              triggers.spark.stopLossToCollateral ||
-              triggers.spark.stopLossToCollateralDMA ||
-              triggers.spark.stopLossToDebt ||
-              triggers.spark.stopLossToDebtDMA,
-      ),
-      trailingStopLoss: mapTrailingStopLossTriggers(
-        poolId
-          ? triggers[`morphoblue-${poolId}`]?.trailingStopLoss
-          : triggers.aave3.trailingStopLossDMA || triggers.spark.trailingStopLossDMA,
-      ),
-      autoSell: mapAutoSellTriggers(
-        poolId
-          ? triggers[`morphoblue-${poolId}`]?.basicSell
-          : triggers.aave3.basicSell || triggers.spark.basicSell,
-      ),
-      autoBuy: mapAutoBuyTriggers(
-        poolId
-          ? triggers[`morphoblue-${poolId}`]?.basicBuy
-          : triggers.aave3.basicBuy || triggers.spark.basicBuy,
-      ),
-      partialTakeProfit: mapPartialTakeProfitTriggers(
-        poolId
-          ? triggers[`morphoblue-${poolId}`]?.partialTakeProfit
-          : triggers.aave3.partialTakeProfit || triggers.spark.partialTakeProfit,
-      ),
-    },
-    simulation: simulationResponse?.simulation,
+
+  const resolvedFlags = {
+    isStopLossEnabled: selectedFlags?.isStopLossEnabled,
+    isTrailingStopLossEnabled: selectedFlags?.isTrailingStopLossEnabled,
+    isAutoSellEnabled: selectedFlags?.isBasicSellEnabled,
+    isAutoBuyEnabled: selectedFlags?.isBasicBuyEnabled,
+    isPartialTakeProfitEnabled: selectedFlags?.isPartialTakeProfitEnabled,
+  }
+
+  switch (protocol) {
+    case LendingProtocol.MorphoBlue:
+      if (!morphoBlueFlagGuard(flagSelector)) {
+        throw Error(`Wrong morpho blue flagSelector value ${flagSelector}`)
+      }
+
+      return {
+        triggers: {
+          stopLoss: mapStopLossTriggers(triggers[flagSelector]?.stopLoss),
+          trailingStopLoss: mapTrailingStopLossTriggers(triggers[flagSelector]?.trailingStopLoss),
+          autoSell: mapAutoSellTriggers(triggers[flagSelector]?.basicSell),
+          autoBuy: mapAutoBuyTriggers(triggers[flagSelector]?.basicBuy),
+          partialTakeProfit: mapPartialTakeProfitTriggers(
+            triggers[flagSelector]?.partialTakeProfit,
+          ),
+        },
+        flags: resolvedFlags,
+        simulation: simulationResponse?.simulation,
+      }
+    case LendingProtocol.AaveV3:
+    case LendingProtocol.SparkV3:
+      if (!aaveLikeFlagGuard(flagSelector)) {
+        throw Error(`Wrong aave-like flagSelector value ${flagSelector}`)
+      }
+
+      return {
+        triggers: {
+          stopLoss: mapStopLossTriggers(
+            triggers[flagSelector].stopLossToCollateral ||
+              triggers[flagSelector].stopLossToCollateralDMA ||
+              triggers[flagSelector].stopLossToDebt ||
+              triggers[flagSelector].stopLossToDebtDMA,
+          ),
+          trailingStopLoss: mapTrailingStopLossTriggers(triggers[flagSelector].trailingStopLossDMA),
+          autoSell: mapAutoSellTriggers(triggers[flagSelector].basicSell),
+          autoBuy: mapAutoBuyTriggers(triggers[flagSelector].basicBuy),
+          partialTakeProfit: mapPartialTakeProfitTriggers(triggers[flagSelector].partialTakeProfit),
+        },
+        flags: resolvedFlags,
+        simulation: simulationResponse?.simulation,
+      }
+    default:
+      return {
+        triggers: {
+          stopLoss: undefined,
+          trailingStopLoss: undefined,
+          autoSell: undefined,
+          autoBuy: undefined,
+          partialTakeProfit: undefined,
+        },
+        flags: resolvedFlags,
+        simulation: simulationResponse?.simulation,
+      }
   }
 }
