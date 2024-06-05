@@ -1,7 +1,7 @@
 import { EmodeType } from '@summer_fi/summerfi-sdk-client'
 import type { IToken } from '@summer_fi/summerfi-sdk-common'
 
-const stablecoinTokensUpperCase = [
+export const stablecoinTokensUpperCase = [
   'ADAI',
   'AETHDAI',
   'AETHLUSD',
@@ -37,7 +37,6 @@ const ethCorrelatedUpperCase = [
   'ASETH',
   'AWETH',
   'AWSTETH',
-  'CBETH',
   'CBETH',
   'CETH',
   'CWETHV3',

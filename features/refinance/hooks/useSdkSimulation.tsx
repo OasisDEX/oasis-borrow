@@ -17,6 +17,7 @@ import {
 } from '@summer_fi/summerfi-sdk-common'
 import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getPosition } from 'features/refinance/helpers/getPosition'
 import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
@@ -26,6 +27,7 @@ import {
   replaceTokenAmountETHWithWETH,
 } from 'features/refinance/helpers/replaceETHwithWETH'
 import { RefinanceSidebarStep } from 'features/refinance/types'
+import { one } from 'helpers/zero'
 import { useEffect, useMemo, useState } from 'react'
 
 export type SDKSimulation = {
@@ -108,7 +110,7 @@ export function useSdkSimulation(): SDKSimulation {
     const _collateralPrice = getTokenPrice(
       collateralTokenData.token.symbol,
       tokenPriceStore.prices,
-      'collateral price - refinance modal controller',
+      'collateral price - useSdkSimulation',
     ).toString()
     setCollateralPrice(_collateralPrice)
 
@@ -162,13 +164,13 @@ export function useSdkSimulation(): SDKSimulation {
       })
       setSourcePosition(_sourcePosition)
 
-      const _liquidationThreshold = (
+      const _targetLiquidationThreshold = (
         targetPoolInfo as ILendingPoolInfo
       ).collateral.liquidationThreshold.toLTV()
-      if (_liquidationThreshold == null) {
+      if (_targetLiquidationThreshold == null) {
         return
       }
-      setLiquidationThreshold(_liquidationThreshold)
+      setLiquidationThreshold(_targetLiquidationThreshold)
 
       const refinanceParameters: IRefinanceParameters = {
         sourcePosition: _sourcePosition,
@@ -198,12 +200,19 @@ export function useSdkSimulation(): SDKSimulation {
         setImportPositionSimulation(_importPositionSimulation)
       }
 
-      const afterLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
-        liquidationThreshold: _liquidationThreshold,
-        debtPriceInUsd: _debtPrice,
-        position: _refinanceSimulation?.targetPosition,
+      const targetDebtPrice = getTokenPrice(
+        _refinanceSimulation.targetPosition.debtAmount.token.symbol,
+        tokenPriceStore.prices,
+        'target debt price - useSdkSimulation',
+      ).toString()
+      const targetLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
+        liquidationThreshold: _targetLiquidationThreshold,
+        debtPriceInUsd: targetDebtPrice,
+        position: _refinanceSimulation.targetPosition,
       })
-      setLiquidationPrice(afterLiquidationPriceInUsd)
+      const targetIsShort = isShortPosition({ collateralToken: _refinanceSimulation?.targetPosition.collateralAmount.token.symbol })
+      const _liquidationPrice = targetIsShort ? one.div(targetLiquidationPriceInUsd).toString() : targetLiquidationPriceInUsd
+      setLiquidationPrice(_liquidationPrice)
     }
     void fetchData().catch((err) => {
       setError(err.message)

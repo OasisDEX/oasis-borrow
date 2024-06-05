@@ -15,7 +15,6 @@ import {
   formatDecimalAsPercent,
   formatLtvDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -128,7 +127,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
     liquidationPrice:
       positionData?.liquidationPrice &&
       formatCryptoBalance(
-        isShort ? one.div(positionData.liquidationPrice) : positionData.liquidationPrice,
+        positionData.liquidationPrice,
       ),
     collateral: positionData?.collateral && (
       <ItemValueWithIcon tokens={[primaryToken]}>
