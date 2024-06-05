@@ -113,7 +113,7 @@
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",
     "snowflake-sdk": "^1.6.10",
-    "@summer_fi/summerfi-sdk-client": "^0.2.8",
+    "@summer_fi/summerfi-sdk-client": "^0.2.9",
     "@summer_fi/summerfi-sdk-common": "^0.2.7",
     "terser-webpack-plugin": "^5.3.9",
     "text-mask-addons": "^3.7.2",
