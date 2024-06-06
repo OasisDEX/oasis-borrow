@@ -1,6 +1,6 @@
 import { makeSDK } from '@summer_fi/summerfi-sdk-client'
 import type { ISimulation, Order, SimulationType } from '@summer_fi/summerfi-sdk-common'
-import { Address, AddressType, Wallet } from '@summer_fi/summerfi-sdk-common'
+import { Address, AddressType, PositionsManager, Wallet } from '@summer_fi/summerfi-sdk-common'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -43,12 +43,7 @@ export function useSdkRefinanceTransaction({
   }, [currentStep])
 
   useEffect(() => {
-    if (
-      !strategy ||
-      !dpm?.address ||
-      refinanceSimulation == null ||
-      (importPositionSimulation == null && lendingProtocol === LendingProtocol.Maker)
-    ) {
+    if (!strategy || !dpm?.address || refinanceSimulation == null) {
       return
     }
     const fetchData = async () => {
@@ -63,28 +58,28 @@ export function useSdkRefinanceTransaction({
         walletAddress: wallet.address,
       })
 
-      const [_importPositionOrder, _refinanceOrder] = await Promise.all([
-        lendingProtocol === LendingProtocol.Maker
-          ? user.newOrder({
-              positionsManager: {
-                address: Address.createFromEthereum({
-                  value: dpm.address as `0x${string}`,
-                }),
-              },
-              simulation: importPositionSimulation,
-            })
-          : Promise.resolve(null),
-        user.newOrder({
-          positionsManager: {
+      const _refinanceOrder = await user.newOrder({
+        positionsManager: PositionsManager.createFrom({
+          address: Address.createFromEthereum({
+            value: dpm.address as `0x${string}`,
+          }),
+        }),
+        simulation: refinanceSimulation,
+      })
+      setTxRefinance(_refinanceOrder)
+
+      // for maker
+      if (lendingProtocol === LendingProtocol.Maker && importPositionSimulation != null) {
+        const _importPositionOrder = await user.newOrder({
+          positionsManager: PositionsManager.createFrom({
             address: Address.createFromEthereum({
               value: dpm.address as `0x${string}`,
             }),
-          },
-          simulation: refinanceSimulation,
-        }),
-      ])
-      setTxImportPosition(_importPositionOrder)
-      setTxRefinance(_refinanceOrder)
+          }),
+          simulation: importPositionSimulation,
+        })
+        setTxImportPosition(_importPositionOrder)
+      }
     }
     void fetchData().catch((err) => {
       setError(err.message)

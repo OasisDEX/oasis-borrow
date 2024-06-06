@@ -2,11 +2,7 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { ItemValueWithIcon } from 'components/infoSection/ItemValueWithIcon'
 import { useRefinanceContext } from 'features/refinance/contexts'
-import {
-  formatCryptoBalance,
-  formatDecimalAsPercent,
-  formatLtvDecimalAsPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
@@ -38,31 +34,36 @@ const getChangeVariant = (
 export const RefinanceReviewChangesSection = () => {
   const { t } = useTranslation()
 
-  const { poolData, position, simulation, automations } = useRefinanceContext()
+  const {
+    poolData,
+    position,
+    simulation,
+    automations,
+    form: {
+      state: { strategy },
+    },
+  } = useRefinanceContext()
 
   const ltv = new BigNumber(poolData.maxLtv.loanToValue)
   const liquidationPrice = new BigNumber(position.liquidationPrice)
   const debt = new BigNumber(position.debtTokenData.amount)
   const debtToken = position.debtTokenData.token.symbol
 
-  if (!simulation.refinanceSimulation) {
+  if (!simulation.refinanceSimulation || !strategy?.maxLtv) {
     return null
   }
   const targetPosition = simulation.refinanceSimulation.targetPosition
 
   const isAutomationEnabled = Object.values(automations).some((item) => item.enabled)
 
-  const afterLtv = new BigNumber(
-    simulation.liquidationThreshold ? simulation.liquidationThreshold.toProportion() : 0,
-  )
+  const afterLtv = new BigNumber(strategy.maxLtv)
 
   const afterLiquidationPriceInUsd = simulation.liquidationPrice
   const afterLiquidationPrice = new BigNumber(afterLiquidationPriceInUsd)
   const afterDebt = new BigNumber(targetPosition.debtAmount.amount)
   const afterDebtToken = targetPosition.debtAmount.token.symbol
 
-  const ltvChange = afterLtv.minus(ltv).div(ltv)
-  const liquidationPriceChange = afterLiquidationPrice.minus(liquidationPrice).div(liquidationPrice)
+  const ltvChange = afterLtv.minus(ltv)
 
   const formatted = {
     ltv: formatLtvDecimalAsPercent(ltv),
@@ -70,7 +71,6 @@ export const RefinanceReviewChangesSection = () => {
     ltvChange: formatLtvDecimalAsPercent(ltvChange),
     liquidationPrice: formatCryptoBalance(liquidationPrice),
     afterLiquidationPrice: formatCryptoBalance(afterLiquidationPrice),
-    liquidationPriceChange: formatDecimalAsPercent(liquidationPriceChange),
     debt: <ItemValueWithIcon tokens={[debtToken]}>{formatCryptoBalance(debt)}</ItemValueWithIcon>,
     afterDebt: (
       <ItemValueWithIcon tokens={[afterDebtToken]}>
@@ -89,14 +89,6 @@ export const RefinanceReviewChangesSection = () => {
               label: t('system.liq-price-short'),
               value: formatted.liquidationPrice,
               change: formatted.afterLiquidationPrice,
-              secondary: {
-                value: formatted.liquidationPriceChange,
-                variant: getChangeVariant(
-                  'liquidationPrice',
-                  liquidationPriceChange,
-                  position.isShort,
-                ),
-              },
             },
             {
               label: t('max-ltv'),

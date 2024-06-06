@@ -1,3 +1,5 @@
+import { stablecoinTokensUpperCase } from 'features/refinance/stablecoinTokensUpperCase'
+
 export function isShortPosition({ collateralToken }: { collateralToken: string }): boolean {
-  return ['SDAI', 'DAI', 'USDC'].includes(collateralToken)
+  return stablecoinTokensUpperCase.includes(collateralToken.toUpperCase())
 }

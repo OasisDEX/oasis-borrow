@@ -3367,10 +3367,10 @@
     "@styled-system/core" "^5.1.2"
     "@styled-system/css" "^5.1.5"
 
-"@summer_fi/summerfi-sdk-client@^0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@summer_fi/summerfi-sdk-client/-/summerfi-sdk-client-0.2.8.tgz#5ceb4ee6b1d9b100ef2134f1d21028ccc0a38efc"
-  integrity sha512-OMnoosPg+vWPRJZznuLjysRb/Jca/VupJ/Wkq1fZysxe5at1fSZPcAmJiDxB17HOZU2CElY5m4VUls8Q8xxcGQ==
+"@summer_fi/summerfi-sdk-client@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@summer_fi/summerfi-sdk-client/-/summerfi-sdk-client-0.2.10.tgz#6ada500f34d1950d996ac6ce9c575bfb801daa4b"
+  integrity sha512-FkGaLNlFXdmN5twERTLjpNb7qbkEBEYuWtibEX3hlzkmYUSLySq8CZWNx9sOYN+4MqjYpe8RWnKCMxXZOUAEug==
   dependencies:
     "@trpc/client" "11.0.0-next-beta.264"
     "@trpc/server" "11.0.0-next-beta.264"

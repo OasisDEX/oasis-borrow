@@ -1,56 +1,7 @@
 import { EmodeType } from '@summer_fi/summerfi-sdk-client'
 import type { IToken } from '@summer_fi/summerfi-sdk-common'
-
-const stablecoinTokensUpperCase = [
-  'ADAI',
-  'AETHDAI',
-  'AETHLUSD',
-  'AETHPYUSD',
-  'AETHSDAI',
-  'AETHUSDC',
-  'AETHUSDT',
-  'AUSDC',
-  'AUSDT',
-  'CDAI',
-  'CRVUSD',
-  'CUSDC',
-  'CUSDCV3',
-  'DAI',
-  'FRAX',
-  'GHO',
-  'GUSD',
-  'LUSD',
-  'PYUSD',
-  'SDAI',
-  'SUSD',
-  'SUSDE',
-  'USDC.E',
-  'USDC',
-  'USDE',
-  'USDT',
-]
-const ethCorrelatedUpperCase = [
-  'AETHCBETH',
-  'AETHRETH',
-  'AETHWETH',
-  'AETHWSTETH',
-  'ASETH',
-  'AWETH',
-  'AWSTETH',
-  'CBETH',
-  'CBETH',
-  'CETH',
-  'CWETHV3',
-  'ETH',
-  'EZETH',
-  'OSETH',
-  'RETH',
-  'STETH',
-  'WEETH',
-  'WETH',
-  'WSTETH',
-  'WOETH',
-]
+import { ethCorrelatedUpperCase } from 'features/refinance/ethCorrelatedUpperCase'
+import { stablecoinTokensUpperCase } from 'features/refinance/stablecoinTokensUpperCase'
 
 export function getEmode(collateralToken: IToken, debtToken: IToken) {
   const collateralTokenSymbolUpperCase = collateralToken.symbol.toUpperCase()
