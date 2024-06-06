@@ -49,12 +49,12 @@ export const omniSwapProtocolsMap: NetworkIdsWithValues<string[]> = {
   [NetworkIds.GOERLI]: [],
 }
 
-export const omniSwapVersionMap: NetworkIdsWithValues<'v4.0' | 'v5.0'> = {
-  [NetworkIds.MAINNET]: 'v4.0',
+export const omniSwapVersionMap: NetworkIdsWithValues<'v4.1' | 'v5.0'> = {
+  [NetworkIds.MAINNET]: 'v4.1',
   [NetworkIds.BASEMAINNET]: 'v5.0',
   [NetworkIds.OPTIMISMMAINNET]: 'v5.0',
   [NetworkIds.ARBITRUMMAINNET]: 'v5.0',
-  [NetworkIds.GOERLI]: 'v4.0', // doesn't matter
+  [NetworkIds.GOERLI]: 'v4.1', // doesn't matter
 }
 
 export const omniNetworkMap: NetworkIdsWithValues<Network> = {
