@@ -24,8 +24,9 @@ const urlCreator = (
   basePath: string,
 ) => {
   if (!path) return basePath
-  const removedRouteName = path.replace(`/api/${ROUTE_NAME}`, '')
-  const url = new URL(`${basePath}${removedRouteName}`)
+  // query starts with /swaps, for example: swap/v4.1/1/swap?...'
+  const replacedRouteName = path.replace(`/api/${ROUTE_NAME}`, '/swap')
+  const url = new URL(`${basePath}${replacedRouteName}`)
 
   // Add connectorTokens query param to the url if the network is mainnet
   if (Number(queryParams.networkId) === NetworkIds.MAINNET) {
@@ -71,6 +72,7 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const newUrl = urlCreator(req.url, parseResult.data, oneInchApiUrl)
+  console.log('newUrl', newUrl)
   const headers = { [AUTH_HEADER_KEY]: 'Bearer ' + oneInchApiKey }
   // fetch data from 1inch api
   const response = await fetch(newUrl, { headers })
