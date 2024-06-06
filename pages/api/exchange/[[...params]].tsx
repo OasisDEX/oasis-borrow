@@ -71,7 +71,7 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const newUrl = urlCreator(req.url, parseResult.data, oneInchApiUrl)
-  const headers = { [AUTH_HEADER_KEY]: oneInchApiKey }
+  const headers = { [AUTH_HEADER_KEY]: 'Bearer ' + oneInchApiKey }
   // fetch data from 1inch api
   const response = await fetch(newUrl, { headers })
   // pass the response from 1inch api to the client
