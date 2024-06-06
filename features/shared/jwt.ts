@@ -106,11 +106,12 @@ async function requestJWT(
   if (isGnosisSafe) {
     const sdk = new SafeAppsSDK()
 
-    const {
-      challenge: gnosisSafeChallenge,
-      messageHash,
-      dataToSign,
-    } = await getGnosisSafeDetails(sdk, chainId, account, challenge)
+    const { challenge: gnosisSafeChallenge, messageHash } = await getGnosisSafeDetails(
+      sdk,
+      chainId,
+      account,
+      challenge,
+    )
 
     // start polling
     const token = await new Promise<string | null>((resolve) => {
@@ -118,12 +119,8 @@ async function requestJWT(
       const interval = setInterval(async () => {
         if (messageHash) {
           try {
-            const isSigned = await sdk.safe.isMessageSigned(dataToSign)
-            if (!isSigned) {
-              throw new Error('Not signed yet')
-            }
             const offchainSignature = await sdk.safe.getOffChainSignature(messageHash)
-            if (!offchainSignature) {
+            if (offchainSignature === '') {
               throw new Error('GS: not ready')
             }
             const safeJwt = await requestSignin({
