@@ -72,7 +72,7 @@ export function swapCall(
     NetworkIds.BASEMAINNET,
   ].includes(network)
     ? 'v5.0'
-    : 'v4.0'
+    : 'v4.1'
   return getOneInchCall(swapAddress, network, oneInchVersion)
 }
 
