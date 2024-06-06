@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { InfoSection } from 'components/infoSection/InfoSection'
