@@ -64,26 +64,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       console.error('Check if argent wallet failed')
     }
 
-    if (body.isGnosisSafe) {
-      try {
-        const toHash = utils.defaultAbiCoder.encode(
-          ['bytes32', 'uint256'],
-          [
-            await getMessageHash(web3, utils.hashMessage(message), challenge.address),
-            7 /* signedMessages slot */,
-          ],
-        )
-        const valueSlot = utils.keccak256(toHash).replace(/0x0/g, '0x')
-        const slot = await web3.eth.getStorageAt(challenge.address, valueSlot as any)
-        const [signed] = utils.defaultAbiCoder.decode(['uint256'], slot)
-
-        if (!signed.eq(1)) {
-          throw new SignatureAuthError('Signature not correct')
-        }
-      } catch (e) {
-        return res.status(400).json({ error: (e as Error).message })
-      }
-    } else if (isArgentWallet) {
+    if (isArgentWallet) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
         throw new SignatureAuthError('Signature not correct')
       }
