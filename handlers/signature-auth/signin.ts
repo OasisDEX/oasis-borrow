@@ -1,5 +1,4 @@
 import { recoverPersonalSignature } from '@metamask/eth-sig-util'
-import { utils } from 'ethers'
 import jwt from 'jsonwebtoken'
 import type { NextApiHandler } from 'next'
 import Web3 from 'web3'
@@ -89,38 +88,6 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
 
     res.status(200).json({ jwt: token })
   }
-}
-
-const GnosisSafeABI = [
-  {
-    name: 'domainSeparator',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-]
-
-async function getMessageHash(web3: Web3, message: string, safe: string) {
-  const SAFE_MSG_TYPESHASH = '0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca'
-  const safeMessageHash = utils.keccak256(
-    utils.defaultAbiCoder.encode(
-      ['bytes32', 'bytes32'],
-      [SAFE_MSG_TYPESHASH, utils.keccak256(message)],
-    ),
-  )
-
-  const contract = new web3.eth.Contract(GnosisSafeABI as any, safe)
-  const domainSeparator = await contract.methods.domainSeparator().call()
-  return utils.solidityKeccak256(
-    ['bytes1', 'bytes1', 'bytes32', 'bytes32'],
-    [0x19, 0x01, domainSeparator, safeMessageHash],
-  )
 }
 
 export function recreateSignedMessage(challenge: ChallengeJWT): string {
