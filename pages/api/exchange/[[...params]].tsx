@@ -24,9 +24,8 @@ const urlCreator = (
   basePath: string,
 ) => {
   if (!path) return basePath
-  // query starts with /swaps, for example: swap/v4.1/1/swap?...'
-  const replacedRouteName = path.replace(`/api/${ROUTE_NAME}`, '/swap')
-  const url = new URL(`${basePath}${replacedRouteName}`)
+  const removedRouteName = path.replace(`/api/${ROUTE_NAME}`, '')
+  const url = new URL(`${basePath}${removedRouteName}`)
 
   // Add connectorTokens query param to the url if the network is mainnet
   if (Number(queryParams.networkId) === NetworkIds.MAINNET) {
