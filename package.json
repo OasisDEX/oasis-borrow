@@ -53,7 +53,7 @@
     "@safe-global/safe-apps-provider": "^0.18.2",
     "@safe-global/safe-apps-sdk": "^9.0.0",
     "@sentry/nextjs": "^7.81.1",
-    "@summer_fi/summerfi-sdk-client": "0.2.9",
+    "@summer_fi/summerfi-sdk-client": "0.2.10",
     "@summer_fi/summerfi-sdk-common": "^0.2.7",
     "@typeform/embed-react": "^1.13.0",
     "@web3-onboard/coinbase": "^2.2.5",

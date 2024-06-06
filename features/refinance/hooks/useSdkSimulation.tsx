@@ -15,6 +15,7 @@ import {
   Percentage,
   ProtocolName,
 } from '@summer_fi/summerfi-sdk-common'
+import BigNumber from 'bignumber.js'
 import { getTokenPrice } from 'blockchain/prices'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
@@ -27,7 +28,6 @@ import {
   replaceTokenAmountETHWithWETH,
 } from 'features/refinance/helpers/replaceETHwithWETH'
 import { RefinanceSidebarStep } from 'features/refinance/types'
-import { one } from 'helpers/zero'
 import { useEffect, useMemo, useState } from 'react'
 
 export type SDKSimulation = {
@@ -206,20 +206,18 @@ export function useSdkSimulation(): SDKSimulation {
         'target debt price - useSdkSimulation',
       ).toString()
 
-      const targetLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInUsd({
+      const targetLiquidationPriceInUsd = PositionUtils.getLiquidationPriceInDebtTokens({
         liquidationThreshold: _targetLiquidationThreshold,
         debtPriceInUsd: targetDebtPrice,
         position: _refinanceSimulation.targetPosition,
       })
-      setLiquidationPrice(targetLiquidationPriceInUsd)
-      console.log(
-        {
-          liquidationThreshold: _targetLiquidationThreshold,
-          debtPriceInUsd: targetDebtPrice,
-          position: _refinanceSimulation.targetPosition,
-        },
-        targetLiquidationPriceInUsd,
-      )
+      const isShort = isShortPosition({
+        collateralToken: _refinanceSimulation.targetPosition.collateralAmount.token.symbol,
+      })
+      const _liquidationPrice = isShort
+        ? new BigNumber(1).div(targetLiquidationPriceInUsd).toString()
+        : targetLiquidationPriceInUsd
+      setLiquidationPrice(_liquidationPrice)
     }
     void fetchData().catch((err) => {
       setError(err.message)

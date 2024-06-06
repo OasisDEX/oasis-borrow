@@ -1,4 +1,4 @@
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { Icon } from 'components/Icon'
 import { InfoSection } from 'components/infoSection/InfoSection'
@@ -122,10 +122,11 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
     ? `${secondaryToken}/${primaryToken}`
     : `${primaryToken}/${secondaryToken}`
 
+  const formattedLiquidationPrice = positionData?.liquidationPrice
+
   const formatted = {
     ltv: positionData?.ltv && formatLtvDecimalAsPercent(positionData.ltv),
-    liquidationPrice:
-      positionData?.liquidationPrice && formatCryptoBalance(positionData.liquidationPrice),
+    liquidationPrice: formattedLiquidationPrice && formatCryptoBalance(formattedLiquidationPrice),
     collateral: positionData?.collateral && (
       <ItemValueWithIcon tokens={[primaryToken]}>
         {formatCryptoBalance(positionData.collateral)}
