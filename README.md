@@ -173,10 +173,6 @@ at _run time_
 
 #### List of the `run-time` env vars
 
-- `INFURA_PROJECT_ID_BACKEND` - This is used mainly together with the
-  `<build_time>.USE_TERM_OF_SERVICE`. It is related with Argent internals. On the backend we need to
-  connect to a node in order to verify the wallet that is signing the Terms of Service.
-
 - `CHALLENGE_JWT_SECRET` - Could be any value. This is used on the server to sign JWT message.
 
 - `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when
