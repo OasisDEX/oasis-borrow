@@ -64,6 +64,25 @@ export function getRpcProvidersForLogs(networkId: NetworkIds): {
  */
 export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvider {
   const network = networkSetById[networkId] ?? networksById[networkId] // check if maybe we should use disabled provider.
+  const rpcGatewayUrl = getBackendRpcUrl(networkId)
+
+  if (!rpcGatewayUrl) {
+    throw new Error('RPC provider is not available')
+  }
+  return providerFactory.getProvider(rpcGatewayUrl, {
+    chainId: networkId,
+    name: network.name,
+  })
+}
+
+/**
+ * Retrieves the backend RPC URL for the specified network.
+ * @param {NetworkIds} networkId - The ID of the network.
+ * @returns {string} - The backend RPC URL.
+ * @throws {Error} - If the network with the specified ID does not exist.
+ */
+export function getBackendRpcUrl(networkId: NetworkIds): string {
+  const network = networkSetById[networkId] ?? networksById[networkId] // check if maybe we should use disabled provider.
 
   if (!network) {
     throw new Error(`Network with id ${networkId} does not exist`)
@@ -87,13 +106,5 @@ export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvid
   }
 
   const rpcBase = getRpcGatewayBaseUrl()
-  const rpcGatewayUrl = resolveRpcGatewayUrl(network.name, rpcConfig, rpcBase)
-
-  if (!rpcGatewayUrl) {
-    throw new Error('RPC provider is not available')
-  }
-  return providerFactory.getProvider(rpcGatewayUrl, {
-    chainId: networkId,
-    name: network.name,
-  })
+  return resolveRpcGatewayUrl(network.name, rpcConfig, rpcBase)
 }

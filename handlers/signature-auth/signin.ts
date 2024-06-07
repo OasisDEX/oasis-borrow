@@ -1,8 +1,7 @@
 import { recoverPersonalSignature } from '@metamask/eth-sig-util'
-import { getNetworkById } from 'blockchain/networks'
+import { getBackendRpcUrl } from 'blockchain/networks'
 import jwt from 'jsonwebtoken'
 import type { NextApiHandler } from 'next'
-import { getRpcGatewayUrl } from 'pages/api/rpcGateway'
 import Web3 from 'web3'
 import * as z from 'zod'
 
@@ -47,8 +46,8 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     } catch (e) {
       throw new SignatureAuthError('Challenge not correct')
     }
-    const network = getNetworkById(body.chainId)
-    const rpcUrl = await getRpcGatewayUrl(network.name)
+
+    const rpcUrl = getBackendRpcUrl(body.chainId)
     const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl))
     const message = recreateSignedMessage(challenge)
 
