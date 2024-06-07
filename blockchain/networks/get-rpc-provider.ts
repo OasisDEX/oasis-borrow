@@ -1,7 +1,7 @@
 import type { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import { providerFactory } from 'blockchain/jsonRpcBatchProvider'
 import type { ethers } from 'ethers'
-import { getRpcGatewayBaseUrl, getRpcGatewayUrl } from 'pages/api/rpcGateway'
+import { getRpcGatewayBaseUrl, resolveRpcGatewayUrl } from 'pages/api/rpcGateway'
 
 import { networkSetById } from './network-helpers'
 import type { NetworkIds } from './network-ids'
@@ -87,7 +87,7 @@ export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvid
   }
 
   const rpcBase = getRpcGatewayBaseUrl()
-  const rpcGatewayUrl = getRpcGatewayUrl(network.name, rpcConfig, rpcBase)
+  const rpcGatewayUrl = resolveRpcGatewayUrl(network.name, rpcConfig, rpcBase)
 
   if (!rpcGatewayUrl) {
     throw new Error('RPC provider is not available')

@@ -58,7 +58,10 @@ async function getAjnaPoolData(
     ...Object.entries(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
   ].map(([key, contract]) => {
     if (contract?.address === undefined) {
-      console.error('Contract address is undefined', { add: contract.address, key, networkId })
+      console.error(
+        'Contract address is undefined',
+        JSON.stringify({ add: contract.address, key, networkId }),
+      )
       throw new Error('Contract address is undefined')
     }
     return contract.address.toLowerCase()
@@ -111,13 +114,16 @@ async function getAjnaPoolData(
         )
 
         if (!response?.results) {
-          console.warn('No Ajna APY data for request: ', {
-            networkId,
-            protocol: LendingProtocol.Ajna,
-            ltv: maxLtv,
-            poolAddress: address,
-            response,
-          })
+          console.warn(
+            'No Ajna APY data for request: ',
+            JSON.stringify({
+              networkId,
+              protocol: LendingProtocol.Ajna,
+              ltv: maxLtv,
+              poolAddress: address,
+              response,
+            }),
+          )
         }
 
         return response

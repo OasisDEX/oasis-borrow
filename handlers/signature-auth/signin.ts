@@ -1,6 +1,8 @@
 import { recoverPersonalSignature } from '@metamask/eth-sig-util'
+import { getNetworkById } from 'blockchain/networks'
 import jwt from 'jsonwebtoken'
 import type { NextApiHandler } from 'next'
+import { getRpcGatewayUrl } from 'pages/api/rpcGateway'
 import Web3 from 'web3'
 import * as z from 'zod'
 
@@ -32,11 +34,6 @@ const inputSchema = z.object({
   isGnosisSafe: z.boolean(),
 })
 
-const networkMap: Record<number, string> = {
-  1: 'mainnet',
-  5: 'goerli',
-}
-
 export function makeSignIn(options: signInOptions): NextApiHandler {
   return async (req, res) => {
     const body = inputSchema.parse(req.body)
@@ -50,11 +47,9 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     } catch (e) {
       throw new SignatureAuthError('Challenge not correct')
     }
-
-    const infuraUrlBackend = `https://${networkMap[body.chainId]}.infura.io/v3/${
-      process.env.INFURA_PROJECT_ID_BACKEND
-    }`
-    const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
+    const network = getNetworkById(body.chainId)
+    const rpcUrl = await getRpcGatewayUrl(network.name)
+    const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl))
     const message = recreateSignedMessage(challenge)
 
     const isGnosisSafe = body.isGnosisSafe
