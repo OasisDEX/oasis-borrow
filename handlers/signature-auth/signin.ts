@@ -4,8 +4,9 @@ import type { NextApiHandler } from 'next'
 import Web3 from 'web3'
 import * as z from 'zod'
 
-import { checkIfArgentWallet, isValidSignature } from './argent'
+import { checkIfArgentWallet } from './argent'
 import type { ChallengeJWT } from './challenge'
+import { isValidSignature } from './eip1272'
 import { checkIfGnosisOwner } from './gnosis'
 
 export interface signInOptions {
@@ -56,6 +57,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
 
+    const isGnosisSafe = body.isGnosisSafe
     let isArgentWallet = false
     try {
       isArgentWallet = await checkIfArgentWallet(web3, challenge.address)
@@ -63,9 +65,9 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       console.error('Check if argent wallet failed')
     }
 
-    if (isArgentWallet) {
+    if (isGnosisSafe || isArgentWallet) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
-        throw new SignatureAuthError('Signature not correct')
+        throw new SignatureAuthError('Signature not correct - EIP1272')
       }
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, signature: body.signature })
@@ -73,7 +75,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
         const isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
 
         if (!isOwner) {
-          throw new SignatureAuthError('Signature not correct')
+          throw new SignatureAuthError('Signature not correct - personal sign')
         }
       }
     }
