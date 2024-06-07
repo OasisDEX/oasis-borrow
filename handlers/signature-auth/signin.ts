@@ -6,7 +6,7 @@ import * as z from 'zod'
 
 import { checkIfArgentWallet } from './argent'
 import type { ChallengeJWT } from './challenge'
-import { isValidSignature } from './eip1272'
+import { isValidSignature } from './eip1271'
 import { checkIfGnosisOwner } from './gnosis'
 
 export interface signInOptions {
@@ -67,7 +67,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
 
     if (isGnosisSafe || isArgentWallet) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
-        throw new SignatureAuthError('Signature not correct - EIP1272')
+        throw new SignatureAuthError('Signature not correct - eip1271')
       }
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, signature: body.signature })

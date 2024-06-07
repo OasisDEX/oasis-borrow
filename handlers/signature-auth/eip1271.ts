@@ -2,7 +2,7 @@ import type { Abi } from 'helpers/types/Abi.types'
 import type Web3 from 'web3'
 import type { AbiItem } from 'web3-utils'
 
-const eip1272CompatibleContract: Abi[] = [
+const eip1271CompatibleContract: Abi[] = [
   {
     inputs: [
       { internalType: 'bytes32', name: '_message', type: 'bytes32' },
@@ -20,7 +20,7 @@ export async function isValidSignature(
   message: string,
   signature: string,
 ): Promise<boolean> {
-  const wallet = new web3.eth.Contract(eip1272CompatibleContract as AbiItem[], address)
+  const wallet = new web3.eth.Contract(eip1271CompatibleContract as AbiItem[], address)
   const messageBytes32 = web3.eth.accounts.hashMessage(message)
 
   try {
