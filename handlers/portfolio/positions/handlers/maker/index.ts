@@ -137,8 +137,8 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             maxRiskRatio,
           }),
           rawPositionDetails: {
-            collateral,
-            debt: debt.toString(),
+            collateralAmount: collateral,
+            debtAmount: debt.toString(),
             collateralPrice: collateralPrice.toString(),
             debtPrice: daiPrice.toString(),
             ethPrice: prices['ETH'].toString(),

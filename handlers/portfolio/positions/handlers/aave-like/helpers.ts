@@ -157,6 +157,7 @@ export const commonDataMapper = ({
             }
           : {}),
       },
+      availableToRefinance: true,
     },
     primaryTokenPrice: primaryTokenOraclePrice || primaryTokenTickerPrice,
     secondaryTokenPrice: secondaryTokenOraclePrice || secondaryTokenTickerPrice,

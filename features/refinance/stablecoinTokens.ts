@@ -16,6 +16,7 @@ export const stablecoinTokensUpperCase = [
   'FRAX',
   'GHO',
   'GUSD',
+  'LUSD',
   'PYUSD',
   'SDAI',
   'SUSD',
