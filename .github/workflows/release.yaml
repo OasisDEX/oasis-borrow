@@ -26,7 +26,7 @@ jobs:
     steps:
       # Runs a single command using the runners shell
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           fetch-depth: 0
@@ -49,7 +49,8 @@ jobs:
         run: echo ${{ env.RELEASE_TYPE }}
       - name: git config
         run: |
-          git config user.name ${{ github.actor }}
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: release version
         run: npx release-it -- ${{ env.RELEASE_TYPE }} --ci
