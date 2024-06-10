@@ -104,6 +104,8 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     }
   }
 
+  console.log('query', query)
+
   if (!('version' in query && typeof query.version === 'string')) {
     console.warn('version url param not provided')
     return {
