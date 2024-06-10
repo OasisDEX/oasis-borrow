@@ -99,9 +99,11 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         },
       }}
     >
-      {isRefinanceEnabled && position.availableToRefinance && position.netValue >= 0 && (
-        <RefinancePortfolioBanner position={position} />
-      )}
+      {isRefinanceEnabled &&
+        position.availableToRefinance &&
+        position.netValue >= emptyPortfolioPositionNetValueThreshold && (
+          <RefinancePortfolioBanner position={position} />
+        )}
       <AppLink href={position.url}>
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
           <Text
