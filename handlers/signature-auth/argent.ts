@@ -2,19 +2,6 @@ import type { Abi } from 'helpers/types/Abi.types'
 import type Web3 from 'web3'
 import type { AbiItem } from 'web3-utils'
 
-const argentABI: Abi[] = [
-  {
-    inputs: [
-      { internalType: 'bytes32', name: '_message', type: 'bytes32' },
-      { internalType: 'bytes', name: '_signature', type: 'bytes' },
-    ],
-    name: 'isValidSignature',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-]
-
 const walletDetectorABI: Abi[] = [
   {
     inputs: [{ internalType: 'address', name: '_wallet', type: 'address' }],
@@ -36,21 +23,4 @@ export async function checkIfArgentWallet(web3: Web3, address: string): Promise<
   )
 
   return walletDetector.methods.isArgentWallet(address).call()
-}
-
-export async function isValidSignature(
-  web3: Web3,
-  address: string,
-  message: string,
-  signature: string,
-): Promise<boolean> {
-  const wallet = new web3.eth.Contract(argentABI as AbiItem[], address)
-  const messageBytes32 = web3.eth.accounts.hashMessage(message)
-
-  try {
-    await wallet.methods.isValidSignature(messageBytes32, signature).call()
-    return true
-  } catch (err) {
-    return false
-  }
 }

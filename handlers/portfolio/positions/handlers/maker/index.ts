@@ -21,6 +21,8 @@ import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/port
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
+const notSupportedIlks = ['CRVV1ETHSTETH-A']
+
 export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   address,
@@ -43,126 +45,128 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   }
 
   const positions = await Promise.all(
-    subgraphPositions.response.cdps.map(
-      async ({
-        cdp,
-        collateral,
-        cumulativeDepositUSD,
-        cumulativeFeesUSD,
-        cumulativeWithdrawnUSD,
-        ilk,
-        normalizedDebt,
-        openedAt,
-        triggers,
-        type: initialType,
-      }): Promise<PortfolioPosition> => {
-        const { collateralPrice, daiPrice, debt, primaryToken, secondaryToken, type, url } =
-          await getMakerPositionInfo({
-            apiVaults,
-            cdp,
-            ilk,
-            normalizedDebt,
-            prices,
-            type: initialType,
-          })
+    subgraphPositions.response.cdps
+      // Filter out ilks that are no longer supported (i.e insti vaults)
+      .filter((item) => !notSupportedIlks.includes(item.ilk.ilk))
+      .map(
+        async ({
+          cdp,
+          collateral,
+          cumulativeDepositUSD,
+          cumulativeFeesUSD,
+          cumulativeWithdrawnUSD,
+          ilk,
+          normalizedDebt,
+          openedAt,
+          triggers,
+          type: initialType,
+        }): Promise<PortfolioPosition> => {
+          const { collateralPrice, daiPrice, debt, primaryToken, secondaryToken, type, url } =
+            await getMakerPositionInfo({
+              apiVaults,
+              cdp,
+              ilk,
+              normalizedDebt,
+              prices,
+              type: initialType,
+            })
+          const netValue = new BigNumber(collateral)
+            .times(collateralPrice)
+            .minus(debt.times(daiPrice))
 
-        const netValue = new BigNumber(collateral)
-          .times(collateralPrice)
-          .minus(debt.times(daiPrice))
+          const minCollRatio = amountFromRay(new BigNumber(ilk.liquidationRatio))
 
-        const minCollRatio = amountFromRay(new BigNumber(ilk.liquidationRatio))
+          const liquidationPrice = collateralPriceAtRatio({
+            collateral: new BigNumber(collateral),
+            colRatio: minCollRatio,
+            vaultDebt: new BigNumber(debt),
+          }).toString()
 
-        const liquidationPrice = collateralPriceAtRatio({
-          collateral: new BigNumber(collateral),
-          colRatio: minCollRatio,
-          vaultDebt: new BigNumber(debt),
-        }).toString()
+          const riskRatio = new RiskRatio(
+            Number(collateral) > 0
+              ? new BigNumber(debt)
+                  .times(daiPrice)
+                  .div(new BigNumber(collateral).times(collateralPrice))
+              : zero,
+            RiskRatio.TYPE.LTV,
+          )
 
-        const riskRatio = new RiskRatio(
-          Number(collateral) > 0
-            ? new BigNumber(debt)
-                .times(daiPrice)
-                .div(new BigNumber(collateral).times(collateralPrice))
-            : zero,
-          RiskRatio.TYPE.LTV,
-        )
+          const borrowRate = new BigNumber(ilk.stabilityFee).minus(one)
+          const maxRiskRatio = new RiskRatio(one.div(minCollRatio), RiskRatio.TYPE.LTV)
+          const chainFamily = getChainInfoByChainId(NetworkIds.MAINNET)
+          if (!chainFamily) {
+            throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
+          }
 
-        const borrowRate = new BigNumber(ilk.stabilityFee).minus(one)
-        const maxRiskRatio = new RiskRatio(one.div(minCollRatio), RiskRatio.TYPE.LTV)
-        const chainFamily = getChainInfoByChainId(NetworkIds.MAINNET)
-        if (!chainFamily) {
-          throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
-        }
+          const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, primaryToken)
+          const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, secondaryToken)
+          const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
+          const positionId = getMakerPositionId(cdp)
 
-        const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, primaryToken)
-        const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, secondaryToken)
-        const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
-        const positionId = getMakerPositionId(cdp)
-
-        return {
-          availableToMigrate: false,
-          availableToRefinance: true,
-          automations: {
-            ...(type !== OmniProductType.Earn && {
-              autoBuy: { enabled: false },
-              autoSell: { enabled: false },
-              stopLoss: { enabled: false },
-              takeProfit: { enabled: false },
-              ...getPositionsAutomations({
-                triggers: triggers.map((trigger) => ({
-                  ...trigger,
-                  ...decodeTriggerDataAsJson(
-                    trigger.commandAddress,
-                    NetworkIds.MAINNET,
-                    trigger.triggerData,
-                  ),
-                })) as unknown as AutomationResponse[number]['triggers'][],
+          return {
+            availableToMigrate: false,
+            availableToRefinance: true,
+            automations: {
+              ...(type !== OmniProductType.Earn && {
+                autoBuy: { enabled: false },
+                autoSell: { enabled: false },
+                stopLoss: { enabled: false },
+                takeProfit: { enabled: false },
+                ...getPositionsAutomations({
+                  triggers: triggers.map((trigger) => ({
+                    ...trigger,
+                    ...decodeTriggerDataAsJson(
+                      trigger.commandAddress,
+                      NetworkIds.MAINNET,
+                      trigger.triggerData,
+                    ),
+                  })) as unknown as AutomationResponse[number]['triggers'][],
+                }),
               }),
+            },
+            details: getMakerPositionDetails({
+              collateral,
+              collateralPrice,
+              cumulativeDepositUSD,
+              cumulativeFeesUSD,
+              cumulativeWithdrawnUSD,
+              daiPrice,
+              debt,
+              liquidationPrice,
+              netValue,
+              primaryToken,
+              type,
+              borrowRate,
+              riskRatio,
+              maxRiskRatio,
             }),
-          },
-          details: getMakerPositionDetails({
-            collateral,
-            collateralPrice,
-            cumulativeDepositUSD,
-            cumulativeFeesUSD,
-            cumulativeWithdrawnUSD,
-            daiPrice,
-            debt,
-            liquidationPrice,
-            netValue,
+            rawPositionDetails: {
+              collateralAmount: collateral,
+              debtAmount: debt.toString(),
+              collateralPrice: collateralPrice.toString(),
+              debtPrice: daiPrice.toString(),
+              ethPrice: prices['ETH'].toString(),
+              liquidationPrice,
+              ltv: riskRatio.loanToValue.toString(),
+              maxLtv: maxRiskRatio.loanToValue.toString(),
+              borrowRate: borrowRate.toString(),
+              poolId,
+              positionId,
+              pairId: 1,
+            },
+            ...(type === OmniProductType.Earn && { lendingType: 'passive' }),
+            network: NetworkNames.ethereumMainnet,
+            netValue: netValue.toNumber(),
+            openDate: Number(openedAt),
+            positionId: Number(cdp),
             primaryToken,
+            protocol: LendingProtocol.Maker,
+            secondaryToken,
             type,
-            borrowRate,
-            riskRatio,
-            maxRiskRatio,
-          }),
-          rawPositionDetails: {
-            collateralAmount: collateral,
-            debtAmount: debt.toString(),
-            collateralPrice: collateralPrice.toString(),
-            debtPrice: daiPrice.toString(),
-            ethPrice: prices['ETH'].toString(),
-            liquidationPrice,
-            ltv: riskRatio.loanToValue.toString(),
-            maxLtv: maxRiskRatio.loanToValue.toString(),
-            borrowRate: borrowRate.toString(),
-            poolId,
-            positionId,
-            pairId: 1,
-          },
-          ...(type === OmniProductType.Earn && { lendingType: 'passive' }),
-          network: NetworkNames.ethereumMainnet,
-          netValue: netValue.toNumber(),
-          openDate: Number(openedAt),
-          positionId: Number(cdp),
-          primaryToken,
-          protocol: LendingProtocol.Maker,
-          secondaryToken,
-          type,
-          url,
-        }
-      },
-    ),
+            url,
+          }
+        },
+      ),
   )
 
   return {

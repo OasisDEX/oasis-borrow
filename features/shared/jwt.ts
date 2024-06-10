@@ -1,4 +1,4 @@
-import type { SendTransactionsResponse } from '@safe-global/safe-apps-sdk'
+import type { SignMessageResponse } from '@safe-global/safe-apps-sdk'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { decode } from 'jsonwebtoken'
 import type { Observable } from 'rxjs'
@@ -44,7 +44,7 @@ export function jwtAuthSetupToken$(
 }
 
 interface GnosisSafeSignInDetails {
-  safeTxHash: string
+  messageHash: string
   challenge: string
 }
 
@@ -72,15 +72,24 @@ async function getGnosisSafeDetails(
   }
 
   const dataToSign = getDataToSignFromChallenge(newChallenge)
-  const { safeTxHash } = (await sdk.txs.signMessage(dataToSign)) as SendTransactionsResponse
+  const res = (await sdk.txs.signMessage(dataToSign)) as SignMessageResponse
+  let messageHash: string | undefined
+  if ('messageHash' in res) {
+    messageHash = res.messageHash
+  } else if ('safeTxHash' in res) {
+    throw new Error('Please upgrade your SAFE')
+  } else {
+    throw new Error('Unexpected response type')
+  }
+
   localStorage.setItem(
     key,
     JSON.stringify({
-      safeTxHash,
+      messageHash,
       challenge: newChallenge,
     } as GnosisSafeSignInDetails),
   )
-  return { challenge: newChallenge, safeTxHash, dataToSign }
+  return { challenge: newChallenge, messageHash, dataToSign }
 }
 
 async function requestJWT(
@@ -97,42 +106,34 @@ async function requestJWT(
   if (isGnosisSafe) {
     const sdk = new SafeAppsSDK()
 
-    const {
-      challenge: gnosisSafeChallenge,
-      safeTxHash,
-      dataToSign,
-    } = await getGnosisSafeDetails(sdk, chainId, account, challenge)
+    const { challenge: gnosisSafeChallenge, messageHash } = await getGnosisSafeDetails(
+      sdk,
+      chainId,
+      account,
+      challenge,
+    )
 
     // start polling
     const token = await new Promise<string | null>((resolve) => {
       let returnValue = (val: string | null) => resolve(val) // CAUTION: this function is reassigned later
       const interval = setInterval(async () => {
-        try {
-          const { detailedExecutionInfo } = await sdk.txs.getBySafeTxHash(safeTxHash)
-          if (
-            !(
-              detailedExecutionInfo?.type === 'MULTISIG' &&
-              detailedExecutionInfo.confirmations.length
-            )
-          ) {
-            throw new Error('GS: not ready')
+        if (messageHash) {
+          try {
+            const offchainSignature = await sdk.safe.getOffChainSignature(messageHash)
+            if (offchainSignature === '') {
+              throw new Error('GS: not ready')
+            }
+            const safeJwt = await requestSignin({
+              challenge: gnosisSafeChallenge,
+              signature: offchainSignature,
+              chainId,
+              isGnosisSafe: true,
+            }).toPromise()
+
+            return returnValue(safeJwt)
+          } catch (error) {
+            console.error('GS: error occurred', error)
           }
-
-          const isSigned = await sdk.safe.isMessageSigned(dataToSign)
-          if (!isSigned) {
-            throw new Error('Not signed yet')
-          }
-
-          const safeJwt = await requestSignin({
-            challenge: gnosisSafeChallenge,
-            signature: safeTxHash,
-            chainId,
-            isGnosisSafe: true,
-          }).toPromise()
-
-          return returnValue(safeJwt)
-        } catch (error) {
-          console.error('GS: error occurred', error)
         }
       }, 5 * 1000)
 
