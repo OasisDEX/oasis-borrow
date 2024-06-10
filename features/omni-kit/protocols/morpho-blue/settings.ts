@@ -3,11 +3,6 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
 import type { NetworkIdsWithValues, OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
-import { getLocalAppConfig } from 'helpers/config'
-import { FeaturesEnum } from 'types/config'
-
-const automationFeatureFlags =
-  getLocalAppConfig('features')[FeaturesEnum.LambdaAutomations].MorphoBlue
 
 export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = {
   [NetworkIds.MAINNET]: {
@@ -76,6 +71,7 @@ export const settings: OmniProtocolSettings = {
       'WEETH',
       'WSTETH',
       'WOETH',
+      'MKR',
     ],
   },
   steps: {
@@ -94,11 +90,11 @@ export const settings: OmniProtocolSettings = {
   },
   availableAutomations: {
     [NetworkIds.MAINNET]: [
-      ...(automationFeatureFlags.autoBuy ? [AutomationFeatures.AUTO_BUY] : []),
-      ...(automationFeatureFlags.autoSell ? [AutomationFeatures.AUTO_SELL] : []),
-      ...(automationFeatureFlags.partialTakeProfit ? [AutomationFeatures.PARTIAL_TAKE_PROFIT] : []),
-      ...(automationFeatureFlags.stopLoss ? [AutomationFeatures.STOP_LOSS] : []),
-      ...(automationFeatureFlags.trailingStopLoss ? [AutomationFeatures.TRAILING_STOP_LOSS] : []),
+      AutomationFeatures.AUTO_BUY,
+      AutomationFeatures.AUTO_SELL,
+      AutomationFeatures.PARTIAL_TAKE_PROFIT,
+      AutomationFeatures.STOP_LOSS,
+      AutomationFeatures.TRAILING_STOP_LOSS,
     ],
   },
   markets: morphoMarkets,
@@ -117,4 +113,6 @@ export const morphoMarketsWithAutomation = [
   morphoMarkets?.[NetworkIds.MAINNET]?.['ETH-USDT'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['EZETH-ETH'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['WOETH-ETH'][0],
+  morphoMarkets?.[NetworkIds.MAINNET]?.['MKR-DAI'][0],
+  morphoMarkets?.[NetworkIds.MAINNET]?.['MKR-USDC'][0],
 ]
