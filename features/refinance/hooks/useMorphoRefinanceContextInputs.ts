@@ -108,7 +108,7 @@ export const useMorphoRefinanceContextInputs = ({
     network,
     address,
     slippage,
-    collateralAmount: collateralAmount,
+    collateralAmount,
     debtAmount: debtAmount,
     positionId: positionId,
     liquidationPrice,

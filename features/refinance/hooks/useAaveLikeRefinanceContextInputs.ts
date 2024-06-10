@@ -124,7 +124,7 @@ export const useAaveLikeRefinanceContextInputs = ({
     network,
     address,
     slippage,
-    collateralAmount: collateralAmount,
+    collateralAmount,
     debtAmount: debtAmount,
     positionId: positionId,
     liquidationPrice,

@@ -1,6 +1,5 @@
-import { RiskRatio, views } from '@oasisdex/dma-library'
+import { views } from '@oasisdex/dma-library'
 import type { Vault } from '@prisma/client'
-import { getChainInfoByChainId } from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
@@ -8,8 +7,6 @@ import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import { type OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { getMorphoPositionId } from 'features/refinance/helpers'
-import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { emptyAutomations } from 'handlers/portfolio/constants'
@@ -29,8 +26,9 @@ import type {
   PortfolioPositionsHandler,
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
-import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
+
+import { getRawPositionDetails } from './getRawPositionDetails'
 
 interface GetMorphoPositionsParams {
   apiVaults?: Vault[]
@@ -206,57 +204,4 @@ export const morphoPositionsHandler: PortfolioPositionsHandler = async ({
       positions: responses.flatMap(({ positions }) => positions),
     }
   })
-}
-
-function getRawPositionDetails(
-  networkId: number,
-  vaultId: string,
-  marketId: string,
-  pairId: number,
-  collateralAmount: BigNumber,
-  debtAmount: BigNumber,
-  liquidationPrice: string,
-  primaryTokenPrice: BigNumber,
-  secondaryTokenPrice: BigNumber,
-  maxRiskRatio: RiskRatio,
-  rate: string,
-  prices: TokensPricesList,
-) {
-  const chainFamily = getChainInfoByChainId(networkId)
-  if (!chainFamily) {
-    throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
-  }
-
-  const collateralPrice = primaryTokenPrice.toString()
-  const debtPrice = secondaryTokenPrice.toString()
-
-  const riskRatio = new RiskRatio(
-    Number(collateralAmount) > 0
-      ? new BigNumber(debtAmount)
-          .times(debtPrice)
-          .div(new BigNumber(collateralAmount).times(collateralPrice))
-      : zero,
-    RiskRatio.TYPE.LTV,
-  )
-
-  const borrowRate = rate
-
-  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
-  const positionId = getMorphoPositionId(vaultId)
-
-  const rawPositionDetails: PortfolioPosition['rawPositionDetails'] = {
-    collateralAmount: collateralAmount.toString(),
-    debtAmount: debtAmount.toString(),
-    collateralPrice,
-    debtPrice,
-    ethPrice: prices['ETH'].toString(),
-    liquidationPrice: liquidationPrice,
-    ltv: riskRatio.loanToValue.toString(),
-    maxLtv: maxRiskRatio.loanToValue.toString(),
-    borrowRate: borrowRate.toString(),
-    positionId,
-    poolId,
-    pairId,
-  }
-  return rawPositionDetails
 }
