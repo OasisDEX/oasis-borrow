@@ -1,4 +1,4 @@
-export const ethCorrelatedUpperCase = [
+export const emodeEthCorrelatedTokensUpperCase = [
   'AETHCBETH',
   'AETHRETH',
   'AETHWETH',

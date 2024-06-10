@@ -1,20 +1,20 @@
 import { EmodeType } from '@summer_fi/summerfi-sdk-client'
 import type { IToken } from '@summer_fi/summerfi-sdk-common'
-import { ethCorrelatedUpperCase } from 'features/refinance/ethCorrelatedUpperCase'
-import { stablecoinTokensUpperCase } from 'features/refinance/stablecoinTokensUpperCase'
+import { emodeEthCorrelatedTokensUpperCase } from 'features/refinance/emodeEthCorrelatedTokens'
+import { emodeStablecoinTokensUpperCase } from 'features/refinance/emodeStablecoinTokens'
 
 export function getEmode(collateralToken: IToken, debtToken: IToken) {
   const collateralTokenSymbolUpperCase = collateralToken.symbol.toUpperCase()
   const debtTokenSymbolUpperCase = debtToken.symbol.toUpperCase()
 
   if (
-    stablecoinTokensUpperCase.includes(collateralTokenSymbolUpperCase) &&
-    stablecoinTokensUpperCase.includes(debtTokenSymbolUpperCase)
+    emodeStablecoinTokensUpperCase.includes(collateralTokenSymbolUpperCase) &&
+    emodeStablecoinTokensUpperCase.includes(debtTokenSymbolUpperCase)
   ) {
     return EmodeType.Stablecoins
   } else if (
-    ethCorrelatedUpperCase.includes(collateralTokenSymbolUpperCase) &&
-    ethCorrelatedUpperCase.includes(debtTokenSymbolUpperCase)
+    emodeEthCorrelatedTokensUpperCase.includes(collateralTokenSymbolUpperCase) &&
+    emodeEthCorrelatedTokensUpperCase.includes(debtTokenSymbolUpperCase)
   ) {
     return EmodeType.ETHCorrelated
   }

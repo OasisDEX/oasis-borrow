@@ -5,9 +5,11 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import { type OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+import { emptyAutomations } from 'handlers/portfolio/constants'
 import {
   getMorphoPositionDetails,
   getMorphoPositionInfo,
@@ -17,6 +19,7 @@ import {
   type TokensPricesList,
 } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import type {
   PortfolioPosition,
   PortfolioPositionsCountReply,
@@ -24,6 +27,8 @@ import type {
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
 import { LendingProtocol } from 'lendingProtocols'
+
+import { getRawPositionDetails } from './getRawPositionDetails'
 
 interface GetMorphoPositionsParams {
   apiVaults?: Vault[]
@@ -33,9 +38,6 @@ interface GetMorphoPositionsParams {
   protocolRaw: string
   positionsCount?: boolean
 }
-import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
-import { emptyAutomations } from 'handlers/portfolio/constants'
-import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 
 async function getMorphoPositions({
   apiVaults,
@@ -132,8 +134,27 @@ async function getMorphoPositions({
             defaultList: emptyAutomations,
           })
 
+          const liquidationPrice = position.liquidationPrice.toString()
+
+          const rawPositionDetails = getRawPositionDetails(
+            networkId,
+            positionId,
+            marketId,
+            pairId,
+            position.collateralAmount,
+            position.debtAmount,
+            liquidationPrice.toString(),
+            collateralPrice,
+            quotePrice,
+            position.maxRiskRatio,
+            rate,
+            prices,
+          )
+
           return {
             availableToMigrate: false,
+            availableToRefinance: true,
+            rawPositionDetails,
             automations,
             details: getMorphoPositionDetails({
               liquidationRatio: new BigNumber(liquidationRatio).shiftedBy(NEGATIVE_WAD_PRECISION),

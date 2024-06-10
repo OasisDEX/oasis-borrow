@@ -28,8 +28,8 @@ export type PortfolioPosition = {
   description?: string
   details: PositionDetail[]
   rawPositionDetails?: {
-    collateral: string
-    debt: string
+    collateralAmount: string
+    debtAmount: string
     collateralPrice: string
     debtPrice: string
     ethPrice: string

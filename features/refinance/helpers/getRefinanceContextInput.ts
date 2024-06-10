@@ -34,8 +34,8 @@ export const getRefinanceContextInput = ({
   network,
   address,
   slippage,
-  collateral,
-  debt,
+  collateralAmount: collateral,
+  debtAmount: debt,
   liquidationPrice,
   ltv,
   maxLtv,
@@ -58,8 +58,8 @@ export const getRefinanceContextInput = ({
   network: NetworkNames
   address?: string
   slippage: number
-  collateral: string
-  debt: string
+  collateralAmount: string
+  debtAmount: string
   liquidationPrice: string
   ltv: string
   maxLtv: string

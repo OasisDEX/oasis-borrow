@@ -33,6 +33,8 @@ import { zero } from 'helpers/zero'
 import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
+import { getRawPositionDetails } from './getRawPositionDetails'
+
 const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
   prices,
@@ -78,8 +80,25 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     ? `${commonData.secondaryToken}/${commonData.primaryToken}`
     : `${commonData.primaryToken}/${commonData.secondaryToken}`
 
+  const liquidationPrice = isShort
+    ? calculations.liquidationPriceInCollateral
+    : calculations.liquidationPriceInDebt
+
+  const rawPositionDetails = getRawPositionDetails(
+    dpm,
+    calculations,
+    liquidationPrice.toString(),
+    primaryTokenPrice,
+    secondaryTokenPrice,
+    onChainPositionData,
+    commonData,
+    commonData.protocol,
+    prices,
+  )
+
   return {
     ...commonData,
+    rawPositionDetails,
     details: [
       {
         type: 'collateralLocked',
@@ -91,9 +110,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
       },
       {
         type: 'liquidationPrice',
-        value: `${formatCryptoBalance(
-          isShort ? calculations.liquidationPriceInCollateral : calculations.liquidationPriceInDebt,
-        )} ${tokensLabel}`,
+        value: `${formatCryptoBalance(liquidationPrice)} ${tokensLabel}`,
         subvalue: `Now ${formatCryptoBalance(
           isShort
             ? secondaryTokenPrice.div(primaryTokenPrice)
@@ -138,7 +155,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     debug,
   })
 
-  const protocol = commonData.protocol
+  const lendingProtocol = commonData.protocol
 
   const [
     primaryTokenReserveConfiguration,
@@ -153,7 +170,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
       networkId: dpm.networkId,
       collateralToken: commonData.primaryToken,
       debtToken: commonData.secondaryToken,
-      protocol,
+      protocol: lendingProtocol,
       proxyAddress: dpm.id.toLowerCase(),
     }),
   ])
@@ -170,13 +187,13 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     RiskRatio.TYPE.LTV,
   )
 
-  if (!isAaveLikeLendingProtocol(protocol)) {
+  if (!isAaveLikeLendingProtocol(lendingProtocol)) {
     throw Error('Given protocol is not aave-like')
   }
 
   const positionHistory = getFilteredAaveLikePortfolioPositionHistory({
     history: allPositionsHistory,
-    protocol,
+    protocol: lendingProtocol,
     proxy: dpm.id,
   })
   const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
@@ -202,8 +219,25 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     useDebtTokenAsPnL: isCorrelatedPosition(commonData.primaryToken, commonData.secondaryToken),
   })
 
+  const liquidationPrice = isShort
+    ? calculations.liquidationPriceInCollateral
+    : calculations.liquidationPriceInDebt
+
+  const rawPositionDetails = getRawPositionDetails(
+    dpm,
+    calculations,
+    liquidationPrice.toString(),
+    primaryTokenPrice,
+    secondaryTokenPrice,
+    onChainPositionData,
+    commonData,
+    lendingProtocol,
+    prices,
+  )
+
   return {
     ...commonData,
+    rawPositionDetails,
     details: [
       {
         type: 'netValue',
@@ -225,9 +259,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
       },
       {
         type: 'liquidationPrice',
-        value: `${formatCryptoBalance(
-          isShort ? calculations.liquidationPriceInCollateral : calculations.liquidationPriceInDebt,
-        )} ${tokensLabel}`,
+        value: `${formatCryptoBalance(liquidationPrice)} ${tokensLabel}`,
         subvalue: `Now ${formatCryptoBalance(
           isShort
             ? secondaryTokenPrice.div(primaryTokenPrice)
