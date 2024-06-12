@@ -17,7 +17,12 @@ export const useOmniYieldLoopHeadline = ({
   const { t } = useTranslation()
 
   const headlineDetails = []
-  if (maxYields && maxYieldsOffset) {
+  if (
+    maxYields?.apy7d &&
+    maxYieldsOffset?.apy7d &&
+    maxYields.apy7d.toString() !== 'NaN' &&
+    maxYieldsOffset.apy7d.toString() !== 'NaN'
+  ) {
     const formatYield = (yieldVal: BigNumber) =>
       formatPercent(yieldVal, {
         precision: 2,
@@ -36,6 +41,11 @@ export const useOmniYieldLoopHeadline = ({
       subColor: getPriceChangeColor({
         collateralPricePercentageChange: yield7DaysDiff,
       }),
+    })
+  } else {
+    headlineDetails.push({
+      label: t('open-earn.aave.product-header.current-yield'),
+      value: 'New!',
     })
   }
 

@@ -68,7 +68,7 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
-    [NetworkIds.BASEMAINNET]: '',
+    [NetworkIds.BASEMAINNET]: 'summer-morpho-blue-base',
     [NetworkIds.BASEGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
     [NetworkIds.POLYGONMUMBAI]: '',
