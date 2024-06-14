@@ -97,7 +97,9 @@ export function getRawPositionDetails(
     borrowRate: borrowRate.toString(),
     positionId,
     poolId,
-    pairId: 1, // TODO: investigate what used for
+    pairId: 1, // TODO: investigate what used for,
+    dpmAddress: dpm.id,
+    ownerAddress: dpm.user,
   }
   return rawPositionDetails
 }

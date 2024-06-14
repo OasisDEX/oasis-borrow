@@ -149,6 +149,8 @@ async function getMorphoPositions({
             position.maxRiskRatio,
             rate,
             prices,
+            proxyAddress,
+            position.owner,
           )
 
           return {

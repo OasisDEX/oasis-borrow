@@ -2,7 +2,13 @@ import { ProtocolName } from '@summer_fi/summerfi-sdk-common'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts/RefinanceGeneralContext'
 import { RefinanceModalController } from 'features/refinance/controllers'
-import { getRefinanceContextInput } from 'features/refinance/helpers'
+import {
+  getAaveLikePoolId,
+  getAaveLikePositionId,
+  getMorphoPositionId,
+  getRefinanceContextInput,
+} from 'features/refinance/helpers'
+import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
 import { omniProductTypeToSDKType } from 'features/refinance/helpers/omniProductTypeToSDKType'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
@@ -106,8 +112,8 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     borrowRate,
     maxLtv,
     ltv,
-    poolId,
-    positionId,
+    poolId: poolIdRaw,
+    positionId: positionIdRaw,
     pairId,
     collateralAmount,
     collateralPrice,
@@ -115,7 +121,39 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     debtPrice,
     liquidationPrice,
     ethPrice,
+    dpmAddress,
+    // ownerAddress,
   } = position.rawPositionDetails
+
+  let positionId: any = positionIdRaw
+  let poolId: any = poolIdRaw
+
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      positionId = getAaveLikePositionId(LendingProtocol.AaveV3, positionId.id)
+      poolId = getAaveLikePoolId(
+        LendingProtocol.SparkV3,
+        poolId.protocol.chainInfo,
+        poolId.collateralToken,
+        poolId.debtToken,
+        poolId.emodeType,
+      )
+      break
+    case LendingProtocol.SparkV3:
+      positionId = getAaveLikePositionId(LendingProtocol.SparkV3, positionId.id)
+      poolId = getAaveLikePoolId(
+        LendingProtocol.SparkV3,
+        poolId.protocol.chainInfo,
+        poolId.collateralToken,
+        poolId.debtToken,
+        poolId.emodeType,
+      )
+      break
+    case LendingProtocol.MorphoBlue:
+      positionId = getMorphoPositionId(positionId.id)
+      poolId = getMorphoPoolId(poolId.protocol.chainInfo, poolId.marketId)
+      break
+  }
 
   // To be useful once we will have clear definition on all copy variants within banner
   // const refinanceToProtocols = {
@@ -216,7 +254,11 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
             positionType: omniProductTypeToSDKType(productType),
             pairId,
             isOwner: wallet?.address.toLowerCase() === portfolioAddress?.toLowerCase(),
-            owner: undefined,
+            owner: dpmAddress,
+            dpm: {
+              id: positionId.id,
+              address: dpmAddress,
+            },
           })
 
           handleSetContext(contextInput)
