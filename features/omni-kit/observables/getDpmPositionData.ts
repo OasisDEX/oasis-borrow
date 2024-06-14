@@ -113,6 +113,7 @@ export function getDpmPositionDataV2$(
   protocolRaw: string,
   pairId: number,
 ): Observable<DpmPositionData> {
+  console.log(protocolRaw, pairId, positionId)
   return from(
     getPositionsFromUrlData({
       networkId,
@@ -121,8 +122,9 @@ export function getDpmPositionDataV2$(
       protocol,
     }),
   ).pipe(
-    switchMap(({ dpmAddress, owner, positions }) =>
-      combineLatest(
+    switchMap(({ dpmAddress, owner, positions }) => {
+      console.log('positions', { positions })
+      return combineLatest(
         of({ dpmAddress, owner, positions }),
         identifyTokens$(
           networkId,
@@ -133,8 +135,8 @@ export function getDpmPositionDataV2$(
             ]),
           ),
         ),
-      ),
-    ),
+      )
+    }),
     switchMap(([{ owner, positions }]) => {
       const position = filterPositionWhenUrlParamsDefined({
         collateralToken,
