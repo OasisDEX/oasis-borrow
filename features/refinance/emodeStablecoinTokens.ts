@@ -17,7 +17,6 @@ export const emodeStablecoinTokensUpperCase = [
   'GHO',
   'GUSD',
   'PYUSD',
-  'SDAI',
   'SUSD',
   'SUSDE',
   'USDC.E',
