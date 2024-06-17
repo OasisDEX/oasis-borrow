@@ -12,7 +12,6 @@ export const emodeStablecoinTokensUpperCase = [
   'CRVUSD',
   'CUSDC',
   'CUSDCV3',
-  'DAI',
   'FRAX',
   'GHO',
   'GUSD',
@@ -20,7 +19,4 @@ export const emodeStablecoinTokensUpperCase = [
   'SUSD',
   'SUSDE',
   'USDC.E',
-  'USDC',
-  'USDE',
-  'USDT',
 ]
