@@ -74,7 +74,7 @@ export function getRawPositionDetails(
 
   const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, commonData.primaryToken)
   const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, commonData.secondaryToken)
-  const emodeType = getEmode(collateralToken, debtToken)
+  const emodeType = getEmode(collateralToken, debtToken, lendingProtocol)
 
   const poolId = getAaveLikePoolId(
     lendingProtocol,
@@ -97,7 +97,9 @@ export function getRawPositionDetails(
     borrowRate: borrowRate.toString(),
     positionId,
     poolId,
-    pairId: 1, // TODO: investigate what used for
+    pairId: 1, // TODO: investigate what used for,
+    dpmAddress: dpm.id,
+    ownerAddress: dpm.user,
   }
   return rawPositionDetails
 }

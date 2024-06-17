@@ -23,6 +23,7 @@ export const RefinanceFlowSidebarController = () => {
     token: 'ETH',
     // Take only proxies without CreatePosition events
     filterConsumedProxy: async (events) => events.length === 0,
+    // will trigger on DPM step
     onEverythingReady: ({ availableProxies }) => {
       // Check if owner is already dpm and use it as dpm for refinance, if not fallback to first available dpm
       const dpm =

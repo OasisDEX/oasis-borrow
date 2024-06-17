@@ -66,7 +66,7 @@ export const useAaveLikeRefinanceContextInputs = ({
 
   const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
   const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
-  const emodeType = getEmode(collateralToken, debtToken)
+  const emodeType = getEmode(collateralToken, debtToken, lendingProtocol)
 
   const poolId = getAaveLikePoolId(
     lendingProtocol,

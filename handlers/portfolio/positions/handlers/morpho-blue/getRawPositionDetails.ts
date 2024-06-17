@@ -21,6 +21,8 @@ export function getRawPositionDetails(
   maxRiskRatio: RiskRatio,
   rate: string,
   prices: TokensPricesList,
+  proxyAddress: string,
+  ownerAddress: string,
 ) {
   const chainFamily = getChainInfoByChainId(networkId)
   if (!chainFamily) {
@@ -57,6 +59,8 @@ export function getRawPositionDetails(
     positionId,
     poolId,
     pairId,
+    dpmAddress: proxyAddress,
+    ownerAddress,
   }
   return rawPositionDetails
 }
