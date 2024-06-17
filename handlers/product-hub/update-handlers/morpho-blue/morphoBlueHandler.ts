@@ -173,7 +173,10 @@ async function getMorphoMarketData(
 }
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
-  return Promise.all([getMorphoMarketData(NetworkIds.MAINNET, tickers)]).then((responses) => {
+  return Promise.all([
+    getMorphoMarketData(NetworkIds.MAINNET, tickers),
+    getMorphoMarketData(NetworkIds.BASEMAINNET, tickers),
+  ]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {
         return {

@@ -6,6 +6,7 @@ import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
+import { isRefinanceSupportedNetwork } from 'features/aave/helpers/isRefinanceSupportedNetwork'
 import { shouldShowPairId } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { RefinancePortfolioBanner } from 'features/refinance/components'
@@ -100,6 +101,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       }}
     >
       {isRefinanceEnabled &&
+        isRefinanceSupportedNetwork(position.network) &&
         position.availableToRefinance &&
         position.netValue >= emptyPortfolioPositionNetValueThreshold && (
           <RefinancePortfolioBanner position={position} />

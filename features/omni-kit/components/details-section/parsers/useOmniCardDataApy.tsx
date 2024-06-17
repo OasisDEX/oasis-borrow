@@ -2,6 +2,7 @@ import type BigNumber from 'bignumber.js'
 import { Skeleton } from 'components/Skeleton'
 import type { OmniContentCardBase } from 'features/omni-kit/components/details-section'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import React from 'react'
 
 interface OmniCardDataApyParams {
@@ -20,7 +21,7 @@ export function useOmniCardDataApy({
           extra: <Skeleton width="120px" height="20px" sx={{ mt: 1 }} />,
         }
       : {
-          value: formatDecimalAsPercent(apy),
+          value: formatDecimalAsPercent(apy.toString() === 'NaN' ? zero : apy),
         }),
   }
 }
