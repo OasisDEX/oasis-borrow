@@ -12,6 +12,7 @@ interface GetOmniSidebarButtonsStatusParams {
   shouldSwitchNetwork: boolean
   suppressValidation: boolean
   walletAddress?: string
+  gasEstimation?: boolean
 }
 
 export function getRefinanceSidebarButtonsStatus({
@@ -26,13 +27,18 @@ export function getRefinanceSidebarButtonsStatus({
   shouldSwitchNetwork,
   suppressValidation,
   walletAddress,
+  gasEstimation,
 }: GetOmniSidebarButtonsStatusParams) {
   const isPrimaryButtonDisabled =
     suppressValidation || isTxSuccess
       ? false
       : !!walletAddress &&
         !shouldSwitchNetwork &&
-        (hasErrors || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
+        (hasErrors ||
+          isSimulationLoading ||
+          isTxInProgress ||
+          isTxWaitingForApproval ||
+          !gasEstimation)
 
   const isPrimaryButtonLoading = isTxSuccess
     ? false
