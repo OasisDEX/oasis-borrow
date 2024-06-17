@@ -128,6 +128,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
   let positionId: any = positionIdRaw
   let poolId: any = poolIdRaw
 
+  // we need to override raw positionId and poolId for Aavelike and Morpho as they require class instance
   switch (protocol) {
     case LendingProtocol.AaveV3:
       positionId = getAaveLikePositionId(LendingProtocol.AaveV3, positionId.id)
