@@ -10,6 +10,7 @@ import { getEmode } from 'features/refinance/helpers/getEmode'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 import { replaceTokenSymbolETHWithWETH } from 'features/refinance/helpers/replaceETHwithWETH'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
+import { LendingProtocol } from 'lendingProtocols'
 
 export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContextBase): IPoolId => {
   const {
@@ -42,7 +43,7 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
           name: 'Spark',
           chainInfo,
         },
-        emodeType: getEmode(collateralToken, debtToken),
+        emodeType: getEmode(collateralToken, debtToken, LendingProtocol.SparkV3),
         collateralToken,
         debtToken,
       })
@@ -52,7 +53,7 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
           name: 'AaveV3',
           chainInfo,
         },
-        emodeType: getEmode(collateralToken, debtToken),
+        emodeType: getEmode(collateralToken, debtToken, LendingProtocol.AaveV3),
         collateralToken,
         debtToken,
       })

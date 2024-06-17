@@ -74,7 +74,7 @@ export function getRawPositionDetails(
 
   const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, commonData.primaryToken)
   const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, commonData.secondaryToken)
-  const emodeType = getEmode(collateralToken, debtToken)
+  const emodeType = getEmode(collateralToken, debtToken, lendingProtocol)
 
   const poolId = getAaveLikePoolId(
     lendingProtocol,
