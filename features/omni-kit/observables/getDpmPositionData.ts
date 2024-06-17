@@ -119,8 +119,8 @@ export function getDpmPositionDataV2$(
       protocol,
     }),
   ).pipe(
-    switchMap(({ dpmAddress, owner, positions }) => {
-      return combineLatest(
+    switchMap(({ dpmAddress, owner, positions }) =>
+      combineLatest(
         of({ dpmAddress, owner, positions }),
         identifyTokens$(
           networkId,
@@ -131,8 +131,8 @@ export function getDpmPositionDataV2$(
             ]),
           ),
         ),
-      )
-    }),
+      ),
+    ),
     switchMap(([{ owner, positions }]) => {
       const position = filterPositionWhenUrlParamsDefined({
         collateralToken,
