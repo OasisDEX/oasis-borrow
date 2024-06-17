@@ -41,6 +41,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     environment: {
       chainInfo: { chainId },
       isOwner,
+      gasEstimation,
     },
     position: { collateralTokenData, debtTokenData, positionType, lendingProtocol },
     tx: { isTxSuccess, isTxInProgress, txDetails, setTxDetails, isTxWaitingForApproval, isTxError },
@@ -101,6 +102,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     shouldSwitchNetwork,
     walletAddress,
     suppressValidation,
+    gasEstimation: gasEstimation?.isCompleted,
   })
 
   if (!positionType) {

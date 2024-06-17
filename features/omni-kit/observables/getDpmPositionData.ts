@@ -55,7 +55,6 @@ const filterPositionWhenUrlParamsDefined = ({
   positions,
   product,
   protocol,
-  protocolRaw,
   quoteToken,
 }: {
   collateralToken: string
@@ -87,11 +86,10 @@ const filterPositionWhenUrlParamsDefined = ({
         pairId: positionPairId,
         positionType,
         protocol: positionProtocol,
-        protocolRaw: positionProtocolRaw,
       }) => {
         return (
           positionProtocol === protocol &&
-          positionProtocolRaw === protocolRaw &&
+          // positionProtocolRaw === protocolRaw && // no need to compare protocolRaw as it's already checked in protocol check
           positionPairId === pairId &&
           [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
           [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
