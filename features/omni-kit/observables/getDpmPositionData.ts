@@ -55,7 +55,6 @@ const filterPositionWhenUrlParamsDefined = ({
   positions,
   product,
   protocol,
-  protocolRaw,
   quoteToken,
 }: {
   collateralToken: string
@@ -87,11 +86,10 @@ const filterPositionWhenUrlParamsDefined = ({
         pairId: positionPairId,
         positionType,
         protocol: positionProtocol,
-        protocolRaw: positionProtocolRaw,
       }) => {
         return (
           positionProtocol === protocol &&
-          positionProtocolRaw === protocolRaw &&
+          // positionProtocolRaw === protocolRaw && // no need to compare protocolRaw as it's already checked in protocol check
           positionPairId === pairId &&
           [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
           [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
@@ -113,7 +111,6 @@ export function getDpmPositionDataV2$(
   protocolRaw: string,
   pairId: number,
 ): Observable<DpmPositionData> {
-  console.log(protocolRaw, pairId, positionId)
   return from(
     getPositionsFromUrlData({
       networkId,
@@ -123,7 +120,6 @@ export function getDpmPositionDataV2$(
     }),
   ).pipe(
     switchMap(({ dpmAddress, owner, positions }) => {
-      console.log('positions', { positions })
       return combineLatest(
         of({ dpmAddress, owner, positions }),
         identifyTokens$(
