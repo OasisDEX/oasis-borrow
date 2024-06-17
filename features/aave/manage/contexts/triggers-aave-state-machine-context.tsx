@@ -63,7 +63,7 @@ function useSetupTriggersStateContext(
       ),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
-      currentTriggers: omniPositionTriggersDataDefault,
+      currentTriggers: omniPositionTriggersDataDefault(),
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()

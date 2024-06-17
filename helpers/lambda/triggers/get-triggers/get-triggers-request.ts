@@ -11,7 +11,7 @@ export const getTriggersRequest = async ({
   protocol,
 }: GetTriggersParams): Promise<GetTriggersResponse> => {
   if (dpmProxy && isZeroAddress(dpmProxy)) {
-    return omniPositionTriggersDataDefault
+    return omniPositionTriggersDataDefault(poolId)
   }
 
   const { url } = getTriggersConfig({
@@ -28,6 +28,6 @@ export const getTriggersRequest = async ({
   } catch (e) {
     console.error('Failed to read data about triggers from server', e)
     // We are returning a default response to ensure that UI won't crash and user will have access to position
-    return omniPositionTriggersDataDefault
+    return omniPositionTriggersDataDefault(poolId)
   }
 }
