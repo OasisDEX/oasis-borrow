@@ -153,6 +153,8 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
               poolId,
               positionId,
               pairId: 1,
+              dpmAddress: undefined,
+              ownerAddress: undefined,
             },
             ...(type === OmniProductType.Earn && { lendingType: 'passive' }),
             network: NetworkNames.ethereumMainnet,

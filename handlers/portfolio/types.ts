@@ -40,8 +40,8 @@ export type PortfolioPosition = {
     poolId: IPoolId
     positionId: IPositionId
     pairId: number
-    dpmAddress: string
-    ownerAddress: string
+    dpmAddress: string | undefined
+    ownerAddress: string | undefined
   }
   /*
   lendingType:

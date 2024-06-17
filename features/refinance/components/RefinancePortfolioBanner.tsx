@@ -255,10 +255,12 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
             pairId,
             isOwner: wallet?.address.toLowerCase() === portfolioAddress?.toLowerCase(),
             owner: dpmAddress,
-            dpm: {
-              id: positionId.id,
-              address: dpmAddress,
-            },
+            dpm: dpmAddress
+              ? {
+                  id: positionId.id,
+                  address: dpmAddress,
+                }
+              : undefined,
           })
 
           handleSetContext(contextInput)
