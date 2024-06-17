@@ -1,5 +1,6 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
+import { NetworkIds } from 'blockchain/networks'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
 import faqMultiply from 'features/content/faqs/morphoblue/multiply/en'
@@ -54,6 +55,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteBalance,
       quotePrecision,
       isOpening,
+      networkId,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -88,7 +90,8 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
 
-      const refinanceBanner = !isOpening ? useOmniRefinanceBanner() : undefined
+      const refinanceBanner =
+        !isOpening && networkId === NetworkIds.MAINNET ? useOmniRefinanceBanner() : undefined
 
       return {
         notifications,

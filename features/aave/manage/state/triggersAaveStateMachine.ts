@@ -587,7 +587,7 @@ export const triggersAaveStateMachine = createMachine(
         } = context
 
         if (!dpm) {
-          return omniPositionTriggersDataDefault
+          return omniPositionTriggersDataDefault()
         }
 
         return await getTriggersRequest({ dpmProxy: dpm.proxy, networkId, protocol })

@@ -42,7 +42,7 @@ export function useOmniTriggersData({
           ? dpmPositionData
             ? getTriggersRequest$({ dpmProxy: dpmPositionData.proxy, networkId, poolId, protocol })
             : EMPTY
-          : of(omniPositionTriggersDataDefault),
+          : of(omniPositionTriggersDataDefault(poolId)),
       [dpmPositionData, isOpening, networkId, poolId, protocol, settings.availableAutomations],
     ),
   )

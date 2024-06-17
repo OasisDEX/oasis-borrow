@@ -100,7 +100,7 @@ export const omniDefaultOverviewSimulationDeposit = new BigNumber(100)
 export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)
 
 // Default response to avoid unnecessary API calls if automation is not available on given protocol
-export const omniPositionTriggersDataDefault: GetTriggersResponse = {
+export const omniPositionTriggersDataDefault = (poolId?: string): GetTriggersResponse => ({
   triggers: {
     aave3: {},
     spark: {},
@@ -120,10 +120,17 @@ export const omniPositionTriggersDataDefault: GetTriggersResponse = {
       isStopLossEnabled: false,
       isTrailingStopLossEnabled: false,
     },
+    [`morphoblue-${poolId}`]: {
+      isBasicBuyEnabled: false,
+      isBasicSellEnabled: false,
+      isPartialTakeProfitEnabled: false,
+      isStopLossEnabled: false,
+      isTrailingStopLossEnabled: false,
+    },
   },
   triggerGroup: {},
   triggersCount: 0,
-}
+})
 
 export const omniProtectionLikeAutomationFeatures = [
   AutomationFeatures.STOP_LOSS,
