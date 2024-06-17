@@ -45,14 +45,30 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'WSTETH-USDA': ['0x423cb007534ac88febb8ce39f544ab303e8b757f8415ed891fc76550f8f4c965'],
     'PTWEETH-USDA': ['0xcc7b191903e4750ad71898a1594d912adbb5bb1c6effcde9c38f0a798112edd1'],
   },
+  [NetworkIds.BASEMAINNET]: {
+    'ETH-USDC': ['0x8793cf302b8ffd655ab97bd1c695dbd967807e8367a65cb2f4edaf1380ba1bda'],
+    'WSTETH-USDC': ['0xa066f3893b780833699043f824e5bb88b8df039886f524f62b9a1ac83cb7f1f0'],
+    'WSTETH-ETH': [
+      '0x6aa81f51dfc955df598e18006deae56ce907ac02b0b5358705f1a28fcea23cc0',
+      '0xe3c4d4d0e214fdc52635d7f9b2f7b3b0081771ae2efeb3cb5aae26009f34f7a7',
+    ],
+    'WEETH-ETH': ['0x78d11c03944e0dc298398f0545dc8195ad201a18b0388cb8058b1bcb89440971'],
+    'WEETH-USDC': ['0x6a331b22b56c9c0ee32a1a7d6f852d2c682ea8b27a1b0f99a9c484a37a951eb7'],
+    'CBETH-USDC': ['0xdba352d93a64b17c71104cbddc6aef85cd432322a1446b5b65163cbbc615cd0c'],
+    'CBETH-ETH': ['0x6600aae6c56d242fa6ba68bd527aff1a146e77813074413186828fd3f1cdca91'],
+    'AERO-USDC': ['0xdaa04f6819210b11fe4e3b65300c725c32e55755e3598671559b9ae3bac453d7'],
+    'EZETH-USDC': ['0xf24417ee06adc0b0836cf0dbec3ba56c1059f62f53a55990a38356d42fa75fa2'],
+    'EZETH-ETH': ['0xdf13c46bf7bd41597f27e32ae9c306eb63859c134073cb81c796ff20b520c7cf'],
+  },
 }
 
 export const settings: OmniProtocolSettings = {
   rawName: {
     [NetworkIds.MAINNET]: 'MorphoBlue',
+    [NetworkIds.BASEMAINNET]: 'MorphoBlue',
   },
-  supportedNetworkIds: [NetworkIds.MAINNET],
-  supportedMainnetNetworkIds: [NetworkIds.MAINNET],
+  supportedNetworkIds: [NetworkIds.MAINNET, NetworkIds.BASEMAINNET],
+  supportedMainnetNetworkIds: [NetworkIds.MAINNET, NetworkIds.BASEMAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply, OmniProductType.Earn],
   supportedMultiplyTokens: {
     [NetworkIds.MAINNET]: [
@@ -73,6 +89,7 @@ export const settings: OmniProtocolSettings = {
       'WOETH',
       'MKR',
     ],
+    [NetworkIds.BASEMAINNET]: ['DAI', 'ETH', 'USDC', 'WBTC', 'WEETH', 'WSTETH'],
   },
   steps: {
     borrow: {
@@ -96,6 +113,7 @@ export const settings: OmniProtocolSettings = {
       AutomationFeatures.STOP_LOSS,
       AutomationFeatures.TRAILING_STOP_LOSS,
     ],
+    [NetworkIds.BASEMAINNET]: [],
   },
   markets: morphoMarkets,
 }
