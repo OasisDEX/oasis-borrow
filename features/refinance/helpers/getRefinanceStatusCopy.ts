@@ -21,7 +21,7 @@ export const getRefinanceStatusCopy = ({
   protocol?: LendingProtocol
   t: TranslationType
 }) =>
-  currentStep === RefinanceSidebarStep.Give
+  currentStep === RefinanceSidebarStep.Import
     ? t(`migrate.allowance-form.status.${isTxSuccess ? 'success' : 'in-progress'}`)
     : t(`omni-kit.form.transaction.${isTxSuccess ? 'success' : 'progress'}-open`, {
         collateralToken,

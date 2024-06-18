@@ -58,7 +58,7 @@ export function getRefinanceSidebarPrimaryButtonActions({
       return { action: onDisconnected }
     case shouldSwitchNetwork && currentStep === editingStep:
       return { action: onSwitchNetwork }
-    case isTxSuccess && currentStep === RefinanceSidebarStep.Give:
+    case isTxSuccess && currentStep === RefinanceSidebarStep.Import:
       return { action: onUpdated }
     case isTxSuccess:
       return {

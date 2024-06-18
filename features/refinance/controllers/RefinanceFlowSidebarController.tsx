@@ -11,6 +11,7 @@ export const RefinanceFlowSidebarController = () => {
     environment: { chainInfo },
     form: { updateState },
     poolData: { pairId },
+    metadata: { isCdpAllowed },
     position: { lendingProtocol: protocol, owner },
     steps: { setStep, setNextStep },
   } = useRefinanceContext()
@@ -34,6 +35,10 @@ export const RefinanceFlowSidebarController = () => {
       // If position owner is dpm that will be used for refinance
       // skip to refinance tx
       if (dpm.address.toLowerCase() === owner) {
+        setStep(RefinanceSidebarStep.Changes)
+      }
+      // If dpm proxy is already allowed in CDP skip Import step
+      else if (isCdpAllowed) {
         setStep(RefinanceSidebarStep.Changes)
       } else {
         setNextStep()
