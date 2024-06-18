@@ -88,8 +88,9 @@ export const settings: OmniProtocolSettings = {
       'WSTETH',
       'WOETH',
       'MKR',
+      'CBETH',
     ],
-    [NetworkIds.BASEMAINNET]: ['DAI', 'ETH', 'USDC', 'WBTC', 'WEETH', 'WSTETH'],
+    [NetworkIds.BASEMAINNET]: ['DAI', 'ETH', 'USDC', 'WBTC', 'WEETH', 'WSTETH', 'CBETH'],
   },
   steps: {
     borrow: {
