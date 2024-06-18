@@ -18,6 +18,7 @@ import {
 import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import { getPointsPerYear } from 'helpers/rays'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -103,6 +104,8 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
           const positionId = getMakerPositionId(cdp)
 
+          const raysPerYear = getPointsPerYear(netValue.toNumber())
+
           return {
             availableToMigrate: false,
             availableToRefinance: true,
@@ -166,6 +169,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             secondaryToken,
             type,
             url,
+            raysPerYear,
           }
         },
       ),

@@ -27,6 +27,7 @@ import {
   formatDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
+import { getPointsPerYear } from 'helpers/rays'
 
 interface GetErc4626PositionsParams {
   apiVaults?: Vault[]
@@ -94,6 +95,8 @@ async function getErc4626Positions({
 
           const netValue = position.netValue.times(quotePrice)
 
+          const raysPerYear = getPointsPerYear(netValue.toNumber())
+
           return {
             assetLabel: vault.name,
             availableToMigrate: false,
@@ -146,6 +149,7 @@ async function getErc4626Positions({
               pseudoProtocol: Erc4626PseudoProtocol,
               quoteToken: quoteToken,
             }),
+            raysPerYear,
           }
         },
       ),

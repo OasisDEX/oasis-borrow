@@ -3,6 +3,7 @@ import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
+import { SECONDS_PER_YEAR } from 'components/constants'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
@@ -29,6 +30,7 @@ import {
   formatDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
+import { getPointsPerPeriodInSeconds, getPointsPerYear } from 'helpers/rays'
 import { zero } from 'helpers/zero'
 import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
@@ -96,6 +98,11 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     prices,
   )
 
+  const raysPerYear = getPointsPerPeriodInSeconds(
+    calculations.netValue.toNumber(),
+    SECONDS_PER_YEAR,
+  )
+
   return {
     ...commonData,
     rawPositionDetails,
@@ -131,6 +138,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     debuggingData: debug
       ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
+    raysPerYear,
   }
 }
 
@@ -235,6 +243,11 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     prices,
   )
 
+  const raysPerYear = getPointsPerPeriodInSeconds(
+    calculations.netValue.toNumber(),
+    SECONDS_PER_YEAR,
+  )
+
   return {
     ...commonData,
     rawPositionDetails,
@@ -281,6 +294,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     debuggingData: debug
       ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
+    raysPerYear,
   }
 }
 
@@ -359,6 +373,8 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     useDebtTokenAsPnL: isCorrelatedPosition(commonData.primaryToken, commonData.secondaryToken),
   })
 
+  const raysPerYear = getPointsPerYear(calculations.netValue.toNumber())
+
   return {
     ...commonData,
     lendingType: onChainPositionData.debt.amount.gt(zero) ? 'loop' : 'passive',
@@ -394,6 +410,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     ].filter(Boolean) as PositionDetail[],
     netValue: netValuePnlModalData.netValue.inToken.toNumber(),
     debuggingData: debug ? { ...formatBigNumberDebugData(commonRest) } : undefined,
+    raysPerYear,
   }
 }
 

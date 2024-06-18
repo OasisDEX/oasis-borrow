@@ -129,7 +129,20 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             {position.availableToMigrate ? tPortfolio('migrate') : upperFirst(position.type)}
             {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
           </Text>
-          <Flex>
+          <Flex sx={{ columnGap: 3, alignItems: 'center' }}>
+            {position.raysPerYear > 0 && (
+              <Text
+                variant="paragraph3"
+                sx={{
+                  fontWeight: 'semiBold',
+                  ...getGradientColor(
+                    'linear-gradient(270.13deg, #007DA3 0.02%, #E7A77F 56.92%, #E97047 98.44%)',
+                  ),
+                }}
+              >
+                + {position.raysPerYear.toFixed(0)} Rays / year
+              </Text>
+            )}
             <ProtocolLabel network={position.network} protocol={position.protocol} />
           </Flex>
         </Flex>

@@ -20,6 +20,7 @@ import {
   formatDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
+import { getPointsPerYear } from 'helpers/rays'
 import { zero } from 'helpers/zero'
 import { isAaveLikeLendingProtocol } from 'lendingProtocols'
 
@@ -88,8 +89,12 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
     debtToken: commonData.secondaryToken,
     useDebtTokenAsPnL: isCorrelatedPosition(commonData.primaryToken, commonData.secondaryToken),
   })
+
+  const raysPerYear = getPointsPerYear(netValuePnlModalData.netValue.inUsd.toNumber())
+
   return {
     ...commonData,
+    raysPerYear,
     details: [
       {
         type: 'netValue',
