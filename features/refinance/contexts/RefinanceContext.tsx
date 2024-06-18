@@ -20,7 +20,6 @@ export type RefinanceContext = {
   poolData: RefinanceGeneralContextBase['poolData']
   metadata: RefinanceGeneralContextBase['metadata'] & {
     interestRates: RefinanceInterestRatesMetadata
-    isCdpAllowed?: boolean
   }
   automations: RefinanceGeneralContextBase['automations']
   form: RefinanceGeneralContextBase['form']

@@ -83,6 +83,7 @@ export function FlowSidebar({
   isUiDataLoading,
   step,
   useHeaderBackBtn,
+  lockUiDataLoading,
 }: CreateDPMAccountViewProps) {
   const { t } = useTranslation()
   const [dpmState, dpmSend] = useActor(internals.dpmMachine)
@@ -125,7 +126,7 @@ export function FlowSidebar({
     return <NoConnectionStateView noConnectionContent={noConnectionContent} />
   }
 
-  if (isUiDataLoading) {
+  if (isUiDataLoading || lockUiDataLoading) {
     return (
       <FlowSidebarSkeleton
         step={step}

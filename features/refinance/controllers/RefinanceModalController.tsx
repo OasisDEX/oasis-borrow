@@ -18,7 +18,6 @@ import {
   getRefinanceTargetInterestRates,
 } from 'features/refinance/helpers'
 import { getNetAPY } from 'features/refinance/helpers/getBorrowRate'
-import { getMakerIsCdpAllowed } from 'features/refinance/helpers/getMakerIsCdpAllowed'
 import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -75,28 +74,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
     ],
   )
 
-  const positionOwnerWithCache = cache.positionOwner || contextInput.position.owner
-  const isCdpAllowed = useMemo(
-    () =>
-      (positionOwnerWithCache &&
-        ctx?.form.state.dpm?.address &&
-        from(
-          getMakerIsCdpAllowed({
-            positionId: contextInput.position.positionId.id,
-            chainId: contextInput.environment.chainId,
-            positionOwner: positionOwnerWithCache,
-            allowedAddress: ctx?.form.state.dpm?.address,
-          }),
-        )) ||
-      of(undefined),
-    [
-      positionOwnerWithCache,
-      contextInput.environment.chainId,
-      contextInput.position.positionId.id,
-      ctx?.form.state.dpm?.address,
-    ],
-  )
-
   const dpmEvents = useMemo(
     () =>
       from(
@@ -126,7 +103,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   const [positionOwnerData, positionOwnerError] = useObservable(positionOwner)
   const [interestRatesData, interestRatesError] = useObservable(interestRates)
   const [dpmEventsData, dpmEventsError] = useObservable(dpmEvents)
-  const [isCdpAllowedData, isCdpAllowedError] = useObservable(isCdpAllowed)
 
   // cache data
   useEffect(() => {
@@ -161,13 +137,7 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
   return (
     <Modal sx={{ margin: '0 auto' }} close={onClose} variant="modalAutoWidth">
       <WithErrorHandler
-        error={[
-          positionOwnerError,
-          interestRatesError,
-          tokenPriceUSDError,
-          dpmEventsError,
-          isCdpAllowedError,
-        ]}
+        error={[positionOwnerError, interestRatesError, tokenPriceUSDError, dpmEventsError]}
       >
         <WithLoadingIndicator
           value={[
@@ -194,7 +164,6 @@ export const RefinanceModalController: FC<RefinanceModalProps> = ({ contextInput
                 metadata: {
                   ..._ctx.metadata,
                   interestRates: _interestRates,
-                  isCdpAllowed: isCdpAllowedData,
                 },
                 position: {
                   ..._ctx.position,

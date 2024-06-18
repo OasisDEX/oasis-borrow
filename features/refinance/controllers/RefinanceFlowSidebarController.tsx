@@ -1,5 +1,6 @@
 import { FlowSidebar } from 'components/FlowSidebar'
 import { useRefinanceContext } from 'features/refinance/contexts'
+import { getMakerIsCdpAllowed } from 'features/refinance/helpers/getMakerIsCdpAllowed'
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useFlowState } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
@@ -11,8 +12,7 @@ export const RefinanceFlowSidebarController = () => {
     environment: { chainInfo },
     form: { updateState },
     poolData: { pairId },
-    metadata: { isCdpAllowed },
-    position: { lendingProtocol: protocol, owner },
+    position: { lendingProtocol: protocol, owner, positionId },
     steps: { setStep, setNextStep },
   } = useRefinanceContext()
 
@@ -22,13 +22,21 @@ export const RefinanceFlowSidebarController = () => {
     networkId: chainInfo.chainId,
     amount: zero,
     token: 'ETH',
+    lockUiDataLoading: true,
     // Take only proxies without CreatePosition events
     filterConsumedProxy: async (events) => events.length === 0,
     // will trigger on DPM step
-    onEverythingReady: ({ availableProxies }) => {
+    onEverythingReady: async ({ availableProxies }) => {
       // Check if owner is already dpm and use it as dpm for refinance, if not fallback to first available dpm
       const dpm =
         availableProxies.find((item) => item.address.toLowerCase() === owner) || availableProxies[0]
+
+      const isCdpAllowed = await getMakerIsCdpAllowed({
+        positionId: positionId.id,
+        chainId: chainInfo.chainId,
+        positionOwner: owner,
+        allowedAddress: dpm.address,
+      })
 
       updateState('dpm', dpm)
 
