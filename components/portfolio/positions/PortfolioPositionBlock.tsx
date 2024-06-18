@@ -50,7 +50,7 @@ const getMigrationGradientsPerProtocol = (
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { EnableRefinance: isRefinanceEnabled } = useAppConfig('features')
+  const { EnableRefinance: isRefinanceEnabled, Rays: isRaysEnabled } = useAppConfig('features')
 
   const resolvedPairId = shouldShowPairId({
     collateralToken: position.primaryToken,
@@ -130,7 +130,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
           </Text>
           <Flex sx={{ columnGap: 3, alignItems: 'center' }}>
-            {position.raysPerYear > 0 && (
+            {position.raysPerYear > 0 && isRaysEnabled && (
               <Text
                 variant="paragraph3"
                 sx={{
