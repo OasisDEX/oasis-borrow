@@ -367,14 +367,16 @@ export interface OmniSupplyMetadataHandlers {
   customReset?: () => void
 }
 
+export interface AutomationMetadataFlags {
+  isStopLossEnabled: boolean
+  isTrailingStopLossEnabled: boolean
+  isAutoSellEnabled: boolean
+  isAutoBuyEnabled: boolean
+  isPartialTakeProfitEnabled: boolean
+}
+
 export interface AutomationMetadataValues {
-  flags: {
-    isStopLossEnabled: boolean
-    isTrailingStopLossEnabled: boolean
-    isAutoSellEnabled: boolean
-    isAutoBuyEnabled: boolean
-    isPartialTakeProfitEnabled: boolean
-  }
+  flags: AutomationMetadataFlags
   triggers: {
     [AutomationFeatures.STOP_LOSS]?: StopLossTriggersWithDecodedParams
     [AutomationFeatures.TRAILING_STOP_LOSS]?: TrailingStopLossTriggersWithDecodedParams

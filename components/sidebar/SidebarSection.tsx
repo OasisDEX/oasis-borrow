@@ -24,6 +24,7 @@ export function SidebarSection({
   dropdown,
   headerButton,
   content,
+  aboveButton,
   primaryButton,
   secondaryButton,
   textButton,
@@ -66,6 +67,7 @@ export function SidebarSection({
         disableMaxHeight={disableMaxHeight}
       />
       <SidebarSectionFooter
+        aboveButton={aboveButton}
         primaryButton={primaryButton}
         secondaryButton={secondaryButton}
         textButton={textButton}
