@@ -1,5 +1,6 @@
 import type { PositionFromUrlWithTriggers } from 'features/omni-kit/observables'
 import type { ProductHubItem } from 'features/productHub/types'
+import { disabledMorphoPairs } from 'features/refinance/disabledMorphoPairs'
 import { LendingProtocol } from 'lendingProtocols'
 
 /**
@@ -43,6 +44,10 @@ export const getRefinanceStrategiesToBeFiltered = ({
   }))
   return table.filter((item) => {
     const existingPosition = mappedEvents.find((event) => event.protocol === item.protocol)
+
+    if (item.protocol === LendingProtocol.MorphoBlue && disabledMorphoPairs.includes(item.label)) {
+      return false
+    }
 
     if (!existingPosition) {
       return true
