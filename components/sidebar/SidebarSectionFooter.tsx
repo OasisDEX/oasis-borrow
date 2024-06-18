@@ -1,6 +1,7 @@
 import type { NetworkConfigHexId } from 'blockchain/networks'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useTranslation } from 'next-i18next'
+import type { ReactNode } from 'react'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
@@ -12,6 +13,7 @@ import { SidebarSectionStatus } from './SidebarSectionStatus'
 export type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>
 
 export interface SidebarSectionFooterProps {
+  aboveButton?: ReactNode
   primaryButton: SidebarSectionFooterButtonSettings
   secondaryButton?: SidebarSectionFooterButtonSettings
   textButton?: SidebarSectionFooterButtonSettings
@@ -95,6 +97,7 @@ function useResolvePrimaryButton({
 }
 
 export function SidebarSectionFooter({
+  aboveButton,
   primaryButton,
   secondaryButton,
   textButton,
@@ -123,6 +126,7 @@ export function SidebarSectionFooter({
         borderTop: 'lightMuted',
       }}
     >
+      {aboveButton}
       <SidebarSectionFooterButton {...resolvedPrimaryButton} />
       {secondaryButton && <SidebarSectionFooterButton variant="secondary" {...secondaryButton} />}
       {textButton && <SidebarSectionFooterButton variant="textual" {...textButton} />}
