@@ -684,6 +684,10 @@
         "refinance": {
           "title": "Move seamlessly between protocols with Summer.Fi Position Swap",
           "cta": "Swap Positions"
+        },
+        "rays": {
+          "title": "Get rewarded in $RAYS by Borrowing, Multiplying and Earning with DeFi’s highest quality protocols on Summer.fi",
+          "cta": "Learn how to earn $RAYS"
         }
       },
       "image-labels": {

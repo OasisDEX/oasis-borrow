@@ -12,7 +12,9 @@ type HomePageHeadlineProps = {
   ctaOnClick?: () => void
   ctaLabel?: TranslateStringType
   sx?: ThemeUIStyleObject
+  buttonSx?: ThemeUIStyleObject
   buttonVariant?: string
+  textVariant?: string
 }
 
 export const HomepageHeadline = ({
@@ -23,13 +25,15 @@ export const HomepageHeadline = ({
   maxWidth = '700px',
   sx,
   buttonVariant = 'primary',
+  textVariant = 'header3',
+  buttonSx,
 }: HomePageHeadlineProps) => {
   return (
     <Flex sx={{ flexDirection: 'column', maxWidth, ...sx }}>
-      <Text variant="header3" sx={{ color: 'primary100' }}>
+      <Text variant={textVariant} sx={{ color: 'primary100' }}>
         {primaryText}
         {secondaryText && (
-          <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>
+          <Text as="span" variant={textVariant} sx={{ color: 'neutral80' }}>
             {secondaryText}
           </Text>
         )}
@@ -46,6 +50,7 @@ export const HomepageHeadline = ({
               transform: 'translateX(10px)',
             },
             width: 'fit-content',
+            ...buttonSx,
           }}
           onClick={ctaOnClick}
         >
