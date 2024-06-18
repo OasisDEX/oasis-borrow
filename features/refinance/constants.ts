@@ -15,7 +15,7 @@ export const refinanceMakerSteps = [
   RefinanceSidebarStep.Option,
   RefinanceSidebarStep.Strategy,
   RefinanceSidebarStep.Dpm,
-  RefinanceSidebarStep.Give,
+  RefinanceSidebarStep.Import,
   RefinanceSidebarStep.Changes,
 ]
 

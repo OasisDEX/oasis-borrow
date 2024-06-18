@@ -239,7 +239,7 @@ export function useSdkSimulation(): SDKSimulation {
   ])
 
   const isLoading =
-    (ctx?.steps.currentStep === RefinanceSidebarStep.Give && !importPositionSimulation) ||
+    (ctx?.steps.currentStep === RefinanceSidebarStep.Import && !importPositionSimulation) ||
     (ctx?.steps.currentStep === RefinanceSidebarStep.Changes && !refinanceSimulation)
 
   return {

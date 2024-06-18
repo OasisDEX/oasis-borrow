@@ -46,6 +46,7 @@ export type UseFlowStateProps = {
   token?: string
   step?: string
   useHeaderBackBtn?: boolean
+  lockUiDataLoading?: boolean
 }
 
 export function useFlowState({
@@ -62,6 +63,7 @@ export function useFlowState({
   token,
   step,
   useHeaderBackBtn,
+  lockUiDataLoading,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
@@ -309,5 +311,6 @@ export function useFlowState({
     onGoBack,
     step,
     useHeaderBackBtn,
+    lockUiDataLoading,
   }
 }

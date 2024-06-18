@@ -30,7 +30,7 @@ export const RefinanceSimulation = () => {
   const borrowRate = strategy.fee ? new BigNumber(strategy.fee) : zero
 
   return [
-    RefinanceSidebarStep.Give,
+    RefinanceSidebarStep.Import,
     RefinanceSidebarStep.Dpm,
     RefinanceSidebarStep.Changes,
     RefinanceSidebarStep.Transaction,

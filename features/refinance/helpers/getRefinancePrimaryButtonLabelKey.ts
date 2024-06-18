@@ -20,7 +20,7 @@ export function getRefinancePrimaryButtonLabelKey({
       if (isTxSuccess) return 'system.go-to-position'
       else if (isTxError) return 'retry'
       else return 'confirm'
-    case RefinanceSidebarStep.Give:
+    case RefinanceSidebarStep.Import:
       if (isTxSuccess) return 'continue'
       else if (isTxError) return 'retry'
       else return 'confirm'

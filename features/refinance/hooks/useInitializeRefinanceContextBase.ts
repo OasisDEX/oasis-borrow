@@ -116,7 +116,7 @@ export const useInitializeRefinanceContextBase = ({
       steps,
       isExternalStep: [RefinanceSidebarStep.Dpm].includes(currentStep),
       isFlowStateReady,
-      isStepWithTransaction: [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(
+      isStepWithTransaction: [RefinanceSidebarStep.Import, RefinanceSidebarStep.Changes].includes(
         currentStep,
       ),
       setIsFlowStateReady,

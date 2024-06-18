@@ -18,7 +18,7 @@ export const RefinanceFormController = () => {
     <RefinanceFormView>
       {currentStep === RefinanceSidebarStep.Option && <RefinanceStrategyStep />}
       {currentStep === RefinanceSidebarStep.Strategy && <RefinanceProductTableStep />}
-      {currentStep === RefinanceSidebarStep.Give && <RefinanceGiveStep />}
+      {currentStep === RefinanceSidebarStep.Import && <RefinanceGiveStep />}
       {currentStep === RefinanceSidebarStep.Changes && <RefinanceWhatsChangingStep />}
     </RefinanceFormView>
   )

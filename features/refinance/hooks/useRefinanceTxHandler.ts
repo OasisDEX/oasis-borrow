@@ -54,7 +54,7 @@ export const useRefinanceTxHandler = () => {
 
   let txInfo: TransactionInfo | undefined
   switch (currentStep) {
-    case RefinanceSidebarStep.Give:
+    case RefinanceSidebarStep.Import:
       txInfo = txImportPosition?.transactions[0]
       break
     case RefinanceSidebarStep.Changes:
@@ -67,7 +67,7 @@ export const useRefinanceTxHandler = () => {
     if (
       dpm &&
       signer &&
-      [RefinanceSidebarStep.Give, RefinanceSidebarStep.Changes].includes(currentStep) &&
+      [RefinanceSidebarStep.Import, RefinanceSidebarStep.Changes].includes(currentStep) &&
       txData &&
       proxyAddress
     ) {
@@ -112,7 +112,7 @@ export const useRefinanceTxHandler = () => {
       const castedTxState = txState as TxState<TxMeta>
 
       // Update in cache owner of position that is being refinanced
-      if (txState.status === TxStatus.Success && currentStep === RefinanceSidebarStep.Give) {
+      if (txState.status === TxStatus.Success && currentStep === RefinanceSidebarStep.Import) {
         handlePositionOwner(dpm.address)
       }
 

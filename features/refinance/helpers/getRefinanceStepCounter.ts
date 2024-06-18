@@ -8,7 +8,7 @@ export const getRefinanceStepCounter = ({ currentStep }: { currentStep: Refinanc
       return '2/5'
     case RefinanceSidebarStep.Dpm:
       return '3/5'
-    case RefinanceSidebarStep.Give:
+    case RefinanceSidebarStep.Import:
       return '4/5'
     case RefinanceSidebarStep.Changes:
       return '5/5'

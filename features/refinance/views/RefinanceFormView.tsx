@@ -76,7 +76,7 @@ export const RefinanceFormView: FC = ({ children }) => {
   const sidebarTitle = getRefinanceSidebarTitle({ currentStep, t, option: refinanceOption })
 
   const textButtonAction = () => {
-    if ([RefinanceSidebarStep.Changes, RefinanceSidebarStep.Give].includes(currentStep)) {
+    if ([RefinanceSidebarStep.Changes, RefinanceSidebarStep.Import].includes(currentStep)) {
       updateState('strategy', undefined)
       setTxDetails(undefined)
       setStep(RefinanceSidebarStep.Strategy)
@@ -131,7 +131,7 @@ export const RefinanceFormView: FC = ({ children }) => {
     onDisconnected: connect,
     onSelectTransition: txHandler,
     onUpdated: () => {
-      if (currentStep === RefinanceSidebarStep.Give) {
+      if (currentStep === RefinanceSidebarStep.Import) {
         setTxDetails(undefined)
         setNextStep()
       }
