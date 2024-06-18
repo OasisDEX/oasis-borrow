@@ -26,6 +26,7 @@ import type {
   PortfolioPositionsHandler,
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
+import { getPointsPerYear } from 'helpers/rays'
 import { LendingProtocol } from 'lendingProtocols'
 
 import { getRawPositionDetails } from './getRawPositionDetails'
@@ -153,6 +154,10 @@ async function getMorphoPositions({
             position.owner,
           )
 
+          const netValue = position.netValue.toNumber()
+
+          const raysPerYear = getPointsPerYear(netValue)
+
           return {
             availableToMigrate: false,
             availableToRefinance: true,
@@ -167,7 +172,7 @@ async function getMorphoPositions({
               type,
             }),
             network: networkName,
-            netValue: position.netValue.toNumber(),
+            netValue,
             pairId,
             positionId: Number(positionId),
             primaryToken,
@@ -175,6 +180,7 @@ async function getMorphoPositions({
             secondaryToken,
             type,
             url,
+            raysPerYear,
           }
         },
       ),

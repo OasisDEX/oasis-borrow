@@ -24,6 +24,7 @@ import type {
   PortfolioPositionsHandler,
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
+import { getPointsPerYear } from 'helpers/rays'
 import { LendingProtocol } from 'lendingProtocols'
 interface GetAjnaPositionsParams {
   apiVaults?: Vault[]
@@ -126,6 +127,16 @@ async function getAjnaPositions({
               })
             : await views.ajna.getPosition(commonPayload, commonDependency)
 
+          const netValue = getAjnaPositionNetValue({
+            collateralPrice,
+            isOracless,
+            position,
+            quotePrice,
+            type,
+          })
+
+          const raysPerYear = getPointsPerYear(netValue)
+
           return {
             availableToMigrate: false,
             automations: {},
@@ -160,6 +171,7 @@ async function getAjnaPositions({
             secondaryToken,
             type,
             url,
+            raysPerYear,
           }
         },
       ),

@@ -7,6 +7,7 @@ import { notAvailable } from 'handlers/portfolio/constants'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { isZeroAddress } from 'helpers/isZeroAddress'
+import { getPointsPerYear } from 'helpers/rays'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { DsProxyRegistry__factory, McdPot__factory } from 'types/ethers-contracts'
@@ -49,11 +50,14 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
       .decimalPlaces(5, BigNumber.ROUND_UP)
       .minus(1)
 
+    const raysPerYear = getPointsPerYear(netValue.toNumber())
+
     return {
       address,
       positions: netValue.gt(zero)
         ? [
             {
+              raysPerYear,
               availableToMigrate: false,
               automations: {},
               description: 'Dai Savings Rate',
