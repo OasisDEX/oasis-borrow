@@ -200,6 +200,14 @@ export const morphoPositionsHandler: PortfolioPositionsHandler = async ({
       positionsCount,
       protocolRaw: morphoSettings.rawName[NetworkIds.MAINNET] as string,
     }),
+    getMorphoPositions({
+      apiVaults,
+      dpmList,
+      networkId: NetworkIds.BASEMAINNET,
+      prices,
+      positionsCount,
+      protocolRaw: morphoSettings.rawName[NetworkIds.BASEMAINNET] as string,
+    }),
   ]).then((responses) => {
     return {
       address,

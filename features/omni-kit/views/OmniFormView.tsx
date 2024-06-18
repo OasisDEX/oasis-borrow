@@ -8,6 +8,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { ethers } from 'ethers'
+import { isSupportingAutomation } from 'features/omni-kit/automation/helpers'
 import { OmniDupePositionModal } from 'features/omni-kit/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -18,6 +19,7 @@ import {
   getOmniSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
+import { getOmniSidebarRaysBanner } from 'features/omni-kit/helpers/getOmniSidebarRaysBanner'
 import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -67,6 +69,7 @@ export function OmniFormView({
       settings,
       shouldSwitchNetwork,
       positionId,
+      poolId,
     },
     steps: {
       currentStep,
@@ -106,7 +109,7 @@ export function OmniFormView({
   const { walletAddress } = useAccount()
   const { openModal } = useModalContext()
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
-  const { OmniKitDebug } = getLocalAppConfig('features')
+  const { OmniKitDebug, Rays } = getLocalAppConfig('features')
 
   const genericSidebarTitle = useOmniSidebarTitle()
 
@@ -270,9 +273,26 @@ export function OmniFormView({
     txDetails,
   })
 
+  const { isSupportingOptimization, isSupportingProtection } = isSupportingAutomation({
+    collateralToken,
+    networkId,
+    poolId,
+    protocol,
+    quoteToken,
+    settings,
+  })
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: sidebarTitle ?? genericSidebarTitle,
     dropdown,
+    aboveButton: Rays
+      ? getOmniSidebarRaysBanner({
+          isOpening,
+          uiDropdown: state.uiDropdown,
+          isSupportingOptimization,
+          isSupportingProtection,
+        })
+      : null,
     content: (
       <Grid gap={3}>
         {sidebarContent}
