@@ -133,7 +133,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
     case LendingProtocol.AaveV3:
       positionId = getAaveLikePositionId(LendingProtocol.AaveV3, positionId.id)
       poolId = getAaveLikePoolId(
-        LendingProtocol.SparkV3,
+        LendingProtocol.AaveV3,
         poolId.protocol.chainInfo,
         poolId.collateralToken,
         poolId.debtToken,
