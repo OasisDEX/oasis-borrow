@@ -42,8 +42,11 @@ export const getPointsPerPeriodInSeconds = (
   return pointsPerSecond * periodInSeconds * amount
 }
 
+/**
+ * Calculates the total points earned over a year.
+ * @param _amount - The amount used to calculate the points. It will be capped at 10,000,000.
+ * @returns The total points earned over the year.
+ */
 export const getPointsPerYear = (_amount: number) => {
-  const amount = Math.min(_amount, NET_VALUE_CAP)
-  const pointsPerSecond = getPointsPerUsdPerSecond(amount)
   return getPointsPerPeriodInSeconds(_amount, SECONDS_PER_YEAR)
 }
