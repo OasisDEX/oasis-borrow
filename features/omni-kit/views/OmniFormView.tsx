@@ -8,7 +8,11 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { ethers } from 'ethers'
-import { isSupportingAutomation } from 'features/omni-kit/automation/helpers'
+import {
+  hasActiveOptimization,
+  hasActiveProtection,
+  isSupportingAutomation,
+} from 'features/omni-kit/automation/helpers'
 import { OmniDupePositionModal } from 'features/omni-kit/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -70,6 +74,8 @@ export function OmniFormView({
       shouldSwitchNetwork,
       positionId,
       poolId,
+      positionRaysMultipliersData,
+      collateralPrice
     },
     steps: {
       currentStep,
@@ -92,7 +98,12 @@ export function OmniFormView({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    position: { isSimulationLoading, openFlowResolvedDpmId },
+    position: {
+      isSimulationLoading,
+      openFlowResolvedDpmId,
+      currentPosition: { position, simulation },
+      swap
+    },
     dynamicMetadata: {
       elements: { sidebarContent },
       featureToggles: { suppressValidation, safetySwitch },
@@ -101,6 +112,7 @@ export function OmniFormView({
       validations: { isFormValid, isFormFrozen, hasErrors },
       values: { interestRate, sidebarTitle },
     },
+    automation: { positionTriggers },
   } = useOmniProductContext(productType)
 
   const txHandler = _txHandler()
@@ -290,7 +302,14 @@ export function OmniFormView({
           isOpening,
           uiDropdown: state.uiDropdown,
           isSupportingOptimization,
+          isOptimizationActive: hasActiveOptimization({ poolId, positionTriggers, protocol }),
           isSupportingProtection,
+          isProtectionActive: hasActiveProtection({ poolId, positionTriggers, protocol }),
+          positionRaysMultipliersData,
+          position,
+          simulation,
+          productType,
+          openSwapValue: swap?.current?.minToTokenAmount.times(collateralPrice)
         })
       : null,
     content: (

@@ -1,20 +1,26 @@
+import { networksById } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
+import { mapErc4626RaysMultipliers } from 'features/omni-kit/protocols/erc-4626/helpers/mapErc4626RaysMultipliers'
 import { mapErc4626Events } from 'features/omni-kit/protocols/erc-4626/history/mapErc4626Events'
 import type { Erc4626HistoryEvent } from 'features/omni-kit/protocols/erc-4626/history/types'
 import { getErc4626PositionAggregatedData$ } from 'features/omni-kit/protocols/erc-4626/observables/getErc4626AggregatedData'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
+import { getRaysUserMultipliers } from 'features/rays/getRaysUserMultipliers'
 import { useObservable } from 'helpers/observableHook'
 import { useMemo } from 'react'
-import { EMPTY } from 'rxjs'
+import { EMPTY, from } from 'rxjs'
 
 export function useErc4626Data({
   dpmPositionData,
   label,
   networkId,
   tokenPriceUSDData,
+  isOpening,
+  walletAddress,
 }: OmniProtocolHookProps) {
   const { erc4626Position$ } = useProductContext()
+  const networkName = networksById[networkId].name
 
   // it is safe to assume that in erc-4626 context label is always availabe string
   const { address, token } = erc4626VaultsByName[label as string]
@@ -49,6 +55,27 @@ export function useErc4626Data({
     ),
   )
 
+  const [multipliers] = useObservable(
+    useMemo(
+      () =>
+        dpmPositionData
+          ? from(
+              getRaysUserMultipliers({
+                walletAddress: isOpening && walletAddress ? walletAddress : dpmPositionData.user,
+              }),
+            )
+          : EMPTY,
+      [dpmPositionData],
+    ),
+  )
+
+  const positionRaysMultipliersData = mapErc4626RaysMultipliers({
+    multipliers,
+    dpmPositionData,
+    networkName,
+    poolId: address,
+  })
+
   return {
     data: {
       aggregatedData: {
@@ -60,6 +87,7 @@ export function useErc4626Data({
       poolId: erc4626PositionData?.vault.address,
       positionData: erc4626PositionData,
       protocolPricesData: tokenPriceUSDData,
+      positionRaysMultipliersData,
     },
     errors: [erc4626PositionError, erc2626PositionAggregatedError],
   }

@@ -52,6 +52,7 @@ export function OmniAutomationFormView({
       shouldSwitchNetwork,
       network,
       networkId,
+      positionRaysMultipliersData,
     },
     automationSteps: { currentStep, editingStep, isStepWithTransaction, setNextStep, setStep },
     tx: {
@@ -72,7 +73,10 @@ export function OmniAutomationFormView({
       setSimulation,
       setCachedOrderInfoItems,
     },
-    position: { openFlowResolvedDpmId },
+    position: {
+      openFlowResolvedDpmId,
+      currentPosition: { position },
+    },
     dynamicMetadata: {
       featureToggles: { suppressValidation, safetySwitch },
       validations: { isFormFrozen },
@@ -87,6 +91,8 @@ export function OmniAutomationFormView({
   const { activeForm, activeUiDropdown } = automation.resolved
 
   const { state, dispatch } = activeForm
+
+  const automationFlags = automation?.flags
 
   const isTriggerEnabled = activeUiDropdown && automation?.triggers[activeUiDropdown]
 
@@ -196,7 +202,14 @@ export function OmniAutomationFormView({
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     aboveButton: Rays
-      ? getOmniAutomationSidebarRaysBanner({ action: state.action, activeTriggersNumber })
+      ? getOmniAutomationSidebarRaysBanner({
+          action: state.action,
+          activeTriggersNumber,
+          position,
+          positionRaysMultipliersData,
+          automationFlags,
+          automationFeature: activeUiDropdown,
+        })
       : null,
     primaryButton: {
       label: t(primaryButtonLabel),
