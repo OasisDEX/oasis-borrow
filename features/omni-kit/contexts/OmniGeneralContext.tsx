@@ -23,6 +23,7 @@ import type {
   OmniSupportedNetworkIds,
 } from 'features/omni-kit/types'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
+import type { PositionRaysMultipliersData } from 'features/rays/types'
 import type { RefinanceContextInput } from 'features/refinance/contexts'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
@@ -80,6 +81,7 @@ interface OmniGeneralContextProviderProps {
   automationSteps: OmniSidebarAutomationStep[]
   walletNetwork: NetworkConfig
   refinanceContextInput?: RefinanceContextInput
+  positionRaysMultipliersData: PositionRaysMultipliersData
 }
 
 export enum OmniSlippageSourceSettings {

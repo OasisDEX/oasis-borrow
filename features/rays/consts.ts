@@ -1,0 +1,2 @@
+export const RAYS_PROTECTION_BOOST = 1.1
+export const RAYS_OPTIMIZATION_BOOST = 1.5

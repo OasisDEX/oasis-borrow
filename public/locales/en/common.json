@@ -3884,6 +3884,9 @@
           "title": "Earn {{rays}} Rays Instantly",
           "description": "You'll earn {{raysPerYear}} Rays a year"
         },
+        "open-non-swap": {
+          "title": "Earn Rays!"
+        },
         "closing": {
           "title": "You’ve earned {{rays}} Rays already",
           "description": "By closing early you'll lose {{raysPerYear}} Rays"

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AppLink } from 'components/Links'
 import { Pill } from 'components/Pill'
@@ -12,6 +13,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { RefinancePortfolioBanner } from 'features/refinance/components'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { getLocalAppConfig, useAppConfig } from 'helpers/config'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getGradientColor } from 'helpers/getGradientColor'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
@@ -140,7 +142,8 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
                   ),
                 }}
               >
-                + {position.raysPerYear.toFixed(0)} Rays / year
+                + {formatCryptoBalance(new BigNumber(position.raysPerYear)).split('.')[0]} Rays /
+                year
               </Text>
             )}
             <ProtocolLabel network={position.network} protocol={position.protocol} />

@@ -145,6 +145,8 @@ export interface OmniProtocolHookProps {
   quoteToken: string
   tokenPriceUSDData?: Tickers
   tokensPrecision?: OmniTokensPrecision
+  isOpening: boolean
+  walletAddress?: string
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'
