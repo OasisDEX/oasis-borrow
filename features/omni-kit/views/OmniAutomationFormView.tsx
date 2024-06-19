@@ -209,6 +209,7 @@ export function OmniAutomationFormView({
           positionRaysMultipliersData,
           automationFlags,
           automationFeature: activeUiDropdown,
+          hidden: isTxInProgress || isTxSuccess || isTxError,
         })
       : null,
     primaryButton: {

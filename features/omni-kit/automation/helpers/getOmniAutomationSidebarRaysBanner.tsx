@@ -21,6 +21,7 @@ export const getOmniAutomationSidebarRaysBanner = ({
   position,
   automationFlags,
   automationFeature,
+  hidden,
 }: {
   activeTriggersNumber: number
   action: TriggerAction
@@ -28,10 +29,11 @@ export const getOmniAutomationSidebarRaysBanner = ({
   position: LendingPosition | SupplyPosition
   automationFlags?: AutomationMetadataFlags
   automationFeature: AutomationFeatures
+  hidden: boolean
 }) => {
   const { t } = useTranslation()
 
-  if (!automationFlags) {
+  if (!automationFlags || hidden) {
     return null
   }
   const {

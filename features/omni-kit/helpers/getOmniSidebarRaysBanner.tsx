@@ -27,6 +27,7 @@ export const getOmniSidebarRaysBanner = ({
   simulation,
   productType,
   openSwapValue,
+  hidden,
 }: {
   isOpening: boolean
   uiDropdown: OmniMultiplyPanel | OmniSidebarEarnPanel | OmniSidebarBorrowPanel
@@ -39,9 +40,14 @@ export const getOmniSidebarRaysBanner = ({
   simulation?: LendingPosition | SupplyPosition
   productType: OmniProductType
   openSwapValue?: BigNumber
+  hidden: boolean
 }) => {
   const [, setHash] = useHash<string>()
   const { t } = useTranslation()
+
+  if (hidden) {
+    return null
+  }
 
   const protocolBoost = getProtocolBoost(positionRaysMultipliersData)
   const swapBoost = getSwapBoost(positionRaysMultipliersData)
