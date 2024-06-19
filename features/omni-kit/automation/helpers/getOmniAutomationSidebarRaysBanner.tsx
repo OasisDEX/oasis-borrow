@@ -5,14 +5,14 @@ import type { AutomationFeatures } from 'features/automation/common/types'
 import { getIsLastAutomationOfKind } from 'features/omni-kit/automation/helpers/getIsLastAutomationOfKind'
 import type { AutomationMetadataFlags } from 'features/omni-kit/types'
 import { RAYS_OPTIMIZATION_BOOST, RAYS_PROTECTION_BOOST } from 'features/rays/consts'
-import { type PositionRaysMultipliersData, RaysMultipliersType } from 'features/rays/types'
+import { getProtocolBoost } from 'features/rays/getProtocolBoost'
+import { type PositionRaysMultipliersData } from 'features/rays/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import { TriggerAction } from 'helpers/lambda/triggers'
 import { getPointsPerYear } from 'helpers/rays'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { getProtocolBoost } from 'features/rays/getProtocolBoost'
 
 export const getOmniAutomationSidebarRaysBanner = ({
   activeTriggersNumber,

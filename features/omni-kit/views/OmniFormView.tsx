@@ -75,7 +75,7 @@ export function OmniFormView({
       positionId,
       poolId,
       positionRaysMultipliersData,
-      collateralPrice
+      collateralPrice,
     },
     steps: {
       currentStep,
@@ -102,7 +102,7 @@ export function OmniFormView({
       isSimulationLoading,
       openFlowResolvedDpmId,
       currentPosition: { position, simulation },
-      swap
+      swap,
     },
     dynamicMetadata: {
       elements: { sidebarContent },
@@ -309,7 +309,7 @@ export function OmniFormView({
           position,
           simulation,
           productType,
-          openSwapValue: swap?.current?.minToTokenAmount.times(collateralPrice)
+          openSwapValue: swap?.current?.minToTokenAmount.times(collateralPrice),
         })
       : null,
     content: (

@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
+import { mapUserAndPositionRays } from 'features/rays/mapUserAndPositionRays'
 import { getRaysMappedNetwork } from 'handlers/rays/getRaysMappedNetwork'
 import { getRaysMappedProtocol } from 'handlers/rays/getRaysMappedProtocol'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -27,10 +27,10 @@ export const mapAaveLikeRaysMultipliers = ({
   const resolvedProtocol = getRaysMappedProtocol(protocol)
   const resolvedNetwork = getRaysMappedNetwork(networkName)
 
-  const positionMultipliers = Object.keys(multipliers.positionMultipliers)
+  const positionMultipliersKey = Object.keys(multipliers.positionMultipliers)
     .filter((item) => item.includes('aave') || item.includes('spark'))
     .find((item) => {
-      const [_network, _walletAddress, _proxy, _protocol, _tokens, _type] = item.split('-')
+      const [_network, , _proxy, _protocol, _tokens] = item.split('-')
       const _collateralTokenAddress = _tokens.split(':')[0].toLowerCase()
       const _debtTokenAddress = _tokens.split(':')[1].toLowerCase()
 
@@ -43,16 +43,5 @@ export const mapAaveLikeRaysMultipliers = ({
       )
     })
 
-  const rawPositionMultipliers = multipliers.positionMultipliers[positionMultipliers || ''] ?? []
-
-  return {
-    user: multipliers.userMultipliers.map((item) => ({
-      value: new BigNumber(item.value),
-      type: item.type,
-    })),
-    position: rawPositionMultipliers.map((item) => ({
-      value: new BigNumber(item.value),
-      type: item.type,
-    })),
-  }
+  return mapUserAndPositionRays({ positionMultipliersKey, multipliers })
 }

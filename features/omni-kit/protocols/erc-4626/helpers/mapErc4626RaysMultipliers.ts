@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
+import { mapUserAndPositionRays } from 'features/rays/mapUserAndPositionRays'
 import { getRaysMappedNetwork } from 'handlers/rays/getRaysMappedNetwork'
 
 export const mapErc4626RaysMultipliers = ({
@@ -26,10 +26,10 @@ export const mapErc4626RaysMultipliers = ({
   const resolvedProtocol = Erc4626PseudoProtocol.replace('-', '')
   const resolvedNetwork = getRaysMappedNetwork(networkName)
 
-  const positionMultipliers = Object.keys(multipliers.positionMultipliers)
+  const positionMultipliersKey = Object.keys(multipliers.positionMultipliers)
     .filter((item) => item.includes(resolvedProtocol))
     .find((item) => {
-      const [_network, _walletAddress, _proxy, _protocol, _poolId, _type] = item.split('-')
+      const [_network, , _proxy, _protocol, _poolId] = item.split('-')
 
       return (
         _network === resolvedNetwork &&
@@ -39,16 +39,5 @@ export const mapErc4626RaysMultipliers = ({
       )
     })
 
-  const rawPositionMultipliers = multipliers.positionMultipliers[positionMultipliers || ''] ?? []
-
-  return {
-    user: multipliers.userMultipliers.map((item) => ({
-      value: new BigNumber(item.value),
-      type: item.type,
-    })),
-    position: rawPositionMultipliers.map((item) => ({
-      value: new BigNumber(item.value),
-      type: item.type,
-    })),
-  }
+  return mapUserAndPositionRays({ positionMultipliersKey, multipliers })
 }
