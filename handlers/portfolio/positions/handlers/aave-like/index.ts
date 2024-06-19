@@ -36,6 +36,7 @@ import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
 import { getRawPositionDetails } from './getRawPositionDetails'
+import { mapDpmProtocolNameToUIName } from './mapDpmProtocolNameToUIName'
 
 const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
@@ -421,9 +422,11 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
   positionsCount,
   debug,
 }) => {
-  const aaveLikeDpmList = dpmList.filter(({ protocol }) =>
-    [aaveLikeProtocolNames.aavev3, aaveLikeProtocolNames.sparkv3].includes(protocol),
-  )
+  const aaveLikeDpmList = dpmList
+    .map(mapDpmProtocolNameToUIName)
+    .filter(({ protocol }) =>
+      [aaveLikeProtocolNames.aavev3, aaveLikeProtocolNames.sparkv3].includes(protocol),
+    )
   if (positionsCount) {
     return {
       positions: aaveLikeDpmList.map(({ vaultId }) => ({ positionId: vaultId })),
