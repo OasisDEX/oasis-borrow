@@ -56,8 +56,8 @@ export const getOmniSidebarRaysBanner = ({
   const swapBoost = getSwapBoost(positionRaysMultipliersData)
 
   if (isOpening) {
-    const simulatedBaseRaysPerYear =
-      simulation && 'netValue' in simulation ? getPointsPerYear(simulation.netValue.toNumber()) : 0
+    const netValue = simulation && 'netValue' in simulation ? simulation.netValue.toNumber() : 0
+    const simulatedBaseRaysPerYear = getPointsPerYear(netValue)
 
     if (simulatedBaseRaysPerYear === 0) {
       return null
@@ -66,7 +66,7 @@ export const getOmniSidebarRaysBanner = ({
     // if user already have position on currently used protocol, use current protocol boost
     const raysPerYear = positionRaysMultipliersData.allUserProtocols.includes(protocol)
       ? simulatedBaseRaysPerYear * protocolBoost
-      : simulatedBaseRaysPerYear * getRaysNextProtocolBonus(protocolBoost)
+      : simulatedBaseRaysPerYear * getRaysNextProtocolBonus(protocolBoost, netValue)
 
     let rays
 
