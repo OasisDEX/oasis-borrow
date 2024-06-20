@@ -3,13 +3,13 @@ import { Icon } from 'components/Icon'
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import type { PortfolioAssetsResponse } from 'components/portfolio/types/domain-types'
 import { handleRaysRedirect } from 'features/rays/handleRaysRedirect'
+import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import React, { useEffect, useState } from 'react'
 import { rays } from 'theme/icons'
 import { Flex, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
-import { useAppConfig } from 'helpers/config'
 
 export const NavigationRays = () => {
   const { walletAddress } = useAccount()
@@ -31,7 +31,7 @@ export const NavigationRays = () => {
 
   return (
     <Flex
-      sx={{ columnGap: 1, alignItems: 'center', mr: !isViewBelowL ? 3 : 0 }}
+      sx={{ columnGap: 1, alignItems: 'center', mr: !isViewBelowL ? 3 : 0, cursor: 'pointer' }}
       onClick={handleRaysRedirect}
     >
       <Icon icon={rays} size={24} />{' '}
