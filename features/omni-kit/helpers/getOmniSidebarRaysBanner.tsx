@@ -11,6 +11,7 @@ import { OmniMultiplyPanel, OmniProductType } from 'features/omni-kit/types'
 import { RAYS_OPTIMIZATION_BOOST, RAYS_PROTECTION_BOOST } from 'features/rays/consts'
 import { getAutomationBoost } from 'features/rays/getAutomationBoost'
 import { getProtocolBoost } from 'features/rays/getProtocolBoost'
+import { getRaysMultiplyMultipliers } from 'features/rays/getRaysMultiplyMultipliers'
 import { getRaysNextProtocolBonus } from 'features/rays/getRaysNextProtocolBonus'
 import { getSwapBoost } from 'features/rays/getSwapBoost'
 import type { PositionRaysMultipliersData } from 'features/rays/types'
@@ -83,26 +84,31 @@ export const getOmniSidebarRaysBanner = ({
     }
 
     // if user already have position on currently used protocol, use current protocol boost
-    const raysPerYear = positionRaysMultipliersData.allUserProtocols.includes(protocol)
+    const simulatedRaysPerYear = positionRaysMultipliersData.allUserProtocols.includes(protocol)
       ? simulatedBaseRaysPerYear * protocolBoost
       : simulatedBaseRaysPerYear * getRaysNextProtocolBonus(protocolBoost, simulationNetValue)
 
-    let rays
+    let instantRays
 
     if (swapData?.minToTokenAmount) {
-      rays = formatCryptoBalance(swapData.minToTokenAmount.times(swapBoost))
+      const swapRaysPerYear = new BigNumber(
+        getPointsPerYear(swapData.minToTokenAmount.times(collateralPrice).toNumber()),
+      )
+      const multiplyMultipliers = getRaysMultiplyMultipliers(isYieldLoop)
+
+      instantRays = formatCryptoBalance(swapRaysPerYear.times(swapBoost).times(multiplyMultipliers))
     } else {
-      rays = 'n/a'
+      instantRays = 'n/a'
     }
 
     return (
       <RaysSidebarBanner
         title={t(
           `rays.sidebar.banner.${productType === OmniProductType.Multiply ? 'instant' : 'open-non-swap'}.title`,
-          { rays },
+          { rays: instantRays },
         )}
         description={t('rays.sidebar.banner.instant.description', {
-          raysPerYear: formatCryptoBalance(new BigNumber(raysPerYear)),
+          raysPerYear: formatCryptoBalance(new BigNumber(simulatedRaysPerYear)),
         })}
       />
     )
@@ -136,7 +142,7 @@ export const getOmniSidebarRaysBanner = ({
     ).times(collateralPrice)
 
     const swapRaysPerYear = new BigNumber(getPointsPerYear(swapValue.toNumber()))
-    const multiplyMultipliers = isYieldLoop ? 0.06 : 0.2
+    const multiplyMultipliers = getRaysMultiplyMultipliers(isYieldLoop)
 
     const instantRays = formatCryptoBalance(
       swapRaysPerYear.times(swapBoost).times(multiplyMultipliers),
