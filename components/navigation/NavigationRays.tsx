@@ -9,11 +9,13 @@ import React, { useEffect, useState } from 'react'
 import { rays } from 'theme/icons'
 import { Flex, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
+import { useAppConfig } from 'helpers/config'
 
 export const NavigationRays = () => {
   const { walletAddress } = useAccount()
   const [assets, setAssets] = useState<PortfolioAssetsResponse>()
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[1] - 1}px)`)
+  const { Rays } = useAppConfig('features')
 
   useEffect(() => {
     if (walletAddress) {
@@ -23,7 +25,7 @@ export const NavigationRays = () => {
     }
   }, [walletAddress])
 
-  if (!assets) {
+  if (!assets || !Rays) {
     return null
   }
 
