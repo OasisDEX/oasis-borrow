@@ -340,7 +340,7 @@ export function OmniFormView({
       label: t(primaryButtonLabel, { token: flowState.token }),
       disabled: suppressValidation ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
-      hidden: false,
+      hidden: isPrimaryButtonHidden,
       withoutNextLink: true,
       ...primaryButtonActions,
     },
