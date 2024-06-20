@@ -2,7 +2,11 @@ import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { RaysSidebarBanner } from 'components/RaysSidebarBanner'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
-import type { OmniSidebarBorrowPanel, OmniSidebarEarnPanel } from 'features/omni-kit/types'
+import type {
+  OmniSidebarBorrowPanel,
+  OmniSidebarEarnPanel,
+  OmniSimulationSwap,
+} from 'features/omni-kit/types'
 import { OmniMultiplyPanel, OmniProductType } from 'features/omni-kit/types'
 import { RAYS_OPTIMIZATION_BOOST, RAYS_PROTECTION_BOOST } from 'features/rays/consts'
 import { getProtocolBoost } from 'features/rays/getProtocolBoost'
@@ -27,9 +31,10 @@ export const getOmniSidebarRaysBanner = ({
   position,
   simulation,
   productType,
-  openSwapValue,
+  swapData,
   hidden,
   protocol,
+  collateralPrice,
 }: {
   isOpening: boolean
   uiDropdown: OmniMultiplyPanel | OmniSidebarEarnPanel | OmniSidebarBorrowPanel
@@ -41,9 +46,10 @@ export const getOmniSidebarRaysBanner = ({
   position: LendingPosition | SupplyPosition
   simulation?: LendingPosition | SupplyPosition
   productType: OmniProductType
-  openSwapValue?: BigNumber
+  swapData?: OmniSimulationSwap
   hidden: boolean
   protocol: LendingProtocol
+  collateralPrice: BigNumber
 }) => {
   const [, setHash] = useHash<string>()
   const { t } = useTranslation()
@@ -70,8 +76,8 @@ export const getOmniSidebarRaysBanner = ({
 
     let rays
 
-    if (openSwapValue) {
-      rays = formatCryptoBalance(openSwapValue.times(swapBoost))
+    if (swapData?.minToTokenAmount) {
+      rays = formatCryptoBalance(swapData.minToTokenAmount.times(swapBoost))
     } else {
       rays = 'n/a'
     }
@@ -98,16 +104,37 @@ export const getOmniSidebarRaysBanner = ({
   if (uiDropdown === OmniMultiplyPanel.Close) {
     return (
       <RaysSidebarBanner
-        title={t('rays.sidebar.banner.closing.title', { rays: 'n/a' })}
+        title={t('rays.sidebar.banner.closing.title', {
+          rays: formatCryptoBalance(new BigNumber(stackedRaysPerYear)),
+        })}
         description={t('rays.sidebar.banner.closing.description', {
           raysPerYear: formatCryptoBalance(new BigNumber(stackedRaysPerYear)),
         })}
-        daysLeft="2"
+        // daysLeft="2"
       />
     )
   }
 
-  if (isSupportingOptimization || isSupportingProtection) {
+  if (swapData) {
+    const castedPosition = position as LendingPosition
+    const castedSimulation = simulation as LendingPosition | undefined
+
+    const withBuyingCollateral = castedSimulation?.riskRatio.loanToValue.gt(
+      castedPosition.riskRatio.loanToValue,
+    )
+
+    const swapValue = (
+      withBuyingCollateral ? swapData.minToTokenAmount : swapData.fromTokenAmount
+    ).times(collateralPrice)
+
+    const instantRays = formatCryptoBalance(swapValue.times(swapBoost))
+
+    return (
+      <RaysSidebarBanner title={t(`rays.sidebar.banner.instant.title`, { rays: instantRays })} />
+    )
+  }
+
+  if ((isSupportingOptimization || isSupportingProtection) && !swapData) {
     let extraRays = 0
 
     if (isOptimizationActive && isProtectionActive) {

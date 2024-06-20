@@ -309,9 +309,10 @@ export function OmniFormView({
           position,
           simulation,
           productType,
-          openSwapValue: swap?.current?.minToTokenAmount.times(collateralPrice),
+          swapData: swap?.current,
           hidden: isTxInProgress || isTxSuccess || isTxError,
           protocol,
+          collateralPrice,
         })
       : null,
     content: (
