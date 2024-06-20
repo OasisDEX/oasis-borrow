@@ -21,6 +21,7 @@ export const mapAaveLikeRaysMultipliers = ({
     return {
       user: [],
       position: [],
+      allUserProtocols: [],
     }
   }
 

@@ -20,6 +20,7 @@ export const mapErc4626RaysMultipliers = ({
     return {
       user: [],
       position: [],
+      allUserProtocols: [],
     }
   }
 

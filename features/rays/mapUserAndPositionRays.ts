@@ -1,4 +1,6 @@
+import { isLendingProtocolType } from 'features/omni-kit/helpers/isLendingProtocolType'
 import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
+import { mapRaysProtocolToOmni } from 'features/rays/mapRaysProtocolToOmni'
 import type { PositionRaysMultipliersData } from 'features/rays/types'
 
 export const mapUserAndPositionRays = ({
@@ -10,6 +12,18 @@ export const mapUserAndPositionRays = ({
 }): PositionRaysMultipliersData => {
   const rawPositionMultipliers = multipliers.positionMultipliers[positionMultipliersKey || ''] ?? []
 
+  const allUserProtocols = [
+    ...new Set(
+      Object.keys(multipliers.positionMultipliers)
+        .map((item) => {
+          const [, , , _protocol] = item.split('-')
+
+          return mapRaysProtocolToOmni(_protocol)
+        })
+        .filter(isLendingProtocolType),
+    ),
+  ]
+
   return {
     user: multipliers.userMultipliers.map((item) => ({
       value: Number(item.value),
@@ -19,5 +33,6 @@ export const mapUserAndPositionRays = ({
       value: Number(item.value),
       type: item.type,
     })),
+    allUserProtocols,
   }
 }

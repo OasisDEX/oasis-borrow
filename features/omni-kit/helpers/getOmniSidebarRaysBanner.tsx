@@ -12,6 +12,7 @@ import type { PositionRaysMultipliersData } from 'features/rays/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getPointsPerYear } from 'helpers/rays'
 import { useHash } from 'helpers/useHash'
+import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -28,6 +29,7 @@ export const getOmniSidebarRaysBanner = ({
   productType,
   openSwapValue,
   hidden,
+  protocol,
 }: {
   isOpening: boolean
   uiDropdown: OmniMultiplyPanel | OmniSidebarEarnPanel | OmniSidebarBorrowPanel
@@ -41,6 +43,7 @@ export const getOmniSidebarRaysBanner = ({
   productType: OmniProductType
   openSwapValue?: BigNumber
   hidden: boolean
+  protocol: LendingProtocol
 }) => {
   const [, setHash] = useHash<string>()
   const { t } = useTranslation()
@@ -60,7 +63,10 @@ export const getOmniSidebarRaysBanner = ({
       return null
     }
 
-    const raysPerYear = simulatedBaseRaysPerYear * getRaysNextProtocolBonus(protocolBoost)
+    // if user already have position on currently used protocol, use current protocol boost
+    const raysPerYear = positionRaysMultipliersData.allUserProtocols.includes(protocol)
+      ? simulatedBaseRaysPerYear * protocolBoost
+      : simulatedBaseRaysPerYear * getRaysNextProtocolBonus(protocolBoost)
 
     let rays
 

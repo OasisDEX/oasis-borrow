@@ -23,6 +23,7 @@ export const mapAjnaRaysMultipliers = ({
     return {
       user: [],
       position: [],
+      allUserProtocols: [],
     }
   }
 

@@ -1,3 +1,5 @@
+import type { LendingProtocol } from 'lendingProtocols'
+
 export enum RaysMultipliersType {
   TIME_OPEN = 'TIME_OPEN',
   AUTOMATION = 'AUTOMATION',
@@ -14,4 +16,5 @@ export type RaysMultipliers = {
 export type PositionRaysMultipliersData = {
   user: RaysMultipliers[]
   position: RaysMultipliers[]
+  allUserProtocols: LendingProtocol[]
 }

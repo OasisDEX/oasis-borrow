@@ -311,6 +311,7 @@ export function OmniFormView({
           productType,
           openSwapValue: swap?.current?.minToTokenAmount.times(collateralPrice),
           hidden: isTxInProgress || isTxSuccess || isTxError,
+          protocol,
         })
       : null,
     content: (

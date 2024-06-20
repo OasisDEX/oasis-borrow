@@ -27,6 +27,7 @@ export const mapMorphoBlueRaysMultipliers = ({
     return {
       user: [],
       position: [],
+      allUserProtocols: [],
     }
   }
 
@@ -39,6 +40,7 @@ export const mapMorphoBlueRaysMultipliers = ({
     return {
       user: [],
       position: [],
+      allUserProtocols: [],
     }
   }
 
