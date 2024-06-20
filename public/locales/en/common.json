@@ -3901,6 +3901,12 @@
         "reduceAuto": {
           "title": "Reduce Rays by {{rays}} Rays a year",
           "description": "When you remove this automation"
+        },
+        "reduce": {
+          "title": "You will reduce your yearly Rays on this position by {{rays}} performing this action"
+        },
+        "increase": {
+          "title": "You will increase your yearly Rays on this position by {{rays}} performing this action"
         }
       }
     }

@@ -132,7 +132,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
           </Text>
           <Flex sx={{ columnGap: 3, alignItems: 'center' }}>
-            {position.raysPerYear && position.raysPerYear > 0 && isRaysEnabled && (
+            {!!position.raysPerYear && position.raysPerYear > 0 && isRaysEnabled && (
               <Text
                 variant="paragraph3"
                 sx={{

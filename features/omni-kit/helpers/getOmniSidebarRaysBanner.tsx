@@ -61,9 +61,19 @@ export const getOmniSidebarRaysBanner = ({
   const protocolBoost = getProtocolBoost(positionRaysMultipliersData)
   const swapBoost = getSwapBoost(positionRaysMultipliersData)
 
+  // In general all positions should have `netValue` field since all positions extend either Lending or Supply interface
+  const positionNetValue = position && 'netValue' in position ? position.netValue.toNumber() : 0
+  const simulationNetValue =
+    simulation && 'netValue' in simulation ? simulation.netValue.toNumber() : 0
+
+  const raysPerYear = getPointsPerYear(positionNetValue)
+  const newRaysPerYear = getPointsPerYear(simulationNetValue)
+
+  const stackedRaysPerYear = raysPerYear * protocolBoost
+  const newStackedRaysPerYear = newRaysPerYear * protocolBoost
+
   if (isOpening) {
-    const netValue = simulation && 'netValue' in simulation ? simulation.netValue.toNumber() : 0
-    const simulatedBaseRaysPerYear = getPointsPerYear(netValue)
+    const simulatedBaseRaysPerYear = getPointsPerYear(simulationNetValue)
 
     if (simulatedBaseRaysPerYear === 0) {
       return null
@@ -72,7 +82,7 @@ export const getOmniSidebarRaysBanner = ({
     // if user already have position on currently used protocol, use current protocol boost
     const raysPerYear = positionRaysMultipliersData.allUserProtocols.includes(protocol)
       ? simulatedBaseRaysPerYear * protocolBoost
-      : simulatedBaseRaysPerYear * getRaysNextProtocolBonus(protocolBoost, netValue)
+      : simulatedBaseRaysPerYear * getRaysNextProtocolBonus(protocolBoost, simulationNetValue)
 
     let rays
 
@@ -94,11 +104,6 @@ export const getOmniSidebarRaysBanner = ({
       />
     )
   }
-
-  // In general all positions should have `netValue` field since all positions extend either Lending or Supply interface
-  const raysPerYear = 'netValue' in position ? getPointsPerYear(position.netValue.toNumber()) : 0
-
-  const stackedRaysPerYear = raysPerYear * protocolBoost
 
   // OmniMultiplyPanel.Close and OmniBorrowPanel.Close are the same
   if (uiDropdown === OmniMultiplyPanel.Close) {
@@ -134,7 +139,33 @@ export const getOmniSidebarRaysBanner = ({
     )
   }
 
+  if (simulation && positionNetValue < simulationNetValue) {
+    const rays = new BigNumber(newStackedRaysPerYear - stackedRaysPerYear)
+
+    return (
+      <RaysSidebarBanner
+        title={t(`rays.sidebar.banner.increase.title`, { rays: formatCryptoBalance(rays) })}
+      />
+    )
+  }
+
+  if (simulation && positionNetValue > simulationNetValue) {
+    const rays = new BigNumber(stackedRaysPerYear - newStackedRaysPerYear)
+
+    return (
+      <RaysSidebarBanner
+        title={t(`rays.sidebar.banner.reduce.title`, { rays: formatCryptoBalance(rays) })}
+      />
+    )
+  }
+
   if ((isSupportingOptimization || isSupportingProtection) && !swapData) {
+    const castedPosition = position as LendingPosition
+
+    if (castedPosition.debtAmount.isZero()) {
+      return null
+    }
+
     let extraRays = 0
 
     if (isOptimizationActive && isProtectionActive) {

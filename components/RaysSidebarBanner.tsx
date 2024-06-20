@@ -35,7 +35,9 @@ export const RaysSidebarBanner: FC<RaysSidebarBannerProps> = ({
             columnGap: 2,
           }}
         >
-          <Icon icon={rays} size={24} />
+          <Flex sx={{ minWidth: '24px' }}>
+            <Icon icon={rays} size={24} />
+          </Flex>
           {title}
         </Text>
         {description && (
