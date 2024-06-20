@@ -76,6 +76,7 @@ export function OmniFormView({
       poolId,
       positionRaysMultipliersData,
       collateralPrice,
+      isYieldLoop,
     },
     steps: {
       currentStep,
@@ -313,6 +314,7 @@ export function OmniFormView({
           hidden: isTxInProgress || isTxSuccess || isTxError,
           protocol,
           collateralPrice,
+          isYieldLoop,
         })
       : null,
     content: (
@@ -338,7 +340,7 @@ export function OmniFormView({
       label: t(primaryButtonLabel, { token: flowState.token }),
       disabled: suppressValidation ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
-      hidden: isPrimaryButtonHidden,
+      hidden: false,
       withoutNextLink: true,
       ...primaryButtonActions,
     },

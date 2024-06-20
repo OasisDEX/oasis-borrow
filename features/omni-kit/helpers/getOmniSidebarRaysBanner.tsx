@@ -9,6 +9,7 @@ import type {
 } from 'features/omni-kit/types'
 import { OmniMultiplyPanel, OmniProductType } from 'features/omni-kit/types'
 import { RAYS_OPTIMIZATION_BOOST, RAYS_PROTECTION_BOOST } from 'features/rays/consts'
+import { getAutomationBoost } from 'features/rays/getAutomationBoost'
 import { getProtocolBoost } from 'features/rays/getProtocolBoost'
 import { getRaysNextProtocolBonus } from 'features/rays/getRaysNextProtocolBonus'
 import { getSwapBoost } from 'features/rays/getSwapBoost'
@@ -35,6 +36,7 @@ export const getOmniSidebarRaysBanner = ({
   hidden,
   protocol,
   collateralPrice,
+  isYieldLoop,
 }: {
   isOpening: boolean
   uiDropdown: OmniMultiplyPanel | OmniSidebarEarnPanel | OmniSidebarBorrowPanel
@@ -50,6 +52,7 @@ export const getOmniSidebarRaysBanner = ({
   hidden: boolean
   protocol: LendingProtocol
   collateralPrice: BigNumber
+  isYieldLoop: boolean
 }) => {
   const [, setHash] = useHash<string>()
   const { t } = useTranslation()
@@ -57,9 +60,9 @@ export const getOmniSidebarRaysBanner = ({
   if (hidden) {
     return null
   }
-
   const protocolBoost = getProtocolBoost(positionRaysMultipliersData)
   const swapBoost = getSwapBoost(positionRaysMultipliersData)
+  const automationBoost = getAutomationBoost(positionRaysMultipliersData)
 
   // In general all positions should have `netValue` field since all positions extend either Lending or Supply interface
   const positionNetValue = position && 'netValue' in position ? position.netValue.toNumber() : 0
@@ -69,8 +72,8 @@ export const getOmniSidebarRaysBanner = ({
   const raysPerYear = getPointsPerYear(positionNetValue)
   const newRaysPerYear = getPointsPerYear(simulationNetValue)
 
-  const stackedRaysPerYear = raysPerYear * protocolBoost
-  const newStackedRaysPerYear = newRaysPerYear * protocolBoost
+  const raysPerYearWithProtocolBoost = raysPerYear * protocolBoost
+  const newRaysPerYearWithProtocolBoost = newRaysPerYear * protocolBoost
 
   if (isOpening) {
     const simulatedBaseRaysPerYear = getPointsPerYear(simulationNetValue)
@@ -110,10 +113,10 @@ export const getOmniSidebarRaysBanner = ({
     return (
       <RaysSidebarBanner
         title={t('rays.sidebar.banner.closing.title', {
-          rays: formatCryptoBalance(new BigNumber(stackedRaysPerYear)),
+          rays: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
         })}
         description={t('rays.sidebar.banner.closing.description', {
-          raysPerYear: formatCryptoBalance(new BigNumber(stackedRaysPerYear)),
+          raysPerYear: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
         })}
         // daysLeft="2"
       />
@@ -132,7 +135,12 @@ export const getOmniSidebarRaysBanner = ({
       withBuyingCollateral ? swapData.minToTokenAmount : swapData.fromTokenAmount
     ).times(collateralPrice)
 
-    const instantRays = formatCryptoBalance(swapValue.times(swapBoost))
+    const swapRaysPerYear = new BigNumber(getPointsPerYear(swapValue.toNumber()))
+    const multiplyMultipliers = isYieldLoop ? 0.06 : 0.2
+
+    const instantRays = formatCryptoBalance(
+      swapRaysPerYear.times(swapBoost).times(multiplyMultipliers),
+    )
 
     return (
       <RaysSidebarBanner title={t(`rays.sidebar.banner.instant.title`, { rays: instantRays })} />
@@ -140,7 +148,9 @@ export const getOmniSidebarRaysBanner = ({
   }
 
   if (simulation && positionNetValue < simulationNetValue) {
-    const rays = new BigNumber(newStackedRaysPerYear - stackedRaysPerYear)
+    const rays = new BigNumber(
+      newRaysPerYearWithProtocolBoost - raysPerYearWithProtocolBoost,
+    ).times(automationBoost)
 
     return (
       <RaysSidebarBanner
@@ -150,7 +160,9 @@ export const getOmniSidebarRaysBanner = ({
   }
 
   if (simulation && positionNetValue > simulationNetValue) {
-    const rays = new BigNumber(stackedRaysPerYear - newStackedRaysPerYear)
+    const rays = new BigNumber(
+      raysPerYearWithProtocolBoost - newRaysPerYearWithProtocolBoost,
+    ).times(automationBoost)
 
     return (
       <RaysSidebarBanner
@@ -175,16 +187,17 @@ export const getOmniSidebarRaysBanner = ({
 
     if (!isOptimizationActive && !isProtectionActive) {
       extraRays =
-        stackedRaysPerYear * RAYS_OPTIMIZATION_BOOST * RAYS_PROTECTION_BOOST - stackedRaysPerYear
+        raysPerYearWithProtocolBoost * RAYS_OPTIMIZATION_BOOST * RAYS_PROTECTION_BOOST -
+        raysPerYearWithProtocolBoost
     }
 
     if (isOptimizationActive && !isProtectionActive) {
-      const baseRays = stackedRaysPerYear * RAYS_OPTIMIZATION_BOOST
+      const baseRays = raysPerYearWithProtocolBoost * RAYS_OPTIMIZATION_BOOST
       extraRays = baseRays * RAYS_PROTECTION_BOOST - baseRays
     }
 
     if (!isOptimizationActive && isProtectionActive) {
-      const baseRays = stackedRaysPerYear * RAYS_PROTECTION_BOOST
+      const baseRays = raysPerYearWithProtocolBoost * RAYS_PROTECTION_BOOST
       extraRays = baseRays * RAYS_OPTIMIZATION_BOOST - baseRays
     }
 
