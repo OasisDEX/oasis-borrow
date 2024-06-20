@@ -111,7 +111,12 @@ export function HomepageView() {
           <HomepageHeadline
             primaryText={t('landing.why-oasis.sub-headers.rays.title')}
             ctaLabel={t('landing.why-oasis.sub-headers.rays.cta')}
-            ctaOnClick={() => push(INTERNAL_LINKS.rays)}
+            ctaOnClick={() => {
+              // hard redirect required since /rays is different app
+              const target = `${window.location.origin}${INTERNAL_LINKS.rays}`
+              window.history.pushState({}, '', target)
+              window.location.assign(target)
+            }}
             sx={{ alignSelf: 'center', mb: [5, 0] }}
             buttonSx={{ p: 0 }}
             buttonVariant="textual"
