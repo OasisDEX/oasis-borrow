@@ -3,11 +3,12 @@ import BigNumber from 'bignumber.js'
 import { RaysSidebarBanner } from 'components/RaysSidebarBanner'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import type {
+  OmniMultiplyPanel,
   OmniSidebarBorrowPanel,
   OmniSidebarEarnPanel,
   OmniSimulationSwap,
 } from 'features/omni-kit/types'
-import { OmniMultiplyPanel, OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { RAYS_OPTIMIZATION_BOOST, RAYS_PROTECTION_BOOST } from 'features/rays/consts'
 import { getAutomationBoost } from 'features/rays/getAutomationBoost'
 import { getProtocolBoost } from 'features/rays/getProtocolBoost'
@@ -24,7 +25,7 @@ import React from 'react'
 
 export const getOmniSidebarRaysBanner = ({
   isOpening,
-  uiDropdown,
+  // uiDropdown,
   isSupportingOptimization,
   isOptimizationActive,
   isSupportingProtection,
@@ -114,20 +115,21 @@ export const getOmniSidebarRaysBanner = ({
     )
   }
 
+  // TODO provide proper handling based on position current earned points, days left etc.
   // OmniMultiplyPanel.Close and OmniBorrowPanel.Close are the same
-  if (uiDropdown === OmniMultiplyPanel.Close) {
-    return (
-      <RaysSidebarBanner
-        title={t('rays.sidebar.banner.closing.title', {
-          rays: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
-        })}
-        description={t('rays.sidebar.banner.closing.description', {
-          raysPerYear: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
-        })}
-        // daysLeft="2"
-      />
-    )
-  }
+  // if (uiDropdown === OmniMultiplyPanel.Close) {
+  //   return (
+  //     <RaysSidebarBanner
+  //       title={t('rays.sidebar.banner.closing.title', {
+  //         rays: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
+  //       })}
+  //       description={t('rays.sidebar.banner.closing.description', {
+  //         raysPerYear: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
+  //       })}
+  //       // daysLeft="2"
+  //     />
+  //   )
+  // }
 
   if (swapData) {
     const castedPosition = position as LendingPosition
