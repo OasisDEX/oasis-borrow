@@ -3,6 +3,7 @@ import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import { NavigationNetworkSwitcherOrb } from 'components/navigation/NavigationNetworkSwitcher'
+import { NavigationRays } from 'components/navigation/NavigationRays'
 import { ConnectButton } from 'features/web3OnBoard/connect-button'
 import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
@@ -20,7 +21,9 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
     <>
       {isConnected ? (
         <>
+          {isViewBelowXl && <NavigationRays />}
           {isViewBelowXl && <MyPositionsOrb />}
+          {!isViewBelowXl && <NavigationRays />}
           {<NavigationNetworkSwitcherOrb />}
           {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
         </>

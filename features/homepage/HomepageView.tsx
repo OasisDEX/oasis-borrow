@@ -4,8 +4,9 @@ import { InfoCard } from 'components/InfoCard'
 import { OmniProductType } from 'features/omni-kit/types'
 import { featuredProducts } from 'features/productHub/meta'
 import { ProductHubView } from 'features/productHub/views'
+import { handleRaysRedirect } from 'features/rays/handleRaysRedirect'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
-import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
@@ -111,12 +112,7 @@ export function HomepageView() {
           <HomepageHeadline
             primaryText={t('landing.why-oasis.sub-headers.rays.title')}
             ctaLabel={t('landing.why-oasis.sub-headers.rays.cta')}
-            ctaOnClick={() => {
-              // hard redirect required since /rays is different app
-              const target = `${window.location.origin}${INTERNAL_LINKS.rays}`
-              window.history.pushState({}, '', target)
-              window.location.assign(target)
-            }}
+            ctaOnClick={handleRaysRedirect}
             sx={{ alignSelf: 'center', mb: [5, 0] }}
             buttonSx={{ p: 0 }}
             buttonVariant="textual"

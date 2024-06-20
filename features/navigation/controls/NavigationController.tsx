@@ -14,6 +14,9 @@ export function NavigationController() {
   const { isConnected, walletAddress } = useAccount()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
 
+  // TODO figure out why unpublish of Use Cases in contentful causes error
+  const resolvedNavigation = navigation.filter((item) => item.label !== 'Use Cases')
+
   return (
     <>
       <Navigation
@@ -27,7 +30,7 @@ export function NavigationController() {
               ]
             : []),
         ]}
-        panels={navigation}
+        panels={resolvedNavigation}
         actions={<NavigationActionsController isConnected={isConnected} />}
       />
       <SwapWidgetShowHide />
