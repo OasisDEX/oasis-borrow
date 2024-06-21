@@ -304,7 +304,7 @@ export function useFlowState({
     isWalletConnected,
     isAllowanceReady,
     isLoading, // just for the allowance loading state
-    isUiDataLoading: isUiDataLoading || (checkingForCDPAllow && isProxyReady),
+    isUiDataLoading: isUiDataLoading || (checkingForCDPAllow ? isProxyReady : false),
     isEverythingReady: isAllowanceReady, // just for convenience, allowance is always the last step
     asUserAction,
     onEverythingReady,
