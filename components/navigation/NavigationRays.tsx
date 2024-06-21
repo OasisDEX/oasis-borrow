@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { Icon } from 'components/Icon'
-import { AppLink } from 'components/Links'
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import type { PortfolioAssetsResponse } from 'components/portfolio/types/domain-types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -32,7 +31,7 @@ export const NavigationRays = () => {
 
   return (
     <Flex sx={{ mr: !isViewBelowL ? 3 : 0, alignItems: 'center' }}>
-      <AppLink href={INTERNAL_LINKS.rays}>
+      <a href={INTERNAL_LINKS.rays} style={{ textDecoration: 'none' }}>
         <Flex
           sx={{
             columnGap: 1,
@@ -47,7 +46,7 @@ export const NavigationRays = () => {
             </Text>
           )}
         </Flex>
-      </AppLink>
+      </a>
     </Flex>
   )
 }
