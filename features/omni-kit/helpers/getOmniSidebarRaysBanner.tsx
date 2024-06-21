@@ -105,7 +105,7 @@ export const getOmniSidebarRaysBanner = ({
     return (
       <RaysSidebarBanner
         title={t(
-          `rays.sidebar.banner.${productType === OmniProductType.Multiply ? 'instant' : 'open-non-swap'}.title`,
+          `rays.sidebar.banner.${productType === OmniProductType.Multiply || swapData ? 'instant' : 'open-non-swap'}.title`,
           { rays: instantRays },
         )}
         description={t('rays.sidebar.banner.instant.description', {
@@ -135,9 +135,10 @@ export const getOmniSidebarRaysBanner = ({
     const castedPosition = position as LendingPosition
     const castedSimulation = simulation as LendingPosition | undefined
 
-    const withBuyingCollateral = castedSimulation?.riskRatio?.loanToValue.gt(
-      castedPosition.riskRatio.loanToValue,
-    )
+    // fallback to true since we have a SupplyPositions that have optional swaps on deposit (Erc4626),
+    // but doesn't have on withdraw (if at some point we will add support, much complex handling will be required)
+    const withBuyingCollateral =
+      castedSimulation?.riskRatio?.loanToValue.gt(castedPosition.riskRatio.loanToValue) || true
 
     const swapValue = (
       withBuyingCollateral ? swapData.minToTokenAmount : swapData.fromTokenAmount
