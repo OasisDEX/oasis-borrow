@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
+import { WithArrow } from 'components/WithArrow'
 import { OmniProductType } from 'features/omni-kit/types'
 import { featuredProducts } from 'features/productHub/meta'
 import { ProductHubView } from 'features/productHub/views'
-import { handleRaysRedirect } from 'features/rays/handleRaysRedirect'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
@@ -111,12 +111,19 @@ export function HomepageView() {
         >
           <HomepageHeadline
             primaryText={t('landing.why-oasis.sub-headers.rays.title')}
-            ctaLabel={t('landing.why-oasis.sub-headers.rays.cta')}
-            ctaOnClick={handleRaysRedirect}
             sx={{ alignSelf: 'center', mb: [5, 0] }}
             buttonSx={{ p: 0 }}
             buttonVariant="textual"
             textVariant="header4"
+            buttonLike={
+              <Box sx={{ mt: 3 }}>
+                <a href={INTERNAL_LINKS.rays} style={{ textDecoration: 'none' }}>
+                  <WithArrow sx={{ color: 'interactive100' }}>
+                    {t('landing.why-oasis.sub-headers.rays.cta')}
+                  </WithArrow>
+                </a>
+              </Box>
+            }
           />
 
           <Image

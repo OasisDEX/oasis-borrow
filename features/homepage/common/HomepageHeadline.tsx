@@ -1,5 +1,6 @@
 import { Icon } from 'components/Icon'
 import type { TranslateStringType } from 'helpers/translateStringType'
+import type { ReactNode } from 'react'
 import React from 'react'
 import { arrow_right } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
@@ -15,6 +16,7 @@ type HomePageHeadlineProps = {
   buttonSx?: ThemeUIStyleObject
   buttonVariant?: string
   textVariant?: string
+  buttonLike?: ReactNode
 }
 
 export const HomepageHeadline = ({
@@ -27,6 +29,7 @@ export const HomepageHeadline = ({
   buttonVariant = 'primary',
   textVariant = 'header3',
   buttonSx,
+  buttonLike,
 }: HomePageHeadlineProps) => {
   return (
     <Flex sx={{ flexDirection: 'column', maxWidth, ...sx }}>
@@ -62,6 +65,7 @@ export const HomepageHeadline = ({
           />
         </Button>
       )}
+      {buttonLike}
     </Flex>
   )
 }
