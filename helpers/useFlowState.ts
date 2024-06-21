@@ -46,7 +46,7 @@ export type UseFlowStateProps = {
   token?: string
   step?: string
   useHeaderBackBtn?: boolean
-  lockUiDataLoading?: boolean
+  checkingForCDPAllow?: boolean
 }
 
 export function useFlowState({
@@ -63,7 +63,7 @@ export function useFlowState({
   token,
   step,
   useHeaderBackBtn,
-  lockUiDataLoading,
+  checkingForCDPAllow,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
@@ -88,7 +88,7 @@ export function useFlowState({
     token,
   )
 
-  const isProxyReady = !!availableProxies.length
+  const isProxyReady = availableProxies.length > 0
   const callbackParams = {
     availableProxies,
     walletAddress,
@@ -304,13 +304,12 @@ export function useFlowState({
     isWalletConnected,
     isAllowanceReady,
     isLoading, // just for the allowance loading state
-    isUiDataLoading,
+    isUiDataLoading: isUiDataLoading || (checkingForCDPAllow ? isProxyReady : false),
     isEverythingReady: isAllowanceReady, // just for convenience, allowance is always the last step
     asUserAction,
     onEverythingReady,
     onGoBack,
     step,
     useHeaderBackBtn,
-    lockUiDataLoading,
   }
 }

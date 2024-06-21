@@ -4,6 +4,7 @@ import { getMakerIsCdpAllowed } from 'features/refinance/helpers/getMakerIsCdpAl
 import { RefinanceSidebarStep } from 'features/refinance/types'
 import { useFlowState } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 import { Box } from 'theme-ui'
 
@@ -16,13 +17,15 @@ export const RefinanceFlowSidebarController = () => {
     steps: { setStep, setNextStep },
   } = useRefinanceContext()
 
+  const checkingForCDPAllow = protocol === LendingProtocol.Maker
+
   const flowState = useFlowState({
     pairId,
     protocol,
     networkId: chainInfo.chainId,
     amount: zero,
     token: 'ETH',
-    lockUiDataLoading: true,
+    checkingForCDPAllow,
     // Take only proxies without CreatePosition events
     filterConsumedProxy: async (events) => events.length === 0,
     // will trigger on DPM step
@@ -30,6 +33,7 @@ export const RefinanceFlowSidebarController = () => {
       // Check if owner is already dpm and use it as dpm for refinance, if not fallback to first available dpm
       const dpm =
         availableProxies.find((item) => item.address.toLowerCase() === owner) || availableProxies[0]
+      updateState('dpm', dpm)
 
       const isCdpAllowed = await getMakerIsCdpAllowed({
         positionId: positionId.id,
@@ -37,8 +41,6 @@ export const RefinanceFlowSidebarController = () => {
         positionOwner: owner,
         allowedAddress: dpm.address,
       })
-
-      updateState('dpm', dpm)
 
       // If position owner is dpm that will be used for refinance
       // skip to refinance tx
