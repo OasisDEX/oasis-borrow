@@ -135,7 +135,7 @@ export const getOmniSidebarRaysBanner = ({
     const castedPosition = position as LendingPosition
     const castedSimulation = simulation as LendingPosition | undefined
 
-    const withBuyingCollateral = castedSimulation?.riskRatio.loanToValue.gt(
+    const withBuyingCollateral = castedSimulation?.riskRatio?.loanToValue.gt(
       castedPosition.riskRatio.loanToValue,
     )
 
