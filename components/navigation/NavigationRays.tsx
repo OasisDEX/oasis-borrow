@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { Icon } from 'components/Icon'
+import { AppLink } from 'components/Links'
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import type { PortfolioAssetsResponse } from 'components/portfolio/types/domain-types'
-import { handleRaysRedirect } from 'features/rays/handleRaysRedirect'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
@@ -30,16 +31,23 @@ export const NavigationRays = () => {
   }
 
   return (
-    <Flex
-      sx={{ columnGap: 1, alignItems: 'center', mr: !isViewBelowL ? 3 : 0, cursor: 'pointer' }}
-      onClick={handleRaysRedirect}
-    >
-      <Icon icon={rays} size={24} />{' '}
-      {!isViewBelowL && (
-        <Text variant="boldParagraph3" sx={{ fontSize: 1 }}>
-          {formatCryptoBalance(new BigNumber(assets.totalRaysEarned)).split('.')[0]} Rays
-        </Text>
-      )}
+    <Flex sx={{ mr: !isViewBelowL ? 3 : 0, alignItems: 'center' }}>
+      <AppLink href={INTERNAL_LINKS.rays}>
+        <Flex
+          sx={{
+            columnGap: 1,
+            alignItems: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <Icon icon={rays} size={24} />{' '}
+          {!isViewBelowL && (
+            <Text variant="boldParagraph3" sx={{ fontSize: 1 }}>
+              {formatCryptoBalance(new BigNumber(assets.totalRaysEarned)).split('.')[0]} Rays
+            </Text>
+          )}
+        </Flex>
+      </AppLink>
     </Flex>
   )
 }
