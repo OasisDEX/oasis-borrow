@@ -51,6 +51,7 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'WSTETH-ETH': [
       '0x6aa81f51dfc955df598e18006deae56ce907ac02b0b5358705f1a28fcea23cc0',
       '0xe3c4d4d0e214fdc52635d7f9b2f7b3b0081771ae2efeb3cb5aae26009f34f7a7',
+      '0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba',
     ],
     'WEETH-ETH': ['0x78d11c03944e0dc298398f0545dc8195ad201a18b0388cb8058b1bcb89440971'],
     'WEETH-USDC': ['0x6a331b22b56c9c0ee32a1a7d6f852d2c682ea8b27a1b0f99a9c484a37a951eb7'],
