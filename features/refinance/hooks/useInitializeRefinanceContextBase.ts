@@ -1,4 +1,6 @@
 import { type AddressValue, TokenAmount } from '@summer_fi/summerfi-sdk-common'
+import { getTokenPrice } from 'blockchain/prices'
+import { tokenPriceStore } from 'blockchain/prices.constants'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import {
   getOmniTxStatuses,
@@ -74,6 +76,13 @@ export const useInitializeRefinanceContextBase = ({
     [LendingProtocol.AaveV2]: [],
     [LendingProtocol.Ajna]: [],
   }[contextInput.position.lendingProtocol]
+
+  const getTokenUsdPrice = (symbol: string) =>
+    getTokenPrice(
+      symbol.toUpperCase(),
+      tokenPriceStore.prices,
+      'getTokenUsdPrice - init refinance context base',
+    ).toString()
 
   const {
     environment: { slippage, address, isOwner },
@@ -154,6 +163,7 @@ export const useInitializeRefinanceContextBase = ({
       slippage,
       gasEstimation,
       isOwner,
+      getTokenUsdPrice,
     },
     position: {
       collateralTokenData,

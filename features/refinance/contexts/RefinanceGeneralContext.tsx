@@ -89,6 +89,7 @@ export type RefinanceGeneralContextBase = {
     slippage: number
     gasEstimation: GasEstimationContext | undefined
     isOwner: boolean
+    getTokenUsdPrice: (symbol: string) => string
   }
   position: {
     positionId: PositionId
