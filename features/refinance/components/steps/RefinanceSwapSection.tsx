@@ -9,10 +9,11 @@ import React from 'react'
 export const RefinanceSwapSection = () => {
   const { t } = useTranslation()
   const {
-    simulation: { refinanceSimulation, debtPrice, collateralPrice },
+    environment: { getTokenUsdPrice },
+    simulation: { refinanceSimulation },
   } = useRefinanceContext()
 
-  if (!refinanceSimulation || !collateralPrice || !debtPrice) {
+  if (!refinanceSimulation) {
     return null
   }
 
@@ -36,7 +37,7 @@ export const RefinanceSwapSection = () => {
 
     const priceImpact = new BigNumber(swap.priceImpact.value).div(100)
     const slippage = new BigNumber(swap.slippage.value)
-    const feePrice = new BigNumber(isCollateral ? collateralPrice : debtPrice)
+    const feePrice = getTokenUsdPrice(swap.summerFee.token.symbol.toUpperCase())
     const fee = new BigNumber(swap.summerFee.amount).times(feePrice)
     const rawPrice = new BigNumber(1).div(swap.offerPrice.value)
 
