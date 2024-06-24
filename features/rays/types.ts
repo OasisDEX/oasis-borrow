@@ -18,3 +18,16 @@ export type PositionRaysMultipliersData = {
   position: RaysMultipliers[]
   allUserProtocols: LendingProtocol[]
 }
+
+export enum RaysEligibilityCondition {
+  POSITION_OPEN_TIME = 'POSITION_OPEN_TIME',
+  POINTS_EXPIRED = 'POINTS_EXPIRED',
+  BECOME_SUMMER_USER = 'BECOME_SUMMER_USER',
+}
+
+export enum RaysUserType {
+  GENERAL_ETHEREUM_USER = 'General Ethereum User',
+  DEFI_USER = 'DeFi User',
+  SUMMERFI_USER = 'SummerFi User',
+  SUMMERFI_POWER_USER = 'SummerFi Power User',
+}
