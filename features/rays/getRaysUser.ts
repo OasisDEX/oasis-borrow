@@ -24,7 +24,7 @@ export const getRaysUser = async ({
       userRays: await response.json(),
     }
   } catch (error) {
-    console.error(error)
+    console.error('Error fetching rays user data', error)
     return {
       error,
     }
