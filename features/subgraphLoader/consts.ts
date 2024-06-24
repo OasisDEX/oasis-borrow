@@ -603,7 +603,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         cumulativeDepositUSD
         cumulativeFeesUSD
         cumulativeWithdrawnUSD
+        creator
         ilk {
+          id
           ilk
           liquidationRatio
           pip {

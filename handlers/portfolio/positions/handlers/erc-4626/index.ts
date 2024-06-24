@@ -8,14 +8,17 @@ import {
   getErc4626ApyParameters,
   getErc4626PositionParameters,
 } from 'features/omni-kit/protocols/erc-4626/helpers'
+import { mapErc4626RaysMultipliers } from 'features/omni-kit/protocols/erc-4626/helpers/mapErc4626RaysMultipliers'
 import { erc4626Vaults } from 'features/omni-kit/protocols/erc-4626/settings'
 import type { Erc4626Config } from 'features/omni-kit/protocols/erc-4626/types'
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import { OmniProductType, type OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { type TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type {
   PortfolioPosition,
   PortfolioPositionsCountReply,
@@ -35,6 +38,7 @@ interface GetErc4626PositionsParams {
   networkId: OmniSupportedNetworkIds
   positionsCount?: boolean
   prices: TokensPricesList
+  raysUserMultipliers: RaysUserMultipliersResponse
 }
 
 async function getErc4626Positions({
@@ -43,6 +47,7 @@ async function getErc4626Positions({
   networkId,
   positionsCount,
   prices,
+  raysUserMultipliers,
 }: GetErc4626PositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph({
@@ -95,7 +100,19 @@ async function getErc4626Positions({
 
           const netValue = position.netValue.times(quotePrice)
 
-          const raysPerYear = getPointsPerYear(netValue.toNumber())
+          const rawRaysPerYear = getPointsPerYear(netValue.toNumber())
+
+          const positionRaysMultipliersData = mapErc4626RaysMultipliers({
+            multipliers: raysUserMultipliers,
+            dpmProxy: address,
+            networkName,
+            poolId: vault.address,
+          })
+
+          const raysPerYear = getPositionPortfolioRaysWithBoosts({
+            rawRaysPerYear,
+            positionRaysMultipliersData,
+          })
 
           return {
             assetLabel: vault.name,
@@ -165,6 +182,7 @@ export const erc4626PositionsHandler: PortfolioPositionsHandler = async ({
   dpmList,
   prices,
   positionsCount,
+  raysUserMultipliers,
 }) => {
   return Promise.all([
     getErc4626Positions({
@@ -173,6 +191,7 @@ export const erc4626PositionsHandler: PortfolioPositionsHandler = async ({
       networkId: NetworkIds.MAINNET,
       prices,
       positionsCount,
+      raysUserMultipliers,
     }),
   ]).then((responses) => {
     return {

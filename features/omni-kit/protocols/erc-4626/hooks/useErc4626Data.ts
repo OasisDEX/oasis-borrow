@@ -71,7 +71,7 @@ export function useErc4626Data({
 
   const positionRaysMultipliersData = mapErc4626RaysMultipliers({
     multipliers,
-    dpmPositionData,
+    dpmProxy: dpmPositionData?.proxy,
     networkName,
     poolId: address,
   })

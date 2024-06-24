@@ -1,21 +1,29 @@
 import type { LendingProtocol } from 'lendingProtocols'
 
-export enum RaysMultipliersType {
-  TIME_OPEN = 'TIME_OPEN',
-  AUTOMATION = 'AUTOMATION',
-  LAZY_VAULT = 'LAZY_VAULT',
+export enum UserRaysMultipliersType {
   SWAP = 'SWAP',
   PROTOCOL_BOOST = 'PROTOCOL_BOOST',
 }
 
-export type RaysMultipliers = {
+export enum PositionRaysMultipliersType {
+  TIME_OPEN = 'TIME_OPEN',
+  AUTOMATION = 'AUTOMATION',
+  LAZY_VAULT = 'LAZY_VAULT',
+}
+
+export type UserRaysMultipliers = {
   value: number
-  type: RaysMultipliersType
+  type: UserRaysMultipliersType
+}
+
+export type PositionRaysMultipliers = {
+  value: number
+  type: PositionRaysMultipliersType
 }
 
 export type PositionRaysMultipliersData = {
-  user: RaysMultipliers[]
-  position: RaysMultipliers[]
+  user: UserRaysMultipliers[]
+  position: PositionRaysMultipliers[]
   allUserProtocols: LendingProtocol[]
 }
 

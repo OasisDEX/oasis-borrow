@@ -15,6 +15,7 @@ import { getProtocolBoost } from 'features/rays/getProtocolBoost'
 import { getRaysMultiplyMultipliers } from 'features/rays/getRaysMultiplyMultipliers'
 import { getRaysNextProtocolBonus } from 'features/rays/getRaysNextProtocolBonus'
 import { getSwapBoost } from 'features/rays/getSwapBoost'
+import { getTimeOpenBoost } from 'features/rays/getTimeOpenBoost'
 import type { PositionRaysMultipliersData } from 'features/rays/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getPointsPerYear } from 'helpers/rays'
@@ -65,6 +66,7 @@ export const getOmniSidebarRaysBanner = ({
   const protocolBoost = getProtocolBoost(positionRaysMultipliersData)
   const swapBoost = getSwapBoost(positionRaysMultipliersData)
   const automationBoost = getAutomationBoost(positionRaysMultipliersData)
+  const timeOpenBoost = getTimeOpenBoost(positionRaysMultipliersData)
 
   // In general all positions should have `netValue` field since all positions extend either Lending or Supply interface
   const positionNetValue = position && 'netValue' in position ? position.netValue.toNumber() : 0
@@ -74,8 +76,8 @@ export const getOmniSidebarRaysBanner = ({
   const raysPerYear = getPointsPerYear(positionNetValue)
   const newRaysPerYear = getPointsPerYear(simulationNetValue)
 
-  const raysPerYearWithProtocolBoost = raysPerYear * protocolBoost
-  const newRaysPerYearWithProtocolBoost = newRaysPerYear * protocolBoost
+  const raysPerYearWithBasicBoosts = raysPerYear * protocolBoost * timeOpenBoost
+  const newRaysPerYearWithBasicBoosts = newRaysPerYear * protocolBoost * timeOpenBoost
 
   if (isOpening) {
     const simulatedBaseRaysPerYear = getPointsPerYear(simulationNetValue)
@@ -121,10 +123,10 @@ export const getOmniSidebarRaysBanner = ({
   //   return (
   //     <RaysSidebarBanner
   //       title={t('rays.sidebar.banner.closing.title', {
-  //         rays: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
+  //         rays: formatCryptoBalance(new BigNumber(raysPerYearWithBasicBoosts)),
   //       })}
   //       description={t('rays.sidebar.banner.closing.description', {
-  //         raysPerYear: formatCryptoBalance(new BigNumber(raysPerYearWithProtocolBoost)),
+  //         raysPerYear: formatCryptoBalance(new BigNumber(raysPerYearWithBasicBoosts)),
   //       })}
   //       // daysLeft="2"
   //     />
@@ -157,9 +159,9 @@ export const getOmniSidebarRaysBanner = ({
   }
 
   if (simulation && positionNetValue < simulationNetValue) {
-    const rays = new BigNumber(
-      newRaysPerYearWithProtocolBoost - raysPerYearWithProtocolBoost,
-    ).times(automationBoost)
+    const rays = new BigNumber(newRaysPerYearWithBasicBoosts - raysPerYearWithBasicBoosts).times(
+      automationBoost,
+    )
 
     return (
       <RaysSidebarBanner
@@ -169,9 +171,9 @@ export const getOmniSidebarRaysBanner = ({
   }
 
   if (simulation && positionNetValue > simulationNetValue) {
-    const rays = new BigNumber(
-      raysPerYearWithProtocolBoost - newRaysPerYearWithProtocolBoost,
-    ).times(automationBoost)
+    const rays = new BigNumber(raysPerYearWithBasicBoosts - newRaysPerYearWithBasicBoosts).times(
+      automationBoost,
+    )
 
     return (
       <RaysSidebarBanner
@@ -196,17 +198,17 @@ export const getOmniSidebarRaysBanner = ({
 
     if (!isOptimizationActive && !isProtectionActive) {
       extraRays =
-        raysPerYearWithProtocolBoost * RAYS_OPTIMIZATION_BOOST * RAYS_PROTECTION_BOOST -
-        raysPerYearWithProtocolBoost
+        raysPerYearWithBasicBoosts * RAYS_OPTIMIZATION_BOOST * RAYS_PROTECTION_BOOST -
+        raysPerYearWithBasicBoosts
     }
 
     if (isOptimizationActive && !isProtectionActive) {
-      const baseRays = raysPerYearWithProtocolBoost * RAYS_OPTIMIZATION_BOOST
+      const baseRays = raysPerYearWithBasicBoosts * RAYS_OPTIMIZATION_BOOST
       extraRays = baseRays * RAYS_PROTECTION_BOOST - baseRays
     }
 
     if (!isOptimizationActive && isProtectionActive) {
-      const baseRays = raysPerYearWithProtocolBoost * RAYS_PROTECTION_BOOST
+      const baseRays = raysPerYearWithBasicBoosts * RAYS_PROTECTION_BOOST
       extraRays = baseRays * RAYS_OPTIMIZATION_BOOST - baseRays
     }
 

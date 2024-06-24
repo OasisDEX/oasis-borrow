@@ -1,5 +1,4 @@
 import type { NetworkNames } from 'blockchain/networks'
-import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
 import { mapUserAndPositionRays } from 'features/rays/mapUserAndPositionRays'
 import { getRaysMappedNetwork } from 'handlers/rays/getRaysMappedNetwork'
@@ -10,14 +9,18 @@ export const mapAaveLikeRaysMultipliers = ({
   multipliers,
   protocol,
   networkName,
-  dpmPositionData,
+  collateralTokenAddress,
+  quoteTokenAddress,
+  dpmProxy,
 }: {
   protocol: LendingProtocol
   networkName: NetworkNames
-  dpmPositionData?: DpmPositionData
+  collateralTokenAddress?: string
+  quoteTokenAddress?: string
+  dpmProxy?: string
   multipliers?: RaysUserMultipliersResponse
 }) => {
-  if (!multipliers || !dpmPositionData) {
+  if (!multipliers || !collateralTokenAddress || !quoteTokenAddress || !dpmProxy) {
     return {
       user: [],
       position: [],
@@ -37,10 +40,10 @@ export const mapAaveLikeRaysMultipliers = ({
 
       return (
         _network === resolvedNetwork &&
-        _proxy.toLowerCase() === dpmPositionData.proxy.toLowerCase() &&
+        _proxy.toLowerCase() === dpmProxy.toLowerCase() &&
         resolvedProtocol.includes(_protocol) &&
-        _collateralTokenAddress === dpmPositionData.collateralTokenAddress &&
-        _debtTokenAddress === dpmPositionData.quoteTokenAddress
+        _collateralTokenAddress === collateralTokenAddress &&
+        _debtTokenAddress === quoteTokenAddress
       )
     })
 

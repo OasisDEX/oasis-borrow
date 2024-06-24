@@ -5,8 +5,10 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import { mapMorphoBlueRaysMultipliers } from 'features/omni-kit/protocols/morpho-blue/helpers/mapMorphoBlueRaysMultipliers'
 import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import { type OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { emptyAutomations } from 'handlers/portfolio/constants'
@@ -20,6 +22,7 @@ import {
 } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
+import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type {
   PortfolioPosition,
   PortfolioPositionsCountReply,
@@ -38,6 +41,7 @@ interface GetMorphoPositionsParams {
   networkId: OmniSupportedNetworkIds
   protocolRaw: string
   positionsCount?: boolean
+  raysUserMultipliers: RaysUserMultipliersResponse
 }
 
 async function getMorphoPositions({
@@ -47,6 +51,7 @@ async function getMorphoPositions({
   positionsCount,
   prices,
   protocolRaw,
+  raysUserMultipliers,
 }: GetMorphoPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph({
@@ -156,7 +161,22 @@ async function getMorphoPositions({
 
           const netValue = position.netValue.toNumber()
 
-          const raysPerYear = getPointsPerYear(netValue)
+          const rawRaysPerYear = getPointsPerYear(netValue)
+          const positionRaysMultipliersData = mapMorphoBlueRaysMultipliers({
+            multipliers: raysUserMultipliers,
+            collateralToken: collateralToken.symbol,
+            quoteToken: debtToken.symbol,
+            dpmProxy: proxyAddress,
+            protocol: LendingProtocol.MorphoBlue,
+            networkName,
+            networkId,
+            pairId,
+          })
+
+          const raysPerYear = getPositionPortfolioRaysWithBoosts({
+            rawRaysPerYear,
+            positionRaysMultipliersData,
+          })
 
           return {
             availableToMigrate: false,
@@ -196,6 +216,7 @@ export const morphoPositionsHandler: PortfolioPositionsHandler = async ({
   dpmList,
   prices,
   positionsCount,
+  raysUserMultipliers,
 }) => {
   return Promise.all([
     getMorphoPositions({
@@ -205,6 +226,7 @@ export const morphoPositionsHandler: PortfolioPositionsHandler = async ({
       prices,
       positionsCount,
       protocolRaw: morphoSettings.rawName[NetworkIds.MAINNET] as string,
+      raysUserMultipliers,
     }),
     getMorphoPositions({
       apiVaults,
@@ -213,6 +235,7 @@ export const morphoPositionsHandler: PortfolioPositionsHandler = async ({
       prices,
       positionsCount,
       protocolRaw: morphoSettings.rawName[NetworkIds.BASEMAINNET] as string,
+      raysUserMultipliers,
     }),
   ]).then((responses) => {
     return {

@@ -2,6 +2,7 @@ import type { Vault } from '@prisma/client'
 import type { IPoolId, IPositionId } from '@summer_fi/summerfi-sdk-common'
 import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
+import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { HistoryResponse } from 'handlers/portfolio/positions/helpers/getHistoryData'
@@ -95,6 +96,7 @@ export type PortfolioPositionsHandler = ({
   positionsCount?: boolean
   allPositionsHistory?: HistoryResponse
   debug?: boolean
+  raysUserMultipliers: RaysUserMultipliersResponse
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
 export type DetailsTypeCommon =

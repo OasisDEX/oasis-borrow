@@ -1,4 +1,5 @@
 export interface MakerDiscoverPositionsIlk {
+  id: string
   ilk: string
   liquidationRatio: string
   pip: {
@@ -30,5 +31,6 @@ export interface MakerDiscoverPositionsResponse {
     openedAt: string
     triggers: MakerDiscoverPositionsTrigger[]
     type: string
+    creator: string // dsProxy
   }[]
 }

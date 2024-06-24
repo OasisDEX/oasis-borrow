@@ -15,8 +15,10 @@ import {
   getMakerPositionDetails,
   getMakerPositionInfo,
 } from 'handlers/portfolio/positions/handlers/maker/helpers'
+import { mapMakerRaysMultipliers } from 'handlers/portfolio/positions/handlers/maker/helpers/mapMakerRaysMultipliers'
 import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
+import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { getPointsPerYear } from 'helpers/rays'
 import { one, zero } from 'helpers/zero'
@@ -29,6 +31,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   address,
   prices,
   positionsCount,
+  raysUserMultipliers,
 }) => {
   const subgraphPositions = (await loadSubgraph({
     subgraph: 'Discover',
@@ -61,6 +64,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           openedAt,
           triggers,
           type: initialType,
+          creator,
         }): Promise<PortfolioPosition> => {
           const { collateralPrice, daiPrice, debt, primaryToken, secondaryToken, type, url } =
             await getMakerPositionInfo({
@@ -104,7 +108,18 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
           const positionId = getMakerPositionId(cdp)
 
-          const raysPerYear = getPointsPerYear(netValue.toNumber())
+          const rawRaysPerYear = getPointsPerYear(netValue.toNumber())
+
+          const positionRaysMultipliersData = mapMakerRaysMultipliers({
+            multipliers: raysUserMultipliers,
+            dsProxy: creator,
+            ilkId: ilk.id,
+          })
+
+          const raysPerYear = getPositionPortfolioRaysWithBoosts({
+            rawRaysPerYear,
+            positionRaysMultipliersData,
+          })
 
           return {
             availableToMigrate: false,
