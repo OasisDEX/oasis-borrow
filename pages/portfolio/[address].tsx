@@ -102,7 +102,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
     awsInfraUrl,
   })
 
-  const userRays = useUserRays({ walletAddress })
+  const userRaysData = useUserRays({ walletAddress })
 
   const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
   const hasAjnaPositions = portfolioPositionsData?.positions.some(
@@ -138,7 +138,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   overviewData={overviewData}
                   portfolioWalletData={portfolioWalletData}
                   migrationPositions={migrationPositions}
-                  userRays={userRays}
+                  userRaysData={userRaysData}
                 />
               ) : (
                 <PortfolioOverviewSkeleton />

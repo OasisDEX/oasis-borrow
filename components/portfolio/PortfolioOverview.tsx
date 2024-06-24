@@ -20,19 +20,19 @@ export const PortfolioOverview = ({
   overviewData,
   portfolioWalletData,
   migrationPositions,
-  userRays,
+  userRaysData,
 }: {
   address: string
   overviewData: PortfolioOverviewResponse
   portfolioWalletData: PortfolioAssetsResponse
   migrationPositions?: PortfolioPosition[]
-  userRays?: RaysUserResponse
+  userRaysData?: RaysUserResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   const isMobile = useOnMobile() && isTouchDevice
   const { Rays: isRaysEnabled } = useAppConfig('features')
 
-  const totalRays = userRays?.userRays?.allPossiblePoints
+  const totalRays = userRaysData?.userRays?.allPossiblePoints
   const totalValue = overviewData.allAssetsUsdValue + portfolioWalletData.totalAssetsUsdValue
   const availableToMigrateUsdValue =
     migrationPositions == null
