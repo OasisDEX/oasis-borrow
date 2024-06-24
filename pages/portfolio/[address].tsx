@@ -9,6 +9,7 @@ import { PortfolioPositionsView } from 'components/portfolio/positions/Portfolio
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
 import { MigrationsContext } from 'features/migrations/context'
+import { useUserRays } from 'features/rays/hooks/useUserRays'
 import { RefinanceGeneralContextProvider } from 'features/refinance/contexts/RefinanceGeneralContext'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -77,6 +78,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
     PortfolioPosition[] | undefined
   >(undefined)
   const { fetchMigrationPositions } = useContext(MigrationsContext)
+
   useEffect(() => {
     void fetchMigrationPositions(address).then((data) => setMigrationPositions(data))
   }, [address, fetchMigrationPositions])
@@ -87,6 +89,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
       replace('/')
     }
   }, [address, replace])
+
   const {
     overviewData,
     portfolioConnectedWalletWalletData,
@@ -98,6 +101,9 @@ export default function PortfolioView(props: PortfolioViewProps) {
     awsInfraHeader,
     awsInfraUrl,
   })
+
+  const userRaysData = useUserRays({ walletAddress })
+
   const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
   const hasAjnaPositions = portfolioPositionsData?.positions.some(
     (position) => position.protocol === LendingProtocol.Ajna,
@@ -132,6 +138,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   overviewData={overviewData}
                   portfolioWalletData={portfolioWalletData}
                   migrationPositions={migrationPositions}
+                  userRaysData={userRaysData}
                 />
               ) : (
                 <PortfolioOverviewSkeleton />

@@ -27,6 +27,7 @@ export const usePortfolioClientData = ({
   const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsResponse>()
   const [portfolioConnectedWalletWalletData, setPortfolioConnectedWalletWalletData] =
     useState<PortfolioAssetsResponse>()
+
   useEffect(() => {
     // clean data
     setOverviewData(undefined)
@@ -34,6 +35,7 @@ export const usePortfolioClientData = ({
     setPortfolioWalletData(undefined)
     setPortfolioConnectedWalletWalletData(undefined)
   }, [address])
+
   useEffect(() => {
     void portfolioClient.fetchPortfolioOverview(address).then((data) => {
       setOverviewData(data)
@@ -45,6 +47,7 @@ export const usePortfolioClientData = ({
       setPortfolioPositionsData(data)
     })
   }, [address, portfolioClient])
+
   useEffect(() => {
     // separate cause connecting wallet made additional calls
     !isOwner &&
@@ -53,6 +56,7 @@ export const usePortfolioClientData = ({
         setPortfolioConnectedWalletWalletData(data)
       })
   }, [isOwner, portfolioClient, walletAddress])
+
   return {
     overviewData,
     portfolioPositionsData,
