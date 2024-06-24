@@ -1,13 +1,15 @@
 import { views } from '@oasisdex/dma-library'
 import type { Vault } from '@prisma/client'
-import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
+import { getNetworkById, getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
 import {
   getAjnaCumulatives,
   getAjnaEarnData,
   getAjnaPoolData,
 } from 'features/omni-kit/protocols/ajna/helpers'
+import { mapAjnaRaysMultipliers } from 'features/omni-kit/protocols/ajna/helpers/mapAjnaRaysMultipliers'
 import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {
@@ -18,6 +20,7 @@ import {
 } from 'handlers/portfolio/positions/handlers/ajna/helpers'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type {
   PortfolioPosition,
   PortfolioPositionsCountReply,
@@ -26,6 +29,7 @@ import type {
 } from 'handlers/portfolio/types'
 import { getPointsPerYear } from 'helpers/rays'
 import { LendingProtocol } from 'lendingProtocols'
+
 interface GetAjnaPositionsParams {
   apiVaults?: Vault[]
   dpmList: DpmSubgraphData[]
@@ -33,6 +37,7 @@ interface GetAjnaPositionsParams {
   networkId: OmniSupportedNetworkIds
   protocolRaw: string
   positionsCount?: boolean
+  raysUserMultipliers: RaysUserMultipliersResponse
 }
 
 async function getAjnaPositions({
@@ -42,6 +47,7 @@ async function getAjnaPositions({
   positionsCount,
   prices,
   protocolRaw,
+  raysUserMultipliers,
 }: GetAjnaPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph({
@@ -135,7 +141,21 @@ async function getAjnaPositions({
             type,
           })
 
-          const raysPerYear = getPointsPerYear(netValue)
+          const rawRaysPerYear = getPointsPerYear(netValue)
+
+          const networkName = getNetworkById(networkId).name
+
+          const positionRaysMultipliersData = mapAjnaRaysMultipliers({
+            multipliers: raysUserMultipliers,
+            dpmProxy: proxyAddress,
+            protocol: LendingProtocol.MorphoBlue,
+            networkName,
+          })
+
+          const raysPerYear = getPositionPortfolioRaysWithBoosts({
+            rawRaysPerYear,
+            positionRaysMultipliersData,
+          })
 
           return {
             availableToMigrate: false,
@@ -187,6 +207,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   dpmList,
   prices,
   positionsCount,
+  raysUserMultipliers,
 }) => {
   return Promise.all([
     getAjnaPositions({
@@ -196,6 +217,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       prices,
       positionsCount,
       protocolRaw: ajnaSettings.rawName[NetworkIds.MAINNET] as string,
+      raysUserMultipliers,
     }),
     getAjnaPositions({
       apiVaults,
@@ -204,6 +226,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       prices,
       positionsCount,
       protocolRaw: ajnaSettings.rawName[NetworkIds.BASEMAINNET] as string,
+      raysUserMultipliers,
     }),
     getAjnaPositions({
       apiVaults,
@@ -212,6 +235,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       prices,
       positionsCount,
       protocolRaw: ajnaSettings.rawName[NetworkIds.ARBITRUMMAINNET] as string,
+      raysUserMultipliers,
     }),
     getAjnaPositions({
       apiVaults,
@@ -220,6 +244,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       prices,
       positionsCount,
       protocolRaw: ajnaSettings.rawName[NetworkIds.OPTIMISMMAINNET] as string,
+      raysUserMultipliers,
     }),
   ]).then((responses) => {
     return {

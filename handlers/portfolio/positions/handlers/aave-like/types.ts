@@ -1,5 +1,6 @@
 import type { Vault } from '@prisma/client'
 import type BigNumber from 'bignumber.js'
+import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
@@ -33,4 +34,5 @@ export type GetAaveLikePositionHandlerType = ({
   allOraclePrices: AaveLikeOraclePriceData
   apiVaults?: Vault[]
   debug?: boolean
+  raysUserMultipliers: RaysUserMultipliersResponse
 }) => Promise<PortfolioPosition>

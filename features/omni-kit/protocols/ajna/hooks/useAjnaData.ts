@@ -90,7 +90,7 @@ export function useAjnaData({
 
   const positionRaysMultipliersData = mapAjnaRaysMultipliers({
     multipliers,
-    dpmPositionData,
+    dpmProxy: dpmPositionData?.proxy,
     protocol,
     networkName,
     poolId,

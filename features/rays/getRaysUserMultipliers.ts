@@ -1,12 +1,17 @@
-import type { RaysMultipliersType } from 'features/rays/types'
+import type { PositionRaysMultipliersType, UserRaysMultipliersType } from 'features/rays/types'
 
 export interface RaysUserMultipliersResponse {
   address: string
   positionMultipliers: Record<
     string,
-    { address: null; externalId: string; type: RaysMultipliersType; value: string }[]
+    { address: null; externalId: string; type: PositionRaysMultipliersType; value: string }[]
   >
-  userMultipliers: { address: string; externalId: null; type: RaysMultipliersType; value: string }[]
+  userMultipliers: {
+    address: string
+    externalId: null
+    type: UserRaysMultipliersType
+    value: string
+  }[]
 }
 
 export const getRaysUserMultipliers = async ({

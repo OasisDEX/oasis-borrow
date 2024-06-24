@@ -82,7 +82,9 @@ export function useMorphoData({
 
   const positionRaysMultipliersData = mapMorphoBlueRaysMultipliers({
     multipliers,
-    dpmPositionData,
+    collateralToken: dpmPositionData?.collateralToken,
+    quoteToken: dpmPositionData?.quoteToken,
+    dpmProxy: dpmPositionData?.proxy,
     protocol,
     networkName,
     networkId,

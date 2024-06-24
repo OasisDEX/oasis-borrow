@@ -142,8 +142,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
                   ),
                 }}
               >
-                + {formatCryptoBalance(new BigNumber(position.raysPerYear)).split('.')[0]} Rays /
-                year
+                + {formatCryptoBalance(new BigNumber(position.raysPerYear))} Rays / year
               </Text>
             )}
             <ProtocolLabel network={position.network} protocol={position.protocol} />
