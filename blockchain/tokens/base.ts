@@ -39,4 +39,5 @@ export const tokensBase = {
   AERO: contractDesc(erc20, base.common.AERO),
   PRIME: contractDesc(erc20, base.common.PRIME),
   EZETH: contractDesc(erc20, base.common.EZETH),
+  BSDETH: contractDesc(erc20, base.common.BSDETH),
 } as Record<string, ContractDesc>
