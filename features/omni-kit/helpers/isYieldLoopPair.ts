@@ -23,6 +23,7 @@ export const yieldLoopDefinition = {
     'ETH',
     'WETH',
     'WOETH',
+    'BSDETH',
   ],
   // its a stable coin yield loop if both the collateral and debt token are on this list
   stableCoinYieldTokens: [
