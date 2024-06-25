@@ -3,6 +3,7 @@ import { strategies } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { getTokenGuarded, getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { omniNetworkMap } from 'features/omni-kit/constants'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
@@ -17,12 +18,7 @@ interface MetaMorphoClaimsApiResponse {
     amount: string
     claimable: string
     proof: string[]
-    reward: {
-      address: string
-      decimals: number
-      symbol: string
-      name: string
-    }
+    rewardTokenAddress: string
     rewardSymbol: string
     urd: string
   }[]
@@ -31,13 +27,7 @@ interface MetaMorphoClaimsApiResponse {
     amount: string
     claimable: string
     claimed: string
-    rewardToken: {
-      address: string
-      decimals: number
-      symbol: string
-      name: string
-      price?: string
-    }
+    rewardTokenAddress: string
     total: string
   }[]
 }
@@ -50,9 +40,9 @@ export async function getMetaMorphoClaims({ account, networkId }: GetMetaMorphoC
 
     const tx = await strategies.morphoblue.common.claimRewards(
       response.claimable.reduce<MorphoCloseClaimRewardsPayload>(
-        (total, { claimable, proof, reward: { address }, urd }) => ({
+        (total, { claimable, proof, rewardTokenAddress, urd }) => ({
           urds: [...total.urds, urd],
-          rewards: [...total.rewards, address],
+          rewards: [...total.rewards, rewardTokenAddress],
           claimable: [...total.claimable, new BigNumber(claimable)],
           proofs: [...total.proofs, proof],
         }),
@@ -71,14 +61,26 @@ export async function getMetaMorphoClaims({ account, networkId }: GetMetaMorphoC
     )
 
     return {
-      claims: response.claimsAggregated.map(
-        ({ accrued, claimable, claimed, rewardToken: { address, decimals, symbol } }) => ({
-          address,
-          token: symbol.toUpperCase(),
-          earned: amountFromWei(new BigNumber(accrued).minus(new BigNumber(claimed)), decimals),
-          claimable: amountFromWei(new BigNumber(claimable), decimals),
-        }),
-      ),
+      claims: response.claimsAggregated
+        .map(({ accrued, claimable, claimed, rewardTokenAddress }) => {
+          const tokenSymbol = getTokenSymbolBasedOnAddress(networkId, rewardTokenAddress)
+          const token = getTokenGuarded(tokenSymbol)
+
+          if (!tokenSymbol || !token) {
+            throw Error('Token symbol or token not defined in morpho claims')
+          }
+
+          return {
+            address: rewardTokenAddress,
+            token: tokenSymbol.toUpperCase(),
+            earned: amountFromWei(
+              new BigNumber(accrued).minus(new BigNumber(claimed)),
+              token.precision,
+            ),
+            claimable: amountFromWei(new BigNumber(claimable), token.precision),
+          }
+        })
+        .filter((item) => item),
       tx,
     }
   } catch (e) {
