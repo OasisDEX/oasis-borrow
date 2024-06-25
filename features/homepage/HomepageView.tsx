@@ -117,7 +117,14 @@ export function HomepageView() {
             textVariant="header4"
             buttonLike={
               <Box sx={{ mt: 3 }}>
-                <a href={INTERNAL_LINKS.rays} style={{ textDecoration: 'none' }}>
+                <a
+                  href={
+                    wallet?.address
+                      ? `${INTERNAL_LINKS.rays}?userAddress=${wallet?.address}`
+                      : INTERNAL_LINKS.rays
+                  }
+                  style={{ textDecoration: 'none' }}
+                >
                   <WithArrow sx={{ color: 'interactive100' }}>
                     {t('landing.why-oasis.sub-headers.rays.cta')}
                   </WithArrow>

@@ -24,7 +24,10 @@ export const NavigationRays = () => {
 
   return (
     <Flex sx={{ mr: !isViewBelowL ? 3 : 0, alignItems: 'center' }}>
-      <a href={INTERNAL_LINKS.rays} style={{ textDecoration: 'none' }}>
+      <a
+        href={`${INTERNAL_LINKS.rays}?userAddress=${walletAddress}`}
+        style={{ textDecoration: 'none' }}
+      >
         <Flex
           sx={{
             columnGap: 1,
