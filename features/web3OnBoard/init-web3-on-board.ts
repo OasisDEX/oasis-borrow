@@ -22,6 +22,7 @@ const walletConnect = walletConnectModule({
   projectId: '832580820193ff6bae62a15dc0feff03',
   version: 2,
   dappUrl: 'https://summer.fi',
+  requiredChains: [1],
 })
 
 const ledger = ledgerModule({
