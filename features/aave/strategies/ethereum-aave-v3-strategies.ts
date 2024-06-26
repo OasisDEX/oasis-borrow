@@ -273,6 +273,12 @@ const availableTokenPairs: TokenPairConfig[] = [
     productTypes: borrowAndMultiply,
   },
   {
+    collateral: 'WEETH',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
     collateral: 'ETH',
     debt: 'USDT',
     strategyType: StrategyType.Long,
