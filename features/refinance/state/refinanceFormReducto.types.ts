@@ -1,5 +1,5 @@
 import type { FormActionsReset } from 'features/omni-kit/state'
-import type { ProductHubItem } from 'features/productHub/types'
+import type { ProductHubItemRefinance } from 'features/refinance/components/steps'
 import type { RefinanceOptions } from 'features/refinance/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
@@ -10,7 +10,7 @@ export type DpmRefinanceFormState = {
 
 export interface RefinanceFormState {
   refinanceOption?: RefinanceOptions
-  strategy?: ProductHubItem // strip to bare minimum during clean up
+  strategy?: ProductHubItemRefinance // strip to bare minimum during clean up
   dpm?: DpmRefinanceFormState
   hasSimilarPosition?: boolean
 }

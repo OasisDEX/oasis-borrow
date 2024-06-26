@@ -24,12 +24,11 @@ import type {
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useSearchParams } from 'next/navigation'
-import type { FC } from 'react'
 import React, { Fragment, useMemo, useState } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box } from 'theme-ui'
 
-interface ProductHubViewProps {
+export interface ProductHubViewProps<ProductHubItem> {
   customSortByDefault?: (tableData: ProductHubItem[]) => ProductHubItem[]
   databaseQuery?: ProductHubDatabaseQuery
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
@@ -54,7 +53,9 @@ interface ProductHubViewProps {
   customFiltersOptions?: ProductHubCustomFiltersOptions
 }
 
-export const ProductHubView: FC<ProductHubViewProps> = ({
+export function ProductHubView<
+  Props extends ProductHubViewProps<ProductHubItem> = ProductHubViewProps<ProductHubItem>,
+>({
   customSortByDefault,
   databaseQuery,
   dataParser = (_table) => _table,
@@ -77,7 +78,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   url,
   wrapperSx,
   customFiltersOptions,
-}) => {
+}: Props) {
   const { productHub: data } = usePreloadAppDataContext()
   const table = useMemo(() => dataParser(data.table), [])
 
