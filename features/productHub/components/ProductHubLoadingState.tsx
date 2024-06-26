@@ -10,10 +10,22 @@ export const ProductHubLoadingState: FC = () => {
       <AssetsTableContainer>
         <AssetsFiltersContainer
           filters={[
-            <Skeleton height="56px" />,
-            <Skeleton height="56px" />,
-            <Skeleton height="56px" />,
-            <Skeleton height="56px" />,
+            {
+              id: 'skeleton1',
+              component: <Skeleton height="56px" />,
+            },
+            {
+              id: 'skeleton2',
+              component: <Skeleton height="56px" />,
+            },
+            {
+              id: 'skeleton3',
+              component: <Skeleton height="56px" />,
+            },
+            {
+              id: 'skeleton4',
+              component: <Skeleton height="56px" />,
+            },
           ]}
         />
         <Box sx={{ m: 4 }}>

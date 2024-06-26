@@ -18,8 +18,8 @@ export const op_circle = {
           y2="16"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FF0420" />
-          <stop offset="1" stop-color="#FF6C7D" />
+          <stop stopColor="#FF0420" />
+          <stop offset="1" stopColor="#FF6C7D" />
         </linearGradient>
       </defs>
     </>

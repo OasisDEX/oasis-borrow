@@ -20,8 +20,8 @@ export const mkr_circle_color = {
           y2="29"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#2DC1B1" />
-          <stop offset="1" stop-color="#139D8D" />
+          <stop stopColor="#2DC1B1" />
+          <stop offset="1" stopColor="#139D8D" />
         </linearGradient>
       </defs>
     </>

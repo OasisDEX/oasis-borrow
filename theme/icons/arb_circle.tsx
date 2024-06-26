@@ -36,8 +36,8 @@ export const arb_circle = {
           y2="16"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#2D374B" />
-          <stop offset="1" stop-color="#585C65" />
+          <stop stopColor="#2D374B" />
+          <stop offset="1" stopColor="#585C65" />
         </linearGradient>
       </defs>
     </>

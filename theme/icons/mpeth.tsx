@@ -21,8 +21,8 @@ export const mpeth = {
           y2="24.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6271AD" />
-          <stop offset="1" stop-color="#8A92B2" />
+          <stop stopColor="#6271AD" />
+          <stop offset="1" stopColor="#8A92B2" />
         </linearGradient>
       </defs>
     </>

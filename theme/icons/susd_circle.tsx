@@ -46,8 +46,8 @@ export const susd_circle = {
           y2="41.0151"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#08021E" />
-          <stop offset="1" stop-color="#1F0777" />
+          <stop stopColor="#08021E" />
+          <stop offset="1" stopColor="#1F0777" />
         </linearGradient>
         <clipPath id="clip0_14079_6971">
           <rect width="26" height="26" fill="white" transform="translate(3 3)" />
