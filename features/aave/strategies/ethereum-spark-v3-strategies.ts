@@ -151,8 +151,45 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'WEETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [],
+        defaultSlippage: SLIPPAGE_YIELD_LOOP,
+      },
+    },
+  },
+  {
     collateral: 'ETH',
     debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WEETH',
+    debt: 'DAI',
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
