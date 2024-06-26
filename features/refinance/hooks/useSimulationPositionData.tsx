@@ -7,7 +7,12 @@ import { useRefinanceContext } from 'features/refinance/contexts'
 import type { RefinancePositionViewType } from 'features/refinance/types'
 
 export const useSimulationPositionData = () => {
-  const { simulation } = useRefinanceContext()
+  const {
+    simulation,
+    form: {
+      state: { strategy },
+    },
+  } = useRefinanceContext()
 
   if (simulation == null) {
     return undefined
@@ -49,6 +54,7 @@ export const useSimulationPositionData = () => {
     liquidationPrice: new BigNumber(liquidationPrice),
     collateral: new BigNumber(targetPosition.collateralAmount.amount),
     debt: new BigNumber(targetPosition.debtAmount.amount),
+    netApy: strategy?.netApy ? new BigNumber(strategy?.netApy) : undefined,
   }
 
   return positionData

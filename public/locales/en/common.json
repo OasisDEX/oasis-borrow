@@ -3785,7 +3785,8 @@
       },
       "tooltips": {
         "max-ltv": "The Max Loan to Value indicates the amount that can be borrowed to the value of the collateral.",
-        "borrow-rate": "This borrow rate is the net APY of your position based on your current LTV. This is taking any supply APY into account, and borrow APY, and using your current LTV to determine the net APY you are paying (or receiving when positive) on your net value.",
+        "borrow-rate": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing with utilization of the pool.",
+        "net-apy": "The Net APY of your position is based on your current LTV. This is taking any supply APY into account, and borrow APY, and using your current LTV to determine the net APY you are paying (or receiving when positive) on your net value.",
         "automations": "This indicates which automation features are available for you on this position."
       }
     },

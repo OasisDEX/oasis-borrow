@@ -6,7 +6,6 @@ export function getNetAPY(currentLTV: string, borrowApy: string, supplyApy: stri
   const netAPY = new BigNumber(multiple)
     .times(supplyApy)
     .minus(new BigNumber(multiple).minus(1).times(borrowApy))
-    .negated() // TODO: remember to remove this negation when enabling netAPY on the UI
     .toString()
 
   return netAPY

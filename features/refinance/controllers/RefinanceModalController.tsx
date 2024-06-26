@@ -17,7 +17,7 @@ import {
   getRefinanceInterestRatesInputParams,
   getRefinanceTargetInterestRates,
 } from 'features/refinance/helpers'
-import { getNetAPY } from 'features/refinance/helpers/getBorrowRate'
+import { getNetAPY } from 'features/refinance/helpers/getNetAPY'
 import { useSdkSimulation } from 'features/refinance/hooks/useSdkSimulation'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'

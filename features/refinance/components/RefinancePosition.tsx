@@ -15,6 +15,7 @@ export const RefinancePosition = () => {
       ltv,
       borrowRate,
       lendingProtocol,
+      netApy,
     },
     poolData: { maxLtv },
     tx: { isTxSuccess },
@@ -55,6 +56,7 @@ export const RefinancePosition = () => {
         liquidationPrice: new BigNumber(liquidationPrice),
         collateral: new BigNumber(collateralTokenData.amount),
         debt: new BigNumber(debtTokenData.amount),
+        netApy: new BigNumber(netApy),
       }}
       automations={automations}
     />

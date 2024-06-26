@@ -13,7 +13,7 @@ export const RefinanceHighlightedChangeSection = () => {
 
   const {
     poolData: { maxLtv },
-    position: { isShort, netApy },
+    position: { isShort, borrowRate },
     form: {
       state: { strategy, refinanceOption },
     },
@@ -23,7 +23,7 @@ export const RefinanceHighlightedChangeSection = () => {
     throw new Error('Refinance option not defined')
   }
 
-  const borrowCost = new BigNumber(netApy)
+  const borrowCost = new BigNumber(borrowRate)
 
   const afterBorrowCost = new BigNumber(strategy?.fee || zero)
   const afterMaxLtv = new BigNumber(strategy?.maxLtv || zero)

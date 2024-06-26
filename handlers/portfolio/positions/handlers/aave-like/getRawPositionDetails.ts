@@ -66,7 +66,7 @@ export function getRawPositionDetails(
     RiskRatio.TYPE.LTV,
   )
 
-  const borrowRate = calculations.netBorrowCostPercentage
+  const borrowRate = calculations.debtVariableBorrowRate
   const maxRiskRatio = new RiskRatio(
     onChainPositionData.category.maxLoanToValue,
     RiskRatio.TYPE.LTV,

@@ -10,7 +10,7 @@ import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { moveItemsToFront } from 'helpers/moveItemsToFront'
 import { LendingProtocol } from 'lendingProtocols'
 
-import { getNetAPY } from './getBorrowRate'
+import { getNetAPY } from './getNetAPY'
 
 const availableLiquidityMapping = ({
   table,
@@ -45,29 +45,23 @@ const borrowRateMapping = ({
   currentLTV: string
 }) =>
   table.map((item) => {
-    // for Morho use PH rates
-    if (item.protocol === LendingProtocol.MorphoBlue) {
-      return item
-    }
-
     const network = getNetworkByName(item.network)
 
     const customCollateralRates = interestRates[network.id]?.[item.protocol]?.[item.primaryToken]
     const customDebtRates = interestRates[network.id]?.[item.protocol]?.[item.secondaryToken]
 
+    // there are no rates so not possible to calculate apys
     if (!customCollateralRates || !customDebtRates) {
       return item
     }
 
-    const borrowRate = getNetAPY(
-      currentLTV,
-      aaveLikeAprToApy(customDebtRates.borrowVariable),
-      aaveLikeAprToApy(customCollateralRates.lendVariable),
-    )
+    const borrowApy = aaveLikeAprToApy(customDebtRates.borrowVariable)
+    const lendApy = aaveLikeAprToApy(customCollateralRates.lendVariable)
+    const netApy = getNetAPY(currentLTV, borrowApy, lendApy)
 
     return {
       ...item,
-      fee: borrowRate,
+      netApy,
     }
   })
 

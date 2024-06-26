@@ -77,6 +77,7 @@ export interface ProductHubItemDetails {
   earnStrategyDescription?: string
   // borrow rate
   fee?: string
+  netApy?: string
   hasRewards?: boolean
   liquidity?: string
   managementType?: ProductHubManagementType
