@@ -1,6 +1,7 @@
 import { getNetworkById } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
-import { ProductHubView } from 'features/productHub/views'
+import type { ProductHubItem } from 'features/productHub/types'
+import { ProductHubView, type ProductHubViewProps } from 'features/productHub/views'
 import {
   refinanceCustomProductHubFiltersOptions,
   refinanceProductHubHiddenColumns,
@@ -15,6 +16,10 @@ import { getRefinanceStrategiesToBeFiltered } from 'features/refinance/helpers/g
 import { RefinanceOptions } from 'features/refinance/types'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { useCallback } from 'react'
+
+export type ProductHubItemRefinance = ProductHubItem & {
+  netApy?: string
+}
 
 export const RefinanceProductTableStep = () => {
   const {
@@ -63,7 +68,7 @@ export const RefinanceProductTableStep = () => {
   const network = getNetworkById(chainInfo.chainId)
 
   return (
-    <ProductHubView
+    <ProductHubView<ProductHubViewProps<ProductHubItemRefinance>>
       product={product}
       customSortByDefault={(table) => table}
       dataParser={(table) =>

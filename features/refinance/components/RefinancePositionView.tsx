@@ -49,6 +49,7 @@ export type RefinancePositionViewProps<Type extends RefinancePositionViewType> =
             collateral: BigNumber
             debt: BigNumber
             liquidationPrice: BigNumber
+            netApy?: BigNumber
           }
           type: Type
           automations: PortfolioPositionAutomations
@@ -106,6 +107,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
       </RefinanceCardWrapper>
     )
   }
+
   const {
     primaryToken,
     secondaryToken,
@@ -145,6 +147,7 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
     ...(poolData.borrowRateChange && {
       borrowRateChange: `${formatDecimalAsPercent(poolData.borrowRateChange, { plus: true })}`,
     }),
+    netApy: positionData?.netApy ? formatLtvDecimalAsPercent(positionData?.netApy) : 'N/A',
   }
 
   const isLoading = !positionData
@@ -194,6 +197,12 @@ export const RefinancePositionView = <Type extends RefinancePositionViewType>(
         },
       }),
       tooltip: t('refinance.position.tooltips.borrow-rate'),
+    },
+    {
+      label: t('net-apy'),
+      value: formatted.netApy,
+      tooltip: t('refinance.position.tooltips.net-apy'),
+      isLoading,
     },
     {
       label: t('system.protocol'),
