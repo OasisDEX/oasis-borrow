@@ -38,6 +38,12 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     types: ['borrow', 'multiply'],
   },
   {
+    collateral: 'WEETH',
+    debt: 'USDC',
+    strategyType: 'long',
+    types: ['borrow', 'multiply'],
+  },
+  {
     collateral: 'rETH',
     debt: 'DAI',
     strategyType: 'long',
