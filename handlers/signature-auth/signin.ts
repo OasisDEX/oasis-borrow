@@ -69,7 +69,11 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
         const isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
 
         if (!isOwner) {
-          throw new SignatureAuthError('Signature not correct - personal sign')
+          // it might be a wallet connect + safe, no way to check
+          // that during connect/sign so im checking that here
+          if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
+            throw new SignatureAuthError('Signature not correct - personal sign')
+          }
         }
       }
     }
