@@ -125,6 +125,56 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'WSTETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WEETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WSTETH',
     debt: 'ETH',
     strategyType: StrategyType.Long,
     productTypes: {

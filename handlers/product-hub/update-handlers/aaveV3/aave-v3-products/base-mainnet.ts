@@ -20,6 +20,18 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     types: ['borrow', 'multiply'],
   },
   {
+    collateral: 'WSTETH',
+    debt: 'USDC',
+    strategyType: 'long',
+    types: ['borrow', 'multiply'],
+  },
+  {
+    collateral: 'WEETH',
+    debt: 'USDC',
+    strategyType: 'long',
+    types: ['borrow', 'multiply'],
+  },
+  {
     collateral: 'cbETH',
     debt: 'USDbC',
     strategyType: 'long',
@@ -33,6 +45,18 @@ const aaveSeed: AaveProductHubItemSeed[] = [
   },
   {
     collateral: 'cbETH',
+    debt: 'ETH',
+    strategyType: 'long',
+    types: ['earn'],
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'ETH',
+    strategyType: 'long',
+    types: ['earn'],
+  },
+  {
+    collateral: 'WEETH',
     debt: 'ETH',
     strategyType: 'long',
     types: ['earn'],

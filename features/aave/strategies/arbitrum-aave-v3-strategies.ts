@@ -74,6 +74,31 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'WEETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'WBTC',
     debt: 'USDC',
     strategyType: StrategyType.Long,
