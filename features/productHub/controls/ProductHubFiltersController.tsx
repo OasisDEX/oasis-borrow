@@ -49,10 +49,30 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
       key={selectedProduct}
       filters={[
         ...(selectedProduct === OmniProductType.Earn
-          ? [depositTokenFilter]
-          : [collateralTokenFilter, debtTokenFilter]),
-        ...(!hiddenProtocolFilter ? [protocolFilter] : []),
-        ...(!hiddenNetworkFilter ? [networkFilter] : []),
+          ? [{ id: 'depositTokenFilter', component: depositTokenFilter }]
+          : [
+              { id: 'collateralTokenFilter', component: collateralTokenFilter },
+              {
+                id: 'debtTokenFilter',
+                component: debtTokenFilter,
+              },
+            ]),
+        ...(!hiddenProtocolFilter
+          ? [
+              {
+                id: 'protocolFilter',
+                component: protocolFilter,
+              },
+            ]
+          : []),
+        ...(!hiddenNetworkFilter
+          ? [
+              {
+                id: 'networkFilter',
+                component: networkFilter,
+              },
+            ]
+          : []),
       ]}
       lastWithAutoOffset={!hiddenProtocolFilter && !hiddenNetworkFilter}
     >

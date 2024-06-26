@@ -45,11 +45,11 @@ export const cseth = {
           y2="29"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#A57BFF" />
-          <stop offset="0.239583" stop-color="#FF66D4" />
-          <stop offset="0.5" stop-color="#FF5B78" />
-          <stop offset="0.739583" stop-color="#FF9E57" />
-          <stop offset="1" stop-color="#FFD595" />
+          <stop stopColor="#A57BFF" />
+          <stop offset="0.239583" stopColor="#FF66D4" />
+          <stop offset="0.5" stopColor="#FF5B78" />
+          <stop offset="0.739583" stopColor="#FF9E57" />
+          <stop offset="1" stopColor="#FFD595" />
         </linearGradient>
         <clipPath id="clip0_14480_4437">
           <rect width="26" height="26" fill="white" transform="translate(3 3)" />

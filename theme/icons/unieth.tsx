@@ -42,8 +42,8 @@ export const unieth = {
           y2="24.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#1A2435" />
-          <stop offset="1" stop-color="#434B59" />
+          <stop stopColor="#1A2435" />
+          <stop offset="1" stopColor="#434B59" />
         </linearGradient>
       </defs>
     </>

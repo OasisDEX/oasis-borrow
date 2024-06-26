@@ -66,6 +66,7 @@ export function Tabs<T>({
         {items.map(({ content, id }) => (
           <Box
             {...(id === selectedId && { ref })}
+            key={id as string}
             as="li"
             onClick={() => {
               onClick(id)

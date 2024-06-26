@@ -23,8 +23,8 @@ export const bal_circle = {
           y2="29.0001"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#222121" />
-          <stop offset="1" stop-color="#8E8E8E" />
+          <stop stopColor="#222121" />
+          <stop offset="1" stopColor="#8E8E8E" />
         </linearGradient>
       </defs>
     </>

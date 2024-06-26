@@ -5,7 +5,10 @@ import { Box, Flex } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface AssetsFiltersContainerProps {
-  filters: ReactNode[]
+  filters: {
+    id: string
+    component: ReactNode
+  }[]
   isSticky?: boolean
   lastWithAutoOffset?: boolean
 }
@@ -48,8 +51,9 @@ export function AssetsFiltersContainer({
           justifyContent: 'flex-start',
         }}
       >
-        {filters.map((filter) => (
+        {filters.map(({ id, component }) => (
           <Box
+            key={id}
             sx={{
               flex: ['1', '1 45%', '1'],
               maxWidth: ['none', null, null, '255px'],
@@ -60,7 +64,7 @@ export function AssetsFiltersContainer({
               }),
             }}
           >
-            {filter}
+            {component}
           </Box>
         ))}
       </Flex>

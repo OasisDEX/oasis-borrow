@@ -6039,8 +6039,8 @@ export const crv_circle = {
           y2="29"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#609DEA" />
-          <stop offset="1" stop-color="#3465A4" />
+          <stop stopColor="#609DEA" />
+          <stop offset="1" stopColor="#3465A4" />
         </linearGradient>
       </defs>
     </>

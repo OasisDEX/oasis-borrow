@@ -20,8 +20,8 @@ export const styeth_circle_color = {
           y2="6"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#5816F9" />
-          <stop offset="1" stop-color="#7840FF" />
+          <stop stopColor="#5816F9" />
+          <stop offset="1" stopColor="#7840FF" />
         </linearGradient>
       </defs>
     </>
