@@ -148,6 +148,22 @@ export function getAaveV3ReserveData({
   })
 }
 
+export function getAaveV3BorrowCap({
+  token,
+  networkId,
+}: AaveV3ReserveDataParameters): Promise<BigNumber> {
+  const { contract, tokenMappings } = networkMappings[networkId]()
+  const tokenAddress = wethToEthAddress(tokenMappings, token)
+  warnIfAddressIsZero(tokenAddress, networkId, 'aaveV3PoolDataProvider', 'getReserveData')
+
+  return (
+    contract
+      .getReserveCaps(tokenAddress)
+      // doesn't require conversion from wei since value is already in correct format
+      .then((result) => new BigNumber(result.borrowCap.toString()))
+  )
+}
+
 export function getAaveV3ReserveConfigurationData({
   networkId,
   token,

@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import {
   aaveV3SupportedNetworkList,
+  getAaveV3BorrowCap,
   getAaveV3EModeCategoryForAsset,
   getAaveV3ReserveConfigurationData,
   getAaveV3ReserveData,
@@ -39,6 +40,8 @@ const networkNameToIdMap = {
   [NetworkNames.baseMainnet]: NetworkIds.BASEMAINNET,
 }
 
+const tokensWithoutAssociatedToken = ['GHO']
+
 const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers) => {
   const currentNetworkProducts = aaveV3ProductHubProducts.filter(
     (product) => product.network === networkName,
@@ -62,13 +65,30 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getAaveV3ReserveData({ token, networkId })
     const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers, 'aaveV3Handler'))
+
+    const fee = aaveLikeAprToApy(reserveData.variableBorrowRate)
+
+    if (tokensWithoutAssociatedToken.includes(token.toUpperCase())) {
+      const borrowCap = await getAaveV3BorrowCap({ token, networkId })
+
+      return {
+        [token]: {
+          liquidity: borrowCap
+            .minus(reserveData.totalStableDebt)
+            .minus(reserveData.totalVariableDebt)
+            .times(debtTokenPrice),
+          fee,
+        },
+      }
+    }
+
     return {
       [token]: {
         liquidity: reserveData.totalAToken
           .minus(reserveData.totalStableDebt)
           .minus(reserveData.totalVariableDebt)
           .times(debtTokenPrice),
-        fee: aaveLikeAprToApy(reserveData.variableBorrowRate),
+        fee,
       },
     }
   })
