@@ -7,6 +7,7 @@ import { useErc4626CustomState } from 'features/omni-kit/protocols/erc-4626/cont
 import type { Erc4626Claims } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { getErc4626Claims } from 'features/omni-kit/protocols/erc-4626/helpers'
 import { erc4626VaultsByName } from 'features/omni-kit/protocols/erc-4626/settings'
+import { MetaMorphoClaimsType } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { zero } from 'helpers/zero'
 import type { FC } from 'react'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -67,6 +68,7 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
         account: dpmProxy,
         networkId,
         rewardsType,
+        claimType: MetaMorphoClaimsType.SUPPLY,
       }).then((data) => {
         if (data.claims.length > 1) setResponse(data)
         else
