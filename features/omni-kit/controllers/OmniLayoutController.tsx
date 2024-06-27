@@ -168,6 +168,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       />
       <TabBar
         variant="underline"
+        useDropdownOnMobile
         sections={[
           {
             value: isOpening ? 'setup' : 'overview',

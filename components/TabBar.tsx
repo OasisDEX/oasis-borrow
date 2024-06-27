@@ -70,7 +70,7 @@ export function TabBar({
         <Box
           sx={{
             display: ['block', 'none'],
-            mb: 3,
+            my: 3,
             zIndex: 2,
           }}
         >
