@@ -8,9 +8,15 @@ import { amountFromWei } from 'blockchain/utils'
 import { omniNetworkMap } from 'features/omni-kit/constants'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 
+export enum MetaMorphoClaimsType {
+  BORROW = 'borrow',
+  SUPPLY = 'supply',
+}
+
 interface GetMetaMorphoClaimsParams {
   account: string
   networkId: OmniSupportedNetworkIds
+  claimType: MetaMorphoClaimsType
 }
 
 interface MetaMorphoClaimsApiResponse {
@@ -32,10 +38,16 @@ interface MetaMorphoClaimsApiResponse {
   }[]
 }
 
-export async function getMetaMorphoClaims({ account, networkId }: GetMetaMorphoClaimsParams) {
+export async function getMetaMorphoClaims({
+  account,
+  networkId,
+  claimType,
+}: GetMetaMorphoClaimsParams) {
   try {
     const response = (await (
-      await fetch(`/api/morpho/claims?account=${account}`)
+      await fetch(
+        `/api/morpho/claims?account=${account}&chainId=${networkId}&claimType=${claimType}`,
+      )
     ).json()) as MetaMorphoClaimsApiResponse
 
     const tx = await strategies.morphoblue.common.claimRewards(
