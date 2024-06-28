@@ -120,7 +120,7 @@ export function useAaveLikeData({
   const positionRaysMultipliersData = mapAaveLikeRaysMultipliers({
     multipliers,
     collateralTokenAddress: dpmPositionData?.collateralTokenAddress,
-    quoteTokenAddress: dpmPositionData?.collateralTokenAddress,
+    quoteTokenAddress: dpmPositionData?.quoteTokenAddress,
     dpmProxy: dpmPositionData?.proxy,
     protocol,
     networkName,

@@ -7,12 +7,10 @@ import { LendingProtocol } from 'lendingProtocols'
 
 export const mapAjnaRaysMultipliers = ({
   multipliers,
-  protocol,
   dpmProxy,
   networkName,
   poolId,
 }: {
-  protocol: LendingProtocol
   networkName: NetworkNames
   dpmProxy?: string
   multipliers?: RaysUserMultipliersResponse
@@ -26,7 +24,7 @@ export const mapAjnaRaysMultipliers = ({
     }
   }
 
-  const resolvedProtocol = getRaysMappedProtocol(protocol)
+  const resolvedProtocol = getRaysMappedProtocol(LendingProtocol.Ajna)
   const resolvedNetwork = getRaysMappedNetwork(networkName)
 
   const positionMultipliersKey = Object.keys(multipliers.positionMultipliers)

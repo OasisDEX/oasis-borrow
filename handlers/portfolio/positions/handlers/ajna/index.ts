@@ -148,7 +148,6 @@ async function getAjnaPositions({
           const positionRaysMultipliersData = mapAjnaRaysMultipliers({
             multipliers: raysUserMultipliers,
             dpmProxy: proxyAddress,
-            protocol: LendingProtocol.MorphoBlue,
             networkName,
           })
 

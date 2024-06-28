@@ -19,7 +19,6 @@ export function useAjnaData({
   tokenPriceUSDData,
   isOpening,
   walletAddress,
-  protocol,
 }: OmniProtocolHookProps) {
   const { ajnaPosition$ } = useProductContext()
 
@@ -91,7 +90,6 @@ export function useAjnaData({
   const positionRaysMultipliersData = mapAjnaRaysMultipliers({
     multipliers,
     dpmProxy: dpmPositionData?.proxy,
-    protocol,
     networkName,
     poolId,
   })

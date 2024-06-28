@@ -42,8 +42,8 @@ export const mapAaveLikeRaysMultipliers = ({
         _network === resolvedNetwork &&
         _proxy.toLowerCase() === dpmProxy.toLowerCase() &&
         resolvedProtocol.includes(_protocol) &&
-        _collateralTokenAddress === collateralTokenAddress &&
-        _debtTokenAddress === quoteTokenAddress
+        _collateralTokenAddress === collateralTokenAddress.toLowerCase() &&
+        _debtTokenAddress === quoteTokenAddress.toLowerCase()
       )
     })
 
