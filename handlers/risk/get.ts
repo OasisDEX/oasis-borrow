@@ -120,6 +120,16 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
       return res.status(200).json({ isRisky })
     }
 
+    // force re-check if wallet is still flagged as risky
+    // it's necessary for cases where provider flags user as risky by mistake
+    // and after a short period of time it's fixed on provider side
+    if (risk.is_risky) {
+      const isRisky = await checkIfRisky(user.address)
+      await updateRiskForAddress(prisma, user.address, isRisky)
+
+      return res.status(200).json({ isRisky })
+    }
+
     const lastCheckTime = new Date(risk.last_check).getTime()
     const now = new Date().getTime()
 
