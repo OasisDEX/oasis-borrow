@@ -48,6 +48,13 @@ export async function getMigrationPositionParameters({
     erc20ProxyActions: erc20ProxyActions,
   }
 
-  const res = await strategies.common.migrate(args, sharedDependencies)
+  let res
+  try {
+    res = await strategies.common.migrate(args, sharedDependencies)
+  } catch (error) {
+    console.error('Failed to get migration parameters', error)
+    throw error
+  }
+
   return res
 }
