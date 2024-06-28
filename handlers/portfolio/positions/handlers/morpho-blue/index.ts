@@ -164,8 +164,8 @@ async function getMorphoPositions({
           const rawRaysPerYear = getPointsPerYear(netValue)
           const positionRaysMultipliersData = mapMorphoBlueRaysMultipliers({
             multipliers: raysUserMultipliers,
-            collateralToken: collateralToken.symbol,
-            quoteToken: debtToken.symbol,
+            collateralToken: primaryToken,
+            quoteToken: secondaryToken,
             dpmProxy: proxyAddress,
             protocol: LendingProtocol.MorphoBlue,
             networkName,
