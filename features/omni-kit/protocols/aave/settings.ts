@@ -78,7 +78,6 @@ export const settingsV3: OmniProtocolSettings = {
       'DAI',
       'SDAI',
       'GHO',
-      'MKR',
       'WBTC',
       'LDO',
       'USDT',

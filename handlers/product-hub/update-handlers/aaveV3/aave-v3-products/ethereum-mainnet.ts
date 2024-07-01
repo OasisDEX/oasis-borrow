@@ -633,18 +633,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
-    product: [OmniProductType.Multiply],
-    primaryToken: 'MKR',
-    primaryTokenGroup: getTokenGroup('MKR'),
-    secondaryToken: 'DAI',
-    depositToken: 'MKR',
-    label: 'MKR/DAI',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long MKR',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-  },
-  {
     product: [OmniProductType.Borrow],
     primaryToken: 'MKR',
     primaryTokenGroup: getTokenGroup('MKR'),
@@ -1049,19 +1037,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     label: 'WSTETH/RPL',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
-  },
-
-  {
-    product: [OmniProductType.Multiply],
-    primaryToken: 'DAI',
-    primaryTokenGroup: getTokenGroup('DAI'),
-    secondaryToken: 'MKR',
-    depositToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'DAI/MKR',
-    multiplyStrategyType: 'short',
-    multiplyStrategy: 'Short MKR',
   },
   {
     product: [OmniProductType.Borrow],
