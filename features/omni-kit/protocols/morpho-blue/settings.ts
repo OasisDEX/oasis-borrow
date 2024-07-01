@@ -44,6 +44,7 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'MKR-USDC': ['0x97bb820669a19ba5fa6de964a466292edd67957849f9631eb8b830c382f58b7f'],
     'WSTETH-USDA': ['0x423cb007534ac88febb8ce39f544ab303e8b757f8415ed891fc76550f8f4c965'],
     'PTWEETH-USDA': ['0xcc7b191903e4750ad71898a1594d912adbb5bb1c6effcde9c38f0a798112edd1'],
+    'RSETH-ETH': ['0xeeabdcb98e9f7ec216d259a2c026bbb701971efae0b44eec79a86053f9b128b6'],
   },
   [NetworkIds.BASEMAINNET]: {
     'ETH-USDC': ['0x8793cf302b8ffd655ab97bd1c695dbd967807e8367a65cb2f4edaf1380ba1bda'],
@@ -90,6 +91,7 @@ export const settings: OmniProtocolSettings = {
       'WOETH',
       'MKR',
       'CBETH',
+      'RSETH',
     ],
     [NetworkIds.BASEMAINNET]: ['DAI', 'ETH', 'USDC', 'WBTC', 'WEETH', 'WSTETH', 'CBETH', 'BSDETH'],
   },
