@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import { tokenPriceStore } from 'blockchain/prices.constants'
 import type { Tickers } from 'blockchain/prices.types'
 import { getTokensPrices, type TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
@@ -54,9 +55,12 @@ export function getErc4626ApyParameters({
   rewardTokenPrice = one,
 }: GetErc4626ApyParametersParams) {
   return async (vaultAddress: string) => {
-    const resolvedPrices = prices ?? (await getTokensPrices()).tokens ?? {}
+    const wstETHPrice =
+      prices?.['wsteth'] ??
+      tokenPriceStore.prices?.['wsteth'] ??
+      (await getTokensPrices()).tokens?.['WSTETH'] ??
+      {}
 
-    const wstETHPrice = resolvedPrices['WSTETH']
     const response = await fetchFromFunctionsApi(
       `/api/morpho/meta-morpho?address=${vaultAddress}&price_MORPHO=${rewardTokenPrice}&price_WSTETH=${wstETHPrice}`,
     )
