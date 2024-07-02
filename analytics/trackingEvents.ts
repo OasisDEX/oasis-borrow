@@ -78,7 +78,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       page,
       query,
-      section: 'SelectCollateral',
+      section: MixpanelCommonAnalyticsSections.SelectCollateral,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -91,7 +91,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       ilk,
       page,
-      section: 'SelectCollateral',
+      section: MixpanelCommonAnalyticsSections.SelectCollateral,
     }
 
     mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
@@ -104,7 +104,7 @@ export const trackingEvents = {
       firstCDP,
       amount,
       page: MixpanelPages.VaultCreate,
-      section: 'CreateVault',
+      section: MixpanelCommonAnalyticsSections.CreateVault,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -118,7 +118,7 @@ export const trackingEvents = {
       firstCDP,
       amount,
       page: MixpanelPages.VaultCreate,
-      section: 'CreateVault',
+      section: MixpanelCommonAnalyticsSections.CreateVault,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -137,7 +137,7 @@ export const trackingEvents = {
       depositAmount,
       generateAmount,
       page: MixpanelPages.VaultCreate,
-      section: 'Configure',
+      section: MixpanelCommonAnalyticsSections.Configure,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -150,7 +150,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       firstCDP,
       page: MixpanelPages.VaultCreate,
-      section: 'ProxyDeploy',
+      section: MixpanelCommonAnalyticsSections.ProxyDeploy,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -165,7 +165,7 @@ export const trackingEvents = {
       type,
       amount,
       page: MixpanelPages.VaultCreate,
-      section: 'Allowance',
+      section: MixpanelCommonAnalyticsSections.Allowance,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -178,7 +178,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       firstCDP,
       page: MixpanelPages.VaultCreate,
-      section: 'Configure',
+      section: MixpanelCommonAnalyticsSections.Configure,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -191,7 +191,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       firstCDP,
       page: MixpanelPages.VaultCreate,
-      section: 'Allowance',
+      section: MixpanelCommonAnalyticsSections.Allowance,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -204,7 +204,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       firstCDP,
       page: MixpanelPages.VaultCreate,
-      section: 'CreateVault',
+      section: MixpanelCommonAnalyticsSections.CreateVault,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -225,7 +225,7 @@ export const trackingEvents = {
       daiAmount,
       firstCDP,
       page: MixpanelPages.VaultCreate,
-      section: 'ConfirmVault',
+      section: MixpanelCommonAnalyticsSections.ConfirmVault,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -252,7 +252,7 @@ export const trackingEvents = {
       network,
       walletType,
       page: MixpanelPages.VaultCreate,
-      section: 'ConfirmVault',
+      section: MixpanelCommonAnalyticsSections.ConfirmVault,
     }
 
     mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
@@ -264,7 +264,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       firstCDP,
       page: MixpanelPages.VaultCreate,
-      section: 'ConfirmVault',
+      section: MixpanelCommonAnalyticsSections.ConfirmVault,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -278,7 +278,7 @@ export const trackingEvents = {
       vaultId,
       ilk,
       page: MixpanelPages.VaultsOverview,
-      section: 'Table',
+      section: MixpanelCommonAnalyticsSections.Table,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -290,7 +290,7 @@ export const trackingEvents = {
       id: 'createNewVault',
       product: TrackingProductType.BORROW,
       firstCDP,
-      section: 'NavBar',
+      section: MixpanelCommonAnalyticsSections.NavBar,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -301,7 +301,7 @@ export const trackingEvents = {
     const eventBody = {
       id: 'YourVaults',
       product: TrackingProductType.BORROW,
-      section: 'NavBar',
+      section: MixpanelCommonAnalyticsSections.NavBar,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -314,7 +314,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       ControllerIsConnected,
       page: MixpanelPages.ManageCollateral,
-      section: 'Dai',
+      section: MixpanelCommonAnalyticsSections.Dai,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -327,7 +327,7 @@ export const trackingEvents = {
       product: TrackingProductType.BORROW,
       ControllerIsConnected,
       page: MixpanelPages.ManageDai,
-      section: 'Collateral',
+      section: MixpanelCommonAnalyticsSections.Collateral,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -406,7 +406,7 @@ export const trackingEvents = {
     const eventBody = {
       id: 'EditVault',
       product: TrackingProductType.BORROW,
-      section: 'ConfirmVault',
+      section: MixpanelCommonAnalyticsSections.ConfirmVault,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -427,7 +427,7 @@ export const trackingEvents = {
       collateralAmount,
       daiAmount,
       page,
-      section: 'ConfirmVault',
+      section: MixpanelCommonAnalyticsSections.ConfirmVault,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -453,7 +453,7 @@ export const trackingEvents = {
       network,
       walletType,
       page,
-      section: 'ConfirmVault',
+      section: MixpanelCommonAnalyticsSections.ConfirmVault,
     }
 
     mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
@@ -466,7 +466,7 @@ export const trackingEvents = {
       type,
       amount,
       page: MixpanelPages.ManageCollateral,
-      section: 'Allowance',
+      section: MixpanelCommonAnalyticsSections.Allowance,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -478,7 +478,7 @@ export const trackingEvents = {
       id: 'ApproveAllowance',
       product: TrackingProductType.BORROW,
       page: MixpanelPages.ManageCollateral,
-      section: 'Allowance',
+      section: MixpanelCommonAnalyticsSections.Allowance,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -492,7 +492,7 @@ export const trackingEvents = {
       type,
       amount,
       page: MixpanelPages.ManageDai,
-      section: 'Allowance',
+      section: MixpanelCommonAnalyticsSections.Allowance,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -504,7 +504,7 @@ export const trackingEvents = {
       id: 'ApproveAllowance',
       product: TrackingProductType.BORROW,
       page: MixpanelPages.ManageDai,
-      section: 'Allowance',
+      section: MixpanelCommonAnalyticsSections.Allowance,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -517,7 +517,7 @@ export const trackingEvents = {
       id: 'Confirm',
       product: TrackingProductType.BORROW,
       page: MixpanelPages.ManageCollateral,
-      section: 'Deposit',
+      section: MixpanelCommonAnalyticsSections.Deposit,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -530,7 +530,7 @@ export const trackingEvents = {
       id: 'Confirm',
       product: TrackingProductType.BORROW,
       page: MixpanelPages.ManageCollateral,
-      section: 'Withdraw',
+      section: MixpanelCommonAnalyticsSections.Withdraw,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -543,7 +543,7 @@ export const trackingEvents = {
       id: 'Confirm',
       product: TrackingProductType.BORROW,
       page: MixpanelPages.ManageDai,
-      section: 'Generate',
+      section: MixpanelCommonAnalyticsSections.Generate,
     }
 
     !mixpanel.has_opted_out_tracking() &&
@@ -556,14 +556,18 @@ export const trackingEvents = {
       id: 'Confirm',
       product: TrackingProductType.BORROW,
       page: MixpanelPages.ManageDai,
-      section: 'Payback',
+      section: MixpanelCommonAnalyticsSections.Payback,
     }
 
     !mixpanel.has_opted_out_tracking() &&
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
-  newsletterSubscribe: (section: 'Footer' | 'Homepage') => {
+  newsletterSubscribe: (
+    section:
+      | MixpanelCommonAnalyticsSections.NewsletterHomepage
+      | MixpanelCommonAnalyticsSections.NewsletterFooter,
+  ) => {
     const eventBody = {
       id: 'NewsletterSubscribe',
       product: TrackingProductType.BORROW,
@@ -589,7 +593,7 @@ export const trackingEvents = {
         collAmount,
         multiply,
         page: MixpanelPages.OpenMultiply,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       !mixpanel.has_opted_out_tracking() &&
@@ -618,7 +622,7 @@ export const trackingEvents = {
         walletType,
         page: MixpanelPages.OpenMultiply,
         oasisFee,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
@@ -631,7 +635,7 @@ export const trackingEvents = {
         ilk,
         multiply,
         page: MixpanelPages.AdjustPosition,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       !mixpanel.has_opted_out_tracking() &&
@@ -656,7 +660,7 @@ export const trackingEvents = {
         walletType,
         oasisFee,
         page: MixpanelPages.AdjustPosition,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
@@ -670,7 +674,7 @@ export const trackingEvents = {
         collateralAmount,
         daiAmount,
         page: MixpanelPages.OtherActions,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       !mixpanel.has_opted_out_tracking() &&
@@ -697,7 +701,7 @@ export const trackingEvents = {
         walletType,
         oasisFee,
         page: MixpanelPages.OtherActions,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
@@ -711,7 +715,7 @@ export const trackingEvents = {
         debt,
         closeTo,
         page: MixpanelPages.CloseVault,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       !mixpanel.has_opted_out_tracking() &&
@@ -738,7 +742,7 @@ export const trackingEvents = {
         walletType,
         oasisFee,
         page: MixpanelPages.CloseVault,
-        section: 'ConfirmVault',
+        section: MixpanelCommonAnalyticsSections.ConfirmVault,
       }
 
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
@@ -812,7 +816,7 @@ export const trackingEvents = {
           [TrackingProductType.EARN]: MixpanelPages.ManageSTETH,
           [TrackingProductType.BORROW]: '',
         }[productType.toLocaleLowerCase()],
-        section: 'AdjustRisk',
+        section: MixpanelCommonAnalyticsSections.AdjustRisk,
       }
       mixpanelInternalAPI(
         action === 'MoveSlider' ? MixpanelEventTypes.InputChange : MixpanelEventTypes.ButtonClick,
@@ -825,7 +829,7 @@ export const trackingEvents = {
         product: TrackingProductType.EARN,
         riskRatio: formatPrecision(riskRatio, 4),
         page: MixpanelPages.ManageSTETH,
-        section: 'AdjustRisk',
+        section: MixpanelCommonAnalyticsSections.AdjustRisk,
       }
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
@@ -834,7 +838,7 @@ export const trackingEvents = {
         id: 'Confirm',
         product: TrackingProductType.EARN,
         page: MixpanelPages.ManageSTETH,
-        section: 'ClosePosition',
+        section: MixpanelCommonAnalyticsSections.ClosePosition,
       }
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
@@ -843,7 +847,7 @@ export const trackingEvents = {
         id: 'ConfirmTransaction',
         product: TrackingProductType.EARN,
         page: MixpanelPages.ManageSTETH,
-        section: 'ClosePosition',
+        section: MixpanelCommonAnalyticsSections.ClosePosition,
       }
       mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
@@ -856,7 +860,13 @@ export const trackingEvents = {
       section: MixpanelCommonAnalyticsSections.Form,
       additionalParams: MixpanelAutomationEventsAdditionalParams,
     ) => {
-      const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
+      const eventBody = {
+        id,
+        page,
+        section,
+        product: TrackingProductType.Automation,
+        ...additionalParams,
+      }
 
       !mixpanel.has_opted_out_tracking() &&
         mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
@@ -867,19 +877,35 @@ export const trackingEvents = {
       section: MixpanelCommonAnalyticsSections,
       additionalParams: MixpanelAutomationEventsAdditionalParams,
     ) => {
-      const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
+      const eventBody = {
+        id,
+        page,
+        section,
+        product: TrackingProductType.Automation,
+        ...additionalParams,
+      }
 
       !mixpanel.has_opted_out_tracking() &&
         mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
   },
   swapWidgetEvent: (id: MixpanelSwapWidgetEvents, eventData: Route | RouteExecutionUpdate) => {
-    const eventBody = { id, section: 'SwapWidget', product: 'SwapWidget', eventData }
+    const eventBody = {
+      id,
+      section: MixpanelCommonAnalyticsSections.SwapWidget,
+      product: TrackingProductType.SwapWidget,
+      eventData,
+    }
     !mixpanel.has_opted_out_tracking() &&
       mixpanelInternalAPI(MixpanelEventTypes.SwapWidgetEvent, eventBody)
   },
   topBannerEvent: (id: MixpanelTopBannerEvents, topBannerName: string) => {
-    const eventBody = { id, section: 'TopBanner', product: 'TopBanner', topBannerName }
+    const eventBody = {
+      id,
+      section: MixpanelCommonAnalyticsSections.TopBanner,
+      product: TrackingProductType.TopBanner,
+      topBannerName,
+    }
     !mixpanel.has_opted_out_tracking() &&
       mixpanelInternalAPI(MixpanelEventTypes.TopBannerEvent, eventBody)
   },
