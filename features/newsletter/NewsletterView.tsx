@@ -1,4 +1,5 @@
 import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelCommonAnalyticsSections } from 'analytics/types'
 import { isMainContextAvailable } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
@@ -93,7 +94,11 @@ function NewsletterForm({ small }: { small?: boolean }) {
 
     if (submit) {
       submit()
-      trackingEvents.newsletterSubscribe(small ? 'Footer' : 'Homepage')
+      trackingEvents.newsletterSubscribe(
+        small
+          ? MixpanelCommonAnalyticsSections.NewsletterFooter
+          : MixpanelCommonAnalyticsSections.NewsletterHomepage,
+      )
     }
   }
 
