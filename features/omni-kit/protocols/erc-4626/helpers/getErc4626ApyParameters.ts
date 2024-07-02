@@ -58,7 +58,7 @@ export function getErc4626ApyParameters({
     const wstETHPrice =
       prices?.['wsteth'] ??
       tokenPriceStore.prices?.['wsteth'] ??
-      (await getTokensPrices()).tokens?.['WSTETH'] ??
+      (await getTokensPrices())?.tokens?.['WSTETH'] ??
       {}
 
     const response = await fetchFromFunctionsApi(
