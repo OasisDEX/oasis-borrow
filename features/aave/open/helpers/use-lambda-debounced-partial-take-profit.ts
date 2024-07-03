@@ -49,7 +49,7 @@ export const mapProfits = (
       token: value.token,
     }
   }
-  return simulation
+  return simulation?.profits
     ? simulation.profits.map((sim) => {
         const triggerPrice = isShort
           ? new BigNumber(lambdaPriceDenomination).div(new BigNumber(sim.triggerPrice))
