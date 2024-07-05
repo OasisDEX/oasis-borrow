@@ -30,8 +30,10 @@ export async function getMakerPositionInfo({
     ilk: ilkLabel,
     pip: { value },
     rate,
-    tokenSymbol,
+    tokenSymbol: rawTokenSymbol,
   } = ilk
+
+  const tokenSymbol = rawTokenSymbol === 'PAX' ? 'USDP' : rawTokenSymbol
 
   // determine position type based on subgraph and db responses
   const resolvedType =
