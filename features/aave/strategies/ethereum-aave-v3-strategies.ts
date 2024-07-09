@@ -534,6 +534,36 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'SUSDE',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+      },
+    },
+  },
+  {
+    collateral: 'SUSDE',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+      },
+    },
+  },
+  {
+    collateral: 'SUSDE',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+      },
+    },
+  },
+  {
     collateral: 'WSTETH',
     debt: 'USDT',
     strategyType: StrategyType.Long,
@@ -675,9 +705,9 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
     }
   })
 
-const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
+const earnStrategies: IStrategyConfig[] = availableTokenPairs
   .filter(hasEarnProductType)
-  .filter((config) => config.collateral === 'SDAI')
+  .filter((config) => ['SDAI', 'SUSDE'].includes(config.collateral))
   .map((config): IStrategyConfig => {
     return {
       network: NetworkNames.ethereumMainnet,
@@ -729,7 +759,7 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
 export const ethereumAaveV3Strategies: IStrategyConfig[] = [
   ...borrowStrategies,
   ...multiplyStategies,
-  ...sdaiEarnStrategies,
+  ...earnStrategies,
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
