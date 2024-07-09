@@ -83,6 +83,7 @@ export function getAddresses(
       LINK: contracts.tokens['LINK']?.address,
       RPL: contracts.tokens['RPL']?.address,
       LDO: contracts.tokens['LDO']?.address,
+      SUSDE: contracts.tokens['SUSDE']?.address,
     } as AaveLikeStrategyAddresses['tokens'],
     chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
     operationExecutor: contracts.operationExecutor.address,
