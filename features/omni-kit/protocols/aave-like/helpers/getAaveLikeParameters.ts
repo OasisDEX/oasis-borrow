@@ -147,7 +147,7 @@ export const getAaveLikeParameters = async ({
       symbol: collateralToken as AaveLikeTokens,
       precision: collateralPrecision,
     },
-    flashloan: getAaveV3FlashLoanToken(networkId, protocol),
+    flashloan: getAaveV3FlashLoanToken(networkId, protocol, collateralToken),
   }
 
   switch (action) {

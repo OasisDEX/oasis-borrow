@@ -672,6 +672,18 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     protocol: LendingProtocol.AaveV3,
   },
   {
+    product: [OmniProductType.Multiply],
+    primaryToken: 'MKR',
+    primaryTokenGroup: getTokenGroup('MKR'),
+    secondaryToken: 'DAI',
+    depositToken: 'MKR',
+    label: 'MKR/DAI',
+    multiplyStrategyType: 'long',
+    multiplyStrategy: 'Long MKR',
+    network: NetworkNames.ethereumMainnet,
+    protocol: LendingProtocol.AaveV3,
+  },
+  {
     product: [OmniProductType.Borrow],
     primaryToken: 'MKR',
     primaryTokenGroup: getTokenGroup('MKR'),
