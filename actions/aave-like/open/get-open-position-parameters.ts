@@ -54,7 +54,7 @@ async function openPosition(
     multiple: riskRatio,
     debtToken: debtToken,
     collateralToken: collateralToken,
-    flashloan: getAaveV3FlashLoanToken(networkId, protocol),
+    flashloan: getAaveV3FlashLoanToken(networkId, protocol, collateralToken.symbol),
     depositedByUser: {
       collateralInWei: depositedByUser.collateralToken?.amountInBaseUnit,
       debtInWei: depositedByUser.debtToken?.amountInBaseUnit,

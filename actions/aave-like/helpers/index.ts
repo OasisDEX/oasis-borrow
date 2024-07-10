@@ -12,15 +12,6 @@ import { getLocalAppConfig } from 'helpers/config'
 import { getOneInchCall } from 'helpers/swap'
 import { LendingProtocol } from 'lendingProtocols'
 
-// enum Network {
-//   MAINNET = "mainnet",
-//   GOERLI = "goerli",
-//   HARDHAT = "hardhat",
-//   OPTIMISM = "optimism",
-//   ARBITRUM = "arbitrum",
-//   LOCAL = "local"
-// }
-
 export function networkIdToLibraryNetwork(networkId: NetworkIds): Network {
   switch (networkId) {
     case NetworkIds.MAINNET:
@@ -90,11 +81,14 @@ export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [
 export const getAaveV3FlashLoanToken = (
   networkId: NetworkIds,
   lendingProtocol: LendingProtocol,
+  collateralToken: string,
 ) => {
   if (lendingProtocol !== LendingProtocol.AaveV3) {
     return undefined
   }
   const flashloanTokensConfig = getLocalAppConfig('parameters').aaveLike.flashLoanTokens
+  const isolatedCollateralTokensConfig =
+    getLocalAppConfig('parameters').aaveLike.isolatedCollateralTokens
   const aaveV3FlashLoanTokenMap = {
     [NetworkIds.OPTIMISMMAINNET]: flashloanTokensConfig.OPTIMISMMAINNET,
     [NetworkIds.BASEMAINNET]: flashloanTokensConfig.BASEMAINNET,
@@ -102,15 +96,26 @@ export const getAaveV3FlashLoanToken = (
   const flashloanToken = aaveV3FlashLoanTokenMap[networkId]
   const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
 
-  if (flashloanToken) {
-    const tokenAddress = addressesV3.tokens[flashloanToken]
+  // isolated collaterals does not allow to deposit other tokens (from FL) as collateral
+  // therefore we need to use isolated collateral as FL token
+  const isIsolatedCollateral = isolatedCollateralTokensConfig.includes(
+    collateralToken.toUpperCase(),
+  )
+
+  const resolvedFlashLoanToken = (
+    isIsolatedCollateral ? collateralToken.toUpperCase() : flashloanToken
+  ) as keyof AaveLikeStrategyAddresses['tokens']
+
+  if (resolvedFlashLoanToken) {
+    const tokenAddress = addressesV3.tokens[resolvedFlashLoanToken]
     if (tokenAddress === undefined)
-      throw new Error(`Flashloan Token ${flashloanToken} address is undefined`)
+      throw new Error(`Flashloan Token ${resolvedFlashLoanToken} address is undefined`)
+
     return {
       token: {
-        symbol: flashloanToken,
+        symbol: resolvedFlashLoanToken,
         address: tokenAddress,
-        precision: getToken(flashloanToken).precision,
+        precision: getToken(resolvedFlashLoanToken).precision,
       },
     }
   }

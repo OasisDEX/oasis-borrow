@@ -39,7 +39,7 @@ export async function getCloseAaveParameters({
     debtToken,
     collateralToken,
     shouldCloseToCollateral,
-    flashloan: getAaveV3FlashLoanToken(networkId, protocol),
+    flashloan: getAaveV3FlashLoanToken(networkId, protocol, collateralToken.symbol),
   }
 
   const stratDeps: Omit<AaveLikeCloseStrategyDeps, 'addresses' | 'getSwapData'> = {
