@@ -81,7 +81,6 @@ export const settings: OmniProtocolSettings = {
       'RETH',
       'SDAI',
       'SUSDE',
-      'USDA',
       'USDC',
       'USDE',
       'USDT',
