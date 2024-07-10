@@ -20,7 +20,14 @@ import { circle_close, circle_exchange, circle_slider } from 'theme/icons'
 export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, isOpening, quoteToken, collateralIcon, quoteIcon },
+    environment: {
+      collateralToken,
+      isOpening,
+      quoteToken,
+      collateralIcon,
+      quoteIcon,
+      isYieldLoopWithData,
+    },
     steps: { currentStep },
   } = useOmniGeneralContext()
   const {
@@ -86,17 +93,21 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
                 updateState('action', OmniMultiplyFormAction.PaybackMultiply)
               },
             },
-            {
-              label: t('system.actions.multiply.switch-to-borrow'),
-              icon: circle_exchange,
-              iconShrink: 2,
-              panel: OmniMultiplyPanel.Switch,
-              action: () => {
-                dispatch({ type: 'reset' })
-                updateState('uiDropdown', OmniMultiplyPanel.Switch)
-                updateState('action', OmniMultiplyFormAction.SwitchMultiply)
-              },
-            },
+            ...(!isYieldLoopWithData
+              ? [
+                  {
+                    label: t('system.actions.multiply.switch-to-borrow'),
+                    icon: circle_exchange,
+                    iconShrink: 2,
+                    panel: OmniMultiplyPanel.Switch,
+                    action: () => {
+                      dispatch({ type: 'reset' })
+                      updateState('uiDropdown', OmniMultiplyPanel.Switch)
+                      updateState('action', OmniMultiplyFormAction.SwitchMultiply)
+                    },
+                  },
+                ]
+              : []),
             ...(!debtAmount.isZero()
               ? [
                   {
