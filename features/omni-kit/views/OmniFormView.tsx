@@ -313,6 +313,7 @@ export function OmniFormView({
           swapData: swap?.current,
           hidden: isTxInProgress || isTxSuccess || isTxError,
           protocol,
+          pseudoProtocol,
           collateralPrice,
           isYieldLoop,
         })

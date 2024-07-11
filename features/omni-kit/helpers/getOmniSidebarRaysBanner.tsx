@@ -2,6 +2,7 @@ import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { RaysSidebarBanner } from 'components/RaysSidebarBanner'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
+import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
 import type {
   OmniMultiplyPanel,
   OmniSidebarBorrowPanel,
@@ -26,7 +27,6 @@ import React from 'react'
 
 export const getOmniSidebarRaysBanner = ({
   isOpening,
-  // uiDropdown,
   isSupportingOptimization,
   isOptimizationActive,
   isSupportingProtection,
@@ -38,6 +38,7 @@ export const getOmniSidebarRaysBanner = ({
   swapData,
   hidden,
   protocol,
+  pseudoProtocol,
   collateralPrice,
   isYieldLoop,
 }: {
@@ -54,6 +55,7 @@ export const getOmniSidebarRaysBanner = ({
   swapData?: OmniSimulationSwap
   hidden: boolean
   protocol: LendingProtocol
+  pseudoProtocol?: string
   collateralPrice: BigNumber
   isYieldLoop: boolean
 }) => {
@@ -137,10 +139,12 @@ export const getOmniSidebarRaysBanner = ({
     const castedPosition = position as LendingPosition
     const castedSimulation = simulation as LendingPosition | undefined
 
-    // fallback to true since we have a SupplyPositions that have optional swaps on deposit (Erc4626),
+    // handle pseudo protocol since we have a SupplyPositions that have optional swaps on deposit (Erc4626),
     // but doesn't have on withdraw (if at some point we will add support, much complex handling will be required)
     const withBuyingCollateral =
-      castedSimulation?.riskRatio?.loanToValue.gt(castedPosition.riskRatio.loanToValue) || true
+      pseudoProtocol === Erc4626PseudoProtocol
+        ? true
+        : castedSimulation?.riskRatio?.loanToValue.gt(castedPosition.riskRatio.loanToValue)
 
     const swapValue = (
       withBuyingCollateral ? swapData.minToTokenAmount : swapData.fromTokenAmount
