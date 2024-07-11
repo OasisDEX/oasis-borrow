@@ -191,11 +191,11 @@ export const useOmniStopLossDataHandler = () => {
   const ltvContentCardCommonData = useOmniCardDataLtv({
     automation: omniCardLtvAutomationData,
     ltv: loanToValue,
-    maxLtv: liquidationPriceLtv,
+    maxLtv: maxLoanToValue,
     modal: (
       <OmniCardDataLtvModal
         ltv={loanToValue}
-        maxLtv={liquidationPriceLtv}
+        maxLtv={maxLoanToValue}
         automation={omniCardLtvAutomationData}
       />
     ),
@@ -205,8 +205,8 @@ export const useOmniStopLossDataHandler = () => {
     [loanToValue],
   )
   const sliderMax = useMemo(
-    () => liquidationPriceLtv.minus(stopLossConstants.offsets.max),
-    [liquidationPriceLtv],
+    () => maxLoanToValue.minus(stopLossConstants.offsets.max),
+    [maxLoanToValue],
   )
 
   const sliderPercentageFill = useMemo(

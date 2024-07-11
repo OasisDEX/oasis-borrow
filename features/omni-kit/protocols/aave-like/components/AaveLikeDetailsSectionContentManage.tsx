@@ -144,12 +144,12 @@ export const AaveLikeDetailsSectionContentManage: FC = () => {
   const ltvContentCardCommonData = useOmniCardDataLtv({
     afterLtv: simulation?.riskRatio.loanToValue,
     ltv: castedPosition.riskRatio.loanToValue,
-    maxLtv: castedPosition.category.liquidationThreshold,
+    maxLtv: castedPosition.maxRiskRatio.loanToValue,
     automation: automationLtvCardData,
     modal: (
       <OmniCardDataLtvModal
         ltv={castedPosition.riskRatio.loanToValue}
-        maxLtv={castedPosition.category.liquidationThreshold}
+        maxLtv={castedPosition.maxRiskRatio.loanToValue}
         automation={automationLtvCardData}
       />
     ),
