@@ -3,6 +3,7 @@ import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supporte
 import type { NetworkIds } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3UserAccountData } from 'blockchain/spark-v3'
+import { hasActiveOptimization, hasActiveProtection } from 'features/omni-kit/automation/helpers'
 import type { OmniFlowStateFilterParams } from 'features/omni-kit/types'
 import { getTriggersRequest } from 'helpers/lambda/triggers'
 import { LendingProtocol } from 'lendingProtocols'
@@ -37,7 +38,11 @@ export async function aaveLikeFlowStateFilter({
   })
   // if there is triggers we should not allow
   // the user to open a new position with this DPM
-  if (positionTriggers?.triggersCount && positionTriggers.triggersCount !== 0) {
+
+  if (
+    hasActiveOptimization({ positionTriggers, protocol }) ||
+    hasActiveProtection({ positionTriggers, protocol })
+  ) {
     return Promise.resolve(!filterConsumed)
   }
 
@@ -57,6 +62,7 @@ export async function aaveLikeFlowStateFilter({
             networkId: networkId as SparkV3SupportedNetwork,
           })
     const filterValue = userData.totalDebtBase.isZero()
+
     return filterConsumed ? filterValue : !filterValue
   }
 
