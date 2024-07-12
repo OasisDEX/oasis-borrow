@@ -71,6 +71,7 @@ export const settingsV3: OmniProtocolSettings = {
   supportedMultiplyTokens: {
     [NetworkIds.MAINNET]: [
       'ETH',
+      'WEETH',
       'RETH',
       'WSTETH',
       'CBETH',
@@ -87,8 +88,8 @@ export const settingsV3: OmniProtocolSettings = {
       'RPL',
       'FRAX',
     ],
-    [NetworkIds.ARBITRUMMAINNET]: ['ETH', 'RETH', 'WSTETH', 'USDC', 'DAI', 'WBTC'],
-    [NetworkIds.BASEMAINNET]: ['ETH', 'CBETH', 'USDBC', 'USDC'],
+    [NetworkIds.ARBITRUMMAINNET]: ['ETH', 'WEETH', 'RETH', 'WSTETH', 'USDC', 'DAI', 'WBTC'],
+    [NetworkIds.BASEMAINNET]: ['ETH', 'WEETH', 'CBETH', 'USDBC', 'USDC'],
     [NetworkIds.OPTIMISMMAINNET]: ['ETH', 'WSTETH', 'USDC', 'USDC.E', 'DAI', 'WBTC'],
   },
   steps: {
