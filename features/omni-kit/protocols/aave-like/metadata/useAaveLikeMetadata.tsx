@@ -4,6 +4,7 @@ import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
 import { getAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
+  getOmniBorrowDebtMax,
   getOmniBorrowishChangeVariant,
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
@@ -48,6 +49,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quoteToken,
+      quotePrecision,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -123,7 +125,11 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           afterBuyingPower: simulation?.buyingPower,
           shouldShowDynamicLtv: () => false,
           debtMin: zero,
-          debtMax: position.debtAvailable(),
+          debtMax: getOmniBorrowDebtMax({
+            digits: quotePrecision,
+            position,
+            simulation,
+          }),
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && simulation.debtAvailable(),
           afterPositionDebt: resolvedSimulation?.debtAmount,

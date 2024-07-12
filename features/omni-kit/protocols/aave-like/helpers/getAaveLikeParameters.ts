@@ -38,7 +38,11 @@ import type {
   OmniFormState,
   OmniSupportedNetworkIds,
 } from 'features/omni-kit/types'
-import { OmniBorrowFormAction, OmniMultiplyFormAction } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniMultiplyFormAction,
+  OmniProductType,
+} from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
@@ -132,11 +136,20 @@ export const getAaveLikeParameters = async ({
     positionType: 'Borrow' as PositionType,
   }
 
+  // entry token different from collateral token applies only for multiply (if defined)
+  const resolvedEntryToken =
+    state.productType === OmniProductType.Multiply
+      ? {
+          symbol: entryToken.symbol as AaveLikeTokens,
+          precision: entryToken.precision,
+        }
+      : {
+          symbol: collateralToken as AaveLikeTokens,
+          precision: collateralPrecision,
+        }
+
   const adjustMultiplyPayload = {
-    entryToken: {
-      symbol: entryToken.symbol as AaveLikeTokens,
-      precision: entryToken.precision,
-    },
+    entryToken: resolvedEntryToken,
     position,
     slippage,
     debtToken: {
