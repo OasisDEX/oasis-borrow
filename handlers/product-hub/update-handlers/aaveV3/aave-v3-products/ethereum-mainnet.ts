@@ -57,6 +57,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     label: 'WEETH/ETH',
     earnStrategy: EarnStrategies.yield_loop,
     earnStrategyDescription: 'WEETH/ETH Yield Loop',
+    depositToken: 'WEETH',
     managementType: 'active',
     hasRewards: true,
     tooltips: {
