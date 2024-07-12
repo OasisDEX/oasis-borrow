@@ -65,13 +65,13 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     collateral: 'wstETH',
     debt: 'ETH',
     strategyType: 'long',
-    types: ['borrow', 'earn'],
+    types: ['earn'],
   },
   {
     collateral: 'rETH',
     debt: 'ETH',
     strategyType: 'long',
-    types: ['borrow', 'earn'],
+    types: ['earn'],
   },
   {
     collateral: 'DAI',

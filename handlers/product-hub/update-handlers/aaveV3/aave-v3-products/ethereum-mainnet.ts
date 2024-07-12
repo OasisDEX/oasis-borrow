@@ -22,16 +22,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [OmniProductType.Borrow],
-    primaryToken: 'WSTETH',
-    primaryTokenGroup: 'ETH',
-    secondaryToken: 'ETH',
-    depositToken: 'WSTETH',
-    label: 'WSTETH/ETH',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-  },
-  {
     product: [OmniProductType.Earn],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
@@ -43,16 +33,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     earnStrategy: EarnStrategies.yield_loop,
     earnStrategyDescription: 'RETH/ETH Yield Loop',
     managementType: 'active',
-  },
-  {
-    product: [OmniProductType.Borrow],
-    primaryToken: 'RETH',
-    primaryTokenGroup: 'ETH',
-    secondaryToken: 'ETH',
-    depositToken: 'RETH',
-    label: 'RETH/ETH',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
   },
   {
     product: [OmniProductType.Earn],
@@ -82,16 +62,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     tooltips: {
       liquidity: { ...productHubWeETHRewardsTooltip },
     },
-  },
-  {
-    product: [OmniProductType.Borrow],
-    primaryToken: 'CBETH',
-    primaryTokenGroup: 'ETH',
-    secondaryToken: 'ETH',
-    depositToken: 'CBETH',
-    label: 'CBETH/ETH',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
   },
   {
     product: [OmniProductType.Multiply],
@@ -387,16 +357,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [OmniProductType.Borrow],
-    primaryToken: 'SDAI',
-    primaryTokenGroup: 'DAI',
-    secondaryToken: 'USDC',
-    depositToken: 'SDAI',
-    label: 'SDAI/USDC',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-  },
-  {
     product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
@@ -410,17 +370,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     managementType: 'active',
   },
   {
-    product: [OmniProductType.Borrow],
-    primaryToken: 'SDAI',
-    primaryTokenGroup: 'DAI',
-    secondaryToken: 'LUSD',
-    depositToken: 'SDAI',
-    label: 'SDAI/LUSD',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-  },
-
-  {
     product: [OmniProductType.Earn],
     primaryToken: 'SDAI',
     primaryTokenGroup: 'DAI',
@@ -432,16 +381,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     earnStrategy: EarnStrategies.yield_loop,
     earnStrategyDescription: 'SDAI/FRAX Yield Loop',
     managementType: 'active',
-  },
-  {
-    product: [OmniProductType.Borrow],
-    primaryToken: 'SDAI',
-    primaryTokenGroup: 'DAI',
-    secondaryToken: 'FRAX',
-    depositToken: 'SDAI',
-    label: 'SDAI/FRAX',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
   },
   {
     product: [OmniProductType.Earn],

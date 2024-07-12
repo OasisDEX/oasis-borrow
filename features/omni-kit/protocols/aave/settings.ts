@@ -106,6 +106,7 @@ export const settingsV3: OmniProtocolSettings = {
     },
   },
   entryTokens: {
+    // entry token different from collateral token applies only for multiply (if defined)
     [NetworkIds.MAINNET]: { 'WSTETH-ETH': 'ETH' },
   },
   availableAutomations: {

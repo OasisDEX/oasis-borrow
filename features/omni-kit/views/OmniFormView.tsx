@@ -25,7 +25,7 @@ import {
 } from 'features/omni-kit/helpers'
 import { getOmniSidebarRaysBanner } from 'features/omni-kit/helpers/getOmniSidebarRaysBanner'
 import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
-import { OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { getLocalAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
@@ -126,6 +126,10 @@ export function OmniFormView({
 
   const genericSidebarTitle = useOmniSidebarTitle()
 
+  // entry token different from collateral token applies only for multiply (if defined)
+  const resolvedEntryToken =
+    state.productType === OmniProductType.Multiply ? entryToken.symbol : collateralToken
+
   const flowState = useFlowState({
     pairId,
     protocol,
@@ -134,7 +138,7 @@ export function OmniFormView({
     ...getOmniFlowStateConfig({
       protocol,
       collateralToken,
-      entryToken: entryToken.symbol,
+      entryToken: resolvedEntryToken,
       fee: interestRate,
       isOpening,
       quoteToken,

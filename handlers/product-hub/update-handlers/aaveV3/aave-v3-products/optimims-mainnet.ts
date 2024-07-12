@@ -65,7 +65,7 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     collateral: 'wstETH',
     debt: 'ETH',
     strategyType: 'long',
-    types: ['borrow', 'earn'],
+    types: ['earn'],
   },
   {
     collateral: 'DAI',
@@ -107,13 +107,13 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     collateral: 'USDC',
     debt: 'SUSD',
     strategyType: 'long',
-    types: ['borrow', 'multiply', 'earn'],
+    types: ['earn'],
   },
   {
     collateral: 'USDC.E',
     debt: 'SUSD',
     strategyType: 'long',
-    types: ['borrow', 'multiply', 'earn'],
+    types: ['earn'],
   },
 ]
 
