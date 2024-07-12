@@ -155,7 +155,8 @@ export function OmniFormView({
         .filter(
           (event) =>
             event.collateralTokenAddress.toLowerCase() === collateralAddress.toLowerCase() &&
-            event.debtTokenAddress.toLowerCase() === quoteAddress.toLowerCase(),
+            event.debtTokenAddress.toLowerCase() === quoteAddress.toLowerCase() &&
+            event.protocol === protocol,
         )
 
       if (!hasDupePosition && filteredEvents.length) {
