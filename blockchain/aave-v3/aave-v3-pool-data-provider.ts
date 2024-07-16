@@ -127,10 +127,15 @@ export function getAaveV3ReserveData({
       new BigNumber(result.totalVariableDebt.toString()),
       token,
     )
+    const accruedToTreasuryScaled = amountFromWei(
+      new BigNumber(result.accruedToTreasuryScaled.toString()),
+      token,
+    )
+
     return {
       availableLiquidity: totalAToken.minus(totalStableDebt).minus(totalVariableDebt),
       unbacked: new BigNumber(result.unbacked.toString()),
-      accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
+      accruedToTreasuryScaled,
       liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
       variableBorrowRate: amountFromRay(new BigNumber(result.variableBorrowRate.toString())),
       stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),

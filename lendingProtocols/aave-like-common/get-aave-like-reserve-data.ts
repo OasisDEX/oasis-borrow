@@ -42,7 +42,9 @@ export function getAaveLikeReserveData(
         totalSupply: reserveData.totalToken,
         availableToSupply: reserveCaps.supply.isZero()
           ? maxUint256
-          : reserveCaps.supply.minus(reserveData.totalToken),
+          : reserveCaps.supply.minus(
+              reserveData.totalToken.plus(reserveData.accruedToTreasuryScaled),
+            ),
         availableToBorrow: BigNumber.maximum(
           reserveCaps.borrow.isZero()
             ? reserveData.availableLiquidity
