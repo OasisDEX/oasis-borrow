@@ -24,12 +24,13 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
           {isViewBelowXl && <NavigationRays />}
           {isViewBelowXl && <MyPositionsOrb />}
           {!isViewBelowXl && <NavigationRays />}
-          {<NavigationNetworkSwitcherOrb />}
+          <NavigationNetworkSwitcherOrb />
           {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
         </>
       ) : (
         <>
-          {<NavigationNetworkSwitcherOrb />}
+          <NavigationRays />
+          <NavigationNetworkSwitcherOrb />
           {!isViewBelowL && <ConnectButton />}
         </>
       )}

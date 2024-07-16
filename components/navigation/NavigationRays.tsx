@@ -18,14 +18,18 @@ export const NavigationRays = () => {
 
   const raysUserData = useUserRays({ walletAddress })
 
-  if (!raysUserData?.userRays || !Rays) {
+  if (!Rays) {
     return null
   }
 
   return (
     <Flex sx={{ mr: !isViewBelowL ? 3 : 0, alignItems: 'center' }}>
       <a
-        href={`${INTERNAL_LINKS.rays}?userAddress=${walletAddress}`}
+        href={
+          walletAddress
+            ? `${INTERNAL_LINKS.rays}?userAddress=${walletAddress}`
+            : INTERNAL_LINKS.rays
+        }
         style={{ textDecoration: 'none' }}
       >
         <Flex
@@ -38,12 +42,13 @@ export const NavigationRays = () => {
           <Icon icon={rays} size={24} />{' '}
           {!isViewBelowL && (
             <Text variant="boldParagraph3" sx={{ fontSize: 1 }}>
-              {
-                formatCryptoBalance(new BigNumber(raysUserData?.userRays.allPossiblePoints)).split(
-                  '.',
-                )[0]
-              }{' '}
-              Rays
+              {raysUserData?.userRays
+                ? `${
+                    formatCryptoBalance(
+                      new BigNumber(raysUserData?.userRays.allPossiblePoints),
+                    ).split('.')[0]
+                  } Rays`
+                : 'Get $RAYS'}
             </Text>
           )}
         </Flex>
