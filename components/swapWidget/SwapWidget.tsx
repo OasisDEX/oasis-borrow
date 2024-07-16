@@ -1,47 +1,16 @@
-import { LiFiWalletManagement, supportedWallets } from '@lifi/wallet-management'
-import { LiFiWidget } from '@lifi/widget'
-import { useWallets } from '@web3-onboard/react'
 import { useMainContext } from 'components/context/MainContextProvider'
-import type { SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
-import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
-import { useTrackSwapWidgetEvents } from 'helpers/hooks'
 import { useObservable } from 'helpers/observableHook'
-import { uiChanges } from 'helpers/uiChanges'
-import { useOnboarding } from 'helpers/useOnboarding'
-import React, { useEffect, useMemo } from 'react'
-import { Box } from 'theme-ui'
+import React from 'react'
+import { Box, Text } from 'theme-ui'
 
-import { swapWidgetConfig } from './swapWidgetConfig'
-import { SwapWidgetOnboarding } from './SwapWidgetOnboarding'
 import { SwapWidgetSkeleton } from './SwapWidgetSkeleton'
 
 export function SwapWidget() {
   const { web3ContextConnected$ } = useMainContext()
   const [web3Context] = useObservable(web3ContextConnected$)
-  const [isOnboarded] = useOnboarding('SwapWidget')
-  const activeOnboardWallets = useWallets()
-  const liFiWalletManagement = useMemo(() => new LiFiWalletManagement(), [])
-  useTrackSwapWidgetEvents()
-
-  const [swapWidgetChange] = useObservable(
-    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
-  )
 
   const web3Provider =
     web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
-
-  useEffect(() => {
-    async function autoConnectLiFi() {
-      const activeWallets = supportedWallets.filter((wallet) =>
-        activeOnboardWallets.some((activeWallet) => activeWallet.label === wallet.name),
-      )
-      if (!activeWallets.length) {
-        return
-      }
-      await liFiWalletManagement.connect(activeWallets[0])
-    }
-    void autoConnectLiFi()
-  }, [activeOnboardWallets, liFiWalletManagement])
 
   if (!web3Provider) {
     return <SwapWidgetSkeleton />
@@ -57,14 +26,9 @@ export function SwapWidget() {
         },
       }}
     >
-      {!isOnboarded ? (
-        <SwapWidgetOnboarding />
-      ) : (
-        <LiFiWidget
-          integrator={swapWidgetConfig.integrator}
-          config={{ ...swapWidgetConfig, subvariantOptions: swapWidgetChange?.variant }}
-        />
-      )}
+      <Text as="p" sx={{ textAlign: 'center', mt: 6 }}>
+        Disabled temporarily.
+      </Text>
     </Box>
   )
 }
