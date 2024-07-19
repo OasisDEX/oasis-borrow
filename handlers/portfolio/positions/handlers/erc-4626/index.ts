@@ -166,7 +166,9 @@ async function getErc4626Positions({
               pseudoProtocol: Erc4626PseudoProtocol,
               quoteToken: quoteToken,
             }),
-            raysPerYear,
+            raysPerYear: {
+              value: raysPerYear,
+            },
           }
         },
       ),

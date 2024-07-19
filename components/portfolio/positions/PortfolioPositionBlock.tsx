@@ -131,8 +131,8 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             {position.availableToMigrate ? tPortfolio('migrate') : upperFirst(position.type)}
             {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
           </Text>
-          <Flex sx={{ columnGap: 3, alignItems: 'center' }}>
-            {!!position.raysPerYear && position.raysPerYear > 0 && isRaysEnabled && (
+          <Flex sx={{ columnGap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
+            {!!position.raysPerYear && isRaysEnabled && (
               <Text
                 variant="paragraph3"
                 sx={{
@@ -140,9 +140,26 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
                   ...getGradientColor(
                     'linear-gradient(270.13deg, #007DA3 0.02%, #E7A77F 56.92%, #E97047 98.44%)',
                   ),
+                  maxWidth: '200px',
                 }}
               >
-                + {formatCryptoBalance(new BigNumber(position.raysPerYear))} Rays / year
+                {typeof position.raysPerYear.value === 'string' ? (
+                  position.raysPerYear.link ? (
+                    <Button
+                      variant="unStyled"
+                      sx={{ fontWeight: 'semiBold' }}
+                      onClick={() => window.open(position.raysPerYear?.link, '_ blank')}
+                    >
+                      {position.raysPerYear.value}
+                    </Button>
+                  ) : (
+                    position.raysPerYear.value
+                  )
+                ) : (
+                  <>
+                    + {formatCryptoBalance(new BigNumber(position.raysPerYear.value))} Rays / year
+                  </>
+                )}
               </Text>
             )}
             <ProtocolLabel network={position.network} protocol={position.protocol} />

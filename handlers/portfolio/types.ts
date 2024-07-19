@@ -64,7 +64,10 @@ export type PortfolioPosition = {
   type?: OmniProductType
   url: string
   debuggingData?: any
-  raysPerYear?: number
+  raysPerYear?: {
+    value: string | number
+    link?: string
+  }
 }
 interface PortfolioPositionsCommonReply {
   error?: boolean | string
