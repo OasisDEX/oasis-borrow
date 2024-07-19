@@ -190,7 +190,9 @@ async function getAjnaPositions({
             secondaryToken,
             type,
             url,
-            raysPerYear,
+            raysPerYear: {
+              value: raysPerYear,
+            },
           }
         },
       ),
