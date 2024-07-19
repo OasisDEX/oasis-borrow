@@ -131,7 +131,14 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             {position.availableToMigrate ? tPortfolio('migrate') : upperFirst(position.type)}
             {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
           </Text>
-          <Flex sx={{ columnGap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
+          <Flex
+            sx={{
+              columnGap: 3,
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-end',
+            }}
+          >
             {!!position.raysPerYear && isRaysEnabled && (
               <Text
                 variant="paragraph3"
