@@ -92,7 +92,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       httpOnly: true,
       secure: true,
       maxAge: 60 * 60 * 24 * 365 * 2, // 2 years
-      sameSite: 'lax',
+      sameSite: 'none',
       path: '/',
     }
 
