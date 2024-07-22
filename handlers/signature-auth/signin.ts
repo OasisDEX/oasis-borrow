@@ -92,7 +92,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       httpOnly: true,
       secure: true,
       maxAge: 60 * 60 * 24 * 365 * 2, // 2 years
-      sameSite: 'none',
+      sameSite: 'lax',
       path: '/',
     }
 
@@ -100,14 +100,6 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       serialize(`token-${challenge.address.toLowerCase()}`, token, {
         ...commonPayload,
       }),
-      ...(isGnosisSafe
-        ? [
-            serialize(`token-${challenge.address.toLowerCase()}`, token, {
-              ...commonPayload,
-              domain: '.safe.global',
-            }),
-          ]
-        : []),
     ])
 
     res.status(200).json({ jwt: token })
