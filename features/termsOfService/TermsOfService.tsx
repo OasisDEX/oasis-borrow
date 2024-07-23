@@ -200,6 +200,14 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
       <NewReferralModal account={wallet.address} userReferral={userReferral}></NewReferralModal>
     )
 
+  // eslint-disable-next-line no-console
+  console.log('Debug ToS', {
+    termsAcceptance,
+    // @ts-ignore
+    condition: hiddenStages.includes(termsAcceptance?.stage),
+    conditionFull: !termsAcceptance || hiddenStages.includes(termsAcceptance.stage),
+  })
+
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 
   return (
