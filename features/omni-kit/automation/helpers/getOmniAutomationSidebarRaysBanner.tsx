@@ -76,7 +76,7 @@ export const getOmniAutomationSidebarRaysBanner = ({
   }
 
   if (action === TriggerAction.Remove) {
-    let rays = 0
+    let rays
 
     const { isLastOptimization, isLastProtection } = getIsLastAutomationOfKind({
       automationFlags,
@@ -104,14 +104,14 @@ export const getOmniAutomationSidebarRaysBanner = ({
       rays = baseRays - stackedRaysPerYear
     }
 
-    return (
+    return rays ? (
       <RaysSidebarBanner
         title={t('rays.sidebar.banner.reduceAuto.title', {
           rays: formatCryptoBalance(new BigNumber(rays)),
         })}
         description={t('rays.sidebar.banner.reduceAuto.description')}
       />
-    )
+    ) : null
   }
 
   return null

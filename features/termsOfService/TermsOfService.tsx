@@ -200,13 +200,6 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
       <NewReferralModal account={wallet.address} userReferral={userReferral}></NewReferralModal>
     )
 
-  console.info('Debug ToS', {
-    termsAcceptance,
-    // @ts-ignore
-    condition: hiddenStages.includes(termsAcceptance?.stage),
-    conditionFull: !termsAcceptance || hiddenStages.includes(termsAcceptance.stage),
-  })
-
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 
   return (
@@ -256,9 +249,6 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   const [userReferral] = useObservable(userReferral$)
 
   const shouldUseTermsOfService = getConfig()?.publicRuntimeConfig?.useTermsOfService
-
-  console.info('shouldUseTermsOfService', shouldUseTermsOfService)
-  console.info('web3ContextConnected', web3ContextConnected)
 
   if (!web3ContextConnected) {
     return null
