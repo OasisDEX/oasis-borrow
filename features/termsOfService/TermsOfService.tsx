@@ -200,8 +200,7 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
       <NewReferralModal account={wallet.address} userReferral={userReferral}></NewReferralModal>
     )
 
-  // eslint-disable-next-line no-console
-  console.log('Debug ToS', {
+  console.info('Debug ToS', {
     termsAcceptance,
     // @ts-ignore
     condition: hiddenStages.includes(termsAcceptance?.stage),
@@ -257,6 +256,9 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   const [userReferral] = useObservable(userReferral$)
 
   const shouldUseTermsOfService = getConfig()?.publicRuntimeConfig?.useTermsOfService
+
+  console.info('shouldUseTermsOfService', shouldUseTermsOfService)
+  console.info('web3ContextConnected', web3ContextConnected)
 
   if (!web3ContextConnected) {
     return null
