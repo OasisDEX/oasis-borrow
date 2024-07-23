@@ -195,6 +195,12 @@ export const ETHEREUM_MAINNET_DEFAULT_PROTOCOLS = [
   'AAVE_V3',
   'ORIGIN',
   'ORIGIN_WOETH',
+  'WETH',
+  'PMM6',
+  'PMM8',
+  'PMM14',
+  'PMM15',
+  'PMM16',
 ]
 
 export const OPTIMISM_DEFAULT_PROCOTOLS = [
