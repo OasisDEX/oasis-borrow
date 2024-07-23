@@ -57,7 +57,9 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
       positions: netValue.gt(zero)
         ? [
             {
-              raysPerYear,
+              raysPerYear: {
+                value: raysPerYear,
+              },
               availableToMigrate: false,
               automations: {},
               description: 'Dai Savings Rate',
