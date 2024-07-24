@@ -198,11 +198,26 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         )[primaryToken]
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
         // rewards are available for the ETH-like+ BTC-like/DAI pairs
-        const hasRewards =
+        const ethDaiDerivativeRewards =
           !!primaryTokenGroup &&
           !!secondaryToken &&
           ['ETH', 'BTC'].includes(primaryTokenGroup) &&
           secondaryToken === 'DAI'
+        // rewards are available for exact SDAI/ETH borrow pair
+        const sDaiEthRewards =
+          !!primaryTokenGroup &&
+          !!secondaryToken &&
+          primaryToken === 'SDAI' &&
+          secondaryToken === 'ETH' &&
+          product.product.includes(OmniProductType.Borrow)
+        // rewards are also available for WSTETH/ETH + RETH/ETH + WEETH/ETH
+        const ethEthDerivativeRewards =
+          !!primaryTokenGroup &&
+          !!secondaryToken &&
+          ['WSTETH', 'RETH', 'WEETH'].includes(primaryToken) &&
+          secondaryToken === 'ETH'
+
+        const hasAnyRewards = ethDaiDerivativeRewards || ethEthDerivativeRewards || sDaiEthRewards
 
         return {
           ...product,
@@ -213,10 +228,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           tooltips: {
-            fee: hasRewards ? productHubSparkRewardsTooltip : undefined,
+            fee:
+              ethDaiDerivativeRewards || sDaiEthRewards ? productHubSparkRewardsTooltip : undefined,
+            weeklyNetApy: ethEthDerivativeRewards ? productHubSparkRewardsTooltip : undefined,
           },
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
-          hasRewards,
+          hasRewards: hasAnyRewards,
           automationFeatures: !product.product.includes(OmniProductType.Earn)
             ? settings.availableAutomations[
                 networksByName[product.network].id as OmniSupportedNetworkIds
