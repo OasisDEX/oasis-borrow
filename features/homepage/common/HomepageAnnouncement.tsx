@@ -17,7 +17,13 @@ type HomepageAnnouncementProps = {
 
 export function HomepageAnnouncement({ announcement }: HomepageAnnouncementProps) {
   return announcement.enabled ? (
-    <AppLink href={announcement.url}>
+    <AppLink
+      href={announcement.url}
+      sx={{
+        width: 'fit-content',
+        margin: '0 auto',
+      }}
+    >
       <Box
         sx={{
           background: 'neutral10',
@@ -28,8 +34,6 @@ export function HomepageAnnouncement({ announcement }: HomepageAnnouncementProps
           borderRadius: 'round',
           padding: 2,
           paddingRight: 4,
-          width: 'fit-content',
-          margin: '0 auto',
           marginTop: 3,
         }}
       >
