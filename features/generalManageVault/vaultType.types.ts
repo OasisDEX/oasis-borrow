@@ -10,8 +10,8 @@ export enum VaultType {
 
 export type SaveVaultType = (
   id: BigNumber,
+  token: string,
   vaultType: VaultType,
   chainId: number,
   protocol: string,
-  walletAddress: string,
 ) => Observable<void>

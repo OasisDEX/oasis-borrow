@@ -23,6 +23,7 @@ import type {
   AaveLikeCumulativeData,
   AaveLikeHistoryEvent,
 } from 'features/omni-kit/protocols/aave-like/history/types'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
@@ -231,12 +232,17 @@ export function getManageAaveV3PositionStateMachineServices(
             return throwError(new Error('No enough data provided to save position'))
           }
 
+          const token = jwtAuthGetToken(user)
+
+          if (!token) {
+            return throwError(new Error('No token available - save position unsuccessful'))
+          }
           return saveVaultUsingApi$(
             new BigNumber(positionId),
+            token,
             updatedVaultType,
             chainId,
             context.strategyConfig.protocol,
-            user,
           )
         }),
         map(() => ({ type: 'SWITCH_SUCCESS', productType: updatedVaultType })),

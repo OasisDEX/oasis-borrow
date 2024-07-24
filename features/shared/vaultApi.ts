@@ -126,10 +126,10 @@ export function getVaultFromApi$(
 
 export function saveVaultUsingApi$(
   id: BigNumber,
+  token: string,
   vaultType: VaultType,
   chainId: number,
   protocol: string,
-  walletAddress: string,
   tokenPair?: string,
 ): Observable<void> {
   return ajax({
@@ -137,13 +137,13 @@ export function saveVaultUsingApi$(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      authorization: 'Bearer ' + token,
     },
     body: {
       id: parseInt(id.toFixed(0)),
       type: vaultType,
       chainId,
       protocol: protocol.toLowerCase(),
-      walletAddress: walletAddress.toLowerCase(),
       tokenPair: (tokenPair || '').toUpperCase(),
     },
   }).pipe(

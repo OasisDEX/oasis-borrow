@@ -4,6 +4,7 @@ import type { OpenData } from 'blockchain/calls/proxyActions/adapters/ProxyActio
 import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
@@ -130,13 +131,15 @@ export function openVault(
             txState.status === TxStatus.Success && txState.receipt,
           )
 
-          if (id) {
+          // assume that user went through ToS flow and can interact with application
+          const jwtToken = jwtAuthGetToken(account)
+          if (id && jwtToken) {
             saveVaultUsingApi$(
               id,
+              jwtToken,
               VaultType.Borrow,
               parseInt(txState.networkId),
               LendingProtocol.Maker,
-              account,
             ).subscribe()
           }
 

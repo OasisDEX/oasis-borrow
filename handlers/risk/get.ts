@@ -1,3 +1,4 @@
+import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   createRiskForAddress,
@@ -95,35 +96,26 @@ async function checkIfRisky(address: string) {
 
 const inputSchema = z.object({
   chainId: z.number(),
-  walletAddress: z.string(),
 })
 
 export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
-  const { chainId, walletAddress } = inputSchema.parse(req.body)
+  const user = getUserFromRequest(req)
+  const body = inputSchema.parse(req.body)
 
-  const userAddress = walletAddress.toLowerCase()
-
-  const token = req.cookies[`token-${userAddress}`]
-
-  if (!token) {
-    return res.status(401).json({ authenticated: false })
-  }
-
-  if (chainId !== 1) {
+  if (body.chainId !== 1) {
     return res.status(200).json({ isRisky: false })
   }
 
   try {
     // check if record exists
     const risk = await selectRiskForAddress(prisma, {
-      address: userAddress,
+      address: user.address,
     })
 
     // create record in db
     if (risk === null) {
-      const isRisky = await checkIfRisky(userAddress)
-
-      await createRiskForAddress(prisma, userAddress, isRisky)
+      const isRisky = await checkIfRisky(user.address)
+      await createRiskForAddress(prisma, user.address, isRisky)
 
       return res.status(200).json({ isRisky })
     }
@@ -132,8 +124,8 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
     // it's necessary for cases where provider flags user as risky by mistake
     // and after a short period of time it's fixed on provider side
     if (risk.is_risky) {
-      const isRisky = await checkIfRisky(userAddress)
-      await updateRiskForAddress(prisma, userAddress, isRisky)
+      const isRisky = await checkIfRisky(user.address)
+      await updateRiskForAddress(prisma, user.address, isRisky)
 
       return res.status(200).json({ isRisky })
     }
@@ -147,8 +139,8 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // update
-    const isRisky = await checkIfRisky(userAddress)
-    await updateRiskForAddress(prisma, userAddress, isRisky)
+    const isRisky = await checkIfRisky(user.address)
+    await updateRiskForAddress(prisma, user.address, isRisky)
 
     return res.status(200).json({ isRisky })
   } catch (error) {

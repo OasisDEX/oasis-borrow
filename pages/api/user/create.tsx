@@ -1,5 +1,8 @@
 import type { User } from '@prisma/client'
 import { getAddress } from 'ethers/lib/utils'
+import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
+import { apply } from 'helpers/apply'
+import { userJwt } from 'helpers/useJwt'
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -21,18 +24,16 @@ const handler: NextApiHandler = async (req, res) => {
 
 const create = async (req: NextApiRequest, res: NextApiResponse) => {
   const params = bodySchema.parse(req.body)
-  const checksumAddress = getAddress(params.address.toLowerCase())
+  const checksumAddress = getAddress(params.address.toLocaleLowerCase())
   // get checksummed address of the referrer or null if user was not referred
   const checksumReferredAddress = params.user_that_referred_address
     ? getAddress(params.user_that_referred_address.toLocaleLowerCase())
     : null
+  const user = getUserFromRequest(req)
 
-  const token = req.cookies[`token-${params.address.toLowerCase()}`]
-
-  if (!token) {
-    return res.status(401).json({ authenticated: false })
+  if (params.address.toLocaleLowerCase() !== user.address) {
+    return res.status(401).json('referral-create/not-authorized')
   }
-
   if (params.user_that_referred_address && !checksumAddress) {
     return res.status(401).json('referral-create/invalid-address')
   }
@@ -66,4 +67,4 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 
-export default handler
+export default apply(userJwt, handler)

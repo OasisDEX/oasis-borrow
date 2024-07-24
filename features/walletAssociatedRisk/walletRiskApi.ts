@@ -8,17 +8,15 @@ export interface WalletRiskResponse {
   error?: string
 }
 
-export function getWalletRisk$(
-  chainId: number,
-  walletAddress: string,
-): Observable<WalletRiskResponse> {
+export function getWalletRisk$(token: string, chainId: number): Observable<WalletRiskResponse> {
   return ajax({
     url: `/api/risk`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
     },
-    body: { chainId, walletAddress },
+    body: { chainId },
   }).pipe(
     map(({ response }) => response as WalletRiskResponse),
     catchError((error) => {

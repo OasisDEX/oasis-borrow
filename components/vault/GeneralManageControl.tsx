@@ -1,4 +1,5 @@
 import type { BigNumber } from 'bignumber.js'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
@@ -17,11 +18,15 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
+  const { context$ } = useMainContext()
   const { generalManageVault$ } = useProductContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [context] = useObservable(context$)
   const { chainId } = useWalletManagement()
   const { MakerTenderly } = useAppConfig('features')
+
+  const account = context?.status === 'connected' ? context.account : ''
 
   useEffect(() => {
     return () => {
@@ -46,7 +51,16 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
                 We need to refactor it so it accepts reactNode as modal content
               */}
               <ModalProvider>
-                <GeneralManageLayout generalManageVault={generalManageVault} chainId={chainId} />
+                <GeneralManageLayout
+                  generalManageVault={generalManageVault}
+                  followButton={{
+                    followerAddress: account,
+                    vaultId: id,
+                    chainId: chainId,
+                    protocol: 'maker',
+                  }}
+                  chainId={chainId}
+                />
               </ModalProvider>
             </RefinanceGeneralContextProvider>
           </MakerAutomationContext>
