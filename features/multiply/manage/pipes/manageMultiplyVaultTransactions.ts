@@ -22,6 +22,7 @@ import type { AddGasEstimationFunction } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations.constants'
 import { one, zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
@@ -193,14 +194,15 @@ export function adjustPosition(
         })
         const sendFn = isGnosisSafe ? send : sendWithGasEstimation
 
-        return getQuote$(
-          getTokenMetaData('DAI', tokensMainnet),
-          getTokenMetaData(token, tokensMainnet),
-          defaultExchange.address,
-          oneInchAmount,
+        return getQuote$({
+          quote: getTokenMetaData('DAI', tokensMainnet),
+          collateral: getTokenMetaData(token, tokensMainnet),
+          account: defaultExchange.address,
+          amount: oneInchAmount,
           slippage,
-          exchangeAction!,
-        ).pipe(
+          action: exchangeAction!,
+          protocol: LendingProtocol.Maker,
+        }).pipe(
           first(),
           switchMap((swap) =>
             sendFn(adjustMultiplyVault, {
@@ -516,14 +518,15 @@ export function closeVault(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation, send }) =>
-        getQuote$(
-          getTokenMetaData('DAI', tokensMainnet),
-          getTokenMetaData(token, tokensMainnet),
-          defaultExchange.address,
-          fromTokenAmount,
+        getQuote$({
+          quote: getTokenMetaData('DAI', tokensMainnet),
+          collateral: getTokenMetaData(token, tokensMainnet),
+          account: defaultExchange.address,
+          amount: fromTokenAmount,
           slippage,
-          'SELL_COLLATERAL',
-        ).pipe(
+          action: 'SELL_COLLATERAL',
+          protocol: LendingProtocol.Maker,
+        }).pipe(
           first(),
           switchMap((swap) => {
             const isGnosisSafe = checkIfGnosisSafe({

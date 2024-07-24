@@ -34,16 +34,16 @@ export function omniExchangeQuote$({
   const collateral = getTokenMetaData(collateralToken, tokens)
 
   return from(
-    getQuote$(
+    getQuote$({
       quote,
       collateral,
-      exchange.address || ADDRESS_ZERO,
+      account: exchange.address || ADDRESS_ZERO,
       amount,
       slippage,
       action,
       protocols,
-      `/api/exchange/${swapVersion}/${networkId}/swap`,
-    ),
+      url: `/api/exchange/${swapVersion}/${networkId}/swap`,
+    }),
   ).pipe(
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)

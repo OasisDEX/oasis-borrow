@@ -1,7 +1,8 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network.constants'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
+import { one } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 import { EMPTY } from 'rxjs'
 import {
@@ -12,7 +13,6 @@ import {
   retry,
   shareReplay,
   switchMap,
-  take,
   withLatestFrom,
 } from 'rxjs/operators'
 
@@ -153,14 +153,37 @@ export function createInitialQuoteChange(
     action: ExchangeAction,
     exchangeType: ExchangeType,
   ) => Observable<Quote>,
-  token: string,
-  slippage: BigNumber,
+  state$: Observable<ManageMultiplyVaultState>,
 ) {
-  return exchangeQuote$(
-    token,
-    slippage,
-    new BigNumber(1),
-    'BUY_COLLATERAL',
-    'defaultExchange',
-  ).pipe(map(quoteToChange), take(1))
+  const stateChanges$ = state$.pipe(
+    map((state) => state),
+    shareReplay(1),
+  )
+
+  return stateChanges$.pipe(
+    distinctUntilChanged(
+      (s1, s2) =>
+        s1.otherAction === s2.otherAction &&
+        s1.closeVaultTo === s2.closeVaultTo &&
+        compareBigNumber(s1.slippage, s2.slippage),
+    ),
+    debounceTime(500),
+    switchMap(() =>
+      every5Seconds$.pipe(
+        withLatestFrom(stateChanges$),
+        switchMap(([_seconds, state]) => {
+          const {
+            exchangeAction,
+            slippage,
+            vault: { token },
+          } = state
+
+          const action = exchangeAction || 'BUY_COLLATERAL'
+
+          return exchangeQuote$(token, slippage, one, action, 'defaultExchange')
+        }),
+        map(quoteToChange),
+      ),
+    ),
+  )
 }
