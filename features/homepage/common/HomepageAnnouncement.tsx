@@ -30,7 +30,6 @@ export function HomepageAnnouncement({ announcement }: HomepageAnnouncementProps
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          columnGap: 2,
           borderRadius: 'round',
           padding: 2,
           paddingRight: 4,
@@ -47,13 +46,20 @@ export function HomepageAnnouncement({ announcement }: HomepageAnnouncementProps
               minWidth: '24px',
               minHeight: '24px',
               borderRadius: 'round',
-              marginRight: 2,
+              marginRight: 3,
             }}
           >
             <Icon icon={icons[announcement.icon as keyof typeof icons]} size={24} />
           </Box>
         ) : null}
-        <Text variant="boldParagraph3">{announcement.message}</Text>
+        <Text
+          variant="boldParagraph3"
+          sx={{
+            marginRight: '-7px',
+          }}
+        >
+          {announcement.message}
+        </Text>
         <WithArrow>&nbsp;</WithArrow>
       </Box>
     </AppLink>
