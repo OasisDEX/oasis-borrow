@@ -1,5 +1,6 @@
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
+import { HomepageAnnouncement } from 'features/homepage/common/HomepageAnnouncement'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
 import { scrollTo } from 'helpers/scrollTo'
@@ -40,89 +41,93 @@ export function Hero({
 }) {
   const { t } = useTranslation()
   const { Referrals: referralsEnabled } = useAppConfig('features')
+  const { announcement } = useAppConfig('parameters')
   const { connecting, connect } = useConnection()
 
   return (
-    <Flex
-      sx={{
-        position: 'relative',
-        justifySelf: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        mt: referralsEnabled ? '24px' : '64px',
-        mb: 5,
-        flexDirection: 'column',
-        ...sx,
-      }}
-    >
-      <Heading
-        as="h1"
-        variant="heroHeader"
+    <>
+      <HomepageAnnouncement announcement={announcement} />
+      <Flex
         sx={{
-          mt: [2, 5],
-          mb: [4, 3],
-          maxWidth: ['100%', headingWidth],
+          position: 'relative',
+          justifySelf: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          mt: referralsEnabled || announcement.enabled ? '24px' : '64px',
+          mb: 5,
+          flexDirection: 'column',
+          ...sx,
         }}
       >
-        {t(heading)}
-      </Heading>
-      <Text
-        variant="paragraph1"
-        as="p"
-        sx={{
-          display: ['none', 'block'],
-          mb: 4,
-          color: 'neutral80',
-          maxWidth: ['100%', subheadingWidth],
-        }}
-      >
-        {subheading}
-      </Text>
-      <Grid gap="12px">
-        {primaryButton.isVisible && (
-          <Button
-            variant="primary"
-            sx={{
-              display: 'flex',
-              margin: '0 auto',
-              px: '40px',
-              py: 2,
-              alignItems: 'center',
-              '&:hover svg': {
-                transform: 'translateX(10px)',
-              },
-            }}
-            onClick={isConnected ? scrollTo('product-hub') : () => connecting || connect()}
-          >
-            {isConnected ? t(primaryButton.translationKey) : t('connect-wallet')}
-            <Icon
-              icon={arrow_right}
-              sx={{
-                ml: 2,
-                position: 'relative',
-                left: 2,
-                transition: '0.2s',
-              }}
-            />
-          </Button>
-        )}
-        {secondaryButton && (
-          <AppLink href={secondaryButton.link}>
+        <Heading
+          as="h1"
+          variant="heroHeader"
+          sx={{
+            mt: announcement.enabled ? [2, 2] : [2, 5],
+            mb: [4, 3],
+            maxWidth: ['100%', headingWidth],
+          }}
+        >
+          {t(heading)}
+        </Heading>
+        <Text
+          variant="paragraph1"
+          as="p"
+          sx={{
+            display: ['none', 'block'],
+            mb: 4,
+            color: 'neutral80',
+            maxWidth: ['100%', subheadingWidth],
+          }}
+        >
+          {subheading}
+        </Text>
+        <Grid gap="12px">
+          {primaryButton.isVisible && (
             <Button
-              variant="action"
+              variant="primary"
               sx={{
-                width: '100%',
-                height: '52px',
-                fontSize: '18px',
-                borderColor: 'primary100',
-                borderRadius: 'round',
+                display: 'flex',
+                margin: '0 auto',
+                px: '40px',
+                py: 2,
+                alignItems: 'center',
+                '&:hover svg': {
+                  transform: 'translateX(10px)',
+                },
               }}
+              onClick={isConnected ? scrollTo('product-hub') : () => connecting || connect()}
             >
-              {t(secondaryButton.translationKey)}
+              {isConnected ? t(primaryButton.translationKey) : t('connect-wallet')}
+              <Icon
+                icon={arrow_right}
+                sx={{
+                  ml: 2,
+                  position: 'relative',
+                  left: 2,
+                  transition: '0.2s',
+                }}
+              />
             </Button>
-          </AppLink>
-        )}
-      </Grid>
-    </Flex>
+          )}
+          {secondaryButton && (
+            <AppLink href={secondaryButton.link}>
+              <Button
+                variant="action"
+                sx={{
+                  width: '100%',
+                  height: '52px',
+                  fontSize: '18px',
+                  borderColor: 'primary100',
+                  borderRadius: 'round',
+                }}
+              >
+                {t(secondaryButton.translationKey)}
+              </Button>
+            </AppLink>
+          )}
+        </Grid>
+      </Flex>
+    </>
   )
 }
