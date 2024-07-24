@@ -26,6 +26,12 @@ export const getHistoryEventLabel = ({
     return t('refinance.title')
   }
 
+  const isLiquidation = kind?.includes('Liquidation')
+
+  if (isLiquidation) {
+    return t('position-history.liquidation')
+  }
+
   const kindWithoutVersion = kind?.split('_')[0]
 
   switch (kindWithoutVersion) {
