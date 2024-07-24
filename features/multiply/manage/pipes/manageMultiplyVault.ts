@@ -394,7 +394,7 @@ export function createManageMultiplyVault$(
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
-                    createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
+                    createInitialQuoteChange(exchangeQuote$, stateSubject$),
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                     createHistoryChange$(vaultHistory$, id),
