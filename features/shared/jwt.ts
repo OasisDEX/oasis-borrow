@@ -1,7 +1,9 @@
 import type { SignMessageResponse } from '@safe-global/safe-apps-sdk'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
+import { checkAuthFromApi } from 'handlers/tos/check-auth'
 import { decode } from 'jsonwebtoken'
 import type { Observable } from 'rxjs'
+import { from } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
@@ -13,8 +15,14 @@ export function jwtAuthSetupToken$(
   chainId: number,
   account: string,
   isGnosisSafe: boolean,
-): Observable<string> {
-  return fromPromise(requestJWT(web3, chainId, account, isGnosisSafe))
+): Observable<void> {
+  return from(checkAuthFromApi(account)).pipe(
+    map((item) => {
+      if (!item.authenticated) {
+        fromPromise(requestJWT(web3, chainId, account, isGnosisSafe))
+      }
+    }),
+  )
 }
 
 interface GnosisSafeSignInDetails {

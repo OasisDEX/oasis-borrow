@@ -32,7 +32,7 @@ function verifyAcceptance$(
     chainId: number,
     account: string,
     isGnosisSafe: boolean,
-  ) => Observable<string>,
+  ) => Observable<void>,
   version: string,
   web3Context: Web3ContextConnected,
 ): Observable<TermsAcceptanceState> {
@@ -48,14 +48,13 @@ function verifyAcceptance$(
         }
 
         const accept$ = new Subject<void>()
-
         return accept$.pipe(
           switchMap(() => {
             return saveAcceptance$(version, walletAddress).pipe(
               map(() => ({ stage: 'acceptanceAccepted' })),
-              catchError((error) => {
-                return withClose({ stage: 'acceptanceSaveFailed', error })
-              }),
+              catchError((error) =>
+                of({ stage: 'acceptanceSaveFailed', error } as TermsAcceptanceState),
+              ),
               startWith({ stage: 'acceptanceSaveInProgress' }),
             )
           }),
@@ -120,7 +119,7 @@ export function createTermsAcceptance$(
     chainId: number,
     account: string,
     isGnosisSafe: boolean,
-  ) => Observable<string>,
+  ) => Observable<void>,
   checkAcceptance$: (
     version: string,
     walletAddress: string,
