@@ -167,7 +167,6 @@ export function createInitialQuoteChange(
         s1.closeVaultTo === s2.closeVaultTo &&
         compareBigNumber(s1.slippage, s2.slippage),
     ),
-    debounceTime(500),
     switchMap(() =>
       every5Seconds$.pipe(
         withLatestFrom(stateChanges$),
