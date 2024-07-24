@@ -15,7 +15,10 @@ import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { settings } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
-import { productHubSparkRewardsTooltip } from 'features/productHub/content'
+import {
+  productHubSparkRewardsTooltip,
+  productHubSparkWstethRewardsTooltip,
+} from 'features/productHub/content'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -219,6 +222,14 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         const hasAnyRewards = ethDaiDerivativeRewards || ethEthDerivativeRewards || sDaiEthRewards
 
+        let feeTooltip = undefined
+        if (hasAnyRewards && ethDaiDerivativeRewards) {
+          feeTooltip = productHubSparkRewardsTooltip
+        }
+        if (hasAnyRewards && sDaiEthRewards) {
+          feeTooltip = productHubSparkWstethRewardsTooltip
+        }
+
         return {
           ...product,
           primaryTokenAddress: tokensAddresses[primaryToken].address,
@@ -228,9 +239,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           tooltips: {
-            fee:
-              ethDaiDerivativeRewards || sDaiEthRewards ? productHubSparkRewardsTooltip : undefined,
-            weeklyNetApy: ethEthDerivativeRewards ? productHubSparkRewardsTooltip : undefined,
+            fee: feeTooltip,
+            weeklyNetApy: ethEthDerivativeRewards ? productHubSparkWstethRewardsTooltip : undefined,
           },
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
           hasRewards: hasAnyRewards,

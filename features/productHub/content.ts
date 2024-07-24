@@ -56,6 +56,18 @@ export const productHubSparkRewardsTooltip: ProductHubTooltipType = {
   icon: 'sparks',
 }
 
+export const productHubSparkWstethRewardsTooltip: ProductHubTooltipType = {
+  content: {
+    title: {
+      key: 'spark.product-hub-tooltips.elligible-for-wsteth-rewards',
+    },
+    description: {
+      key: '',
+    },
+  },
+  icon: 'sparks',
+}
+
 export const productHubWeETHRewardsTooltip: ProductHubTooltipType = {
   content: {
     description: {

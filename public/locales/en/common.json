@@ -3342,7 +3342,8 @@
   "spark": {
     "product-hub-tooltips": {
       "elligible-for-spk-airdrop": "Positions on this pair are elligible for the SPK airdrop.",
-      "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
+      "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum",
+      "elligible-for-wsteth-rewards": "Positions on this pair are earning wstETH rewards."
     }
   },
   "aave-like": {
