@@ -2,19 +2,45 @@ import type { SignMessageResponse } from '@safe-global/safe-apps-sdk'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { decode } from 'jsonwebtoken'
 import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
 import type Web3 from 'web3'
+
 const LOCAL_STORAGE_GNOSIS_SAFE_PENDING = 'gnosis-safe-pending'
+
+export type JWToken = string
+// return 'invalid' if we have forced the removal of the token again
+export function jwtAuthGetToken(address: string): JWToken | undefined | 'invalid' {
+  const token = Object.entries(localStorage).find(
+    ([key]) => key.toLowerCase() === `token-b/${address}`.toLowerCase(),
+  )?.[1]
+  if (token && token !== 'xxx') {
+    const parsedToken = JSON.parse(atob(token.split('.')[1]))
+
+    // remove old tokens moved to termsAcceptance.ts
+    if (!parsedToken.chainId) {
+      return 'invalid'
+    }
+  }
+  return token === null ? undefined : token
+}
 
 export function jwtAuthSetupToken$(
   web3: Web3,
   chainId: number,
   account: string,
   isGnosisSafe: boolean,
-): Observable<string> {
-  return fromPromise(requestJWT(web3, chainId, account, isGnosisSafe))
+): Observable<JWToken> {
+  const token = jwtAuthGetToken(account)
+  if (token === 'invalid') {
+    return of('invalid')
+  }
+  if (token === undefined) {
+    return fromPromise(requestJWT(web3, chainId, account, isGnosisSafe))
+  }
+  return of(token)
 }
 
 interface GnosisSafeSignInDetails {
@@ -122,6 +148,7 @@ async function requestJWT(
       throw new Error(`GS: failed to sign`)
     }
 
+    localStorage.setItem(`token-b/${account}`, token)
     return token
   }
 
@@ -132,6 +159,8 @@ async function requestJWT(
     chainId,
     isGnosisSafe: false,
   }).toPromise()
+
+  localStorage.setItem(`token-b/${account}`, jwt)
 
   return jwt
 }

@@ -4,24 +4,21 @@ import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
 
 export function checkAcceptanceFromApi$(
+  token: string,
   version: string,
-  walletAddress: string,
-): Observable<{ acceptance: boolean; updated?: boolean; authorized?: boolean }> {
+): Observable<{ acceptance: boolean; updated?: boolean }> {
   return ajax({
-    url: `/api/tos/${version}/${walletAddress}`,
+    url: `/api/tos/${version}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      authorization: 'Bearer ' + token,
     },
   }).pipe(
     map((resp) => {
-      const { acceptance, updated, authorized } = resp.response as {
-        acceptance: boolean
-        updated?: boolean
-        authorized?: boolean
-      }
+      const { acceptance, updated } = resp.response as { acceptance: boolean; updated?: boolean }
 
-      return { acceptance, updated, authorized }
+      return { acceptance, updated }
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {
@@ -32,16 +29,21 @@ export function checkAcceptanceFromApi$(
   )
 }
 
-export function saveAcceptanceFromApi$(version: string, walletAddress: string): Observable<void> {
+export function saveAcceptanceFromApi$(
+  token: string,
+  version: string,
+  email?: string,
+): Observable<void> {
   return ajax({
     url: `/api/tos`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      authorization: 'Bearer ' + token,
     },
     body: {
       docVersion: version,
-      walletAddress: walletAddress.toLowerCase(),
+      email,
     },
   }).pipe(map((_) => {}))
 }

@@ -10,6 +10,7 @@ import type { Vault } from 'blockchain/vaults.types'
 import type { Quote } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { ManageChange } from 'features/multiply/manage/pipes/manageMultiplyVaultTransactions.types'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
@@ -119,13 +120,14 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
                 txState.status === TxStatus.Success && txState.receipt,
               )
 
-              if (id) {
+              const jwtToken = jwtAuthGetToken(account as string)
+              if (id && jwtToken) {
                 saveVaultUsingApi$(
                   id,
+                  jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
                   LendingProtocol.Maker,
-                  account!,
                 ).subscribe()
               }
 

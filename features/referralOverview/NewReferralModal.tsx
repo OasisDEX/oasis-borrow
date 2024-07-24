@@ -2,6 +2,7 @@ import { useMainnetEnsName } from 'blockchain/ens'
 import { ReferralModal } from 'components/ReferralModal'
 import { SuccessfulJoinModal } from 'components/SuccessfullJoinModal'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -28,19 +29,22 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
     const { hasAccepted, isReferred } = upsertUser
 
     if (userReferral && account) {
-      createUserUsingApi$(
-        hasAccepted,
-        isReferred ? userReferral.referrer : null,
-        account,
-      ).subscribe((res) => {
-        if (res === 200) {
-          hasAccepted ? setSuccess(true) : userReferral.trigger()
-        } else {
-          console.error('Error creating user')
-          localStorage.removeItem(`referral`)
-          userReferral.trigger()
-        }
-      })
+      const jwtToken = jwtAuthGetToken(account)
+      if (jwtToken)
+        createUserUsingApi$(
+          hasAccepted,
+          isReferred ? userReferral.referrer : null,
+          account,
+          jwtToken,
+        ).subscribe((res) => {
+          if (res === 200) {
+            hasAccepted ? setSuccess(true) : userReferral.trigger()
+          } else {
+            console.error('Error creating user')
+            localStorage.removeItem(`referral`)
+            userReferral.trigger()
+          }
+        })
     }
   }
 

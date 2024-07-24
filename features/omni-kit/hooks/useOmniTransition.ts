@@ -6,6 +6,7 @@ import {
   OmniMultiplyFormAction,
   OmniProductType,
 } from 'features/omni-kit/types'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { useAccount } from 'helpers/useAccount'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -40,14 +41,16 @@ export function useOmniProductTypeTransition({
         : undefined
 
   const transitionHandler = () => {
-    if (positionId && chainId && protocol && vaultType && walletAddress) {
+    const jwtToken = jwtAuthGetToken(walletAddress || '')
+
+    if (jwtToken && positionId && chainId && protocol && vaultType) {
       setIsTransitionInProgress(true)
       saveVaultUsingApi$(
         new BigNumber(positionId),
+        jwtToken,
         vaultType,
         chainId,
         protocol.toLowerCase(),
-        walletAddress,
         tokenPair.toUpperCase(),
       ).subscribe(reload)
     } else throw new Error(`Not enough position data provided`)

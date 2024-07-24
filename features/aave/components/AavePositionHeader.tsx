@@ -1,11 +1,14 @@
 import type { IRiskRatio } from '@oasisdex/dma-library'
 import { RiskRatio } from '@oasisdex/dma-library'
+import type { Protocol } from '@prisma/client'
 import type BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave'
+import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import { useAaveEarnYields } from 'features/aave/hooks'
 import type { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/types'
+import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -196,15 +199,20 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }
 }
 
-export function AavePositionHeaderNoDetails({ strategyConfig }: ManageAaveHeaderProps) {
+export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: ManageAaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.protocol][strategyConfig.name]
-
+  const { protocol } = strategyConfig
+  const followButton: FollowButtonControlProps | undefined = createFollowButton(
+    positionId,
+    protocol.toLowerCase() as Protocol,
+  )
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}
       tokens={tokenData.tokenList}
       details={[]}
+      followButton={followButton}
       shareButton
     />
   )

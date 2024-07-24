@@ -1,7 +1,5 @@
 import { recoverPersonalSignature } from '@metamask/eth-sig-util'
 import { getBackendRpcUrl } from 'blockchain/networks'
-import type { CookieSerializeOptions } from 'cookie'
-import { serialize } from 'cookie'
 import jwt from 'jsonwebtoken'
 import type { NextApiHandler } from 'next'
 import Web3 from 'web3'
@@ -87,20 +85,6 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       chainId: body.chainId,
     }
     const token = jwt.sign(userJwtPayload, options.userJWTSecret, { algorithm: 'HS512' })
-
-    const commonPayload: CookieSerializeOptions = {
-      httpOnly: true,
-      secure: true,
-      maxAge: 60 * 60 * 24 * 365 * 2, // 2 years
-      sameSite: 'none',
-      path: '/',
-    }
-
-    res.setHeader('Set-Cookie', [
-      serialize(`token-${challenge.address.toLowerCase()}`, token, {
-        ...commonPayload,
-      }),
-    ])
 
     res.status(200).json({ jwt: token })
   }
