@@ -10,7 +10,6 @@ import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
-import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
@@ -169,14 +168,13 @@ export function multiplyVault(
                 txState.status === TxStatus.Success && txState.receipt,
               )
 
-              const jwtToken = jwtAuthGetToken(account)
-              if (id && jwtToken) {
+              if (id) {
                 saveVaultUsingApi$(
                   id,
-                  jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
                   LendingProtocol.Maker,
+                  account,
                 ).subscribe()
               }
 

@@ -19,7 +19,6 @@ import type {
 import { contextToEthersTransactions, ProxyType } from 'features/aave/types'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
-import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
@@ -236,16 +235,13 @@ export function getOpenAaveV3PositionStateMachineServices(
           if (!positionId || !vaultType || !proxy || !user) {
             return throwError(new Error('No enough data provided to save position'))
           }
-          const token = jwtAuthGetToken(user)
-          if (!token) {
-            return throwError(new Error('No token available - save position unsuccessful'))
-          }
+
           return saveVaultUsingApi$(
             new BigNumber(positionId),
-            token,
             vaultType,
             chainId,
             LendingProtocol.AaveV3,
+            user,
           )
         }),
         map(() => ({ type: 'SAVE_POSITION_SUCCESS' })),
