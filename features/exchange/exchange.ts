@@ -4,6 +4,7 @@ import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import type { ContractDesc } from 'features/web3Context'
+import { LendingProtocol } from 'lendingProtocols'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
@@ -195,6 +196,13 @@ export const ETHEREUM_MAINNET_DEFAULT_PROTOCOLS = [
   'AAVE_V3',
   'ORIGIN',
   'ORIGIN_WOETH',
+  'WETH',
+  'PMM3',
+  'PMM6',
+  'PMM8',
+  'PMM14',
+  'PMM15',
+  'PMM16',
 ]
 
 export const OPTIMISM_DEFAULT_PROCOTOLS = [
@@ -303,18 +311,31 @@ export const BASE_DEFAULT_LIQUIDITY_PROVIDERS = [
   'BASE_CURVE_V2_TRICRYPTO_NG',
   'BASE_CURVE_V2_TWO_CRYPTO',
   'BASE_SMARDEX',
+  'BASE_PMM14',
+  'BASE_AERODROME_V3',
 ]
 
-export function getQuote$(
-  quote: TokenMetadata,
-  collateral: TokenMetadata,
-  account: string,
-  amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
-  slippage: BigNumber,
-  action: ExchangeAction,
-  protocols?: string,
-  url?: string,
-) {
+export function getQuote$({
+  quote,
+  collateral,
+  account,
+  amount,
+  slippage,
+  action,
+  protocols,
+  url,
+  protocol,
+}: {
+  quote: TokenMetadata
+  collateral: TokenMetadata
+  account: string
+  amount: BigNumber // This is always the receiveAtLeast amount of tokens we want to exchange from
+  slippage: BigNumber
+  action: ExchangeAction
+  protocols?: string
+  url?: string
+  protocol?: LendingProtocol
+}) {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? quote.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : quote.address
 
@@ -323,7 +344,6 @@ export function getQuote$(
     action === 'BUY_COLLATERAL' ? quote.decimals : collateral.decimals,
   ).toFixed(0)
 
-  //TODO: set proper precision depending on token
   const searchParams = new URLSearchParams({
     fromTokenAddress,
     toTokenAddress,
@@ -333,6 +353,9 @@ export function getQuote$(
     disableEstimate: 'true',
     allowPartialFill: 'false',
     protocols: protocols || ETHEREUM_MAINNET_DEFAULT_PROTOCOLS.join(','),
+    ...(protocol === LendingProtocol.Maker && {
+      complexityLevel: '1',
+    }),
   })
 
   const responseBase = {
@@ -421,7 +444,16 @@ export function createExchangeQuote$(
       const quote = getTokenMetaData(quoteToken || 'DAI', tokensMainnet)
       const collateral = getTokenMetaData(token, tokensMainnet)
 
-      return getQuote$(quote, collateral, exchange.address, amount, slippage, action, protocols)
+      return getQuote$({
+        quote,
+        collateral,
+        account: exchange.address,
+        amount,
+        slippage,
+        action,
+        protocols,
+        protocol: LendingProtocol.Maker,
+      })
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)

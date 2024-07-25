@@ -200,7 +200,9 @@ async function getMorphoPositions({
             secondaryToken,
             type,
             url,
-            raysPerYear,
+            raysPerYear: {
+              value: raysPerYear,
+            },
           }
         },
       ),

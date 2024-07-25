@@ -154,7 +154,9 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     debuggingData: debug
       ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
-    raysPerYear,
+    raysPerYear: {
+      value: raysPerYear,
+    },
   }
 }
 
@@ -324,7 +326,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     debuggingData: debug
       ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
-    raysPerYear,
+    raysPerYear: {
+      value: raysPerYear,
+    },
   }
 }
 
@@ -457,7 +461,9 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     ].filter(Boolean) as PositionDetail[],
     netValue: netValuePnlModalData.netValue.inToken.toNumber(),
     debuggingData: debug ? { ...formatBigNumberDebugData(commonRest) } : undefined,
-    raysPerYear,
+    raysPerYear: {
+      value: raysPerYear,
+    },
   }
 }
 

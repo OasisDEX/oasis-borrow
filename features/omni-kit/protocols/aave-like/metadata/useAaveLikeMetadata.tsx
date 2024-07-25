@@ -1,4 +1,5 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
+import { NetworkIds } from 'blockchain/networks'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
 import { getAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
@@ -50,6 +51,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
       quoteBalance,
       quoteToken,
       quotePrecision,
+      network,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -92,7 +94,9 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
 
       // aave v2 is not allowed for refinance
       const refinanceBanner =
-        [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol) && !isOpening
+        [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol) &&
+        !isOpening &&
+        network.id === NetworkIds.MAINNET
           ? useOmniRefinanceBanner()
           : undefined
 

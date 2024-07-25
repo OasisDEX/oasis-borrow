@@ -20,6 +20,7 @@ import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getPointsPerYear } from 'helpers/rays'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -116,10 +117,14 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             ilkId: ilk.id,
           })
 
-          const raysPerYear = getPositionPortfolioRaysWithBoosts({
-            rawRaysPerYear,
-            positionRaysMultipliersData,
-          })
+          // Each maker position if created through summer will have at least one position multiplier (can be x1)
+          // If there are no position multipliers it means that position was created through defisaver and is not earning rays
+          const raysPerYear = positionRaysMultipliersData.position.length
+            ? getPositionPortfolioRaysWithBoosts({
+                rawRaysPerYear,
+                positionRaysMultipliersData,
+              })
+            : 'Start earning Rays'
 
           return {
             availableToMigrate: false,
@@ -184,7 +189,12 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             secondaryToken,
             type,
             url,
-            raysPerYear,
+            raysPerYear: netValue.gt(zero)
+              ? {
+                  value: raysPerYear,
+                  link: EXTERNAL_LINKS.KB.READ_ABOUT_RAYS,
+                }
+              : undefined,
           }
         },
       ),

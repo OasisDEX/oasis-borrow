@@ -124,14 +124,15 @@ export function multiplyVault(
   }: OpenMultiplyVaultState,
 ) {
   const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
-  return getQuote$(
-    getTokenMetaData('DAI', tokensMainnet),
-    getTokenMetaData(token, tokensMainnet),
-    defaultExchange.address,
-    oneInchAmount,
+  return getQuote$({
+    quote: getTokenMetaData('DAI', tokensMainnet),
+    collateral: getTokenMetaData(token, tokensMainnet),
+    account: defaultExchange.address,
+    amount: oneInchAmount,
     slippage,
-    'BUY_COLLATERAL',
-  )
+    action: 'BUY_COLLATERAL',
+    protocol: LendingProtocol.Maker,
+  })
     .pipe(
       first(),
       switchMap((swap) =>

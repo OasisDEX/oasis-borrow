@@ -15,7 +15,10 @@ import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { settings } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
-import { productHubSparkRewardsTooltip } from 'features/productHub/content'
+import {
+  productHubSparkRewardsTooltip,
+  productHubSparkWstethRewardsTooltip,
+} from 'features/productHub/content'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -198,11 +201,34 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         )[primaryToken]
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
         // rewards are available for the ETH-like+ BTC-like/DAI pairs
-        const hasRewards =
+        const ethDaiDerivativeRewards =
           !!primaryTokenGroup &&
           !!secondaryToken &&
           ['ETH', 'BTC'].includes(primaryTokenGroup) &&
           secondaryToken === 'DAI'
+        // rewards are available for exact SDAI/ETH borrow pair
+        const sDaiEthRewards =
+          !!primaryTokenGroup &&
+          !!secondaryToken &&
+          primaryToken === 'SDAI' &&
+          secondaryToken === 'ETH' &&
+          product.product.includes(OmniProductType.Borrow)
+        // rewards are also available for WSTETH/ETH + RETH/ETH + WEETH/ETH
+        const ethEthDerivativeRewards =
+          !!primaryTokenGroup &&
+          !!secondaryToken &&
+          ['WSTETH', 'RETH', 'WEETH'].includes(primaryToken) &&
+          secondaryToken === 'ETH'
+
+        const hasAnyRewards = ethDaiDerivativeRewards || ethEthDerivativeRewards || sDaiEthRewards
+
+        let feeTooltip = undefined
+        if (hasAnyRewards && ethDaiDerivativeRewards) {
+          feeTooltip = productHubSparkRewardsTooltip
+        }
+        if (hasAnyRewards && sDaiEthRewards) {
+          feeTooltip = productHubSparkWstethRewardsTooltip
+        }
 
         return {
           ...product,
@@ -213,10 +239,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           tooltips: {
-            fee: hasRewards ? productHubSparkRewardsTooltip : undefined,
+            fee: feeTooltip,
+            weeklyNetApy: ethEthDerivativeRewards ? productHubSparkWstethRewardsTooltip : undefined,
           },
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
-          hasRewards,
+          hasRewards: hasAnyRewards,
           automationFeatures: !product.product.includes(OmniProductType.Earn)
             ? settings.availableAutomations[
                 networksByName[product.network].id as OmniSupportedNetworkIds

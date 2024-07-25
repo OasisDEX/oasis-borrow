@@ -64,12 +64,12 @@ export const PortfolioOverview = ({
           columnGap: '24px',
         }}
       >
-        {isRaysEnabled && totalRays && (
+        {isRaysEnabled && (
           <PortfolioOverviewItem
             header={tPortfolio('total-rays-earned')}
             value={
               <Heading variant="header4" sx={getGradientColor(summerBrandGradient)}>
-                {formatCryptoBalance(new BigNumber(totalRays)).split('.')[0]}
+                {formatCryptoBalance(new BigNumber(totalRays || 0)).split('.')[0]}
               </Heading>
             }
           />

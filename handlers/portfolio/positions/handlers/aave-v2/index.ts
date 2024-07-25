@@ -113,7 +113,9 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
 
   return {
     ...commonData,
-    raysPerYear,
+    raysPerYear: {
+      value: raysPerYear,
+    },
     details: [
       {
         type: 'netValue',
