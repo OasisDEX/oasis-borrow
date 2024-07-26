@@ -1,4 +1,5 @@
 import { get } from 'handlers/tos/get'
+import { withPreflightHandler } from 'helpers/api/withPreflightHandler'
 import type { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
@@ -9,4 +10,4 @@ const handler: NextApiHandler = async (req, res) => {
       return res.status(405).end()
   }
 }
-export default handler
+export default withPreflightHandler(handler)
