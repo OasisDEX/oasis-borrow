@@ -1,11 +1,15 @@
+import { useMainContext } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
+import dayjs from 'dayjs'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
+import { useObservable } from 'helpers/observableHook'
 import React, { useState } from 'react'
 import { rays } from 'theme/icons'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
 // a quick, crude POC for the rays animation
-const explodeRays = (_ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+const explodeRays = () => {
   const iconsCount = 30
   const raysContainer = document.getElementById('claim-rays')
   if (raysContainer) {
@@ -42,17 +46,37 @@ const explodeRays = (_ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
   }
 }
 
+const getClaimingMessage = () => `Claiming 100 Rays for day: ${dayjs().format('YYYY-MM-DD')}`
+
 export const PortfolioDailyRays = () => {
+  const { connectedContext$ } = useMainContext()
+  const [context] = useObservable(connectedContext$)
+  const { wallet } = useWalletManagement()
   const [isExploding, setIsExploding] = useState(false)
-  const flashButton = () => {
-    setIsExploding(true)
-    setTimeout(() => {
-      setIsExploding(false)
-    }, 400)
-  }
-  const explodeRaysHandler = (ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    explodeRays(ev)
-    flashButton()
+  const [userError, setUserError] = useState(false)
+  const flashButton = () =>
+    new Promise((resolve) => {
+      explodeRays()
+      setIsExploding(true)
+      setTimeout(() => {
+        setIsExploding(false)
+        return resolve(null)
+      }, 400)
+    })
+  const explodeRaysHandler = (_ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setUserError(false)
+    void flashButton().then(() => {
+      if (context?.web3.eth.personal && wallet?.address && context?.web3.eth.personal.sign) {
+        void context?.web3.eth.personal
+          .sign(getClaimingMessage(), wallet?.address, '')
+          .then((signedMessage) => {
+            console.log('signedMessage', signedMessage)
+            setUserError(false)
+            void flashButton()
+          })
+          .catch(() => setUserError(true))
+      }
+    })
   }
   return (
     <>
@@ -62,10 +86,15 @@ export const PortfolioDailyRays = () => {
         </Flex>
       </Flex>
       <Box sx={{ mt: 3, mb: 4 }}>
-        <Text variant="paragraph3">
+        <Text as="p" variant="paragraph3">
           Every day you can claim your Rays. Claim Rays for 7 days in a row and get a special 500
           Rays bonus.
         </Text>
+        {userError && (
+          <Text as="p" variant="paragraph3" color="warning100" sx={{ mt: 3 }}>
+            Something went wrong. Please try again.
+          </Text>
+        )}
         <div
           id="claim-rays"
           style={{ position: 'relative', zIndex: 10, left: '50%', top: '40px' }}
