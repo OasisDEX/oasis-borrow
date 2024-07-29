@@ -63,6 +63,7 @@ export function OmniMultiplyFormOrder() {
       networkId,
       slippageSource,
       isStrategyWithDefaultSlippage,
+      owner,
     },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails, setSlippageSource },
@@ -117,6 +118,7 @@ export function OmniMultiplyFormOrder() {
         action: quoteAction,
         exchangeType: 'defaultExchange',
         quoteToken,
+        walletAddress: owner,
       }),
     [quoteAmount.toString(), quoteAction],
   )

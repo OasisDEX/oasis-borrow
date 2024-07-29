@@ -77,7 +77,7 @@ async function openPosition(
       const dependenciesAaveV2 = {
         ...sharedDependencies,
         addresses: aavev2Addresses,
-        getSwapData: swapCall(aavev2Addresses, networkId),
+        getSwapData: swapCall(aavev2Addresses, networkId, userAddress),
       }
       return await strategies.aave.multiply.v2.open(args, dependenciesAaveV2)
     case LendingProtocol.AaveV3:
@@ -85,7 +85,7 @@ async function openPosition(
       const dependenciesAaveV3 = {
         ...sharedDependencies,
         addresses: aavev3Addresses,
-        getSwapData: swapCall(aavev3Addresses, networkId),
+        getSwapData: swapCall(aavev3Addresses, networkId, userAddress),
       }
       return await strategies.aave.multiply.v3.open(args, dependenciesAaveV3)
     case LendingProtocol.SparkV3:
@@ -93,7 +93,7 @@ async function openPosition(
       const dependenciesSparkV3 = {
         ...sharedDependencies,
         addresses: sparkV3Addresses,
-        getSwapData: swapCall(sparkV3Addresses, networkId),
+        getSwapData: swapCall(sparkV3Addresses, networkId, userAddress),
       }
       return await strategies.spark.multiply.open(args, dependenciesSparkV3)
     default:

@@ -18,6 +18,7 @@ async function swapOneInchTokens(
   slippage: string,
   chainId: number,
   oneInchVersion: 'v4.1' | 'v5.0',
+  eoaAddress: string,
   protocols: string[] = [],
 ): Promise<any> {
   const url = formatOneInchSwapUrl(
@@ -28,6 +29,7 @@ async function swapOneInchTokens(
     recipient,
     chainId,
     oneInchVersion,
+    eoaAddress,
     protocols,
   )
 
@@ -44,10 +46,11 @@ function formatOneInchSwapUrl(
   recepient: string,
   chainId: number,
   oneInchVersion: 'v4.1' | 'v5.0',
+  eoaAddress: string,
   protocols: string[] = [],
 ) {
   const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
-  return `${PROXY_API_ENDPOINT}/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
+  return `${PROXY_API_ENDPOINT}/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false&origin=${eoaAddress}`
 }
 
 async function exchangeTokens(url: string): Promise<any> {
@@ -85,6 +88,7 @@ export function getOneInchCall(
   swapAddress: string,
   networkId: NetworkIds = NetworkIds.MAINNET,
   oneInchVersion: 'v4.1' | 'v5.0' = 'v4.1',
+  eoaAddress: string,
   debug?: true,
 ) {
   return async (
@@ -121,6 +125,7 @@ export function getOneInchCall(
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
       networkId,
       oneInchVersion,
+      eoaAddress,
       resolvedProcotols,
     )
 
