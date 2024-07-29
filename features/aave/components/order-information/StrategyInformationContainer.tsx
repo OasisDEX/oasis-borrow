@@ -1,4 +1,6 @@
+import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
+import type { Context } from 'blockchain/network.types'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
 import { useAaveLikeConfig } from 'features/aave/hooks'
 import type { StrategyTokenBalance } from 'features/aave/types'
@@ -37,6 +39,7 @@ export type OpenAaveInformationContainerProps = {
       currentPosition?: IPosition
       strategyConfig: IStrategyConfig
       getSlippageFrom: 'strategyConfig' | 'userSettings'
+      web3Context?: Context
     }
   }
   changeSlippageSource: (from: 'strategyConfig' | 'userSettings') => void
@@ -62,7 +65,7 @@ export function StrategyInformationContainer({
 
   const { orderInformation: orderInformationConfig } = useAaveLikeConfig()
 
-  const { transition, currentPosition, balance, strategyConfig } = state.context
+  const { transition, currentPosition, balance, strategyConfig, web3Context } = state.context
 
   const simulationHasSwap =
     transitionHasSwap(transition) && transition?.simulation.swap?.toTokenAmount.gt(zero)
@@ -89,6 +92,7 @@ export function StrategyInformationContainer({
           {...state.context}
           transactionParameters={transition}
           slippage={getSlippage(state.context)}
+          walletAddress={web3Context?.account ?? ADDRESS_ZERO}
         />
       )}
       {simulationHasSwap && (

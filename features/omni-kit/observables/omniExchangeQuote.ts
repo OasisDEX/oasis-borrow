@@ -16,6 +16,7 @@ export function omniExchangeQuote$({
   amount,
   action,
   slippage,
+  walletAddress,
 }: {
   networkId: OmniSupportedNetworkIds
   collateralToken: string
@@ -24,6 +25,7 @@ export function omniExchangeQuote$({
   amount: BigNumber
   action: ExchangeAction
   exchangeType: ExchangeType
+  walletAddress: string
 }) {
   const contracts = getNetworkContracts(networkId)
   const tokens = contracts.tokens
@@ -42,6 +44,7 @@ export function omniExchangeQuote$({
       slippage,
       action,
       protocols,
+      eoaAddress: walletAddress,
       url: `/api/exchange/${swapVersion}/${networkId}/swap`,
     }),
   ).pipe(

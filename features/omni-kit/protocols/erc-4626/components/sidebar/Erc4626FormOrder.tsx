@@ -39,6 +39,7 @@ export const Erc4626FormOrder: FC = () => {
       quoteToken,
       slippage,
       slippageSource,
+      owner,
     },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails, setSlippageSource },
@@ -74,6 +75,7 @@ export const Erc4626FormOrder: FC = () => {
               action: 'BUY_COLLATERAL',
               exchangeType: 'defaultExchange',
               quoteToken,
+              walletAddress: owner,
             })
           : EMPTY,
       [depositAmount, networkId, pullToken, quotePrice, quoteToken, slippage],

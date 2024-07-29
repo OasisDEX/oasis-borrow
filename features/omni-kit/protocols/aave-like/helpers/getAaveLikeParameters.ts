@@ -128,7 +128,7 @@ export const getAaveLikeParameters = async ({
   const multiplyDependencies = {
     ...commonDependencies,
     positionType: 'Multiply' as PositionType,
-    getSwapData: swapCall(addresses, networkId),
+    getSwapData: swapCall(addresses, networkId, walletAddress),
   }
 
   const borrowDependencies = {

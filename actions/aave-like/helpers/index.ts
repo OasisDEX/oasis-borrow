@@ -56,6 +56,7 @@ export function lendingProtocolToSystemKeys(protocol: LendingProtocol): SystemKe
 export function swapCall(
   { swapAddress }: Pick<ReturnType<typeof getAddresses>, 'swapAddress'>,
   network: NetworkIds,
+  eoaAddress: string,
 ) {
   const oneInchVersion = [
     NetworkIds.OPTIMISMMAINNET,
@@ -64,7 +65,7 @@ export function swapCall(
   ].includes(network)
     ? 'v5.0'
     : 'v4.1'
-  return getOneInchCall(swapAddress, network, oneInchVersion)
+  return getOneInchCall(swapAddress, network, oneInchVersion, eoaAddress)
 }
 
 export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [

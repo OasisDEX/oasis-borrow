@@ -198,6 +198,7 @@ export async function getAjnaParameters({
         collateralToken,
         quoteToken,
         networkId,
+        walletAddress,
       })
     }
     case OmniMultiplyFormAction.GenerateMultiply:
@@ -214,6 +215,7 @@ export async function getAjnaParameters({
           collateralToken,
           quoteToken,
           networkId,
+          walletAddress,
         })
       }
 
@@ -261,6 +263,7 @@ export async function getAjnaParameters({
           collateralToken,
           quoteToken,
           networkId,
+          walletAddress,
         })
       }
 
@@ -288,6 +291,7 @@ export async function getAjnaParameters({
         quoteToken,
         slippage,
         networkId,
+        walletAddress,
       })
     }
     default:
