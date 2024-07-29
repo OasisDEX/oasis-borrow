@@ -1,8 +1,8 @@
 import { NetworkNames } from 'blockchain/networks'
+import { withPreflightHandler } from 'helpers/api/withPreflightHandler'
 import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { AppConfigType } from 'types/config'
-import { withPreflightHandler } from 'helpers/api/withPreflightHandler'
 
 /**
  * Resolves the RPC node for the given network.
