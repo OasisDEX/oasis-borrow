@@ -78,6 +78,7 @@ export async function getErc4626Parameters({
       getNetworkContracts(networkId).swapAddress,
       networkId,
       omniSwapVersionMap[networkId],
+      walletAddress,
     ),
     getVaultApyParameters: getErc4626ApyParameters({ prices: protocolPrices }),
     network: omniNetworkMap[networkId] as Network,

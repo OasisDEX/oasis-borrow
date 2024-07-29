@@ -19,6 +19,7 @@ export const ajnaActionClose = ({
   quoteToken,
   slippage,
   state,
+  walletAddress,
 }: {
   collateralToken: string
   commonPayload: AjnaCommonPayload
@@ -28,6 +29,7 @@ export const ajnaActionClose = ({
   quoteToken: string
   slippage: BigNumber
   state: OmniMultiplyFormState | OmniBorrowFormState
+  walletAddress: string
 }) => {
   return strategies.ajna.multiply.close(
     {
@@ -45,6 +47,7 @@ export const ajnaActionClose = ({
         getNetworkContracts(networkId).swapAddress,
         networkId,
         omniSwapVersionMap[networkId],
+        walletAddress,
       ),
       operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {
@@ -68,6 +71,7 @@ export const ajnaActionAdjust = ({
   quoteToken,
   slippage,
   state,
+  walletAddress,
 }: {
   collateralToken: string
   commonPayload: AjnaCommonPayload
@@ -77,6 +81,7 @@ export const ajnaActionAdjust = ({
   quoteToken: string
   slippage: BigNumber
   state: OmniMultiplyFormState | OmniBorrowFormState
+  walletAddress: string
 }) => {
   const { loanToValue, depositAmount, withdrawAmount } = state
 
@@ -100,6 +105,7 @@ export const ajnaActionAdjust = ({
         getNetworkContracts(networkId).swapAddress,
         networkId,
         omniSwapVersionMap[networkId],
+        walletAddress,
       ),
       operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {

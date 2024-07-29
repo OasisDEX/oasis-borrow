@@ -70,6 +70,7 @@ interface PriceImpactProps {
   }
   transactionParameters: IMultiplyStrategy
   strategyConfig: IStrategyConfig
+  walletAddress: string
 }
 
 export function PriceImpact({
@@ -77,6 +78,7 @@ export function PriceImpact({
   transactionParameters,
   slippage,
   strategyConfig,
+  walletAddress,
 }: PriceImpactProps) {
   const { t } = useTranslation()
   const [marketPrice, setMarketPrice] = useState<BigNumber>(zero)
@@ -101,7 +103,7 @@ export function PriceImpact({
   }, [strategyConfig, sourceToken, targetToken])
 
   const oneInchCall = useMemo(() => {
-    return swapCall({ swapAddress }, networkId)
+    return swapCall({ swapAddress }, networkId, walletAddress)
   }, [swapAddress, networkId])
 
   useEffect(() => {

@@ -131,6 +131,7 @@ export function multiplyVault(
     amount: oneInchAmount,
     slippage,
     action: 'BUY_COLLATERAL',
+    eoaAddress: account,
     protocol: LendingProtocol.Maker,
   })
     .pipe(
