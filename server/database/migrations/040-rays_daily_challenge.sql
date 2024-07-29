@@ -7,4 +7,4 @@ CREATE TABLE "rays_daily_challenge" (
 );
 
 
-CREATE UNIQUE INDEX "rays_daily_challenge_address_claimed_dates_key" ON "rays_daily_challenge"("address", "claimed_dates");
+CREATE UNIQUE INDEX "rays_daily_challenge_address_key" ON "rays_daily_challenge"("address");

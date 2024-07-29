@@ -426,9 +426,8 @@ model Tokens {
 
 model RaysDailyChallenge {
   id             Int               @id @default(autoincrement())
-  address        String
+  address        String            @unique
   claimed_dates  String[]
 
-  @@unique([address, claimed_dates], name: "rays_daily_challenge_unique_id")
   @@map("rays_daily_challenge")
 }

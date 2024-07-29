@@ -514,6 +514,12 @@ export const theme = themeTypeSafe({
         opacity: 0.5,
       },
     },
+    outlineSmall: {
+      variant: 'buttons.outline',
+      fontSize: 1,
+      px: 3,
+      py: 1,
+    },
     outlineSquare: {
       variant: 'text.paragraph2',
       background: 'none',
