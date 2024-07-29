@@ -177,12 +177,11 @@ export const PortfolioDailyRays = ({
                 },
               },
             }}
-            // onClick={
-            //   requiredItems && !baseRaysChallengeData?.alreadyClaimed
-            //     ? explodeRaysHandler
-            //     : () => null
-            // }
-            onClick={explodeRaysHandler}
+            onClick={
+              requiredItems && !baseRaysChallengeData?.alreadyClaimed
+                ? explodeRaysHandler
+                : () => null
+            }
           >
             <Icon icon={rays} color="primary60" sx={{ mr: 3 }} />
             Claim {dailyRaysAmount} Rays now
