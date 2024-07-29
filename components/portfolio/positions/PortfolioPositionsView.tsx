@@ -18,7 +18,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { WithArrow } from 'components/WithArrow'
 import type { PortfolioPosition, PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getLocalAppConfig } from 'helpers/config'
+import { getLocalAppConfig, useAppConfig } from 'helpers/config'
 import { formatAddress } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
@@ -61,6 +61,7 @@ export const PortfolioPositionsView = ({
   refreshUserRaysData,
 }: PortfolioPositionsViewProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
+  const { RaysDailyChallenge } = useAppConfig('features')
 
   const [filterState, setFilterState] = useState<PortfolioPositionsViewFiltersType>({
     showEmptyPositions: false,
@@ -267,7 +268,7 @@ export const PortfolioPositionsView = ({
         <PortfolioPositionLearn posts={blogPosts?.learn} />
       </Flex>
       <Box>
-        <PortfolioDailyRays refreshUserRaysData={refreshUserRaysData} />
+        {RaysDailyChallenge && <PortfolioDailyRays refreshUserRaysData={refreshUserRaysData} />}
         <BlogPosts posts={blogPosts?.news} />
       </Box>
     </Grid>
