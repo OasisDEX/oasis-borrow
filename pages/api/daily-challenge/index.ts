@@ -16,7 +16,7 @@ const handler: NextApiHandler = async (req, res) => {
       const { walletAddress } = req.query
       const dailyChallengeData = await prisma.raysDailyChallenge.findUnique({
         where: {
-          address: walletAddress as string,
+          address: (walletAddress as string).toLocaleLowerCase(),
         },
       })
       const calculatedData = getRaysDailyChallengeData(dailyChallengeData?.claimed_dates)
@@ -46,7 +46,7 @@ const handler: NextApiHandler = async (req, res) => {
 
       const walletsDailyChallenge = await prisma.raysDailyChallenge.findUnique({
         where: {
-          address,
+          address: address.toLocaleLowerCase(),
         },
       })
 
@@ -68,7 +68,7 @@ const handler: NextApiHandler = async (req, res) => {
       const updateDailyChallengeData = walletsDailyChallenge
         ? await prisma.raysDailyChallenge.update({
             where: {
-              address,
+              address: address.toLocaleLowerCase(),
             },
             data: {
               claimed_dates: {
@@ -78,7 +78,7 @@ const handler: NextApiHandler = async (req, res) => {
           })
         : await prisma.raysDailyChallenge.create({
             data: {
-              address,
+              address: address.toLocaleLowerCase(),
               claimed_dates: [todaysDate],
             },
           })

@@ -24,7 +24,11 @@ const flashButton = ({
     }, 400)
   })
 
-export const PortfolioDailyRays = () => {
+export const PortfolioDailyRays = ({
+  refreshUserRaysData,
+}: {
+  refreshUserRaysData?: () => void
+}) => {
   const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
   const { wallet } = useWalletManagement()
@@ -75,6 +79,7 @@ export const PortfolioDailyRays = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res.isSignatureValid) {
+            refreshUserRaysData && refreshUserRaysData()
             setBaseRaysChallengeData((prev) => ({ ...prev, ...res, loaded: true }))
             !res.alreadyClaimed && void flashButton({ setIsExploding })
           } else {
@@ -150,7 +155,7 @@ export const PortfolioDailyRays = () => {
         >
           <Button
             variant="outlineSmall"
-            disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed}
+            // disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed}
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -172,11 +177,12 @@ export const PortfolioDailyRays = () => {
                 },
               },
             }}
-            onClick={
-              requiredItems && !baseRaysChallengeData?.alreadyClaimed
-                ? explodeRaysHandler
-                : () => null
-            }
+            // onClick={
+            //   requiredItems && !baseRaysChallengeData?.alreadyClaimed
+            //     ? explodeRaysHandler
+            //     : () => null
+            // }
+            onClick={explodeRaysHandler}
           >
             <Icon icon={rays} color="primary60" sx={{ mr: 3 }} />
             Claim {dailyRaysAmount} Rays now

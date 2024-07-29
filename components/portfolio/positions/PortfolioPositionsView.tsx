@@ -34,6 +34,7 @@ interface PortfolioPositionsViewProps {
   portfolioPositionsData?: PortfolioPositionsReply
   portfolioWalletData?: PortfolioAssetsResponse
   migrationPositions?: PortfolioPosition[]
+  refreshUserRaysData?: () => void
 }
 
 type PortfolioPositionsViewFiltersType = {
@@ -57,6 +58,7 @@ export const PortfolioPositionsView = ({
   isOwner,
   portfolioPositionsData,
   portfolioWalletData,
+  refreshUserRaysData,
 }: PortfolioPositionsViewProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
@@ -265,7 +267,7 @@ export const PortfolioPositionsView = ({
         <PortfolioPositionLearn posts={blogPosts?.learn} />
       </Flex>
       <Box>
-        <PortfolioDailyRays />
+        <PortfolioDailyRays refreshUserRaysData={refreshUserRaysData} />
         <BlogPosts posts={blogPosts?.news} />
       </Box>
     </Grid>

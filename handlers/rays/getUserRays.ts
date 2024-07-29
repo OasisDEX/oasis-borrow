@@ -1,5 +1,7 @@
+import { getRaysDailyChallengeData } from 'handlers/dailyRays'
 import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
 const querySchema = z.object({
@@ -17,10 +19,19 @@ export async function getUserRays(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const { address } = querySchema.parse(req.query)
+  const dailyChallengeData = await prisma.raysDailyChallenge.findUnique({
+    where: {
+      address: address.toLocaleLowerCase(),
+    },
+  })
+  const calculatedData = getRaysDailyChallengeData(dailyChallengeData?.claimed_dates)
 
   const response = await fetchFromFunctionsApi(`/api/rays?address=${address}`).then((resp) =>
     resp.json(),
   )
 
-  return res.status(response.error ? 500 : 200).json(response)
+  return res.status(response.error ? 500 : 200).json({
+    ...response,
+    allPossiblePoints: response.allPossiblePoints + calculatedData.allBonusRays,
+  })
 }
