@@ -82,11 +82,12 @@ export const PortfolioDailyRays = ({
           if (res.isSignatureValid) {
             refreshUserRaysData && refreshUserRaysData()
             setBaseRaysChallengeData((prev) => ({ ...prev, ...res, loaded: true }))
-            !res.alreadyClaimed && trackingEvents.raysDailyRewards.claim({
-              allBonusRays: res.allBonusRays,
-              streaks: res.streaks,
-              currentStreak: res.currentStreak,
-            })
+            !res.alreadyClaimed &&
+              trackingEvents.raysDailyRewards.claim({
+                allBonusRays: res.allBonusRays,
+                streaks: res.streaks,
+                currentStreak: res.currentStreak,
+              })
             !res.alreadyClaimed && void flashButton({ setIsExploding })
           } else {
             setUserError(true)
