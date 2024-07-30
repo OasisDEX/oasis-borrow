@@ -66,6 +66,7 @@ export const ajnaActionOpenMultiply = ({
         getNetworkContracts(networkId).swapAddress,
         networkId,
         omniSwapVersionMap[networkId],
+        walletAddress,
       ),
       operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {

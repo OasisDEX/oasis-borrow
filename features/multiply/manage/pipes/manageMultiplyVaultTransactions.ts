@@ -1,3 +1,4 @@
+import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import { TxStatus } from '@oasisdex/transactions'
 import { approve } from 'blockchain/calls/erc20'
 import type { ApproveData } from 'blockchain/calls/erc20.types'
@@ -201,6 +202,7 @@ export function adjustPosition(
           amount: oneInchAmount,
           slippage,
           action: exchangeAction!,
+          eoaAddress: account || ADDRESS_ZERO,
           protocol: LendingProtocol.Maker,
         }).pipe(
           first(),
@@ -526,6 +528,7 @@ export function closeVault(
           slippage,
           action: 'SELL_COLLATERAL',
           protocol: LendingProtocol.Maker,
+          eoaAddress: account || ADDRESS_ZERO,
         }).pipe(
           first(),
           switchMap((swap) => {

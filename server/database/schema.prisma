@@ -422,3 +422,12 @@ model Tokens {
   @@unique([address, chain_id], name: "address_chain_id_unique_id")
   @@map("tokens")
 }
+
+
+model RaysDailyChallenge {
+  id             Int               @id @default(autoincrement())
+  address        String            @unique
+  claimed_dates  String[]
+
+  @@map("rays_daily_challenge")
+}

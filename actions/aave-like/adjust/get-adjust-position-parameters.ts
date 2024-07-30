@@ -63,21 +63,21 @@ export async function getAdjustPositionParameters({
         return await strategies.aave.multiply.v2.adjust(args, {
           ...stratDeps,
           addresses: addressesV2,
-          getSwapData: swapCall(addressesV2, networkId),
+          getSwapData: swapCall(addressesV2, networkId, userAddress),
         })
       case LendingProtocol.AaveV3:
         const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
         return await strategies.aave.multiply.v3.adjust(args, {
           ...stratDeps,
           addresses: addressesV3,
-          getSwapData: swapCall(addressesV3, networkId),
+          getSwapData: swapCall(addressesV3, networkId, userAddress),
         })
       case LendingProtocol.SparkV3:
         const addressesSparkV3 = getAddresses(networkId, LendingProtocol.SparkV3)
         return await strategies.spark.multiply.adjust(args, {
           ...stratDeps,
           addresses: addressesSparkV3,
-          getSwapData: swapCall(addressesSparkV3, networkId),
+          getSwapData: swapCall(addressesSparkV3, networkId, userAddress),
         })
       default:
         throw new Error('Invalid protocol')

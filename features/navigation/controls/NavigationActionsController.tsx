@@ -4,15 +4,20 @@ import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobi
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import { NavigationNetworkSwitcherOrb } from 'components/navigation/NavigationNetworkSwitcher'
 import { NavigationRays } from 'components/navigation/NavigationRays'
+import type { useUserRays } from 'features/rays/hooks/useUserRays'
 import { ConnectButton } from 'features/web3OnBoard/connect-button'
 import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface NavigationActionsControllerProps {
   isConnected: boolean
+  userRaysData?: ReturnType<typeof useUserRays>['userRaysData']
 }
 
-export function NavigationActionsController({ isConnected }: NavigationActionsControllerProps) {
+export function NavigationActionsController({
+  isConnected,
+  userRaysData,
+}: NavigationActionsControllerProps) {
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2] - 1}px)`)
   const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1] - 1}px)`)
@@ -21,15 +26,15 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
     <>
       {isConnected ? (
         <>
-          {isViewBelowXl && <NavigationRays />}
+          {isViewBelowXl && <NavigationRays userRaysData={userRaysData} />}
           {isViewBelowXl && <MyPositionsOrb />}
-          {!isViewBelowXl && <NavigationRays />}
+          {!isViewBelowXl && <NavigationRays userRaysData={userRaysData} />}
           <NavigationNetworkSwitcherOrb />
           {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
         </>
       ) : (
         <>
-          <NavigationRays />
+          <NavigationRays userRaysData={userRaysData} />
           <NavigationNetworkSwitcherOrb />
           {!isViewBelowL && <ConnectButton />}
         </>

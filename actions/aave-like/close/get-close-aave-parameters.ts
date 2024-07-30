@@ -59,21 +59,21 @@ export async function getCloseAaveParameters({
       return strategies.aave.multiply.v2.close(stratArgs, {
         ...stratDeps,
         addresses: addressesV2,
-        getSwapData: swapCall(addressesV2, networkId),
+        getSwapData: swapCall(addressesV2, networkId, userAddress),
       })
     case LendingProtocol.AaveV3:
       const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
       return strategies.aave.multiply.v3.close(stratArgs, {
         ...stratDeps,
         addresses: addressesV3,
-        getSwapData: swapCall(addressesV3, networkId),
+        getSwapData: swapCall(addressesV3, networkId, userAddress),
       })
     case LendingProtocol.SparkV3:
       const addressesSpark = getAddresses(networkId, LendingProtocol.SparkV3)
       return strategies.spark.multiply.close(stratArgs, {
         ...stratDeps,
         addresses: addressesSpark,
-        getSwapData: swapCall(addressesSpark, networkId),
+        getSwapData: swapCall(addressesSpark, networkId, userAddress),
       })
     default:
       throw new Error('Invalid protocol')

@@ -1,3 +1,4 @@
+import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
@@ -322,6 +323,7 @@ export function getQuote$({
   amount,
   slippage,
   action,
+  eoaAddress,
   protocols,
   url,
   protocol,
@@ -332,6 +334,7 @@ export function getQuote$({
   amount: BigNumber // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber
   action: ExchangeAction
+  eoaAddress: string
   protocols?: string
   url?: string
   protocol?: LendingProtocol
@@ -356,6 +359,7 @@ export function getQuote$({
     ...(protocol === LendingProtocol.Maker && {
       complexityLevel: '1',
     }),
+    origin: eoaAddress,
   })
 
   const responseBase = {
@@ -449,6 +453,7 @@ export function createExchangeQuote$(
         collateral,
         account: exchange.address,
         amount,
+        eoaAddress: context.account ?? ADDRESS_ZERO,
         slippage,
         action,
         protocols,

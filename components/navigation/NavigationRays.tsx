@@ -11,16 +11,24 @@ import { rays } from 'theme/icons'
 import { Flex, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
-export const NavigationRays = () => {
+export const NavigationRays = ({
+  userRaysData,
+}: {
+  userRaysData?: ReturnType<typeof useUserRays>['userRaysData']
+}) => {
   const { walletAddress } = useAccount()
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[1] - 1}px)`)
   const { Rays } = useAppConfig('features')
-
-  const raysUserData = useUserRays({ walletAddress })
+  const { userRaysData: nonPortfolioUserRaysData } = useUserRays({
+    walletAddress: walletAddress?.toLocaleLowerCase(),
+    enabled: Rays && !userRaysData,
+  })
 
   if (!Rays) {
     return null
   }
+
+  const resolvedUserRaysData = userRaysData || nonPortfolioUserRaysData
 
   return (
     <Flex sx={{ mr: !isViewBelowL ? 3 : 0, alignItems: 'center' }}>
@@ -42,10 +50,10 @@ export const NavigationRays = () => {
           <Icon icon={rays} size={24} />{' '}
           {!isViewBelowL && (
             <Text variant="boldParagraph3" sx={{ fontSize: 1 }}>
-              {raysUserData?.userRays
+              {resolvedUserRaysData?.userRays
                 ? `${
                     formatCryptoBalance(
-                      new BigNumber(raysUserData?.userRays.allPossiblePoints),
+                      new BigNumber(resolvedUserRaysData?.userRays.allPossiblePoints),
                     ).split('.')[0]
                   } Rays`
                 : 'Get $RAYS'}

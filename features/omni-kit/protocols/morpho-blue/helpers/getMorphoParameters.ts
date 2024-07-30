@@ -115,6 +115,7 @@ export const getMorphoParameters = async ({
       getNetworkContracts(networkId).swapAddress,
       networkId,
       omniSwapVersionMap[networkId],
+      walletAddress,
     ),
     morphoAddress: addressesConfig.morphoBlue.address,
     addresses: commonTokenAddresses,
