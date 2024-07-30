@@ -288,6 +288,7 @@ export function setupProductContext(
         potDsr$,
         dsr$(addressFromUrl),
         addGasEstimation$,
+        addressFromUrl,
       ),
     (item) => item,
   )

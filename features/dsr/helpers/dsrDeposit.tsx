@@ -323,6 +323,7 @@ export function createDsrDeposit$(
   potDsr$: Observable<BigNumber>,
   dsr$: Observable<Dsr>, // TODO make use of it instead fetching dsrOverview separately
   addGasEstimation$: AddGasEstimationFunction,
+  addressFromUrl: string,
 ): Observable<DsrDepositState> {
   return combineLatest(context$, proxyAddress$, balancesInfoArray$, daiDeposit$, potDsr$).pipe(
     first(),
@@ -336,7 +337,7 @@ export function createDsrDeposit$(
               allowance$('DAI', context.account, proxyAddress),
               allowance$('DAI', context.account, SDAI.address),
             ]
-          : [of(undefined), allowance$('DAI', context.account, SDAI.address)],
+          : [of(undefined), allowance$('DAI', addressFromUrl, SDAI.address)],
       ).pipe(
         first(),
         switchMap(([daiProxyAllowance, daiWalletAllowance]) => {
