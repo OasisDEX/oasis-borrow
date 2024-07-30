@@ -1,4 +1,5 @@
 import { getRisk } from 'handlers/risk/get'
+import { withPreflightHandler } from 'helpers/api/withPreflightHandler'
 import type { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
@@ -14,4 +15,4 @@ const handler: NextApiHandler = async (req, res) => {
   }
 }
 
-export default handler
+export default withPreflightHandler(handler)
