@@ -1,4 +1,4 @@
-import { getRaysDailyChallengeData } from 'handlers/dailyRays'
+import { getRaysDailyChallengeData } from 'helpers/dailyRays'
 import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'

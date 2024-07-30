@@ -1,4 +1,4 @@
-import { getRaysDailyChallengeData } from 'handlers/dailyRays'
+import { getRaysDailyChallengeData } from 'helpers/dailyRays'
 
 describe('Rays daily challenge numbers', () => {
   it('should give 0 points and 0 streak for 0 days', () => {

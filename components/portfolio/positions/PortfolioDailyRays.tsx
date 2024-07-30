@@ -1,10 +1,14 @@
 import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
+import {
+  getDailyRaysBaseData,
+  type RaysDailyChallengeResponse,
+  updateDailyRaysData,
+} from 'components/portfolio/helpers/getRaysDailyChallenge'
 import { SkeletonLine } from 'components/Skeleton'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
-import type { getRaysDailyChallengeData } from 'handlers/dailyRays'
-import { dailyRaysAmount, explodeRays } from 'handlers/dailyRays'
+import { dailyRaysAmount, explodeRays } from 'helpers/dailyRays'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { useObservable } from 'helpers/observableHook'
 import React, { useEffect, useState } from 'react'
@@ -35,13 +39,7 @@ export const PortfolioDailyRays = ({
   const { wallet } = useWalletManagement()
   const [isExploding, setIsExploding] = useState(false)
   const [userError, setUserError] = useState(false)
-  const [baseRaysChallengeData, setBaseRaysChallengeData] = useState<
-    Partial<ReturnType<typeof getRaysDailyChallengeData>> & {
-      message?: string
-      loaded: boolean
-      alreadyClaimed?: boolean
-    }
-  >({
+  const [baseRaysChallengeData, setBaseRaysChallengeData] = useState<RaysDailyChallengeResponse>({
     currentStreak: 0,
     dailyChallengeRays: 0,
     loaded: false,
@@ -51,13 +49,12 @@ export const PortfolioDailyRays = ({
   useEffect(() => {
     if (!loadingBaseRaysChallengeData && !baseRaysChallengeData.loaded && wallet?.address) {
       setloadingBaseRaysChallengeData(true)
-      void fetch(`/api/daily-challenge?walletAddress=${wallet?.address}`, {
-        method: 'GET',
-      })
-        .then((res) => res.json())
-        .then((baseDailyRaysData) => {
+      void getDailyRaysBaseData({
+        walletAddress: wallet.address,
+        callback: (baseDailyRaysData) => {
           setBaseRaysChallengeData({ ...baseDailyRaysData, loaded: true })
-        })
+        },
+      })
     }
   }, [baseRaysChallengeData, wallet?.address, loadingBaseRaysChallengeData])
 
@@ -66,23 +63,17 @@ export const PortfolioDailyRays = ({
 
   const dailyRaysCall = (signature: string) => {
     requiredItems &&
-      void fetch('/api/daily-challenge', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          address: wallet?.address,
-          signature,
-          chainId: wallet?.chainId,
-        }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
+      void updateDailyRaysData({
+        signature,
+        wallet,
+        callback: (res) => {
           if (res.isSignatureValid) {
             refreshUserRaysData && refreshUserRaysData()
             setBaseRaysChallengeData((prev) => ({ ...prev, ...res, loaded: true }))
             !res.alreadyClaimed &&
+              res.allBonusRays &&
+              res.streaks &&
+              res.currentStreak &&
               trackingEvents.raysDailyRewards.claim({
                 allBonusRays: res.allBonusRays,
                 streaks: res.streaks,
@@ -92,7 +83,8 @@ export const PortfolioDailyRays = ({
           } else {
             setUserError(true)
           }
-        })
+        },
+      })
   }
 
   const explodeRaysHandler = (_ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
