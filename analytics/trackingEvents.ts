@@ -999,6 +999,24 @@ export const trackingEvents = {
       })
     },
   },
+  raysDailyRewards: {
+    claim: ({
+      allBonusRays,
+      streaks,
+      currentStreak,
+    }: {
+      allBonusRays: number
+      streaks: number
+      currentStreak: number
+    }) => {
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, {
+        id: 'ClaimDailyRaysBonus',
+        allBonusRays,
+        streaks,
+        currentStreak,
+      })
+    },
+  },
 }
 
 export type Tracker = typeof trackingEvents

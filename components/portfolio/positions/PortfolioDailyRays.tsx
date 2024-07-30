@@ -1,3 +1,4 @@
+import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
 import { SkeletonLine } from 'components/Skeleton'
@@ -81,6 +82,11 @@ export const PortfolioDailyRays = ({
           if (res.isSignatureValid) {
             refreshUserRaysData && refreshUserRaysData()
             setBaseRaysChallengeData((prev) => ({ ...prev, ...res, loaded: true }))
+            !res.alreadyClaimed && trackingEvents.raysDailyRewards.claim({
+              allBonusRays: res.allBonusRays,
+              streaks: res.streaks,
+              currentStreak: res.currentStreak,
+            })
             !res.alreadyClaimed && void flashButton({ setIsExploding })
           } else {
             setUserError(true)
