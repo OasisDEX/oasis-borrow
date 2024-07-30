@@ -5,6 +5,7 @@ export interface RaysUserResponse {
     address: string
     eligiblePoints: number
     allPossiblePoints: number
+    dailyChallengeRays: number
     actionRequiredPoints: { dueDate: string; points: number; type: RaysEligibilityCondition }[]
     positionInLeaderboard: string
     userTypes: RaysUserType[]

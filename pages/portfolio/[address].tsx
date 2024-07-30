@@ -102,7 +102,9 @@ export default function PortfolioView(props: PortfolioViewProps) {
     awsInfraUrl,
   })
 
-  const userRaysData = useUserRays({ walletAddress: address })
+  const { userRaysData, refreshUserRaysData } = useUserRays({
+    walletAddress: address.toLocaleLowerCase(),
+  })
 
   const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
   const hasAjnaPositions = portfolioPositionsData?.positions.some(
@@ -113,7 +115,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
     <ProductContextProvider>
       <RefinanceGeneralContextProvider>
         <ModalProvider>
-          <PortfolioLayout>
+          <PortfolioLayout userRaysData={userRaysData}>
             <Box sx={{ width: '100%' }}>
               {ajnaSafetySwitchOn && isOwner && hasAjnaPositions && (
                 <Announcement
@@ -157,6 +159,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                         portfolioPositionsData={portfolioPositionsData}
                         portfolioWalletData={portfolioWalletData}
                         migrationPositions={migrationPositions}
+                        refreshUserRaysData={refreshUserRaysData}
                       />
                     ),
                   },
