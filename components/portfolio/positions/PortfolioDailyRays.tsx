@@ -154,7 +154,7 @@ export const PortfolioDailyRays = ({
         >
           <Button
             variant="outlineSmall"
-            // disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed}
+            disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed}
             sx={{
               display: 'flex',
               alignItems: 'center',
