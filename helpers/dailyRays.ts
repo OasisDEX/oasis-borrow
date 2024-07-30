@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 
-export const dailyRaysAmount = 100
-export const bonusRaysAmount = 500
+export const dailyRaysAmount = 10
+export const bonusRaysAmount = 25
 
 export const getRaysDailyChallengeDateFormat = () => dayjs().format('YYYY-MM-DD')
 

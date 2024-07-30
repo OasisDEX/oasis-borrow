@@ -167,6 +167,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                         portfolioWalletData={portfolioWalletData}
                         migrationPositions={migrationPositions}
                         refreshUserRaysData={refreshUserRaysData}
+                        overviewData={overviewData}
                       />
                     ),
                   },

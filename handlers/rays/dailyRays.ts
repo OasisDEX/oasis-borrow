@@ -40,6 +40,14 @@ export const dailyRaysPostHandler: NextApiHandler = async (req, res) => {
     return res.status(200).json({ isSignatureValid })
   }
 
+  const usersOverview = await fetch(
+    `${process.env.FUNCTIONS_API_URL}/api/portfolio/overview?address=${address}`,
+  ).then((usersOverviewRes) => usersOverviewRes.json())
+
+  if (!usersOverview.summerUsdValue) {
+    return res.status(200).json({ isSignatureValid, alreadyClaimed: false, error: 'No assets' })
+  }
+
   const todaysDate = getRaysDailyChallengeDateFormat()
 
   const walletsDailyChallenge = await prisma.raysDailyChallenge.findUnique({

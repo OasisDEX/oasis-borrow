@@ -8,7 +8,7 @@ import {
 } from 'components/portfolio/helpers/getRaysDailyChallenge'
 import { SkeletonLine } from 'components/Skeleton'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
-import { dailyRaysAmount, explodeRays } from 'helpers/dailyRays'
+import { bonusRaysAmount, dailyRaysAmount, explodeRays } from 'helpers/dailyRays'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { useObservable } from 'helpers/observableHook'
 import React, { useEffect, useState } from 'react'
@@ -38,6 +38,7 @@ export const PortfolioDailyRays = ({
   const [context] = useObservable(connectedContext$)
   const { wallet } = useWalletManagement()
   const [isExploding, setIsExploding] = useState(false)
+  const [isAddingPoints, setIsAddingPoints] = useState(false)
   const [userError, setUserError] = useState(false)
   const [baseRaysChallengeData, setBaseRaysChallengeData] = useState<RaysDailyChallengeResponse>({
     currentStreak: 0,
@@ -60,13 +61,14 @@ export const PortfolioDailyRays = ({
 
   const requiredItems =
     wallet?.address && wallet?.chainId && context?.web3.eth.personal.sign && baseRaysChallengeData
-
-  const dailyRaysCall = (signature: string) => {
+  const updateDailyRays = (signature: string) => {
+    setIsAddingPoints(true)
     requiredItems &&
       void updateDailyRaysData({
         signature,
         wallet,
         callback: (res) => {
+          setIsAddingPoints(false)
           if (res.isSignatureValid) {
             refreshUserRaysData && refreshUserRaysData()
             setBaseRaysChallengeData((prev) => ({ ...prev, ...res, loaded: true }))
@@ -92,7 +94,7 @@ export const PortfolioDailyRays = ({
       if (requiredItems && baseRaysChallengeData.message) {
         void context?.web3.eth.personal
           .sign(baseRaysChallengeData.message, wallet?.address, '')
-          .then(dailyRaysCall)
+          .then(updateDailyRays)
           .catch(() => setUserError(true))
       }
     })
@@ -106,8 +108,8 @@ export const PortfolioDailyRays = ({
       </Flex>
       <Box sx={{ mt: 3, mb: 4 }}>
         <Text as="p" variant="paragraph3" color="neutral80">
-          Every day you can claim your Rays. Claim Rays for 7 days in a row and get a special 500
-          Rays bonus.
+          Every day you can claim your Rays. Claim Rays for 7 days in a row and get a special{' '}
+          {bonusRaysAmount} Rays bonus.
         </Text>
         <Grid
           gap={2}
@@ -119,7 +121,7 @@ export const PortfolioDailyRays = ({
           }}
         >
           <Text variant="paragraph3">Current streak</Text>
-          {baseRaysChallengeData.loaded ? (
+          {baseRaysChallengeData.loaded && !isAddingPoints ? (
             <Text variant="boldParagraph3" sx={{ textAlign: 'right' }}>
               {baseRaysChallengeData.currentStreak}{' '}
               {baseRaysChallengeData.currentStreak === 1 ? 'day' : 'days'}
@@ -129,7 +131,7 @@ export const PortfolioDailyRays = ({
           )}
           <Text variant="paragraph3">Daily challenge Rays</Text>
           <Box as="span" sx={{ textAlign: 'right', justifySelf: 'flex-end' }}>
-            {baseRaysChallengeData.loaded ? (
+            {baseRaysChallengeData.loaded && !isAddingPoints ? (
               <Text variant="boldParagraph3" as="span" sx={getGradientColor(summerBrandGradient)}>
                 {baseRaysChallengeData?.allBonusRays}
               </Text>
@@ -153,7 +155,7 @@ export const PortfolioDailyRays = ({
         >
           <Button
             variant="outlineSmall"
-            disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed}
+            disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed || isAddingPoints}
             sx={{
               display: 'flex',
               alignItems: 'center',

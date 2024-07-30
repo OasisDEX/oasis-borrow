@@ -12,7 +12,10 @@ import { PortfolioPositionLearn } from 'components/portfolio/positions/Portfolio
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
 import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/PortfolioPositionsSortingSelect'
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
-import type { PortfolioAssetsResponse } from 'components/portfolio/types/domain-types'
+import type {
+  PortfolioAssetsResponse,
+  PortfolioOverviewResponse,
+} from 'components/portfolio/types/domain-types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithArrow } from 'components/WithArrow'
@@ -35,6 +38,7 @@ interface PortfolioPositionsViewProps {
   portfolioWalletData?: PortfolioAssetsResponse
   migrationPositions?: PortfolioPosition[]
   refreshUserRaysData?: () => void
+  overviewData?: PortfolioOverviewResponse
 }
 
 type PortfolioPositionsViewFiltersType = {
@@ -59,6 +63,7 @@ export const PortfolioPositionsView = ({
   portfolioPositionsData,
   portfolioWalletData,
   refreshUserRaysData,
+  overviewData,
 }: PortfolioPositionsViewProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { RaysDailyChallenge } = useAppConfig('features')
@@ -268,7 +273,9 @@ export const PortfolioPositionsView = ({
         <PortfolioPositionLearn posts={blogPosts?.learn} />
       </Flex>
       <Box>
-        {RaysDailyChallenge && <PortfolioDailyRays refreshUserRaysData={refreshUserRaysData} />}
+        {RaysDailyChallenge && isOwner && overviewData?.summerUsdValue && (
+          <PortfolioDailyRays refreshUserRaysData={refreshUserRaysData} />
+        )}
         <BlogPosts posts={blogPosts?.news} />
       </Box>
     </Grid>
