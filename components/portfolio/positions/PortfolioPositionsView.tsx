@@ -273,7 +273,7 @@ export const PortfolioPositionsView = ({
         <PortfolioPositionLearn posts={blogPosts?.learn} />
       </Flex>
       <Box>
-        {RaysDailyChallenge && isOwner && overviewData?.summerUsdValue && (
+        {RaysDailyChallenge && isOwner && !!overviewData?.summerUsdValue && (
           <PortfolioDailyRays refreshUserRaysData={refreshUserRaysData} />
         )}
         <BlogPosts posts={blogPosts?.news} />
