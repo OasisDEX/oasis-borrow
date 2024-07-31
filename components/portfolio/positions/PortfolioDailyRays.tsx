@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
+import { AppLink } from 'components/Links'
 import {
   getDailyRaysBaseData,
   type RaysDailyChallengeResponse,
@@ -11,9 +12,10 @@ import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { bonusRaysAmount, dailyRaysAmount, explodeRays } from 'helpers/dailyRays'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { useObservable } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { useEffect, useState } from 'react'
 import { rays } from 'theme/icons'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Divider, Flex, Grid, Image, Text } from 'theme-ui'
 
 const flashButton = ({
   setIsExploding,
@@ -28,6 +30,14 @@ const flashButton = ({
       return resolve(null)
     }, 400)
   })
+
+const PortfolioDailyRaysHeader = () => (
+  <Flex sx={{ justifyContent: 'space-between' }}>
+    <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Text variant="boldParagraph2">Rays Daily Challenge</Text>
+    </Flex>
+  </Flex>
+)
 
 export const PortfolioDailyRays = ({
   refreshUserRaysData,
@@ -101,12 +111,8 @@ export const PortfolioDailyRays = ({
   }
   return (
     <>
-      <Flex sx={{ justifyContent: 'space-between' }}>
-        <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text variant="boldParagraph2">Rays Daily Challenge</Text>
-        </Flex>
-      </Flex>
-      <Box sx={{ mt: 3, mb: 4 }}>
+      <PortfolioDailyRaysHeader />
+      <Box sx={{ mt: 3, mb: 3 }}>
         <Text as="p" variant="paragraph3" color="neutral80">
           Every day you can claim your Rays. Claim Rays for 7 days in a row and get a special{' '}
           {bonusRaysAmount} Rays bonus.
@@ -187,15 +193,37 @@ export const PortfolioDailyRays = ({
             Claim {dailyRaysAmount} Rays now
           </Button>
         </Box>
-        <Text
-          as="p"
-          variant="paragraph3"
-          color="warning100"
-          sx={{ mt: 3, opacity: userError ? 1 : 0 }}
-        >
-          Something went wrong. Please try again.
-        </Text>
+        {userError && (
+          <Text as="p" variant="paragraph3" color="warning100" sx={{ mt: 3 }}>
+            Something went wrong. Please try again.
+          </Text>
+        )}
       </Box>
+      <Divider sx={{ mb: 3 }} />
+    </>
+  )
+}
+
+export const PortfolioDailyRaysNotAUser = () => {
+  return (
+    <>
+      <PortfolioDailyRaysHeader />
+      <Box sx={{ mt: 3, mb: 3 }}>
+        <Image
+          src={staticFilesRuntimeUrl(`/static/img/daily-rays-not-a-user-banner.svg`)}
+          sx={{ width: '100%', margin: '0 auto', borderRadius: 'large' }}
+        />
+        <Text variant="paragraph3" color="neutral80" sx={{ mt: 3 }}>
+          To earn daily rays you need to have a position. Claim Rays for 7 days in a row and get a
+          special 30 Rays bonus.
+        </Text>
+        <AppLink href="/earn">
+          <Button variant="primary" sx={{ fontSize: 1, py: 1, px: 4, mt: 3 }}>
+            Get started
+          </Button>
+        </AppLink>
+      </Box>
+      <Divider sx={{ mb: 3 }} />
     </>
   )
 }
