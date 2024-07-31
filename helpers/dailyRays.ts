@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 
 export const dailyRaysAmount = 10
-export const bonusRaysAmount = 25
+export const bonusRaysAmount = 30
 
 export const getRaysDailyChallengeDateFormat = () => dayjs().format('YYYY-MM-DD')
 
@@ -9,7 +9,7 @@ export const getDailyChallengeMessage = () =>
   `Claiming my ${dailyRaysAmount} $RAYS daily challenge for ${getRaysDailyChallengeDateFormat()}`
 
 export const explodeRays = () => {
-  const iconsCount = 30
+  const iconsCount = 50
   // needs claim-rays container
   // currently positioned only for portfolio
   const raysContainer = document.getElementById('claim-rays')
