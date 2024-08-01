@@ -69,7 +69,7 @@ describe('Rays daily challenge numbers', () => {
     expect(streakRays).toBe(0)
     expect(streaks).toBe(0)
   })
-  it('should give 125 points and 1 streak for 10 days with consecutive 7 days', () => {
+  it('should give 130 points and 1 streak for 10 days with consecutive 7 days', () => {
     const datesArray = [
       '2001-09-11',
       '2001-09-12',
@@ -85,12 +85,12 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(125)
+    expect(allBonusRays).toBe(130)
     expect(dailyChallengeRays).toBe(100)
-    expect(streakRays).toBe(25)
+    expect(streakRays).toBe(30)
     expect(streaks).toBe(1)
   })
-  it('should give 285 points and 3 streak for 21 days with 3x consecutive 7 days', () => {
+  it('should give 300 points and 3 streak for 21 days with 3x consecutive 7 days', () => {
     const datesArray = [
       '2001-09-11',
       '2001-09-12',
@@ -117,12 +117,12 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(285)
+    expect(allBonusRays).toBe(300)
     expect(dailyChallengeRays).toBe(210)
-    expect(streakRays).toBe(75)
+    expect(streakRays).toBe(90)
     expect(streaks).toBe(3)
   })
-  it('should give 325 points and 3 streak for 21 days with 3x consecutive 7 days and 4 random dates', () => {
+  it('should give 340 points and 3 streak for 21 days with 3x consecutive 7 days and 4 random dates', () => {
     const datesArray = [
       '2001-09-11',
       '2001-09-12',
@@ -153,9 +153,9 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(325)
+    expect(allBonusRays).toBe(340)
     expect(dailyChallengeRays).toBe(250)
-    expect(streakRays).toBe(75)
+    expect(streakRays).toBe(90)
     expect(streaks).toBe(3)
   })
 })
