@@ -6,7 +6,7 @@ export interface RaysDailyChallengeResponse
   message?: string
   loaded: boolean
   alreadyClaimed?: boolean
-  isSignatureValid?: boolean
+  isJwtValid?: boolean
 }
 
 export const getDailyRaysBaseData = ({
@@ -17,7 +17,7 @@ export const getDailyRaysBaseData = ({
   callback: (data: RaysDailyChallengeResponse) => void
 }) =>
   walletAddress &&
-  fetch(`/api/daily-challenge?walletAddress=${walletAddress}`, {
+  fetch(`/api/daily-challenge-user-data?walletAddress=${walletAddress}`, {
     method: 'GET',
   })
     .then((res) => res.json())
@@ -25,26 +25,26 @@ export const getDailyRaysBaseData = ({
 
 export const updateDailyRaysData = ({
   wallet,
-  signature,
+  token,
   callback,
 }: {
   wallet: Wallet
-  signature: string
+  token: string
   callback: (data: RaysDailyChallengeResponse) => void
 }) =>
   wallet?.address &&
   wallet?.chainId &&
-  signature &&
-  fetch('/api/daily-challenge', {
+  fetch('/api/daily-challenge-update', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      authorization: 'Bearer ' + token,
     },
     body: JSON.stringify({
       address: wallet?.address,
-      signature,
       chainId: wallet?.chainId,
     }),
   })
     .then((res) => res.json())
     .then(callback)
+    .catch(() => callback({ loaded: true, isJwtValid: false }))

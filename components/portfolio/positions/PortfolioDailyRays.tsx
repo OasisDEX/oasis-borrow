@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/trackingEvents'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import {
@@ -8,10 +8,11 @@ import {
   updateDailyRaysData,
 } from 'components/portfolio/helpers/getRaysDailyChallenge'
 import { SkeletonLine } from 'components/Skeleton'
+import { jwtAuthGetToken } from 'features/shared/jwt'
+import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { bonusRaysAmount, dailyRaysAmount, explodeRays } from 'helpers/dailyRays'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
-import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { useEffect, useState } from 'react'
 import { rays } from 'theme/icons'
@@ -19,17 +20,32 @@ import { Box, Button, Divider, Flex, Grid, Image, Text } from 'theme-ui'
 
 const flashButton = ({
   setIsExploding,
+  small,
 }: {
   setIsExploding: React.Dispatch<React.SetStateAction<boolean>>
+  small: boolean
 }) =>
   new Promise((resolve) => {
-    explodeRays()
+    explodeRays(small)
     setIsExploding(true)
     setTimeout(() => {
       setIsExploding(false)
       return resolve(null)
     }, 400)
   })
+
+const SignTosComponent = ({ wallet }: { wallet?: string }) => {
+  const [signTosEnabled, setSignTosEnabled] = useState(false)
+  const jwtToken = wallet ? jwtAuthGetToken(wallet) : ''
+  if (!jwtToken && !signTosEnabled) {
+    return (
+      <Button variant="outlineSmall" onClick={() => setSignTosEnabled(true)} sx={{ mt: 3 }}>
+        Sign Terms of service
+      </Button>
+    )
+  }
+  return <TermsOfService refreshAfterSign />
+}
 
 const PortfolioDailyRaysHeader = () => (
   <Flex sx={{ justifyContent: 'space-between' }}>
@@ -44,8 +60,6 @@ export const PortfolioDailyRays = ({
 }: {
   refreshUserRaysData?: () => void
 }) => {
-  const { connectedContext$ } = useMainContext()
-  const [context] = useObservable(connectedContext$)
   const { wallet } = useWalletManagement()
   const [isExploding, setIsExploding] = useState(false)
   const [isAddingPoints, setIsAddingPoints] = useState(false)
@@ -56,6 +70,7 @@ export const PortfolioDailyRays = ({
     loaded: false,
   })
   const [loadingBaseRaysChallengeData, setloadingBaseRaysChallengeData] = useState(false)
+  const jwtToken = wallet?.address ? jwtAuthGetToken(wallet.address) : ''
 
   useEffect(() => {
     if (!loadingBaseRaysChallengeData && !baseRaysChallengeData.loaded && wallet?.address) {
@@ -69,17 +84,17 @@ export const PortfolioDailyRays = ({
     }
   }, [baseRaysChallengeData, wallet?.address, loadingBaseRaysChallengeData])
 
-  const requiredItems =
-    wallet?.address && wallet?.chainId && context?.web3.eth.personal.sign && baseRaysChallengeData
-  const updateDailyRays = (signature: string) => {
+  const requiredItems = wallet?.address && wallet?.chainId && baseRaysChallengeData && jwtToken
+
+  const updateDailyRays = () => {
     setIsAddingPoints(true)
     requiredItems &&
       void updateDailyRaysData({
-        signature,
         wallet,
+        token: jwtToken,
         callback: (res) => {
           setIsAddingPoints(false)
-          if (res.isSignatureValid) {
+          if (res.isJwtValid) {
             refreshUserRaysData && refreshUserRaysData()
             setBaseRaysChallengeData((prev) => ({ ...prev, ...res, loaded: true }))
             res.allBonusRays &&
@@ -90,7 +105,7 @@ export const PortfolioDailyRays = ({
                 streaks: res.streaks,
                 currentStreak: res.currentStreak,
               })
-            void flashButton({ setIsExploding })
+            void flashButton({ setIsExploding, small: false })
           } else {
             setUserError(true)
           }
@@ -100,12 +115,13 @@ export const PortfolioDailyRays = ({
 
   const explodeRaysHandler = (_ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setUserError(false)
-    void flashButton({ setIsExploding }).then(() => {
-      if (requiredItems && baseRaysChallengeData.message) {
-        void context?.web3.eth.personal
-          .sign(baseRaysChallengeData.message, wallet?.address, '')
-          .then(updateDailyRays)
-          .catch(() => setUserError(true))
+    void flashButton({ setIsExploding, small: true }).then(() => {
+      if (requiredItems && baseRaysChallengeData.loaded) {
+        if (!jwtToken) {
+          setUserError(true)
+          return
+        }
+        updateDailyRays()
       }
     })
   }
@@ -159,39 +175,45 @@ export const PortfolioDailyRays = ({
             borderRadius: 'round',
           }}
         >
-          <Button
-            variant="outlineSmall"
-            disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed || isAddingPoints}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              mt: 3,
-              transition: 'box-shadow 0.5s cubic-bezier(0,1.81,.41,1.37)',
-              userSelect: 'none',
-              boxShadow: isExploding
-                ? '-10px -6px 14px -8px #007da3,14px -8px 15px -8px #e7a77f,-11px 14px 15px -14px #e97047'
-                : '0px',
-              animation: 'animateGradient 10s infinite linear alternate',
-              ...getGradientColor(summerBrandGradient),
-              backgroundSize: '400px',
-              '@keyframes animateGradient': {
-                '0%': {
-                  backgroundPositionX: '50px',
+          {jwtToken ? (
+            <Button
+              variant="outlineSmall"
+              disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed || isAddingPoints}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mt: 3,
+                transition: 'box-shadow 0.5s cubic-bezier(0,1.81,.41,1.37)',
+                userSelect: 'none',
+                boxShadow: isExploding
+                  ? '-10px -6px 14px -8px #007da3,14px -8px 15px -8px #e7a77f,-11px 14px 15px -14px #e97047'
+                  : '0px',
+                animation: 'animateGradient 10s infinite linear alternate',
+                ...getGradientColor(summerBrandGradient),
+                backgroundSize: '400px',
+                '@keyframes animateGradient': {
+                  '0%': {
+                    backgroundPositionX: '50px',
+                  },
+                  '100%': {
+                    backgroundPositionX: '-160px',
+                  },
                 },
-                '100%': {
-                  backgroundPositionX: '-160px',
-                },
-              },
-            }}
-            onClick={
-              requiredItems && !baseRaysChallengeData?.alreadyClaimed
-                ? explodeRaysHandler
-                : () => null
-            }
-          >
-            <Icon icon={rays} color="primary60" sx={{ mr: 3 }} />
-            Claim {dailyRaysAmount} Rays now
-          </Button>
+              }}
+              onClick={
+                requiredItems && !baseRaysChallengeData?.alreadyClaimed
+                  ? explodeRaysHandler
+                  : () => null
+              }
+            >
+              <Icon icon={rays} color="primary60" sx={{ mr: 3 }} />
+              Claim {dailyRaysAmount} Rays now
+            </Button>
+          ) : (
+            <FunctionalContextHandler>
+              <SignTosComponent wallet={wallet?.address} />
+            </FunctionalContextHandler>
+          )}
         </Box>
         {userError && (
           <Text as="p" variant="paragraph3" color="warning100" sx={{ mt: 3 }}>

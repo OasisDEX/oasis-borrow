@@ -12,7 +12,7 @@ import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { fadeIn } from 'theme/animations'
 import { checkmark } from 'theme/icons'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
@@ -184,11 +184,23 @@ const hiddenStages: TermsAcceptanceStage[] = [
   'acceptanceCheckInProgress',
 ]
 
-export function TermsOfService({ userReferral }: { userReferral?: UserReferralState }) {
+export function TermsOfService({
+  userReferral,
+  refreshAfterSign,
+}: {
+  userReferral?: UserReferralState
+  refreshAfterSign?: boolean
+}) {
   const { termsAcceptance$ } = useTOSContext()
   const [termsAcceptance] = useObservable(termsAcceptance$)
 
   const { disconnect, wallet } = useWalletManagement()
+
+  useEffect(() => {
+    if (refreshAfterSign && termsAcceptance?.stage === 'acceptanceAccepted') {
+      window.location.reload()
+    }
+  }, [refreshAfterSign, termsAcceptance])
 
   if (
     userReferral?.state === 'newUser' &&

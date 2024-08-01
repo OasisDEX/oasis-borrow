@@ -8,8 +8,8 @@ export const getRaysDailyChallengeDateFormat = () => dayjs().format('YYYY-MM-DD'
 export const getDailyChallengeMessage = () =>
   `Claiming my ${dailyRaysAmount} $RAYS daily challenge for ${getRaysDailyChallengeDateFormat()}`
 
-export const explodeRays = () => {
-  const iconsCount = 50
+export const explodeRays = (smallExplosion: boolean) => {
+  const iconsCount = smallExplosion ? 10 : 70
   // needs claim-rays container
   // currently positioned only for portfolio
   const raysContainer = document.getElementById('claim-rays')
