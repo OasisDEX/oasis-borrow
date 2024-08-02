@@ -1,8 +1,4 @@
-import {
-  getDailyChallengeMessage,
-  getRaysDailyChallengeData,
-  getRaysDailyChallengeDateFormat,
-} from 'helpers/dailyRays'
+import { getRaysDailyChallengeData, getRaysDailyChallengeDateFormat } from 'helpers/dailyRays'
 import type { NextApiHandler } from 'next'
 import { prisma } from 'server/prisma'
 
@@ -18,7 +14,6 @@ export const dailyRaysGetHandler: NextApiHandler = async (req, res) => {
   const calculatedData = getRaysDailyChallengeData(dailyChallengeData?.claimed_dates)
   return res.status(200).json({
     ...calculatedData,
-    message: getDailyChallengeMessage(),
     alreadyClaimed: dailyChallengeData?.claimed_dates.includes(getRaysDailyChallengeDateFormat()),
   })
 }
