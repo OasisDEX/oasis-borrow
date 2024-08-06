@@ -20,7 +20,7 @@ import { useObservable } from 'helpers/observableHook'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import type { ChangeEvent } from 'react'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { chevron_down, chevron_up, dai_color, settings, sign_out } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
@@ -312,10 +312,37 @@ function WalletInfo() {
 export function UserSettings({ sx }: { sx?: ThemeUIStyleObject }) {
   const { t } = useTranslation()
   const { disconnect } = useWalletManagement()
+  const [holdingShift, setHoldingShift] = useState(false)
 
-  const disconnectCallback = useCallback(async () => {
-    disconnect()
-  }, [disconnect])
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Shift') {
+        setHoldingShift(true)
+      }
+    }
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'Shift') {
+        setHoldingShift(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [])
+
+  const disconnectCallback = useCallback(
+    async (clearStorage: boolean) => {
+      disconnect()
+      clearStorage && localStorage.clear()
+    },
+    [disconnect],
+  )
 
   return (
     <Box sx={sx}>
@@ -346,12 +373,20 @@ export function UserSettings({ sx }: { sx?: ThemeUIStyleObject }) {
           alignItems: 'center',
         }}
         onClick={async () => {
-          await disconnectCallback()
+          await disconnectCallback(holdingShift)
         }}
       >
-        <Icon icon={sign_out} color="primary60" size="auto" width={20} />
-        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primary60', ml: 2 }}>
-          {t('disconnect-wallet')}
+        <Icon
+          icon={sign_out}
+          color={holdingShift ? 'warning100' : 'primary60'}
+          size="auto"
+          width={20}
+        />
+        <Text
+          variant="paragraph3"
+          sx={{ fontWeight: 'medium', color: holdingShift ? 'warning100' : 'primary60', ml: 2 }}
+        >
+          {holdingShift ? t('disconnect-wallet-and-clear-data') : t('disconnect-wallet')}
         </Text>
       </Button>
       <Flex
