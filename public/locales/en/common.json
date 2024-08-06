@@ -194,6 +194,7 @@
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
+  "disconnect-wallet-and-clear-data": "Clear all data and Disconnect Wallet",
   "discover": {
     "heading": "Discover Summer.fi",
     "intro": "Discover and find the most interesting Vaults on Summer.fi in real-time.",
