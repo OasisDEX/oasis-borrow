@@ -1,5 +1,9 @@
 import { RiskRatio } from '@oasisdex/dma-library'
-import type { ILendingPoolId, IPositionId, PositionType } from '@summer_fi/summerfi-sdk-common'
+import type {
+  ILendingPoolId,
+  ILendingPositionId,
+  LendingPositionType,
+} from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { networkNameToIdMap } from 'blockchain/networks'
@@ -65,10 +69,10 @@ export const getRefinanceContextInput = ({
   maxLtv: string
   automations: RefinanceContextInputAutomations
   contextId: string
-  positionId: IPositionId
+  positionId: ILendingPositionId
   owner: string | undefined
   isOwner: boolean
-  positionType: PositionType
+  positionType: LendingPositionType
   dpm?: DpmRefinanceFormState
 }): RefinanceContextInput => {
   const chainId = networkNameToIdMap[network]

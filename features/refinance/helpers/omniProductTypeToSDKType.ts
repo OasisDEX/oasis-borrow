@@ -1,14 +1,14 @@
-import { PositionType } from '@summer_fi/summerfi-sdk-common'
+import { LendingPositionType } from '@summer_fi/summerfi-sdk-common'
 import { OmniProductType } from 'features/omni-kit/types'
 
-export const omniProductTypeToSDKType = (type: OmniProductType): PositionType => {
+export const omniProductTypeToSDKType = (type: OmniProductType): LendingPositionType => {
   switch (type) {
     case OmniProductType.Borrow:
-      return PositionType.Borrow
+      return LendingPositionType.Borrow
     case OmniProductType.Multiply:
-      return PositionType.Multiply
+      return LendingPositionType.Multiply
     case OmniProductType.Earn:
-      return PositionType.Earn
+      return LendingPositionType.Earn
     default:
       throw new Error(`Unknown vault type: ${type}`)
   }

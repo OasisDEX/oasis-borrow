@@ -90,8 +90,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         ltv: resolvedSimulation?.maxRiskRatio.loanToValue || position.maxRiskRatio.loanToValue,
       })
 
-      const refinanceBanner =
-        !isOpening && networkId === NetworkIds.MAINNET ? useOmniRefinanceBanner() : undefined
+      const refinanceBanner = !isOpening ? useOmniRefinanceBanner() : undefined
 
       return {
         notifications,

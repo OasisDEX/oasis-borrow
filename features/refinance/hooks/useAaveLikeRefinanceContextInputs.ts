@@ -1,5 +1,5 @@
 import type { AaveLikePositionV2, LendingPosition } from '@oasisdex/dma-library'
-import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
+import { getChainInfoByChainId, type LendingPositionType } from '@summer_fi/summerfi-sdk-common'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
@@ -42,7 +42,7 @@ export const useAaveLikeRefinanceContextInputs = ({
   debtPrice: string
   ethPrice: string
   isOwner: boolean
-  positionType: PositionType
+  positionType: LendingPositionType
   pairId: number
   owner: string
   triggerData: GetTriggersResponse

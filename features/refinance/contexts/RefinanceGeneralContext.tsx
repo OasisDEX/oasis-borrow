@@ -3,10 +3,10 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type {
   AddressValue,
   ChainInfo,
+  ILendingPositionId,
   IPoolId,
   ITokenAmount,
-  PositionId,
-  PositionType,
+  LendingPositionType,
 } from '@summer_fi/summerfi-sdk-common'
 import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { OmniGeneralContextTx } from 'features/omni-kit/contexts'
@@ -62,12 +62,12 @@ export type RefinanceContextInput = {
     isOwner: boolean
   }
   position: {
-    positionId: PositionId
+    positionId: ILendingPositionId
     collateralAmount: string
     debtAmount: string
     liquidationPrice: string
     ltv: RiskRatio
-    positionType: PositionType
+    positionType: LendingPositionType
     lendingProtocol: LendingProtocol
     borrowRate: string
     supplyRate: string
@@ -92,12 +92,12 @@ export type RefinanceGeneralContextBase = {
     getTokenUsdPrice: (symbol: string) => string
   }
   position: {
-    positionId: PositionId
+    positionId: ILendingPositionId
     collateralTokenData: ITokenAmount
     debtTokenData: ITokenAmount
     liquidationPrice: string
     ltv: RiskRatio
-    positionType: PositionType
+    positionType: LendingPositionType
     isShort: boolean
     lendingProtocol: LendingProtocol
     borrowRate: string

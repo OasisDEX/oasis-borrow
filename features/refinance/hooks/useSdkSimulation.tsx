@@ -1,19 +1,21 @@
-import type { Chain, ProtocolClient, User } from '@summer_fi/summerfi-sdk-client'
+import type { Chain, UserClient } from '@summer_fi/summerfi-sdk-client'
 import { makeSDK, PositionUtils } from '@summer_fi/summerfi-sdk-client'
 import type {
   IImportPositionParameters,
   ILendingPoolInfo,
+  ImportSimulation,
   IPosition,
-  IRefinanceParameters,
-  ISimulation,
-  Maybe,
-  SimulationType,
+  RefinanceSimulation,
 } from '@summer_fi/summerfi-sdk-common'
 import {
   Address,
-  ExternalPositionType,
+  ExternalLendingPosition,
+  ExternalLendingPositionId,
+  ExternalLendingPositionType,
+  ImportPositionParameters,
   Percentage,
   ProtocolName,
+  RefinanceParameters,
 } from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import { getTokenPrice } from 'blockchain/prices'
@@ -21,6 +23,7 @@ import { tokenPriceStore } from 'blockchain/prices.constants'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { useRefinanceGeneralContext } from 'features/refinance/contexts'
 import { getPosition } from 'features/refinance/helpers/getPosition'
+import { getProtocol } from 'features/refinance/helpers/getProtocol'
 import { getProtocolNameByLendingProtocol } from 'features/refinance/helpers/getProtocolNameByLendingProtocol'
 import { getTargetPoolId } from 'features/refinance/helpers/getTargetPoolId'
 import {
@@ -33,10 +36,10 @@ import { useEffect, useMemo, useState } from 'react'
 export type SDKSimulation = {
   error: string | null
   chain: Chain | null
-  user: User | null
+  user: UserClient | null
   sourcePosition: IPosition | null
-  importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
-  refinanceSimulation: ISimulation<SimulationType.Refinance> | null
+  refinanceSimulation: RefinanceSimulation | null
+  importPositionSimulation: ImportSimulation | null
   liquidationPrice: string
   liquidationThreshold: Percentage | null
   debtPrice: string | null
@@ -46,13 +49,13 @@ export type SDKSimulation = {
 
 export function useSdkSimulation(): SDKSimulation {
   const [error, setError] = useState<null | string>(null)
-  const [user, setUser] = useState<null | User>(null)
+  const [user, setUser] = useState<null | UserClient>(null)
   const [chain, setChain] = useState<null | Chain>(null)
   const [sourcePosition, setSourcePosition] = useState<null | IPosition>(null)
-  const [refinanceSimulation, setRefinanceSimulation] =
-    useState<null | ISimulation<SimulationType.Refinance>>(null)
-  const [importPositionSimulation, setImportPositionSimulation] =
-    useState<null | ISimulation<SimulationType.ImportPosition>>(null)
+  const [refinanceSimulation, setRefinanceSimulation] = useState<null | RefinanceSimulation>(null)
+  const [importPositionSimulation, setImportPositionSimulation] = useState<null | ImportSimulation>(
+    null,
+  )
   const [liquidationPrice, setLiquidationPrice] = useState<string>('')
   const [liquidationThreshold, setLiquidationThreshold] = useState<Percentage | null>(null)
   const [debtPrice, setDebtPrice] = useState<string | null>(null)
@@ -133,26 +136,22 @@ export function useSdkSimulation(): SDKSimulation {
         throw new Error(`ChainId ${chainInfo.chainId} is not found`)
       }
       setChain(_chain)
-      const sourceProtocol: Maybe<ProtocolClient> = await _chain.protocols.getProtocol({
-        name: sourceProtocolName,
-      })
-      if (!sourceProtocol) {
-        throw new Error(`Protocol ${sourceProtocolName} is not found`)
-      }
 
       const sourcePoolId = replacePoolIdETHWithWETH(poolId)
 
-      const targetProtocol: Maybe<ProtocolClient> = await _chain.protocols.getProtocol({
-        name: targetProtocolName,
+      const targetProtocol = getProtocol({
+        protocolName: targetProtocolName,
+        chainInfo,
       })
       if (!targetProtocol) {
         throw new Error(`Protocol ${targetProtocolName} is not found`)
       }
       const targetPoolId = getTargetPoolId(targetProtocol, ctx)
+
       const [sourcePool, targetPool, targetPoolInfo] = await Promise.all([
-        sourceProtocol.getLendingPool({ poolId: sourcePoolId }),
-        targetProtocol.getLendingPool({ poolId: targetPoolId }),
-        targetProtocol.getLendingPoolInfo({ poolId: targetPoolId }),
+        _chain.protocols.getLendingPool({ poolId: sourcePoolId }),
+        _chain.protocols.getLendingPool({ poolId: targetPoolId }),
+        _chain.protocols.getLendingPoolInfo({ poolId: targetPoolId }),
       ])
 
       const _sourcePosition = getPosition(sourceProtocolName, {
@@ -172,11 +171,11 @@ export function useSdkSimulation(): SDKSimulation {
       }
       setLiquidationThreshold(_targetLiquidationThreshold)
 
-      const refinanceParameters: IRefinanceParameters = {
+      const refinanceParameters = RefinanceParameters.createFrom({
         sourcePosition: _sourcePosition,
         targetPool: targetPool,
         slippage: Percentage.createFrom({ value: slippage * 100 }),
-      }
+      })
 
       const _refinanceSimulation =
         await sdk.simulator.refinance.simulateRefinancePosition(refinanceParameters)
@@ -184,17 +183,23 @@ export function useSdkSimulation(): SDKSimulation {
 
       const isMaker = poolId.protocol.name === ProtocolName.Maker
       if (isMaker) {
-        const importPositionParameters: IImportPositionParameters = {
-          externalPosition: {
-            position: _sourcePosition,
-            externalId: {
-              address: Address.createFromEthereum({
-                value: owner as `0x${string}`,
+        const importPositionParameters: IImportPositionParameters =
+          ImportPositionParameters.createFrom({
+            externalPosition: ExternalLendingPosition.createFrom({
+              ..._sourcePosition,
+              id: ExternalLendingPositionId.createFrom({
+                id: 'test',
+                externalType: ExternalLendingPositionType.DS_PROXY,
+                address: Address.createFromEthereum({
+                  value: owner as `0x${string}`,
+                }),
+                protocolId: positionId,
               }),
-              type: ExternalPositionType.DS_PROXY,
-            },
-          },
-        }
+            }),
+            // externalId: {
+            //
+            // },
+          })
         const _importPositionSimulation =
           await sdk.simulator.importing.simulateImportPosition(importPositionParameters)
         setImportPositionSimulation(_importPositionSimulation)

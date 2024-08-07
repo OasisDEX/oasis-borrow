@@ -1,4 +1,4 @@
-import { getChainInfoByChainId, type PositionType } from '@summer_fi/summerfi-sdk-common'
+import { getChainInfoByChainId, type LendingPositionType } from '@summer_fi/summerfi-sdk-common'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
@@ -41,7 +41,7 @@ export const useMakerRefinanceContextInputs = ({
   maxLtv: string
   ilkType: string
   isOwner: boolean
-  positionType: PositionType
+  positionType: LendingPositionType
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 

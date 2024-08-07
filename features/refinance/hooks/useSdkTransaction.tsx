@@ -1,5 +1,5 @@
 import { makeSDK } from '@summer_fi/summerfi-sdk-client'
-import type { ISimulation, Order, SimulationType } from '@summer_fi/summerfi-sdk-common'
+import type { ImportSimulation, Order, RefinanceSimulation } from '@summer_fi/summerfi-sdk-common'
 import { Address, AddressType, PositionsManager, Wallet } from '@summer_fi/summerfi-sdk-common'
 import { useRefinanceContext } from 'features/refinance/contexts'
 import { RefinanceSidebarStep } from 'features/refinance/types'
@@ -10,8 +10,8 @@ export function useSdkRefinanceTransaction({
   refinanceSimulation,
   importPositionSimulation,
 }: {
-  refinanceSimulation: ISimulation<SimulationType.Refinance> | null
-  importPositionSimulation: ISimulation<SimulationType.ImportPosition> | null
+  refinanceSimulation: RefinanceSimulation | null
+  importPositionSimulation: ImportSimulation | null
 }) {
   const [error, setError] = useState<null | string>(null)
   const [txImportPosition, setTxImportPosition] = useState<null | Order>(null)

@@ -1,7 +1,7 @@
-import { MakerPositionId } from '@summer_fi/summerfi-sdk-client'
+import { MakerLendingPositionId } from '@summer_fi/summerfi-sdk-client'
 
 export const getMakerPositionId = (vaultId: string) => {
-  return MakerPositionId.createFrom({
+  return MakerLendingPositionId.createFrom({
     id: vaultId,
     vaultId,
   })

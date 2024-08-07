@@ -94,9 +94,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
 
       // aave v2 is not allowed for refinance
       const refinanceBanner =
-        [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol) &&
-        !isOpening &&
-        network.id === NetworkIds.MAINNET
+        [LendingProtocol.AaveV3, LendingProtocol.SparkV3].includes(protocol) && !isOpening
           ? useOmniRefinanceBanner()
           : undefined
 

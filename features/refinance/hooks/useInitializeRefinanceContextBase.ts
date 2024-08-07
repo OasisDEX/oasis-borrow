@@ -145,10 +145,11 @@ export const useInitializeRefinanceContextBase = ({
     }
   }
 
-  const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
   if (!type) {
     throw new Error('Unsupported position type')
   }
+
+  const isShort = isShortPosition({ collateralToken: collateralTokenSymbol })
 
   const ctx: RefinanceGeneralContextBase = {
     metadata: {

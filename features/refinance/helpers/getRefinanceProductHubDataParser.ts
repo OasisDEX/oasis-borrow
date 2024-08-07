@@ -124,6 +124,7 @@ export const getRefinanceProductHubDataParser = ({
     debtAmount,
     debtToken,
   })
+  console.log('table', table)
 
   // Overwrite borrow rates from PH (which are per pool, not per position) for aave-like protocols
   const borrowRatesMapped = borrowRateMapping({
