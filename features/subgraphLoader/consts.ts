@@ -711,8 +711,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         kind
         timestamp
         txHash
-        repaidAssets
-        quoteRepaid
+        debtDelta
+        collateralDelta
       }
     }
   `,

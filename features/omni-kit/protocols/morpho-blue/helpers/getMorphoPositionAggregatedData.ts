@@ -1,7 +1,7 @@
 import { mapMorphoLiquidationResponseEvent } from 'features/omni-kit/protocols/morpho-blue/history/mapMorphoLiquidationResponseEvent'
-import { morphoDefaultHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/morphoDefaultHistoryEvent'
 import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { unifiedDefaultHistoryItem } from 'features/positionHistory/consts'
 import { getAutomationEvents } from 'features/positionHistory/helpers'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
@@ -46,16 +46,16 @@ export const getMorpoPositionAggregatedData = async (
 
   const history = [
     ...response.summerEvents.map((event) => ({
-      ...morphoDefaultHistoryEvent,
+      ...unifiedDefaultHistoryItem,
       ...mapPositionHistoryResponseEvent(event),
     })),
     ...response.borrowerEvents
       .filter((event) => event.kind === 'Liquidate')
       .map((event) => ({
-        ...morphoDefaultHistoryEvent,
+        ...unifiedDefaultHistoryItem,
         ...mapMorphoLiquidationResponseEvent(event),
       })),
-    ...automationEvents.map((item) => ({ ...morphoDefaultHistoryEvent, ...item })),
+    ...automationEvents.map((item) => ({ ...unifiedDefaultHistoryItem, ...item })),
   ].sort((a, b) => b.timestamp - a.timestamp)
 
   // assumption that when liquidation happen there won't be any events afterward

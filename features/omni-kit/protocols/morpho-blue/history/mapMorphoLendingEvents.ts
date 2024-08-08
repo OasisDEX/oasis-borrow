@@ -91,8 +91,8 @@ export const mapMorphoLendingEvents = (
           kind: event.kind,
           txHash: event.txHash,
           timestamp: event.timestamp,
-          quoteRepaid: event.quoteRepaid,
-          repaidAssets: event.repaidAssets,
+          debtDelta: event.debtDelta,
+          collateralDelta: event.collateralDelta,
         }
       }
       default: {
