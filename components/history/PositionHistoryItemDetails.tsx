@@ -278,13 +278,13 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       )}
       {isOracless && 'totalFeeInQuoteToken' in event && event.totalFeeInQuoteToken && (
         <PositionHistoryRow label={t('position-history.total-fees')}>
-          {formatFiatBalance(event.totalFeeInQuoteToken)} {quoteToken}
+          {formatCryptoBalance(event.totalFeeInQuoteToken)} {quoteToken}
         </PositionHistoryRow>
       )}
       {/* AUCTION events */}
       {'remainingCollateral' in event && event.remainingCollateral && (
         <PositionHistoryRow label={t('position-history.remaining-collateral')}>
-          {formatFiatBalance(event.remainingCollateral)} {collateralToken}
+          {formatCryptoBalance(event.remainingCollateral)} {collateralToken}
         </PositionHistoryRow>
       )}
       {'debtToCover' in event && event.debtToCover && (
@@ -294,17 +294,17 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       )}
       {'collateralForLiquidation' in event && event.collateralForLiquidation && (
         <PositionHistoryRow label={t('position-history.collateral-for-liquidation')}>
-          {formatFiatBalance(event.collateralForLiquidation)} {collateralToken}
+          {formatCryptoBalance(event.collateralForLiquidation)} {collateralToken}
         </PositionHistoryRow>
       )}
-      {'repaidAssets' in event && event.repaidAssets && (
+      {'collateralDelta' in event && event.collateralDelta && (
         <PositionHistoryRow label={t('position-history.sold')}>
-          {formatFiatBalance(event.repaidAssets)} {collateralToken}
+          {formatCryptoBalance(event.collateralDelta)} {collateralToken}
         </PositionHistoryRow>
       )}
-      {'quoteRepaid' in event && event.quoteRepaid && (
+      {'debtDelta' in event && event.debtDelta && (
         <PositionHistoryRow label={t('position-history.repaid')}>
-          {formatFiatBalance(event.quoteRepaid)} {quoteToken}
+          {formatCryptoBalance(event.debtDelta)} {quoteToken}
         </PositionHistoryRow>
       )}
     </DefinitionList>
