@@ -1,4 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
+import { withPreflightHandler } from 'helpers/api/withPreflightHandler'
 import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { AppConfigType } from 'types/config'
@@ -106,4 +107,4 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   return res.status(200).send(resolvedResponse)
 }
 
-export default rpc
+export default withPreflightHandler(rpc)

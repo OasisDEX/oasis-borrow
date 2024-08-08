@@ -167,6 +167,8 @@ const baseConfig = {
           { key: 'X-Frame-Options', value: 'ALLOW' },
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'same-origin' },
+          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type' },
         ],
       },
     ]

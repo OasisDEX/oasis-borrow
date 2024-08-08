@@ -6,7 +6,6 @@ import { tosContext } from 'components/context/TOSContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
-import { jwtAuthGetToken } from 'features/shared/jwt'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -64,19 +63,16 @@ export function ReferralLanding({ context, userReferral }: Props) {
     const { hasAccepted, isReferred } = upsertUser
 
     if (userReferral && connectedAccount) {
-      const jwtToken = jwtAuthGetToken(connectedAccount)
-      if (jwtToken)
-        createUserUsingApi$(
-          hasAccepted,
-          isReferred ? userReferral.referrer : null,
-          connectedAccount,
-          jwtToken,
-        ).subscribe((res) => {
-          if (res === 200) {
-            userReferral.trigger()
-            replace(`/referrals/${connectedAccount}`)
-          }
-        })
+      createUserUsingApi$(
+        hasAccepted,
+        isReferred ? userReferral.referrer : null,
+        connectedAccount,
+      ).subscribe((res) => {
+        if (res === 200) {
+          userReferral.trigger()
+          replace(`/referrals/${connectedAccount}`)
+        }
+      })
     }
   }
 

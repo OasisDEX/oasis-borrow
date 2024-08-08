@@ -1,4 +1,3 @@
-import { jwtAuthGetToken } from 'features/shared/jwt'
 import type { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance.types'
 import type { Web3Context } from 'features/web3Context'
 import type { Observable } from 'rxjs'
@@ -24,10 +23,10 @@ export function createWalletAssociatedRisk$(
             return of(undefined)
           }
 
-          const jwtToken = jwtAuthGetToken(web3Context.account)
           const chainId = web3Context.chainId
+          const walletAddress = web3Context.account
 
-          return getWalletRisk$(jwtToken!, chainId).pipe(map((riskData) => riskData))
+          return getWalletRisk$(chainId, walletAddress).pipe(map((riskData) => riskData))
         }),
       )
     }),

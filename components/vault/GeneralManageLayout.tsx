@@ -3,7 +3,6 @@ import type { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
-import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
@@ -18,15 +17,10 @@ import { GeneralManageTabBar } from './GeneralManageTabBar'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
-  followButton?: FollowButtonControlProps
   chainId: NetworkIds
 }
 
-export function GeneralManageLayout({
-  generalManageVault,
-  followButton,
-  chainId,
-}: GeneralManageLayoutProps) {
+export function GeneralManageLayout({ generalManageVault, chainId }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo, account } = generalManageVault.state
   const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
@@ -35,19 +29,13 @@ export function GeneralManageLayout({
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
-      <GuniVaultHeader
-        token={ilkData.token}
-        ilk={ilkData.ilk}
-        followButton={followButton}
-        shareButton
-      />
+      <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} shareButton />
     ) : (
       <DefaultVaultHeadline
         header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
         token={[vault.token]}
         priceInfo={priceInfo}
         colRatio={colRatioPercnentage}
-        followButton={followButton}
         shareButton
       />
     )

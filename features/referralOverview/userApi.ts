@@ -133,14 +133,12 @@ export function createUserUsingApi$(
   accepted: boolean,
   referrer: string | null,
   address: string,
-  token: string,
 ): Observable<number> {
   return ajax({
     url: `/api/user/create`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
     },
     body: {
       user_that_referred_address: referrer,

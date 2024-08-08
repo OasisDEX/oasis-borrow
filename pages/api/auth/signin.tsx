@@ -1,4 +1,5 @@
 import { makeSignIn } from 'handlers/signature-auth/signin'
+import { withPreflightHandler } from 'helpers/api/withPreflightHandler'
 import type { NextApiHandler } from 'next'
 import { config } from 'server/config'
 
@@ -14,4 +15,4 @@ const handler: NextApiHandler = async (req, res) => {
   }
 }
 
-export default handler
+export default withPreflightHandler(handler)
