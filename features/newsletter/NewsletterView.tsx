@@ -4,6 +4,7 @@ import { isMainContextAvailable } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { useAppConfig } from 'helpers/config'
 import { Trans, useTranslation } from 'next-i18next'
 import type { FormEvent } from 'react'
 import React, { useEffect, useState } from 'react'
@@ -88,6 +89,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
 }
 
 function NewsletterForm({ small }: { small?: boolean }) {
+  const { Newsletter } = useAppConfig('features')
   const [inputOnFocus, setInputOnFocus] = useState(false)
   const [gdprBoxOnHover, setGdprBoxOnHover] = useState(false)
   const [newsletterForm, setNewsletterForm] = useState<NewsletterState | undefined>(undefined)
@@ -142,7 +144,9 @@ function NewsletterForm({ small }: { small?: boolean }) {
         }}
       >
         <Input
-          placeholder={t('newsletter.placeholder') as string}
+          placeholder={
+            Newsletter ? t('newsletter.placeholder') : t('newsletter.placeholder-disabled')
+          }
           sx={{
             bg: 'neutral10',
             borderRadius: 'inherit',
@@ -152,6 +156,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
             fontSize: small ? 2 : 3,
             lineHeight: 1.2,
           }}
+          disabled={!Newsletter}
           value={email}
           maxLength={320}
           onChange={(e) => {
@@ -179,9 +184,10 @@ function NewsletterForm({ small }: { small?: boolean }) {
             '&:hover svg': {
               transform: 'translateX(4px)',
             },
+            pointerEvents: Newsletter ? 'auto' : 'none',
           }}
           type="submit"
-          disabled={!submit}
+          disabled={!submit || !Newsletter}
         >
           {stage === 'inProgress' ? (
             <AppSpinner sx={{ color: 'primary100' }} variant="styles.spinner.large" />
