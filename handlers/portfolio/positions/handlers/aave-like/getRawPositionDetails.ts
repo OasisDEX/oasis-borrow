@@ -1,5 +1,9 @@
 import { RiskRatio } from '@oasisdex/dma-library'
-import { getChainInfoByChainId } from '@summer_fi/summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  type ILendingPoolId,
+  type ILendingPositionId,
+} from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, type NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
@@ -82,8 +86,11 @@ export function getRawPositionDetails(
     collateralToken,
     debtToken,
     emodeType,
-  )
-  const positionId = getAaveLikePositionId(lendingProtocol, dpm.vaultId)
+  ) as any as ILendingPoolId
+  const positionId = getAaveLikePositionId(
+    lendingProtocol,
+    dpm.vaultId,
+  ) as any as ILendingPositionId
 
   const rawPositionDetails: PortfolioPosition['rawPositionDetails'] = {
     collateralAmount: collateral.toString(),

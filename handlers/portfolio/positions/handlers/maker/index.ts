@@ -1,6 +1,10 @@
 import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/dma-library'
-import { getChainInfoByChainId } from '@summer_fi/summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  type ILendingPoolId,
+  type ILendingPositionId,
+} from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { amountFromRay } from 'blockchain/utils'
@@ -106,8 +110,13 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
 
           const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, primaryToken)
           const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, secondaryToken)
-          const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
-          const positionId = getMakerPositionId(cdp)
+          const poolId = getMakerPoolId(
+            chainFamily.chainInfo,
+            ilk.ilk,
+            collateralToken,
+            debtToken,
+          ) as any as ILendingPoolId
+          const positionId = getMakerPositionId(cdp) as any as ILendingPositionId
 
           const rawRaysPerYear = getPointsPerYear(netValue.toNumber())
 

@@ -14,7 +14,10 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "paths": {
-      "server/*": ["server/*"]
+      "server/*": ["server/*"],
+      "@summerfi/protocol-plugins": ["@summer_fi/summerfi-protocol-plugins"],
+      "@summerfi/sdk-client": ["@summer_fi/summerfi-sdk-client"],
+      "@summerfi/sdk-common": ["@summer_fi/summerfi-sdk-common"]
     },
     "noEmit": true,
     "esModuleInterop": true,

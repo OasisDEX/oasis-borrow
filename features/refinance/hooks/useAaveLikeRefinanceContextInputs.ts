@@ -1,5 +1,10 @@
 import type { AaveLikePositionV2, LendingPosition } from '@oasisdex/dma-library'
-import { getChainInfoByChainId, type LendingPositionType } from '@summer_fi/summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  type ILendingPoolId,
+  type ILendingPositionId,
+  type LendingPositionType,
+} from '@summer_fi/summerfi-sdk-common'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
@@ -74,9 +79,9 @@ export const useAaveLikeRefinanceContextInputs = ({
     collateralToken,
     debtToken,
     emodeType,
-  )
+  ) as any as ILendingPoolId
 
-  const positionId = getAaveLikePositionId(lendingProtocol, vaultId)
+  const positionId = getAaveLikePositionId(lendingProtocol, vaultId) as any as ILendingPositionId
 
   const flag = {
     [LendingProtocol.AaveV3]: 'aave3',

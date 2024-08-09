@@ -1,5 +1,5 @@
 import type { Vault } from '@prisma/client'
-import type { IPoolId, IPositionId } from '@summer_fi/summerfi-sdk-common'
+import type { ILendingPoolId, ILendingPositionId } from '@summer_fi/summerfi-sdk-common'
 import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
@@ -38,8 +38,8 @@ export type PortfolioPosition = {
     ltv: string
     maxLtv: string
     borrowRate: string
-    poolId: IPoolId
-    positionId: IPositionId
+    poolId: ILendingPoolId
+    positionId: ILendingPositionId
     pairId: number
     dpmAddress: string | undefined
     ownerAddress: string | undefined

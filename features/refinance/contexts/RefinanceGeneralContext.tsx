@@ -3,8 +3,8 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type {
   AddressValue,
   ChainInfo,
+  ILendingPoolId,
   ILendingPositionId,
-  IPoolId,
   ITokenAmount,
   LendingPositionType,
 } from '@summer_fi/summerfi-sdk-common'
@@ -49,7 +49,7 @@ export type RefinanceContextInputAutomations = {
 
 export type RefinanceContextInput = {
   poolData: {
-    poolId: IPoolId
+    poolId: ILendingPoolId
     collateralTokenSymbol: string
     debtTokenSymbol: string
     maxLtv: RiskRatio
@@ -109,7 +109,7 @@ export type RefinanceGeneralContextBase = {
     }
   }
   poolData: {
-    poolId: IPoolId
+    poolId: ILendingPoolId
     maxLtv: RiskRatio
     pairId: number
   }

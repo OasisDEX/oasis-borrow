@@ -1,9 +1,15 @@
 import {
   AaveV3LendingPoolId,
+  AaveV3Protocol,
+  type IAaveV3Protocol,
+  type IMorphoProtocol,
+  type ISparkProtocol,
   MorphoLendingPoolId,
+  MorphoProtocol,
   SparkLendingPoolId,
-} from '@summer_fi/summerfi-sdk-client'
-import { type IPoolId, type IProtocol, ProtocolName } from '@summer_fi/summerfi-sdk-common'
+  SparkProtocol,
+} from '@summer_fi/summerfi-protocol-plugins'
+import { type ILendingPoolId, type IProtocol, ProtocolName } from '@summer_fi/summerfi-sdk-common'
 import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { RefinanceGeneralContextBase } from 'features/refinance/contexts'
 import { getEmode } from 'features/refinance/helpers/getEmode'
@@ -12,7 +18,10 @@ import { replaceTokenSymbolETHWithWETH } from 'features/refinance/helpers/replac
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContextBase): IPoolId => {
+export const getTargetPoolId = (
+  protocol: IProtocol,
+  ctx: RefinanceGeneralContextBase,
+): ILendingPoolId => {
   const {
     environment: { chainInfo },
     form: {
@@ -39,24 +48,18 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
       throw new Error('Maker is not supported as a target protocol')
     case ProtocolName.Spark:
       return SparkLendingPoolId.createFrom({
-        protocol: {
-          name: 'Spark',
-          chainInfo,
-        },
+        protocol: SparkProtocol.createFrom({ chainInfo }) as ISparkProtocol,
         emodeType: getEmode(collateralToken, debtToken, LendingProtocol.SparkV3),
         collateralToken,
         debtToken,
-      })
+      }) as any as ILendingPoolId
     case ProtocolName.AaveV3:
       return AaveV3LendingPoolId.createFrom({
-        protocol: {
-          name: 'AaveV3',
-          chainInfo,
-        },
+        protocol: AaveV3Protocol.createFrom({ chainInfo }) as IAaveV3Protocol,
         emodeType: getEmode(collateralToken, debtToken, LendingProtocol.AaveV3),
         collateralToken,
         debtToken,
-      })
+      }) as any as ILendingPoolId
     case ProtocolName.AaveV2:
       throw new Error('AAVEv2 is not supported as a target protocol')
     case ProtocolName.MorphoBlue:
@@ -68,10 +71,14 @@ export const getTargetPoolId = (protocol: IProtocol, ctx: RefinanceGeneralContex
           `${resolvedCollateralToken}-${resolvedDebtToken}`
         ][(pairId ? Number(pairId) : 1) - 1]
 
+      if (!marketId) {
+        throw new Error(`Market ID not found for ${resolvedCollateralToken}-${resolvedDebtToken}`)
+      }
+
       return MorphoLendingPoolId.createFrom({
-        protocol,
-        marketId,
-      })
+        protocol: MorphoProtocol.createFrom({ chainInfo }) as IMorphoProtocol,
+        marketId: marketId as `0x${string}`,
+      }) as any as ILendingPoolId
 
     default:
       throw new Error(`Unsupported protocol: ${protocol.name}`)

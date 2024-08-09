@@ -1,5 +1,9 @@
 import { RiskRatio } from '@oasisdex/dma-library'
-import { getChainInfoByChainId } from '@summer_fi/summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  type ILendingPoolId,
+  type ILendingPositionId,
+} from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { getMorphoPositionId } from 'features/refinance/helpers'
@@ -43,8 +47,8 @@ export function getRawPositionDetails(
 
   const borrowRate = rate
 
-  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
-  const positionId = getMorphoPositionId(vaultId)
+  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId) as unknown as ILendingPoolId
+  const positionId = getMorphoPositionId(vaultId) as unknown as ILendingPositionId
 
   const rawPositionDetails: PortfolioPosition['rawPositionDetails'] = {
     collateralAmount: collateralAmount.toString(),

@@ -1,5 +1,10 @@
 import type { LendingPosition, MorphoBluePosition } from '@oasisdex/dma-library'
-import { getChainInfoByChainId, type LendingPositionType } from '@summer_fi/summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  type ILendingPoolId,
+  type ILendingPositionId,
+  type LendingPositionType,
+} from '@summer_fi/summerfi-sdk-common'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import type { RefinanceContextInput } from 'features/refinance/contexts/RefinanceGeneralContext'
@@ -66,8 +71,8 @@ export const useMorphoRefinanceContextInputs = ({
     throw new Error(`Dpm proxy not defined`)
   }
 
-  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId)
-  const positionId = getMorphoPositionId(vaultId)
+  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId) as any as ILendingPoolId
+  const positionId = getMorphoPositionId(vaultId) as any as ILendingPositionId
 
   const morphoTriggerId: `morphoblue-${string}` = `morphoblue-${marketId}`
 

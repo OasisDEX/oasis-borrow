@@ -1,9 +1,13 @@
 import {
   AaveV3LendingPoolId,
+  AaveV3Protocol,
   type EmodeType,
+  type IAaveV3Protocol,
+  type ISparkProtocol,
   SparkLendingPoolId,
-} from '@summer_fi/summerfi-sdk-client'
-import { type ChainInfo, type IToken, ProtocolName } from '@summer_fi/summerfi-sdk-common'
+  SparkProtocol,
+} from '@summer_fi/summerfi-protocol-plugins'
+import { type ChainInfo, type IToken } from '@summer_fi/summerfi-sdk-common'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const getAaveLikePoolId = (
@@ -16,20 +20,18 @@ export const getAaveLikePoolId = (
   switch (lendingProtocol) {
     case LendingProtocol.AaveV3:
       return AaveV3LendingPoolId.createFrom({
-        protocol: {
-          name: ProtocolName.AaveV3,
+        protocol: AaveV3Protocol.createFrom({
           chainInfo,
-        },
+        }) as IAaveV3Protocol,
         collateralToken,
         debtToken,
         emodeType,
       })
     case LendingProtocol.SparkV3:
       return SparkLendingPoolId.createFrom({
-        protocol: {
-          name: ProtocolName.Spark,
+        protocol: SparkProtocol.createFrom({
           chainInfo,
-        },
+        }) as ISparkProtocol,
         collateralToken,
         debtToken,
         emodeType,

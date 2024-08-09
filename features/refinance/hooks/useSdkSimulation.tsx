@@ -14,6 +14,7 @@ import {
   ExternalLendingPositionType,
   ImportPositionParameters,
   Percentage,
+  PositionType,
   ProtocolName,
   RefinanceParameters,
 } from '@summer_fi/summerfi-sdk-common'
@@ -159,7 +160,8 @@ export function useSdkSimulation(): SDKSimulation {
         pool: sourcePool,
         collateralAmount: replaceTokenAmountETHWithWETH(collateralTokenData),
         debtAmount: replaceTokenAmountETHWithWETH(debtTokenData),
-        type: positionType,
+        type: PositionType.Lending,
+        subtype: positionType,
       })
       setSourcePosition(_sourcePosition)
 

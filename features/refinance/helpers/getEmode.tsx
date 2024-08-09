@@ -1,4 +1,4 @@
-import { EmodeType } from '@summer_fi/summerfi-sdk-client'
+import { EmodeType } from '@summer_fi/summerfi-protocol-plugins'
 import type { IToken } from '@summer_fi/summerfi-sdk-common'
 import { emodeEthCorrelatedTokensUpperCase } from 'features/refinance/emodeEthCorrelatedTokens'
 import { emodeStablecoinTokensSparkUpperCase } from 'features/refinance/emodeStablecoinTokens'

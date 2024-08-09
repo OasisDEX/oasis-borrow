@@ -1,5 +1,10 @@
-import { MakerLendingPoolId } from '@summer_fi/summerfi-sdk-client'
-import { type ChainInfo, type IToken, ProtocolName } from '@summer_fi/summerfi-sdk-common'
+import {
+  type ILKType,
+  type IMakerProtocol,
+  MakerLendingPoolId,
+  MakerProtocol,
+} from '@summer_fi/summerfi-protocol-plugins'
+import { type ChainInfo, type IToken } from '@summer_fi/summerfi-sdk-common'
 
 export const getMakerPoolId = (
   chainInfo: ChainInfo,
@@ -8,11 +13,10 @@ export const getMakerPoolId = (
   debtToken: IToken,
 ) => {
   return MakerLendingPoolId.createFrom({
-    protocol: {
-      name: ProtocolName.Maker,
-      chainInfo,
-    },
-    ilkType,
+    protocol: MakerProtocol.createFrom({
+      chainInfo: chainInfo,
+    }) as any as IMakerProtocol,
+    ilkType: ilkType as ILKType,
     collateralToken,
     debtToken,
   })

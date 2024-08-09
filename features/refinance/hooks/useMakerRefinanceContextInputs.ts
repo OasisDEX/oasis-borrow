@@ -1,4 +1,9 @@
-import { getChainInfoByChainId, type LendingPositionType } from '@summer_fi/summerfi-sdk-common'
+import {
+  getChainInfoByChainId,
+  type ILendingPoolId,
+  type ILendingPositionId,
+  type LendingPositionType,
+} from '@summer_fi/summerfi-sdk-common'
 import type { NetworkIds } from 'blockchain/networks'
 import { getNetworkById } from 'blockchain/networks'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
@@ -53,8 +58,13 @@ export const useMakerRefinanceContextInputs = ({
   const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
   const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
 
-  const poolId = getMakerPoolId(chainFamily.chainInfo, ilkType, collateralToken, debtToken)
-  const positionId = getMakerPositionId(id)
+  const poolId = getMakerPoolId(
+    chainFamily.chainInfo,
+    ilkType,
+    collateralToken,
+    debtToken,
+  ) as any as ILendingPoolId
+  const positionId = getMakerPositionId(id) as any as ILendingPositionId
 
   const automations = {
     stopLoss: {
