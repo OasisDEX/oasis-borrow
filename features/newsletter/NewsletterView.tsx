@@ -57,6 +57,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
         </Flex>
         <Box sx={{ flex: 1, ml: 3, textAlign: 'center' }}>
           <Text
+            as="p"
             sx={{
               color: 'neutral80',
               fontSize: small ? 1 : 3,
@@ -67,6 +68,18 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
             }}
           >
             {t('newsletter.success')}
+          </Text>
+          <Text
+            as="p"
+            sx={{
+              color: 'neutral80',
+              fontSize: small ? 1 : 3,
+              py: 1,
+              maxWidth: '32em',
+              textAlign: 'left',
+            }}
+          >
+            {t('newsletter.success-info')}
           </Text>
         </Box>
       </Box>
@@ -126,11 +139,10 @@ function NewsletterForm({ small }: { small?: boolean }) {
           height: small ? '38px' : 'initial',
           justifyContent: 'space-between',
           px: 2,
-          opacity: 0.7,
         }}
       >
         <Input
-          placeholder={t('newsletter.placeholder-disabled') as string}
+          placeholder={t('newsletter.placeholder') as string}
           sx={{
             bg: 'neutral10',
             borderRadius: 'inherit',
@@ -142,7 +154,6 @@ function NewsletterForm({ small }: { small?: boolean }) {
           }}
           value={email}
           maxLength={320}
-          disabled
           onChange={(e) => {
             change({ kind: 'email', email: e.target.value })
           }}
@@ -168,10 +179,9 @@ function NewsletterForm({ small }: { small?: boolean }) {
             '&:hover svg': {
               transform: 'translateX(4px)',
             },
-            pointerEvents: 'none',
           }}
           type="submit"
-          disabled
+          disabled={!submit}
         >
           {stage === 'inProgress' ? (
             <AppSpinner sx={{ color: 'primary100' }} variant="styles.spinner.large" />
