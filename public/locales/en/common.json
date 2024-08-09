@@ -1964,6 +1964,7 @@
     "placeholder-disabled": "Temporarily disabled",
     "button": "Subscribe",
     "success": "Thank you for subscribing the newsletter!",
+    "success-info": "Check your inbox and confirm your subscription.",
     "gdpr": "By entering your email address, you acknowledge that Oazo Apps Limited will collect and process your personal data for marketing purposes (e.g. newsletter, updates). For more information please refer to our <1>Privacy Policy.</1>",
     "errors": {
       "unknown": "Something went wrong. Please try again.",
