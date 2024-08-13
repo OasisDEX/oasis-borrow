@@ -228,6 +228,7 @@ export const mainnetContracts = {
     'PRIME-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_PRIMEUSDC),
     'SAFE-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SAFEDAI),
     'WOETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WOETHETH),
+    'SYRUPUSDC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -248,7 +249,6 @@ export const mainnetContracts = {
       mainnet.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDCYUSDC),
-    'SYRUPUSDC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, mainnet.ajna.AjnaRewardsReedemer),

@@ -199,6 +199,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'PRIME-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_PRIMEUSDC),
     'SAFE-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SAFEDAI),
     'WOETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WOETHETH),
+    'SYRUPUSDC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
@@ -219,7 +220,6 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
       arbitrum.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SUSDCYUSDC),
-    'SYRUPUSDC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),
