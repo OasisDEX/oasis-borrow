@@ -5,6 +5,7 @@ import { getCoingeckoTickers } from 'server/services/coingecko'
 import { getCoinPaprikaTickers } from 'server/services/coinPaprika'
 import { getSDaiOracleTicker } from 'server/services/sdaiOracle'
 import { getSUSDEOracleTicker } from 'server/services/susdeOracle'
+import { getSyrupUsdcOracleTicker } from 'server/services/syrupUsdcOracle'
 import { getUSDEOracleTicker } from 'server/services/usdeOracle'
 import { getWSTETHOracleTicker } from 'server/services/wstethOracle'
 
@@ -41,7 +42,12 @@ export async function tokenTickers(): Promise<PriceServiceResponse> {
       console.error('Error getting USDE oracle price', error)
       return {}
     }),
+    getSyrupUsdcOracleTicker().catch((error) => {
+      console.error('Error getting syrupUSDC oracle price', error)
+      return {}
+    }),
   ])
+
   // Merge prices from all services into one tickers blob
   return results.reduce((acc, el) => ({ ...acc, ...el }), {})
 }
