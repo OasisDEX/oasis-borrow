@@ -248,6 +248,7 @@ export const mainnetContracts = {
       mainnet.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SUSDCYUSDC),
+    'SYRUPUSDC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, mainnet.ajna.AjnaRewardsReedemer),
