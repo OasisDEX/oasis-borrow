@@ -13,9 +13,9 @@ export async function getSyrupUsdcOracleTicker(): Promise<PriceServiceResponse> 
   const syrupUSDCContractAddress = getNetworkContracts(NetworkIds.MAINNET).tokens['SYRUPUSDC']
     .address
 
-  const sdaiPriceOracleContract = MaplePoolFactory.connect(syrupUSDCContractAddress, rpcProvider)
+  const syrupUsdcContract = MaplePoolFactory.connect(syrupUSDCContractAddress, rpcProvider)
 
-  const usdcPerOneSyrupUsdcRaw = await sdaiPriceOracleContract.convertToAssets(
+  const usdcPerOneSyrupUsdcRaw = await syrupUsdcContract.convertToAssets(
     one.shiftedBy(6).toString(),
   )
 
