@@ -236,6 +236,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
       goerli.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SUSDCYUSDC),
+    'SYRUPUSDC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, goerli.ajna.AjnaRewardsReedemer),

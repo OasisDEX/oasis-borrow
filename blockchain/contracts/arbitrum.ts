@@ -219,6 +219,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
       arbitrum.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SUSDCYUSDC),
+    'SYRUPUSDC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),
