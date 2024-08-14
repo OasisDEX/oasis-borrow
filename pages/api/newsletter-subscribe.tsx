@@ -42,6 +42,7 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     const {
       data: getMemberResponse,
+      // beehiv response has either data on success or status and statusText on error
       status: getMemberErrorStatus,
       statusText: getMemberErrorStatusText,
     }: SubscriptionResponse = await fetch(`${MEMBER_GET_ENDPOINT}/${email}`, {
@@ -52,8 +53,10 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse) {
     // new subscription
     if (getMemberErrorStatus === 404 && getMemberErrorStatusText === 'not_found') {
       const {
+        // we dont use data response here, if theres no error, we can assume the subscription was successful
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         data: subscribeMemberReponse,
+        // beehiv response has either data on success or status and statusText on error
         status: subscribeErrorStatus,
         statusText: subscribeErrorStatusText,
       }: SubscriptionResponse = await fetch(SUBSCRIBE_POST_ENDPOINT, {
