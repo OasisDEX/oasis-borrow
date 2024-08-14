@@ -1,9 +1,16 @@
 import { LiFiWalletManagement, supportedWallets } from '@lifi/wallet-management'
 import { LiFiWidget } from '@lifi/widget'
 import { useWallets } from '@web3-onboard/react'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { NetworkIds } from 'blockchain/networks'
+import {
+  arbitrumMainnetRpc,
+  baseMainnetRpc,
+  mainnetRpc,
+  optimismMainnetRpc,
+} from 'config/rpcConfig'
 import type { SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useTrackSwapWidgetEvents } from 'helpers/hooks'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'
@@ -16,8 +23,7 @@ import { SwapWidgetOnboarding } from './SwapWidgetOnboarding'
 import { SwapWidgetSkeleton } from './SwapWidgetSkeleton'
 
 export function SwapWidget() {
-  const { web3ContextConnected$ } = useMainContext()
-  const [web3Context] = useObservable(web3ContextConnected$)
+  const { signer } = useWalletManagement()
   const [isOnboarded] = useOnboarding('SwapWidget')
   const activeOnboardWallets = useWallets()
   const liFiWalletManagement = useMemo(() => new LiFiWalletManagement(), [])
@@ -26,9 +32,6 @@ export function SwapWidget() {
   const [swapWidgetChange] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
-
-  const web3Provider =
-    web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
 
   useEffect(() => {
     async function autoConnectLiFi() {
@@ -43,7 +46,7 @@ export function SwapWidget() {
     void autoConnectLiFi()
   }, [activeOnboardWallets, liFiWalletManagement])
 
-  if (!web3Provider) {
+  if (!signer) {
     return <SwapWidgetSkeleton />
   }
 
@@ -62,7 +65,18 @@ export function SwapWidget() {
       ) : (
         <LiFiWidget
           integrator={swapWidgetConfig.integrator}
-          config={{ ...swapWidgetConfig, subvariantOptions: swapWidgetChange?.variant }}
+          config={{
+            ...swapWidgetConfig,
+            subvariantOptions: swapWidgetChange?.variant,
+            sdkConfig: {
+              rpcs: {
+                [NetworkIds.MAINNET]: [mainnetRpc],
+                [NetworkIds.BASEMAINNET]: [baseMainnetRpc],
+                [NetworkIds.ARBITRUMMAINNET]: [arbitrumMainnetRpc],
+                [NetworkIds.OPTIMISMMAINNET]: [optimismMainnetRpc],
+              },
+            },
+          }}
         />
       )}
     </Box>
