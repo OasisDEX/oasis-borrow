@@ -1,74 +1,127 @@
-// import md5 from 'crypto-js/md5'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-// const AUTHORIZATION_HEADER = `Basic ${Buffer.from(
-//   `apikey:${process.env.MAILCHIMP_API_KEY}`,
-// ).toString('base64')}`
+const { NEWSLETTER_API_KEY, NEWSLETTER_PUBLICATION_ID, NEWSLETTER_ENDPOINT } = process.env
 
-// const SUBSCRIBERS_ENDPOINT = `${process.env.MAILCHIMP_ENDPOINT}/members`
+// validating - The email address is being validated.
+// invalid - The email address is invalid.
+// pending - The email address is valid, but the subscription is pending double opt-in.
+// active - The email was valid and the subscription is active.
+// inactive - The subscription was made inactive, possibly due to an unsubscribe.
+// needs_attention - The subscription requires approval or denial.
 
-// type UserStatus = 'pending' | 'subscribed' | 'unsubscribed' | 'cleaned' | 'transactional'
+type UserStatus = 'validating' | 'invalid' | 'pending' | 'active' | 'inactive' | 'needs_attention'
 
-// change to pending if there is need for opt-in confirm email
-// change to subscribed if there is no need for opt-in
-// const INITIAL_USER_STATUS: UserStatus = 'subscribed'
+type SubscriptionResponse = {
+  // same for GET and POST
+  data: {
+    id: string
+    email: string
+    status: UserStatus
+    created: number
+  }
+  status: number
+  statusText: string
+}
+
+const MEMBER_GET_ENDPOINT = `${NEWSLETTER_ENDPOINT}/publications/${NEWSLETTER_PUBLICATION_ID}/subscriptions/by_email`
+const SUBSCRIBE_POST_ENDPOINT = `${NEWSLETTER_ENDPOINT}/publications/${NEWSLETTER_PUBLICATION_ID}/subscriptions`
 
 const handler = async function (req: NextApiRequest, res: NextApiResponse) {
-  return res.status(500).json({ error: 'unknown' })
-  // const { email } = req.body
+  const { email } = req.body
 
-  // try {
-  //   const emailMd5Hash = md5(email)
-  //   const MEMBER_ENDPOINT = `${SUBSCRIBERS_ENDPOINT}/${emailMd5Hash}`
+  const bodyData = {
+    email: email,
+  }
 
-  //   // GET request first to check if user exists OR is subscribed
-  //   const response = await fetch(MEMBER_ENDPOINT, {
-  //     headers: {
-  //       Authorization: AUTHORIZATION_HEADER,
-  //     },
-  //     method: 'GET',
-  //   }).then((res) => res.json())
+  const headers = {
+    Authorization: `Bearer ${NEWSLETTER_API_KEY}`,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  }
 
-  //   if (response.status === 'pending') {
-  //     return res.status(409).json({ error: 'emailPending' })
-  //   }
+  try {
+    const {
+      data: getMemberResponse,
+      // beehiv response has either data on success or status and statusText on error
+      status: getMemberErrorStatus,
+      statusText: getMemberErrorStatusText,
+    }: SubscriptionResponse = await fetch(`${MEMBER_GET_ENDPOINT}/${email}`, {
+      headers,
+      method: 'GET',
+    }).then((getMemberRes) => getMemberRes.json())
 
-  //   if (response.status === 'subscribed') {
-  //     return res.status(409).json({ error: 'emailAlreadyExists' })
-  //   }
+    // new subscription
+    if (getMemberErrorStatus === 404 && getMemberErrorStatusText === 'not_found') {
+      const {
+        // we dont use data response here, if theres no error, we can assume the subscription was successful
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        data: subscribeMemberReponse,
+        // beehiv response has either data on success or status and statusText on error
+        status: subscribeErrorStatus,
+        statusText: subscribeErrorStatusText,
+      }: SubscriptionResponse = await fetch(SUBSCRIBE_POST_ENDPOINT, {
+        body: JSON.stringify({ ...bodyData }),
+        headers,
+        method: 'POST',
+      }).then((subscribeMemberRes) => subscribeMemberRes.json())
 
-  //   if (response.status === 'unsubscribed' || response.status === 404) {
-  //     const bodyData = {
-  //       email_address: email,
-  //       status: INITIAL_USER_STATUS,
-  //       status_if_new: INITIAL_USER_STATUS,
-  //     }
+      if (subscribeErrorStatus || subscribeErrorStatusText) {
+        return res.status(500).json({
+          error: 'unknown',
+          response: {
+            subscribeErrorStatus,
+            subscribeErrorStatusText,
+          },
+        })
+      }
+      return res.status(200).json({})
+    }
 
-  //     const response = await fetch(MEMBER_ENDPOINT, {
-  //       body: JSON.stringify(bodyData),
-  //       headers: {
-  //         Authorization: AUTHORIZATION_HEADER,
-  //       },
-  //       method: 'PUT',
-  //     }).then((res) => res.json())
+    if (getMemberErrorStatus || getMemberErrorStatusText) {
+      return res.status(500).json({
+        error: 'unknown',
+        response: {
+          getMemberErrorStatus,
+          getMemberErrorStatusText,
+        },
+      })
+    }
 
-  //     // Might happen eg. if user who was permanently deleted (not archived) tries to resubscribe
-  //     if (response.status !== INITIAL_USER_STATUS) {
-  //       console.error(response)
-  //       return res.status(500).json({ error: 'unknown', response })
-  //     }
+    if (getMemberResponse.status === 'pending') {
+      return res.status(409).json({ error: 'emailPending' })
+    }
 
-  //     return res.status(200).json({})
-  //   }
+    if (getMemberResponse.status === 'active') {
+      return res.status(409).json({ error: 'emailAlreadyExists' })
+    }
 
-  //   return res.status(500).json({
-  //     error: 'unknown',
-  //     response,
-  //   })
-  // } catch (error) {
-  //   // @ts-ignore
-  //   return res.status(500).json({ error: error.message || error.toString() })
-  // }
+    // resubscribe
+    if (getMemberResponse.status === 'inactive') {
+      const { data: subscribeMemberReponse }: SubscriptionResponse = await fetch(
+        SUBSCRIBE_POST_ENDPOINT,
+        {
+          body: JSON.stringify({ ...bodyData, reactivate_existing: true }),
+          headers,
+          method: 'POST',
+        },
+      ).then((subscribeMemberRes) => subscribeMemberRes.json())
+
+      // Might happen eg. if user who was permanently deleted (not archived) tries to resubscribe
+      if (subscribeMemberReponse.status !== 'inactive') {
+        return res.status(500).json({ error: 'unknown', response: subscribeMemberReponse })
+      }
+
+      return res.status(200).json({})
+    }
+
+    return res.status(500).json({
+      error: 'unknown',
+      response: getMemberResponse,
+    })
+  } catch (error) {
+    // @ts-ignore
+    return res.status(500).json({ error: error.message || error.toString() })
+  }
 }
 
 export default handler
