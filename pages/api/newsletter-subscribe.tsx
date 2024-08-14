@@ -1,7 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const { NEWSLETTER_API_KEY, NEWSLETTER_PUBLICATION_ID, NEWSLETTER_ENDPOINT } = process.env
-
 // validating - The email address is being validated.
 // invalid - The email address is invalid.
 // pending - The email address is valid, but the subscription is pending double opt-in.
@@ -23,10 +21,11 @@ type SubscriptionResponse = {
   statusText: string
 }
 
-const MEMBER_GET_ENDPOINT = `${NEWSLETTER_ENDPOINT}/publications/${NEWSLETTER_PUBLICATION_ID}/subscriptions/by_email`
-const SUBSCRIBE_POST_ENDPOINT = `${NEWSLETTER_ENDPOINT}/publications/${NEWSLETTER_PUBLICATION_ID}/subscriptions`
-
 const handler = async function (req: NextApiRequest, res: NextApiResponse) {
+  const { NEWSLETTER_API_KEY, NEWSLETTER_PUBLICATION_ID, NEWSLETTER_ENDPOINT } = process.env
+
+  const MEMBER_GET_ENDPOINT = `${NEWSLETTER_ENDPOINT}/publications/${NEWSLETTER_PUBLICATION_ID}/subscriptions/by_email`
+  const SUBSCRIBE_POST_ENDPOINT = `${NEWSLETTER_ENDPOINT}/publications/${NEWSLETTER_PUBLICATION_ID}/subscriptions`
   const { email } = req.body
 
   const bodyData = {
