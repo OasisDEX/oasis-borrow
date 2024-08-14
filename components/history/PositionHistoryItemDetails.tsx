@@ -297,15 +297,22 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatCryptoBalance(event.collateralForLiquidation)} {collateralToken}
         </PositionHistoryRow>
       )}
-      {'collateralDelta' in event && event.collateralDelta && (
-        <PositionHistoryRow label={t('position-history.sold')}>
-          {formatCryptoBalance(event.collateralDelta)} {collateralToken}
-        </PositionHistoryRow>
-      )}
-      {'debtDelta' in event && event.debtDelta && (
-        <PositionHistoryRow label={t('position-history.repaid')}>
-          {formatCryptoBalance(event.debtDelta)} {quoteToken}
-        </PositionHistoryRow>
+      {/* collateralDelta and debtDelta values are available in normal (non-auction) events as well
+        this is why additional check if Liquidate is needed
+       */}
+      {event.kind === 'Liquidate' && (
+        <>
+          {'collateralDelta' in event && event.collateralDelta && (
+            <PositionHistoryRow label={t('position-history.sold')}>
+              {formatCryptoBalance(event.collateralDelta)} {collateralToken}
+            </PositionHistoryRow>
+          )}
+          {'debtDelta' in event && event.debtDelta && (
+            <PositionHistoryRow label={t('position-history.repaid')}>
+              {formatCryptoBalance(event.debtDelta)} {quoteToken}
+            </PositionHistoryRow>
+          )}
+        </>
       )}
     </DefinitionList>
   )
