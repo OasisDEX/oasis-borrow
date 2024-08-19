@@ -808,7 +808,7 @@
     "subtitle": "Subscribe to the newsletter for Summer.fi updates",
     "placeholder": "Email Address",
     "button": "Subscribe",
-    "success": "Thank you for subscribing the newsletter!",
+    "success": "Thank you for subscribing to the newsletter!",
     "errors": {
       "unknown": "Something went wrong. Please try again.",
       "email-is-invalid": "Please enter a valid email address",
