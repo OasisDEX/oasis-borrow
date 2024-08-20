@@ -5343,6 +5343,14 @@
     ethers "5.5.4"
     joi "17.9.1"
 
+"@web3-onboard/common@^2.4.1":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/common/-/common-2.4.2.tgz#ffa7b1a7cb6410d9cc4d7b38d50b97a857b334cb"
+  integrity sha512-3+zkBru5W2jBYFBPPQsnqZ7tuN1GUyM5PzD9/MmhvjCLNhmjFtMQ0MkLzG4Yshodb4UW/DmZpjUVrpjdhEhj/Q==
+  dependencies:
+    joi "17.9.1"
+    viem "2.12.0"
+
 "@web3-onboard/core@^2.21.1", "@web3-onboard/core@^2.21.2":
   version "2.21.2"
   resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.21.2.tgz#962683efc87b29ee9150ab8d7ea9568ea3b41dd5"
@@ -5369,13 +5377,14 @@
   dependencies:
     "@web3-onboard/common" "^2.3.3"
 
-"@web3-onboard/hw-common@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.3.0.tgz#715d35c4039515e3f8ec839643e6d4c49097891f"
-  integrity sha512-ai5gwaXHxMOgov+TKuy2yUtBf7b2Vq8c28L9tSx4Hl8Q2IM6boGZQEqfW6Hw0GHu/Ez+MxRR5+M6nfwFBf8JRw==
+"@web3-onboard/hw-common@^2.3.2":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.3.3.tgz#c8327b3eb6808e251809e6a7abeae84a542b0b85"
+  integrity sha512-AkJixEMSDsLjNeeruXvR2WAPa9Ji3lOR0+gKrVoW9Uwf6b3YmWh8dBAPd2XRVUVOc/AUNSwcNJVQ3Xo9rZkuhg==
   dependencies:
     "@ethereumjs/common" "2.6.2"
-    "@web3-onboard/common" "^2.3.3"
+    "@web3-onboard/common" "^2.4.1"
+    bignumber.js "^9.1.0"
     ethers "5.5.4"
     joi "17.9.1"
     rxjs "^7.5.2"
@@ -5411,16 +5420,16 @@
     "@web3-onboard/core" "^2.21.2"
     use-sync-external-store "1.0.0"
 
-"@web3-onboard/trezor@^2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/trezor/-/trezor-2.4.3.tgz#a509ce37eff5ee4432a85c8a62217b1b2a757f73"
-  integrity sha512-Um/g766/jzbSd9tBCAWqD7vJOPX+V6bxqGP2SX8Hh8G3cXtMklTUkmbrY2spp8QHPj2HcQWHVIxfjsFVFcqmUg==
+"@web3-onboard/trezor@^2.4.6":
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/trezor/-/trezor-2.4.6.tgz#ca7ce429a19e70a87fee3a3e96e94440ca37bda2"
+  integrity sha512-cP8krxZcmD6n5mh/xp8h4+6CVLqZmLL2mJrtx64n7bEsWpS3mauhe6ipQHRpMRfhS3VyoELQy7V0r9spYAZJTg==
   dependencies:
     "@ethereumjs/tx" "^3.4.0"
     "@ethersproject/providers" "^5.5.0"
     "@trezor/connect-web" "^9.0.11"
-    "@web3-onboard/common" "^2.3.3"
-    "@web3-onboard/hw-common" "^2.3.0"
+    "@web3-onboard/common" "^2.4.1"
+    "@web3-onboard/hw-common" "^2.3.2"
     buffer "^6.0.3"
     eth-crypto "^2.1.0"
     ethereumjs-util "^7.1.3"
@@ -15863,7 +15872,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viem@1.21.4, viem@2.9.19, viem@^1.0.0, viem@^1.17.2, viem@^1.19.11, viem@^1.6.0:
+viem@1.21.4, viem@2.12.0, viem@2.9.19, viem@^1.0.0, viem@^1.17.2, viem@^1.19.11, viem@^1.6.0:
   version "1.21.4"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
   integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==
