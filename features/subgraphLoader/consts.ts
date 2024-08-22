@@ -20,6 +20,20 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+  SummerEvents: {
+    [NetworkIds.MAINNET]: 'summer-events',
+    [NetworkIds.HARDHAT]: 'summer-events',
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: 'summer-events-arbitrum',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.BASEMAINNET]: 'summer-events-base',
+    [NetworkIds.BASEGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: 'summer-events-optimism',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
   Ajna: {
     [NetworkIds.MAINNET]: 'summer-ajna-v2',
     [NetworkIds.HARDHAT]: 'summer-ajna-v2',
@@ -134,6 +148,35 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         user {
           id
         }
+      }
+    }
+  `,
+  getMakerSummerEvents: gql`
+    query getMakerSummerEvents($proxy: Bytes!, $marketId: String!) {
+      summerEvents(where: { account_: { id: $proxy }, marketId: $marketId }) {
+        depositTransfers {
+          amount
+        }
+        withdrawTransfers {
+          amount
+          amountUSD
+          token
+        }
+        blockNumber
+        collateralAfter
+        collateralBefore
+        collateralToken
+        debtAfter
+        debtBefore
+        debtToken
+        depositedUSD
+        id
+        kind
+        netValueAfter
+        netValueBefore
+        timestamp
+        txHash
+        withdrawnUSD
       }
     }
   `,
@@ -625,6 +668,57 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           triggerData
         }
         type
+      }
+    }
+  `,
+  getMakerPosition: gql`
+    query getMakerPosition($cdpId: ID!) {
+      cdps(where: { cdp: $cdpId }) {
+        cdp
+        collateral
+        debt
+        cumulativeDepositUSD
+        cumulativeFeesUSD
+        cumulativeWithdrawnUSD
+        creator
+        owner {
+          id
+        }
+        ilk {
+          id
+          ilk
+          liquidationRatio
+          liquidationPenalty
+          pip {
+            value
+          }
+          rate
+          stabilityFee
+          tokenSymbol
+        }
+        liquidationPrice
+        normalizedDebt
+        openedAt
+        triggers {
+          commandAddress
+          executedBlock
+          removedBlock
+          triggerData
+        }
+        type
+      }
+    }
+  `,
+  getMakerOracle: gql`
+    query getMakerOracle($ilkId: Bytes!) {
+      collateralTypes(where: { id: $ilkId }) {
+        tokenSymbol
+        ilk
+        id
+        pip {
+          value
+          next
+        }
       }
     }
   `,

@@ -28,13 +28,19 @@ import type { ClaimedReferralRewards } from 'features/referralOverview/getClaime
 import type { GetAaveLikeInterestRatesResponse } from 'features/refinance/graph/getRefinanceTargetInterestRates'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { Erc4626DpmPositionsResponse } from 'handlers/portfolio/positions/handlers/erc-4626/types'
-import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
+import type {
+  MakerDiscoverPositionsResponse,
+  MakerOracleResponse,
+} from 'handlers/portfolio/positions/handlers/maker/types'
 import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 import type { Erc4626InterestRatesResponse } from 'handlers/product-hub/update-handlers/erc-4626/erc4626Handler'
 
 export type Subgraphs = {
   SummerDpm: {
     getUserCreateEvents: { positionId: number }
+  }
+  SummerEvents: {
+    getMakerSummerEvents: { positionId: number }
   }
   Ajna: {
     getAjnaEarnPositionData: { dpmProxyAddress: string; poolAddress: string }
@@ -63,6 +69,8 @@ export type Subgraphs = {
   }
   Discover: {
     getMakerDiscoverPositions: { walletAddress: string }
+    getMakerPosition: { cdpId: string }
+    getMakerOracle: { ilkId: string }
   }
   Morpho: {
     getMorphoVauldIdPositions: { positionId: number }
@@ -165,6 +173,8 @@ export type SubgraphsResponses = {
   }
   Discover: {
     getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
+    getMakerPosition: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
+    getMakerOracle: SubgraphBaseResponse<MakerOracleResponse>
   }
   Morpho: {
     getMorphoVauldIdPositions: SubgraphBaseResponse<MorphoVauldIdPositionsResponse>
@@ -213,6 +223,7 @@ export type SubgraphsRecord = {
 }
 export type SubgraphMethodsRecord = {
   [key in keyof (Subgraphs['SummerDpm'] &
+    Subgraphs['SummerEvents'] &
     Subgraphs['Ajna'] &
     Subgraphs['Aave'] &
     Subgraphs['Discover'] &

@@ -38,7 +38,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useAccount } from 'helpers/useAccount'
 import { one, zero } from 'helpers/zero'
-import { LendingProtocolLabel } from 'lendingProtocols'
+import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -143,6 +143,7 @@ export const OmniProductController = <Auction, History, Position>({
     protocol,
     protocolRaw,
     quoteToken,
+    isDsProxy: protocol === LendingProtocol.Maker,
   })
 
   const {

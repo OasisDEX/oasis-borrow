@@ -60,6 +60,7 @@ export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
 
 const omniSupportedProtocols = [
   LendingProtocol.Ajna,
+  LendingProtocol.Maker,
   LendingProtocol.MorphoBlue,
   LendingProtocol.AaveV2,
   LendingProtocol.AaveV3,
@@ -403,6 +404,7 @@ interface CommonMetadataValues {
   headline?: string
   headlineDetails?: HeadlineDetailsProp[]
   isHeadlineDetailsLoading?: boolean
+  showHeadlineCurrentPrice?: boolean
   interestRate: BigNumber
   isFormEmpty: boolean
   sidebarTitle?: string

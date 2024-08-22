@@ -491,6 +491,13 @@ export type GetTriggersResponse = {
       isStopLossEnabled: boolean
       isTrailingStopLossEnabled: boolean
     }
+    maker: {
+      isBasicBuyEnabled: boolean
+      isBasicSellEnabled: boolean
+      isPartialTakeProfitEnabled: boolean
+      isStopLossEnabled: boolean
+      isTrailingStopLossEnabled: boolean
+    }
   }
   triggerGroup: {
     aaveBasicBuy?: Trigger

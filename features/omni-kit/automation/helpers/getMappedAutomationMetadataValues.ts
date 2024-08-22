@@ -48,6 +48,20 @@ export const getMappedAutomationMetadataValues = ({
   }
 
   switch (protocol) {
+    case LendingProtocol.Maker:
+      return {
+        triggers: {
+          stopLoss: mapStopLossTriggers(triggers[flagSelector]?.stopLossToCollateral), // TODO
+          trailingStopLoss: mapTrailingStopLossTriggers(triggers[flagSelector]?.trailingStopLoss),
+          autoSell: mapAutoSellTriggers(triggers[flagSelector]?.basicSell),
+          autoBuy: mapAutoBuyTriggers(triggers[flagSelector]?.basicBuy),
+          partialTakeProfit: mapPartialTakeProfitTriggers(
+            triggers[flagSelector]?.partialTakeProfit,
+          ),
+        },
+        flags: resolvedFlags,
+        simulation: simulationResponse?.simulation,
+      }
     case LendingProtocol.MorphoBlue:
       if (!morphoBlueFlagGuard(flagSelector)) {
         throw Error(`Wrong morpho blue flagSelector value ${flagSelector}`)

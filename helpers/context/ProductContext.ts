@@ -58,6 +58,7 @@ import { getAaveLikePosition$ } from 'features/omni-kit/protocols/aave-like/obse
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getErc4626Position$ } from 'features/omni-kit/protocols/erc-4626/observables'
 import type { Erc4626Token } from 'features/omni-kit/protocols/erc-4626/types'
+import { getMakerPosition$ } from 'features/omni-kit/protocols/maker/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniTokensPrecision } from 'features/omni-kit/types'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
@@ -657,6 +658,23 @@ export function setupProductContext(
       ).join('-')}`,
   )
 
+  const makerPosition$ = memoize(
+    curry(getMakerPosition$)(onEveryBlock$),
+    (
+      collateralPrice: BigNumber,
+      quotePrice: BigNumber,
+      dpmPositionData: DpmPositionData,
+      pairId: number,
+      network: NetworkIds,
+      tokensPrecision?: OmniTokensPrecision,
+    ) =>
+      `${dpmPositionData.vaultId}-${pairId}-${network}-${collateralPrice
+        .decimalPlaces(2)
+        .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
+        tokensPrecision ?? {},
+      ).join('-')}`,
+  )
+
   const erc4626Position$ = memoize(
     curry(getErc4626Position$)(onEveryBlock$),
     (
@@ -716,6 +734,7 @@ export function setupProductContext(
     ilks$: ilksSupportedOnNetwork$,
     manageGuniVault$,
     manageMultiplyVault$,
+    makerPosition$,
     morphoPosition$,
     openGuniVault$,
     openMultiplyVault$,
