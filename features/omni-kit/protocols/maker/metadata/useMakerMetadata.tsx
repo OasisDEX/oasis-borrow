@@ -21,6 +21,7 @@ import {
   getMakerNotifications,
   makerFlowStateFilter,
 } from 'features/omni-kit/protocols/maker/helpers'
+import { getMakerHeadlineDetails } from 'features/omni-kit/protocols/maker/helpers/getMakerHeadlineDetails'
 import type { MakerHistoryEvent } from 'features/omni-kit/protocols/maker/history/types'
 import type {
   GetOmniMetadata,
@@ -29,23 +30,10 @@ import type {
 } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
-import { formatFiatBalance } from 'helpers/formatters/format'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
-
-function minutesUntilNextHour() {
-  // Get the current time
-  const now = new Date()
-
-  // Calculate the number of minutes until the next hour
-  const minutes = now.getMinutes()
-  const minutesUntilNextHour = 60 - minutes
-
-  // Return formatted string
-  return `${minutesUntilNextHour} min`
-}
 
 export const useMakerMetadata: GetOmniMetadata = (productContext) => {
   const {
@@ -116,18 +104,10 @@ export const useMakerMetadata: GetOmniMetadata = (productContext) => {
             }),
         },
         values: {
-          headlineDetails: [
-            {
-              label: 'Current Price',
-              value: `$${formatFiatBalance(position.osmCurrentCollateralPrice)}`,
-            },
-            {
-              label: 'Next Price',
-              value: `$${formatFiatBalance(position.osmNextCollateralPrice)}`,
-              sub: `in ${minutesUntilNextHour()}`,
-              subColor: 'grey',
-            },
-          ],
+          headlineDetails: getMakerHeadlineDetails({
+            osmCurrentCollateralPrice: position.osmCurrentCollateralPrice,
+            osmNextCollateralPrice: position.osmNextCollateralPrice,
+          }),
           showHeadlineCurrentPrice: false,
           interestRate: position.rate,
           isFormEmpty: getOmniIsFormEmpty({
