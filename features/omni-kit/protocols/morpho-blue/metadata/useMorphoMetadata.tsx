@@ -13,12 +13,12 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import { getOmniBorrowWithdrawMax } from 'features/omni-kit/helpers/getOmniBorrowWithdrawMax'
 import { useOmniRefinanceBanner } from 'features/omni-kit/hooks/useOmniRefinanceBanner'
 import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { MorphoDetailsSectionContentWrapper } from 'features/omni-kit/protocols/morpho-blue/components/details-sections/MorphoDetailsSectionContentWrapper'
 import {
-  getMorphoBorrowWithdrawMax,
   getMorphoNotifications,
   morphoFlowStateFilter,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
@@ -131,7 +131,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
           afterPositionDebt: resolvedSimulation?.debtAmount,
-          withdrawMax: getMorphoBorrowWithdrawMax({
+          withdrawMax: getOmniBorrowWithdrawMax({
             collateralPrecision,
             position,
             simulation,

@@ -13,11 +13,11 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import { getOmniBorrowWithdrawMax } from 'features/omni-kit/helpers/getOmniBorrowWithdrawMax'
 import { useOmniRefinanceBanner } from 'features/omni-kit/hooks/useOmniRefinanceBanner'
 import { MakerDetailsSectionFooter } from 'features/omni-kit/protocols/maker/components/details-sections'
 import { MakerDetailsSectionContentWrapper } from 'features/omni-kit/protocols/maker/components/details-sections/MakerDetailsSectionContentWrapper'
 import {
-  getMakerBorrowWithdrawMax,
   getMakerNotifications,
   makerFlowStateFilter,
 } from 'features/omni-kit/protocols/maker/helpers'
@@ -149,7 +149,7 @@ export const useMakerMetadata: GetOmniMetadata = (productContext) => {
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
           afterPositionDebt: resolvedSimulation?.debtAmount,
-          withdrawMax: getMakerBorrowWithdrawMax({
+          withdrawMax: getOmniBorrowWithdrawMax({
             collateralPrecision,
             position,
             simulation,
