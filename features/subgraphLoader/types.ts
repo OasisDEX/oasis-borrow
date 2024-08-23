@@ -31,6 +31,7 @@ import type { Erc4626DpmPositionsResponse } from 'handlers/portfolio/positions/h
 import type {
   MakerDiscoverPositionsResponse,
   MakerOracleResponse,
+  MakerPositionsResponse,
 } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 import type { Erc4626InterestRatesResponse } from 'handlers/product-hub/update-handlers/erc-4626/erc4626Handler'
@@ -69,7 +70,7 @@ export type Subgraphs = {
   }
   Discover: {
     getMakerDiscoverPositions: { walletAddress: string }
-    getMakerPosition: { cdpId: string }
+    getMakerPosition: { cdpId: string; ilkId: string }
     getMakerOracle: { ilkId: string }
   }
   Morpho: {
@@ -173,7 +174,7 @@ export type SubgraphsResponses = {
   }
   Discover: {
     getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
-    getMakerPosition: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
+    getMakerPosition: SubgraphBaseResponse<MakerPositionsResponse>
     getMakerOracle: SubgraphBaseResponse<MakerOracleResponse>
   }
   Morpho: {

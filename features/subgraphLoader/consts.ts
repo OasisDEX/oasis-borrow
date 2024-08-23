@@ -672,7 +672,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   getMakerPosition: gql`
-    query getMakerPosition($cdpId: ID!) {
+    query getMakerPosition($cdpId: ID!, $ilkId: ID!) {
       cdps(where: { cdp: $cdpId }) {
         cdp
         collateral
@@ -684,18 +684,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         owner {
           id
         }
-        ilk {
-          id
-          ilk
-          liquidationRatio
-          liquidationPenalty
-          pip {
-            value
-          }
-          rate
-          stabilityFee
-          tokenSymbol
-        }
         liquidationPrice
         normalizedDebt
         openedAt
@@ -706,6 +694,18 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           triggerData
         }
         type
+      }
+      collateralTypes(where: { id: $ilkId }) {
+        id
+        ilk
+        liquidationRatio
+        liquidationPenalty
+        pip {
+          value
+        }
+        rate
+        stabilityFee
+        tokenSymbol
       }
     }
   `,

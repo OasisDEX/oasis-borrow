@@ -13,14 +13,20 @@ export const getDsProxyPositionData$ = ({
   collateralToken,
   quoteToken,
   cdpId,
+  marketId,
 }: {
   collateralToken: string
   quoteToken: string
   cdpId: string
+  marketId?: string
 }): Observable<DpmPositionData> => {
   const tokens = getNetworkContracts(NetworkIds.MAINNET).tokens
 
-  return from(getMakerPositionFromSubgraph({ cdpId })()).pipe(
+  if (!marketId) {
+    throw new Error('Market id not defined getDsProxyPositionData$')
+  }
+
+  return from(getMakerPositionFromSubgraph({ cdpId, ilkId: marketId })()).pipe(
     switchMap(({ type, creator, owner }) =>
       from(
         getApiVault({

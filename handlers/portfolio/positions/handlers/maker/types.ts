@@ -36,6 +36,24 @@ export interface MakerDiscoverPositionsResponse {
   }[]
 }
 
+export interface MakerPositionsResponse {
+  cdps: {
+    cdp: string
+    collateral: string
+    cumulativeDepositUSD: string
+    cumulativeFeesUSD: string
+    cumulativeWithdrawnUSD: string
+    owner: { id: string }
+    liquidationPrice: string
+    normalizedDebt: string
+    openedAt: string
+    triggers: MakerDiscoverPositionsTrigger[]
+    type: string
+    creator: string // dsProxy
+  }[]
+  collateralTypes: MakerDiscoverPositionsIlk[]
+}
+
 export interface MakerOracleResponse {
   collateralTypes: {
     tokenSymbol: string

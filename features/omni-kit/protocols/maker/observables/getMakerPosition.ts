@@ -15,7 +15,7 @@ import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 export const getMakerPositionFromSubgraph =
-  ({ cdpId }: { cdpId: string }) =>
+  ({ cdpId, ilkId }: { cdpId: string; ilkId: string }) =>
   async () => {
     const subgraphPosition = (await loadSubgraph({
       subgraph: 'Discover',
@@ -23,10 +23,14 @@ export const getMakerPositionFromSubgraph =
       networkId: NetworkIds.MAINNET,
       params: {
         cdpId,
+        ilkId,
       },
     })) as SubgraphsResponses['Discover']['getMakerPosition']
 
-    return subgraphPosition.response.cdps[0]
+    return {
+      ...subgraphPosition.response.cdps[0],
+      ilk: subgraphPosition.response.collateralTypes[0],
+    }
   }
 
 export function getMakerPosition$(
@@ -58,7 +62,7 @@ export function getMakerPosition$(
           quotePriceUSD: quotePrice,
         },
         {
-          getPosition: getMakerPositionFromSubgraph({ cdpId: vaultId }),
+          getPosition: getMakerPositionFromSubgraph({ cdpId: vaultId, ilkId: marketId }),
         },
         // {
         //   getCumulatives: getMakerCumulatives(networkId),

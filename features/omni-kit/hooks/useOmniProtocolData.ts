@@ -7,6 +7,7 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
 import { getDsProxyPositionData$ } from 'features/omni-kit/observables/getDsProxyPositionData'
+import { makerMarkets } from 'features/omni-kit/protocols/maker/settings'
 import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getTokenBalances$ } from 'features/shared/balanceInfo'
 import { useObservable } from 'helpers/observableHook'
@@ -62,12 +63,14 @@ export function useOmniProtocolData({
     ),
   )
 
+  const marketId = makerMarkets[networkId]?.[`${collateralToken}-${quoteToken}`]?.[pairId - 1]
+
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
         positionId
           ? isDsProxy
-            ? getDsProxyPositionData$({ collateralToken, quoteToken, cdpId: positionId })
+            ? getDsProxyPositionData$({ collateralToken, quoteToken, cdpId: positionId, marketId })
             : dpmPositionDataV2$(
                 Number(positionId),
                 networkId,
