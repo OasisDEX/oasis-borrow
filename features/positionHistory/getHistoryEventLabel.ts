@@ -176,7 +176,7 @@ function handleAutomationKinds(
   } else if (automationType.includes(AutomationType.PartialTakeProfit)) {
     return handlePartialTakeProfitLabel(automationAction, t)
   }
-  console.warn('Automation type not found')
+  console.warn('Automation type not found', automationType)
   return undefined
 }
 

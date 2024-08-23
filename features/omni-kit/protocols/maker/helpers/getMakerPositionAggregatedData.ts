@@ -1,7 +1,7 @@
 import type { MakerHistoryEvent } from 'features/omni-kit/protocols/maker/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { unifiedDefaultHistoryItem } from 'features/positionHistory/consts'
-import { getAutomationEvents } from 'features/positionHistory/helpers'
+import { getMakerAutomationEvents } from 'features/positionHistory/helpers'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -16,6 +16,7 @@ export const getMakerPositionAggregatedData = async (
   networkId: OmniSupportedNetworkIds,
   collateralTokenAddress: string,
   debtTokenAddress: string,
+  cdpId: string,
   poolId: string,
 ): Promise<MorphoPositionAggregatedData> => {
   const { response } = (await loadSubgraph({
@@ -23,17 +24,16 @@ export const getMakerPositionAggregatedData = async (
     method: 'getMakerSummerEvents',
     networkId,
     params: {
-      proxy: '0xe08d6ba1109945322f8c824fb803851f2545ca18'.toLowerCase(),
+      proxy: proxy.toLowerCase(),
       marketId: poolId.toLowerCase(),
     },
   })) as SubgraphsResponses['SummerEvents']['getMakerSummerEvents']
 
-  const automationEvents = await getAutomationEvents({
+  const automationEvents = await getMakerAutomationEvents({
     networkId,
-    proxy,
     collateralTokenAddress,
     debtTokenAddress,
-    poolId,
+    cdpId,
   })
 
   const errors = []

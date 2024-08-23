@@ -41,6 +41,7 @@ export const getMakerPositionAggregatedData$ = ({
       networkId,
       dpmPositionData.collateralTokenAddress,
       dpmPositionData.quoteTokenAddress,
+      dpmPositionData.vaultId,
       poolId,
     ),
   ).pipe(

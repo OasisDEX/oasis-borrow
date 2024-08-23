@@ -984,4 +984,23 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMakerAutomationEvents: gql`
+    query getAutomationEvents($cdpId: ID!) {
+      triggerEvents(where: { trigger_: { cdpId: $cdpId } }) {
+        eventType
+        transaction
+        timestamp
+        trigger {
+          kind
+          simpleName
+          tokens {
+            symbol
+            address
+          }
+          decodedData
+          decodedDataNames
+        }
+      }
+    }
+  `,
 }

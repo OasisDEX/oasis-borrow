@@ -41,7 +41,7 @@ export type Subgraphs = {
     getUserCreateEvents: { positionId: number }
   }
   SummerEvents: {
-    getMakerSummerEvents: { positionId: number }
+    getMakerSummerEvents: { proxy: string; marketId: string }
   }
   Ajna: {
     getAjnaEarnPositionData: { dpmProxyAddress: string; poolAddress: string }
@@ -97,6 +97,9 @@ export type Subgraphs = {
       dpmProxyAddress: string
       collateralAddress: string
       debtAddress: string
+    }
+    getMakerAutomationEvents: {
+      cdpId: string
     }
   }
 }
@@ -203,6 +206,10 @@ export type SubgraphsResponses = {
   }
   Automation: {
     getAutomationEvents: SubgraphBaseResponse<{ triggerEvents: TriggerEvent[] }>
+    getMakerAutomationEvents: SubgraphBaseResponse<{ triggerEvents: TriggerEvent[] }>
+  }
+  SummerEvents: {
+    getMakerSummerEvents: any
   }
 }
 
