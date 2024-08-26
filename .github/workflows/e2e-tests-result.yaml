@@ -8,7 +8,7 @@ on:
         type: string
         required: true
       tests_result:
-        description: 'E2E tests result -- faillure | success'
+        description: 'E2E tests result -- failure | success'
         type: string
         required: true
 
