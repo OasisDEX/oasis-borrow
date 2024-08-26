@@ -1,0 +1,29 @@
+name: Staging E2E tests result
+
+on: 
+  workflow_dispatch:
+    inputs:
+      tests_run_id:
+        description: 'E2E tests run_id'
+        type: string
+        required: true
+      tests_result:
+        description: 'E2E tests result -- faillure | success'
+        type: string
+        required: true
+
+jobs:
+  e2e-tests-result:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Link to tests run -> https://github.com/OasisDEX/e2e-tests/actions/runs/${{ inputs.tests_run_id }}
+        run: echo 'See tests results in https://github.com/OasisDEX/e2e-tests/actions/runs/${{ inputs.tests_run_id }}'
+      - name: E2E tests failed
+        if: ${{ inputs.tests_result == 'failure' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setFailed('E2E tests failed - Link to tests run https://github.com/OasisDEX/e2e-tests/actions/runs/${{ inputs.tests_run_id }}')
+      - name: E2E tests passed
+        if: ${{ inputs.tests_result == 'success' }}
+        run: echo 'E2E tests passed'
