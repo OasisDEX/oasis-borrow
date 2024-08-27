@@ -39,38 +39,30 @@ export function calculateOmniYieldsSimulation({
     currentApy: yields.apy1d,
     breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
-    previous7Days:
-      yields.apy7d &&
-      getSimulation({
-        amount,
-        annualizedYield: yields.apy7d,
-        token,
-        days: 7,
-      }),
-    previous30Days:
-      yields.apy30d &&
-      getSimulation({
-        amount,
-        annualizedYield: yields.apy30d,
-        token,
-        days: 30,
-      }),
-    previous90Days:
-      yields.apy1d &&
-      getSimulation({
-        amount,
-        annualizedYield: yields.apy90d,
-        token,
-        days: 90,
-      }),
-    previous1Year:
-      yields.apy1d &&
-      getSimulation({
-        amount,
-        annualizedYield: yields.apy365d,
-        token,
-        days: 365,
-      }),
+    previous7Days: getSimulation({
+      amount,
+      annualizedYield: yields.apy7d,
+      token,
+      days: 7,
+    }),
+    previous30Days: getSimulation({
+      amount,
+      annualizedYield: yields.apy30d,
+      token,
+      days: 30,
+    }),
+    previous90Days: getSimulation({
+      amount,
+      annualizedYield: yields.apy90d,
+      token,
+      days: 90,
+    }),
+    previous1Year: getSimulation({
+      amount,
+      annualizedYield: yields.apy365d,
+      token,
+      days: 365,
+    }),
   }
 }
 
