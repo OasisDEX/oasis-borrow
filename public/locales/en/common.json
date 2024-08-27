@@ -1638,7 +1638,7 @@
     },
     "token-ceiling-reduced": {
       "header": "{{token}} Vault Debt Ceiling Reductions on Maker and Spark",
-      "subheader1": "The {{token}} debt ceiling has been set to 0 among the most notable adjustments. Your current {{token}} positions will remain unaffected. These changes will prevent further borrowing from these vaults but existing positions will not be liquidated. This is valid both for Maker and Spark. Automations that increase debt on these vaults such as Auto-Buy or Constant Multiple are also affected and will not be eligible for execution.",
+      "subheader1": "The {{token}} debt ceiling has been set to 0 among the most notable adjustments. Your current {{token}} positions will remain unaffected. These changes will prevent further borrowing from these vaults, but liquidation parameters remain unchanged. This is valid both for Maker and Spark. Automations that increase debt on these vaults such as Auto-Buy or Constant Multiple are also affected and will not be eligible for execution.",
       "subheader2": "You can view your vaults"
     },
     "position": {
