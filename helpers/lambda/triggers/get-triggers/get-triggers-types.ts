@@ -18,6 +18,73 @@ type Trigger = {
   dynamicParams?: unknown
 }
 
+export type MakerBasicBuy = {
+  triggerTypeName: 'MakerBasicBuy'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  // TODO: needs types, later
+}
+export type MakerBasicSell = {
+  triggerTypeName: 'MakerBasicSell'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  // TODO: needs types, later
+}
+
+export type MakerStopLossToCollateral = {
+  triggerTypeName: 'MakerStopLossToCollateral'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    collRatio: string
+    positionAddress: string
+    debtToken: string
+    collateralToken: string
+    executionLtv: string
+    maxCoverage: string
+    operationName: ''
+  }
+}
+
+export type MakerStopLossToDebt = {
+  triggerTypeName: 'MakerStopLossToDai'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    collRatio: string
+    positionAddress: string
+    debtToken: string
+    collateralToken: string
+    executionLtv: string
+    maxCoverage: string
+    operationName: ''
+  }
+}
+
+export type MakerTakeProfitToCollateral = {
+  triggerTypeName: 'MakerAutoTakeProfitToCollateral'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  // TODO: needs types, later
+}
+
+export type MakerTakeProfitToDebt = {
+  triggerTypeName: 'MakerAutoTakeProfitToDai'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  // TODO: needs types, later
+}
+
 export type AaveStopLossToCollateral = {
   triggerTypeName: 'AaveStopLossToCollateralV2'
   triggerType: bigint
@@ -441,6 +508,14 @@ export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 // This interface is available also in monorepo, at some point we should probably import it from there
 export type GetTriggersResponse = {
   triggers: {
+    maker: {
+      basicBuy?: MakerBasicBuy
+      basicSell?: MakerBasicSell
+      stopLossToCollateral?: MakerStopLossToCollateral
+      stopLossToDebt?: MakerStopLossToDebt
+      autoTakeProfitToCollateral?: MakerTakeProfitToCollateral
+      autoTakeProfitToDebt?: MakerTakeProfitToDebt
+    }
     aave3: {
       basicBuy?: DmaAaveBasicBuy
       basicSell?: DmaAaveBasicSell
@@ -494,9 +569,8 @@ export type GetTriggersResponse = {
     maker: {
       isBasicBuyEnabled: boolean
       isBasicSellEnabled: boolean
-      isPartialTakeProfitEnabled: boolean
       isStopLossEnabled: boolean
-      isTrailingStopLossEnabled: boolean
+      isAutoTakeProfitEnabled: boolean
     }
   }
   triggerGroup: {
@@ -512,6 +586,10 @@ export type GetTriggersResponse = {
     morphoBlueBasicSell?: Trigger
     morphoBluePartialTakeProfit?: Trigger
     morphoBlueStopLoss?: Trigger
+    makerStopLoss?: Trigger
+    makerBasicBuy?: Trigger
+    makerBasicSell?: Trigger
+    makerAutoTakeProfitToCollateral?: Trigger
   }
   triggersCount: number
   additionalData?: Record<string, unknown>

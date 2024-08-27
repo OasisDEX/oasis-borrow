@@ -14,6 +14,11 @@ export const hasActiveOptimization = ({
   protocol,
 }: HasActiveOptimizationParams): boolean => {
   switch (protocol) {
+    case LendingProtocol.Maker: {
+      const { basicBuy, autoTakeProfitToCollateral, autoTakeProfitToDebt } = triggers.maker
+
+      return isAnyValueDefined(basicBuy, autoTakeProfitToCollateral, autoTakeProfitToDebt)
+    }
     case LendingProtocol.AaveV3: {
       const { basicBuy, partialTakeProfit } = triggers.aave3
 
