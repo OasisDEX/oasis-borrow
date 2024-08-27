@@ -8,6 +8,7 @@ import { getSUSDEOracleTicker } from 'server/services/susdeOracle'
 import { getSyrupUsdcOracleTicker } from 'server/services/syrupUsdcOracle'
 import { getUSDEOracleTicker } from 'server/services/usdeOracle'
 import { getWSTETHOracleTicker } from 'server/services/wstethOracle'
+import { getSwBtcOracleTicker } from 'server/swbtcOracle'
 
 export async function tokenTickers(): Promise<PriceServiceResponse> {
   if (process.env.TOKEN_TICKERS_OVERRIDE) {
@@ -44,6 +45,10 @@ export async function tokenTickers(): Promise<PriceServiceResponse> {
     }),
     getSyrupUsdcOracleTicker().catch((error) => {
       console.error('Error getting syrupUSDC oracle price', error)
+      return {}
+    }),
+    getSwBtcOracleTicker().catch((error) => {
+      console.error('Error getting swBTC oracle price', error)
       return {}
     }),
   ])

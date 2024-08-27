@@ -208,7 +208,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'swBTC',
     icon: swbtc,
     iconCircle: swbtc,
-    coinGeckoTicker: 'swell-restaked-btc',
+    oracleTicker: 'swbtc',
     tags: [],
     rootToken: 'BTC',
   },

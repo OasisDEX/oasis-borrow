@@ -139,6 +139,7 @@ export const mainnetContracts = {
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
+    BTCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: contractDesc(
     aaveV2LendingPool,

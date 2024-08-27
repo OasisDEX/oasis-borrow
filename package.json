@@ -43,7 +43,7 @@
     "@lifi/wallet-management": "^2.6.1",
     "@lifi/widget": "^2.10.2",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "0.1.77",
+    "@oasisdex/addresses": "0.1.78",
     "@oasisdex/automation": "1.6.5-morpho.6",
     "@oasisdex/dma-library": "0.6.64",
     "@oasisdex/multiply": "^0.2.11",
