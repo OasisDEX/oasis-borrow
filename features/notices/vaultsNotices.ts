@@ -9,7 +9,12 @@ import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
-type BannerTypes = 'ownership' | 'liquidating' | 'liquidated' | 'liquidatingNextPrice'
+type BannerTypes =
+  | 'ownership'
+  | 'liquidating'
+  | 'liquidated'
+  | 'liquidatingNextPrice'
+  | 'wbtcCeilingReduced'
 
 export type VaultNoticesState = Pick<
   Vault,
@@ -34,6 +39,7 @@ function assignBanner(state: VaultNoticesState): VaultNoticesState {
     controller,
     underCollateralized,
     underCollateralizedAtNextPrice,
+    token,
   } = state
 
   if (underCollateralized) {
@@ -61,6 +67,13 @@ function assignBanner(state: VaultNoticesState): VaultNoticesState {
     return {
       ...state,
       banner: 'ownership',
+    }
+  }
+
+  if (token === 'WBTC') {
+    return {
+      ...state,
+      banner: 'wbtcCeilingReduced',
     }
   }
 

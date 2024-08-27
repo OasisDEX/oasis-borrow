@@ -142,6 +142,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_ETHUSD),
+    BTCUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: contractDesc(
     aaveV2LendingPool,

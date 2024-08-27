@@ -147,6 +147,7 @@ export const optimismContracts: OptimismContracts = {
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_ETHUSD),
+    BTCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
 

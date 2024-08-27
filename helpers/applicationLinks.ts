@@ -104,6 +104,8 @@ export const EXTERNAL_LINKS = {
     WHY_BORROW_ON_SUMMER: 'https://blog.summer.fi/why-borrow-on-summer',
     WHY_MULTIPLY_ON_SUMMER: 'https://blog.summer.fi/why-multiply-on-summer',
     WHY_EARN_ON_SUMMER: 'https://blog.summer.fi/why-earn-on-summer',
+    MAKER_WBTC_CEILING_REDUCED:
+      'https://blog.summer.fi/wbtc-vault-debt-ceiling-reductions-on-maker-and-spark/',
   },
   DOCS: {
     FAQ: {

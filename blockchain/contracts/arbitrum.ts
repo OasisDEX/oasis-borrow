@@ -137,6 +137,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_ETHUSD),
+    BTCUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
 

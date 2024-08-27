@@ -17,7 +17,7 @@ export function useOmniCardDataBreakEven({
   const { t } = useTranslation()
 
   const formatted = {
-    breakeven: breakEven?.gt(zero) ? breakEven.toFixed(0, BigNumber.ROUND_UP) : '1',
+    breakeven: breakEven?.gt(zero) ? breakEven.toFixed(0, BigNumber.ROUND_UP) : '∞',
   }
   return {
     title: { key: 'omni-kit.content-card.est-break-even.title' },
