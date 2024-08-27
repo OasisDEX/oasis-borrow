@@ -1,7 +1,7 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
 import { NetworkIds } from 'blockchain/networks'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { AaveLiquidatedNotice } from 'features/notices/VaultsNoticesView'
+import { AaveLiquidatedNotice, TokenCeilingReduced } from 'features/notices/VaultsNoticesView'
 import { getAutomationMetadataValues } from 'features/omni-kit/automation/helpers'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -27,6 +27,7 @@ import {
 import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
@@ -100,6 +101,18 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           ? useOmniRefinanceBanner()
           : undefined
 
+      const liquidationBanner = productContext.position.positionAuction ? (
+        <AaveLiquidatedNotice isPositionController={isOwner} />
+      ) : undefined
+
+      const ceilingReducedBanner =
+        protocol === LendingProtocol.SparkV3 && collateralToken === 'WBTC' ? (
+          <TokenCeilingReduced
+            token={collateralToken}
+            link={EXTERNAL_LINKS.BLOG.MAKER_WBTC_CEILING_REDUCED}
+          />
+        ) : undefined
+
       return {
         notifications,
         validations,
@@ -167,9 +180,7 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             quoteToken,
             isOpening,
           }),
-          positionBanner: productContext.position.positionAuction ? (
-            <AaveLiquidatedNotice isPositionController={isOwner} />
-          ) : undefined,
+          positionBanner: liquidationBanner || ceilingReducedBanner,
           renderOverviewBanner: refinanceBanner?.renderOverviewBanner,
           overviewWithSimulation: isYieldLoopWithData,
         },
