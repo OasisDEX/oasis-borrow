@@ -13,7 +13,7 @@ export default () => {
     >
       <Heading as="h1">Cookie Policy</Heading>
       <Text as="p" sx={{ textDecoration: 'italic' }}>
-        Last updated: 26 June 2023
+        Last updated: 28 August 2024
       </Text>
       <Text as="p">
         This Policy provides our Cookie Policy regarding the nature, purpose, use, and sharing of

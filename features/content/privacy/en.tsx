@@ -11,7 +11,7 @@ export default () => (
   >
     <Heading as="h1">Privacy Policy</Heading>
     <Text as="p" sx={{ textDecoration: 'italic' }}>
-      Last updated: 26 June 2023
+      Last updated: 28 August 2024
     </Text>
     <Text as="p">
       This Privacy Policy provides our privacy policy regarding the nature, purpose, use, and
