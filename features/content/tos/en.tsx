@@ -12,7 +12,7 @@ export default () => (
   >
     <Heading as="h1">Terms of Service</Heading>
     <Text as="p" sx={{ textDecoration: 'italic' }}>
-      Last Revised: June 26th 2023
+      Last Revised: 27 August 2024
     </Text>
     <Text as="p">
       Please read these Terms of Service (this “Agreement”) carefully. Your use or access of the
@@ -25,12 +25,13 @@ export default () => (
       This Agreement is between you (the “User” or “You”, and collectively with others using the
       Site, “Users”) and Oazo Apps Limited, a company incorporated and registered in England, United
       Kingdom (“Company” or “we,” “our” or “us” and together with you, the “Parties”) concerning
-      your use of (including any access to) Company’s websites, currently located at summer.fi,
-      mobile applications, web applications, decentralized applications, smart contracts and API
-      located at any of Company’s websites (together with any materials and services available
-      therein, and successor website(s) or application(s) thereto, the “Site”). This Agreement
-      hereby incorporates by this reference any additional terms and conditions with respect to the
-      Site posted by Company to the Site, or otherwise made available to you by Company.
+      your use of (including access to) the Company’s websites, currently located at Summer.fi, and
+      any mobile applications, web applications, decentralized applications, smart contracts and API
+      located at or available through any of Company’s websites (together with any materials and
+      services available therein, and successor website(s) or application(s) thereto, the “Site”).
+      This Agreement hereby incorporates by this reference any additional terms and conditions with
+      respect to the Site posted by Company to the Site, or otherwise made available to you by
+      Company.
     </Text>
     <Text as="p">
       <strong>IMPORTANT: </strong> This Agreement contains a mandatory individual Arbitration clause
@@ -49,24 +50,30 @@ export default () => (
     <Heading as="h2">1. Use of Services</Heading>
     <Heading as="h3">1.1. Services</Heading>
     <Text as="p">
-      The Company has developed summer.fi – an online, decentralized and autonomous environment that
-      displays price information and autonomous smart contract mechanisms of digital tokens and
-      assets (“Digital Assets”) – and provides the user-interface that guides your access to
-      summer.fi; the Site is used to provide Users with access to certain decentralized finance
-      services and products on the Ethereum blockchain through summer.fi (the “Services.”) The
-      Services may require users to pay fees, such as gas charges on the Ethereum network, to
-      perform a transaction. You acknowledge and agree that the Company has no control over User
-      transactions, User digital assets, the method or amount of payment required for any User to
-      engage in any transaction, or any payments of fees for any transactions. You must ensure that
-      you have a sufficient balance to complete any transaction using the Site or Services before
-      initiating such transaction.
+      The Company has developed Summer.fi – an online, decentralized and autonomous environment that
+      displays price information and provides to Users access to use autonomous smart contracts and
+      access to transactions of digital tokens and digital assets (“Digital Assets”) – and provides
+      the user-interface that guides your access to Summer.fi; the Site is used to provide Users
+      with access to certain decentralized technology services and products on the Ethereum
+      blockchain and other blockchains as may be available from time to time through Summer.fi (the
+      “Services”). The Services may require users to pay fees, such as gas charges on the Ethereum
+      network, to perform a transaction. You acknowledge and agree that the Company has no control
+      over User transactions, User digital assets, the method or amount of payment required for any
+      User to engage in any transaction, or any payments of fees for any transactions. You must
+      ensure that you have a sufficient balance to complete any transaction using the Site or
+      Services before initiating such transaction.
     </Text>
     <Text as="p">
       User affirms that the User is aware and acknowledges that Company is a noncustodial provider
       of software services, meaning that the Company does not custody, control, or manage User funds
-      in any manner whatsoever. The Services are deployed in a decentralized environment wherein the
-      Services can be autonomously and directly accessed by the Users without any involvement or
-      actions taken by Company or any third-party.
+      or assets in any manner whatsoever. The Services are deployed in a decentralized environment
+      wherein the Services can be autonomously and directly accessed by the Users without any
+      involvement or actions taken by Company or any third-party. The User acknowledges that Company
+      does not in any way control any of the assets or protocols displayed on the Site, including
+      but not limited to ETH, WSTETH, DAI, USDC, Ajna, Spark, Maker, Aave, Arbitrum, Optimism, Base
+      or Ethereum. The User acknowledges that the Company and its Services are entirely unaffiliated
+      with any of these protocols, other service provider or other DeFi platform upon which Users
+      may transact.
     </Text>
     <Heading as="h3">1.2. Your Use of Services</Heading>
     <Text as="p">
@@ -92,36 +99,44 @@ export default () => (
         address via private keys, access credentials, or otherwise;
       </li>
       <li>
-        You acknowledge and agree that access to the Site is provided “as is” and “as available”
-        basis, only. You acknowledge and agree that from time to time the Site may be inaccessible
-        or inoperable for any reason, including, without limitation: (i) equipment malfunctions;
-        (ii) periodic maintenance procedures or repairs which Company may undertake from time to
-        time; (iii) causes beyond the control of Company or which are not reasonably foreseeable by
-        Company; (iv) disruptions and temporary or permanent unavailability of the underlying
-        blockchain infrastructure; (v) unavailability of third party service providers or external
-        partners for any reason. In such a case, you may be prevented from accessing or using the
-        Services.
+        You acknowledge and agree that access to the Site is provided on an “as is” and “as
+        available” basis, only. You acknowledge and agree that from time to time the Site may be
+        inaccessible or inoperable for any reason, including, without limitation: (i) equipment
+        malfunctions; (ii) periodic maintenance procedures or repairs which Company may undertake
+        from time to time; (iii) causes beyond the control of Company or which are not reasonably
+        foreseeable by Company; (iv) disruptions and temporary or permanent unavailability of the
+        underlying blockchain infrastructure, including of the supported protocols or any
+        staking-related infrastructure; (v) unavailability of third party service providers or
+        external partners for any reason. In such a case, you may be prevented from accessing or
+        using the Site and the Services.
       </li>
       <li>
         You acknowledge and agree that the Site and the Services may evolve or change over time.
-        This means Company may alter, replace, or discontinue (temporarily or permanently) the
-        Services at any time in Company’s sole discretion.
+        This means the Company may alter, replace, or discontinue (temporarily or permanently) the
+        Site and Services at any time in the Company’s sole discretion.
       </li>
       <li>
-        You acknowledge and agree that the pricing information provided on the Site does not
-        represent an offer, a solicitation of an offer, or any advice regarding, or recommendation
-        to enter into, a transaction with Company. You further acknowledge and agree that you are
-        not relying upon pricing information provided on the Site and will undertake reasonable
-        independent diligence as to pricing information which may appear on the Site.
+        You acknowledge that the Site is provided as a tool for you to interact with third party
+        DeFi protocols on your own initiative, without any endorsement or recommendation of
+        cryptoasset trading activities. In doing so, the Company is not recommending that You engage
+        in cryptoasset trading activity, and You should not regard the Site or any Company
+        communications as involving any form of recommendation, invitation or inducement to deal in
+        cryptoassets.
       </li>
       <li>
-        You acknowledge and agree that the Company does not act as an agent for any of the Users, or
-        for any party or parties who may otherwise use any underlying blockchain infrastructure that
-        is involved in any of the Services.
+        You acknowledge and agree that the Company does not act as an agent for any User, or for any
+        party or parties who may otherwise use any underlying blockchain infrastructure that is
+        involved in any of the Services.
       </li>
       <li>
-        You are solely responsible for your use of the Services, including all transactions of
-        Digital Assets you make.
+        You acknowledge that the Site is provided as a tool for you to interact with third party
+        DeFi protocols. To the extent third party DeFi protocols offer Digital Assets rewards to you
+        for using their services, if Company distributes these rewards to you then it will solely be
+        acting as agent for the third party service provider (disclosed agency relationship).
+      </li>
+      <li>
+        You are solely responsible for your use of the Site and Services, including all transactions
+        of Digital Assets you make.
       </li>
       <li>
         In connection with using the Services, you will only transact legally obtained Digital
@@ -130,22 +145,31 @@ export default () => (
       <li>
         You will obey all applicable domestic and international laws in connection with using the
         Services. You will not use the Site or the Services if the laws of your country, or any
-        other applicable law, prohibits you from doing so in accordance with this Agreement. You are
-        solely responsible for reporting and paying any taxes applicable to your use of the Services
-        or any other transactions of Digital Assets or rights thereto. You are responsible for
-        complying with any applicable export controls or embargoes.
+        other applicable law, prohibits you from doing so in accordance with this Agreement.
+      </li>
+      <li>
+        You are solely responsible for reporting and paying any taxes applicable to your use of the
+        Services or any other transactions of Digital Assets or rights thereto.
+      </li>
+      <li>
+        You are responsible for complying with any applicable export controls or embargoes that may
+        apply to you or your digital assets.
       </li>
       <li>
         Any Digital Assets used by You in connection with the Services are either owned by You or
         You are validly authorized to carry out actions using such Digital Assets.
       </li>
       <li>
-        You acknowledge and agree that we have no control over, or liability for, the delivery,
-        quality, safety, legality or any other aspect of any Digital Assets that you may transfer to
-        or from a third party, and that we are not responsible for ensuring that an entity with whom
-        you transact actually completes the transaction or is authorized to do so. If you experience
-        a problem with any Digital Assets purchased from or sold to a third party through the
-        Services, you bear the entire risk.
+        You acknowledge and agree that the Company has no control over, or liability for, the
+        delivery, quality, safety, legality or any other aspect of any Digital Assets that you may
+        transfer to or from a third party, and that the Company is not responsible for ensuring that
+        an entity with whom you transact actually completes the transaction or is authorized to do
+        so. If you experience a problem with any Digital Assets purchased from or sold to a third
+        party through the Services, you bear the entire risk. You acknowledge that Company does not
+        in any way control the Digital Assets or the underlying networks and protocols and that the
+        Company cannot be held liable in any way for any deficiency, malfunctioning, exploit or
+        other issue with the Digital Assets and underlying networks and protocols or any errors you
+        make interacting with them.
       </li>
       <li>
         You covenant that all activity and conduct in connection with your use of the Site and
@@ -153,23 +177,23 @@ export default () => (
         with all applicable law, rules, regulations, requirements, guidelines and policies of any
         governmental or quasi-governmental body or regulatory agency, any self-regulatory
         organization and that you will not use the Site or Services for any illegal or unlawful
-        purpose, including but not limited to any Prohibited Uses noted in Section 13, below. You
+        purpose, including but not limited to any Prohibited Use noted in Section 13, below. You
         will not violate any applicable law, including, without limitation, any relevant and
         applicable anti-money laundering and anti-terrorist financing laws and any relevant and
         applicable privacy and data collection laws.
       </li>
       <li>
         You acknowledge and affirm that You are not and have not been (a) the subject of economic or
-        trade sanctions administered or enforced by any governmental authority (b) otherwise
+        trade sanctions administered or enforced by any governmental authority, (b) otherwise
         designated on any list of prohibited or restricted parties (including but not limited to the
         list maintained by the Office of Foreign Assets Control of the U.S. Department of the
-        Treasury, the Office of Financial Sanctions Implementation of the UK’s HM Treasury, or the
-        EU’s Financial Sanctions Database) or (c) a citizen, resident, or organized in a
-        jurisdiction or territory that is the subject of comprehensive country-wide, territory-wide,
-        or regional economic sanctions by the United States (d) placed on any excluded or denied
-        persons lists by any authority. You are not a resident of any of the following countries or
-        regions: Belarus, Burma (Myanmar), Burundi, Central African Republic, Congo, Côte
-        d&#39;Ivoire, Cuba, Iran, Iraq, Lebanon, Liberia, Libya, Mali, Nicaragua, North Korea,
+        Treasury, the Office of Financial Sanctions Implementation of the UK’s HM Treasury, the EU’s
+        Financial Sanctions Database or United Nations sanctions), or (c) a citizen, resident, or
+        organized in a jurisdiction or territory that is the subject of comprehensive country-wide,
+        territory-wide, or regional economic sanctions by the United States, (d) placed on any
+        excluded or denied persons lists by any authority, and or a resident of any of the following
+        countries or regions: Belarus, Burma (Myanmar), Burundi, Central African Republic, Congo,
+        Côte d&#39;Ivoire, Cuba, Iran, Iraq, Lebanon, Liberia, Libya, Mali, Nicaragua, North Korea,
         Somalia, South Sudan, Sudan, Syria, Crimea (Ukraine/Russia), Venezuela, Yemen, Zimbabwe
         (“Non-Supported Countries”).
       </li>
@@ -185,7 +209,7 @@ export default () => (
         to the Site or Services. You acknowledge that at any time, your access to your
         cryptocurrency assets may be suspended or terminated, or there may be a delay in your access
         or use of your cryptocurrency assets which may result in the cryptocurrency assets
-        diminishing in value or you being unable to complete a transaction;
+        diminishing in value or you being unable to complete a transaction.
       </li>
       <li>
         You acknowledge that we use data you submit using our Site through your wallet to detect,
@@ -198,33 +222,33 @@ export default () => (
     <Text as="p">
       In connection with your use of the Services, you agree to bear all costs necessary to conduct
       a transaction, such as gas costs, which may be charged by others, including costs to access
-      blockchain infrastructure incident to your transaction (i.e. “network fees”). We attempt to
-      provide accurate costs information, but this information is highly volatile and can change
-      quickly without the Company or Users necessarily being aware of these changes. The Company may
-      charge fees for certain transaction types available at summer.fi including automated trigger
+      blockchain infrastructure incident to your transaction (i.e. “network fees”). The Site may
+      attempt to provide accurate costs information, but this information is highly volatile and can
+      change quickly without any party necessarily being aware of these changes. The Company may
+      charge fees for certain transaction types available at Summer.fi, including automated trigger
       executions. All such fees payable to the Company will be disclosed to you. Company may provide
-      integrations with third party service providers, such as the integration of the Li.Fi widget,
-      and such third party providers may impose costs if you decide to make use of those
-      integrations. Please check the details of any transaction you enter into using summer.fi prior
+      integrations with third party service providers, such as the integration of the Li.Fi widget
+      or other widgets, and such third party providers may impose costs if you decide to use those
+      integrations. Please check the details of any transaction you enter into using Summer.fi prior
       to authorizing that transaction for more information.
     </Text>
     <Heading as="h2">2. Eligibility</Heading>
     <Text as="p">
       You affirm that you are of legal age to enter into this Agreement where you live and have the
-      legal capacity to enter into this Agreement, to form a legally binding contract online, as
-      well as that you are fully able and competent to enter into the terms, conditions,
-      obligations, affirmations, representations and warranties set forth in this Agreement and to
-      abide by and comply with this Agreement.
+      legal capacity to enter into this Agreement, to form a legally binding contract online, and
+      that you are fully able and competent to enter into the terms, conditions, obligations,
+      affirmations, representations and warranties set forth in this Agreement and to abide by and
+      comply with this Agreement.
     </Text>
     <Text as="p">
       Services are available for your business use only. You are not allowed to enter into this
       Agreement and use the Services in your capacity as a consumer. If you are an individual
-      accessing or using the Site on behalf of, or for the benefit of, any corporation, partnership
-      or other entity with which you are associated (an “Organization”), then you are agreeing to
-      this Agreement on behalf of yourself and such Organization, and you represent and warrant that
-      you have the legal authority to bind such Organization to this Agreement. References to “You”
-      and “Your” in this Agreement will refer to both the individual using the Site and to any such
-      Organization.
+      accessing or using the Site and or Services on behalf of, or for the benefit of, any
+      corporation, partnership or other entity with which you are associated (an “Organization”),
+      then you are agreeing to this Agreement on behalf of yourself and such Organization, and you
+      represent and warrant that you have the legal authority to bind such Organization to this
+      Agreement. References to “You” and “Your” in this Agreement will refer to both the individual
+      using the Site and to any such Organization.
     </Text>
     <Text as="p">
       You represent that You are legally permitted to use the service in your jurisdiction,
@@ -235,7 +259,7 @@ export default () => (
       country of residency or establishment prohibit you from doing so in accordance with this
       Agreement. You further represent that neither you nor your Organization is a resident of any
       of the Non-Supported Countries, or otherwise legally prohibited from accessing the Site or
-      Services. Finally, You represent and warrant that you will not use the Service for any illegal
+      Services. You also represent and warrant that you will not use the Service for any illegal
       activity.
     </Text>
     <Heading as="h2">3. Modification of Agreement and Transfer</Heading>
@@ -258,10 +282,11 @@ export default () => (
     </Text>
     <Heading as="h2">4. Rewards Program Terms:</Heading>
     <Text as="p">
-      The Company offers its Users the opportunity to earn Rewards by referring other Users to enter
-      into qualified transactions using the Services. The Rewards are for promotional purposes only,
-      as part of the Company Rewards Program (&quot;Rewards Program&quot; or &quot;Program&quot;).
-      By joining the Program, you and Users you refer can earn Rewards payable in DAI.
+      The Company offers its eligible Users the opportunity to earn Rewards by referring other Users
+      to enter into qualified transactions using the Services. The Rewards are for promotional
+      purposes only, as part of the Company Rewards Program (&quot;Rewards Program&quot; or
+      &quot;Program&quot;). By joining the Program, you and Users you refer can earn Rewards payable
+      in DAI.
     </Text>
     <Text as="p">
       These Rewards Program Terms (“Program Terms”) apply to a User&#39;s participation in the
@@ -285,31 +310,31 @@ export default () => (
     </Text>
     <Heading as="h2">How It Works</Heading>
     <Text as="p">
-      To participate, a User generates a referral code by browsing to the summer.fi web site and
+      To participate, a User generates a referral code by browsing to the Summer.fi web site and
       clicking the “copy referral link” button. Once that User generates and distributes that
       referral code to another User that accepts to be referred after they have accepted the Program
       Terms via wallet transaction, that second User becomes a Referred User, and that User who
       distributed the referral code becomes a Referrer. Referrers can share their referral code with
       other Users who may use that code to receive Services from the Company using their
-      self-custodial wallet by visiting summer.fi and inserting the referral code when prompted at
+      self-custodial wallet by visiting Summer.fi and inserting the referral code when prompted at
       the appropriate URL (currently{' '}
       <AppLink href="https://summer.fi/referrals">https://summer.fi/referrals</AppLink>). The User
       who receives the referral code and clicks it or otherwise manually enters the URL will be
       prompted to access, review, and accept these Program Terms by signing a transaction through
-      that User’s wallet. After that User clicks to accept these Program Terms, that User will be a
+      that User’s wallet. After that User clicks to accept the Program Terms, that User will be a
       Referred User. Both a Referrer, and a Referred User may be able to claim Rewards in an amount
       equal to 5% of all fees thereafter generated by the Referred User for Multiply or Earn
-      transactions or any of the summer.fi automated trigger executions (hereinafter a “qualified
+      transactions or any of the Summer.fi automated trigger executions (hereinafter a “qualified
       transaction.”).
     </Text>
     <Text as="p">
       Once the Referred User has performed a qualified transaction, both Referrer and the Referred
-      User will see on the summer.fi referral page (
-      <AppLink href="https://summer.fi/referrals">https://summer.fi/referrals</AppLink>) a balance
-      accumulating that they are able to &#39;Claim&#39; each week. The summer.fi Referral page will
-      update the Rewards balance that is available to be claimed by Referrers and Referred Users. A
+      User will see on the Summer.fi referral page (
+      <AppLink href="https://summer.fi/referrals">https://summer.fi/referrals</AppLink>) balance
+      accumulating that they are able to 'Claim' each week. The Summer.fi Referral page will update
+      the Rewards balance that is available to be claimed by Referrers and Referred Users. A
       Referrer or Referred User may claim their outstanding Rewards balance by browsing to the
-      summer.fi referral page and clicking the Claim button, and interacting with the smart contract
+      Summer.fi referral page and clicking the Claim button, and interacting with the smart contract
       using their wallet to claim the Rewards available to them.
     </Text>
     <Heading as="h2">Conditions for Receiving Rewards</Heading>
@@ -323,7 +348,7 @@ export default () => (
         other offer that results in the payment of Rewards.
       </li>
       <li>
-        The Referred User be qualified to use the services provided by the Company under these
+        The Referred User must be qualified to use the Services provided by the Company under these
         Program Terms.
       </li>
       <li>
@@ -343,7 +368,7 @@ export default () => (
       redeemed for DAI. Referrers and Referred Users are eligible to begin to receive Rewards as
       long as this Program is offered by the Company and as long as Referrers and Referred Users
       otherwise qualify for the Program. Referrers may refer an unlimited number of Users to the
-      Program.{' '}
+      Program.
     </Text>
     <Heading as="h2">Use of Rewards</Heading>
     <Text as="p">
@@ -352,8 +377,8 @@ export default () => (
       be modified or extended.
     </Text>
     <Text as="p">
-      If a Referrer&#39;s or Referred User’s participation in the Rewards Program is terminated for
-      any reason, unclaimed Rewards are void. Prior to redemption, Rewards may not be sold,
+      If a Referrer&#39;s or Referred User&#39;s participation in the Rewards Program is terminated
+      for any reason, unclaimed Rewards are void. Prior to redemption, Rewards may not be sold,
       transferred or assigned to, or shared with, any other person. Rewards have no value until
       claimed. Rewards have no cash value and may not be redeemed for cash, goods or services.
       Rewards are intended for the User’s use only. Commercial use of Rewards is prohibited. Your
@@ -366,58 +391,65 @@ export default () => (
       Except where prohibited, Users who have accepted these Program Terms agree that by
       participating in the Program, they agree: (1) to be bound by these Program Terms and to the
       decisions of the Company and/or its designees, its other Terms of Service and its privacy
-      policies; and (2) to release and hold harmless the Company and its affiliates and
+      policies; and (2) to release and hold harmless the Company and its owners, affiliates, and
       subsidiaries, together with its respective employees, directors, officers, licensees,
       licensors, shareholders, attorneys and agents including, without limitation, their respective
       advertising and promotion entities and any person or entity associated with the production,
-      operation or administration of the Program (collectively, the &quot;Released Parties&quot;),
-      from any and all claims, demands, damages, losses, liabilities, costs or expenses caused by,
-      arising out of, in connection with, or related to their participation in the Program
-      (including, without limitation, any property loss, damage, personal injury or death caused to
-      any person(s) and/or the awarding, receipt and/or use or misuse of the Program or any Reward).
+      operation or administration of the Program (collectively, the "Released Parties"), from any
+      and all claims, demands, damages, losses, liabilities, costs or expenses caused by, arising
+      out of, in connection with, or related to their participation in the Program (including,
+      without limitation, any property loss, damage, personal injury or death caused to any
+      person(s) and/or the awarding, receipt and/or use or misuse of the Program or any Reward).
     </Text>
     <Text as="p">
-      Except where prohibited by law, the Released Parties shall not be liable for: (i) late, lost,
-      delayed, stolen, misdirected, incomplete unreadable, inaccurate, garbled or unintelligible
-      entries, or communications, regardless of the method of transmission; (ii) telephone system,
-      telephone or computer hardware, software or other technical or computer malfunctions, lost
-      connections, disconnections, delays or transmission errors; (iii) data corruption, theft,
-      destruction, unauthorized access to or alteration of entry or other materials; (iv) any
-      injuries, losses, or damages of any kind to any person, resulting from acceptance, possession
-      or use of Rewards, or from participation in the Program; or (v) any printing, typographical,
-      administrative or technological errors in any websites or materials associated with the
-      Program.
+      Except where prohibited by law, the Company and its owners, affiliates, and subsidiaries,
+      together with its respective employees, directors, officers, licensees, licensors,
+      shareholders, attorneys and agents including, without limitation, their respective advertising
+      and promotion entities and any person or entity associated with the production, operation or
+      administration of the Program (collectively, the “Released Parties”) shall not be liable for:
+      (i) late, lost, delayed, stolen, misdirected, incomplete, unreadable, inaccurate, garbled or
+      unintelligible entries, or communications, regardless of the method of transmission; (ii)
+      telephone system, telephone or computer hardware, software, network, or other technical or
+      computer malfunctions, lost connections, disconnections, delays or transmission errors; (iii)
+      data corruption, theft, destruction, unauthorized access to or alteration of entry or other
+      materials; (iv) any injuries, losses, or damages of any kind to any person, resulting from
+      acceptance, possession or use of Rewards, or from participation in the Program; or (v) any
+      printing, typographical, administrative or technological errors in any websites or materials
+      associated with the Program.
     </Text>
     <Text as="p">
       The Company disclaims any liability for damage to any computer system resulting from
-      participating in, or accessing, or downloading information in connection with this Program,
-      and reserves the right, in its sole discretion, to cancel, modify or suspend the Program
-      should a virus, bug, computer problem, unauthorized intervention, technical fault, hack,
-      attack, exploit, or other causes beyond the Company’s control, corrupt the administration,
-      security, or proper play of the Program, or any system, product, service, or protocol upon
-      which the Program relies.
+      participating in, or accessing, or downloading information in connection with this Program, to
+      the extent that You could have avoided such damage by following the Company’s advice to apply
+      an update offered to You free of charge or for damage that was caused by You failing to
+      correctly follow installation instructions or to have in place the minimum system requirements
+      advised by the Company, and reserves the right, in its sole discretion, to cancel, modify or
+      suspend the Program should a virus, bug, computer problem, unauthorized intervention,
+      technical fault, hack, attack, exploit, or other causes beyond the Company’s control, corrupt
+      the administration, security, or proper play of the Program, or any system, product, service,
+      or protocol upon which the Program relies.
     </Text>
     <Text as="p">
       Except where prohibited, the Released Parties shall not be liable to any Users for failure to
       supply any Reward or any part thereof, by reason of any acts of God, any action(s),
       regulation(s), order(s) or request(s) by any governmental or quasi-governmental entity
       (whether or not the action(s), regulations(s), order(s) or request(s) prove(s) to be invalid),
-      equipment failure, utility failure, failure of any protocol, blockchain, oracle, data source,
-      or smart contract, threatened terrorist acts, terrorist acts, air raid, blackout, act of
-      public enemy, earthquake, tornado, tsunami, war (declared or undeclared), fire, flood,
-      epidemic, explosion, unusually severe weather, hurricane, embargo, labor dispute or strike
-      (whether legal or illegal), labor or material shortage, transportation interruption of any
-      kind, work slow-down, civil disturbance, insurrection, riot, change in applicable law or
-      regulation, or any other similar or dissimilar cause beyond any of the Released Parties&#39;
-      control.
+      equipment failure, utility failure, failure of any protocol, application, multi-signature
+      wallet, blockchain, oracle, data source, or smart contract, threatened terrorist acts,
+      terrorist acts, air raid, blackout, act of public enemy, earthquake, tornado, tsunami, war
+      (declared or undeclared), fire, flood, epidemic, explosion, unusually severe weather,
+      hurricane, embargo, labor dispute or strike (whether legal or illegal), labor or material
+      shortage, transportation interruption of any kind, work slow-down, civil disturbance,
+      insurrection, riot, change in applicable law or regulation, or any other similar or dissimilar
+      cause beyond any of the Released Parties' control.
     </Text>
     <Text as="p">
       As a condition of entering the Program, and unless prohibited by law, Users agree that under
       no circumstances will Users be entitled to any awards of damages for any losses or damages,
-      and Users hereby waive all rights to claim actual, punitive, incidental, consequential, and
-      any other damages, and waives any and all rights to have damages multiplied or otherwise
-      increased. A waiver of rights may not apply to you in your jurisdiction of residence.
-      Additional rights may be available to you.
+      and Users hereby waive all rights to claim actual, nominal, special, punitive, incidental,
+      consequential, and any other form of legally recognized damages, and waives any and all rights
+      to have damages multiplied or otherwise increased. A waiver of rights may not apply to you in
+      your jurisdiction of residence. Additional rights may be available to you.
     </Text>
     <Heading as="h2">Applicable Law</Heading>
     <Text as="p">
@@ -434,24 +466,22 @@ export default () => (
     </Text>
     <ul>
       <li>Violate the intellectual property rights of the Company or any other party;</li>
-      <li>
-        Spam or otherwise create bulk distributions of the referral link that is inappropriate;
-      </li>
+      <li>Spam or otherwise create bulk distributions of the referral link;</li>
       <li>Collect or attempting to collect personal data about Users;</li>
       <li>
-        Engage in any actions that are designed to disrupt or undermine the Program, the Company or
-        the use of same by any other User;
+        Engage in any actions that are designed to disrupt or undermine the Program, the Company, or
+        the use of the Site and Services by any other User;
       </li>
       <li>
-        Make attempts to gain unauthorized access to any software or the Program for any reason.
+        Make attempts to gain unauthorized access to any software or the Program for any reason;
       </li>
       <li>
-        Transmit files that contain bots, viruses, works, Trojan horses, or any other file that
-        could contaminate or otherwise destroy the Company intellectual property or stop the
-        function of the Site and Services, or otherwise harm any third party.
+        Transmit files that contain bots, viruses, works, Trojan horses, exploits, or any other code
+        or file that could contaminate or otherwise destroy the Company intellectual property or
+        stop the function of the Site and Services, or otherwise harm any third party;
       </li>
-      <li>Engage in illegal or improper activities.</li>
-      <li>Engage in behavior designed to annoy or harass others.</li>
+      <li>Engage in illegal or improper activities;</li>
+      <li>Engage in behavior designed to annoy or harass others; and or</li>
       <li>
         Engage in actions that disparage or malign or call into question the reputation of the
         Company, as determined in the Company’s sole discretion.
@@ -498,7 +528,7 @@ export default () => (
       these Terms as they may be updated from time to time, and, except where prohibited, will
       become effective as of the date the Terms are updated. Please check these Terms frequently. If
       a Referrer has Rewards pending at the time that the Program is updated or changed, those
-      pending Rewards shall be honored under the Terms that were valid at the time the qualified
+      pending Rewards shall be honored under the Terms that were valid at the time of the qualified
       transaction giving rise to the Rewards.
     </Text>
     <Text as="p">
@@ -531,29 +561,29 @@ export default () => (
     </Text>
     <Text as="p">
       THE CONTENT, INFORMATION, LINKS AND FUNCTIONALITY OF THE SITE AND SERVICES RELATED TO THE
-      PROGRAM ARE PROVIDED “AS IS” AND “AS AVAILABLE” AND WITHOUT WARRANTIES OF ANY KIND, EITHER
-      EXPRESSED OR IMPLIED, INCLUDING WITHOUT LIMITATION WARRANTIES OF NON INFRINGEMENT OF THIRD
-      PARTY RIGHTS, TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND FREEDOM FROM
-      COMPUTER VIRUS OR OTHER HARMFUL COMPONENTS. WITHOUT IN ANY WAY LIMITING THE PRIOR SENTENCE,
-      THE COMPANY DOES NOT MAKE ANY REPRESENTATION OR WARRANTY THAT (I) THE CONTENT AND INFORMATION
-      OF THE SITE IS ACCURATE, SECURE, COMPLETE OR OTHERWISE FREE FROM ERRORS AND OMISSIONS, OR (II)
-      THE LINKS AND OTHER ASPECTS OF THE SITE ARE FUNCTIONAL.
+      PROGRAM ARE PROVIDED “AS IS” AND “AS AVAILABLE” AND, TO THE EXTENT PERMITTED BY APPLICABLE
+      LAW, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
+      WARRANTIES OF NON INFRINGEMENT OF THIRD PARTY RIGHTS, TITLE, MERCHANTABILITY, FITNESS FOR A
+      PARTICULAR PURPOSE AND FREEDOM FROM COMPUTER VIRUS OR OTHER HARMFUL COMPONENTS. WITHOUT IN ANY
+      WAY LIMITING THE PRIOR SENTENCE, THE COMPANY DOES NOT MAKE ANY REPRESENTATION OR WARRANTY THAT
+      (I) THE CONTENT AND INFORMATION OF THE SITE IS ACCURATE, SECURE, COMPLETE OR OTHERWISE FREE
+      FROM ERRORS AND OMISSIONS, OR (II) THE LINKS AND OTHER ASPECTS OF THE SITE ARE FUNCTIONAL.
     </Text>
     <Heading as="h2">5. Representations, Warranties, and Risks</Heading>
     <Heading as="h3">5.1. No Representation or Warranty</Heading>
     <Text as="p">
-      You expressly understand and agree that your use of the Service is at your sole risk. WE MAKE
-      AND EXPRESSLY DISCLAIM ALL REPRESENTATIONS AND WARRANTIES, EXPRESS, IMPLIED OR STATUTORY, AND
-      WITH RESPECT TO THE SERVICES AND THE CODE, WHETHER PROPRIETARY OR OPEN SOURCE, WE SPECIFICALLY
-      DO NOT REPRESENT AND WARRANT AND EXPRESSLY DISCLAIM ANY REPRESENTATION OR WARRANTY, EXPRESS,
-      IMPLIED OR STATUTORY, INCLUDING WITHOUT LIMITATION, ANY REPRESENTATIONS OR WARRANTIES OF
-      TITLE, NONINFRINGEMENT, MERCHANTABILITY, USAGE, SECURITY, SUITABILITY OR FITNESS FOR ANY
-      PARTICULAR PURPOSE, OR AS TO THE WORKMANSHIP OR TECHNICAL CODING THEREOF, OR THE ABSENCE OF
-      ANY DEFECTS THEREIN, WHETHER LATENT OR PATENT. WE DO NOT REPRESENT OR WARRANT THAT THE SITE,
-      SERVICES, CODE AND ANY RELATED INFORMATION ARE ACCURATE, COMPLETE, RELIABLE, CURRENT OR
-      ERROR-FREE. WE FURTHER EXPRESSLY DISCLAIM ALL REPRESENTATIONS AND WARRANTIES REGARDING ANY
-      THIRD PARTY TECHNOLOGY, INCLUDING ALL BLOCKCHAIN INFRASTRUCTURE, WHICH MAY BE RELIED UPON BY
-      USERS OF THE SERVICES OR SITE.
+      You expressly understand and agree that your use of the Site and Services is at your sole
+      risk. WE MAKE AND EXPRESSLY DISCLAIM ALL REPRESENTATIONS AND WARRANTIES, EXPRESS, IMPLIED OR
+      STATUTORY, AND WITH RESPECT TO THE SERVICES AND THE CODE, WHETHER PROPRIETARY OR OPEN SOURCE,
+      TO THE EXTENT PERMITTED BY APPLICABLE LAW, WE SPECIFICALLY DO NOT REPRESENT AND WARRANT AND
+      EXPRESSLY DISCLAIM ANY REPRESENTATION OR WARRANTY, EXPRESS, IMPLIED OR STATUTORY, INCLUDING
+      WITHOUT LIMITATION, ANY REPRESENTATIONS OR WARRANTIES OF TITLE, NONINFRINGEMENT,
+      MERCHANTABILITY, USAGE, SECURITY, SUITABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE, OR AS TO
+      THE WORKMANSHIP OR TECHNICAL CODING THEREOF, OR THE ABSENCE OF ANY DEFECTS THEREIN, WHETHER
+      LATENT OR PATENT. WE DO NOT REPRESENT OR WARRANT THAT THE SITE, SERVICES, CODE AND ANY RELATED
+      INFORMATION ARE ACCURATE, COMPLETE, RELIABLE, CURRENT OR ERROR-FREE. WE FURTHER EXPRESSLY
+      DISCLAIM ALL REPRESENTATIONS AND WARRANTIES REGARDING ANY THIRD PARTY TECHNOLOGY, INCLUDING
+      ALL BLOCKCHAIN INFRASTRUCTURE, WHICH MAY BE RELIED UPON BY USERS OF THE SERVICES OR SITE.
     </Text>
     <Text as="p">
       WE SPECIFICALLY DO NOT REPRESENT AND WARRANT AND EXPRESSLY DISCLAIM ANY REPRESENTATION OR
@@ -576,7 +606,7 @@ export default () => (
     <Heading as="h3">5.3. Sophistication and Risk of Cryptographic Systems</Heading>
     <Text as="p">
       By utilizing the Services or interacting with the Site in any way, you represent that you
-      understand the inherent risks associated with cryptographic systems; and warrant that you have
+      understand the inherent risks associated with cryptographic systems and warrant that you have
       an understanding of the usage and intricacies of native cryptographic tokens, like Ether (ETH)
       and Bitcoin (BTC), smart contract based tokens such as those that follow the Ethereum Token
       Standard known as ERC-20 (
@@ -590,13 +620,13 @@ export default () => (
       blockchain networks are formed and operated. In general, the underlying software for
       blockchain networks tends to be open source such that anyone can use, copy, modify, and
       distribute it. By using the Services, you acknowledge and agree (i) that Company is not
-      responsible for operation of the underlying software, hardware, and networks that there exists
-      no guarantee of functionality, security, or availability of such software and networks; and
-      (ii) that the underlying protocols are subject to sudden changes in operating rules (known as
-      “ Forks ”), and that such Forks may materially affect the Services. It might be
+      responsible for operation of the underlying software, hardware, and networks and that there
+      exists no guarantee of functionality, security, or availability of such software and networks;
+      and (ii) that the underlying protocols are subject to sudden changes in operating rules (known
+      as “Forks”), and that such Forks may materially affect the Services. It might be
       discretionarily decided not to support (or cease supporting) the Forked network entirely. You
-      acknowledge and agree that Company assumes absolutely no responsibility whatsoever in respect
-      of any underlying software protocols, whether Forked or not.
+      acknowledge and agree that the Company assumes absolutely no responsibility whatsoever in
+      respect of any underlying software protocols, whether Forked or not.
     </Text>
     <Text as="p">
       Underlying networks relied upon by the Services utilize public/private key cryptography. You
@@ -610,18 +640,18 @@ export default () => (
       Digital Assets to any other address or wallet. If this occurs, you will not be able to realize
       any value or utility from Digital Assets that you may hold now or in future. The Services may
       offer integrations with third party service providers, such as the Li.Fi widget integration.
-      If you decide to make use of the Li.Fi widget integration, your transactions are executed by
-      Li.Fi’s third-party service providers and not by Li.Fi.
+      If you decide to make use of the Li.Fi or widget integration, your transactions are executed
+      by Li.Fi’s third-party service providers and not by Li.Fi.
     </Text>
     <Heading as="h3">5.4. Risk of Regulatory Actions in One or More Jurisdictions</Heading>
     <Text as="p">
       The Services, Digital Assets, and underlying technology relied upon by the Site and Services,
       including Ethereum and other blockchain infrastructure could be impacted by one or more
-      regulatory inquiries or regulatory action, which could impede or limit the ability of Company
-      to continue to develop, or which could impede or limit your ability to access or use the
-      Services or Ethereum blockchain, including access to your Digital Assets or other funds. The
-      law as relates to the Site, Services, Digital Assets, Ethereum and public network blockchains
-      remains fluid and quickly changing.
+      regulatory inquiries or regulatory action, which could impede or limit the ability of the
+      Company to continue to develop, or which could impede or limit your ability to access or use
+      the Services or Ethereum blockchain, including access to your Digital Assets or other funds.
+      The law as relates to the Site, Services, Digital Assets, Ethereum and public network
+      blockchains remains fluid and quickly changing.
     </Text>
     <Heading as="h3">5.5. Risk of Weaknesses or Exploits in the Field of Cryptography</Heading>
     <Text as="p">
@@ -653,12 +683,12 @@ export default () => (
     </Text>
     <Heading as="h3">5.8. Site Accuracy</Heading>
     <Text as="p">
-      Although it is intended to provide accurate and timely information on the Site, the Site or
-      relevant tools may not always be entirely accurate, complete or current and may also include
-      technical inaccuracies or typographical errors. In an effort to continue to provide you with
-      as complete and accurate information as possible, information may be changed or updated from
-      time to time without notice, including, without limitation, information regarding our
-      policies. Accordingly, you should verify all information before relying on it, and all
+      Although it is intended to provide reasonably accurate and timely information on the Site, the
+      Site or relevant tools may not always be entirely accurate, complete or current and may also
+      include technical inaccuracies or typographical errors. In an effort to continue to provide
+      you with as complete and accurate information as possible, information may be changed or
+      updated from time to time without notice, including, without limitation, information regarding
+      our policies. Accordingly, you should verify all information before relying on it, and all
       decisions based on information contained on the Site or relevant tools are your sole
       responsibility and Company shall have no liability for such decisions. Links to third-party
       materials (including, without limitation, websites) may be provided as a convenience but are
@@ -692,7 +722,7 @@ export default () => (
     <Heading as="h3">5.10. Financial Risks</Heading>
     <Text as="p">
       Use of the Services, in particular for trading Digital Assets, may carry financial risk.
-      Digital Assets are, by their nature, highly experimental, risky, volatile and transactions
+      Digital Assets are, by their nature, highly experimental, risky and volatile, and transactions
       carried through the Services are irreversible, final, and there are no refunds. You
       acknowledge and agree that you will access and use the Site and the Services at your own risk.
       The risk of loss in trading Digital Assets can be substantial. You should, therefore,
@@ -759,9 +789,9 @@ export default () => (
       inaccurate price data transmitted by the Site or Services, any vulnerabilities or exploits of
       the Site, Services, or any underlying technology relied upon by the Site or Services, any of
       Your acts or omissions that implicate publicity rights, defamation or invasion of privacy, any
-      claims arising form or related to any change in law and from Weaknesses or Exploits in the
+      claims arising from or related to any change in law and from Weaknesses or Exploits in the
       Field of Cryptography that would affect blockchain systems, risks associated with underlying
-      cryptographic protocols relied upon by You, risk of regulatory actions risk of exploits of
+      cryptographic protocols relied upon by You, risk of regulatory actions, risk of exploits of
       cryptographic technology, risk of price volatility, risk of cybersecurity exploits, a lack of
       requisite technical knowledge, financial risks, risks of change of law, risks related to
       operations, changes in law, including tax laws, regulatory inquiries, regulatory actions, or
@@ -780,6 +810,18 @@ export default () => (
       own risk.
     </Text>
     <Text as="p">
+      Nothing in this Agreement limits any liability which cannot legally be limited, including
+      liability for:
+    </Text>
+    <ul>
+      <li>(a) death or personal injury caused by negligence;</li>
+      <li>(b) fraud or fraudulent misrepresentation; and</li>
+      <li>
+        (c) breach of the terms implied by section 2 of the UK’s Supply of Goods and Services Act
+        1982 (title and quiet possession).
+      </li>
+    </ul>
+    <Text as="p">
       Recognizing such, You understand and agree that, to the fullest extent permitted by applicable
       law, neither Company nor any of our officers, directors, employees, contractors, agents,
       affiliates, or subsidiaries suppliers or licensors or related entities will be liable to You
@@ -795,20 +837,23 @@ export default () => (
       technical malfunctions; failures, including public utility, including electric, internet or
       telephone outages; (h) omissions, interruptions, latency, deletions or defects of any device
       or network, providers, or software (including, but not limited to, those that do not permit
-      participation in the service); (i) any injury or damage persons or property, including to
-      computer equipment; (j) inability to fully access the site or service or any other website;
-      (k) theft, tampering, destruction, or unauthorized access to, images or other content of any
-      kind; data that is processed late or incorrectly or is incomplete or lost; (l) typographical,
-      printing or other errors, or any combination thereof; (m) offensive or defamatory conduct of
-      any third party, or (n) any Site or Services downtime or lack of availability, or any other
-      matter relating to the Site or Service, including any damage, loss, or injury resulting from
-      hacking, tampering, or other unauthorized access or use of the Site or Services or the
-      information contained within it.
+      participation in the service); (i) any injury or damage to persons or property, including to
+      computer equipment (to the extent that You could have avoided such damage by following the
+      Company’s advice to apply an update offered to You free of charge or for damage that was
+      caused by You failing to correctly follow installation instructions or to have in place the
+      minimum system requirements advised by the Company); (j) inability to fully access the site or
+      service or any other website; (k) theft, tampering, destruction, or unauthorized access to,
+      images or other content of any kind; data that is processed late or incorrectly or is
+      incomplete or lost; (l) typographical, printing or other errors, or any combination thereof;
+      (m) offensive or defamatory conduct of any third party, or (n) any Site or Services downtime
+      or lack of availability, or any other matter relating to the Site or Service, including any
+      damage, loss, or injury resulting from hacking, tampering, or other unauthorized access or use
+      of the Site or Services or the information contained within it.
     </Text>
     <Text as="p">
       Under no circumstances shall the Company or any of its officers, directors, employees,
       contractors, agents, affiliates, or subsidiaries be liable to You for any claims, proceedings,
-      liabilities, obligations, damages, losses, or costs in an amount exceeding GBP£100.00. This
+      liabilities, obligations, damages, losses, or costs in an amount exceeding GBP100.00. This
       limitation of liability is an agreed upon contractual term and is not a penalty, and applies
       regardless of whether the alleged liability is based on contract, tort, negligence, strict
       liability, or any other basis, and even if we have been advised of the possibility of such
@@ -817,20 +862,24 @@ export default () => (
       disclaimers and limitations set forth in this Agreement may not apply to You. This limitation
       of liability shall apply to the fullest extent permitted by law. If you are a California
       resident, You waive the benefits and protections of California Civil Code § 1542, which
-      provides: &quot;[a] general release does not extend to claims that the creditor or releasing
-      party does not know or suspect to exist in his or her favor at the time of executing the
-      release and that, if known by him or her, would have materially affected his or her settlement
-      with the debtor or released party.
+      provides: "[a] general release does not extend to claims that the creditor or releasing party
+      does not know or suspect to exist in his or her favor at the time of executing the release and
+      that, if known by him or her, would have materially affected his or her settlement with the
+      debtor or released party.
+    </Text>
+    <Text as="p">
+      The terms implied by sections 3, 4 and 5 of the UK’s Supply of Goods and Services Act 1982
+      are, to the fullest extent permitted by law, excluded from this Agreement.
     </Text>
     <Heading as="h2">8. Open Source and Proprietary Rights</Heading>
     <Text as="p">
       Some software used in our Services may be offered under an open source license that we will
-      make available to you. Documentation of open source code is available on the summer.fi Github
+      make available to you. Documentation of open source code is available on the Summer.fi Github
       page. This documentation, including any code shown in it, is licensed under the GNU Affero
       General Public License version 3 and you agree to abide by the terms of this license.
     </Text>
     <Text as="p">
-      The “summer.fi” name, the summer.fi logo, other related trademarks, and the web domains and
+      The “Summer.fi” name, the Summer.fi logo, other related trademarks, and the web domains and
       URLs are property of Oazo Apps Limited. Using our Services does not give you ownership of any
       proprietary intellectual property rights in our Services or the content you access. You may
       not use proprietary content from our Services unless you obtain permission from its owner or
@@ -841,18 +890,18 @@ export default () => (
     <Heading as="h2">9. Links</Heading>
     <Text as="p">
       The Service provides, or third parties may provide, links to other World Wide Web or
-      accessible sites, applications or resources. You authorize the Company to provide certain
-      personal data and information, including, but not limited to, email addresses, wallets
+      accessible sites, applications or resources. You acknowledge that the Company may provide
+      certain personal data and information, including, but not limited to, email addresses, wallets
       addresses, and Service-related data as described and addressed in Section 14.5 below and the
       Privacy Policy, to such linked sites, applications and resources that you choose to access.
       Because Company has no control over such sites, applications and resources, you acknowledge
       and agree that Company is not responsible for the availability of such external sites,
       applications or resources, and does not endorse and is not responsible or liable for any
       content, advertising, products or other materials on or available from such sites or
-      resources. You further acknowledge and agree that Company shall not be responsible or liable,
-      directly or indirectly, for any damage or loss caused or alleged to be caused by or in
-      connection with use of or reliance on any such content, goods or services available on or
-      through any such site or resource.
+      resources. You further acknowledge and agree that, to the extent permitted under applicable
+      law, Company shall not be responsible or liable, directly or indirectly, for any damage or
+      loss caused or alleged to be caused by or in connection with use of or reliance on any such
+      content, goods or services available on or through any such site or resource.
     </Text>
     <Heading as="h2">10. Termination and Suspension</Heading>
     <Text as="p">
@@ -915,7 +964,7 @@ export default () => (
       and (3) the specific relief that you are seeking. A Notice of Dispute sent by email is deemed
       received on the date the email is sent. If you and the Company cannot agree to resolve the
       Dispute within thirty (30) days of the Notice of Dispute, the Dispute shall be referred to and
-      finally resolved by binding arbitration proceedings in accordance with Clause 12.5 below. You
+      finally resolved by binding arbitration proceedings in accordance with Clause 12.1 below. You
       and the Company agree that any arbitration must be commenced or filed within one (1) year
       after the Dispute arose; otherwise, you and the Company agree that the claim and any relief
       therefor is permanently barred (which means that you will no longer have the right to assert a
@@ -934,7 +983,7 @@ export default () => (
     <Heading as="h3">12.6. Authority of Arbitral Tribunal</Heading>
     <Text as="p">
       Unless the parties agree otherwise, the arbitrarily tribunal may only conduct an individual
-      arbitration and may not consolidate more than one individual’ s claims, preside over any type
+      arbitration and may not consolidate more than one individual’s claims, preside over any type
       of class or representative proceeding or preside over any proceeding involving more than one
       individual.
     </Text>
@@ -948,8 +997,9 @@ export default () => (
     </Text>
     <Heading as="h3">12.8. Governing law</Heading>
     <Text as="p">
-      This Agreement and the relationship between you and Company shall be governed by the laws of
-      England and Wales without regard to conflict of law provisions.
+      This Agreement, any Dispute arising under or in relation to it, and the relationship between
+      you and Company shall be governed by the laws of England and Wales without regard to conflict
+      of law provisions.
     </Text>
     <Heading as="h2">13. Prohibited Use</Heading>
     <Text as="p">
@@ -983,12 +1033,12 @@ export default () => (
         publicity and intellectual property) of others; incite, threaten, facilitate, promote, or
         encourage hate, racial intolerance, or violent acts against others; harvest or otherwise
         collect information from the Site about others, including without limitation email
-        addresses, without proper consent;{' '}
+        addresses, without proper consent;
       </li>
       <li>
         Fraud or misrepresentation: Activity which operates to defraud Company, other Users, or any
         other person; provide any false, inaccurate, or misleading information, or misrepresent the
-        truthfulness of any content on the Site or of the Services;{' '}
+        truthfulness of any content on the Site or of the Services;
       </li>
       <li>
         Intellectual Property Infringement: Engage in transactions involving items that infringe or
@@ -998,37 +1048,37 @@ export default () => (
         authorization from the rights holder; use of Company intellectual property, name, or logo,
         including use of Company trade or service marks, without express consent from Company or in
         a manner that otherwise harms Company; any action that implies an untrue endorsement by or
-        affiliation with Company.{' '}
+        affiliation with Company.
       </li>
       <li>
         Illegal Source of Funds: Use or accessing the Site or Services to transmit or exchange
         Digital Assets that are the direct or indirect proceeds of any criminal or fraudulent
-        activity, including terrorism or tax evasion.{' '}
+        activity, including terrorism or tax evasion.
       </li>
       <li>
         Other Prohibited Activities: Additionally, you confirm that you may not, nor may you assist
-        other parties to:{' '}
+        other parties to:
         <ul>
           <li>
             attempt to disable or circumvent any security or access control mechanism of the Site or
-            Services, where applicable;{' '}
+            Services, where applicable;
           </li>
           <li>
             design or assist in designing cheats, exploits, hacks, modes or any other unauthorized
             third-party software to modify or interfere with the Services, with the exception of
             automation software and bots, provided that such automation software and bots operate in
             the ordinary course of using the Services and do not cause disruption or harm to the
-            Services;{' '}
+            Services;
           </li>
           <li>
             institute, assist or become involved in any type of attack, including distribution of a
             virus, attacks upon the Services or the Site, that prevent access to or use of any of
             the above, other attempts to disrupt any of the above, gain unauthorized access to any
-            of the above, or disrupt any other person’s use or enjoyment of any of the above;{' '}
+            of the above, or disrupt any other person’s use or enjoyment of any of the above;
           </li>
           <li>
             attempt to, or harass, abuse, or harm of another person or entity, including our
-            employees and service providers;{' '}
+            employees and service providers;
           </li>
           <li>impersonate another user or otherwise misrepresent yourself;</li>
           <li>
@@ -1060,9 +1110,9 @@ export default () => (
       The failure of any entity to exercise or enforce any right or provision of the Agreement shall
       not constitute a waiver of such right or provision. If any provision of the Agreement is found
       by an arbitrator or court of competent jurisdiction to be invalid, the parties nevertheless
-      agree that the arbitrator or court should endeavor to give effect to the parties&#39;
-      intentions as reflected in the provision, and the other provisions of the Agreement shall
-      remain in full force and effect.
+      agree that the arbitrator or court should endeavor to give effect to the parties' intentions
+      as reflected in the provision, and the other provisions of the Agreement shall remain in full
+      force and effect.
     </Text>
     <Heading as="h3">14.3 Statute of Limitations</Heading>
     <Text as="p">
@@ -1093,7 +1143,7 @@ export default () => (
     <Text as="p">
       You are asked to read the Privacy Policy before you use the Site or Services. If you are
       unwilling to accept the terms and conditions of the Privacy Policy, please do not use or
-      immediately discontinue use the Site and the Services.
+      immediately discontinue use of the Site and the Services.
     </Text>
     <Heading as="h3">14.6 Conflict or Inconsistencies</Heading>
     <Text as="p">
@@ -1105,9 +1155,23 @@ export default () => (
     <Text as="p">
       Company may utilize collected data and information about you, addressed above and in the
       Privacy Policy, to communicate with you regarding the Services. By agreeing to these Terms of
-      Service or availing yourself of the Services, you acknowledge and authorize the Company’s
-      communications with you. You may opt out of subsequent communications by following the
-      procedures provided for in any such communication.
+      Service or availing yourself of the Services, you acknowledge the Company’s communications
+      with you.
+    </Text>
+    <Text as="p">
+      You acknowledge that you do not provide Company with contact details when accessing the Site
+      or Services, that Company does not routinely hold information that would enable it to connect
+      specific users, including you, to specific contact details, and that Company is under no
+      obligation to contact you in relation to your specific User transactions, User digital assets,
+      or anything else related to your specific use of the Site or Services.{' '}
+    </Text>
+    <Text as="p">
+      As stipulated in the Privacy Policy, incorporated herein by reference, data provided by you in
+      an email to Company will be used only to answer the contact question or to reply to the email
+      in the best possible manner. To the extent Company does, voluntarily and as a gesture of
+      goodwill, use your contact details that you have provided in correspondence with Company in
+      order to contact you, Company does so without creating any obligation to contact you whether
+      specifically regarding your correspondence or more generally.
     </Text>
     <Text as="p">
       Users with questions, complaints or claims with respect to the Services may contact us using

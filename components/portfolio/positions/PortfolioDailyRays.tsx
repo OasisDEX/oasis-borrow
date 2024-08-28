@@ -8,13 +8,16 @@ import {
   updateDailyRaysData,
 } from 'components/portfolio/helpers/getRaysDailyChallenge'
 import { SkeletonLine } from 'components/Skeleton'
-import { jwtAuthGetToken } from 'features/shared/jwt'
+import { currentContent } from 'features/content'
+import { checkAcceptanceFromApi$ } from 'features/termsOfService/termsAcceptanceApi'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { bonusRaysAmount, dailyRaysAmount, explodeRays } from 'helpers/dailyRays'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
+import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { EMPTY } from 'rxjs'
 import { rays } from 'theme/icons'
 import { Box, Button, Divider, Flex, Grid, Image, Text } from 'theme-ui'
 
@@ -34,16 +37,21 @@ const flashButton = ({
     }, 400)
   })
 
-const SignTosComponent = ({ wallet }: { wallet?: string }) => {
+const SignTosComponent = ({ isAuthorized }: { isAuthorized?: boolean }) => {
   const [signTosEnabled, setSignTosEnabled] = useState(false)
-  const jwtToken = wallet ? jwtAuthGetToken(wallet) : ''
-  if (!jwtToken && !signTosEnabled) {
+
+  if (isAuthorized || isAuthorized === undefined) {
+    return null
+  }
+
+  if (!isAuthorized && !signTosEnabled) {
     return (
       <Button variant="outlineSmall" onClick={() => setSignTosEnabled(true)} sx={{ mt: 3 }}>
         Sign Terms of service
       </Button>
     )
   }
+
   return <TermsOfService refreshAfterSign />
 }
 
@@ -70,7 +78,13 @@ export const PortfolioDailyRays = ({
     loaded: false,
   })
   const [loadingBaseRaysChallengeData, setloadingBaseRaysChallengeData] = useState(false)
-  const jwtToken = wallet?.address ? jwtAuthGetToken(wallet.address) : ''
+  const _checkAcceptanceFromApi$ = useMemo(
+    () => (wallet ? checkAcceptanceFromApi$(currentContent.tos.version, wallet.address) : EMPTY),
+    [wallet?.address],
+  )
+  const [checkAcceptanceFromApiData] = useObservable(_checkAcceptanceFromApi$)
+
+  const isAuthorized = checkAcceptanceFromApiData?.authorized
 
   useEffect(() => {
     if (!loadingBaseRaysChallengeData && !baseRaysChallengeData.loaded && wallet?.address) {
@@ -84,14 +98,13 @@ export const PortfolioDailyRays = ({
     }
   }, [baseRaysChallengeData, wallet?.address, loadingBaseRaysChallengeData])
 
-  const requiredItems = wallet?.address && wallet?.chainId && baseRaysChallengeData && jwtToken
+  const requiredItems = wallet?.address && wallet?.chainId && baseRaysChallengeData && isAuthorized
 
   const updateDailyRays = () => {
     setIsAddingPoints(true)
     requiredItems &&
       void updateDailyRaysData({
         wallet,
-        token: jwtToken,
         callback: (res) => {
           setIsAddingPoints(false)
           if (res.isJwtValid) {
@@ -117,7 +130,7 @@ export const PortfolioDailyRays = ({
     setUserError(false)
     void flashButton({ setIsExploding, small: true }).then(() => {
       if (requiredItems && baseRaysChallengeData.loaded) {
-        if (!jwtToken) {
+        if (!isAuthorized) {
           setUserError(true)
           return
         }
@@ -175,45 +188,46 @@ export const PortfolioDailyRays = ({
             borderRadius: 'round',
           }}
         >
-          {jwtToken ? (
-            <Button
-              variant="outlineSmall"
-              disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed || isAddingPoints}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                mt: 3,
-                transition: 'box-shadow 0.5s cubic-bezier(0,1.81,.41,1.37)',
-                userSelect: 'none',
-                boxShadow: isExploding
-                  ? '-10px -6px 14px -8px #007da3,14px -8px 15px -8px #e7a77f,-11px 14px 15px -14px #e97047'
-                  : '0px',
-                animation: 'animateGradient 10s infinite linear alternate',
-                ...getGradientColor(summerBrandGradient),
-                backgroundSize: '400px',
-                '@keyframes animateGradient': {
-                  '0%': {
-                    backgroundPositionX: '50px',
+          <>
+            {isAuthorized && (
+              <Button
+                variant="outlineSmall"
+                disabled={!requiredItems || baseRaysChallengeData?.alreadyClaimed || isAddingPoints}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mt: 3,
+                  transition: 'box-shadow 0.5s cubic-bezier(0,1.81,.41,1.37)',
+                  userSelect: 'none',
+                  boxShadow: isExploding
+                    ? '-10px -6px 14px -8px #007da3,14px -8px 15px -8px #e7a77f,-11px 14px 15px -14px #e97047'
+                    : '0px',
+                  animation: 'animateGradient 10s infinite linear alternate',
+                  ...getGradientColor(summerBrandGradient),
+                  backgroundSize: '400px',
+                  '@keyframes animateGradient': {
+                    '0%': {
+                      backgroundPositionX: '50px',
+                    },
+                    '100%': {
+                      backgroundPositionX: '-160px',
+                    },
                   },
-                  '100%': {
-                    backgroundPositionX: '-160px',
-                  },
-                },
-              }}
-              onClick={
-                requiredItems && !baseRaysChallengeData?.alreadyClaimed
-                  ? explodeRaysHandler
-                  : () => null
-              }
-            >
-              <Icon icon={rays} color="primary60" sx={{ mr: 3 }} />
-              Claim {dailyRaysAmount} Rays now
-            </Button>
-          ) : (
+                }}
+                onClick={
+                  requiredItems && !baseRaysChallengeData?.alreadyClaimed
+                    ? explodeRaysHandler
+                    : () => null
+                }
+              >
+                <Icon icon={rays} color="primary60" sx={{ mr: 3 }} />
+                Claim {dailyRaysAmount} Rays now
+              </Button>
+            )}
             <FunctionalContextHandler>
-              <SignTosComponent wallet={wallet?.address} />
+              <SignTosComponent isAuthorized={isAuthorized} />
             </FunctionalContextHandler>
-          )}
+          </>
         </Box>
         {userError && (
           <Text as="p" variant="paragraph3" color="warning100" sx={{ mt: 3 }}>
