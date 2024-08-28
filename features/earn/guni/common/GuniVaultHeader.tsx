@@ -3,7 +3,6 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { EarnVaultHeadline } from 'components/vault/EarnVaultHeadline'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import dayjs from 'dayjs'
-import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import type { YieldChange } from 'helpers/earn/calculations'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -16,14 +15,13 @@ import React from 'react'
 export interface EarnVaultHeaderProps {
   ilk: string
   token: string
-  followButton?: FollowButtonControlProps
   shareButton?: boolean
 }
 
 const currentDate = dayjs().startOf('day')
 const previousDate = currentDate.clone().subtract(1, 'day')
 
-export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnVaultHeaderProps) {
+export function GuniVaultHeader({ ilk, token, shareButton }: EarnVaultHeaderProps) {
   const { yieldsChange$, totalValueLocked$ } = useProductContext()
   const [yieldChanges, changesError] = useObservable(yieldsChange$(currentDate, previousDate, ilk))
   const [totalValueLocked, totalValueLockedError] = useObservable(totalValueLocked$(ilk))
@@ -48,7 +46,6 @@ export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnV
               header={ilk}
               tokens={[token]}
               details={details}
-              followButton={followButton}
               shareButton={shareButton}
             />
           )

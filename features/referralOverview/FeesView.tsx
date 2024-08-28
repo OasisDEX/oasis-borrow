@@ -6,7 +6,6 @@ import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { ReferralClaimSwitchNetworkModal } from 'features/referralOverview/referral-claim-switch-network-modal'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
-import { jwtAuthGetToken } from 'features/shared/jwt'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { formatAddress } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
@@ -42,18 +41,15 @@ export function FeesView({ userReferral }: Props) {
     const { hasAccepted, isReferred } = upsertUser
 
     if (userReferral.user) {
-      const jwtToken = jwtAuthGetToken(userReferral.user.address)
-      if (jwtToken)
-        createUserUsingApi$(
-          hasAccepted,
-          isReferred ? userReferral.user.user_that_referred_address : null,
-          userReferral.user.address,
-          jwtToken,
-        ).subscribe((res) => {
-          if (res === 200) {
-            userReferral.trigger()
-          }
-        })
+      createUserUsingApi$(
+        hasAccepted,
+        isReferred ? userReferral.user.user_that_referred_address : null,
+        userReferral.user.address,
+      ).subscribe((res) => {
+        if (res === 200) {
+          userReferral.trigger()
+        }
+      })
     }
   }
 

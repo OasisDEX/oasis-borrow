@@ -1,5 +1,4 @@
 import type { VaultType } from '@prisma/client'
-import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -12,16 +11,22 @@ const vaultSchema = z.object({
   chainId: z.number(),
   protocol: z.string(),
   tokenPair: z.string(),
+  walletAddress: z.string(),
 })
 
 export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
   const params = vaultSchema.parse(req.body)
-  const user = getUserFromRequest(req)
+
+  const token = req.cookies[`token-${params.walletAddress.toLowerCase()}`]
+
+  if (!token) {
+    return res.status(401).json({ authenticated: false })
+  }
 
   const vaultData = {
     vault_id: params.id,
     type: params.type as VaultType,
-    owner_address: user.address.toLowerCase(),
+    owner_address: params.walletAddress.toLowerCase(),
     chain_id: params.chainId,
     protocol: params.protocol,
     token_pair: params.tokenPair,
@@ -36,7 +41,7 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
 
   const vault = await selectVaultByIdAndChainId(vaultData)
 
-  if (vault === null || vault.owner_address === user.address) {
+  if (vault === null || vault.owner_address === params.walletAddress.toLowerCase()) {
     if (vault === null) {
       await prisma.$executeRawUnsafe(insertQuery)
     } else {

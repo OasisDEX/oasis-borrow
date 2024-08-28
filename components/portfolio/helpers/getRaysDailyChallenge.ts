@@ -25,11 +25,9 @@ export const getDailyRaysBaseData = ({
 
 export const updateDailyRaysData = ({
   wallet,
-  token,
   callback,
 }: {
   wallet: Wallet
-  token: string
   callback: (data: RaysDailyChallengeResponse) => void
 }) =>
   wallet?.address &&
@@ -38,7 +36,6 @@ export const updateDailyRaysData = ({
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
     },
     body: JSON.stringify({
       address: wallet?.address,
@@ -47,4 +44,4 @@ export const updateDailyRaysData = ({
   })
     .then((res) => res.json())
     .then(callback)
-    .catch(() => callback({ loaded: true, isJwtValid: false }))
+    .catch(() => callback({ loaded: true }))

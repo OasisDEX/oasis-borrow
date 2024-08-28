@@ -3,7 +3,7 @@ import type { NextApiHandler } from 'next'
 import { prisma } from 'server/prisma'
 
 export const dailyRaysGetHandler: NextApiHandler = async (req, res) => {
-  // message is retreived from the server
+  // message is retrieved from the server
   // so we wont need to think about user's timezone
   const { walletAddress } = req.query
   const dailyChallengeData = await prisma.raysDailyChallenge.findUnique({
@@ -22,6 +22,12 @@ export const dailyRaysPostHandler: NextApiHandler = async (req, res) => {
   const { address, chainId } = req.body
   if (!address || !chainId) {
     return res.status(400).end()
+  }
+
+  const token = req.cookies[`token-${address.toLocaleLowerCase()}`]
+
+  if (!token) {
+    return res.status(401).json({ authenticated: false })
   }
 
   const usersOverview = await fetch(
