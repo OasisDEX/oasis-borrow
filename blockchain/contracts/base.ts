@@ -17,6 +17,7 @@ import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregat
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
+import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from 'blockchain/abi/ds-proxy-registry.json'
 import * as dssCdpManager from 'blockchain/abi/dss-cdp-manager.json'
@@ -132,6 +133,7 @@ export const baseContracts: MainnetContractsWithOptional = {
   chainlinkPriceOracle: {
     USDCUSD: emptyContractDesc('chainLinkPriceOracle'),
     ETHUSD: emptyContractDesc('chainLinkPriceOracle'),
+    BTCUSD: contractDesc(chainLinkPriceOracle, base.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
 
@@ -194,6 +196,7 @@ export const baseContracts: MainnetContractsWithOptional = {
     'PRIME-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_PRIMEUSDC),
     'SAFE-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SAFEDAI),
     'WOETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_WOETHETH),
+    'SYRUPUSDC-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),

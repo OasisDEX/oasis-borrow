@@ -11,6 +11,7 @@ import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import type { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { ProtocolsServices } from 'helpers/context/types'
 import {
   formatAddress,
@@ -221,13 +222,7 @@ function PositionOwnershipBanner({
   )
 }
 
-export function VaultOverviewOwnershipNotice({
-  controller,
-  account,
-}: {
-  controller: string
-  account: string
-}) {
+export function TokenCeilingReduced({ token, link }: { token: string; link: string }) {
   const { t } = useTranslation()
 
   return (
@@ -237,16 +232,17 @@ export function VaultOverviewOwnershipNotice({
           <Icon size="auto" width="24" height="24" icon={bannerWallet} />
         </StatusFrame>
       }
-      header={t('vaults-overview.banner-header', { address: formatAddress(controller) })}
+      header={t('vault-notices.token-ceiling-reduced.header', { token })}
       subheader={
         <Text>
-          {t('vaults-overview.banner-content')}{' '}
-          <AppLink href={getPortfolioLink(account)} internalInNewTab={true} sx={{ fontSize: 3 }}>
-            {t('here')}
+          {t('vault-notices.token-ceiling-reduced.subheader1', { token })} {t('learn-more')}{' '}
+          <AppLink href={link} target="_blank" sx={{ fontSize: '16px' }}>
+            {t('here')}.
           </AppLink>
         </Text>
       }
       color="primary100"
+      mb={4}
     />
   )
 }
@@ -467,6 +463,10 @@ export function VaultNoticesView({ id }: { id: BigNumber }) {
         <VaultLiquidatingNextPriceNotice
           {...{ token, id, dateNextCollateralPrice, isVaultController, controller }}
         />
+      )
+    case 'wbtcCeilingReduced':
+      return (
+        <TokenCeilingReduced token={token} link={EXTERNAL_LINKS.BLOG.MAKER_WBTC_CEILING_REDUCED} />
       )
     default:
       return null

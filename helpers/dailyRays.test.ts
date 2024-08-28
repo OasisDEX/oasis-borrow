@@ -8,26 +8,26 @@ describe('Rays daily challenge numbers', () => {
     expect(streakRays).toBe(0)
     expect(streaks).toBe(0)
   })
-  it('should give 100 points for 1 day', () => {
+  it('should give 10 points for 1 day', () => {
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData([
       '2001-09-11',
     ])
-    expect(allBonusRays).toBe(100)
-    expect(dailyChallengeRays).toBe(100)
+    expect(allBonusRays).toBe(10)
+    expect(dailyChallengeRays).toBe(10)
     expect(streakRays).toBe(0)
     expect(streaks).toBe(0)
   })
-  it('should give 200 points for 2 random days', () => {
+  it('should give 20 points for 2 random days', () => {
     const datesArray = ['2005-04-02', '2001-09-11']
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(200)
-    expect(dailyChallengeRays).toBe(200)
+    expect(allBonusRays).toBe(20)
+    expect(dailyChallengeRays).toBe(20)
     expect(streakRays).toBe(0)
     expect(streaks).toBe(0)
   })
-  it('should give 1000 points for 10 random days', () => {
+  it('should give 100 points for 10 random days', () => {
     const datesArray = [
       '2001-09-11',
       '2001-08-12',
@@ -43,12 +43,12 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(1000)
-    expect(dailyChallengeRays).toBe(1000)
+    expect(allBonusRays).toBe(100)
+    expect(dailyChallengeRays).toBe(100)
     expect(streakRays).toBe(0)
     expect(streaks).toBe(0)
   })
-  it('should give 1000 points for 10 days with consecutive 5 days', () => {
+  it('should give 100 points for 10 days with consecutive 5 days', () => {
     const datesArray = [
       '2001-09-11',
       '2001-09-12',
@@ -64,12 +64,12 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(1000)
-    expect(dailyChallengeRays).toBe(1000)
+    expect(allBonusRays).toBe(100)
+    expect(dailyChallengeRays).toBe(100)
     expect(streakRays).toBe(0)
     expect(streaks).toBe(0)
   })
-  it('should give 1500 points and 1 streak for 10 days with consecutive 7 days', () => {
+  it('should give 130 points and 1 streak for 10 days with consecutive 7 days', () => {
     const datesArray = [
       '2001-09-11',
       '2001-09-12',
@@ -85,12 +85,12 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(1500)
-    expect(dailyChallengeRays).toBe(1000)
-    expect(streakRays).toBe(500)
+    expect(allBonusRays).toBe(130)
+    expect(dailyChallengeRays).toBe(100)
+    expect(streakRays).toBe(30)
     expect(streaks).toBe(1)
   })
-  it('should give 3600 points and 3 streak for 21 days with 3x consecutive 7 days', () => {
+  it('should give 300 points and 3 streak for 21 days with 3x consecutive 7 days', () => {
     const datesArray = [
       '2001-09-11',
       '2001-09-12',
@@ -117,12 +117,12 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(3600)
-    expect(dailyChallengeRays).toBe(2100)
-    expect(streakRays).toBe(1500)
+    expect(allBonusRays).toBe(300)
+    expect(dailyChallengeRays).toBe(210)
+    expect(streakRays).toBe(90)
     expect(streaks).toBe(3)
   })
-  it('should give 4000 points and 3 streak for 21 days with 3x consecutive 7 days and 4 random dates', () => {
+  it('should give 340 points and 3 streak for 21 days with 3x consecutive 7 days and 4 random dates', () => {
     const datesArray = [
       '2001-09-11',
       '2001-09-12',
@@ -153,9 +153,9 @@ describe('Rays daily challenge numbers', () => {
 
     const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
       getRaysDailyChallengeData(datesArray)
-    expect(allBonusRays).toBe(4000)
-    expect(dailyChallengeRays).toBe(2500)
-    expect(streakRays).toBe(1500)
+    expect(allBonusRays).toBe(340)
+    expect(dailyChallengeRays).toBe(250)
+    expect(streakRays).toBe(90)
     expect(streaks).toBe(3)
   })
 })

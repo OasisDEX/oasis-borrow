@@ -116,7 +116,25 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     })
   })
 
+  // There may be 2x (or in theory more create events) with different position types. For example when someone will migrate position
+  // a create borrow position event will be emitted, later on position may be closed and reopened as multiply (create multiply position event).
+  // We should pick the latest createEvent (the last event from dpm list) as indicator of position type.
+  const resolvedByCreateEvent = dpms.map(
+    (dpm) =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      dpms.findLast(
+        (item) =>
+          item.networkId === dpm.networkId &&
+          item.id === dpm.id &&
+          item.user === dpm.user &&
+          item.vaultId === dpm.vaultId &&
+          item.protocol === dpm.protocol &&
+          item.collateralToken === dpm.collateralToken &&
+          item.debtToken === dpm.debtToken,
+      )!,
+  )
+
   // Since we are mapping nested events, there is a possibility that output array will contain duplicates
   // which should not be passed on UI
-  return uniq(dpms)
+  return uniq(resolvedByCreateEvent)
 }

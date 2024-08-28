@@ -6,13 +6,13 @@ export interface MorphoBorrowerEventsResponse {
   kind: string
   timestamp: string
   txHash: string
-  repaidAssets: string
-  quoteRepaid: string
+  collateralDelta: string
+  debtDelta: string
 }
 
 type MorphoLiquidationEventExtension = {
-  repaidAssets: BigNumber
-  quoteRepaid: BigNumber
+  collateralDelta: BigNumber
+  debtDelta: BigNumber
 }
 
 type MorphoTriggerEventExension = {

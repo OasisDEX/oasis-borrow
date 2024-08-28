@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "12.36.1",
+  "version": "13.2.1",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.19"
@@ -43,9 +43,9 @@
     "@lifi/wallet-management": "^2.6.1",
     "@lifi/widget": "^2.10.2",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "0.1.75",
+    "@oasisdex/addresses": "0.1.78",
     "@oasisdex/automation": "1.6.5-morpho.6",
-    "@oasisdex/dma-library": "0.6.62",
+    "@oasisdex/dma-library": "0.6.64",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
@@ -63,7 +63,7 @@
     "@web3-onboard/injected-wallets": "^2.10.6",
     "@web3-onboard/ledger": "^2.5.2",
     "@web3-onboard/react": "^2.8.12",
-    "@web3-onboard/trezor": "^2.4.3",
+    "@web3-onboard/trezor": "^2.4.6",
     "@web3-onboard/walletconnect": "2.4.6",
     "@web3-onboard/web3auth": "^2.2.3",
     "@web3-react/abstract-connector": "^6.0.7",

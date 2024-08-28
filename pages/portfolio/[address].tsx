@@ -102,11 +102,18 @@ export default function PortfolioView(props: PortfolioViewProps) {
     awsInfraUrl,
   })
 
-  const { userRaysData, refreshUserRaysData } = useUserRays({
-    walletAddress: address.toLocaleLowerCase(),
+  const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
+
+  const { userRaysData: connectedWalletUserRaysData, refreshUserRaysData } = useUserRays({
+    walletAddress: walletAddress?.toLocaleLowerCase(),
+    enabled: isConnected && !!address,
   })
 
-  const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
+  const { userRaysData: displayWalletUserRaysData } = useUserRays({
+    walletAddress: address.toLocaleLowerCase(),
+    enabled: !isOwner,
+  })
+
   const hasAjnaPositions = portfolioPositionsData?.positions.some(
     (position) => position.protocol === LendingProtocol.Ajna,
   )
@@ -115,7 +122,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
     <ProductContextProvider>
       <RefinanceGeneralContextProvider>
         <ModalProvider>
-          <PortfolioLayout userRaysData={userRaysData}>
+          <PortfolioLayout userRaysData={connectedWalletUserRaysData}>
             <Box sx={{ width: '100%' }}>
               {ajnaSafetySwitchOn && isOwner && hasAjnaPositions && (
                 <Announcement
@@ -140,7 +147,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   overviewData={overviewData}
                   portfolioWalletData={portfolioWalletData}
                   migrationPositions={migrationPositions}
-                  userRaysData={userRaysData}
+                  userRaysData={isOwner ? connectedWalletUserRaysData : displayWalletUserRaysData}
                 />
               ) : (
                 <PortfolioOverviewSkeleton />
@@ -160,6 +167,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                         portfolioWalletData={portfolioWalletData}
                         migrationPositions={migrationPositions}
                         refreshUserRaysData={refreshUserRaysData}
+                        overviewData={overviewData}
                       />
                     ),
                   },
