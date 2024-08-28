@@ -85,7 +85,6 @@
     "emotion": "^10.0.27",
     "emotion-server": "^10.0.27",
     "eslint-plugin-no-relative-import-paths": "^1.5.2",
-    "express-jwt": "^8.4.1",
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "i18next": "^22.4.2",
