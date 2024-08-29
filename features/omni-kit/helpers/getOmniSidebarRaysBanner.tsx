@@ -21,6 +21,7 @@ import type { PositionRaysMultipliersData } from 'features/rays/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getPointsPerYear } from 'helpers/rays'
 import { useHash } from 'helpers/useHash'
+import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -41,6 +42,7 @@ export const getOmniSidebarRaysBanner = ({
   pseudoProtocol,
   collateralPrice,
   isYieldLoop,
+  temporaryRaysMultiplier = one,
 }: {
   isOpening: boolean
   uiDropdown: OmniMultiplyPanel | OmniSidebarEarnPanel | OmniSidebarBorrowPanel
@@ -58,6 +60,7 @@ export const getOmniSidebarRaysBanner = ({
   pseudoProtocol?: string
   collateralPrice: BigNumber
   isYieldLoop: boolean
+  temporaryRaysMultiplier?: BigNumber
 }) => {
   const [, setHash] = useHash<string>()
   const { t } = useTranslation()
@@ -101,7 +104,9 @@ export const getOmniSidebarRaysBanner = ({
       )
       const multiplyMultipliers = getRaysMultiplyMultipliers(isYieldLoop)
 
-      instantRays = formatCryptoBalance(swapRaysPerYear.times(swapBoost).times(multiplyMultipliers))
+      instantRays = formatCryptoBalance(
+        swapRaysPerYear.times(swapBoost).times(multiplyMultipliers).times(temporaryRaysMultiplier),
+      )
     } else {
       instantRays = 'n/a'
     }
@@ -113,7 +118,9 @@ export const getOmniSidebarRaysBanner = ({
           { rays: instantRays },
         )}
         description={t('rays.sidebar.banner.instant.description', {
-          raysPerYear: formatCryptoBalance(new BigNumber(simulatedRaysPerYear)),
+          raysPerYear: formatCryptoBalance(
+            new BigNumber(simulatedRaysPerYear).times(temporaryRaysMultiplier),
+          ),
         })}
       />
     )
@@ -153,19 +160,22 @@ export const getOmniSidebarRaysBanner = ({
     const swapRaysPerYear = new BigNumber(getPointsPerYear(swapValue.toNumber()))
     const multiplyMultipliers = getRaysMultiplyMultipliers(isYieldLoop)
 
-    const instantRays = formatCryptoBalance(
-      swapRaysPerYear.times(swapBoost).times(multiplyMultipliers),
-    )
+    const instantRays = swapRaysPerYear
+      .times(swapBoost)
+      .times(multiplyMultipliers)
+      .times(temporaryRaysMultiplier)
 
     return (
-      <RaysSidebarBanner title={t(`rays.sidebar.banner.instant.title`, { rays: instantRays })} />
+      <RaysSidebarBanner
+        title={t(`rays.sidebar.banner.instant.title`, { rays: formatCryptoBalance(instantRays) })}
+      />
     )
   }
 
   if (simulation && positionNetValue < simulationNetValue) {
-    const rays = new BigNumber(newRaysPerYearWithBasicBoosts - raysPerYearWithBasicBoosts).times(
-      automationBoost,
-    )
+    const rays = new BigNumber(newRaysPerYearWithBasicBoosts - raysPerYearWithBasicBoosts)
+      .times(automationBoost)
+      .times(temporaryRaysMultiplier)
 
     return (
       <RaysSidebarBanner
@@ -175,9 +185,9 @@ export const getOmniSidebarRaysBanner = ({
   }
 
   if (simulation && positionNetValue > simulationNetValue) {
-    const rays = new BigNumber(raysPerYearWithBasicBoosts - newRaysPerYearWithBasicBoosts).times(
-      automationBoost,
-    )
+    const rays = new BigNumber(raysPerYearWithBasicBoosts - newRaysPerYearWithBasicBoosts)
+      .times(automationBoost)
+      .times(temporaryRaysMultiplier)
 
     return (
       <RaysSidebarBanner
@@ -219,7 +229,7 @@ export const getOmniSidebarRaysBanner = ({
     return (
       <RaysSidebarBanner
         title={t('rays.sidebar.banner.boost.title', {
-          rays: formatCryptoBalance(new BigNumber(extraRays)),
+          rays: formatCryptoBalance(new BigNumber(extraRays).times(temporaryRaysMultiplier)),
         })}
         items={[
           ...(!isProtectionActive

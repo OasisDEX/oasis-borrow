@@ -111,7 +111,7 @@ export function OmniFormView({
       filters: { omniProxyFilter },
       theme,
       validations: { isFormValid, isFormFrozen, hasErrors },
-      values: { interestRate, sidebarTitle },
+      values: { interestRate, sidebarTitle, temporaryRaysMultiplier },
     },
     automation: { positionTriggers },
   } = useOmniProductContext(productType)
@@ -321,6 +321,7 @@ export function OmniFormView({
           pseudoProtocol,
           collateralPrice,
           isYieldLoop,
+          temporaryRaysMultiplier,
         })
       : null,
     content: (
