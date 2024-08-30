@@ -32,8 +32,9 @@ import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import type {
   AutoBuyTriggersWithDecodedParams,
   AutoSellTriggersWithDecodedParams,
+  AutoTakeProfitTriggers,
+  ConstantMultipleTriggers,
   GetTriggersResponse,
-  PartialTakeProfitTriggers,
   PartialTakeProfitTriggersWithDecodedParams,
   SetupBasicAutoResponse,
   SetupBasicStopLossResponse,
@@ -376,6 +377,8 @@ export interface AutomationMetadataFlags {
   isAutoSellEnabled: boolean
   isAutoBuyEnabled: boolean
   isPartialTakeProfitEnabled: boolean
+  isAutoTakeProfitEnabled: boolean
+  isConstantMultipleEnabled: boolean
 }
 
 export interface AutomationMetadataValues {
@@ -386,8 +389,8 @@ export interface AutomationMetadataValues {
     [AutomationFeatures.AUTO_SELL]?: AutoSellTriggersWithDecodedParams
     [AutomationFeatures.AUTO_BUY]?: AutoBuyTriggersWithDecodedParams
     [AutomationFeatures.PARTIAL_TAKE_PROFIT]?: PartialTakeProfitTriggersWithDecodedParams
-    [AutomationFeatures.CONSTANT_MULTIPLE]?: PartialTakeProfitTriggers
-    [AutomationFeatures.AUTO_TAKE_PROFIT]?: PartialTakeProfitTriggers
+    [AutomationFeatures.CONSTANT_MULTIPLE]?: ConstantMultipleTriggers
+    [AutomationFeatures.AUTO_TAKE_PROFIT]?: AutoTakeProfitTriggers
   }
   resolved: {
     activeUiDropdown: AutomationFeatures

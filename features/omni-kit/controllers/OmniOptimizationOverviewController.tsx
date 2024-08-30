@@ -1,4 +1,6 @@
 import { AutoBuyBanner, PartialTakeProfitBanner } from 'features/aave/components/banners'
+import { AutoTakeProfitBanner } from 'features/aave/components/banners/auto-take-profit-banner'
+import { ConstantMultipleBanner } from 'features/aave/components/banners/constant-multiple-banner'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   OmniAutoBSOverviewDetailsSection,
@@ -8,7 +10,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Card, Grid, Heading } from 'theme-ui'
 
 export const OmniOptimizationOverviewController: FC = () => {
   const {
@@ -29,6 +31,8 @@ export const OmniOptimizationOverviewController: FC = () => {
 
   const isPartialTakeProfitEnabled = !!automation?.flags.isPartialTakeProfitEnabled
   const isAutoBuyEnabled = !!automation?.flags.isAutoBuyEnabled
+  const isAutoTakeProfitEnabled = !!automation?.flags.isAutoTakeProfitEnabled
+  const isConstantMultipleEnabled = !!automation?.flags.isConstantMultipleEnabled
 
   const partialTakeProfitDetailsActive =
     state.uiDropdownOptimization === AutomationFeatures.PARTIAL_TAKE_PROFIT
@@ -46,6 +50,24 @@ export const OmniOptimizationOverviewController: FC = () => {
           type={AutomationFeatures.AUTO_BUY}
           active={autoBuyDetailsActive}
         />
+      )}
+      {(state.uiDropdownOptimization === AutomationFeatures.AUTO_TAKE_PROFIT ||
+        isAutoTakeProfitEnabled) && (
+        <Card variant="vaultFormContainer" sx={{ p: 2, overflow: 'scroll', height: '200px' }}>
+          <Heading variant="h5">Auto Take Profit enabled</Heading>
+          <pre style={{ fontSize: '10px' }}>
+            {JSON.stringify(automation?.triggers.autoTakeProfit, null, 2)}
+          </pre>
+        </Card>
+      )}
+      {(state.uiDropdownOptimization === AutomationFeatures.CONSTANT_MULTIPLE ||
+        isConstantMultipleEnabled) && (
+        <Card variant="vaultFormContainer" sx={{ p: 2, overflow: 'scroll', height: '200px' }}>
+          <Heading variant="h5">Constant Multiple enabled</Heading>
+          <pre style={{ fontSize: '10px' }}>
+            {JSON.stringify(automation?.triggers.constantMultiple, null, 2)}
+          </pre>
+        </Card>
       )}
       {/*{ BANNERS }*/}
       {availableAutomations?.includes(AutomationFeatures.PARTIAL_TAKE_PROFIT) &&
@@ -65,6 +87,26 @@ export const OmniOptimizationOverviewController: FC = () => {
             buttonClicked={() => {
               !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
               updateState('uiDropdownOptimization', AutomationFeatures.AUTO_BUY)
+            }}
+          />
+        )}
+      {availableAutomations?.includes(AutomationFeatures.CONSTANT_MULTIPLE) &&
+        state.uiDropdownOptimization !== AutomationFeatures.CONSTANT_MULTIPLE &&
+        !isConstantMultipleEnabled && (
+          <ConstantMultipleBanner
+            buttonClicked={() => {
+              !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+              updateState('uiDropdownOptimization', AutomationFeatures.CONSTANT_MULTIPLE)
+            }}
+          />
+        )}
+      {availableAutomations?.includes(AutomationFeatures.AUTO_TAKE_PROFIT) &&
+        state.uiDropdownOptimization !== AutomationFeatures.AUTO_TAKE_PROFIT &&
+        !isAutoTakeProfitEnabled && (
+          <AutoTakeProfitBanner
+            buttonClicked={() => {
+              !isTxInProgress && setStep(OmniSidebarAutomationStep.Manage)
+              updateState('uiDropdownOptimization', AutomationFeatures.AUTO_TAKE_PROFIT)
             }}
           />
         )}

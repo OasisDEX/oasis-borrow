@@ -65,7 +65,8 @@ export const settings: OmniProtocolSettings = {
     [NetworkIds.MAINNET]: [
       AutomationFeatures.AUTO_BUY,
       AutomationFeatures.AUTO_SELL,
-      AutomationFeatures.PARTIAL_TAKE_PROFIT,
+      AutomationFeatures.CONSTANT_MULTIPLE,
+      AutomationFeatures.AUTO_TAKE_PROFIT,
       AutomationFeatures.STOP_LOSS,
     ],
   },

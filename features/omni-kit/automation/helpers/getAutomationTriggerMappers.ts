@@ -6,6 +6,10 @@ import type {
   AutoBuyTriggersWithDecodedParams,
   AutoSellTriggers,
   AutoSellTriggersWithDecodedParams,
+  AutoTakeProfitTriggers,
+  AutoTakeProfitTriggersWithDecodedParams,
+  ConstantMultipleTriggers,
+  ConstantMultipleTriggersWithDecodedParams,
   PartialTakeProfitTriggers,
   PartialTakeProfitTriggersWithDecodedParams,
   StopLossTriggers,
@@ -100,6 +104,41 @@ export const mapPartialTakeProfitTriggers = (
         lambdaPriceDenomination,
       ),
       ltvStep: new BigNumber(triggers.decodedParams.targetLtv).div(10000),
+    },
+  }
+}
+
+export const mapAutoTakeProfitTriggers = (
+  triggers?: AutoTakeProfitTriggers,
+): AutoTakeProfitTriggersWithDecodedParams | undefined => {
+  if (!triggers) return undefined
+
+  return {
+    ...triggers,
+    decodedMappedParams: {
+      executionLtv: new BigNumber(triggers.decodedParams.executionLtv).div(10000),
+      executionPrice: new BigNumber(triggers.decodedParams.executionPrice).div(
+        lambdaPriceDenomination,
+      ),
+    },
+  }
+}
+
+export const mapConstantMultipleTriggers = (
+  triggers?: ConstantMultipleTriggers,
+): ConstantMultipleTriggersWithDecodedParams | undefined => {
+  if (!triggers) return undefined
+
+  return {
+    ...triggers,
+    decodedMappedParams: {
+      // probably needs some math here
+      basicBuyExecutionLtv: new BigNumber(triggers.decodedParams.basicBuyExecutionLtv),
+      basicSellExecutionLtv: new BigNumber(triggers.decodedParams.basicSellExecutionLtv),
+      basicBuyTargetLtv: new BigNumber(triggers.decodedParams.basicBuyTargetLtv),
+      basicSellTargetLtv: new BigNumber(triggers.decodedParams.basicSellTargetLtv),
+      basicBuyMaxBuyprice: new BigNumber(triggers.decodedParams.basicBuyMaxBuyprice),
+      basicSellMinSellprice: new BigNumber(triggers.decodedParams.basicSellMinSellprice),
     },
   }
 }
