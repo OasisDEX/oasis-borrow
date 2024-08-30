@@ -4,6 +4,7 @@ import {
   AaveManageHeader,
   AaveMultiplyManageComponent,
   AaveOpenHeader,
+  AavePositionHeaderNoDetails,
   adjustRiskView,
   DebtInput,
   headerWithDetails,
@@ -768,8 +769,8 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
-      headerManage: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
-      headerView: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
+      headerManage: AavePositionHeaderNoDetails,
+      headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       secondaryInput: adjustRiskView(adjustRiskSliders.wstethEth),
