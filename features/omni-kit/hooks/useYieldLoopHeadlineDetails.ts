@@ -14,7 +14,6 @@ export const useYieldLoopHeadlineDetails = ({
     environment: {
       protocol,
       isYieldLoopWithData,
-      isOpening,
       network,
       quoteAddress,
       collateralAddress,
@@ -23,7 +22,7 @@ export const useYieldLoopHeadlineDetails = ({
     },
   } = useOmniGeneralContext()
 
-  if (!(isYieldLoopWithData && isOpening)) {
+  if (!isYieldLoopWithData) {
     return { headlineDetails: [], isLoading: false }
   }
 

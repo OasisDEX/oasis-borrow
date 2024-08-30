@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
 
 export type FilterYieldFieldsType =
   | '7Days'
@@ -21,25 +22,13 @@ export interface AaveLikeYieldsResponse {
 }
 
 export function has7daysYield(
-  yields: AaveLikeYieldsResponse,
-  withOffset: boolean = true,
-): yields is Required<
-  Pick<AaveLikeYieldsResponse, 'annualisedYield7days' | 'annualisedYield7daysOffset'>
-> {
-  if (withOffset) {
-    return (
-      yields.annualisedYield7days !== undefined && yields.annualisedYield7daysOffset !== undefined
-    )
-  }
-  return yields.annualisedYield7days !== undefined
+  yields: GetYieldsResponseMapped,
+): yields is Required<Pick<GetYieldsResponseMapped, 'apy1d' | 'apy7d'>> {
+  return !!yields.apy7d
 }
 
 export function has90daysYield(
-  yields: AaveLikeYieldsResponse,
-): yields is Required<
-  Pick<AaveLikeYieldsResponse, 'annualisedYield90days' | 'annualisedYield90daysOffset'>
-> {
-  return (
-    yields.annualisedYield90days !== undefined && yields.annualisedYield90daysOffset !== undefined
-  )
+  yields: GetYieldsResponseMapped,
+): yields is Required<Pick<GetYieldsResponseMapped, 'apy1d' | 'apy7d' | 'apy90d'>> {
+  return !!yields.apy90d
 }

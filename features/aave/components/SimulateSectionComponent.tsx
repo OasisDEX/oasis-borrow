@@ -17,7 +17,6 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
-import type { FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Box } from 'theme-ui'
@@ -29,8 +28,6 @@ function mapSimulation(simulation?: Simulation): string[] {
     `${formatCryptoBalance(simulation.netValue)} ${simulation.token}`,
   ]
 }
-
-export const defaultYieldFields: FilterYieldFieldsType[] = ['7Days', '30Days', '90Days', '1Year']
 
 function transitionHasSwap(
   transition?: IMultiplyStrategy | IStrategy,
@@ -73,7 +70,6 @@ function SimulationSection({
   const simulation = useSimulationYields({
     amount,
     riskRatio,
-    fields: defaultYieldFields,
     token,
     strategy,
     fees,

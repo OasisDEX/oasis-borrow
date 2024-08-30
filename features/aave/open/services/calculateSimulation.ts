@@ -1,9 +1,6 @@
 import type BigNumber from 'bignumber.js'
-import dayjs from 'dayjs'
+import type { GetYieldsResponseMapped } from 'helpers/lambda/yields'
 import { one, zero } from 'helpers/zero'
-import type { AaveLikeYieldsResponse } from 'lendingProtocols/aave-like-common'
-
-const AAVE_INCEPTION_DATE = dayjs('2022-02-28')
 
 export interface Simulation {
   earningAfterFees: BigNumber
@@ -20,7 +17,6 @@ export interface CalculateSimulationResult {
   previous30Days?: Simulation
   previous90Days?: Simulation
   previous1Year?: Simulation
-  sinceInception?: Simulation
 }
 
 export function calculateSimulation({
@@ -32,54 +28,45 @@ export function calculateSimulation({
   fees?: BigNumber
   amount: BigNumber
   token: string
-  yields: AaveLikeYieldsResponse
+  yields: GetYieldsResponseMapped
 }): CalculateSimulationResult {
   const earningsPerDay =
-    yields.annualisedYield7days &&
-    amount.times(yields.annualisedYield7days.div(100).plus(one)).minus(amount).div(365)
+    yields.apy7d && amount.times(yields.apy7d.div(100).plus(one)).minus(amount).div(365)
   return {
-    apy: yields.annualisedYield7days,
+    apy: yields.apy7d,
     breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
     previous7Days:
-      yields.annualisedYield7days &&
+      yields.apy7d &&
       getSimulation({
         amount,
-        annualizedYield: yields.annualisedYield7days,
+        annualizedYield: yields.apy7d,
         token,
         days: 7,
       }),
     previous30Days:
-      yields.annualisedYield30days &&
+      yields.apy30d &&
       getSimulation({
         amount,
-        annualizedYield: yields.annualisedYield30days,
+        annualizedYield: yields.apy30d,
         token,
         days: 30,
       }),
     previous90Days:
-      yields.annualisedYield90days &&
+      yields.apy90d &&
       getSimulation({
         amount,
-        annualizedYield: yields.annualisedYield90days,
+        annualizedYield: yields.apy90d,
         token,
         days: 90,
       }),
     previous1Year:
-      yields.annualisedYield1Year &&
+      yields.apy365d &&
       getSimulation({
         amount,
-        annualizedYield: yields.annualisedYield1Year,
+        annualizedYield: yields.apy365d,
         token,
         days: 365,
-      }),
-    sinceInception:
-      yields.annualisedYieldSinceInception &&
-      getSimulation({
-        amount,
-        annualizedYield: yields.annualisedYieldSinceInception,
-        token,
-        days: dayjs().diff(AAVE_INCEPTION_DATE, 'days'),
       }),
   }
 }
