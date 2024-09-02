@@ -99,34 +99,28 @@ export const omniDefaultOverviewSimulationDeposit = new BigNumber(100)
 
 export const omniYieldLoopMaxRiskLtvDefaultOffset = new BigNumber(0.02)
 
+const triggersEmpty = {
+  isBasicBuyEnabled: false,
+  isBasicSellEnabled: false,
+  isPartialTakeProfitEnabled: false,
+  isStopLossEnabled: false,
+  isTrailingStopLossEnabled: false,
+  isAutoTakeProfitEnabled: false,
+  isConstantMultipleEnabled: false,
+}
+
 // Default response to avoid unnecessary API calls if automation is not available on given protocol
 export const omniPositionTriggersDataDefault = (poolId?: string): GetTriggersResponse => ({
   triggers: {
+    maker: {},
     aave3: {},
     spark: {},
   },
   flags: {
-    aave3: {
-      isBasicBuyEnabled: false,
-      isBasicSellEnabled: false,
-      isPartialTakeProfitEnabled: false,
-      isStopLossEnabled: false,
-      isTrailingStopLossEnabled: false,
-    },
-    spark: {
-      isBasicBuyEnabled: false,
-      isBasicSellEnabled: false,
-      isPartialTakeProfitEnabled: false,
-      isStopLossEnabled: false,
-      isTrailingStopLossEnabled: false,
-    },
-    [`morphoblue-${poolId}`]: {
-      isBasicBuyEnabled: false,
-      isBasicSellEnabled: false,
-      isPartialTakeProfitEnabled: false,
-      isStopLossEnabled: false,
-      isTrailingStopLossEnabled: false,
-    },
+    maker: triggersEmpty,
+    aave3: triggersEmpty,
+    spark: triggersEmpty,
+    [`morphoblue-${poolId}`]: triggersEmpty,
   },
   triggerGroup: {},
   triggersCount: 0,

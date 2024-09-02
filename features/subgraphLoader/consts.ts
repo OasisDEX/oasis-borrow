@@ -20,6 +20,20 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+  SummerEvents: {
+    [NetworkIds.MAINNET]: 'summer-events',
+    [NetworkIds.HARDHAT]: 'summer-events',
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: 'summer-events-arbitrum',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.BASEMAINNET]: 'summer-events-base',
+    [NetworkIds.BASEGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: 'summer-events-optimism',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
   Ajna: {
     [NetworkIds.MAINNET]: 'summer-ajna-v2',
     [NetworkIds.HARDHAT]: 'summer-ajna-v2',
@@ -105,7 +119,7 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: '',
   },
   Automation: {
-    [NetworkIds.MAINNET]: 'summer-automation',
+    [NetworkIds.MAINNET]: 'summer-automation/version/0.0.18-add-trigger-groups', // TODO remove version once deployed
     [NetworkIds.HARDHAT]: 'summer-automation',
     [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: 'summer-automation-arbitrum',
@@ -134,6 +148,35 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         user {
           id
         }
+      }
+    }
+  `,
+  getMakerSummerEvents: gql`
+    query getMakerSummerEvents($proxy: Bytes!, $marketId: String!) {
+      summerEvents(where: { account_: { id: $proxy }, marketId: $marketId }) {
+        depositTransfers {
+          amount
+        }
+        withdrawTransfers {
+          amount
+          amountUSD
+          token
+        }
+        blockNumber
+        collateralAfter
+        collateralBefore
+        collateralToken
+        debtAfter
+        debtBefore
+        debtToken
+        depositedUSD
+        id
+        kind
+        netValueAfter
+        netValueBefore
+        timestamp
+        txHash
+        withdrawnUSD
       }
     }
   `,
@@ -628,6 +671,57 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMakerPosition: gql`
+    query getMakerPosition($cdpId: ID!, $ilkId: ID!) {
+      cdps(where: { cdp: $cdpId }) {
+        cdp
+        collateral
+        debt
+        cumulativeDepositUSD
+        cumulativeFeesUSD
+        cumulativeWithdrawnUSD
+        creator
+        owner {
+          id
+        }
+        liquidationPrice
+        normalizedDebt
+        openedAt
+        triggers {
+          commandAddress
+          executedBlock
+          removedBlock
+          triggerData
+        }
+        type
+      }
+      collateralTypes(where: { id: $ilkId }) {
+        id
+        ilk
+        liquidationRatio
+        liquidationPenalty
+        pip {
+          value
+        }
+        rate
+        stabilityFee
+        tokenSymbol
+      }
+    }
+  `,
+  getMakerOracle: gql`
+    query getMakerOracle($ilkId: Bytes!) {
+      collateralTypes(where: { id: $ilkId }) {
+        tokenSymbol
+        ilk
+        id
+        pip {
+          value
+          next
+        }
+      }
+    }
+  `,
   getClaimedReferralRewards: gql`
     query getClaimed($walletAddress: String!) {
       claimeds(where: { user: $walletAddress }) {
@@ -874,6 +968,25 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           trigger_: { decodedData_contains: [$collateralAddress, $debtAddress] }
         }
       ) {
+        eventType
+        transaction
+        timestamp
+        trigger {
+          kind
+          simpleName
+          tokens {
+            symbol
+            address
+          }
+          decodedData
+          decodedDataNames
+        }
+      }
+    }
+  `,
+  getMakerAutomationEvents: gql`
+    query getAutomationEvents($cdpId: ID!) {
+      triggerEvents(where: { trigger_: { cdpId: $cdpId } }) {
         eventType
         transaction
         timestamp

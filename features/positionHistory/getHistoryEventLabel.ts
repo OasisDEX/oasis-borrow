@@ -153,6 +153,7 @@ enum AutomationType {
   'BasicSell' = 'BasicSell',
   'TrailingStopLoss' = 'TrailingStopLoss',
   'PartialTakeProfit' = 'PartialTakeProfit',
+  'AutoTakeProfit' = 'AutoTakeProfit',
 }
 function handleAutomationKinds(
   kind: string,
@@ -175,8 +176,10 @@ function handleAutomationKinds(
     return handleTrailingStopLossLabel(automationAction, t)
   } else if (automationType.includes(AutomationType.PartialTakeProfit)) {
     return handlePartialTakeProfitLabel(automationAction, t)
+  } else if (automationType.includes(AutomationType.AutoTakeProfit)) {
+    return handlePartialTakeProfitLabel(automationAction, t)
   }
-  console.warn('Automation type not found')
+  console.warn('Automation type not found', automationType)
   return undefined
 }
 

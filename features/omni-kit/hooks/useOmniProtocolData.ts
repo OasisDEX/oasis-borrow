@@ -6,6 +6,8 @@ import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
+import { getDsProxyPositionData$ } from 'features/omni-kit/observables/getDsProxyPositionData'
+import { makerMarkets } from 'features/omni-kit/protocols/maker/settings'
 import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getTokenBalances$ } from 'features/shared/balanceInfo'
 import { useObservable } from 'helpers/observableHook'
@@ -25,6 +27,7 @@ interface OmniProtocolDataProps {
   protocol: LendingProtocol
   protocolRaw: string
   quoteToken: string
+  isDsProxy?: boolean
 }
 
 export function useOmniProtocolData({
@@ -38,6 +41,7 @@ export function useOmniProtocolData({
   protocol,
   protocolRaw,
   quoteToken,
+  isDsProxy,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
   const { gasPriceOnNetwork$ } = useMainContext()
@@ -59,20 +63,24 @@ export function useOmniProtocolData({
     ),
   )
 
+  const marketId = makerMarkets[networkId]?.[`${collateralToken}-${quoteToken}`]?.[pairId - 1]
+
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
         positionId
-          ? dpmPositionDataV2$(
-              Number(positionId),
-              networkId,
-              collateralToken,
-              quoteToken,
-              productType,
-              protocol,
-              protocolRaw,
-              pairId,
-            )
+          ? isDsProxy
+            ? getDsProxyPositionData$({ collateralToken, quoteToken, cdpId: positionId, marketId })
+            : dpmPositionDataV2$(
+                Number(positionId),
+                networkId,
+                collateralToken,
+                quoteToken,
+                productType,
+                protocol,
+                protocolRaw,
+                pairId,
+              )
           : !isOracless && productType && collateralToken && quoteToken
             ? getStaticDpmPositionData$({
                 collateralToken,

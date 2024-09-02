@@ -14,6 +14,11 @@ export const hasActiveProtection = ({
   protocol,
 }: HasActiveProtectionParams): boolean => {
   switch (protocol) {
+    case LendingProtocol.Maker: {
+      const { basicSell, stopLossToCollateral, stopLossToDebt } = triggers.maker
+
+      return isAnyValueDefined(basicSell, stopLossToCollateral, stopLossToDebt)
+    }
     case LendingProtocol.AaveV3: {
       const {
         basicSell,

@@ -71,7 +71,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     },
     dynamicMetadata: {
       elements: { faq, positionBanner },
-      values: { headline, headlineDetails, isHeadlineDetailsLoading, automation },
+      values: {
+        headline,
+        headlineDetails,
+        isHeadlineDetailsLoading,
+        automation,
+        showHeadlineCurrentPrice = true,
+      },
     },
     automation: {
       positionTriggers,
@@ -148,7 +154,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                       },
                     ]
                   : []),
-                ...(collateralToken !== quoteToken
+                ...(collateralToken !== quoteToken && showHeadlineCurrentPrice
                   ? [
                       {
                         label: t('omni-kit.headline.details.current-market-price'),

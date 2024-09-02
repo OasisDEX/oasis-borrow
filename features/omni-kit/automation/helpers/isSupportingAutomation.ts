@@ -37,7 +37,6 @@ export function isSupportingAutomation({
 }: IsSupportingAutomationParams): IsSupportingAutomationResponse {
   const supportedTokens = settings.supportedMultiplyTokens[networkId]
   const availableAutomations = settings.availableAutomations?.[networkId] ?? []
-
   const isMultiplySupported = isPoolSupportingMultiply({
     collateralToken,
     quoteToken,

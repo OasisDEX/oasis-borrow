@@ -1,6 +1,8 @@
 import {
   mapAutoBuyTriggers,
   mapAutoSellTriggers,
+  mapAutoTakeProfitTriggers,
+  mapConstantMultipleTriggers,
   mapPartialTakeProfitTriggers,
   mapStopLossTriggers,
   mapTrailingStopLossTriggers,
@@ -18,12 +20,14 @@ interface GetMappedAutomationMetadataValuesParams {
 
 type MorphoBlueFlag = `morphoblue-${string}`
 type AaveLikeFlag = 'aave3' | 'spark'
+type MakerFlag = 'maker'
+type AllFlags = MakerFlag | MorphoBlueFlag | AaveLikeFlag
 
-const morphoBlueFlagGuard = (flag: MorphoBlueFlag | AaveLikeFlag): flag is MorphoBlueFlag =>
-  flag.includes('morphoblue')
-
-const aaveLikeFlagGuard = (flag: MorphoBlueFlag | AaveLikeFlag): flag is AaveLikeFlag =>
-  flag.includes('aave3') || flag.includes('spark')
+const makerFlagGuard = (flag: AllFlags): flag is MakerFlag => flag.includes('maker')
+const morphoBlueFlagGuard = (flag: AllFlags): flag is MorphoBlueFlag => flag.includes('morphoblue')
+const aaveLikeFlagGuard = (flag: AllFlags): flag is AaveLikeFlag => {
+  return flag.includes('aave3') || flag.includes('spark')
+}
 
 export const getMappedAutomationMetadataValues = ({
   poolId,
@@ -32,7 +36,7 @@ export const getMappedAutomationMetadataValues = ({
   protocol,
 }: GetMappedAutomationMetadataValuesParams) => {
   const flagSelector = (
-    poolId
+    poolId && protocol !== LendingProtocol.Maker
       ? `${protocol}-${poolId}`
       : protocol.replace('aavev3', 'aave3').replace('sparkv3', 'spark')
   ) as keyof typeof flags // thanks for "aave3" and "spark"... 🙄
@@ -40,14 +44,36 @@ export const getMappedAutomationMetadataValues = ({
   const selectedFlags = flags[flagSelector]
 
   const resolvedFlags = {
-    isStopLossEnabled: selectedFlags?.isStopLossEnabled,
-    isTrailingStopLossEnabled: selectedFlags?.isTrailingStopLossEnabled,
-    isAutoSellEnabled: selectedFlags?.isBasicSellEnabled,
-    isAutoBuyEnabled: selectedFlags?.isBasicBuyEnabled,
-    isPartialTakeProfitEnabled: selectedFlags?.isPartialTakeProfitEnabled,
+    isStopLossEnabled: !!selectedFlags?.isStopLossEnabled,
+    isTrailingStopLossEnabled: !!selectedFlags?.isTrailingStopLossEnabled,
+    isAutoSellEnabled: !!selectedFlags?.isBasicSellEnabled,
+    isAutoBuyEnabled: !!selectedFlags?.isBasicBuyEnabled,
+    isPartialTakeProfitEnabled: !!selectedFlags?.isPartialTakeProfitEnabled,
+    isAutoTakeProfitEnabled: !!selectedFlags?.isAutoTakeProfitEnabled,
+    isConstantMultipleEnabled: !!selectedFlags?.isConstantMultipleEnabled,
   }
 
   switch (protocol) {
+    case LendingProtocol.Maker:
+      if (!makerFlagGuard(flagSelector)) {
+        throw Error(`Wrong maker flagSelector value ${flagSelector}`)
+      }
+      return {
+        triggers: {
+          stopLoss: mapStopLossTriggers(
+            triggers[flagSelector]?.stopLossToCollateral || triggers[flagSelector]?.stopLossToDebt,
+          ),
+          autoSell: mapAutoSellTriggers(triggers[flagSelector]?.basicSell),
+          autoBuy: mapAutoBuyTriggers(triggers[flagSelector]?.basicBuy),
+          autoTakeProfit: mapAutoTakeProfitTriggers(
+            triggers[flagSelector]?.autoTakeProfitToCollateral ||
+              triggers[flagSelector]?.autoTakeProfitToDebt,
+          ),
+          constantMultiple: mapConstantMultipleTriggers(triggers[flagSelector]?.constantMultiple),
+        },
+        flags: resolvedFlags,
+        simulation: simulationResponse?.simulation,
+      }
     case LendingProtocol.MorphoBlue:
       if (!morphoBlueFlagGuard(flagSelector)) {
         throw Error(`Wrong morpho blue flagSelector value ${flagSelector}`)

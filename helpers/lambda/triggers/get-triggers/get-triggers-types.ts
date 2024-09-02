@@ -18,6 +18,126 @@ type Trigger = {
   dynamicParams?: unknown
 }
 
+export type MakerBasicBuy = {
+  triggerTypeName: 'MakerBasicBuy'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    executionLtv: string
+    targetLtv: string
+    maxBuyPrice: string
+    continuous: boolean
+    deviation: string
+    maxBaseFeeInGwei: string
+  }
+}
+export type MakerBasicSell = {
+  triggerTypeName: 'MakerBasicSell'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    executionLtv: string
+    targetLtv: string
+    minSellPrice: string
+    continuous: boolean
+    deviation: string
+    maxBaseFeeInGwei: string
+  }
+}
+
+export type MakerStopLossToCollateral = {
+  triggerTypeName: 'MakerStopLossToCollateral'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    collRatio: string
+    positionAddress: string
+    debtToken: string
+    collateralToken: string
+    executionLtv: string
+    maxCoverage: string
+    operationName: ''
+  }
+}
+
+export type MakerStopLossToDebt = {
+  triggerTypeName: 'MakerStopLossToDai'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    collRatio: string
+    positionAddress: string
+    debtToken: string
+    collateralToken: string
+    executionLtv: string
+    maxCoverage: string
+    operationName: ''
+  }
+}
+
+export type MakerAutoTakeProfitToCollateral = {
+  triggerTypeName: 'MakerAutoTakeProfitToCollateral'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    executionPrice: string
+    maxBaseFeeInGwei: string
+    currentLtv: string
+    executionLtv: string
+  }
+}
+
+export type MakerAutoTakeProfitToDebt = {
+  triggerTypeName: 'MakerAutoTakeProfitToDai'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    triggerType: string
+    executionPrice: string
+    maxBaseFeeInGwei: string
+    currentLtv: string
+    executionLtv: string
+  }
+}
+
+export type MakerConstantMultiple = {
+  triggerTypeName: 'MakerConstantMultiple'
+  triggerType: bigint
+  triggerId: string
+  triggerData: string
+  decodedParams: {
+    cdpId: string
+    basicBuyExecutionLtv: string
+    basicSellExecutionLtv: string
+    basicBuyTargetLtv: string
+    basicSellTargetLtv: string
+    basicBuyMaxBuyprice: string
+    basicSellMinSellprice: string
+    minSellPrice: string
+    maxBuyPrice: string
+    continuous: boolean
+    deviation: string
+    maxBaseFeeInGwei: string
+  }
+}
+
 export type AaveStopLossToCollateral = {
   triggerTypeName: 'AaveStopLossToCollateralV2'
   triggerType: bigint
@@ -439,8 +559,28 @@ export type MorphoBlueTrailingStopLoss = {
 
 export type AaveBasicBuyOrSell = DmaAaveBasicBuy | DmaAaveBasicSell
 // This interface is available also in monorepo, at some point we should probably import it from there
+
+export type TriggersFlagsType = {
+  isBasicBuyEnabled: boolean
+  isBasicSellEnabled: boolean
+  isPartialTakeProfitEnabled: boolean
+  isStopLossEnabled: boolean
+  isTrailingStopLossEnabled: boolean
+  isAutoTakeProfitEnabled: boolean
+  isConstantMultipleEnabled: boolean
+}
+
 export type GetTriggersResponse = {
   triggers: {
+    maker: {
+      basicBuy?: MakerBasicBuy
+      basicSell?: MakerBasicSell
+      stopLossToCollateral?: MakerStopLossToCollateral
+      stopLossToDebt?: MakerStopLossToDebt
+      autoTakeProfitToCollateral?: MakerAutoTakeProfitToCollateral
+      autoTakeProfitToDebt?: MakerAutoTakeProfitToDebt
+      constantMultiple?: MakerConstantMultiple
+    }
     aave3: {
       basicBuy?: DmaAaveBasicBuy
       basicSell?: DmaAaveBasicSell
@@ -470,27 +610,10 @@ export type GetTriggersResponse = {
     }
   }
   flags: {
-    aave3: {
-      isBasicBuyEnabled: boolean
-      isBasicSellEnabled: boolean
-      isPartialTakeProfitEnabled: boolean
-      isStopLossEnabled: boolean
-      isTrailingStopLossEnabled: boolean
-    }
-    spark: {
-      isBasicBuyEnabled: boolean
-      isBasicSellEnabled: boolean
-      isPartialTakeProfitEnabled: boolean
-      isStopLossEnabled: boolean
-      isTrailingStopLossEnabled: boolean
-    }
-    [key: `morphoblue-${string}`]: {
-      isBasicBuyEnabled: boolean
-      isBasicSellEnabled: boolean
-      isPartialTakeProfitEnabled: boolean
-      isStopLossEnabled: boolean
-      isTrailingStopLossEnabled: boolean
-    }
+    aave3: TriggersFlagsType
+    spark: TriggersFlagsType
+    [key: `morphoblue-${string}`]: TriggersFlagsType
+    maker: TriggersFlagsType
   }
   triggerGroup: {
     aaveBasicBuy?: Trigger
@@ -505,6 +628,11 @@ export type GetTriggersResponse = {
     morphoBlueBasicSell?: Trigger
     morphoBluePartialTakeProfit?: Trigger
     morphoBlueStopLoss?: Trigger
+    makerStopLoss?: Trigger
+    makerBasicBuy?: Trigger
+    makerBasicSell?: Trigger
+    makerAutoTakeProfit?: Trigger
+    makerConstantMultiple?: Trigger
   }
   triggersCount: number
   additionalData?: Record<string, unknown>
@@ -546,6 +674,22 @@ type WithMappedPartialTakeProfitDecodedParams = {
     ltvStep: BigNumber
   }
 }
+type WithMappedAutoTakeProfitDecodedParams = {
+  decodedMappedParams: {
+    executionPrice: BigNumber
+    executionLtv: BigNumber
+  }
+}
+type WithMappedConstantMultipleDecodedParams = {
+  decodedMappedParams: {
+    basicBuyExecutionLtv: BigNumber
+    basicSellExecutionLtv: BigNumber
+    basicBuyTargetLtv: BigNumber
+    basicSellTargetLtv: BigNumber
+    basicBuyMaxBuyprice: BigNumber
+    basicSellMinSellprice: BigNumber
+  }
+}
 
 // Types below to be extended when new triggers types will be available on other protocols
 export type StopLossTriggers =
@@ -558,6 +702,8 @@ export type StopLossTriggers =
   | SparkStopLossToDebt
   | SparkStopLossToDebtDMA
   | MorphoBlueStopLoss
+  | MakerStopLossToCollateral
+  | MakerStopLossToDebt
 export type StopLossTriggersWithDecodedParams = StopLossTriggers & WithMappedStopLossDecodedParams
 
 export type TrailingStopLossTriggers =
@@ -567,15 +713,31 @@ export type TrailingStopLossTriggers =
 export type TrailingStopLossTriggersWithDecodedParams = TrailingStopLossTriggers &
   WithMappedTrailingStopLossDecodedParams
 
-export type AutoSellTriggers = DmaAaveBasicSell | DmaSparkBasicSell | MorphoBlueBasicSell
+export type AutoSellTriggers =
+  | DmaAaveBasicSell
+  | DmaSparkBasicSell
+  | MorphoBlueBasicSell
+  | MakerBasicSell
 export type AutoSellTriggersWithDecodedParams = AutoSellTriggers & WithMappedAutoSellDecodedParams
 
-export type AutoBuyTriggers = DmaAaveBasicBuy | DmaSparkBasicBuy | MorphoBlueBasicBuy
+export type AutoBuyTriggers =
+  | DmaAaveBasicBuy
+  | DmaSparkBasicBuy
+  | MorphoBlueBasicBuy
+  | MakerBasicBuy
 export type AutoBuyTriggersWithDecodedParams = AutoBuyTriggers & WithMappedAutoBuyDecodedParams
 
 export type PartialTakeProfitTriggers =
   | DmaAavePartialTakeProfit
   | DmaSparkPartialTakeProfit
   | MorphoBluePartialTakeProfit
+export type AutoTakeProfitTriggers = MakerAutoTakeProfitToCollateral | MakerAutoTakeProfitToDebt
+export type AutoTakeProfitTriggersWithDecodedParams = AutoTakeProfitTriggers &
+  WithMappedAutoTakeProfitDecodedParams
+
+export type ConstantMultipleTriggers = MakerConstantMultiple
+export type ConstantMultipleTriggersWithDecodedParams = ConstantMultipleTriggers &
+  WithMappedConstantMultipleDecodedParams
+
 export type PartialTakeProfitTriggersWithDecodedParams = PartialTakeProfitTriggers &
   WithMappedPartialTakeProfitDecodedParams
