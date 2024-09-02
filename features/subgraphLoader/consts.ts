@@ -119,7 +119,7 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: '',
   },
   Automation: {
-    [NetworkIds.MAINNET]: 'summer-automation',
+    [NetworkIds.MAINNET]: 'summer-automation/version/0.0.18-add-trigger-groups', // TODO remove version once deployed
     [NetworkIds.HARDHAT]: 'summer-automation',
     [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: 'summer-automation-arbitrum',
