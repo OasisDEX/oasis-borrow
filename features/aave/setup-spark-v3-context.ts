@@ -9,7 +9,6 @@ import type { AccountContext } from 'components/context/AccountContextProvider'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
-import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import type { MainContext } from 'helpers/context/MainContext.types'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
 import { getYieldsRequest } from 'helpers/lambda/yields'
@@ -63,7 +62,7 @@ export function setupSparkV3Context(
   const networkId = networksByName[network].id
   ensureIsSupportedSparkV3NetworkId(networkId)
 
-  const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
+  const { txHelpers$, onEveryBlock$, context$, connectedContext$ } = mainContext
   const { userSettings$, proxyConsumed$ } = accountContext
   const { tokenPriceUSD$, protocols, commonTransactionServices } = productContext
 
@@ -254,8 +253,6 @@ export function setupSparkV3Context(
     }),
   )
 
-  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
-
   const migrationAssets = memoize(
     ({ positionId }: { positionId: Pick<PositionId, 'positionAddress'> }) =>
       getAssetsForMigration({ network: networkId, protocol: LendingProtocol.SparkV3, positionId }),
@@ -333,7 +330,6 @@ export function setupSparkV3Context(
     chainLinkETHUSDOraclePrice$,
     earnCollateralsReserveData,
     dpmAccountStateMachine,
-    aaveHistory$,
     manageViewInfo$,
     manageViewInfoExternal$,
   }

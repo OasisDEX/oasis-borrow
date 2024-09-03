@@ -16,15 +16,14 @@ export function AaveBorrowManageComponent({
   debtPrice,
   strategyConfig,
   nextPosition,
-  dpmProxy,
   isOpenView,
   cumulatives,
   triggersState,
 }: AaveManageComponentProps) {
-  const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$, aaveHistory$ } =
-    useAaveContext(strategyConfig.protocol, strategyConfig.network)
-  const _aaveHistory$ = aaveHistory$(dpmProxy!)
-  const [aaveHistory, aaveHistoryError] = useObservable(_aaveHistory$)
+  const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$ } = useAaveContext(
+    strategyConfig.protocol,
+    strategyConfig.network,
+  )
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
     getAaveLikeReserveData$({ token: strategyConfig.tokens.debt }),
   )
@@ -50,7 +49,6 @@ export function AaveBorrowManageComponent({
         debtTokenReserveDataError,
         collateralTokenReserveDataError,
         debtTokenReserveConfigurationDataError,
-        aaveHistoryError,
       ]}
     >
       <WithLoadingIndicator
@@ -61,7 +59,6 @@ export function AaveBorrowManageComponent({
           debtTokenReserveData,
           collateralTokenReserveData,
           debtTokenReserveConfigurationData,
-          aaveHistory,
         ]}
         customLoader={<PositionLoadingOverviewState />}
       >
@@ -72,7 +69,6 @@ export function AaveBorrowManageComponent({
           _debtTokenReserveData,
           _collateralTokenReserveData,
           _debtTokenReserveConfigurationData,
-          _aaveHistory,
         ]) => {
           return (
             <AaveBorrowPositionData
@@ -84,7 +80,7 @@ export function AaveBorrowManageComponent({
               debtTokenReserveData={_debtTokenReserveData}
               debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
-              aaveHistory={_aaveHistory}
+              aaveHistory={[]}
               cumulatives={cumulatives}
               triggersState={triggersState}
               isAutomationAvailable={isAutomationAvailable}

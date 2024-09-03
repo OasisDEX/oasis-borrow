@@ -5,7 +5,6 @@ import type { TokenBalances } from 'blockchain/tokens.types'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
-import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import type { MainContext } from 'helpers/context/MainContext.types'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
 import { getYieldsRequest } from 'helpers/lambda/yields'
@@ -45,7 +44,7 @@ export function setupAaveV2Context(
   accountContext: AccountContext,
   productContext: ProductContext,
 ): AaveContext {
-  const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
+  const { txHelpers$, onEveryBlock$, context$, connectedContext$ } = mainContext
   const { proxyConsumed$, userSettings$ } = accountContext
   const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = productContext
 
@@ -208,8 +207,6 @@ export function setupAaveV2Context(
     getAaveLikeAssetsPrices$({ tokens: ['USDC', 'STETH'] }),
   )
 
-  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
-
   const manageViewInfo$ = memoize(
     curry(getManageViewInfo)({
       strategyConfig$,
@@ -233,7 +230,6 @@ export function setupAaveV2Context(
     chainLinkETHUSDOraclePrice$,
     earnCollateralsReserveData,
     dpmAccountStateMachine,
-    aaveHistory$,
     manageViewInfo$,
     manageViewInfoExternal$: () => EMPTY, // We don't support external positions for Aave v2
   }

@@ -16,7 +16,7 @@ import { combineLatest, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
 import { groupHistoryEventsByHash } from './groupHistoryEventsByHash'
-import { query, triggerEventsQuery, triggerEventsQueryUsingProxy } from './vaultHistory.constants'
+import { query, triggerEventsQuery } from './vaultHistory.constants'
 import type { VaultHistoryEvent, WithSplitMark } from './vaultHistory.types'
 import type {
   AutomationEvent,
@@ -384,20 +384,6 @@ async function getVaultAutomationHistory(
   }))
 }
 
-async function getVaultAutomationV2History(
-  client: GraphQLClient,
-  proxyAddress: string,
-  chainId: NetworkIds,
-): Promise<ReturnedAutomationEvent[]> {
-  const triggersData = await client.request(triggerEventsQueryUsingProxy, {
-    proxyAddress: proxyAddress.toLowerCase(),
-  })
-  return triggersData.allTriggerEvents.nodes.map((item: ReturnedAutomationEvent) => ({
-    ...item,
-    chainId,
-  }))
-}
-
 function addReclaimFlag(events: VaultHistoryEvent[]) {
   return events.map((event, index, array) => {
     if (index === 0) {
@@ -463,34 +449,6 @@ export function createVaultHistory$(
         mapEventsToVaultEvents,
         map((events) => events.map((event) => ({ etherscan, ...event, token }))),
         map(addReclaimFlag),
-        catchError(() => of([])),
-      )
-    }),
-  )
-}
-
-// Simplified history for now with only automation events (to get info about SL execution)
-export function createAaveHistory$(
-  context$: Observable<Context>,
-  onEveryBlock$: Observable<number>,
-  proxyAddress: string,
-): Observable<VaultHistoryEvent[]> {
-  const makeClient = memoize(
-    (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
-  )
-  return combineLatest(context$).pipe(
-    switchMap(([{ chainId }]) => {
-      const { etherscan, cacheApi } = getNetworkContracts(NetworkIds.MAINNET, chainId)
-      return onEveryBlock$.pipe(
-        switchMap(() => {
-          const apiClient = makeClient(cacheApi)
-          return combineLatest(
-            of([]),
-            getVaultAutomationV2History(apiClient, proxyAddress, chainId),
-          )
-        }),
-        mapEventsToVaultEvents,
-        map((events) => events.map((event) => ({ etherscan, autoKind: event.kind, ...event }))),
         catchError(() => of([])),
       )
     }),

@@ -89,29 +89,3 @@ export const triggerEventsQuery = gql`
     }
   }
 `
-export const triggerEventsQueryUsingProxy = gql`
-  query triggerEvents($proxyAddress: String) {
-    allTriggerEvents(
-      filter: { proxyAddress: { equalTo: $proxyAddress } }
-      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
-    ) {
-      nodes {
-        id
-        triggerId
-        cdpId
-        number
-        kind
-        eventType
-        hash
-        timestamp
-        triggerData
-        commandAddress
-        groupId
-        groupType
-        gasFee
-        ethPrice
-        proxyAddress
-      }
-    }
-  }
-`
