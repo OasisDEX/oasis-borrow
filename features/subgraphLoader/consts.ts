@@ -890,4 +890,11 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getOsm: gql`
+    query getOsm($id: ID!, $block: Int!) {
+      osm(id: $id, block: { number: $block }) {
+        value
+      }
+    }
+  `,
 }
