@@ -127,7 +127,10 @@ export function getYields$(
           { ilk: ilk, yields: {} },
         )
     }),
-    catchError(() => of({ ilk: ilk, yields: {} })),
+    catchError((error) => {
+      console.error('Maker yield calcs error', error)
+      return of({ ilk: ilk, yields: {} })
+    }),
     distinctUntilChanged(isEqual),
   )
 }
