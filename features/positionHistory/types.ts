@@ -141,6 +141,8 @@ export interface Trigger {
   executedTransaction: string
   decodedDataNames: string[]
   decodedData: string[]
+  commandAddress: string
+  triggerData: string
   tokens: {
     symbol: string
     address: string

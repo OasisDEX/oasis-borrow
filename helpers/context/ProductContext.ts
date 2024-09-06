@@ -369,9 +369,7 @@ export function setupProductContext(
       `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
   )
 
-  const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
-  )
+  const automationTriggersData$ = memoize(curry(createAutomationTriggersData)(chainContext$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
