@@ -47,6 +47,7 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'RSETH-ETH': ['0xeeabdcb98e9f7ec216d259a2c026bbb701971efae0b44eec79a86053f9b128b6'],
     'SWBTC-WBTC': ['0x514efda728a646dcafe4fdc9afe4ea214709e110ac1b2b78185ae00c1782cc82'],
     'RSWETH-ETH': ['0xcacd4c39af872ddecd48b650557ff5bcc7d3338194c0f5b2038e0d4dec5dc022'],
+    'LBTC-WBTC': ['0xf6a056627a51e511ec7f48332421432ea6971fc148d8f3c451e14ea108026549'],
   },
   [NetworkIds.BASEMAINNET]: {
     'ETH-USDC': ['0x8793cf302b8ffd655ab97bd1c695dbd967807e8367a65cb2f4edaf1380ba1bda'],
@@ -135,6 +136,7 @@ export const morphoMarketsWithAutomation = [
   morphoMarkets?.[NetworkIds.MAINNET]?.['OSETH-ETH'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['WBTC-USDT'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['SWBTC-WBTC'][0],
+  morphoMarkets?.[NetworkIds.MAINNET]?.['LBTC-WBTC'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['RSWETH-ETH'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['WSTETH-USDT'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['ETH-USDT'][0],
