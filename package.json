@@ -12,7 +12,7 @@
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",
     "start:preview": "yarn build:8gb && next start -p 3000",
-    "migrate": "npx ts-node@10.9.1 server/database/migrate.ts",
+    "migrate": "node server/database/migrate.js",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
     "build": "next build && node sitemapGenerator.js",
