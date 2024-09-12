@@ -9,7 +9,9 @@ import { map } from 'rxjs/operators'
 const { mainnet } = ADDRESSES
 
 const reserveNamesDictionary = Object.fromEntries(
-  Object.entries(mainnet.common).map((mainnetEntry) => mainnetEntry.reverse()),
+  Object.entries(mainnet.common)
+    .map((entry) => [entry[0], entry[1].toLowerCase()])
+    .map((mainnetEntry) => mainnetEntry.reverse()),
 )
 
 export type AaveUserConfigurationResult = {
@@ -64,11 +66,11 @@ export function createAaveUserConfiguration(
           [collateral, borrowed],
           reserveIndex, // collateral, borrowed are string '0' or '1'
         ) =>
-          tokensDictionary[aaveReserveList[reserveIndex]] && {
+          tokensDictionary[aaveReserveList[reserveIndex].toLowerCase()] && {
             collateral: !!Number(collateral),
             borrowed: !!Number(borrowed),
             asset: aaveReserveList[reserveIndex],
-            assetName: tokensDictionary[aaveReserveList[reserveIndex]],
+            assetName: tokensDictionary[aaveReserveList[reserveIndex].toLowerCase()],
           },
       )
       .filter(Boolean) || []
@@ -81,11 +83,14 @@ export function hasAssets(
   collateralToken: AaveUserConfigurationResult['assetName'][],
   debtToken: AaveUserConfigurationResult['assetName'][],
 ) {
-  return (
-    userAssetList.filter(
-      ({ collateral, assetName }) => collateral && collateralToken.includes(assetName),
-    ).length > 0 &&
-    userAssetList.filter(({ borrowed, assetName }) => borrowed && debtToken.includes(assetName))
-      .length > 0
-  )
+  return userAssetList.filter(
+    ({ collateral, assetName }) => collateral && collateralToken.includes(assetName),
+  ).length > 0 &&
+    // a special case for old positions with no debt, if theres no debt we should still return true
+    // the empty array for STETH/ETH is a special case here (no issues there because its the only aave v2 pair using DS proxy)
+    // look for getStrategyConfig$ for usage
+    debtToken.length > 0
+    ? userAssetList.filter(({ borrowed, assetName }) => borrowed && debtToken.includes(assetName))
+        .length > 0
+    : true
 }
