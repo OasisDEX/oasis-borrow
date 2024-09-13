@@ -133,9 +133,9 @@ export const tokensMainnet = {
   ENA: contractDesc(erc20, mainnet.common.ENA),
   UNIV2: contractDesc(erc20, mainnet.common['UNI-V2']),
   SYRUPUSDC: contractDesc(erc20, mainnet.common.SYRUPUSDC),
+  RSWETH: contractDesc(erc20, mainnet.common.RSWETH),
+  LBTC: contractDesc(erc20, mainnet.common.LBTC),
 } as Record<string, ContractDesc>
-
-export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'] as const
 
 export const ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET = 16183119
 export const AAVE_V3_POOL_GENESIS_MAINNET = 16291127

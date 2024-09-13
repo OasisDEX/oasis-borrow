@@ -3,12 +3,13 @@ import type { PriceServiceResponse } from 'helpers/types'
 import { getCoinbaseTickers } from 'server/services/coinbase'
 import { getCoingeckoTickers } from 'server/services/coingecko'
 import { getCoinPaprikaTickers } from 'server/services/coinPaprika'
+import { getRswETHOracleTicker } from 'server/services/rswethOracle'
 import { getSDaiOracleTicker } from 'server/services/sdaiOracle'
 import { getSUSDEOracleTicker } from 'server/services/susdeOracle'
+import { getSwBtcOracleTicker } from 'server/services/swbtcOracle'
 import { getSyrupUsdcOracleTicker } from 'server/services/syrupUsdcOracle'
 import { getUSDEOracleTicker } from 'server/services/usdeOracle'
 import { getWSTETHOracleTicker } from 'server/services/wstethOracle'
-import { getSwBtcOracleTicker } from 'server/swbtcOracle'
 
 export async function tokenTickers(): Promise<PriceServiceResponse> {
   if (process.env.TOKEN_TICKERS_OVERRIDE) {
@@ -49,6 +50,10 @@ export async function tokenTickers(): Promise<PriceServiceResponse> {
     }),
     getSwBtcOracleTicker().catch((error) => {
       console.error('Error getting swBTC oracle price', error)
+      return {}
+    }),
+    getRswETHOracleTicker().catch((error) => {
+      console.error('Error getting rswETH oracle price', error)
       return {}
     }),
   ])

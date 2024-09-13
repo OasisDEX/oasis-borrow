@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "13.3.1",
+  "version": "13.4.2",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.19"
@@ -12,7 +12,7 @@
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",
     "start:preview": "yarn build:8gb && next start -p 3000",
-    "migrate": "npx ts-node server/database/migrate.ts",
+    "migrate": "node server/database/migrate.js",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
     "build": "next build && node sitemapGenerator.js",
@@ -34,7 +34,7 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn typechain:generate && yarn xstate:typegen && yarn get-config-types",
     "xstate:typegen": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" ",
     "xstate:typegen:watch": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" --watch",
-    "update-product-hub": "npx ts-node scripts/update-product-hub.ts"
+    "update-product-hub": "npx ts-node@10.9.1 scripts/update-product-hub.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -43,9 +43,9 @@
     "@lifi/wallet-management": "^2.6.1",
     "@lifi/widget": "^2.10.2",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "0.1.78",
+    "@oasisdex/addresses": "0.1.79",
     "@oasisdex/automation": "1.6.5-morpho.6",
-    "@oasisdex/dma-library": "0.6.64",
+    "@oasisdex/dma-library": "0.6.65",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
