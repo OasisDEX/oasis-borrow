@@ -432,6 +432,7 @@
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
+    "opened": "Opened a new Vault",
     "payback": "Pay back <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
