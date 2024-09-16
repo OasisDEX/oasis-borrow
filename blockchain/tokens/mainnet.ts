@@ -135,6 +135,9 @@ export const tokensMainnet = {
   SYRUPUSDC: contractDesc(erc20, mainnet.common.SYRUPUSDC),
   RSWETH: contractDesc(erc20, mainnet.common.RSWETH),
   LBTC: contractDesc(erc20, mainnet.common.LBTC),
+  SUSDS: contractDesc(erc20, '0xa3931d71877C0E7a3148CB7Eb4463524FEc27fbD'),
+  SKY: contractDesc(erc20, '0x56072C95FAA701256059aa122697B133aDEd9279'),
+  USDS: contractDesc(erc20, '0xdC035D45d973E3EC169d2276DDab16f1e407384F'),
 } as Record<string, ContractDesc>
 
 export const ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET = 16183119
