@@ -48,7 +48,6 @@ export function ManageSectionComponent({
   const simulations = useSimulationYields({
     amount: currentPosition?.collateral.amount,
     riskRatio: currentPosition?.riskRatio,
-    fields: ['7Days'],
     strategy: strategyConfig,
     token: state.context.tokens.deposit,
   })

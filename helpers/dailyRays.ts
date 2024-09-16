@@ -5,9 +5,6 @@ export const bonusRaysAmount = 30
 
 export const getRaysDailyChallengeDateFormat = () => dayjs().format('YYYY-MM-DD')
 
-export const getDailyChallengeMessage = () =>
-  `Claiming my ${dailyRaysAmount} $RAYS daily challenge for ${getRaysDailyChallengeDateFormat()}`
-
 export const explodeRays = (smallExplosion: boolean) => {
   const iconsCount = smallExplosion ? 10 : 70
   // needs claim-rays container
@@ -47,6 +44,7 @@ export const explodeRays = (smallExplosion: boolean) => {
   }
 }
 
+// this function is also used in monorepo -> rays-dashboard, if you make changes here you should also update it there
 export const getRaysDailyChallengeData = (claimedDates?: string[]) => {
   if (!claimedDates) {
     return {
@@ -96,10 +94,12 @@ export const getRaysDailyChallengeData = (claimedDates?: string[]) => {
     ) ||
     0
 
+  const streakRays = streaks * bonusRaysAmount
+
   return {
     dailyChallengeRays,
-    streakRays: streaks * bonusRaysAmount,
-    allBonusRays: dailyChallengeRays + streaks * bonusRaysAmount,
+    streakRays: streakRays,
+    allBonusRays: dailyChallengeRays + streakRays,
     currentStreak,
     streaks,
   }

@@ -1,12 +1,11 @@
 import { getOnChainPosition } from 'actions/aave-like'
+import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveData } from 'blockchain/aave'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
-import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import {
   commonDataMapper,
@@ -20,9 +19,9 @@ import {
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { isZeroAddress } from 'helpers/isZeroAddress'
+import { getYieldsRequest } from 'helpers/lambda/yields'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { DsProxyRegistry__factory } from 'types/ethers-contracts'
 
 const DsProxyFactory = DsProxyRegistry__factory
@@ -88,12 +87,23 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
       positionIdAsString: true,
       prices,
     })
+
+    const stethTokenAddress = contracts.tokens['STETH'].address
+    const ethTokenAddress = contracts.tokens['WETH'].address
+
     const [primaryTokenReserveData, secondaryTokenReserveData, yields] = await Promise.all([
       getAaveV2ReserveData({ token: commonData.primaryToken }),
       getAaveV2ReserveData({ token: commonData.secondaryToken }),
-      getAaveStEthYield(new GraphQLClient(contracts.cacheApi), dayjs(), stEthPosition.riskRatio, [
-        '7Days',
-      ]),
+      getYieldsRequest(
+        {
+          ltv: stEthPosition.riskRatio.loanToValue,
+          protocol: LendingProtocol.AaveV2,
+          networkId: NetworkIds.MAINNET,
+          collateralTokenAddress: stethTokenAddress,
+          quoteTokenAddress: ethTokenAddress,
+        },
+        process.env.FUNCTIONS_API_URL,
+      ),
     ])
     const calculations = calculateViewValuesForPosition(
       stEthPosition,
@@ -141,8 +151,8 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
             },
             {
               type: 'apy',
-              value: yields.annualisedYield7days
-                ? formatDecimalAsPercent(yields.annualisedYield7days.div(100))
+              value: yields?.results?.apy7d
+                ? formatDecimalAsPercent(new BigNumber(yields.results.apy7d).div(100))
                 : notAvailable,
             },
             {

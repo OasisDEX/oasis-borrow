@@ -3,12 +3,10 @@ import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
-import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
 import { mapAaveLikeRaysMultipliers } from 'features/omni-kit/protocols/aave-like/helpers/mapAaveLikeRaysMultipliers'
 import { OmniProductType } from 'features/omni-kit/types'
-import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import {
   aaveLikeProtocolNames,
@@ -31,10 +29,11 @@ import {
   formatDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
+import type { GetYieldsResponse } from 'helpers/lambda/yields'
+import { getYieldsRequest } from 'helpers/lambda/yields'
 import { getPointsPerYear } from 'helpers/rays'
 import { zero } from 'helpers/zero'
 import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
-import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
 import { getRawPositionDetails } from './getRawPositionDetails'
 import { mapDpmProtocolNameToUIName } from './mapDpmProtocolNameToUIName'
@@ -365,20 +364,28 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     primaryTokenReserveData.liquidityRate,
     secondaryTokenReserveData.variableBorrowRate,
   )
-  const isWstethEthEarn =
-    commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'ETH'
-  let wstEthYield
-  if (isWstethEthEarn) {
-    const contracts = getNetworkContracts(NetworkIds.MAINNET)
-    wstEthYield = await getAaveWstEthYield(
-      new GraphQLClient(contracts.cacheApi),
-      dayjs(),
-      onChainPositionData.riskRatio,
-      ['7Days'],
-    )
-  }
 
   const protocol = commonData.protocol
+
+  const isWstethEthEarn =
+    commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'ETH'
+  let wstEthYield: GetYieldsResponse | null = null
+
+  if (isWstethEthEarn) {
+    const contracts = getNetworkContracts(NetworkIds.MAINNET)
+    const wstethTokenAddress = contracts.tokens['WSTETH'].address
+    const ethTokenAddress = contracts.tokens['WETH'].address
+    wstEthYield = await getYieldsRequest(
+      {
+        ltv: onChainPositionData.riskRatio.loanToValue,
+        protocol,
+        networkId: NetworkIds.MAINNET,
+        collateralTokenAddress: wstethTokenAddress,
+        quoteTokenAddress: ethTokenAddress,
+      },
+      process.env.FUNCTIONS_API_URL,
+    )
+  }
 
   if (!isAaveLikeLendingProtocol(protocol)) {
     throw Error('Given protocol is not aave-like')
@@ -449,8 +456,8 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
       },
       {
         type: 'apy',
-        value: wstEthYield?.annualisedYield7days
-          ? formatDecimalAsPercent(wstEthYield.annualisedYield7days.div(100))
+        value: wstEthYield?.results?.apy7d
+          ? formatDecimalAsPercent(new BigNumber(wstEthYield.results.apy7d).div(100))
           : notAvailable,
       },
       {

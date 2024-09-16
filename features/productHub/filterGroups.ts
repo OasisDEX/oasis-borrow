@@ -2,7 +2,7 @@ import { LendingProtocol } from 'lendingProtocols'
 
 export const TOKENS_MEME = ['DOGE', 'MEME']
 export const TOKENS_STABLE_GROUPS = ['DAI', 'FRAX', 'LUSD', 'SUSDE', 'USDC', 'USDT']
-export const TOKENS_WITH_RESTAKING = ['EZETH', 'WEETH']
+export const TOKENS_WITH_RESTAKING = ['EZETH', 'WEETH', 'RSETH', 'RSWETH', 'SWBTC']
 export const TOKENS_WITH_STAKING_REWARDS = ['APXETH', 'CBETH', 'OSETH', 'RETH', 'STYETH', 'WSTETH']
 export const TOKENS_BLUECHIP = [
   'CBETH',

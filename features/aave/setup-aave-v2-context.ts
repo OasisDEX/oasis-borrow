@@ -1,14 +1,14 @@
+import type BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import type { AccountContext } from 'components/context/AccountContextProvider'
-import dayjs from 'dayjs'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
-import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import type { MainContext } from 'helpers/context/MainContext.types'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
+import { getYieldsRequest } from 'helpers/lambda/yields'
 import { LendingProtocol } from 'lendingProtocols'
-import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -44,7 +44,7 @@ export function setupAaveV2Context(
   accountContext: AccountContext,
   productContext: ProductContext,
 ): AaveContext {
-  const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
+  const { txHelpers$, onEveryBlock$, context$, connectedContext$ } = mainContext
   const { proxyConsumed$, userSettings$ } = accountContext
   const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = productContext
 
@@ -57,7 +57,6 @@ export function setupAaveV2Context(
     proxyStateMachine,
     proxiesRelatedWithPosition$,
     unconsumedDpmProxyForConnectedAccount$,
-    disconnectedGraphQLClient$,
     chainLinkETHUSDOraclePrice$,
   } = getCommonPartsFromProductContext(
     mainContext,
@@ -76,9 +75,21 @@ export function setupAaveV2Context(
     getAaveLikeReserveData$,
   } = protocols[LendingProtocol.AaveV2]
 
-  const aaveEarnYieldsQuery = memoize(
-    curry(getAaveStEthYield)(disconnectedGraphQLClient$, dayjs()),
-    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
+  const contracts = getNetworkContracts(NetworkIds.MAINNET)
+  const wstethTokenAddress = contracts.tokens['WSTETH'].address
+  const ethTokenAddress = contracts.tokens['WETH'].address
+
+  const getAaveStEthYield = (ltv: BigNumber) =>
+    getYieldsRequest({
+      ltv,
+      protocol: LendingProtocol.AaveV2,
+      networkId: NetworkIds.MAINNET,
+      collateralTokenAddress: wstethTokenAddress,
+      quoteTokenAddress: ethTokenAddress,
+    })
+
+  const aaveEarnYieldsQuery = memoize(getAaveStEthYield, (ltv, fields) =>
+    JSON.stringify({ fields, riskRatio: ltv.toString() }),
   )
 
   const earnCollateralsReserveData = {
@@ -196,8 +207,6 @@ export function setupAaveV2Context(
     getAaveLikeAssetsPrices$({ tokens: ['USDC', 'STETH'] }),
   )
 
-  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
-
   const manageViewInfo$ = memoize(
     curry(getManageViewInfo)({
       strategyConfig$,
@@ -221,7 +230,6 @@ export function setupAaveV2Context(
     chainLinkETHUSDOraclePrice$,
     earnCollateralsReserveData,
     dpmAccountStateMachine,
-    aaveHistory$,
     manageViewInfo$,
     manageViewInfoExternal$: () => EMPTY, // We don't support external positions for Aave v2
   }

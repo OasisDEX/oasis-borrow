@@ -1,20 +1,20 @@
+import type BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkNames } from 'blockchain/networks'
 import { networksByName } from 'blockchain/networks'
 import { ensureIsSupportedSparkV3NetworkId } from 'blockchain/spark-v3'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context/AccountContextProvider'
-import dayjs from 'dayjs'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
-import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import type { MainContext } from 'helpers/context/MainContext.types'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
+import { getYieldsRequest } from 'helpers/lambda/yields'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
-import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -62,7 +62,7 @@ export function setupSparkV3Context(
   const networkId = networksByName[network].id
   ensureIsSupportedSparkV3NetworkId(networkId)
 
-  const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
+  const { txHelpers$, onEveryBlock$, context$, connectedContext$ } = mainContext
   const { userSettings$, proxyConsumed$ } = accountContext
   const { tokenPriceUSD$, protocols, commonTransactionServices } = productContext
 
@@ -74,7 +74,6 @@ export function setupSparkV3Context(
     proxyForAccount$,
     proxyStateMachine,
     unconsumedDpmProxyForConnectedAccount$,
-    disconnectedGraphQLClient$,
     chainLinkETHUSDOraclePrice$,
   } = getCommonPartsFromProductContext(
     mainContext,
@@ -120,9 +119,21 @@ export function setupSparkV3Context(
     getAaveLikeAssetsPrices$,
   } = protocolData
 
-  const aaveEarnYieldsQuery = memoize(
-    curry(getAaveWstEthYield)(disconnectedGraphQLClient$, dayjs()),
-    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
+  const contracts = getNetworkContracts(networkId)
+  const wstethTokenAddress = contracts.tokens['WSTETH'].address
+  const ethTokenAddress = contracts.tokens['WETH'].address
+
+  const getAaveWstEthYield = (ltv: BigNumber) =>
+    getYieldsRequest({
+      ltv,
+      protocol: LendingProtocol.SparkV3,
+      networkId,
+      collateralTokenAddress: wstethTokenAddress,
+      quoteTokenAddress: ethTokenAddress,
+    })
+
+  const aaveEarnYieldsQuery = memoize(getAaveWstEthYield, (ltv, fields) =>
+    JSON.stringify({ fields, riskRatio: ltv.toString() }),
   )
 
   const earnCollateralsReserveData = {
@@ -242,8 +253,6 @@ export function setupSparkV3Context(
     }),
   )
 
-  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
-
   const migrationAssets = memoize(
     ({ positionId }: { positionId: Pick<PositionId, 'positionAddress'> }) =>
       getAssetsForMigration({ network: networkId, protocol: LendingProtocol.SparkV3, positionId }),
@@ -321,7 +330,6 @@ export function setupSparkV3Context(
     chainLinkETHUSDOraclePrice$,
     earnCollateralsReserveData,
     dpmAccountStateMachine,
-    aaveHistory$,
     manageViewInfo$,
     manageViewInfoExternal$,
   }

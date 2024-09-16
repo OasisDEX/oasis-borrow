@@ -1,15 +1,12 @@
-import type { IRiskRatio } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { NetworkIds, NetworkNames } from 'blockchain/networks'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
+import type { GetYieldsResponse } from 'helpers/lambda/yields'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeServices,
-  AaveLikeYieldsResponse,
-  FilterYieldFieldsType,
 } from 'lendingProtocols/aave-like-common'
 import type { Observable } from 'rxjs'
 
@@ -26,10 +23,7 @@ export type AaveContext = AaveLikeServices & {
   aaveStateMachine: OpenAaveStateMachine
   aaveManageStateMachine: ManageAaveStateMachine
   aaveTotalValueLocked$: Observable<AaveTotalValueLocked>
-  aaveEarnYieldsQuery: (
-    riskRatio: IRiskRatio,
-    fields: FilterYieldFieldsType[],
-  ) => Promise<AaveLikeYieldsResponse>
+  aaveEarnYieldsQuery: (ltv: BigNumber) => Promise<GetYieldsResponse | null>
   strategyConfig$: (
     positionId: PositionId,
     networkName: NetworkNames,
@@ -48,7 +42,6 @@ export type AaveContext = AaveLikeServices & {
   chainLinkETHUSDOraclePrice$: Observable<BigNumber>
   earnCollateralsReserveData: Record<string, Observable<AaveLikeReserveConfigurationData>>
   dpmAccountStateMachine: DPMAccountStateMachine
-  aaveHistory$: (proxyAddress: string) => Observable<VaultHistoryEvent[]>
   manageViewInfo$: (args: { positionId: PositionId }) => Observable<ManageViewInfo>
   manageViewInfoExternal$: (args: {
     positionId: Required<Pick<PositionId, 'positionAddress'>>

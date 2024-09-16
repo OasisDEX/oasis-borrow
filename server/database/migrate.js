@@ -1,7 +1,7 @@
-import dotenv from 'dotenv'
-import { join } from 'path'
-import pg from 'pg'
-import { migrate } from 'postgres-migrations'
+const dotenv = require('dotenv')
+const { join } = require('path')
+const pg = require('pg')
+const { migrate } = require('postgres-migrations')
 dotenv.config()
 
 async function main() {

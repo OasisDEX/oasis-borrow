@@ -106,6 +106,11 @@ export const ajnaWeeklyRewards: AjnaWeeklyRewards = {
       borrowShare: new BigNumber(0.05),
       earnShare: new BigNumber(0.95),
     },
+    'SYRUPUSDC-USDC': {
+      amount: new BigNumber(50000),
+      borrowShare: new BigNumber(0.05),
+      earnShare: new BigNumber(0.95),
+    },
   },
   [NetworkIds.BASEMAINNET]: {
     'CBETH-ETH': {

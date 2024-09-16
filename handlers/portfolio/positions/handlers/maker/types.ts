@@ -34,3 +34,9 @@ export interface MakerDiscoverPositionsResponse {
     creator: string // dsProxy
   }[]
 }
+
+export interface MakerOsmResponse {
+  osm: {
+    value: string
+  }
+}

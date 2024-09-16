@@ -1,14 +1,10 @@
 import type { IRiskRatio } from '@oasisdex/dma-library'
 import { RiskRatio } from '@oasisdex/dma-library'
-import type { Protocol } from '@prisma/client'
 import type BigNumber from 'bignumber.js'
-import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave'
-import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import { useAaveEarnYields } from 'features/aave/hooks'
 import type { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/types'
-import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -76,13 +72,11 @@ function AavePositionHeader({
     !isSparkProtocol ? minimumRiskRatio : undefined,
     strategy.protocol,
     strategy.network,
-    ['7Days'],
   )
   const maxYields = useAaveEarnYields(
     !isSparkProtocol ? maxRisk || minimumRiskRatio : undefined,
     strategy.protocol,
     strategy.network,
-    ['7Days', '7DaysOffset', '90Days', '90DaysOffset'],
   )
 
   const headlineDetails = []
@@ -92,26 +86,15 @@ function AavePositionHeader({
         precision: 2,
       })
 
-    if (has7daysYield(minYields, false) && has7daysYield(maxYields)) {
-      const yield7DaysMin = minYields.annualisedYield7days ?? zero
-      const yield7DaysMax = maxYields.annualisedYield7days ?? zero
-
-      const yield7DaysDiff = maxYields.annualisedYield7days.minus(
-        maxYields.annualisedYield7daysOffset,
-      )
+    if (has7daysYield(minYields) && has7daysYield(maxYields)) {
+      const yield7DaysMin = minYields.apy7d ?? zero
+      const yield7DaysMax = maxYields.apy7d ?? zero
 
       headlineDetails.push({
         label: t('open-earn.aave.product-header.current-yield'),
         value: `${formatYield(yield7DaysMin).toString()} - ${formatYield(
           yield7DaysMax,
         ).toString()}`,
-        sub: formatPercent(yield7DaysDiff, {
-          precision: 2,
-          plus: true,
-        }),
-        subColor: getPriceChangeColor({
-          collateralPricePercentageChange: yield7DaysDiff,
-        }),
       })
     } else {
       headlineDetails.push({
@@ -122,20 +105,10 @@ function AavePositionHeader({
   }
 
   if (maxYields && has90daysYield(maxYields)) {
-    const yield90DaysDiff = maxYields.annualisedYield90daysOffset.minus(
-      maxYields.annualisedYield90days,
-    )
     headlineDetails.push({
       label: t('open-earn.aave.product-header.90-day-avg-yield'),
-      value: formatPercent(maxYields.annualisedYield90days, {
+      value: formatPercent(maxYields.apy90d, {
         precision: 2,
-      }),
-      sub: formatPercent(yield90DaysDiff, {
-        precision: 2,
-        plus: true,
-      }),
-      subColor: getPriceChangeColor({
-        collateralPricePercentageChange: yield90DaysDiff,
       }),
     })
   } else {
@@ -199,20 +172,15 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }
 }
 
-export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: ManageAaveHeaderProps) {
+export function AavePositionHeaderNoDetails({ strategyConfig }: ManageAaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.protocol][strategyConfig.name]
-  const { protocol } = strategyConfig
-  const followButton: FollowButtonControlProps | undefined = createFollowButton(
-    positionId,
-    protocol.toLowerCase() as Protocol,
-  )
+
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}
       tokens={tokenData.tokenList}
       details={[]}
-      followButton={followButton}
       shareButton
     />
   )

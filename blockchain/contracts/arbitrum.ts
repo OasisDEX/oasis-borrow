@@ -137,6 +137,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_ETHUSD),
+    BTCUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
 
@@ -199,6 +200,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'PRIME-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_PRIMEUSDC),
     'SAFE-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SAFEDAI),
     'WOETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WOETHETH),
+    'SYRUPUSDC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),

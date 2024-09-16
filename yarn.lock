@@ -2502,10 +2502,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.75":
-  version "0.1.75"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.75.tgz#134f49cb0682a5f7a101ca298b28a20a501f689f"
-  integrity sha512-h/UhO9nopmzpObk2MZWzG8765cAHjhOwuHcdXcDjG5POwlSGmCuOGjAYsZBCzgEkta6u9SzWY8qum9jK8tZieA==
+"@oasisdex/addresses@0.1.79":
+  version "0.1.79"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.79.tgz#aa8734171b0550290a998a63a4a9234a8bf83722"
+  integrity sha512-8CjfUjM8rqmKaiRm0/vHoakV5jia/bCD6khJeP9JijzeHw84h0NrwrQCYv5ALse/gwUzcg5Mr+THJwL/aerDyg==
 
 "@oasisdex/automation@1.6.5-morpho.6":
   version "1.6.5-morpho.6"
@@ -2514,10 +2514,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.62":
-  version "0.6.62"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.62.tgz#b542c53cb3587131379f86d8d8184159608e5533"
-  integrity sha512-oXVgiBzQZop8PQrn5bntycSazL69reIiEjDkktcVWWjjuFQlPb+/y8aU/jeSNaHmxVR3JsR3cmzkXGRjxVG0qA==
+"@oasisdex/dma-library@0.6.65":
+  version "0.6.65"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.65.tgz#5970feb6d9a5d372c65bec9caa9ab194523b0a83"
+  integrity sha512-tx8xp6gopVnJl9I8AiV734STHAiRfmRakRYuL2M/UM02kuZRKGj2cBHl2bUIPoZ4vRf0mD8Prl4sBvPkVYC/VA==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
@@ -4120,6 +4120,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/cookie@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.6.0.tgz#eac397f28bf1d6ae0ae081363eca2f425bedf0d5"
+  integrity sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==
+
 "@types/debug@^4.1.7":
   version "4.1.8"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.8.tgz#cef723a5d0a90990313faec2d1e22aee5eecb317"
@@ -5351,6 +5356,14 @@
     ethers "5.5.4"
     joi "17.9.1"
 
+"@web3-onboard/common@^2.4.1":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/common/-/common-2.4.2.tgz#ffa7b1a7cb6410d9cc4d7b38d50b97a857b334cb"
+  integrity sha512-3+zkBru5W2jBYFBPPQsnqZ7tuN1GUyM5PzD9/MmhvjCLNhmjFtMQ0MkLzG4Yshodb4UW/DmZpjUVrpjdhEhj/Q==
+  dependencies:
+    joi "17.9.1"
+    viem "2.12.0"
+
 "@web3-onboard/core@^2.21.1", "@web3-onboard/core@^2.21.2":
   version "2.21.2"
   resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.21.2.tgz#962683efc87b29ee9150ab8d7ea9568ea3b41dd5"
@@ -5377,13 +5390,14 @@
   dependencies:
     "@web3-onboard/common" "^2.3.3"
 
-"@web3-onboard/hw-common@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.3.0.tgz#715d35c4039515e3f8ec839643e6d4c49097891f"
-  integrity sha512-ai5gwaXHxMOgov+TKuy2yUtBf7b2Vq8c28L9tSx4Hl8Q2IM6boGZQEqfW6Hw0GHu/Ez+MxRR5+M6nfwFBf8JRw==
+"@web3-onboard/hw-common@^2.3.2":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.3.3.tgz#c8327b3eb6808e251809e6a7abeae84a542b0b85"
+  integrity sha512-AkJixEMSDsLjNeeruXvR2WAPa9Ji3lOR0+gKrVoW9Uwf6b3YmWh8dBAPd2XRVUVOc/AUNSwcNJVQ3Xo9rZkuhg==
   dependencies:
     "@ethereumjs/common" "2.6.2"
-    "@web3-onboard/common" "^2.3.3"
+    "@web3-onboard/common" "^2.4.1"
+    bignumber.js "^9.1.0"
     ethers "5.5.4"
     joi "17.9.1"
     rxjs "^7.5.2"
@@ -5419,16 +5433,16 @@
     "@web3-onboard/core" "^2.21.2"
     use-sync-external-store "1.0.0"
 
-"@web3-onboard/trezor@^2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/trezor/-/trezor-2.4.3.tgz#a509ce37eff5ee4432a85c8a62217b1b2a757f73"
-  integrity sha512-Um/g766/jzbSd9tBCAWqD7vJOPX+V6bxqGP2SX8Hh8G3cXtMklTUkmbrY2spp8QHPj2HcQWHVIxfjsFVFcqmUg==
+"@web3-onboard/trezor@^2.4.6":
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/trezor/-/trezor-2.4.6.tgz#ca7ce429a19e70a87fee3a3e96e94440ca37bda2"
+  integrity sha512-cP8krxZcmD6n5mh/xp8h4+6CVLqZmLL2mJrtx64n7bEsWpS3mauhe6ipQHRpMRfhS3VyoELQy7V0r9spYAZJTg==
   dependencies:
     "@ethereumjs/tx" "^3.4.0"
     "@ethersproject/providers" "^5.5.0"
     "@trezor/connect-web" "^9.0.11"
-    "@web3-onboard/common" "^2.3.3"
-    "@web3-onboard/hw-common" "^2.3.0"
+    "@web3-onboard/common" "^2.4.1"
+    "@web3-onboard/hw-common" "^2.3.2"
     buffer "^6.0.3"
     eth-crypto "^2.1.0"
     ethereumjs-util "^7.1.3"
@@ -7469,6 +7483,11 @@ cookie@0.5.0:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.5.0.tgz#d1f5d71adec6558c58f389987c366aa47e994f8b"
   integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
 
+cookie@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.6.0.tgz#2798b04b071b0ecbff0dbb62a505a8efa4e19051"
+  integrity sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==
+
 cookiejar@^2.1.1:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.4.tgz#ee669c1fea2cf42dc31585469d193fef0d65771b"
@@ -9099,7 +9118,7 @@ expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-express-jwt@*, express-jwt@^8.4.1:
+express-jwt@*:
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/express-jwt/-/express-jwt-8.4.1.tgz#ba817c1ced7c6f1f7017fc2e6deac207011e8acb"
   integrity sha512-IZoZiDv2yZJAb3QrbaSATVtTCYT11OcqgFGoTN4iKVyN6NBkBkhtVIixww5fmakF0Upt5HfOxJuS6ZmJVeOtTQ==
@@ -15871,7 +15890,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viem@1.21.4, viem@2.9.19, viem@^1.0.0, viem@^1.17.2, viem@^1.19.11, viem@^1.6.0:
+viem@1.21.4, viem@2.12.0, viem@2.9.19, viem@^1.0.0, viem@^1.17.2, viem@^1.19.11, viem@^1.6.0:
   version "1.21.4"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
   integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==

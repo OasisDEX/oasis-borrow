@@ -35,16 +35,15 @@ export function AaveMultiplyManageComponent({
   debtPrice,
   strategyConfig,
   nextPosition,
-  dpmProxy,
   isOpenView,
   cumulatives,
   triggersState,
   sendTriggerEvent,
 }: AaveManageComponentProps) {
-  const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$, aaveHistory$ } =
-    useAaveContext(strategyConfig.protocol, strategyConfig.network)
-  const _aaveHistory$ = aaveHistory$(dpmProxy!)
-  const [aaveHistory, aaveHistoryError] = useObservable(_aaveHistory$)
+  const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$ } = useAaveContext(
+    strategyConfig.protocol,
+    strategyConfig.network,
+  )
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
     getAaveLikeReserveData$({ token: strategyConfig.tokens.debt }),
   )
@@ -71,7 +70,6 @@ export function AaveMultiplyManageComponent({
         debtTokenReserveDataError,
         collateralTokenReserveDataError,
         debtTokenReserveConfigurationDataError,
-        aaveHistoryError,
       ]}
     >
       <WithLoadingIndicator
@@ -82,7 +80,6 @@ export function AaveMultiplyManageComponent({
           debtTokenReserveData,
           collateralTokenReserveData,
           debtTokenReserveConfigurationData,
-          aaveHistory,
         ]}
         customLoader={<PositionLoadingOverviewState />}
       >
@@ -93,7 +90,6 @@ export function AaveMultiplyManageComponent({
           _debtTokenReserveData,
           _collateralTokenReserveData,
           _debtTokenReserveConfigurationData,
-          _aaveHistory,
         ]) => {
           return (
             <AaveMultiplyPositionData
@@ -105,7 +101,7 @@ export function AaveMultiplyManageComponent({
               debtTokenReserveData={_debtTokenReserveData}
               debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
-              aaveHistory={_aaveHistory}
+              aaveHistory={[]}
               cumulatives={cumulatives}
               isAutomationAvailable={isAutomationAvailable}
               lendingProtocol={strategyConfig.protocol}

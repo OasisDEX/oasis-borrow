@@ -24,6 +24,13 @@ function NotFoundPage() {
           <AppLink href="/">
             <Button>{t('404-button')}</Button>
           </AppLink>
+          {process.env.NODE_ENV !== 'production' && (
+            <AppLink href="/" sx={{ mt: '-20px' }}>
+              <Button variant="secondary" onClick={() => window.history.back()}>
+                {t('404-back')}
+              </Button>
+            </AppLink>
+          )}
         </Grid>
       </Container>
     </MarketingLayout>

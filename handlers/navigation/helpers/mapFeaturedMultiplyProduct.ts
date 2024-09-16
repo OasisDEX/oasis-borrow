@@ -40,7 +40,7 @@ export function mapFeaturedMultiplyProduct(items: ProductHubItem[]): NavigationM
       ],
       url: getGenericPositionUrl({
         ...item,
-        product: [OmniProductType.Earn],
+        product: [OmniProductType.Multiply],
       }),
     }
   })

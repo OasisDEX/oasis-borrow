@@ -28,7 +28,10 @@ import type { ClaimedReferralRewards } from 'features/referralOverview/getClaime
 import type { GetAaveLikeInterestRatesResponse } from 'features/refinance/graph/getRefinanceTargetInterestRates'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { Erc4626DpmPositionsResponse } from 'handlers/portfolio/positions/handlers/erc-4626/types'
-import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
+import type {
+  MakerDiscoverPositionsResponse,
+  MakerOsmResponse,
+} from 'handlers/portfolio/positions/handlers/maker/types'
 import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 import type { Erc4626InterestRatesResponse } from 'handlers/product-hub/update-handlers/erc-4626/erc4626Handler'
 
@@ -63,6 +66,7 @@ export type Subgraphs = {
   }
   Discover: {
     getMakerDiscoverPositions: { walletAddress: string }
+    getOsm: { id: string; block: number }
   }
   Morpho: {
     getMorphoVauldIdPositions: { positionId: number }
@@ -165,6 +169,7 @@ export type SubgraphsResponses = {
   }
   Discover: {
     getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
+    getOsm: SubgraphBaseResponse<MakerOsmResponse>
   }
   Morpho: {
     getMorphoVauldIdPositions: SubgraphBaseResponse<MorphoVauldIdPositionsResponse>
