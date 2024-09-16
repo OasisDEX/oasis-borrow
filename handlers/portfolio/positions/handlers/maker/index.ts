@@ -105,7 +105,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           const maxRiskRatio = new RiskRatio(one.div(minCollRatio), RiskRatio.TYPE.LTV)
           const chainFamily = getChainInfoByChainId(NetworkIds.MAINNET)
           if (!chainFamily) {
-            throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
+            throw new Error(`ChainFamily not found for chainId ${NetworkIds.MAINNET}`)
           }
 
           const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, primaryToken)

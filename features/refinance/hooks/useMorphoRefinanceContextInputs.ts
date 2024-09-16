@@ -60,7 +60,7 @@ export const useMorphoRefinanceContextInputs = ({
 
   const chainFamily = getChainInfoByChainId(networkId)
   if (!chainFamily) {
-    throw new Error(`ChainId ${networkId} is not supported`)
+    throw new Error(`ChainFamily with networkId ${networkId} is not supported`)
   }
 
   if (!marketId) {

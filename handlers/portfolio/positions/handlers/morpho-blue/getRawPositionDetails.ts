@@ -5,7 +5,6 @@ import {
   type ILendingPositionId,
 } from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
 import { getMorphoPositionId } from 'features/refinance/helpers'
 import { getMorphoPoolId } from 'features/refinance/helpers/getMorphoPoolId'
 import { type TokensPricesList } from 'handlers/portfolio/positions/helpers'
@@ -30,7 +29,7 @@ export function getRawPositionDetails(
 ) {
   const chainFamily = getChainInfoByChainId(networkId)
   if (!chainFamily) {
-    throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
+    throw new Error(`ChainFamily with networkId ${networkId} is not supported`)
   }
 
   const collateralPrice = primaryTokenPrice.toString()

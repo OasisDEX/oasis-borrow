@@ -57,7 +57,7 @@ export function GeneralManageLayout({
 
   generalManageVault.state.refinanceContextInput = useMakerRefinanceContextInputs({
     address: account,
-    chainId,
+    networkId: chainId,
     collateralAmount: vault.lockedCollateral.toString(),
     collateralTokenSymbol: vault.token,
     debtAmount: vault.debt.toString(),

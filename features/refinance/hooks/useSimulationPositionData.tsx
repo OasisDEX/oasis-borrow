@@ -17,7 +17,7 @@ export const useSimulationPositionData = () => {
   if (simulation == null) {
     return undefined
   } else if (simulation.error) {
-    console.error('Refinance simulation error', simulation.error)
+    console.error('Refinance simulation error: ', simulation.error)
     return undefined
   }
 

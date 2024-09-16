@@ -15,7 +15,7 @@ import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToke
 
 export const useMakerRefinanceContextInputs = ({
   address,
-  chainId,
+  networkId,
   collateralAmount,
   collateralTokenSymbol,
   debtAmount,
@@ -32,7 +32,7 @@ export const useMakerRefinanceContextInputs = ({
   isOwner,
 }: {
   address?: string
-  chainId: NetworkIds
+  networkId: NetworkIds
   collateralAmount: string
   collateralTokenSymbol: string
   debtAmount: string
@@ -50,9 +50,9 @@ export const useMakerRefinanceContextInputs = ({
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 
-  const chainFamily = getChainInfoByChainId(chainId)
+  const chainFamily = getChainInfoByChainId(networkId)
   if (!chainFamily) {
-    throw new Error(`ChainId ${chainId} is not supported`)
+    throw new Error(`ChainFamily with networkId ${networkId} is not supported`)
   }
   const debtTokenSymbol = 'DAI'
   const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
@@ -84,7 +84,7 @@ export const useMakerRefinanceContextInputs = ({
     },
   }
 
-  const network = getNetworkById(chainId).name
+  const network = getNetworkById(networkId).name
 
   return getRefinanceContextInput({
     borrowRate,

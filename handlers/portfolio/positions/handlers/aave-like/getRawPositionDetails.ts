@@ -5,7 +5,7 @@ import {
   type ILendingPositionId,
 } from '@summer_fi/summerfi-sdk-common'
 import BigNumber from 'bignumber.js'
-import { NetworkIds, type NetworkNames } from 'blockchain/networks'
+import { type NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import { getAaveLikePoolId, getAaveLikePositionId } from 'features/refinance/helpers'
 import { getEmode } from 'features/refinance/helpers/getEmode'
@@ -56,7 +56,7 @@ export function getRawPositionDetails(
 ) {
   const chainFamily = getChainInfoByChainId(dpm.networkId)
   if (!chainFamily) {
-    throw new Error(`ChainId ${NetworkIds.MAINNET} is not supported`)
+    throw new Error(`ChainFamily with networkId ${dpm.networkId} is not supported`)
   }
   const collateral = calculations.collateral
   const debt = calculations.debt
