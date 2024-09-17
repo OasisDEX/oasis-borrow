@@ -121,27 +121,6 @@ export const SwapCardWrapper = ({
         {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}
         {actionLabel}
       </Button>
-      <pre>
-        {JSON.stringify(
-          {
-            resolvedPrimaryTokenData: {
-              ...resolvedPrimaryTokenData,
-              balance: resolvedPrimaryTokenData.balance?.toString(),
-              allowance: resolvedPrimaryTokenData.allowance?.toString(),
-            },
-            resolvedSecondaryTokenData: {
-              ...resolvedSecondaryTokenData,
-              balance: resolvedSecondaryTokenData.balance?.toString(),
-              allowance: resolvedSecondaryTokenData.allowance?.toString(),
-            },
-            actionLabel,
-            amount: amount?.toString(),
-            isLoading,
-          },
-          null,
-          2,
-        )}
-      </pre>
     </Card>
   )
 }
