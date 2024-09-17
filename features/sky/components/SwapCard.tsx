@@ -10,7 +10,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { combineLatest, of } from 'rxjs'
 import { Button, Card, Flex, Heading, Spinner } from 'theme-ui'
 
