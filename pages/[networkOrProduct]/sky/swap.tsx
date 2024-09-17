@@ -11,6 +11,7 @@ import { SwapCard } from 'features/sky/components/SwapCard'
 import { skySwapTokensConfig } from 'features/sky/config'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Container, Grid } from 'theme-ui'
 
@@ -70,7 +71,11 @@ function SkySwapPage() {
             <WithTermsOfService>
               <WithWalletAssociatedRisk>
                 <Container variant="vaultPageContainer">
-                  <VaultHeadline header={'SKY Token swap'} tokens={['DAI']} details={[]} />
+                  <VaultHeadline
+                    header={'Sky Ecosystem Token Upgrades'}
+                    tokens={['DAI']}
+                    details={[]}
+                  />
                   <Grid gap={3} columns={3} mt={[1, 3]}>
                     <SkySwapWrapper />
                   </Grid>
@@ -82,6 +87,19 @@ function SkySwapPage() {
       </ProductContextHandler>
     </AppLayout>
   )
+}
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
+
+export async function getStaticPaths() {
+  return {
+    paths: ['/ethereum/sky/swap'],
+    fallback: true,
+  }
 }
 
 export default SkySwapPage

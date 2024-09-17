@@ -28,6 +28,7 @@ export const INTERNAL_LINKS = {
   sparkRewards:
     'https://forum.makerdao.com/t/sparkdao-spk-pre-farming-airdrop-general-subdao-farming-overview/21595',
   rays: '/rays',
+  skySwapPage: '/ethereum/sky/swap',
 }
 
 export const EXTERNAL_LINKS = {
@@ -106,6 +107,7 @@ export const EXTERNAL_LINKS = {
     WHY_EARN_ON_SUMMER: 'https://blog.summer.fi/why-earn-on-summer',
     MAKER_WBTC_CEILING_REDUCED:
       'https://blog.summer.fi/wbtc-vault-debt-ceiling-reductions-on-maker-and-spark/',
+    SKY_BLOG_POST: 'https://blog.summer.fi/sky-on-summer',
   },
   DOCS: {
     FAQ: {

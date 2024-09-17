@@ -8,6 +8,7 @@ import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { vaultTypeToSDKType } from 'features/refinance/helpers/vaultTypeToSDKType'
 import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
+import { UpgradeToSkyBanner } from 'features/sky/components/UpgradeToSkyBanner'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
@@ -43,6 +44,10 @@ export function GeneralManageLayout({ generalManageVault, chainId }: GeneralMana
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
+  const isOwner =
+    generalManageVault.state.vault.controller?.toLowerCase() ===
+    generalManageVault.state.account?.toLowerCase()
+
   generalManageVault.state.refinanceContextInput = useMakerRefinanceContextInputs({
     address: account,
     chainId,
@@ -65,13 +70,12 @@ export function GeneralManageLayout({ generalManageVault, chainId }: GeneralMana
     ).loanToValue.toString(),
     ilkType: vault.ilk,
     positionType: vaultTypeToSDKType(generalManageVault.type),
-    isOwner:
-      generalManageVault.state.vault.controller?.toLowerCase() ===
-      generalManageVault.state.account?.toLowerCase(),
+    isOwner,
   })
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
+      {isOwner && <UpgradeToSkyBanner />}
       <VaultNoticesView id={vault.id} />
       <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>
       <GeneralManageTabBar
