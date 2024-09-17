@@ -1,6 +1,7 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
+import { Icon } from 'components/Icon'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
 import type { skySwapTokensConfig } from 'features/sky/config'
@@ -12,6 +13,7 @@ import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { combineLatest, of } from 'rxjs'
+import { exchange } from 'theme/icons'
 import { Button, Card, Flex, Heading, Spinner } from 'theme-ui'
 
 export type SwapCardType = {
@@ -21,14 +23,14 @@ export type SwapCardType = {
     resolvedPrimaryTokenData: ResolvedDepositParamsType
     amount: BigNumber
     signer: ethers.Signer
-  }) => Promise<void>
+  }) => Promise<ethers.ContractTransaction>
 }
 
 type SwapCardWrapperType = SwapCardType & {
   balancesData: BigNumber[]
   allowancesData: BigNumber[]
-  isLoadingAllowance: boolean
-  setIsLoadingAllowance: (value: boolean) => void
+  reloadingTokenInfo: boolean
+  setReloadingTokenInfo: (value: boolean) => void
   walletAddress?: string
 }
 
@@ -37,8 +39,8 @@ export const SwapCardWrapper = ({
   depositAction,
   balancesData,
   allowancesData,
-  isLoadingAllowance,
-  setIsLoadingAllowance,
+  reloadingTokenInfo,
+  setReloadingTokenInfo,
   walletAddress,
 }: SwapCardWrapperType) => {
   const {
@@ -61,8 +63,8 @@ export const SwapCardWrapper = ({
     secondaryTokenBalance: balancesData?.[1],
     secondaryTokenAllowance: allowancesData?.[1],
     walletAddress,
-    setIsLoadingAllowance,
-    isLoadingAllowance,
+    setReloadingTokenInfo,
+    reloadingTokenInfo,
     depositAction,
   })
   return (
@@ -90,12 +92,15 @@ export const SwapCardWrapper = ({
         >
           {resolvedPrimaryTokenData.token} to {resolvedSecondaryTokenData.token}
         </Heading>
-        <Button variant="outlineSmall" onClick={() => setIsTokenSwapped(!isTokenSwapped)}>
-          switch tokens
-        </Button>
+        <Icon
+          icon={exchange}
+          variant="outlineSmall"
+          onClick={() => setIsTokenSwapped(!isTokenSwapped)}
+          sx={{ cursor: 'pointer' }}
+        />
       </Flex>
       <VaultActionInput
-        action="Swap"
+        action={!isTokenSwapped ? 'Upgrade' : 'Downgrade'}
         currencyCode={resolvedPrimaryTokenData.token}
         onChange={onAmountChange}
         hasError={false}
@@ -141,26 +146,26 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
   )
   const [{ wallet }] = useConnectWallet()
   const { balancesFromAddressInfoArray$, allowanceForAccountEthers$ } = useProductContext()
-  const [isLoadingAllowance, setIsLoadingAllowance] = useState(false)
+  const [reloadingTokenInfo, setReloadingTokenInfo] = useState(false)
   const [balancesData, balancesError] = useObservable(
     useMemo(
       () =>
-        isLoadingAllowance
+        reloadingTokenInfo
           ? of([zero, zero])
           : balancesFromAddressInfoArray$(balancesConfig, wallet?.accounts[0].address, 1),
-      [isLoadingAllowance, balancesFromAddressInfoArray$, balancesConfig, wallet?.accounts],
+      [reloadingTokenInfo, balancesFromAddressInfoArray$, balancesConfig, wallet?.accounts],
     ),
   )
   const [allowancesData, allowancesError] = useObservable(
     useMemo(
       () =>
-        isLoadingAllowance
+        reloadingTokenInfo
           ? of([zero, zero])
           : combineLatest([
               allowanceForAccountEthers$(config.primaryToken, config.contractAddress, 1),
               allowanceForAccountEthers$(config.secondaryToken, config.contractAddress, 1),
             ]),
-      [allowanceForAccountEthers$, config, isLoadingAllowance],
+      [allowanceForAccountEthers$, config, reloadingTokenInfo],
     ),
   )
 
@@ -172,8 +177,8 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
             config={config}
             balancesData={loadedBalancesData}
             allowancesData={loadedAllowancesData}
-            isLoadingAllowance={isLoadingAllowance}
-            setIsLoadingAllowance={setIsLoadingAllowance}
+            reloadingTokenInfo={reloadingTokenInfo}
+            setReloadingTokenInfo={setReloadingTokenInfo}
             depositAction={depositAction}
             walletAddress={wallet?.accounts[0].address}
           />

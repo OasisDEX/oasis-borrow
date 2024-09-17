@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { createApproveTransaction } from 'blockchain/better-calls/erc20'
 import { useMainContext } from 'components/context/MainContextProvider'
+import type { ethers } from 'ethers'
 import type { SwapCardType } from 'features/sky/components/SwapCard'
 import type { skySwapTokensConfig } from 'features/sky/config'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -22,8 +23,8 @@ type UseSkyTokenSwapType = {
   secondaryTokenAllowance: BigNumber
   depositAction: SwapCardType['depositAction']
   walletAddress?: string
-  setIsLoadingAllowance: (isLoading: boolean) => void
-  isLoadingAllowance: boolean
+  setReloadingTokenInfo: (isLoading: boolean) => void
+  reloadingTokenInfo: boolean
 } & (typeof skySwapTokensConfig)[number]
 
 export const useSkyTokenSwap = ({
@@ -35,8 +36,8 @@ export const useSkyTokenSwap = ({
   secondaryTokenAllowance,
   depositAction,
   walletAddress,
-  setIsLoadingAllowance,
-  isLoadingAllowance,
+  setReloadingTokenInfo,
+  reloadingTokenInfo,
   contractAddress,
 }: UseSkyTokenSwapType) => {
   const { connect, connecting } = useConnection()
@@ -98,7 +99,7 @@ export const useSkyTokenSwap = ({
         signer,
       })
         .then((tx) => {
-          setIsLoadingAllowance(true)
+          setReloadingTokenInfo(true)
           console.info('Approve transaction', tx)
           tx.wait()
             .then((receipt) => {
@@ -110,11 +111,11 @@ export const useSkyTokenSwap = ({
               setIsSettingAllowance(false)
             })
             .finally(() => {
-              setIsLoadingAllowance(false)
+              setReloadingTokenInfo(false)
             })
         })
         .catch((e) => {
-          setIsLoadingAllowance(false)
+          setReloadingTokenInfo(false)
           setIsSettingAllowance(false)
           console.error('Approve transaction failed 2', e)
         })
@@ -123,9 +124,43 @@ export const useSkyTokenSwap = ({
     amount,
     contractAddress,
     resolvedPrimaryTokenData.token,
-    setIsLoadingAllowance,
+    setReloadingTokenInfo,
     signer,
     walletAddress,
+  ])
+  const executeDeposit = useCallback(() => {
+    if (!amount) {
+      console.error('Amount is not set')
+      return () => {}
+    }
+    if (!signer) {
+      console.error('Signer is not set')
+      return () => {}
+    }
+    setReloadingTokenInfo(true)
+    return depositAction({ isTokenSwapped, resolvedPrimaryTokenData, amount, signer }).then(
+      (tx: ethers.ContractTransaction) => {
+        tx.wait()
+          .then((receipt) => {
+            setIsSettingAllowance(false)
+            console.info('Approve transaction receipt', receipt)
+          })
+          .catch((e) => {
+            console.error('Approve transaction failed 1', e)
+            setIsSettingAllowance(false)
+          })
+          .finally(() => {
+            setReloadingTokenInfo(false)
+          })
+      },
+    )
+  }, [
+    amount,
+    depositAction,
+    isTokenSwapped,
+    resolvedPrimaryTokenData,
+    signer,
+    setReloadingTokenInfo,
   ])
   const onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = new BigNumber(
@@ -143,17 +178,6 @@ export const useSkyTokenSwap = ({
   const onSetMax = () => {
     setAmount(resolvedPrimaryTokenData.balance)
   }
-  const executeDeposit = useCallback(() => {
-    if (!amount) {
-      console.error('Amount is not set')
-      return () => {}
-    }
-    if (!signer) {
-      console.error('Signer is not set')
-      return () => {}
-    }
-    return depositAction({ isTokenSwapped, resolvedPrimaryTokenData, amount, signer })
-  }, [amount, depositAction, isTokenSwapped, resolvedPrimaryTokenData, signer])
   const action = useMemo(() => {
     if (!walletAddress) {
       return connect
@@ -187,9 +211,9 @@ export const useSkyTokenSwap = ({
     ) {
       return 'Set allowance'
     }
-    return 'Swap'
-  }, [walletAddress, resolvedPrimaryTokenData.allowance, amount])
-  const isLoading = isSettingAllowance || isLoadingAllowance || connecting
+    return !isTokenSwapped ? 'Upgrade' : 'Downgrade'
+  }, [walletAddress, resolvedPrimaryTokenData.allowance, amount, isTokenSwapped])
+  const isLoading = isSettingAllowance || reloadingTokenInfo || connecting
   const buttonDisabled =
     (!amount || amount.isZero() || amount.isNaN() || isLoading) && !!walletAddress
   return {
