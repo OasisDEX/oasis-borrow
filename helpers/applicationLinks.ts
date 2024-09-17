@@ -28,6 +28,7 @@ export const INTERNAL_LINKS = {
   sparkRewards:
     'https://forum.makerdao.com/t/sparkdao-spk-pre-farming-airdrop-general-subdao-farming-overview/21595',
   rays: '/rays',
+  skySwapPage: '/ethereum/sky/swap',
 }
 
 export const EXTERNAL_LINKS = {
