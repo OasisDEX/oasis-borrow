@@ -51,7 +51,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc } from 'blockchain/networks'
+import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
   AAVE_V3_POOL_GENESIS_GOERLI,
@@ -238,6 +238,11 @@ export const goerliContracts: MainnetContractsWithOptional = {
       goerli.ajna['AjnaPoolPairs_MOOAURAGYROAUSDCN/AUSDTNUSDC'],
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SUSDCYUSDC),
+  },
+  sky: {
+    daiusds: emptyContractDesc('daiusds'),
+    mkrsky: emptyContractDesc('mkrsky'),
+    susds: emptyContractDesc('susds'),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, goerli.ajna.AjnaRewardsReedemer),

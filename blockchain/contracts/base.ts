@@ -212,6 +212,11 @@ export const baseContracts: MainnetContractsWithOptional = {
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SUSDCYUSDC),
   },
+  sky: {
+    daiusds: emptyContractDesc('daiusds'),
+    mkrsky: emptyContractDesc('mkrsky'),
+    susds: emptyContractDesc('susds'),
+  },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, base.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, base.ajna.AjnaBonusRewardsReedemer),

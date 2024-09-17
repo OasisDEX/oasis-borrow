@@ -247,6 +247,11 @@ export const optimismContracts: OptimismContracts = {
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, optimism.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, optimism.ajna.AjnaBonusRewardsReedemer),
+  sky: {
+    daiusds: emptyContractDesc('daiusds'),
+    mkrsky: emptyContractDesc('mkrsky'),
+    susds: emptyContractDesc('susds'),
+  },
   morphoBlue: contractDesc(morphoBlue, optimism.morphoblue.MorphoBlue),
   adaptiveCurveIrm: contractDesc(morphoBlue, optimism.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, optimism.common.BalancerVault),

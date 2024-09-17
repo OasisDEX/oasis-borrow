@@ -117,6 +117,42 @@ const deprecatedTokens = [
 
 export const tokenConfigs: TokenConfig[] = [
   {
+    // TBD
+    symbol: 'SUSDS',
+    precision: 18,
+    digits: 5,
+    name: 'SUSD',
+    icon: usdp_circle_color,
+    iconCircle: usdp_circle_color,
+    color: '#0B9F74',
+    background: 'linear-gradient(143.13deg, #0B9F74 12.24%, #64DFBB 85.9%) #FFFFFF',
+    tags: [],
+  },
+  {
+    // TBD
+    symbol: 'SKY',
+    precision: 18,
+    digits: 5,
+    name: 'SKY Governance Token',
+    icon: usdp_circle_color,
+    iconCircle: usdp_circle_color,
+    color: '#0B9F74',
+    background: 'linear-gradient(143.13deg, #0B9F74 12.24%, #64DFBB 85.9%) #FFFFFF',
+    tags: [],
+  },
+  {
+    // TBD
+    symbol: 'USDS',
+    precision: 18,
+    digits: 5,
+    name: 'USDS',
+    icon: usdp_circle_color,
+    iconCircle: usdp_circle_color,
+    color: '#0B9F74',
+    background: 'linear-gradient(143.13deg, #0B9F74 12.24%, #64DFBB 85.9%) #FFFFFF',
+    tags: [],
+  },
+  {
     symbol: 'USDP',
     precision: 18,
     digits: 5,
