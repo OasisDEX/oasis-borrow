@@ -16,6 +16,7 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getLocalAppConfig, useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getGradientColor } from 'helpers/getGradientColor'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import React from 'react'
@@ -87,6 +88,35 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
 
   return (
     <>
+      {position.protocol === LendingProtocol.Maker && (
+        <AppLink
+          href={INTERNAL_LINKS.skySwapPage}
+          sx={{
+            zIndex: 0,
+          }}
+        >
+          <Flex
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: '-60px',
+              p: 3,
+              pb: '50px',
+              backgroundImage: `url(${staticFilesRuntimeUrl('/static/img/sky-banner-background.png')})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'bottom',
+              border: '1px solid transparent',
+              borderColor: 'neutral20',
+              borderRadius: 'large',
+            }}
+          >
+            <Text color="neutral10">The Sky Ecosystem is here</Text>{' '}
+            <Button variant="outlineSmall" color="neutral10">
+              Upgrade DAI & MKR now
+            </Button>
+          </Flex>
+        </AppLink>
+      )}
       <Box
         sx={{
           width: '100%',
@@ -265,33 +295,6 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
           )}
         </AppLink>
       </Box>
-      {position.protocol === LendingProtocol.Maker && (
-        <AppLink
-          href={INTERNAL_LINKS.skySwapPage}
-          sx={{
-            zIndex: 0,
-          }}
-        >
-          <Flex
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              mt: '-90px',
-              p: 3,
-              pt: '80px',
-              backgroundColor: 'neutral80',
-              border: '1px solid transparent',
-              borderColor: 'neutral20',
-              borderRadius: 'large',
-            }}
-          >
-            <Text color="neutral10">The Sky Ecosystem is here</Text>{' '}
-            <Button variant="outlineSmall" color="neutral10">
-              Upgrade DAI & MKR now
-            </Button>
-          </Flex>
-        </AppLink>
-      )}
     </>
   )
 }
