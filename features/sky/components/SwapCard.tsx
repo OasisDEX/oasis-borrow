@@ -2,6 +2,7 @@ import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Icon } from 'components/Icon'
+import { MessageCard } from 'components/MessageCard'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
 import type { skySwapTokensConfig } from 'features/sky/config'
@@ -56,6 +57,10 @@ export const SwapCardWrapper = ({
     isTokenSwapped,
     resolvedPrimaryTokenData,
     resolvedSecondaryTokenData,
+    allowanceStatus,
+    setAllowanceStatus,
+    setTransactionStatus,
+    transactionStatus,
   } = useSkyTokenSwap({
     ...config,
     primaryTokenBalance: balancesData?.[0],
@@ -126,6 +131,54 @@ export const SwapCardWrapper = ({
         {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}
         {actionLabel}
       </Button>
+      {transactionStatus && (
+        <MessageCard
+          sx={{
+            mt: 3,
+          }}
+          messages={
+            transactionStatus === 'success'
+              ? ['Transaction successfull.']
+              : ['Failed to execute transaction.']
+          }
+          closeIcon
+          type={transactionStatus === 'success' ? 'ok' : 'error'}
+          handleClick={() => setTransactionStatus(undefined)}
+          withBullet={false}
+        />
+      )}
+      {allowanceStatus && (
+        <MessageCard
+          sx={{
+            mt: 3,
+          }}
+          messages={
+            allowanceStatus === 'success'
+              ? ['Allowance set successfully.']
+              : ['Failed to set allowance.']
+          }
+          closeIcon
+          type={allowanceStatus === 'success' ? 'ok' : 'error'}
+          handleClick={() => setAllowanceStatus(undefined)}
+          withBullet={false}
+        />
+      )}
+      {!isLoading &&
+      amount &&
+      !resolvedPrimaryTokenData.allowance.isNaN() &&
+      (resolvedPrimaryTokenData.allowance.isZero() ||
+        resolvedPrimaryTokenData.allowance.isLessThan(amount)) ? (
+        <MessageCard
+          sx={{
+            mt: 3,
+          }}
+          messages={[
+            `Current allowance is ${resolvedPrimaryTokenData.allowance} ${resolvedPrimaryTokenData.token}. You need to update allowance.`,
+          ]}
+          type="error"
+          withBullet={false}
+        />
+      ) : null}
     </Card>
   )
 }
@@ -165,10 +218,15 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
               allowanceForAccountEthers$(config.primaryToken, config.contractAddress, 1),
               allowanceForAccountEthers$(config.secondaryToken, config.contractAddress, 1),
             ]),
-      [allowanceForAccountEthers$, config, reloadingTokenInfo],
+      [
+        allowanceForAccountEthers$,
+        config.contractAddress,
+        config.primaryToken,
+        config.secondaryToken,
+        reloadingTokenInfo,
+      ],
     ),
   )
-
   return (
     <WithErrorHandler error={[balancesError, allowancesError]}>
       <WithLoadingIndicator value={[balancesData, allowancesData]}>

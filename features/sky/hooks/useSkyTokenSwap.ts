@@ -6,7 +6,7 @@ import type { SwapCardType } from 'features/sky/components/SwapCard'
 import type { skySwapTokensConfig } from 'features/sky/config'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 export type ResolvedDepositParamsType = {
   token: string
@@ -44,9 +44,15 @@ export const useSkyTokenSwap = ({
   const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
   const [isSettingAllowance, setIsSettingAllowance] = useState(false)
+  const [allowanceStatus, setAllowanceStatus] = useState<'success' | 'error' | undefined>()
+  const [transactionStatus, setTransactionStatus] = useState<'success' | 'error' | undefined>()
   const [isTokenSwapped, setIsTokenSwapped] = useState(false)
   const signer = context?.transactionProvider
   const [amount, setAmount] = useState<BigNumber>()
+
+  useEffect(() => {
+    setAmount(undefined)
+  }, [isTokenSwapped])
 
   const resolvedPrimaryTokenData = useMemo(() => {
     if (isTokenSwapped) {
@@ -90,6 +96,7 @@ export const useSkyTokenSwap = ({
       return () => {}
     }
     return () => {
+      setAllowanceStatus(undefined)
       setIsSettingAllowance(true)
       createApproveTransaction({
         token: resolvedPrimaryTokenData.token,
@@ -103,10 +110,12 @@ export const useSkyTokenSwap = ({
           console.info('Approve transaction', tx)
           tx.wait()
             .then((receipt) => {
+              setAllowanceStatus('success')
               setIsSettingAllowance(false)
               console.info('Approve transaction receipt', receipt)
             })
             .catch((e) => {
+              setAllowanceStatus('error')
               console.error('Approve transaction failed 1', e)
               setIsSettingAllowance(false)
             })
@@ -115,6 +124,7 @@ export const useSkyTokenSwap = ({
             })
         })
         .catch((e) => {
+          setAllowanceStatus('error')
           setReloadingTokenInfo(false)
           setIsSettingAllowance(false)
           console.error('Approve transaction failed 2', e)
@@ -137,23 +147,31 @@ export const useSkyTokenSwap = ({
       console.error('Signer is not set')
       return () => {}
     }
+    setTransactionStatus(undefined)
     setReloadingTokenInfo(true)
-    return depositAction({ isTokenSwapped, resolvedPrimaryTokenData, amount, signer }).then(
-      (tx: ethers.ContractTransaction) => {
+    return depositAction({ isTokenSwapped, resolvedPrimaryTokenData, amount, signer })
+      .then((tx: ethers.ContractTransaction) => {
         tx.wait()
           .then((receipt) => {
             setIsSettingAllowance(false)
-            console.info('Approve transaction receipt', receipt)
+            setTransactionStatus('success')
+            console.info('Deposit transaction receipt', receipt)
           })
           .catch((e) => {
-            console.error('Approve transaction failed 1', e)
+            setTransactionStatus('error')
             setIsSettingAllowance(false)
+            console.error('Deposit transaction failed 1', e)
           })
           .finally(() => {
+            setAmount(undefined)
             setReloadingTokenInfo(false)
           })
-      },
-    )
+      })
+      .catch((e) => {
+        setTransactionStatus('error')
+        setReloadingTokenInfo(false)
+        console.error('Deposit transaction failed 2', e)
+      })
   }, [
     amount,
     depositAction,
@@ -229,5 +247,9 @@ export const useSkyTokenSwap = ({
     isTokenSwapped,
     resolvedPrimaryTokenData,
     resolvedSecondaryTokenData,
+    allowanceStatus,
+    setAllowanceStatus,
+    transactionStatus,
+    setTransactionStatus,
   }
 }

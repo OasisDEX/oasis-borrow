@@ -71,7 +71,11 @@ function SkySwapPage() {
             <WithTermsOfService>
               <WithWalletAssociatedRisk>
                 <Container variant="vaultPageContainer">
-                  <VaultHeadline header={'SKY Token swap'} tokens={['DAI']} details={[]} />
+                  <VaultHeadline
+                    header={'Sky Ecosystem Token Upgrades'}
+                    tokens={['DAI']}
+                    details={[]}
+                  />
                   <Grid gap={3} columns={3} mt={[1, 3]}>
                     <SkySwapWrapper />
                   </Grid>
