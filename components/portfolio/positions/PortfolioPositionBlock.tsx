@@ -86,9 +86,14 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       }
     : {}
 
+  const showSkyBanner =
+    position.protocol === LendingProtocol.Maker ||
+    [position.primaryToken, position.secondaryToken].includes('DAI') ||
+    [position.primaryToken, position.secondaryToken].includes('MKR')
+
   return (
     <>
-      {position.protocol === LendingProtocol.Maker && (
+      {showSkyBanner && (
         <AppLink
           href={INTERNAL_LINKS.skySwapPage}
           sx={{
