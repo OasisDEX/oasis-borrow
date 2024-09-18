@@ -161,7 +161,7 @@ export const SwapCardWrapper = ({
             ? isTokenSwapped
               ? `Unstake ${viewPrimaryToken}`
               : `Stake ${viewPrimaryToken}`
-            : `Upgrade ${viewPrimaryToken} to ${resolvedSecondaryTokenData.token}`}
+            : `${isTokenSwapped ? 'Downgrade' : 'Upgrade'} ${viewPrimaryToken} to ${resolvedSecondaryTokenData.token}`}
         </Heading>
         <Icon
           icon={exchange}
