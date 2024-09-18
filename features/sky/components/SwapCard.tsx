@@ -3,6 +3,7 @@ import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Icon } from 'components/Icon'
 import { MessageCard } from 'components/MessageCard'
+import { SkeletonLine } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
 import type { skySwapTokensConfig } from 'features/sky/config'
@@ -15,7 +16,7 @@ import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { combineLatest, of } from 'rxjs'
 import { exchange } from 'theme/icons'
-import { Button, Card, Flex, Heading, Spinner } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Spinner } from 'theme-ui'
 
 export type SwapCardType = {
   config: (typeof skySwapTokensConfig)[number]
@@ -34,6 +35,54 @@ type SwapCardWrapperType = SwapCardType & {
   setReloadingTokenInfo: (value: boolean) => void
   walletAddress?: string
 }
+
+const SwapCardLoader = () => (
+  <Box
+    sx={{
+      position: 'relative',
+      height: 300,
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Card
+      sx={{
+        p: 4,
+        border: 'lightMuted',
+        width: '100%',
+      }}
+    >
+      <Flex
+        sx={{
+          position: 'relative',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pb: 3,
+          mb: 3,
+          borderBottom: 'lightMuted',
+          zIndex: 1,
+        }}
+      >
+        <SkeletonLine sx={{ mr: 3 }} />
+        <SkeletonLine sx={{ ml: 3 }} />
+      </Flex>
+      <Flex
+        sx={{
+          position: 'relative',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <SkeletonLine sx={{ mr: 5 }} />
+        <SkeletonLine sx={{ ml: 5 }} />
+      </Flex>
+      <SkeletonLine height={50} sx={{ mt: 3 }} />
+      <SkeletonLine height={60} sx={{ mt: 3 }} />
+    </Card>
+  </Box>
+)
 
 export const SwapCardWrapper = ({
   config,
@@ -227,9 +276,25 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
       ],
     ),
   )
+  if (!wallet?.accounts[0].address) {
+    return (
+      <SwapCardWrapper
+        config={config}
+        balancesData={[zero, zero]}
+        allowancesData={[zero, zero]}
+        reloadingTokenInfo={reloadingTokenInfo}
+        setReloadingTokenInfo={setReloadingTokenInfo}
+        depositAction={depositAction}
+        walletAddress={wallet?.accounts[0].address}
+      />
+    )
+  }
   return (
     <WithErrorHandler error={[balancesError, allowancesError]}>
-      <WithLoadingIndicator value={[balancesData, allowancesData]}>
+      <WithLoadingIndicator
+        value={[balancesData, allowancesData]}
+        customLoader={<SwapCardLoader />}
+      >
         {([loadedBalancesData, loadedAllowancesData]) => (
           <SwapCardWrapper
             config={config}

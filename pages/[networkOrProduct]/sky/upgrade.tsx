@@ -73,7 +73,7 @@ function SkySwapPage() {
                 <Container variant="vaultPageContainer">
                   <VaultHeadline
                     header={'Sky Ecosystem Token Upgrades'}
-                    tokens={['DAI']}
+                    tokens={['SKY']}
                     details={[]}
                   />
                   <Grid gap={3} columns={3} mt={[1, 3]}>
@@ -97,7 +97,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 export async function getStaticPaths() {
   return {
-    paths: ['/ethereum/sky/swap'],
+    paths: ['/ethereum/sky/upgrade'],
     fallback: true,
   }
 }
