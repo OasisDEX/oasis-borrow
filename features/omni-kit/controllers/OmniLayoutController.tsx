@@ -35,7 +35,7 @@ import React from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
 export function OmniLayoutController({ txHandler }: { txHandler: () => () => void }) {
-  const { ProxyReveal: proxyReveal, LambdaAutomations } = useAppConfig('features')
+  const { ProxyReveal: proxyReveal, LambdaAutomations, SkyUpgrade } = useAppConfig('features')
 
   const { t } = useTranslation()
 
@@ -107,7 +107,8 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       : false
 
   const showSkyBanner =
-    [quoteToken, collateralToken].includes('DAI') || [quoteToken, collateralToken].includes('MKR')
+    SkyUpgrade &&
+    ([quoteToken, collateralToken].includes('DAI') || [quoteToken, collateralToken].includes('MKR'))
 
   return (
     <Container variant="vaultPageContainerStatic">

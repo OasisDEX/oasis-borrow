@@ -13,6 +13,7 @@ import { handleAmountChange } from 'features/dsr/utils/formUtils'
 import { selectPrimaryAction } from 'features/dsr/utils/helpers'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { UpgradeToSkyBanner } from 'features/sky/components/UpgradeToSkyBanner'
+import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import type { Loadable } from 'helpers/loadable'
 import { zero } from 'helpers/zero'
@@ -55,6 +56,7 @@ export function DsrView({
   daiPrice,
 }: DsrViewProps) {
   const { t } = useTranslation()
+  const { SkyUpgrade } = useAppConfig('features')
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
 
   const account = context.status === 'connected' ? context.account : undefined
@@ -70,7 +72,7 @@ export function DsrView({
           <VaultOwnershipBanner account={account} controller={walletAddress} />
         </Box>
       )}
-      {isOwner && <UpgradeToSkyBanner />}
+      {isOwner && SkyUpgrade && <UpgradeToSkyBanner />}
       <VaultHeadline
         header={t('dsr.titles.heading')}
         tokens={['DAI']}

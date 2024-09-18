@@ -54,7 +54,11 @@ const getMigrationGradientsPerProtocol = (
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { EnableRefinance: isRefinanceEnabled, Rays: isRaysEnabled } = useAppConfig('features')
+  const {
+    EnableRefinance: isRefinanceEnabled,
+    Rays: isRaysEnabled,
+    SkyUpgrade,
+  } = useAppConfig('features')
 
   const resolvedPairId = shouldShowPairId({
     collateralToken: position.primaryToken,
@@ -87,9 +91,10 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
     : {}
 
   const showSkyBanner =
-    position.protocol === LendingProtocol.Maker ||
-    [position.primaryToken, position.secondaryToken].includes('DAI') ||
-    [position.primaryToken, position.secondaryToken].includes('MKR')
+    SkyUpgrade &&
+    (position.protocol === LendingProtocol.Maker ||
+      [position.primaryToken, position.secondaryToken].includes('DAI') ||
+      [position.primaryToken, position.secondaryToken].includes('MKR'))
 
   return (
     <>
