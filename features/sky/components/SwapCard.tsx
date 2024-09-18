@@ -18,7 +18,7 @@ import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { combineLatest, of } from 'rxjs'
 import { exchange } from 'theme/icons'
-import { Box, Button, Card, Flex, Heading, Spinner } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Spinner, Text } from 'theme-ui'
 
 export type SwapCardType = {
   config: (typeof skySwapTokensConfig)[number]
@@ -125,6 +125,7 @@ export const SwapCardWrapper = ({
     reloadingTokenInfo,
     depositAction,
   })
+  const viewPrimaryToken = resolvedPrimaryTokenData.token.replace('SUS', 'sUS')
   return (
     <Card
       sx={{
@@ -158,9 +159,9 @@ export const SwapCardWrapper = ({
         >
           {config.stake
             ? isTokenSwapped
-              ? `Unstake ${resolvedPrimaryTokenData.token}`
-              : `Stake ${resolvedPrimaryTokenData.token}`
-            : `Upgrade ${resolvedPrimaryTokenData.token} to ${resolvedSecondaryTokenData.token}`}
+              ? `Unstake ${viewPrimaryToken}`
+              : `Stake ${viewPrimaryToken}`
+            : `Upgrade ${viewPrimaryToken} to ${resolvedSecondaryTokenData.token}`}
         </Heading>
         <Icon
           icon={exchange}
@@ -169,6 +170,11 @@ export const SwapCardWrapper = ({
           sx={{ cursor: 'pointer' }}
         />
       </Flex>
+      <Box sx={{ pt: 1, pb: 4 }}>
+        <Text variant="paragraph4" color="neutral80">
+          {!isTokenSwapped ? config.descriptionPrimary : config.descriptionSecondary}
+        </Text>
+      </Box>
       <VaultActionInput
         action={
           config.stake
@@ -270,7 +276,7 @@ export const SwapCardWrapper = ({
             mt: 3,
           }}
           messages={[
-            `Current allowance is ${resolvedPrimaryTokenData.allowance} ${resolvedPrimaryTokenData.token}. You need to update allowance.`,
+            `Current allowance is ${resolvedPrimaryTokenData.allowance} ${viewPrimaryToken}. You need to update allowance.`,
           ]}
           type="error"
           withBullet={false}
