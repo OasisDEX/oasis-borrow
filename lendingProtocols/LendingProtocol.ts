@@ -5,6 +5,7 @@ export enum LendingProtocol {
   Maker = 'maker',
   MorphoBlue = 'morphoblue',
   SparkV3 = 'sparkv3',
+  Sky = 'sky',
 }
 
 export enum LendingProtocolLabel {
@@ -14,6 +15,7 @@ export enum LendingProtocolLabel {
   maker = 'Maker',
   morphoblue = 'Morpho Blue',
   sparkv3 = 'Spark',
+  sky = 'Sky',
 }
 
 export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
