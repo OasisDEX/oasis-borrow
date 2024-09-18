@@ -170,10 +170,10 @@ export const SwapCardWrapper = ({
           sx={{ cursor: 'pointer' }}
         />
       </Flex>
-      {config.descriptionPrimary && config.descriptionSecondary && (
+      {config.description && (
         <Box sx={{ pt: 1, pb: 4 }}>
           <Text variant="paragraph4" color="neutral80">
-            {!isTokenSwapped ? config.descriptionPrimary : config.descriptionSecondary}
+            {config.description}
           </Text>
         </Box>
       )}

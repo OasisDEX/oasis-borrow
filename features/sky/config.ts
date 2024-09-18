@@ -8,8 +8,8 @@ export const skySwapTokensConfig = [
     secondaryTokenAddress: mainnetContracts.tokens['USDS'].address,
     contractAddress: mainnetContracts.sky.daiusds.address,
     stake: false,
-    descriptionPrimary: '',
-    descriptionSecondary: '',
+    description:
+      'Upgrade DAI to USDS and unlock features of the Sky Ecosystem, like sUSDS and SKY rewards.',
   },
   {
     primaryToken: 'MKR',
@@ -18,8 +18,7 @@ export const skySwapTokensConfig = [
     secondaryTokenAddress: mainnetContracts.tokens['SKY'].address,
     contractAddress: mainnetContracts.sky.mkrsky.address,
     stake: false,
-    descriptionPrimary: '',
-    descriptionSecondary: '',
+    description: 'Upgrade MKR to SKY for a 24,000 for 1 token split, and eligibility for rewards.',
   },
   {
     primaryToken: 'USDS',
@@ -27,8 +26,7 @@ export const skySwapTokensConfig = [
     primaryTokenAddress: mainnetContracts.tokens['USDS'].address,
     secondaryTokenAddress: mainnetContracts.tokens['SUSDS'].address,
     contractAddress: mainnetContracts.sky.susds.address,
-    descriptionPrimary: '',
-    descriptionSecondary: '',
+    description: 'Stake USDS to save and earn a competitive yield.',
     stake: true,
   },
 ]
