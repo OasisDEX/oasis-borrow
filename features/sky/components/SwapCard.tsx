@@ -170,11 +170,13 @@ export const SwapCardWrapper = ({
           sx={{ cursor: 'pointer' }}
         />
       </Flex>
-      <Box sx={{ pt: 1, pb: 4 }}>
-        <Text variant="paragraph4" color="neutral80">
-          {!isTokenSwapped ? config.descriptionPrimary : config.descriptionSecondary}
-        </Text>
-      </Box>
+      {config.descriptionPrimary && config.descriptionSecondary && (
+        <Box sx={{ pt: 1, pb: 4 }}>
+          <Text variant="paragraph4" color="neutral80">
+            {!isTokenSwapped ? config.descriptionPrimary : config.descriptionSecondary}
+          </Text>
+        </Box>
+      )}
       <VaultActionInput
         action={
           config.stake

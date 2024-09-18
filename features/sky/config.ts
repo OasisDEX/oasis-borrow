@@ -8,6 +8,8 @@ export const skySwapTokensConfig = [
     secondaryTokenAddress: mainnetContracts.tokens['USDS'].address,
     contractAddress: mainnetContracts.sky.daiusds.address,
     stake: false,
+    descriptionPrimary: '',
+    descriptionSecondary: '',
   },
   {
     primaryToken: 'MKR',
@@ -16,6 +18,8 @@ export const skySwapTokensConfig = [
     secondaryTokenAddress: mainnetContracts.tokens['SKY'].address,
     contractAddress: mainnetContracts.sky.mkrsky.address,
     stake: false,
+    descriptionPrimary: '',
+    descriptionSecondary: '',
   },
   {
     primaryToken: 'USDS',
@@ -23,6 +27,8 @@ export const skySwapTokensConfig = [
     primaryTokenAddress: mainnetContracts.tokens['USDS'].address,
     secondaryTokenAddress: mainnetContracts.tokens['SUSDS'].address,
     contractAddress: mainnetContracts.sky.susds.address,
+    descriptionPrimary: '',
+    descriptionSecondary: '',
     stake: true,
   },
 ]
