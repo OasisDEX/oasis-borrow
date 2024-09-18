@@ -73,7 +73,7 @@ function SkySwapPage() {
                 <Container variant="vaultPageContainer">
                   <VaultHeadline
                     header={'Sky Ecosystem Token Upgrades'}
-                    tokens={['DAI']}
+                    tokens={['SKY']}
                     details={[]}
                   />
                   <Grid gap={3} columns={3} mt={[1, 3]}>
