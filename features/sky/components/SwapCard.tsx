@@ -2,6 +2,7 @@ import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Icon } from 'components/Icon'
+import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { SkeletonLine } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
@@ -12,6 +13,7 @@ import { useSkyTokenSwap } from 'features/sky/hooks/useSkyTokenSwap'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { combineLatest, of } from 'rxjs'
@@ -110,6 +112,8 @@ export const SwapCardWrapper = ({
     setAllowanceStatus,
     setTransactionStatus,
     transactionStatus,
+    allowanceTx,
+    transactionTx,
   } = useSkyTokenSwap({
     ...config,
     primaryTokenBalance: balancesData?.[0],
@@ -126,6 +130,14 @@ export const SwapCardWrapper = ({
       sx={{
         p: 4,
         border: 'lightMuted',
+        ...(config.stake
+          ? {
+              backgroundPosition: 'top center',
+              backgroundSize: '150%',
+              backgroundRepeat: 'no-repeat',
+              backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.7) 40px, white 90px, white 100%), url(${staticFilesRuntimeUrl('/static/img/sky-banner-background.png')})`,
+            }
+          : {}),
       }}
     >
       <Flex
@@ -144,7 +156,11 @@ export const SwapCardWrapper = ({
           variant="boldParagraph2"
           sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
         >
-          {resolvedPrimaryTokenData.token} to {resolvedSecondaryTokenData.token}
+          {config.stake
+            ? isTokenSwapped
+              ? `Unstake ${resolvedPrimaryTokenData.token}`
+              : `Stake ${resolvedPrimaryTokenData.token}`
+            : `Swap ${resolvedPrimaryTokenData.token} to ${resolvedSecondaryTokenData.token}`}
         </Heading>
         <Icon
           icon={exchange}
@@ -154,7 +170,15 @@ export const SwapCardWrapper = ({
         />
       </Flex>
       <VaultActionInput
-        action={!isTokenSwapped ? 'Upgrade' : 'Downgrade'}
+        action={
+          config.stake
+            ? isTokenSwapped
+              ? `Unstake`
+              : `Stake`
+            : isTokenSwapped
+              ? `Downgrade`
+              : `Upgrade`
+        }
         currencyCode={resolvedPrimaryTokenData.token}
         onChange={onAmountChange}
         hasError={false}
@@ -187,7 +211,19 @@ export const SwapCardWrapper = ({
           }}
           messages={
             transactionStatus === 'success'
-              ? ['Transaction successfull.']
+              ? ([
+                  'Transaction successfull.',
+                  transactionTx ? (
+                    <AppLink
+                      href={`https://etherscan.io/tx/${transactionTx}`}
+                      sx={{ color: 'success100', textDecoration: 'underline' }}
+                    >
+                      View on etherscan.
+                    </AppLink>
+                  ) : (
+                    false
+                  ),
+                ].filter(Boolean) as string[])
               : ['Failed to execute transaction.']
           }
           closeIcon
@@ -203,7 +239,19 @@ export const SwapCardWrapper = ({
           }}
           messages={
             allowanceStatus === 'success'
-              ? ['Allowance set successfully.']
+              ? ([
+                  'Allowance set successfully.',
+                  allowanceTx ? (
+                    <AppLink
+                      href={`https://etherscan.io/tx/${allowanceTx}`}
+                      sx={{ color: 'success100', textDecoration: 'underline' }}
+                    >
+                      View on etherscan.
+                    </AppLink>
+                  ) : (
+                    false
+                  ),
+                ].filter(Boolean) as string[])
               : ['Failed to set allowance.']
           }
           closeIcon

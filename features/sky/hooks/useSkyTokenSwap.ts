@@ -39,13 +39,16 @@ export const useSkyTokenSwap = ({
   setReloadingTokenInfo,
   reloadingTokenInfo,
   contractAddress,
+  stake,
 }: UseSkyTokenSwapType) => {
   const { connect, connecting } = useConnection()
   const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
   const [isSettingAllowance, setIsSettingAllowance] = useState(false)
   const [allowanceStatus, setAllowanceStatus] = useState<'success' | 'error' | undefined>()
+  const [allowanceTx, setAllowanceTx] = useState<string | undefined>()
   const [transactionStatus, setTransactionStatus] = useState<'success' | 'error' | undefined>()
+  const [transactionTx, setTransactionTx] = useState<string | undefined>()
   const [isTokenSwapped, setIsTokenSwapped] = useState(false)
   const signer = context?.transactionProvider
   const [amount, setAmount] = useState<BigNumber>()
@@ -98,6 +101,7 @@ export const useSkyTokenSwap = ({
     return () => {
       setAllowanceStatus(undefined)
       setIsSettingAllowance(true)
+      setAllowanceTx(undefined)
       createApproveTransaction({
         token: resolvedPrimaryTokenData.token,
         spender: contractAddress,
@@ -110,6 +114,7 @@ export const useSkyTokenSwap = ({
           console.info('Approve transaction', tx)
           tx.wait()
             .then((receipt) => {
+              setAllowanceTx(receipt.transactionHash)
               setAllowanceStatus('success')
               setIsSettingAllowance(false)
               console.info('Approve transaction receipt', receipt)
@@ -149,10 +154,12 @@ export const useSkyTokenSwap = ({
     }
     setTransactionStatus(undefined)
     setReloadingTokenInfo(true)
+    setTransactionTx(undefined)
     return depositAction({ isTokenSwapped, resolvedPrimaryTokenData, amount, signer })
       .then((tx: ethers.ContractTransaction) => {
         tx.wait()
           .then((receipt) => {
+            setTransactionTx(receipt.transactionHash)
             setIsSettingAllowance(false)
             setTransactionStatus('success')
             console.info('Deposit transaction receipt', receipt)
@@ -219,19 +226,20 @@ export const useSkyTokenSwap = ({
     connect,
     approveAllowance,
   ])
+  const isLoading = isSettingAllowance || reloadingTokenInfo || connecting
   const actionLabel = useMemo(() => {
     if (!walletAddress) {
       return 'Connect wallet'
     }
     if (
-      resolvedPrimaryTokenData.allowance.isZero() ||
-      resolvedPrimaryTokenData.allowance.isLessThan(amount || 0)
+      (resolvedPrimaryTokenData.allowance.isZero() ||
+        resolvedPrimaryTokenData.allowance.isLessThan(amount || 0)) &&
+      !isLoading
     ) {
       return 'Set allowance'
     }
-    return !isTokenSwapped ? 'Upgrade' : 'Downgrade'
-  }, [walletAddress, resolvedPrimaryTokenData.allowance, amount, isTokenSwapped])
-  const isLoading = isSettingAllowance || reloadingTokenInfo || connecting
+    return stake ? (isTokenSwapped ? `Unstake` : `Stake`) : isTokenSwapped ? `Downgrade` : `Upgrade`
+  }, [walletAddress, resolvedPrimaryTokenData.allowance, amount, isTokenSwapped, isLoading, stake])
   const buttonDisabled =
     (!amount || amount.isZero() || amount.isNaN() || isLoading) && !!walletAddress
   return {
@@ -251,5 +259,7 @@ export const useSkyTokenSwap = ({
     setAllowanceStatus,
     transactionStatus,
     setTransactionStatus,
+    allowanceTx,
+    transactionTx,
   }
 }
