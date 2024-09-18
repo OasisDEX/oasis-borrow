@@ -97,7 +97,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 export async function getStaticPaths() {
   return {
-    paths: ['/ethereum/sky/swap'],
+    paths: ['/ethereum/sky/upgrade'],
     fallback: true,
   }
 }
