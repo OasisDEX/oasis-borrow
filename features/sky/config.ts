@@ -1,6 +1,16 @@
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
 
-export const skySwapTokensConfig = [
+type SkySwapTokensConfigType = {
+  primaryToken: string
+  secondaryToken: string
+  primaryTokenAddress?: string
+  secondaryTokenAddress?: string
+  contractAddress: string
+  stake: boolean
+  description?: string
+}
+
+export const skySwapTokensConfig: SkySwapTokensConfigType[] = [
   {
     primaryToken: 'DAI',
     secondaryToken: 'USDS',

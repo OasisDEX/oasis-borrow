@@ -38,6 +38,7 @@ export const paybackAllAmountAllowanceMaxMultiplier: Record<LendingProtocol, Big
   maker: one,
   morphoblue: one,
   sparkv3: one,
+  sky: one,
   ajna: one.plus(protocols.ajna.ajnaPaybackAllWithdrawAllValueOffset),
 }
 

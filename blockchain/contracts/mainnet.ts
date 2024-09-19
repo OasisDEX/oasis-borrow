@@ -46,6 +46,7 @@ import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
 import * as skyDaiUsds from 'blockchain/abi/sky-dai-usds.json'
 import * as skyMkrSky from 'blockchain/abi/sky-mkr-sky.json'
+import * as skyStaking from 'blockchain/abi/sky-staking.json'
 import * as skySusds from 'blockchain/abi/sky-susds.json'
 import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
 import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
@@ -283,6 +284,7 @@ export const mainnetContracts = {
     daiusds: contractDesc(skyDaiUsds, '0x3225737a9Bbb6473CB4a45b7244ACa2BeFdB276A'),
     mkrsky: contractDesc(skyMkrSky, '0xBDcFCA946b6CDd965f99a839e4435Bcdc1bc470B'),
     susds: contractDesc(skySusds, '0xa3931d71877C0E7a3148CB7Eb4463524FEc27fbD'),
+    staking: contractDesc(skyStaking, '0x0650CAF159C5A49f711e8169D4336ECB9b950275'),
   },
 }
 

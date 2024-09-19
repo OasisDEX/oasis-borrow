@@ -1,5 +1,6 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
@@ -8,8 +9,8 @@ import { SkeletonLine } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
 import type { skySwapTokensConfig } from 'features/sky/config'
-import type { ResolvedDepositParamsType } from 'features/sky/hooks/useSkyTokenSwap'
-import { useSkyTokenSwap } from 'features/sky/hooks/useSkyTokenSwap'
+import type { ResolvedDepositParamsType } from 'features/sky/hooks/useSky'
+import { useSky } from 'features/sky/hooks/useSky'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -114,7 +115,7 @@ export const SwapCardWrapper = ({
     transactionStatus,
     allowanceTx,
     transactionTx,
-  } = useSkyTokenSwap({
+  } = useSky({
     ...config,
     primaryTokenBalance: balancesData?.[0],
     primaryTokenAllowance: allowancesData?.[0],
@@ -220,7 +221,7 @@ export const SwapCardWrapper = ({
           messages={
             transactionStatus === 'success'
               ? ([
-                  'Transaction successfull.',
+                  'Transaction successful.',
                   transactionTx ? (
                     <AppLink
                       href={`https://etherscan.io/tx/${transactionTx}`}
@@ -292,11 +293,11 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
   const balancesConfig = useMemo(
     () => [
       {
-        address: config.primaryTokenAddress,
+        address: config.primaryTokenAddress as string,
         precision: 18,
       },
       {
-        address: config.secondaryTokenAddress,
+        address: config.secondaryTokenAddress as string,
         precision: 18,
       },
     ],
@@ -310,7 +311,11 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
       () =>
         reloadingTokenInfo
           ? of([zero, zero])
-          : balancesFromAddressInfoArray$(balancesConfig, wallet?.accounts[0].address, 1),
+          : balancesFromAddressInfoArray$(
+              balancesConfig,
+              wallet?.accounts[0].address,
+              NetworkIds.MAINNET,
+            ),
       [reloadingTokenInfo, balancesFromAddressInfoArray$, balancesConfig, wallet?.accounts],
     ),
   )
@@ -320,8 +325,16 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
         reloadingTokenInfo
           ? of([zero, zero])
           : combineLatest([
-              allowanceForAccountEthers$(config.primaryToken, config.contractAddress, 1),
-              allowanceForAccountEthers$(config.secondaryToken, config.contractAddress, 1),
+              allowanceForAccountEthers$(
+                config.primaryToken,
+                config.contractAddress,
+                NetworkIds.MAINNET,
+              ),
+              allowanceForAccountEthers$(
+                config.secondaryToken,
+                config.contractAddress,
+                NetworkIds.MAINNET,
+              ),
             ]),
       [
         allowanceForAccountEthers$,

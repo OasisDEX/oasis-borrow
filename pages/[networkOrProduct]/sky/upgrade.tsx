@@ -1,5 +1,5 @@
 import { useConnectWallet } from '@web3-onboard/react'
-import { skyDaiUsdsSwap, skyMkrSkySwap, skyUsdsSusdsVault } from 'blockchain/better-calls/sky-swaps'
+import { skyDaiUsdsSwap, skyMkrSkySwap, skyUsdsSusdsVault } from 'blockchain/better-calls/sky'
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'

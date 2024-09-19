@@ -2,7 +2,7 @@ import React from 'react'
 export const usds = {
   path: (
     <>
-      <g clip-path="url(#clip0_15322_4484)">
+      <g clipPath="url(#clip0_15322_4484)">
         <path
           d="M16 29C23.1797 29 29 23.1797 29 16C29 8.8203 23.1797 3 16 3C8.8203 3 3 8.8203 3 16C3 23.1797 8.8203 29 16 29Z"
           fill="url(#paint0_radial_15322_4484)"
@@ -21,8 +21,8 @@ export const usds = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16 33.1358) rotate(-90) scale(41.6587)"
         >
-          <stop stop-color="#FFD232" />
-          <stop offset="1" stop-color="#FF6D6D" />
+          <stop stopColor="#FFD232" />
+          <stop offset="1" stopColor="#FF6D6D" />
         </radialGradient>
         <clipPath id="clip0_15322_4484">
           <rect width="26" height="26" fill="white" transform="translate(3 3)" />

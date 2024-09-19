@@ -8,6 +8,7 @@ const ProtocolNameByLendingProtocol: Record<LendingProtocol, ProtocolName> = {
   [LendingProtocol.MorphoBlue]: ProtocolName.MorphoBlue,
   [LendingProtocol.SparkV3]: ProtocolName.Spark,
   [LendingProtocol.Maker]: ProtocolName.Maker,
+  [LendingProtocol.Sky]: 'Sky' as ProtocolName,
 }
 
 // get ProtocolName by LendingProtocol, throw error if not found

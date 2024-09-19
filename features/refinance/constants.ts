@@ -99,4 +99,5 @@ export const refinanceCustomProductHubFiltersOptions = {
   },
   [LendingProtocol.AaveV2]: undefined,
   [LendingProtocol.Ajna]: undefined,
+  [LendingProtocol.Sky]: undefined,
 }

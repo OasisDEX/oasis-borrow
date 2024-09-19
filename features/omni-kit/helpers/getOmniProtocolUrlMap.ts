@@ -8,6 +8,7 @@ export const getOmniProtocolUrlMap = (protocol: LendingProtocol) => {
     [LendingProtocol.Ajna]: protocol,
     [LendingProtocol.MorphoBlue]: protocol,
     [LendingProtocol.Maker]: protocol,
+    [LendingProtocol.Sky]: protocol,
   }
 
   return protocolUrlMap[protocol]

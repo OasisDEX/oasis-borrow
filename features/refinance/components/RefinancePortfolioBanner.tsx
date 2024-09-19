@@ -176,6 +176,7 @@ export const RefinancePortfolioBanner: FC<RefinancePortfolioBannerProps> = ({ po
       </Text>
     ),
     [LendingProtocol.Ajna]: null,
+    [LendingProtocol.Sky]: null,
     [LendingProtocol.AaveV3]: (
       <Text as="span" variant="boldParagraph3" color="primary100">
         {tPortfolio('refinance.banner.default', {
