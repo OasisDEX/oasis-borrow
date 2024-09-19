@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
-import { getRpcProvider } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
 import { ethers } from 'ethers'
 import {
@@ -105,8 +105,8 @@ export const skyUsdsStakeGetRewards = async ({ signer }: { signer: ethers.Signer
   return skyStakingContract['getReward()']()
 }
 
-export const skyUsdsStakeDetails = async ({ ownerAddress }: { ownerAddress?: string }) => {
-  const rpcProvider = getRpcProvider(1)
+export const skyUsdsWalletStakeDetails = async ({ ownerAddress }: { ownerAddress?: string }) => {
+  const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
   if (!ownerAddress) {
     return undefined
   }
@@ -136,6 +136,27 @@ export const skyUsdsStakeDetails = async ({ ownerAddress }: { ownerAddress?: str
   return { balance, earned, rewardRate, totalUSDSLocked } as {
     balance: BigNumber
     earned: BigNumber
+    rewardRate: BigNumber
+    totalUSDSLocked: BigNumber
+  }
+}
+
+export const skyUsdsStakeDetails = async () => {
+  const rpcProvider = getRpcProvider(1)
+  const skyStakingContract = new ethers.Contract(
+    mainnetContracts.sky.staking.address,
+    SkyStaking__factory.abi,
+    rpcProvider,
+  )
+  const [rewardRate, totalUSDSLocked] = await Promise.all([
+    skyStakingContract['rewardRate']().then((rewardPercentage: ethers.BigNumber) => {
+      return new BigNumber(ethers.utils.formatUnits(rewardPercentage, 18))
+    }),
+    skyStakingContract['totalSupply']().then((USDSLocked: ethers.BigNumber) => {
+      return new BigNumber(ethers.utils.formatUnits(USDSLocked, 18))
+    }),
+  ])
+  return { rewardRate, totalUSDSLocked } as {
     rewardRate: BigNumber
     totalUSDSLocked: BigNumber
   }

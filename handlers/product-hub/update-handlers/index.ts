@@ -1,4 +1,5 @@
 import { Erc4626PseudoProtocol } from 'features/omni-kit/protocols/morpho-blue/constants'
+import skyHandler from 'handlers/product-hub/update-handlers/sky/skyHandler'
 import { LendingProtocol } from 'lendingProtocols'
 
 import aaveV2Handler from './aaveV2/aaveV2Handler'
@@ -23,6 +24,6 @@ export const PRODUCT_HUB_HANDLERS = {
   [LendingProtocol.Maker]: makerHandler,
   [LendingProtocol.MorphoBlue]: morphoBlueHandler,
   [LendingProtocol.SparkV3]: sparkV3Handler,
-  [LendingProtocol.Sky]: emptyHandler,
+  [LendingProtocol.Sky]: skyHandler,
   [Erc4626PseudoProtocol]: erc4626Handler,
 }

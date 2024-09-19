@@ -1,6 +1,6 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
-import { skyUsdsStake, skyUsdsStakeGetRewards } from 'blockchain/better-calls/sky-swaps'
+import { skyUsdsStake, skyUsdsStakeGetRewards } from 'blockchain/better-calls/sky'
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
 import { ActionPills } from 'components/ActionPills'
 import { DetailsSection, DetailsSectionTitle } from 'components/DetailsSection'
@@ -287,7 +287,7 @@ export const SkyStakePositionView = ({
                         value={`${formatCryptoBalance(skyStakeData.totalUSDSLocked)}`}
                       />
                       <DetailsSectionFooterItem
-                        title="SKY in Your Wallet"
+                        title="Total SKY Earned"
                         value={`${formatCryptoBalance(skyBalance)}`}
                       />
                     </DetailsSectionFooterItemWrapper>

@@ -94,14 +94,25 @@ export const productHubTestNetworkFilter: GenericMultiselectOption[] = [
 
 export const productHubProtocolFilter: GenericMultiselectOption[] = [
   {
-    label: lendingProtocolsByName[LendingProtocol.AaveV2].label,
-    value: lendingProtocolsByName[LendingProtocol.AaveV2].name,
-    image: lendingProtocolsByName[LendingProtocol.AaveV2].icon,
+    label: lendingProtocolsByName[LendingProtocol.Sky].label,
+    value: lendingProtocolsByName[LendingProtocol.Sky].name,
+    image: lendingProtocolsByName[LendingProtocol.Sky].icon,
   },
   {
     label: lendingProtocolsByName[LendingProtocol.AaveV3].label,
     value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
     image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.MorphoBlue].label,
+    value: lendingProtocolsByName[LendingProtocol.MorphoBlue].name,
+    image: lendingProtocolsByName[LendingProtocol.MorphoBlue].icon,
+    featureFlag: FeaturesEnum.MorphoBlue,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
+    value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+    image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
   },
   {
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
@@ -114,15 +125,9 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
     image: lendingProtocolsByName[LendingProtocol.Maker].icon,
   },
   {
-    label: lendingProtocolsByName[LendingProtocol.MorphoBlue].label,
-    value: lendingProtocolsByName[LendingProtocol.MorphoBlue].name,
-    image: lendingProtocolsByName[LendingProtocol.MorphoBlue].icon,
-    featureFlag: FeaturesEnum.MorphoBlue,
-  },
-  {
-    label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
-    value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
-    image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
+    label: lendingProtocolsByName[LendingProtocol.AaveV2].label,
+    value: lendingProtocolsByName[LendingProtocol.AaveV2].name,
+    image: lendingProtocolsByName[LendingProtocol.AaveV2].icon,
   },
 ]
 

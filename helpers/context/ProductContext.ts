@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { tokenAllowance as tokenAllowanceEthers } from 'blockchain/better-calls/erc20'
-import { skyUsdsStakeDetails } from 'blockchain/better-calls/sky-swaps'
+import { skyUsdsWalletStakeDetails } from 'blockchain/better-calls/sky'
 import { call } from 'blockchain/calls/callsHelpers'
 import { dogIlk } from 'blockchain/calls/dog'
 import { tokenAllowance } from 'blockchain/calls/erc20'
@@ -686,8 +686,8 @@ export function setupProductContext(
         .toString()}-${quotePrice.decimalPlaces(2).toString()}`,
   )
 
-  const skyUsdsStakeDetails$ = (ownerAddress?: string) =>
-    onEveryBlock$.pipe(() => fromPromise(skyUsdsStakeDetails({ ownerAddress })))
+  const skyUsdsWalletStakeDetails$ = (ownerAddress?: string) =>
+    onEveryBlock$.pipe(() => fromPromise(skyUsdsWalletStakeDetails({ ownerAddress })))
 
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
@@ -731,7 +731,7 @@ export function setupProductContext(
     priceInfo$,
     protocols,
     reclaimCollateral$,
-    skyUsdsStakeDetails$,
+    skyUsdsWalletStakeDetails$,
     strategyConfig$,
     tokenPriceUSD$,
     tokenPriceUSDStatic$,

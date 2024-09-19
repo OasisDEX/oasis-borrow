@@ -32,12 +32,12 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
     totalUSDSLocked: BigNumber
   }>()
   const isOwner = wallet?.accounts[0]?.address.toLowerCase() === walletAddress.toLowerCase()
-  const { balancesFromAddressInfoArray$, allowanceForAccountEthers$, skyUsdsStakeDetails$ } =
+  const { balancesFromAddressInfoArray$, allowanceForAccountEthers$, skyUsdsWalletStakeDetails$ } =
     useProductContext()
   const [skyStakeData, skyStakeError] = useObservable(
     useMemo(
-      () => (reloadingTokenInfo ? of(undefined) : skyUsdsStakeDetails$(walletAddress)),
-      [skyUsdsStakeDetails$, walletAddress, reloadingTokenInfo],
+      () => (reloadingTokenInfo ? of(undefined) : skyUsdsWalletStakeDetails$(walletAddress)),
+      [skyUsdsWalletStakeDetails$, walletAddress, reloadingTokenInfo],
     ),
   )
   useEffect(() => {
