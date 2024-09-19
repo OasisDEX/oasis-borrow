@@ -14,7 +14,7 @@ export type ResolvedDepositParamsType = {
   balance: BigNumber
 }
 
-type UseSkyTokenSwapType = {
+type useSkyType = {
   primaryToken: string
   secondaryToken: string
   primaryTokenBalance: BigNumber
@@ -27,7 +27,7 @@ type UseSkyTokenSwapType = {
   reloadingTokenInfo: boolean
 } & (typeof skySwapTokensConfig)[number]
 
-export const useSkyTokenSwap = ({
+export const useSky = ({
   primaryToken,
   secondaryToken,
   primaryTokenBalance,
@@ -40,7 +40,7 @@ export const useSkyTokenSwap = ({
   reloadingTokenInfo,
   contractAddress,
   stake,
-}: UseSkyTokenSwapType) => {
+}: useSkyType) => {
   const { connect, connecting } = useConnection()
   const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
@@ -153,10 +153,10 @@ export const useSkyTokenSwap = ({
       return () => {}
     }
     setTransactionStatus(undefined)
-    setReloadingTokenInfo(true)
     setTransactionTx(undefined)
     return depositAction({ isTokenSwapped, resolvedPrimaryTokenData, amount, signer })
       .then((tx: ethers.ContractTransaction) => {
+        setReloadingTokenInfo(true)
         tx.wait()
           .then((receipt) => {
             setTransactionTx(receipt.transactionHash)
@@ -261,5 +261,7 @@ export const useSkyTokenSwap = ({
     setTransactionStatus,
     allowanceTx,
     transactionTx,
+    setTransactionTx,
+    signer,
   }
 }

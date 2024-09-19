@@ -8,8 +8,8 @@ import { SkeletonLine } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
 import type { skySwapTokensConfig } from 'features/sky/config'
-import type { ResolvedDepositParamsType } from 'features/sky/hooks/useSkyTokenSwap'
-import { useSkyTokenSwap } from 'features/sky/hooks/useSkyTokenSwap'
+import type { ResolvedDepositParamsType } from 'features/sky/hooks/useSky'
+import { useSky } from 'features/sky/hooks/useSky'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -114,7 +114,7 @@ export const SwapCardWrapper = ({
     transactionStatus,
     allowanceTx,
     transactionTx,
-  } = useSkyTokenSwap({
+  } = useSky({
     ...config,
     primaryTokenBalance: balancesData?.[0],
     primaryTokenAllowance: allowancesData?.[0],
@@ -292,11 +292,11 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
   const balancesConfig = useMemo(
     () => [
       {
-        address: config.primaryTokenAddress,
+        address: config.primaryTokenAddress as string,
         precision: 18,
       },
       {
-        address: config.secondaryTokenAddress,
+        address: config.secondaryTokenAddress as string,
         precision: 18,
       },
     ],

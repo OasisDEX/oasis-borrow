@@ -251,6 +251,7 @@ export const optimismContracts: OptimismContracts = {
     daiusds: emptyContractDesc('daiusds'),
     mkrsky: emptyContractDesc('mkrsky'),
     susds: emptyContractDesc('susds'),
+    staking: emptyContractDesc('staking'),
   },
   morphoBlue: contractDesc(morphoBlue, optimism.morphoblue.MorphoBlue),
   adaptiveCurveIrm: contractDesc(morphoBlue, optimism.morphoblue.AdaptiveCurveIrm),
