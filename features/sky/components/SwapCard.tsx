@@ -1,5 +1,6 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
@@ -220,7 +221,7 @@ export const SwapCardWrapper = ({
           messages={
             transactionStatus === 'success'
               ? ([
-                  'Transaction successfull.',
+                  'Transaction successful.',
                   transactionTx ? (
                     <AppLink
                       href={`https://etherscan.io/tx/${transactionTx}`}
@@ -310,7 +311,11 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
       () =>
         reloadingTokenInfo
           ? of([zero, zero])
-          : balancesFromAddressInfoArray$(balancesConfig, wallet?.accounts[0].address, 1),
+          : balancesFromAddressInfoArray$(
+              balancesConfig,
+              wallet?.accounts[0].address,
+              NetworkIds.MAINNET,
+            ),
       [reloadingTokenInfo, balancesFromAddressInfoArray$, balancesConfig, wallet?.accounts],
     ),
   )
@@ -320,8 +325,16 @@ export const SwapCard = ({ config, depositAction }: SwapCardType) => {
         reloadingTokenInfo
           ? of([zero, zero])
           : combineLatest([
-              allowanceForAccountEthers$(config.primaryToken, config.contractAddress, 1),
-              allowanceForAccountEthers$(config.secondaryToken, config.contractAddress, 1),
+              allowanceForAccountEthers$(
+                config.primaryToken,
+                config.contractAddress,
+                NetworkIds.MAINNET,
+              ),
+              allowanceForAccountEthers$(
+                config.secondaryToken,
+                config.contractAddress,
+                NetworkIds.MAINNET,
+              ),
             ]),
       [
         allowanceForAccountEthers$,

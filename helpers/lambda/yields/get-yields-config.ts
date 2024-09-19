@@ -25,6 +25,7 @@ export const getYieldsConfig = ({
     [LendingProtocol.SparkV3]: 'spark',
     [LendingProtocol.Ajna]: 'ajna',
     [LendingProtocol.Maker]: 'maker', // shouldnt happen
+    [LendingProtocol.Sky]: 'sky', // shouldnt happen
     [LendingProtocol.MorphoBlue]: 'morpho-blue',
   }[protocol]
   const morphoMarketId =

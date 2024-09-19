@@ -1,7 +1,7 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
-import { ethereumMainnetHexId } from 'blockchain/networks'
+import { ethereumMainnetHexId, NetworkIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
@@ -41,7 +41,7 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
     ),
   )
   useEffect(() => {
-    if (skyStakeData && skyStakeData.balance !== tempSkyStakeData?.balance) {
+    if (skyStakeData && !tempSkyStakeData?.balance.isEqualTo(skyStakeData.balance)) {
       setTempSkyStakeData(skyStakeData)
     }
   }, [skyStakeData, tempSkyStakeData])
@@ -62,7 +62,7 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
                 },
               ],
               walletAddress,
-              1,
+              NetworkIds.MAINNET,
             ),
       [balancesFromAddressInfoArray$, walletAddress, reloadingTokenInfo],
     ),
@@ -73,8 +73,16 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
         reloadingTokenInfo
           ? of([zero, zero])
           : combineLatest([
-              allowanceForAccountEthers$('USDS', mainnetContracts.sky.staking.address, 1),
-              allowanceForAccountEthers$('SKY', mainnetContracts.sky.staking.address, 1),
+              allowanceForAccountEthers$(
+                'USDS',
+                mainnetContracts.sky.staking.address,
+                NetworkIds.MAINNET,
+              ),
+              allowanceForAccountEthers$(
+                'SKY',
+                mainnetContracts.sky.staking.address,
+                NetworkIds.MAINNET,
+              ),
             ]),
       [allowanceForAccountEthers$, reloadingTokenInfo],
     ),

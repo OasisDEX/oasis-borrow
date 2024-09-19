@@ -23,5 +23,6 @@ export const PRODUCT_HUB_HANDLERS = {
   [LendingProtocol.Maker]: makerHandler,
   [LendingProtocol.MorphoBlue]: morphoBlueHandler,
   [LendingProtocol.SparkV3]: sparkV3Handler,
+  [LendingProtocol.Sky]: emptyHandler,
   [Erc4626PseudoProtocol]: erc4626Handler,
 }

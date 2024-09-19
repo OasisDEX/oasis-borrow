@@ -170,7 +170,7 @@ export const SkyStakePositionView = ({
             messages={
               transactionStatus === 'success'
                 ? ([
-                    'Transaction successfull.',
+                    'Transaction successful.',
                     transactionTx ? (
                       <AppLink
                         href={`https://etherscan.io/tx/${transactionTx}`}

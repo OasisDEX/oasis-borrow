@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { createApproveTransaction } from 'blockchain/better-calls/erc20'
+import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context/MainContextProvider'
 import type { ethers } from 'ethers'
 import type { SwapCardType } from 'features/sky/components/SwapCard'
@@ -106,7 +107,7 @@ export const useSky = ({
         token: resolvedPrimaryTokenData.token,
         spender: contractAddress,
         amount,
-        networkId: 1,
+        networkId: NetworkIds.MAINNET,
         signer,
       })
         .then((tx) => {
