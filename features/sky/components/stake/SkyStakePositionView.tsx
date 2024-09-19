@@ -12,6 +12,7 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -23,7 +24,8 @@ import { useSky } from 'features/sky/hooks/useSky'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Card, Grid, Heading } from 'theme-ui'
+import { sky } from 'theme/icons'
+import { Box, Card, Grid, Heading, Text } from 'theme-ui'
 
 type SkyStakeViewType = {
   usdsBalance: BigNumber
@@ -101,7 +103,7 @@ export const SkyStakePositionView = ({
       return
     }
 
-    signer &&
+    if (signer) {
       skyUsdsStakeGetRewards({ signer })
         .then((tx: ethers.ContractTransaction) => {
           setTransactionStatus('success')
@@ -123,8 +125,10 @@ export const SkyStakePositionView = ({
             })
         })
         .catch(() => {
+          setReloadingTokenInfo(false)
           setTransactionStatus('error')
         })
+    }
   }
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -144,6 +148,19 @@ export const SkyStakePositionView = ({
           ]}
           active={stakingAction}
         />
+        {stakingAction === 'claim' && (
+          <>
+            <Text variant="boldParagraph1" sx={{ textAlign: 'center', mt: 3 }}>
+              You will receive{' '}
+              <Icon icon={sky} size={30} sx={{ display: 'inline-block', mb: '-8px' }} />
+              {formatCryptoBalance(skyStakeData.earned)} SKY.
+            </Text>
+            <Text variant="paragraph3" sx={{ textAlign: 'center', mb: 1, mx: 4 }}>
+              The position will still be active and getting rewarded with SKY. Claiming SKY will not
+              affect your position.
+            </Text>
+          </>
+        )}
         {stakingAction !== 'claim' ? (
           <VaultActionInput
             currencyCode={resolvedPrimaryTokenData.token}
@@ -239,8 +256,8 @@ export const SkyStakePositionView = ({
     primaryButton: {
       label: stakingAction !== 'claim' ? actionLabel : 'Claim',
       action: stakingAction !== 'claim' ? action : claimAction,
-      isLoading,
-      disabled: isLoading || !isOwner,
+      isLoading: isLoading || reloadingTokenInfo,
+      disabled: isLoading || !isOwner || reloadingTokenInfo,
     },
   }
   return (

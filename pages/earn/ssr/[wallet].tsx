@@ -31,6 +31,7 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
     rewardRate: BigNumber
     totalUSDSLocked: BigNumber
   }>()
+  const [tempBalancesData, setTempBalancesData] = useState<BigNumber[]>()
   const isOwner = wallet?.accounts[0]?.address.toLowerCase() === walletAddress.toLowerCase()
   const { balancesFromAddressInfoArray$, allowanceForAccountEthers$, skyUsdsWalletStakeDetails$ } =
     useProductContext()
@@ -49,7 +50,7 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
     useMemo(
       () =>
         reloadingTokenInfo
-          ? of([zero, zero])
+          ? of([undefined, undefined])
           : balancesFromAddressInfoArray$(
               [
                 {
@@ -67,6 +68,17 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
       [balancesFromAddressInfoArray$, walletAddress, reloadingTokenInfo],
     ),
   )
+  useEffect(() => {
+    if (
+      balancesData &&
+      balancesData[0] &&
+      balancesData[1] &&
+      (!tempBalancesData?.[0].isEqualTo(balancesData[0]) ||
+        !tempBalancesData?.[1].isEqualTo(balancesData[1]))
+    ) {
+      setTempBalancesData(balancesData as BigNumber[])
+    }
+  }, [balancesData, tempBalancesData])
   const [allowancesData, allowancesError] = useObservable(
     useMemo(
       () =>
@@ -100,8 +112,8 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
       <WithErrorHandler error={[allowancesError, balancesError, skyStakeError]}>
         <WithLoadingIndicator
           value={[
-            usdsBalance,
-            skyBalance,
+            usdsBalance || tempBalancesData?.[0],
+            skyBalance || tempBalancesData?.[1],
             usdsAllowance,
             skyAllowance,
             skyStakeData || tempSkyStakeData,
