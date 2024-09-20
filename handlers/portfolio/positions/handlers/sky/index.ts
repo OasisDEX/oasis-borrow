@@ -18,7 +18,7 @@ export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address }
             {
               availableToMigrate: false,
               automations: {},
-              description: 'Sky Savings Rate',
+              description: 'Sky Rewards Rate',
               details: [
                 {
                   type: 'netValue',

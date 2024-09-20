@@ -13,6 +13,6 @@ export const skyProductHubProducts: Omit<ProductHubItemWithoutAddress, 'network'
     label: 'SSR',
     managementType: 'passive',
     earnStrategy: EarnStrategies.other,
-    earnStrategyDescription: 'Sky Savings Rate',
+    earnStrategyDescription: 'Sky Rewards Rate',
   },
 ]
