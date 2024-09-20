@@ -9,7 +9,7 @@ import type {
 import { skyProductHubProducts } from 'handlers/product-hub/update-handlers/sky/skyProducts'
 
 async function getSkyData(networkId: NetworkIds.MAINNET): ProductHubHandlerResponse {
-  return Promise.all([skyUsdsStakeDetails()]).then(([ssrData]) => {
+  return Promise.all([skyUsdsStakeDetails()]).then(([srrData]) => {
     return {
       table: skyProductHubProducts
         .map((product) => {
@@ -18,15 +18,15 @@ async function getSkyData(networkId: NetworkIds.MAINNET): ProductHubHandlerRespo
           const primaryTokenAddress = tokensAddresses[primaryToken].address
           const secondaryTokenAddress = tokensAddresses[secondaryToken].address
 
-          if (label === 'SSR') {
+          if (label === 'SRR') {
             return {
               ...product,
               primaryTokenAddress,
               secondaryTokenAddress,
               network: networksById[networkId].name as ProductHubSupportedNetworks,
               hasRewards: true,
-              fee: ssrData.rewardRate.toString(),
-              liquidity: ssrData.totalUSDSLocked.toString(),
+              fee: srrData.rewardRate.toString(),
+              liquidity: srrData.totalUSDSLocked.toString(),
             }
           }
           return {}

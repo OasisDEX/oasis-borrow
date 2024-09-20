@@ -10,7 +10,7 @@ export const skyProductHubProducts: Omit<ProductHubItemWithoutAddress, 'network'
     secondaryToken: 'USDS',
     depositToken: 'USDS',
     protocol: LendingProtocol.Sky,
-    label: 'SSR',
+    label: 'SRR',
     managementType: 'passive',
     earnStrategy: EarnStrategies.other,
     earnStrategyDescription: 'Sky Rewards Rate',

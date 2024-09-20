@@ -41,7 +41,7 @@ export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address }
               protocol: LendingProtocol.Sky,
               secondaryToken: 'USDS',
               type: OmniProductType.Earn,
-              url: `/earn/ssr/${address}`,
+              url: `/earn/srr/${address}`,
             },
           ]
         : [],
