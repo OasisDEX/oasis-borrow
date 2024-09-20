@@ -20,7 +20,7 @@ function SkyProxyPage({ walletAddress }: { walletAddress: string }) {
   const { walletAddress: walletContextAddress } = useAccount()
   const { replace } = useRouter()
   if (!walletAddress && walletContextAddress) {
-    void replace(`/earn/ssr/${walletContextAddress}`)
+    void replace(`/earn/srr/${walletContextAddress}`)
   }
 
   return (
