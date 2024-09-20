@@ -13,7 +13,7 @@ export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address }
   ]).then(([usdsWalletStakeDetails]) => {
     return {
       address,
-      positions: usdsWalletStakeDetails?.balance
+      positions: usdsWalletStakeDetails?.balance.isGreaterThan(0)
         ? [
             {
               availableToMigrate: false,
