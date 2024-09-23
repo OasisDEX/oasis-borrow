@@ -1,16 +1,17 @@
+import BigNumber from 'bignumber.js'
 import { skyUsdsStakeDetails, skyUsdsWalletStakeDetails } from 'blockchain/better-calls/sky'
 import { NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address }) => {
+export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address, prices }) => {
   return Promise.all([
     skyUsdsWalletStakeDetails({
       ownerAddress: address,
     }),
-    skyUsdsStakeDetails(),
+    skyUsdsStakeDetails({ mkrPrice: new BigNumber(prices.MKR) }),
   ]).then(([usdsWalletStakeDetails, usdsStakeDetails]) => {
     return {
       address,
@@ -31,7 +32,7 @@ export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address }
                 },
                 {
                   type: 'apy',
-                  value: formatPercent(usdsStakeDetails.rewardRate).toString(),
+                  value: formatDecimalAsPercent(usdsStakeDetails.apy),
                 },
               ],
               lendingType: 'passive',

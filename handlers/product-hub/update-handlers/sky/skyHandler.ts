@@ -1,6 +1,7 @@
 import { skyUsdsStakeDetails } from 'blockchain/better-calls/sky'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
 import type { ProductHubItem, ProductHubSupportedNetworks } from 'features/productHub/types'
 import type {
   ProductHubHandlerResponse,
@@ -8,8 +9,13 @@ import type {
 } from 'handlers/product-hub/types'
 import { skyProductHubProducts } from 'handlers/product-hub/update-handlers/sky/skyProducts'
 
-async function getSkyData(networkId: NetworkIds.MAINNET): ProductHubHandlerResponse {
-  return Promise.all([skyUsdsStakeDetails()]).then(([srrData]) => {
+async function getSkyData(
+  networkId: NetworkIds.MAINNET,
+  tickers: Tickers,
+): ProductHubHandlerResponse {
+  return Promise.all([
+    skyUsdsStakeDetails({ mkrPrice: tickers['mkr-usd'] || tickers['mkr-maker'] }),
+  ]).then(([srrData]) => {
     return {
       table: skyProductHubProducts
         .map((product) => {
@@ -25,7 +31,7 @@ async function getSkyData(networkId: NetworkIds.MAINNET): ProductHubHandlerRespo
               secondaryTokenAddress,
               network: networksById[networkId].name as ProductHubSupportedNetworks,
               hasRewards: true,
-              fee: srrData.rewardRate.toString(),
+              weeklyNetApy: srrData.apy.toFixed(2),
               liquidity: srrData.totalUSDSLocked.toString(),
             }
           }
@@ -37,8 +43,8 @@ async function getSkyData(networkId: NetworkIds.MAINNET): ProductHubHandlerRespo
   })
 }
 
-export default async function (): ProductHubHandlerResponse {
-  return Promise.all([getSkyData(NetworkIds.MAINNET)]).then((responses) => {
+export default async function (tickers: Tickers): ProductHubHandlerResponse {
+  return Promise.all([getSkyData(NetworkIds.MAINNET, tickers)]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {
         return {
