@@ -245,7 +245,7 @@ export const useSky = ({
     if (!walletAddress) {
       return 'Connect wallet'
     }
-    if (!isOwner) {
+    if (!isOwner && viewWalletAddress) {
       return 'Go to your position'
     }
     if (
@@ -259,6 +259,7 @@ export const useSky = ({
     return stake ? (isTokenSwapped ? `Unstake` : `Stake`) : isTokenSwapped ? `Downgrade` : `Upgrade`
   }, [
     walletAddress,
+    viewWalletAddress,
     resolvedPrimaryTokenData.allowance,
     amount,
     isTokenSwapped,
