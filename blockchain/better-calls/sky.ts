@@ -115,7 +115,7 @@ export const skyUsdsWalletStakeDetails = async ({ ownerAddress }: { ownerAddress
     SkyStaking__factory.abi,
     rpcProvider,
   )
-  const [balance, earned, rewardRate, totalUSDSLocked] = await Promise.all([
+  const [balance, earned] = await Promise.all([
     skyStakingContract['balanceOf(address)'](ownerAddress).then(
       (tokensStaked: ethers.BigNumber) => {
         return new BigNumber(ethers.utils.formatUnits(tokensStaked, 18))
@@ -126,18 +126,10 @@ export const skyUsdsWalletStakeDetails = async ({ ownerAddress }: { ownerAddress
         return new BigNumber(ethers.utils.formatUnits(skyTokensEarned, 18))
       },
     ),
-    skyStakingContract['rewardRate']().then((rewardPercentage: ethers.BigNumber) => {
-      return new BigNumber(ethers.utils.formatUnits(rewardPercentage, 18))
-    }),
-    skyStakingContract['totalSupply']().then((USDSLocked: ethers.BigNumber) => {
-      return new BigNumber(ethers.utils.formatUnits(USDSLocked, 18))
-    }),
   ])
-  return { balance, earned, rewardRate, totalUSDSLocked } as {
+  return { balance, earned } as {
     balance: BigNumber
     earned: BigNumber
-    rewardRate: BigNumber
-    totalUSDSLocked: BigNumber
   }
 }
 

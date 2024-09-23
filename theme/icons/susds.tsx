@@ -2,7 +2,7 @@ import React from 'react'
 export const susds = {
   path: (
     <>
-      <g clip-path="url(#clip0_15322_4476)">
+      <g clipPath="url(#clip0_15322_4476)">
         <path
           d="M16.2695 29C23.4492 29 29.2695 23.1797 29.2695 16C29.2695 8.8203 23.4492 3 16.2695 3C9.08983 3 3.26953 8.8203 3.26953 16C3.26953 23.1797 9.08983 29 16.2695 29Z"
           fill="url(#paint0_radial_15322_4476)"
@@ -21,8 +21,8 @@ export const susds = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.2695 43.4951) rotate(-90) scale(40.4952)"
         >
-          <stop stop-color="#FFEF79" />
-          <stop offset="1" stop-color="#00C2A1" />
+          <stop stopColor="#FFEF79" />
+          <stop offset="1" stopColor="#00C2A1" />
         </radialGradient>
         <clipPath id="clip0_15322_4476">
           <rect width="26" height="26" fill="white" transform="translate(3.26953 3)" />

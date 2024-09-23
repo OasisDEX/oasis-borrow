@@ -15,8 +15,8 @@ export const oeth = {
         fill="#D9D9D9"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M15.7149 23.2954C11.7112 23.2251 8.4873 19.9576 8.4873 15.9371C8.4873 12.1857 11.294 9.08994 14.922 8.63509L16.3654 10.8868C16.1949 10.8695 16.0219 10.8606 15.8468 10.8606C13.0432 10.8606 10.7704 13.1334 10.7704 15.9371C10.7704 18.1043 12.1285 19.9543 14.04 20.6825L15.7149 23.2954ZM15.3459 20.9891C15.5107 21.0052 15.6778 21.0135 15.8468 21.0135C18.6504 21.0135 20.9232 18.7407 20.9232 15.9371C20.9232 13.7782 19.5756 11.934 17.6756 11.2L15.9955 8.57902C19.9914 8.6582 23.2063 11.9222 23.2063 15.9371C23.2063 19.6831 20.4075 22.7754 16.787 23.2371L15.3459 20.9891Z"
         fill="white"
       />
@@ -41,11 +41,11 @@ export const oeth = {
           y2="28.9743"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#3985F7" />
-          <stop offset="0.397116" stop-color="#6B47F9" />
-          <stop offset="0.52715" stop-color="#8E3FAC" />
-          <stop offset="0.771456" stop-color="#C75043" />
-          <stop offset="1" stop-color="#C74F42" />
+          <stop stopColor="#3985F7" />
+          <stop offset="0.397116" stopColor="#6B47F9" />
+          <stop offset="0.52715" stopColor="#8E3FAC" />
+          <stop offset="0.771456" stopColor="#C75043" />
+          <stop offset="1" stopColor="#C74F42" />
         </linearGradient>
       </defs>
     </>

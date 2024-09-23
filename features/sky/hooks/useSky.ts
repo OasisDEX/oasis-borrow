@@ -7,23 +7,25 @@ import type { SwapCardType } from 'features/sky/components/SwapCard'
 import type { skySwapTokensConfig } from 'features/sky/config'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
+import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 export type ResolvedDepositParamsType = {
   token: string
-  allowance: BigNumber
-  balance: BigNumber
+  allowance?: BigNumber
+  balance?: BigNumber
 }
 
 type useSkyType = {
   primaryToken: string
   secondaryToken: string
-  primaryTokenBalance: BigNumber
-  primaryTokenAllowance: BigNumber
-  secondaryTokenBalance: BigNumber
-  secondaryTokenAllowance: BigNumber
+  primaryTokenBalance?: BigNumber
+  primaryTokenAllowance?: BigNumber
+  secondaryTokenBalance?: BigNumber
+  secondaryTokenAllowance?: BigNumber
   depositAction: SwapCardType['depositAction']
   walletAddress?: string
+  viewWalletAddress?: string
   setReloadingTokenInfo: (isLoading: boolean) => void
   reloadingTokenInfo: boolean
 } & (typeof skySwapTokensConfig)[number]
@@ -41,7 +43,9 @@ export const useSky = ({
   reloadingTokenInfo,
   contractAddress,
   stake,
+  viewWalletAddress,
 }: useSkyType) => {
+  const { replace } = useRouter()
   const { connect, connecting } = useConnection()
   const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
@@ -53,6 +57,7 @@ export const useSky = ({
   const [isTokenSwapped, setIsTokenSwapped] = useState(false)
   const signer = context?.transactionProvider
   const [amount, setAmount] = useState<BigNumber>()
+  const isOwner = walletAddress === viewWalletAddress
 
   useEffect(() => {
     setAmount(undefined)
@@ -189,6 +194,9 @@ export const useSky = ({
     setReloadingTokenInfo,
   ])
   const onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!resolvedPrimaryTokenData.balance) {
+      return null
+    }
     const newValue = new BigNumber(
       e.target.value.replaceAll(
         // leave only numbers and dots
@@ -208,7 +216,13 @@ export const useSky = ({
     if (!walletAddress) {
       return connect
     }
+    if (!isOwner) {
+      return () => {
+        void replace(`/earn/srr/${walletAddress}`)
+      }
+    }
     if (
+      !resolvedPrimaryTokenData.allowance ||
       resolvedPrimaryTokenData.allowance.isZero() ||
       (amount && resolvedPrimaryTokenData.allowance.isLessThan(amount))
     ) {
@@ -220,6 +234,8 @@ export const useSky = ({
           console.error('Amount is not set')
         }
   }, [
+    isOwner,
+    replace,
     walletAddress,
     resolvedPrimaryTokenData.allowance,
     amount,
@@ -232,15 +248,27 @@ export const useSky = ({
     if (!walletAddress) {
       return 'Connect wallet'
     }
+    if (!isOwner) {
+      return 'Go to your position'
+    }
     if (
-      (resolvedPrimaryTokenData.allowance.isZero() ||
+      (!resolvedPrimaryTokenData.allowance ||
+        resolvedPrimaryTokenData.allowance.isZero() ||
         resolvedPrimaryTokenData.allowance.isLessThan(amount || 0)) &&
       !isLoading
     ) {
       return 'Set allowance'
     }
     return stake ? (isTokenSwapped ? `Unstake` : `Stake`) : isTokenSwapped ? `Downgrade` : `Upgrade`
-  }, [walletAddress, resolvedPrimaryTokenData.allowance, amount, isTokenSwapped, isLoading, stake])
+  }, [
+    walletAddress,
+    resolvedPrimaryTokenData.allowance,
+    amount,
+    isTokenSwapped,
+    isLoading,
+    stake,
+    isOwner,
+  ])
   const buttonDisabled =
     (!amount || amount.isZero() || amount.isNaN() || isLoading) && !!walletAddress
   return {

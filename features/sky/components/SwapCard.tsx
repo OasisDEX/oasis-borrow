@@ -127,6 +127,12 @@ export const SwapCardWrapper = ({
     depositAction,
   })
   const viewPrimaryToken = resolvedPrimaryTokenData.token.replace('SUS', 'sUS')
+  const showAllowanceInfo =
+    amount &&
+    resolvedPrimaryTokenData.allowance &&
+    !resolvedPrimaryTokenData.allowance.isNaN() &&
+    (resolvedPrimaryTokenData.allowance.isZero() ||
+      resolvedPrimaryTokenData.allowance.isLessThan(amount))
   return (
     <Card
       sx={{
@@ -269,11 +275,7 @@ export const SwapCardWrapper = ({
           withBullet={false}
         />
       )}
-      {!isLoading &&
-      amount &&
-      !resolvedPrimaryTokenData.allowance.isNaN() &&
-      (resolvedPrimaryTokenData.allowance.isZero() ||
-        resolvedPrimaryTokenData.allowance.isLessThan(amount)) ? (
+      {!isLoading && showAllowanceInfo ? (
         <MessageCard
           sx={{
             mt: 3,
