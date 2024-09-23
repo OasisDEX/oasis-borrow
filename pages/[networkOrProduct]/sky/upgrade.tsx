@@ -95,7 +95,7 @@ function SkySwapWrapper() {
           Stake your USDS in the Sky Ecosystem to earn SKY rewards.
         </ActionBanner>
       )}
-      <Grid gap={3} columns={3} mt={[1, 3]}>
+      <Grid gap={3} columns={[1, 3]} mt={[1, 3]}>
         {skySwapTokensConfig.map((config) => (
           <SwapCard
             key={`swap-card-${config.primaryToken}-${config.secondaryToken}`}
