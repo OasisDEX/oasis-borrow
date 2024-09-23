@@ -22,7 +22,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
 import { showAllowanceInfo } from 'features/sky/helpers'
 import { useSky } from 'features/sky/hooks/useSky'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -39,7 +39,7 @@ type SkyStakeViewType = {
     earned: BigNumber
   }
   skyStakeData: {
-    rewardRate: BigNumber
+    apy: BigNumber
     totalUSDSLocked: BigNumber
   }
   isOwner: boolean
@@ -303,7 +303,7 @@ export const SkyStakePositionView = ({
                       />
                       <DetailsSectionContentCard
                         title="SKY Reward Rate"
-                        value={`${formatCryptoBalance(skyStakeData.rewardRate)}`}
+                        value={`${formatDecimalAsPercent(skyStakeData.apy, { noPercentSign: true })}`}
                         unit="%"
                       />
                       <DetailsSectionContentCard

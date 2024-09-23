@@ -30,7 +30,7 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
     earned: BigNumber
   }>()
   const [tempSkyStakeData, setTempSkyStakeData] = useState<{
-    rewardRate: BigNumber
+    apy: BigNumber
     totalUSDSLocked: BigNumber
   }>()
   const [tempBalancesData, setTempBalancesData] = useState<BigNumber[]>()
@@ -40,7 +40,10 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
     allowanceForAccountEthers$,
     skyUsdsWalletStakeDetails$,
     skyUsdsStakeDetails$,
+    tokenPriceUSD$,
   } = useProductContext()
+  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['MKR']), [tokenPriceUSD$])
+  const [tokenPrices] = useObservable(_tokenPriceUSD$)
   const [skyStakeWalletData, skyStakeWalletError] = useObservable(
     useMemo(
       () => (reloadingTokenInfo ? of(undefined) : skyUsdsWalletStakeDetails$(walletAddress)),
@@ -49,8 +52,8 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
   )
   const [skyStakeData, skyStakeError] = useObservable(
     useMemo(
-      () => (reloadingTokenInfo ? of(undefined) : skyUsdsStakeDetails$()),
-      [skyUsdsStakeDetails$, reloadingTokenInfo],
+      () => (reloadingTokenInfo ? of(undefined) : skyUsdsStakeDetails$(tokenPrices?.MKR)),
+      [reloadingTokenInfo, skyUsdsStakeDetails$, tokenPrices?.MKR],
     ),
   )
   useEffect(() => {
@@ -62,7 +65,7 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
     }
   }, [skyStakeWalletData, tempSkyStakeWalletData])
   useEffect(() => {
-    if (skyStakeData && !tempSkyStakeData?.rewardRate.isEqualTo(skyStakeData.rewardRate)) {
+    if (skyStakeData && !tempSkyStakeData?.apy.isEqualTo(skyStakeData.apy)) {
       setTempSkyStakeData(skyStakeData)
     }
   }, [skyStakeData, tempSkyStakeData])

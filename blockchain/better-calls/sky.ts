@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
+import { SECONDS_PER_YEAR } from 'components/constants'
 import { ethers } from 'ethers'
 import {
   SkyDaiUsds__factory,
@@ -9,6 +10,8 @@ import {
   SkyStaking__factory,
   SkySusds__factory,
 } from 'types/ethers-contracts'
+
+const mkrSkySwapValue = 24 * 1000 // 1 MKR = 24000 SKY
 
 export const skyDaiUsdsSwap = async ({
   token,
@@ -133,23 +136,33 @@ export const skyUsdsWalletStakeDetails = async ({ ownerAddress }: { ownerAddress
   }
 }
 
-export const skyUsdsStakeDetails = async () => {
+export const skyUsdsStakeDetails = async ({ mkrPrice }: { mkrPrice?: BigNumber }) => {
+  if (!mkrPrice) {
+    return {
+      apy: new BigNumber(0),
+      totalUSDSLocked: new BigNumber(0),
+    }
+  }
   const rpcProvider = getRpcProvider(1)
   const skyStakingContract = new ethers.Contract(
     mainnetContracts.sky.staking.address,
     SkyStaking__factory.abi,
     rpcProvider,
   )
+  const skyPrice = mkrPrice.div(mkrSkySwapValue)
   const [rewardRate, totalUSDSLocked] = await Promise.all([
     skyStakingContract['rewardRate']().then((rewardPercentage: ethers.BigNumber) => {
       return new BigNumber(ethers.utils.formatUnits(rewardPercentage, 18))
     }),
-    skyStakingContract['totalSupply']().then((USDSLocked: ethers.BigNumber) => {
-      return new BigNumber(ethers.utils.formatUnits(USDSLocked, 18))
-    }),
+    skyStakingContract['totalSupply']().then(
+      (USDSLocked: ethers.BigNumber) => new BigNumber(ethers.utils.formatUnits(USDSLocked, 18)),
+    ),
   ])
-  return { rewardRate, totalUSDSLocked } as {
-    rewardRate: BigNumber
+  const rewardsPerYear = rewardRate.times(SECONDS_PER_YEAR)
+  const rewardsPerYearPrice = rewardsPerYear.times(skyPrice)
+  const apy = rewardsPerYearPrice.div(totalUSDSLocked)
+  return { apy, totalUSDSLocked } as {
+    apy: BigNumber
     totalUSDSLocked: BigNumber
   }
 }

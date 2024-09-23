@@ -689,7 +689,8 @@ export function setupProductContext(
   const skyUsdsWalletStakeDetails$ = (ownerAddress?: string) =>
     onEveryBlock$.pipe(() => fromPromise(skyUsdsWalletStakeDetails({ ownerAddress })))
 
-  const skyUsdsStakeDetails$ = () => onEveryBlock$.pipe(() => fromPromise(skyUsdsStakeDetails()))
+  const skyUsdsStakeDetails$ = (mkrPrice?: BigNumber) =>
+    onEveryBlock$.pipe(() => fromPromise(skyUsdsStakeDetails({ mkrPrice })))
 
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
