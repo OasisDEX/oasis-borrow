@@ -1,4 +1,4 @@
-import { skyUsdsWalletStakeDetails } from 'blockchain/better-calls/sky'
+import { skyUsdsStakeDetails, skyUsdsWalletStakeDetails } from 'blockchain/better-calls/sky'
 import { NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
@@ -10,7 +10,8 @@ export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address }
     skyUsdsWalletStakeDetails({
       ownerAddress: address,
     }),
-  ]).then(([usdsWalletStakeDetails]) => {
+    skyUsdsStakeDetails(),
+  ]).then(([usdsWalletStakeDetails, usdsStakeDetails]) => {
     return {
       address,
       positions: usdsWalletStakeDetails?.balance.isGreaterThan(0)
@@ -30,7 +31,7 @@ export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address }
                 },
                 {
                   type: 'apy',
-                  value: formatPercent(usdsWalletStakeDetails.rewardRate).toString(),
+                  value: formatPercent(usdsStakeDetails.rewardRate).toString(),
                 },
               ],
               lendingType: 'passive',

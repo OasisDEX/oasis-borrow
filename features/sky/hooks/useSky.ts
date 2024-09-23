@@ -58,7 +58,7 @@ export const useSky = ({
   const [isTokenSwapped, setIsTokenSwapped] = useState(false)
   const signer = context?.transactionProvider
   const [amount, setAmount] = useState<BigNumber>()
-  const isOwner = walletAddress === viewWalletAddress
+  const isOwner = walletAddress?.toLowerCase() === viewWalletAddress?.toLowerCase()
 
   useEffect(() => {
     setAmount(undefined)
