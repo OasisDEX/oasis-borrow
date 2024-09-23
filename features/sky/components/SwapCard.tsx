@@ -174,14 +174,12 @@ export const SwapCardWrapper = ({
       </Flex>
       {config.description && (
         <Box sx={{ pt: 1, pb: 4 }}>
-          <Text variant="paragraph4" color="neutral80">
+          <Text
+            variant="paragraph4"
+            color="neutral80"
+            sx={{ height: '45px', display: 'inline-block' }}
+          >
             {config.description}
-            {config.stake /* quick hack because staking card has only one line */ && (
-              <>
-                <br />
-                <br />
-              </>
-            )}
           </Text>
         </Box>
       )}
