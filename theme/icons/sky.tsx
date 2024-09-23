@@ -2,7 +2,7 @@ import React from 'react'
 export const sky = {
   path: (
     <>
-      <g clip-path="url(#clip0_15322_4492)">
+      <g clipPath="url(#clip0_15322_4492)">
         <path
           d="M16 29C23.1797 29 29 23.1797 29 16C29 8.8203 23.1797 3 16 3C8.8203 3 3 8.8203 3 16C3 23.1797 8.8203 29 16 29Z"
           fill="white"
@@ -61,8 +61,8 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.2182 16.1465) rotate(180) scale(14.2236)"
         >
-          <stop stop-color="#6D28FF" />
-          <stop offset="1" stop-color="#F7A7F9" />
+          <stop stopColor="#6D28FF" />
+          <stop offset="1" stopColor="#F7A7F9" />
         </radialGradient>
         <radialGradient
           id="paint1_radial_15322_4492"
@@ -72,8 +72,8 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.0761 16.4153) rotate(90) scale(10.9307)"
         >
-          <stop stop-color="#FFCD6B" />
-          <stop offset="1" stop-color="#EB5EDF" />
+          <stop stopColor="#FFCD6B" />
+          <stop offset="1" stopColor="#EB5EDF" />
         </radialGradient>
         <radialGradient
           id="paint2_radial_15322_4492"
@@ -83,9 +83,9 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.0001 16) scale(10.8394)"
         >
-          <stop stop-color="#A273FF" />
-          <stop offset="0.5" stop-color="#9FAEFF" />
-          <stop offset="1" stop-color="#AAF2E1" />
+          <stop stopColor="#A273FF" />
+          <stop offset="0.5" stopColor="#9FAEFF" />
+          <stop offset="1" stopColor="#AAF2E1" />
         </radialGradient>
         <radialGradient
           id="paint3_radial_15322_4492"
@@ -95,9 +95,9 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16 15.9973) scale(11.6064)"
         >
-          <stop stop-color="#FFD2B9" />
-          <stop offset="0.3" stop-color="#C99BED" />
-          <stop offset="1" stop-color="#0075FF" />
+          <stop stopColor="#FFD2B9" />
+          <stop offset="0.3" stopColor="#C99BED" />
+          <stop offset="1" stopColor="#0075FF" />
         </radialGradient>
         <radialGradient
           id="paint4_radial_15322_4492"
@@ -107,8 +107,8 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.0334 16.403) rotate(-99) scale(10.9351)"
         >
-          <stop stop-color="#F7A7F9" />
-          <stop offset="1" stop-color="#00DDFB" />
+          <stop stopColor="#F7A7F9" />
+          <stop offset="1" stopColor="#00DDFB" />
         </radialGradient>
         <radialGradient
           id="paint5_radial_15322_4492"
@@ -118,9 +118,9 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(15.7086 16.0417) rotate(-90) scale(10.9218)"
         >
-          <stop stop-color="#A273FF" />
-          <stop offset="0.5" stop-color="#9FAEFF" />
-          <stop offset="1" stop-color="#AAF2E1" />
+          <stop stopColor="#A273FF" />
+          <stop offset="0.5" stopColor="#9FAEFF" />
+          <stop offset="1" stopColor="#AAF2E1" />
         </radialGradient>
         <radialGradient
           id="paint6_radial_15322_4492"
@@ -130,8 +130,8 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(15.9921 15.9918) rotate(-180) scale(10.9439)"
         >
-          <stop stop-color="#FFF3D0" />
-          <stop offset="1" stop-color="#FFC044" />
+          <stop stopColor="#FFF3D0" />
+          <stop offset="1" stopColor="#FFC044" />
         </radialGradient>
         <radialGradient
           id="paint7_radial_15322_4492"
@@ -141,8 +141,8 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.0761 16.415) rotate(90) scale(10.9307)"
         >
-          <stop stop-color="#FFCD6B" />
-          <stop offset="1" stop-color="#EB5EDF" />
+          <stop stopColor="#FFCD6B" />
+          <stop offset="1" stopColor="#EB5EDF" />
         </radialGradient>
         <radialGradient
           id="paint8_radial_15322_4492"
@@ -152,9 +152,9 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(15.9143 15.7335) rotate(114.2) scale(11.7042)"
         >
-          <stop stop-color="#FFD2B9" />
-          <stop offset="0.3" stop-color="#C99BED" />
-          <stop offset="1" stop-color="#0075FF" />
+          <stop stopColor="#FFD2B9" />
+          <stop offset="0.3" stopColor="#C99BED" />
+          <stop offset="1" stopColor="#0075FF" />
         </radialGradient>
         <radialGradient
           id="paint9_radial_15322_4492"
@@ -164,8 +164,8 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.5765 16.0727) rotate(90) scale(10.9572)"
         >
-          <stop stop-color="#D4FAFF" />
-          <stop offset="1" stop-color="#00DDFB" />
+          <stop stopColor="#D4FAFF" />
+          <stop offset="1" stopColor="#00DDFB" />
         </radialGradient>
         <radialGradient
           id="paint10_radial_15322_4492"
@@ -175,8 +175,8 @@ export const sky = {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.0026 16.0013) rotate(36) scale(10.8913)"
         >
-          <stop stop-color="#0075FF" />
-          <stop offset="1" stop-color="#00DDFB" />
+          <stop stopColor="#0075FF" />
+          <stop offset="1" stopColor="#00DDFB" />
         </radialGradient>
         <clipPath id="clip0_15322_4492">
           <rect width="26" height="26" fill="white" transform="translate(3 3)" />

@@ -1,10 +1,8 @@
-import { ethereumMainnetHexId } from 'blockchain/networks'
-import { WithWalletConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/layouts/AppLayout'
 import { useAccount } from 'helpers/useAccount'
 import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import SkyStakeUsdsViewWrapper from 'pages/earn/srr/[wallet]'
 import React from 'react'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -23,13 +21,7 @@ function SkyProxyPage({ walletAddress }: { walletAddress: string }) {
     void replace(`/earn/srr/${walletContextAddress}`)
   }
 
-  return (
-    <AppLayout>
-      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
-        {null}
-      </WithWalletConnection>
-    </AppLayout>
-  )
+  return <SkyStakeUsdsViewWrapper />
 }
 
 export default SkyProxyPage

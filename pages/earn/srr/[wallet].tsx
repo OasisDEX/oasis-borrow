@@ -1,18 +1,18 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
-import { ethereumMainnetHexId, NetworkIds } from 'blockchain/networks'
-import { WithConnection } from 'components/connectWallet'
+import { NetworkIds } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLayout } from 'components/layouts/AppLayout'
+import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { SkyStakePositionView } from 'features/sky/components/stake/SkyStakePositionView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
@@ -22,27 +22,47 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { combineLatest, of } from 'rxjs'
 import { Box, Container } from 'theme-ui'
 
-const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
+const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
   const [{ wallet }] = useConnectWallet()
   const [reloadingTokenInfo, setReloadingTokenInfo] = useState(false)
-  const [tempSkyStakeData, setTempSkyStakeData] = useState<{
+  const [tempSkyStakeWalletData, setTempSkyWalletStakeData] = useState<{
     balance: BigNumber
     earned: BigNumber
+  }>()
+  const [tempSkyStakeData, setTempSkyStakeData] = useState<{
     rewardRate: BigNumber
     totalUSDSLocked: BigNumber
   }>()
   const [tempBalancesData, setTempBalancesData] = useState<BigNumber[]>()
-  const isOwner = wallet?.accounts[0]?.address.toLowerCase() === walletAddress.toLowerCase()
-  const { balancesFromAddressInfoArray$, allowanceForAccountEthers$, skyUsdsWalletStakeDetails$ } =
-    useProductContext()
-  const [skyStakeData, skyStakeError] = useObservable(
+  const isOwner = wallet?.accounts[0]?.address.toLowerCase() === walletAddress?.toLowerCase()
+  const {
+    balancesFromAddressInfoArray$,
+    allowanceForAccountEthers$,
+    skyUsdsWalletStakeDetails$,
+    skyUsdsStakeDetails$,
+  } = useProductContext()
+  const [skyStakeWalletData, skyStakeWalletError] = useObservable(
     useMemo(
       () => (reloadingTokenInfo ? of(undefined) : skyUsdsWalletStakeDetails$(walletAddress)),
       [skyUsdsWalletStakeDetails$, walletAddress, reloadingTokenInfo],
     ),
   )
+  const [skyStakeData, skyStakeError] = useObservable(
+    useMemo(
+      () => (reloadingTokenInfo ? of(undefined) : skyUsdsStakeDetails$()),
+      [skyUsdsStakeDetails$, reloadingTokenInfo],
+    ),
+  )
   useEffect(() => {
-    if (skyStakeData && !tempSkyStakeData?.balance.isEqualTo(skyStakeData.balance)) {
+    if (
+      skyStakeWalletData &&
+      !tempSkyStakeWalletData?.balance.isEqualTo(skyStakeWalletData.balance)
+    ) {
+      setTempSkyWalletStakeData(skyStakeWalletData)
+    }
+  }, [skyStakeWalletData, tempSkyStakeWalletData])
+  useEffect(() => {
+    if (skyStakeData && !tempSkyStakeData?.rewardRate.isEqualTo(skyStakeData.rewardRate)) {
       setTempSkyStakeData(skyStakeData)
     }
   }, [skyStakeData, tempSkyStakeData])
@@ -103,33 +123,35 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
   const [usdsAllowance, skyAllowance] = allowancesData || [undefined, undefined]
   return (
     <Container variant="vaultPageContainer">
-      {!isOwner && (
+      {!isOwner && walletAddress && (
         <Box mb={4}>
           <VaultOwnershipBanner account={wallet?.accounts[0]?.address} controller={walletAddress} />
         </Box>
       )}
       <VaultHeadline header={'Stake USDS'} tokens={['USDS']} details={[]} />
-      <WithErrorHandler error={[allowancesError, balancesError, skyStakeError]}>
+      <WithErrorHandler
+        error={[allowancesError, balancesError, skyStakeError, skyStakeWalletError]}
+      >
         <WithLoadingIndicator
           value={[
             usdsBalance || tempBalancesData?.[0],
             skyBalance || tempBalancesData?.[1],
-            usdsAllowance,
-            skyAllowance,
             skyStakeData || tempSkyStakeData,
           ]}
-          customLoader={<VaultContainerSpinner />}
+          customLoader={<PositionLoadingState header={null} />}
         >
-          {([_usdsBalance, _skyBalance, _usdsAllowance, _skyAllowance, _skyStakeData]) => (
+          {([_usdsBalance, _skyBalance, _skyStakeData]) => (
             <SkyStakePositionView
               usdsBalance={_usdsBalance}
               skyBalance={_skyBalance}
-              usdsAllowance={_usdsAllowance}
-              skyAllowance={_skyAllowance}
+              usdsAllowance={usdsAllowance}
+              skyAllowance={skyAllowance}
+              skyStakeWalletData={skyStakeWalletData}
               skyStakeData={_skyStakeData}
               isOwner={isOwner}
               reloadingTokenInfo={reloadingTokenInfo}
               setReloadingTokenInfo={setReloadingTokenInfo}
+              viewWalletAddress={walletAddress}
             />
           )}
         </WithLoadingIndicator>
@@ -138,18 +160,16 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress: string }) => {
   )
 }
 
-const SkyStakeUsdsViewWrapper = ({ walletAddress }: { walletAddress: string }) => {
+const SkyStakeUsdsViewWrapper = ({ walletAddress }: { walletAddress?: string }) => {
   return (
     <AppLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
-          <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
-            <WithTermsOfService>
-              <WithWalletAssociatedRisk>
-                <SkyStakeUsdsView walletAddress={walletAddress} />
-              </WithWalletAssociatedRisk>
-            </WithTermsOfService>
-          </WithConnection>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <SkyStakeUsdsView walletAddress={walletAddress} />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
         </GasEstimationContextProvider>
       </ProductContextHandler>
     </AppLayout>

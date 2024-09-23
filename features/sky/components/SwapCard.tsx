@@ -9,6 +9,7 @@ import { SkeletonLine } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
 import type { skySwapTokensConfig } from 'features/sky/config'
+import { showAllowanceInfo } from 'features/sky/helpers'
 import type { ResolvedDepositParamsType } from 'features/sky/hooks/useSky'
 import { useSky } from 'features/sky/hooks/useSky'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -173,7 +174,11 @@ export const SwapCardWrapper = ({
       </Flex>
       {config.description && (
         <Box sx={{ pt: 1, pb: 4 }}>
-          <Text variant="paragraph4" color="neutral80">
+          <Text
+            variant="paragraph4"
+            color="neutral80"
+            sx={{ height: '45px', display: 'inline-block' }}
+          >
             {config.description}
           </Text>
         </Box>
@@ -269,11 +274,7 @@ export const SwapCardWrapper = ({
           withBullet={false}
         />
       )}
-      {!isLoading &&
-      amount &&
-      !resolvedPrimaryTokenData.allowance.isNaN() &&
-      (resolvedPrimaryTokenData.allowance.isZero() ||
-        resolvedPrimaryTokenData.allowance.isLessThan(amount)) ? (
+      {!isLoading && showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance) ? (
         <MessageCard
           sx={{
             mt: 3,

@@ -20,8 +20,10 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { TabBar } from 'components/TabBar'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
+import { showAllowanceInfo } from 'features/sky/helpers'
 import { useSky } from 'features/sky/hooks/useSky'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { sky } from 'theme/icons'
@@ -30,16 +32,19 @@ import { Box, Card, Grid, Heading, Text } from 'theme-ui'
 type SkyStakeViewType = {
   usdsBalance: BigNumber
   skyBalance: BigNumber
-  usdsAllowance: BigNumber
-  skyAllowance: BigNumber
-  skyStakeData: {
+  usdsAllowance?: BigNumber
+  skyAllowance?: BigNumber
+  skyStakeWalletData?: {
     balance: BigNumber
     earned: BigNumber
+  }
+  skyStakeData: {
     rewardRate: BigNumber
     totalUSDSLocked: BigNumber
   }
   isOwner: boolean
   reloadingTokenInfo: boolean
+  viewWalletAddress?: string
   setReloadingTokenInfo: (value: boolean) => void
 }
 
@@ -49,7 +54,9 @@ export const SkyStakePositionView = ({
   usdsAllowance,
   skyAllowance,
   skyStakeData,
+  skyStakeWalletData,
   isOwner,
+  viewWalletAddress,
   reloadingTokenInfo,
   setReloadingTokenInfo,
 }: SkyStakeViewType) => {
@@ -88,18 +95,19 @@ export const SkyStakePositionView = ({
     },
     primaryToken: 'USDS',
     secondaryToken: 'SKY',
-    primaryTokenBalance: stakingAction === 'stake' ? usdsBalance : skyStakeData.balance,
+    primaryTokenBalance: stakingAction === 'stake' ? usdsBalance : skyStakeWalletData?.balance,
     secondaryTokenBalance: skyBalance,
     primaryTokenAllowance: usdsAllowance,
     secondaryTokenAllowance: skyAllowance,
     stake: true,
     walletAddress: wallet?.accounts[0].address,
+    viewWalletAddress,
     setReloadingTokenInfo,
     reloadingTokenInfo,
   })
 
   const claimAction = async () => {
-    if (!wallet?.accounts[0].address || skyStakeData.earned.isZero()) {
+    if (!wallet?.accounts[0].address || skyStakeWalletData?.earned.isZero()) {
       return
     }
 
@@ -137,13 +145,24 @@ export const SkyStakePositionView = ({
       <Grid gap={3}>
         <ActionPills
           items={[
-            { id: 'stake', label: 'Stake', action: () => setStakingAction('stake') },
-            { id: 'unstake', label: 'Unstake', action: () => setStakingAction('unstake') },
+            {
+              id: 'stake',
+              label: 'Stake',
+              action: () => setStakingAction('stake'),
+              disabled: isLoading || !isOwner,
+            },
+            {
+              id: 'unstake',
+              label: 'Unstake',
+              action: () => setStakingAction('unstake'),
+              disabled: isLoading || !isOwner,
+            },
             {
               id: 'claim',
               label: 'Claim',
               action: () => setStakingAction('claim'),
-              disabled: skyStakeData.earned.isZero(),
+              disabled:
+                !skyStakeWalletData || skyStakeWalletData?.earned.isZero() || isLoading || !isOwner,
             },
           ]}
           active={stakingAction}
@@ -153,7 +172,7 @@ export const SkyStakePositionView = ({
             <Text variant="boldParagraph1" sx={{ textAlign: 'center', mt: 3 }}>
               You will receive{' '}
               <Icon icon={sky} size={30} sx={{ display: 'inline-block', mb: '-8px' }} />
-              {formatCryptoBalance(skyStakeData.earned)} SKY.
+              {formatCryptoBalance(skyStakeWalletData?.earned || zero)} SKY.
             </Text>
             <Text variant="paragraph3" sx={{ textAlign: 'center', mb: 1, mx: 4 }}>
               The position will still be active and getting rewarded with SKY. Claiming SKY will not
@@ -166,8 +185,9 @@ export const SkyStakePositionView = ({
             currencyCode={resolvedPrimaryTokenData.token}
             onChange={onAmountChange}
             amount={amount}
-            maxAmount={stakingAction === 'stake' ? maxAmount : skyStakeData.balance}
+            maxAmount={stakingAction === 'stake' ? maxAmount : skyStakeWalletData?.balance}
             showMax
+            disabled={isLoading || !isOwner}
             onSetMax={onSetMax}
             action={
               {
@@ -235,11 +255,7 @@ export const SkyStakePositionView = ({
             withBullet={false}
           />
         )}
-        {!isLoading &&
-        amount &&
-        !resolvedPrimaryTokenData.allowance.isNaN() &&
-        (resolvedPrimaryTokenData.allowance.isZero() ||
-          resolvedPrimaryTokenData.allowance.isLessThan(amount)) ? (
+        {!isLoading && showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance) ? (
           <MessageCard
             sx={{
               mt: 3,
@@ -257,7 +273,7 @@ export const SkyStakePositionView = ({
       label: stakingAction !== 'claim' ? actionLabel : 'Claim',
       action: stakingAction !== 'claim' ? action : claimAction,
       isLoading: isLoading || reloadingTokenInfo,
-      disabled: isLoading || !isOwner || reloadingTokenInfo,
+      disabled: isLoading || reloadingTokenInfo,
     },
   }
   return (
@@ -282,7 +298,7 @@ export const SkyStakePositionView = ({
                     <DetailsSectionContentCardWrapper>
                       <DetailsSectionContentCard
                         title="USDS Deposited"
-                        value={`${formatCryptoBalance(skyStakeData.balance)}`}
+                        value={`${formatCryptoBalance(skyStakeWalletData?.balance || zero)}`}
                         unit="USDS"
                       />
                       <DetailsSectionContentCard
@@ -292,7 +308,7 @@ export const SkyStakePositionView = ({
                       />
                       <DetailsSectionContentCard
                         title="SKY Earned"
-                        value={`${formatCryptoBalance(skyStakeData.earned)}`}
+                        value={`${formatCryptoBalance(skyStakeWalletData?.earned || zero)}`}
                         unit="SKY"
                       />
                     </DetailsSectionContentCardWrapper>
