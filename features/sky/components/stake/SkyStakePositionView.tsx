@@ -20,6 +20,7 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { TabBar } from 'components/TabBar'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
+import { showAllowanceInfo } from 'features/sky/helpers'
 import { useSky } from 'features/sky/hooks/useSky'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -138,13 +139,6 @@ export const SkyStakePositionView = ({
     }
   }
 
-  const showAllowanceInfo =
-    amount &&
-    resolvedPrimaryTokenData.allowance &&
-    !resolvedPrimaryTokenData.allowance.isNaN() &&
-    (resolvedPrimaryTokenData.allowance.isZero() ||
-      resolvedPrimaryTokenData.allowance.isLessThan(amount))
-
   const sidebarSectionProps: SidebarSectionProps = {
     title: 'Manage',
     content: (
@@ -261,7 +255,7 @@ export const SkyStakePositionView = ({
             withBullet={false}
           />
         )}
-        {!isLoading && showAllowanceInfo ? (
+        {!isLoading && showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance) ? (
           <MessageCard
             sx={{
               mt: 3,

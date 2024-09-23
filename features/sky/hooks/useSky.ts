@@ -5,6 +5,7 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import type { ethers } from 'ethers'
 import type { SwapCardType } from 'features/sky/components/SwapCard'
 import type { skySwapTokensConfig } from 'features/sky/config'
+import { showAllowanceInfo } from 'features/sky/helpers'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
@@ -221,11 +222,7 @@ export const useSky = ({
         void replace(`/earn/srr/${walletAddress}`)
       }
     }
-    if (
-      !resolvedPrimaryTokenData.allowance ||
-      resolvedPrimaryTokenData.allowance.isZero() ||
-      (amount && resolvedPrimaryTokenData.allowance.isLessThan(amount))
-    ) {
+    if (showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance)) {
       return approveAllowance
     }
     return amount
