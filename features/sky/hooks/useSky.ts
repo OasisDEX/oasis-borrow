@@ -217,7 +217,7 @@ export const useSky = ({
     if (!walletAddress) {
       return connect
     }
-    if (!isOwner) {
+    if (!isOwner && viewWalletAddress) {
       return () => {
         void replace(`/earn/srr/${walletAddress}`)
       }
@@ -234,6 +234,7 @@ export const useSky = ({
     isOwner,
     replace,
     walletAddress,
+    viewWalletAddress,
     resolvedPrimaryTokenData.allowance,
     amount,
     executeDeposit,
