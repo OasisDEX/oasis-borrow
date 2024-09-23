@@ -373,19 +373,13 @@ export default () => {
           <th>Purpose</th>
           <th>Duration</th>
         </tr>
+        {/* TODO to be updated once new marketing applied*/}
         <tr>
-          <td>Adroll</td>
-          <td>Third party</td>
-          <td>__adroll_fpc</td>
-          <td>Marketing (retargeting)</td>
-          <td>12 months</td>
-        </tr>
-        <tr>
-          <td>Adroll</td>
-          <td>Third party</td>
-          <td>__ar_v4</td>
-          <td>Marketing (retargeting)</td>
-          <td>12 months</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
         </tr>
       </table>
       <Text as="p" variant="boldParagraph1">

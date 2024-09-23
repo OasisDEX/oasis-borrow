@@ -4,8 +4,6 @@ const publicRuntimeConfig = {
   buildDate: Date.now(),
   mixpanelEnv: process.env.MIXPANEL_ENV,
   mixpanelAPIKey: process.env.MIXPANEL_KEY,
-  adRollAdvId: process.env.ADROLL_ADV_ID,
-  adRollPixId: process.env.ADROLL_PIX_ID,
   useTermsOfService: process.env.USE_TERMS_OF_SERVICE === '1',
   useTrmApi: process.env.USE_TRM_API === '1',
   showBuildInfo: process.env.SHOW_BUILD_INFO === '1',

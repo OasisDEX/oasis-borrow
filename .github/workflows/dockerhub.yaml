@@ -38,8 +38,6 @@ jobs:
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg MIXPANEL_ENV=staging \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \
-                     --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_STAGING }} \
-                     --build-arg ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_STAGING }} \
                      --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL }} \
                      --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
                      --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
