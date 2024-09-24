@@ -25,6 +25,7 @@ import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
+import { UpgradeToSkyBanner } from 'features/sky/components/UpgradeToSkyBanner'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
@@ -34,7 +35,7 @@ import React from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
 export function OmniLayoutController({ txHandler }: { txHandler: () => () => void }) {
-  const { ProxyReveal: proxyReveal, LambdaAutomations } = useAppConfig('features')
+  const { ProxyReveal: proxyReveal, LambdaAutomations, SkyUpgrade } = useAppConfig('features')
 
   const { t } = useTranslation()
 
@@ -105,6 +106,10 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       ? faultyTakeProfitTriggerIds.includes(Number(partialProfitTiggerId))
       : false
 
+  const showSkyBanner =
+    SkyUpgrade &&
+    ([quoteToken, collateralToken].includes('DAI') || [quoteToken, collateralToken].includes('MKR'))
+
   return (
     <Container variant="vaultPageContainerStatic">
       {contextIsLoaded && !isOwner && !isOpening && (
@@ -120,6 +125,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         </Box>
       )}
 
+      {isOwner && showSkyBanner && <UpgradeToSkyBanner />}
       {positionBanner && <Box sx={{ mb: 4 }}>{positionBanner}</Box>}
       <VaultHeadline
         loading={isHeadlineDetailsLoading}

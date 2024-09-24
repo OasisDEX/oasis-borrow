@@ -670,7 +670,7 @@
       "cookies": {
         "marketing": {
           "title": "Marketing Cookies",
-          "description": "Summer.fi uses anonymised cookies from adRoll to be able to apply retargeting campaigns on advertising platforms."
+          "description": "Summer.fi uses anonymised cookies to be able to apply retargeting campaigns on advertising platforms."
         },
         "analytics": {
           "title": "Analytics Cookies",

@@ -136,6 +136,9 @@ export function getGenericPositionUrl({
         secondaryToken,
         aaveLikeProduct: 'aave',
       })
+    case LendingProtocol.Sky:
+      if (label === 'SRR') return '/earn/srr/'
+      return '/'
     case LendingProtocol.Maker:
       if (label === 'DSR') return '/earn/dsr/'
 

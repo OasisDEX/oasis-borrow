@@ -222,6 +222,12 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     ),
     'SUSDCY-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SUSDCYUSDC),
   },
+  sky: {
+    daiusds: emptyContractDesc('daiusds'),
+    mkrsky: emptyContractDesc('mkrsky'),
+    susds: emptyContractDesc('susds'),
+    staking: emptyContractDesc('staking'),
+  },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, arbitrum.ajna.AjnaBonusRewardsReedemer),

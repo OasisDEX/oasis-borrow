@@ -8,6 +8,8 @@ import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { vaultTypeToSDKType } from 'features/refinance/helpers/vaultTypeToSDKType'
 import { useMakerRefinanceContextInputs } from 'features/refinance/hooks'
+import { UpgradeToSkyBanner } from 'features/sky/components/UpgradeToSkyBanner'
+import { useAppConfig } from 'helpers/config'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
@@ -22,6 +24,7 @@ interface GeneralManageLayoutProps {
 
 export function GeneralManageLayout({ generalManageVault, chainId }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
+  const { SkyUpgrade } = useAppConfig('features')
   const { ilkData, vault, priceInfo, account } = generalManageVault.state
   const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
 
@@ -42,6 +45,10 @@ export function GeneralManageLayout({ generalManageVault, chainId }: GeneralMana
 
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
+
+  const isOwner =
+    generalManageVault.state.vault.controller?.toLowerCase() ===
+    generalManageVault.state.account?.toLowerCase()
 
   generalManageVault.state.refinanceContextInput = useMakerRefinanceContextInputs({
     address: account,
@@ -65,13 +72,12 @@ export function GeneralManageLayout({ generalManageVault, chainId }: GeneralMana
     ).loanToValue.toString(),
     ilkType: vault.ilk,
     positionType: vaultTypeToSDKType(generalManageVault.type),
-    isOwner:
-      generalManageVault.state.vault.controller?.toLowerCase() ===
-      generalManageVault.state.account?.toLowerCase(),
+    isOwner,
   })
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
+      {isOwner && SkyUpgrade && <UpgradeToSkyBanner />}
       <VaultNoticesView id={vault.id} />
       <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>
       <GeneralManageTabBar

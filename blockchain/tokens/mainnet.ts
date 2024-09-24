@@ -2,6 +2,9 @@ import { ADDRESS_ZERO, ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
 import * as savingsDai from 'blockchain/abi/savings-dai.json'
+import * as sky from 'blockchain/abi/sky.json'
+import * as skySusds from 'blockchain/abi/sky-susds.json'
+import * as skyUsds from 'blockchain/abi/sky-usds.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import { contractDesc } from 'blockchain/networks'
 import type { ContractDesc } from 'features/web3Context'
@@ -135,6 +138,9 @@ export const tokensMainnet = {
   SYRUPUSDC: contractDesc(erc20, mainnet.common.SYRUPUSDC),
   RSWETH: contractDesc(erc20, mainnet.common.RSWETH),
   LBTC: contractDesc(erc20, mainnet.common.LBTC),
+  SUSDS: contractDesc(skySusds, '0xa3931d71877C0E7a3148CB7Eb4463524FEc27fbD'),
+  SKY: contractDesc(sky, '0x56072C95FAA701256059aa122697B133aDEd9279'),
+  USDS: contractDesc(skyUsds, '0xdC035D45d973E3EC169d2276DDab16f1e407384F'),
 } as Record<string, ContractDesc>
 
 export const ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET = 16183119

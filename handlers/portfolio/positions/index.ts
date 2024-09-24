@@ -5,6 +5,7 @@ import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
 import { erc4626PositionsHandler } from 'handlers/portfolio/positions/handlers/erc-4626'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
 import { morphoPositionsHandler } from 'handlers/portfolio/positions/handlers/morpho-blue'
+import { skyPositionsHandler } from 'handlers/portfolio/positions/handlers/sky'
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import { getRaysUserMultipliersServerSide } from 'handlers/portfolio/positions/helpers/getRaysMultipliersServerSide'
@@ -68,6 +69,7 @@ export const portfolioPositionsHandler = async ({
       erc4626PositionsHandler(payload),
       makerPositionsHandler(payload),
       morphoPositionsHandler(payload),
+      skyPositionsHandler(payload),
     ])
       .then(
         ([
@@ -78,8 +80,10 @@ export const portfolioPositionsHandler = async ({
           { positions: erc4626Positions },
           { positions: makerPositions },
           { positions: morphoPositions },
+          { positions: skyPositions },
         ]) => ({
           positions: [
+            ...skyPositions,
             ...aaveLikePositions,
             ...aaveV2Positions,
             ...ajnaPositions,
