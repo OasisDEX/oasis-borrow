@@ -7,7 +7,14 @@ export const mapMakerSubgraphHistoryOld = (
   items: MakerHistoryOldItem[],
   liquidationItems: MakerHistoryOldLiquidationItem[],
 ) => {
-  return items.map((item) => {
+  const isOpenMultiplyEvent = items.find((item) => item.kind === 'OPEN_MULTIPLY_VAULT')
+
+  const filteredItems = items.filter((item) =>
+    // filter out duplicated open position events
+    isOpenMultiplyEvent ? isOpenMultiplyEvent && item.kind !== 'Opened' : true,
+  )
+
+  return filteredItems.map((item) => {
     const possiblyStartedLiquidationEvent = liquidationItems.find(
       (liqItem) => liqItem.startedTransaction.toLowerCase() === item.transaction.toLowerCase(),
     )
