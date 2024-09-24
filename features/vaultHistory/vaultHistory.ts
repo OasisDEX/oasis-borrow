@@ -444,7 +444,9 @@ export function createVaultHistory$(
       ).pipe(
         switchMap(([{ response: _history }, { response: _automationHistory }]) => {
           return combineLatest(
-            of(mapMakerSubgraphHistoryOld(_history.cdps[0].stateLogs)),
+            of(
+              mapMakerSubgraphHistoryOld(_history.cdps[0].stateLogs, _history.cdps[0].liquidations),
+            ),
             of(mapMakerSubgraphAutomationHistoryOld(_automationHistory.triggerEvents)),
           )
         }),

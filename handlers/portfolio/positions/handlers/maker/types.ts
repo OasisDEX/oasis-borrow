@@ -87,9 +87,21 @@ export interface MakerHistoryOldItem {
   transaction: string
 }
 
+export interface MakerHistoryOldLiquidationItem {
+  kind: string
+  collateralAmount: string
+  daiAmount: string
+  remainingDebt: string
+  remainingCollateral: string
+  startedTransaction: string
+  finishedTransaction: string
+  auctionId: string
+}
+
 export interface MakerHistoryOldResponse {
   cdps: {
     stateLogs: MakerHistoryOldItem[]
+    liquidations: MakerHistoryOldLiquidationItem[]
   }[]
 }
 

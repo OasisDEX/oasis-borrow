@@ -945,6 +945,16 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           timestamp
           transaction
         }
+        liquidations {
+          kind
+          collateralAmount
+          daiAmount
+          remainingDebt
+          remainingCollateral
+          startedTransaction
+          finishedTransaction
+          auctionId
+        }
       }
     }
   `,
