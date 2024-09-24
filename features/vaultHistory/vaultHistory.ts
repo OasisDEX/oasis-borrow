@@ -7,16 +7,18 @@ import type { Vault } from 'blockchain/vaults.types'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { GraphQLClient } from 'graphql-request'
-import { flatten, memoize } from 'lodash'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
+import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+import { mapMakerSubgraphAutomationHistoryOld } from 'features/vaultHistory/mapMakerSubgraphAutomationHistoryOld'
+import { mapMakerSubgraphHistoryOld } from 'features/vaultHistory/mapMakerSubgraphHistoryOld'
+import { flatten } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { equals } from 'ramda'
 import type { Observable } from 'rxjs'
-import { combineLatest, of } from 'rxjs'
+import { combineLatest, from, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
 import { groupHistoryEventsByHash } from './groupHistoryEventsByHash'
-import { query, triggerEventsQuery } from './vaultHistory.constants'
 import type { VaultHistoryEvent, WithSplitMark } from './vaultHistory.types'
 import type {
   AutomationEvent,
@@ -364,26 +366,6 @@ function parseBigNumbersFields(
   ) as VaultEvent
 }
 
-async function getVaultMultiplyHistory(
-  client: GraphQLClient,
-  urn: string,
-): Promise<ReturnedEvent[]> {
-  const data = await client.request(query, { urn })
-  return data.allVaultMultiplyHistories.nodes
-}
-
-async function getVaultAutomationHistory(
-  client: GraphQLClient,
-  id: BigNumber,
-  chainId: NetworkIds,
-): Promise<ReturnedAutomationEvent[]> {
-  const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
-  return triggersData.allTriggerEvents.nodes.map((item: ReturnedAutomationEvent) => ({
-    ...item,
-    chainId,
-  }))
-}
-
 function addReclaimFlag(events: VaultHistoryEvent[]) {
   return events.map((event, index, array) => {
     if (index === 0) {
@@ -431,19 +413,39 @@ export function createVaultHistory$(
   vault$: (id: BigNumber) => Observable<Vault>,
   vaultId: BigNumber,
 ): Observable<VaultHistoryEvent[]> {
-  const makeClient = memoize(
-    (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
-  )
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ chainId }, { token, address, id }]) => {
-      const { etherscan, cacheApi } = getNetworkContracts(NetworkIds.MAINNET, chainId)
-      return onEveryBlock$.pipe(
-        switchMap(() => {
-          const apiClient = makeClient(cacheApi)
+    switchMap(([{ chainId }, { token, id }]) => {
+      const { etherscan } = getNetworkContracts(NetworkIds.MAINNET, chainId)
 
+      const historyFromSubgraph$ = from(
+        loadSubgraph({
+          subgraph: 'Discover',
+          method: 'getMakerHistoryOld',
+          networkId: chainId,
+          params: {
+            cdpId: id.toNumber(),
+          },
+        }),
+      ) as Observable<SubgraphsResponses['Discover']['getMakerHistoryOld']>
+
+      const automationHistoryFromSubgraph$ = from(
+        loadSubgraph({
+          subgraph: 'Automation',
+          method: 'getMakerAutomationEvents',
+          networkId: chainId,
+          params: { cdpId: id.toNumber() },
+        }),
+      ) as Observable<SubgraphsResponses['Automation']['getMakerAutomationEvents']>
+
+      return combineLatest(
+        historyFromSubgraph$,
+        automationHistoryFromSubgraph$,
+        onEveryBlock$,
+      ).pipe(
+        switchMap(([{ response: _history }, { response: _automationHistory }]) => {
           return combineLatest(
-            getVaultMultiplyHistory(apiClient, address.toLowerCase()),
-            getVaultAutomationHistory(apiClient, id, chainId),
+            of(mapMakerSubgraphHistoryOld(_history.cdps[0].stateLogs)),
+            of(mapMakerSubgraphAutomationHistoryOld(_automationHistory.triggerEvents)),
           )
         }),
         mapEventsToVaultEvents,
