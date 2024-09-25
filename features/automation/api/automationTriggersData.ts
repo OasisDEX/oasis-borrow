@@ -30,7 +30,21 @@ async function loadTriggerDataFromSubgraph({
     },
   })) as SubgraphsResponses['Discover']['getMakerTriggersOld']
 
-  const triggers = response.cdps[0].triggers
+  // handling for cases where testing on fork
+  // subgraph operates only on mainnet
+  if (!response.cdps[0]) {
+    return {
+      isAutomationDataLoaded: true,
+      isAutomationEnabled: false,
+      triggers: [],
+      chainId,
+    }
+  }
+
+  // get only active triggers
+  const triggers = response.cdps[0].triggers.filter(
+    (trigger) => !trigger.removedBlock && !trigger.executedBlock,
+  )
 
   return {
     isAutomationDataLoaded: true,

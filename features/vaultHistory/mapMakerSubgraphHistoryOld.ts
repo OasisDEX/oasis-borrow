@@ -1,3 +1,5 @@
+import { RiskRatio } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import type {
   MakerHistoryOldItem,
   MakerHistoryOldLiquidationItem,
@@ -37,10 +39,16 @@ export const mapMakerSubgraphHistoryOld = (
         }
       : {}
 
+    // not all events have collRatioBefore
+    const beforeCollRatioDerivedFromMultiply = new RiskRatio(
+      new BigNumber(item.beforeMultiple || 1),
+      RiskRatio.TYPE.MULITPLE,
+    ).colRatio.toString()
+
     return {
       ...item,
       timestamp: Number(item.timestamp) * 1000,
-      beforeCollateralizationRatio: item.collRatioBefore,
+      beforeCollateralizationRatio: item.collRatioBefore || beforeCollRatioDerivedFromMultiply,
       collateralizationRatio: item.collRatioAfter,
       multiple: item.afterMultiple,
       beforeLiquidationPrice: item.liquidationPriceBefore,
@@ -55,6 +63,7 @@ export const mapMakerSubgraphHistoryOld = (
       lockedCollateral: item.collateralAfter,
       collateralAmount: item.collateralDiff,
       daiAmount: item.debtDiff,
+      marketPrice: item.collateralMarketPrice,
       ...mappedStartedLiquidationEvent,
       ...mappedFinishedLiquidationEvent,
     }

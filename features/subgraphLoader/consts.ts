@@ -965,6 +965,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           id
           commandAddress
           triggerData
+          removedBlock
+          executedBlock
         }
       }
     }
@@ -976,6 +978,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         transaction
         timestamp
         trigger {
+          id
           kind
           simpleName
           tokens {
