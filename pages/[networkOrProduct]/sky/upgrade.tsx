@@ -77,13 +77,19 @@ function SkySwapWrapper() {
     <>
       {balancesData?.[0] && balancesData[0].isGreaterThan(zero) && (
         <ActionBanner
-          title={`You have ${formatAsShorthandNumbers(balancesData[0])} USDS ready to be staked`}
+          title={`You have ${formatAsShorthandNumbers(balancesData[0])} USDS that can earn SKY or Chronicle Points`}
           lightText
           customCtaVariant="outlineSmall"
-          cta={{
-            label: 'Stake now',
-            url: `/earn/srr/${wallet?.accounts[0].address}`,
-          }}
+          cta={[
+            {
+              label: 'Get SKY Rewards',
+              url: `/earn/srr/${wallet?.accounts[0].address}`,
+            },
+            {
+              label: 'Earn Chronicle Points',
+              url: `/earn/cle/${wallet?.accounts[0].address}`,
+            },
+          ]}
           sx={{
             backgroundImage: `url(${staticFilesRuntimeUrl('/static/img/sky-banner-background.png')})`,
             backgroundSize: 'cover',
@@ -92,7 +98,8 @@ function SkySwapWrapper() {
             my: 4,
           }}
         >
-          Stake your USDS in the Sky Ecosystem to earn SKY rewards.
+          Deposit you USDS in the SKY Ecosystem to earn Chronicle Points or SKY Rewards. Withdraw
+          anytime.
         </ActionBanner>
       )}
       <Grid gap={3} columns={[1, 3]} mt={[1, 3]}>
