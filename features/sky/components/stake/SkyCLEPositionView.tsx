@@ -1,6 +1,6 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import type BigNumber from 'bignumber.js'
-import { skyUsdsStake, skyUsdsStakeGetRewards } from 'blockchain/better-calls/sky'
+import { skyUsdsStake } from 'blockchain/better-calls/sky'
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
 import { ActionPills } from 'components/ActionPills'
 import { DetailsSection, DetailsSectionTitle } from 'components/DetailsSection'
@@ -12,7 +12,6 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
-import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -20,27 +19,20 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SkeletonLine } from 'components/Skeleton'
 import { TabBar } from 'components/TabBar'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import type { ethers } from 'ethers'
 import { showAllowanceInfo } from 'features/sky/helpers'
 import { useSky } from 'features/sky/hooks/useSky'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { sky } from 'theme/icons'
-import { Box, Card, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Grid, Heading } from 'theme-ui'
 
-type SkyStakeViewType = {
+type SkyCLEViewType = {
   usdsBalance: BigNumber
-  skyBalance: BigNumber
   usdsAllowance?: BigNumber
-  skyAllowance?: BigNumber
-  skyStakeWalletData?: {
+  skyCleStakeWalletData?: {
     balance: BigNumber
     earned: BigNumber
-  }
-  skyStakeData: {
-    apy: BigNumber
     totalUSDSLocked: BigNumber
   }
   isOwner: boolean
@@ -49,21 +41,18 @@ type SkyStakeViewType = {
   setReloadingTokenInfo: (value: boolean) => void
 }
 
-export const SkyStakePositionView = ({
+export const SkyCLEPositionView = ({
   usdsBalance,
-  skyBalance,
   usdsAllowance,
-  skyAllowance,
-  skyStakeData,
-  skyStakeWalletData,
+  skyCleStakeWalletData,
   isOwner,
   viewWalletAddress,
   reloadingTokenInfo,
   setReloadingTokenInfo,
-}: SkyStakeViewType) => {
+}: SkyCLEViewType) => {
   const { t } = useTranslation()
   const [{ wallet }] = useConnectWallet()
-  const [stakingAction, setStakingAction] = useState<'stake' | 'unstake' | 'claim'>('stake')
+  const [stakingAction, setStakingAction] = useState<'stake' | 'unstake'>('stake')
 
   const {
     resolvedPrimaryTokenData,
@@ -79,11 +68,9 @@ export const SkyStakePositionView = ({
     transactionStatus,
     allowanceTx,
     transactionTx,
-    setTransactionTx,
     isLoading,
-    signer,
   } = useSky({
-    contractAddress: mainnetContracts.sky.staking.address,
+    contractAddress: mainnetContracts.sky.stakingCle.address,
     depositAction: (params) => {
       if (!wallet?.accounts[0].address) {
         return new Promise(() => {})
@@ -92,54 +79,22 @@ export const SkyStakePositionView = ({
         action: stakingAction,
         amount: params.amount,
         signer: params.signer,
+        stakeForCle: true,
       })
     },
-    primaryToken: 'USDS',
-    secondaryToken: 'SKY',
     stakingAction,
-    primaryTokenBalance: stakingAction === 'stake' ? usdsBalance : skyStakeWalletData?.balance,
-    secondaryTokenBalance: skyBalance,
+    primaryToken: 'USDS',
+    secondaryToken: 'CLE',
+    primaryTokenBalance: stakingAction === 'stake' ? usdsBalance : skyCleStakeWalletData?.balance,
+    secondaryTokenBalance: zero,
     primaryTokenAllowance: usdsAllowance,
-    secondaryTokenAllowance: skyAllowance,
+    secondaryTokenAllowance: zero,
     stake: true,
     walletAddress: wallet?.accounts[0].address,
     viewWalletAddress,
     setReloadingTokenInfo,
     reloadingTokenInfo,
   })
-
-  const claimAction = async () => {
-    if (!wallet?.accounts[0].address || skyStakeWalletData?.earned.isZero()) {
-      return
-    }
-
-    if (signer) {
-      skyUsdsStakeGetRewards({ signer })
-        .then((tx: ethers.ContractTransaction) => {
-          setTransactionStatus('success')
-          setReloadingTokenInfo(true)
-          console.info('Claim transaction', tx)
-          tx.wait()
-            .then((receipt) => {
-              setTransactionTx(receipt.transactionHash)
-              setTransactionStatus('success')
-              console.info('Claim transaction receipt', receipt)
-            })
-            .catch((e) => {
-              setTransactionStatus('error')
-              console.error('Claim transaction failed 1', e)
-            })
-            .finally(() => {
-              setStakingAction('stake')
-              setReloadingTokenInfo(false)
-            })
-        })
-        .catch(() => {
-          setReloadingTokenInfo(false)
-          setTransactionStatus('error')
-        })
-    }
-  }
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: 'Manage',
@@ -159,52 +114,25 @@ export const SkyStakePositionView = ({
               action: () => setStakingAction('unstake'),
               disabled: isLoading || !isOwner,
             },
-            {
-              id: 'claim',
-              label: 'Claim',
-              action: () => setStakingAction('claim'),
-              disabled:
-                !skyStakeWalletData || skyStakeWalletData?.earned.isZero() || isLoading || !isOwner,
-            },
           ]}
           active={stakingAction}
         />
-        {stakingAction === 'claim' && (
-          <>
-            {isLoading ? (
-              <SkeletonLine height={30} width={250} sx={{ m: '0 auto', mt: 3 }} />
-            ) : (
-              <Text variant="boldParagraph1" sx={{ textAlign: 'center', mt: 3 }}>
-                You will receive{' '}
-                <Icon icon={sky} size={30} sx={{ display: 'inline-block', mb: '-8px' }} />
-                {formatCryptoBalance(skyStakeWalletData?.earned || zero)} SKY.
-              </Text>
-            )}
-            <Text variant="paragraph3" sx={{ textAlign: 'center', mb: 1, mx: 4 }}>
-              The position will still be active and getting rewarded with SKY. Claiming SKY will not
-              affect your position.
-            </Text>
-          </>
-        )}
-        {stakingAction !== 'claim' ? (
-          <VaultActionInput
-            currencyCode={resolvedPrimaryTokenData.token}
-            onChange={onAmountChange}
-            amount={amount}
-            maxAmount={stakingAction === 'stake' ? maxAmount : skyStakeWalletData?.balance}
-            showMax
-            disabled={isLoading || !isOwner}
-            onSetMax={onSetMax}
-            action={
-              {
-                stake: 'Stake',
-                unstake: 'Unstake',
-                claim: 'Claim',
-              }[stakingAction]
-            }
-            hasError={false}
-          />
-        ) : null}
+        <VaultActionInput
+          currencyCode={resolvedPrimaryTokenData.token}
+          onChange={onAmountChange}
+          amount={amount}
+          maxAmount={stakingAction === 'stake' ? maxAmount : skyCleStakeWalletData?.balance}
+          showMax
+          disabled={isLoading || !isOwner}
+          onSetMax={onSetMax}
+          action={
+            {
+              stake: 'Stake',
+              unstake: 'Unstake',
+            }[stakingAction]
+          }
+          hasError={false}
+        />
         {transactionStatus && (
           <MessageCard
             sx={{
@@ -261,7 +189,9 @@ export const SkyStakePositionView = ({
             withBullet={false}
           />
         )}
-        {!isLoading && showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance) ? (
+        {!isLoading &&
+        stakingAction === 'stake' &&
+        showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance) ? (
           <MessageCard
             sx={{
               mt: 3,
@@ -276,8 +206,8 @@ export const SkyStakePositionView = ({
       </Grid>
     ),
     primaryButton: {
-      label: stakingAction !== 'claim' ? actionLabel : 'Claim',
-      action: stakingAction !== 'claim' ? action : claimAction,
+      label: actionLabel,
+      action,
       isLoading: isLoading || reloadingTokenInfo,
       disabled: isLoading || reloadingTokenInfo,
     },
@@ -296,7 +226,7 @@ export const SkyStakePositionView = ({
                   title={
                     <DetailsSectionTitle>
                       <Heading as="p" variant="boldParagraph2">
-                        Stake $USDS and get $SKY rewards
+                        Stake $USDS and get Chronicle Points
                       </Heading>
                     </DetailsSectionTitle>
                   }
@@ -308,32 +238,21 @@ export const SkyStakePositionView = ({
                           isLoading ? (
                             <SkeletonLine height={30} width={200} sx={{ mt: 2 }} />
                           ) : (
-                            `${formatCryptoBalance(skyStakeWalletData?.balance || zero)}`
+                            `${formatCryptoBalance(skyCleStakeWalletData?.balance || zero)}`
                           )
                         }
                         unit={isLoading ? undefined : 'USDS'}
                       />
                       <DetailsSectionContentCard
-                        title="SKY Reward Rate"
+                        title="Chronicle Points Earned"
                         value={
                           isLoading ? (
                             <SkeletonLine height={30} width={200} sx={{ mt: 2 }} />
                           ) : (
-                            `${formatDecimalAsPercent(skyStakeData.apy, { noPercentSign: true })}`
+                            `${formatCryptoBalance(skyCleStakeWalletData?.earned || zero)}`
                           )
                         }
-                        unit={isLoading ? undefined : '%'}
-                      />
-                      <DetailsSectionContentCard
-                        title="SKY Earned"
-                        value={
-                          isLoading ? (
-                            <SkeletonLine height={30} width={200} sx={{ mt: 2 }} />
-                          ) : (
-                            `${formatCryptoBalance(skyStakeWalletData?.earned || zero)}`
-                          )
-                        }
-                        unit={isLoading ? undefined : 'SKY'}
+                        unit={isLoading ? undefined : 'CLE'}
                       />
                     </DetailsSectionContentCardWrapper>
                   }
@@ -345,17 +264,7 @@ export const SkyStakePositionView = ({
                           isLoading ? (
                             <SkeletonLine height={20} width={130} sx={{ mt: 2 }} />
                           ) : (
-                            `${formatCryptoBalance(skyStakeData.totalUSDSLocked)}`
-                          )
-                        }
-                      />
-                      <DetailsSectionFooterItem
-                        title="Total SKY Earned"
-                        value={
-                          isLoading ? (
-                            <SkeletonLine height={20} width={130} sx={{ mt: 2 }} />
-                          ) : (
-                            `${formatCryptoBalance(skyBalance)}`
+                            `${formatCryptoBalance(skyCleStakeWalletData?.totalUSDSLocked || zero)}`
                           )
                         }
                       />

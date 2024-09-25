@@ -44,6 +44,7 @@ import * as morphoBlue from 'blockchain/abi/morpho-blue.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
+import * as skyCleStaking from 'blockchain/abi/sky-cle-staking.json'
 import * as skyDaiUsds from 'blockchain/abi/sky-dai-usds.json'
 import * as skyMkrSky from 'blockchain/abi/sky-mkr-sky.json'
 import * as skyStaking from 'blockchain/abi/sky-staking.json'
@@ -285,6 +286,7 @@ export const mainnetContracts = {
     mkrsky: contractDesc(skyMkrSky, '0xBDcFCA946b6CDd965f99a839e4435Bcdc1bc470B'),
     susds: contractDesc(skySusds, '0xa3931d71877C0E7a3148CB7Eb4463524FEc27fbD'),
     staking: contractDesc(skyStaking, '0x0650CAF159C5A49f711e8169D4336ECB9b950275'),
+    stakingCle: contractDesc(skyCleStaking, '0x10ab606B067C9C461d8893c47C7512472E19e2Ce'),
   },
 }
 

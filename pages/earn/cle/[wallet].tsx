@@ -9,7 +9,7 @@ import { AppLayout } from 'components/layouts/AppLayout'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
-import { SkyStakePositionView } from 'features/sky/components/stake/SkyStakePositionView'
+import { SkyCLEPositionView } from 'features/sky/components/stake/SkyCLEPositionView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -22,15 +22,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { combineLatest, of } from 'rxjs'
 import { Box, Container } from 'theme-ui'
 
-const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
+const SkyCleStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
   const [{ wallet }] = useConnectWallet()
   const [reloadingTokenInfo, setReloadingTokenInfo] = useState(false)
-  const [tempSkyStakeWalletData, setTempSkyWalletStakeData] = useState<{
+  const [tempSkyCleStakeWalletData, setTempSkyWalletStakeData] = useState<{
     balance: BigNumber
-    earned: BigNumber
-  }>()
-  const [tempSkyStakeData, setTempSkyStakeData] = useState<{
-    apy: BigNumber
     totalUSDSLocked: BigNumber
   }>()
   const [tempBalancesData, setTempBalancesData] = useState<BigNumber[]>()
@@ -38,49 +34,32 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
   const {
     balancesFromAddressInfoArray$,
     allowanceForAccountEthers$,
-    skyUsdsWalletStakeDetails$,
-    skyUsdsStakeDetails$,
-    tokenPriceUSD$,
+    skyUsdsWalletStakeCleDetails$,
   } = useProductContext()
-  const [tokenPrices] = useObservable(useMemo(() => tokenPriceUSD$(['MKR']), [tokenPriceUSD$]))
-  const [skyStakeWalletData, skyStakeWalletError] = useObservable(
+  const [skyCleStakeWalletData, skyCleStakeWalletError] = useObservable(
     useMemo(
-      () => (reloadingTokenInfo ? of(undefined) : skyUsdsWalletStakeDetails$(walletAddress)),
-      [skyUsdsWalletStakeDetails$, walletAddress, reloadingTokenInfo],
-    ),
-  )
-  const [skyStakeData, skyStakeError] = useObservable(
-    useMemo(
-      () => (reloadingTokenInfo ? of(undefined) : skyUsdsStakeDetails$(tokenPrices?.MKR)),
-      [reloadingTokenInfo, skyUsdsStakeDetails$, tokenPrices?.MKR],
+      () => (reloadingTokenInfo ? of(undefined) : skyUsdsWalletStakeCleDetails$(walletAddress)),
+      [skyUsdsWalletStakeCleDetails$, walletAddress, reloadingTokenInfo],
     ),
   )
   useEffect(() => {
     if (
-      skyStakeWalletData &&
-      !tempSkyStakeWalletData?.balance.isEqualTo(skyStakeWalletData.balance)
+      skyCleStakeWalletData &&
+      !tempSkyCleStakeWalletData?.balance.isEqualTo(skyCleStakeWalletData.balance)
     ) {
-      setTempSkyWalletStakeData(skyStakeWalletData)
+      setTempSkyWalletStakeData(skyCleStakeWalletData)
     }
-  }, [skyStakeWalletData, tempSkyStakeWalletData])
-  useEffect(() => {
-    if (skyStakeData && !tempSkyStakeData?.apy.isEqualTo(skyStakeData.apy)) {
-      setTempSkyStakeData(skyStakeData)
-    }
-  }, [skyStakeData, tempSkyStakeData])
+  }, [skyCleStakeWalletData, tempSkyCleStakeWalletData])
+
   const [balancesData, balancesError] = useObservable(
     useMemo(
       () =>
         reloadingTokenInfo
-          ? of([undefined, undefined])
+          ? of([undefined])
           : balancesFromAddressInfoArray$(
               [
                 {
                   address: mainnetContracts.tokens['USDS'].address,
-                  precision: 18,
-                },
-                {
-                  address: mainnetContracts.tokens['SKY'].address,
                   precision: 18,
                 },
               ],
@@ -91,13 +70,7 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
     ),
   )
   useEffect(() => {
-    if (
-      balancesData &&
-      balancesData[0] &&
-      balancesData[1] &&
-      (!tempBalancesData?.[0].isEqualTo(balancesData[0]) ||
-        !tempBalancesData?.[1].isEqualTo(balancesData[1]))
-    ) {
+    if (balancesData && balancesData[0] && !tempBalancesData?.[0].isEqualTo(balancesData[0])) {
       setTempBalancesData(balancesData as BigNumber[])
     }
   }, [balancesData, tempBalancesData])
@@ -105,24 +78,19 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
     useMemo(
       () =>
         reloadingTokenInfo
-          ? of([zero, zero])
+          ? of([zero])
           : combineLatest([
               allowanceForAccountEthers$(
                 'USDS',
-                mainnetContracts.sky.staking.address,
-                NetworkIds.MAINNET,
-              ),
-              allowanceForAccountEthers$(
-                'SKY',
-                mainnetContracts.sky.staking.address,
+                mainnetContracts.sky.stakingCle.address,
                 NetworkIds.MAINNET,
               ),
             ]),
       [allowanceForAccountEthers$, reloadingTokenInfo],
     ),
   )
-  const [usdsBalance, skyBalance] = balancesData || [undefined, undefined]
-  const [usdsAllowance, skyAllowance] = allowancesData || [undefined, undefined]
+  const [usdsBalance] = balancesData || [undefined]
+  const [usdsAllowance] = allowancesData || [undefined]
   return (
     <Container variant="vaultPageContainer">
       {!isOwner && walletAddress && (
@@ -130,26 +98,17 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
           <VaultOwnershipBanner account={wallet?.accounts[0]?.address} controller={walletAddress} />
         </Box>
       )}
-      <VaultHeadline header={'Stake USDS'} tokens={['USDS']} details={[]} />
-      <WithErrorHandler
-        error={[allowancesError, balancesError, skyStakeError, skyStakeWalletError]}
-      >
+      <VaultHeadline header={'Earn Chronicle Points'} tokens={['USDS', 'CLE']} details={[]} />
+      <WithErrorHandler error={[allowancesError, balancesError, skyCleStakeWalletError]}>
         <WithLoadingIndicator
-          value={[
-            usdsBalance || tempBalancesData?.[0],
-            skyBalance || tempBalancesData?.[1],
-            skyStakeData || tempSkyStakeData,
-          ]}
+          value={[usdsBalance || tempBalancesData?.[0]]}
           customLoader={<PositionLoadingState header={null} />}
         >
-          {([_usdsBalance, _skyBalance, _skyStakeData]) => (
-            <SkyStakePositionView
+          {([_usdsBalance]) => (
+            <SkyCLEPositionView
               usdsBalance={_usdsBalance}
-              skyBalance={_skyBalance}
               usdsAllowance={usdsAllowance}
-              skyAllowance={skyAllowance}
-              skyStakeWalletData={skyStakeWalletData}
-              skyStakeData={_skyStakeData}
+              skyCleStakeWalletData={skyCleStakeWalletData}
               isOwner={isOwner}
               reloadingTokenInfo={reloadingTokenInfo}
               setReloadingTokenInfo={setReloadingTokenInfo}
@@ -162,14 +121,14 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
   )
 }
 
-const SkyStakeUsdsViewWrapper = ({ walletAddress }: { walletAddress?: string }) => {
+const SkyCleStakeUsdsViewWrapper = ({ walletAddress }: { walletAddress?: string }) => {
   return (
     <AppLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>
-              <SkyStakeUsdsView walletAddress={walletAddress} />
+              <SkyCleStakeUsdsView walletAddress={walletAddress} />
             </WithWalletAssociatedRisk>
           </WithTermsOfService>
         </GasEstimationContextProvider>
@@ -186,4 +145,4 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     },
   }
 }
-export default SkyStakeUsdsViewWrapper
+export default SkyCleStakeUsdsViewWrapper
