@@ -205,7 +205,12 @@ export const skyUsdsWalletStakeCleDetails = async ({ ownerAddress }: { ownerAddr
     ),
     fetch(
       `https://info-sky.blockanalitica.com/api/v1/farms/${mainnetContracts.sky.stakingCle.address}/wallets/${ownerAddress}/?format=json`,
-    ).then((resp) => resp.json()),
+    )
+      .then((resp) => resp.json())
+      .catch((error) => {
+        console.error('Failed to fetch earned CLE rewards:', error)
+        return { reward_balance: '0' }
+      }),
     skyStakingCleContract['totalSupply']().then(
       (USDSLocked: ethers.BigNumber) => new BigNumber(ethers.utils.formatUnits(USDSLocked, 18)),
     ),
