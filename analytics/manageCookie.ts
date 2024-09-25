@@ -5,7 +5,7 @@ import type { CookieName, Switch } from './common'
 export const manageCookie: Record<CookieName, Switch> = {
   marketing: {
     enable: () => {},
-    disable: () => {}, // no needed since adding adRoll instance to app is 0/1 like
+    disable: () => {},
   },
   analytics: {
     enable: () => mixpanel.opt_in_tracking(),

@@ -170,7 +170,7 @@ export const PortfolioPositionsView = ({
       }}
       data-testid="portfolio-positions-controls"
     >
-      <Flex sx={{ flexDirection: 'row', mt: [2, 0] }}>
+      <Flex sx={{ flexDirection: 'row', mt: [2, 0], position: 'relative', zIndex: 2 }}>
         <PortfolioPositionsProductSelect onChange={updatePortfolioPositionsFilters('product')} />
         <PortfolioPositionsSortingSelect onChange={updatePortfolioPositionsFilters('sorting')} />
       </Flex>

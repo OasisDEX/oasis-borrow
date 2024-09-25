@@ -7,16 +7,17 @@ import type { Vault } from 'blockchain/vaults.types'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { GraphQLClient } from 'graphql-request'
-import { flatten, memoize } from 'lodash'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
+import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+import { mapMakerSubgraphAutomationHistoryOld } from 'features/vaultHistory/mapMakerSubgraphAutomationHistoryOld'
+import { mapMakerSubgraphHistoryOld } from 'features/vaultHistory/mapMakerSubgraphHistoryOld'
+import { flatten } from 'lodash'
 import pickBy from 'lodash/pickBy'
-import { equals } from 'ramda'
 import type { Observable } from 'rxjs'
-import { combineLatest, of } from 'rxjs'
+import { combineLatest, from, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
 import { groupHistoryEventsByHash } from './groupHistoryEventsByHash'
-import { query, triggerEventsQuery } from './vaultHistory.constants'
 import type { VaultHistoryEvent, WithSplitMark } from './vaultHistory.types'
 import type {
   AutomationEvent,
@@ -93,120 +94,6 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
   }
 }
 
-export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
-  const addOrRemove = ['added', 'removed']
-  const addCombination = ['added']
-
-  const eventTypes = events.reduce((acc, curr) => {
-    if (acc.includes((curr as AutomationEvent).eventType)) {
-      return acc
-    }
-
-    return [...acc, (curr as AutomationEvent).eventType]
-  }, [] as string[])
-
-  const addOrRemoveEvents = events.filter(
-    (item) => 'triggerId' in item && addOrRemove.includes(item.eventType),
-  ) as AutomationEvent[]
-
-  if (addOrRemoveEvents.length) {
-    const historyKey = equals(eventTypes, addCombination) ? 'addTriggerData' : 'removeTriggerData'
-
-    return {
-      ...addOrRemoveEvents[0],
-      autoKind: addOrRemoveEvents[0].kind,
-      [historyKey]: addOrRemoveEvents.map((item) => unpackTriggerDataForHistory(item)),
-    } as VaultHistoryEvent
-  }
-
-  return undefined
-}
-
-export function getUpdateTrigger(events: VaultHistoryEvent[]) {
-  const updateCombination = ['added', 'removed']
-
-  const eventTypes = events
-    .reduce((acc, curr) => {
-      if (acc.includes((curr as AutomationEvent).eventType)) {
-        return acc
-      }
-
-      return [...acc, (curr as AutomationEvent).eventType]
-    }, [] as string[])
-    .sort()
-
-  const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
-
-  const autoEvent = events.find(
-    (item) => 'triggerId' in item && updateCombination.includes(item.eventType),
-  ) as AutomationEvent
-
-  if (autoEvent && isUpdateTriggerEvent) {
-    const addEvents = events.filter(
-      (item) => 'triggerId' in item && item.eventType === 'added',
-    ) as AutomationEvent[]
-
-    const removeEvents = events.filter(
-      (item) => 'triggerId' in item && item.eventType === 'removed',
-    ) as AutomationEvent[]
-
-    return {
-      ...autoEvent,
-      addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
-      removeTriggerData: removeEvents.map((item) => unpackTriggerDataForHistory(item)),
-      eventType: 'updated',
-      autoKind: autoEvent.kind,
-    } as VaultHistoryEvent
-  }
-
-  return undefined
-}
-
-export function getOverrideTriggers(events: VaultHistoryEvent[]) {
-  const overrideCombinationV1 = ['added', 'added', 'removed']
-  const overrideCombinationV2 = ['added', 'added', 'removed', 'removed']
-
-  const eventTypes = events
-    .reduce((acc, curr) => [...acc, (curr as AutomationEvent).eventType], [] as string[])
-    .sort()
-  const isOverrideTriggerEvent =
-    equals(eventTypes, overrideCombinationV1) || equals(eventTypes, overrideCombinationV2)
-
-  const standaloneEvents = events.filter(
-    (item) => 'triggerId' in item && !('groupId' in item),
-  ) as AutomationEvent[]
-
-  const groupEvent = events.find(
-    (item) => 'triggerId' in item && 'groupId' in item && item.groupId,
-  ) as AutomationEvent
-
-  if (standaloneEvents.length && groupEvent && isOverrideTriggerEvent) {
-    const addEvents = events.filter(
-      (item) => 'triggerId' in item && item.eventType === 'added',
-    ) as AutomationEvent[]
-
-    return [
-      {
-        ...groupEvent,
-        addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
-        eventType: 'added',
-        autoKind: groupEvent.kind,
-      } as VaultHistoryEvent,
-      ...standaloneEvents.map(
-        (item) =>
-          ({
-            ...item,
-            removeTriggerData: [unpackTriggerDataForHistory(item)],
-            eventType: 'removed',
-            autoKind: item.kind,
-          }) as VaultHistoryEvent,
-      ),
-    ]
-  }
-
-  return undefined
-}
-
 export function getExecuteTrigger(events: VaultHistoryEvent[]) {
   const postExecutionEvents = [
     'DECREASE_MULTIPLE',
@@ -233,32 +120,32 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
 }
 
 export function mapAutomationEvents(events: VaultHistoryEvent[]) {
-  const groupedByHash = groupHistoryEventsByHash(events)
+  const unpackedAutomationEvents = events.map((item) => {
+    // if automation event - unpack, if not just return event
+    if ('triggerId' in item) {
+      return {
+        ...item,
+        autoKind: item.kind,
+        [item.eventType === 'added' ? 'addTriggerData' : 'removeTriggerData']: [
+          unpackTriggerDataForHistory(item),
+        ],
+      }
+    }
+
+    return item
+  })
+
+  const groupedByHash = groupHistoryEventsByHash(unpackedAutomationEvents)
 
   const wrappedByHash = Object.keys(groupedByHash).reduce(
     (acc, key) => {
-      const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
       const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
-      const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
-      const overrideEvents = getOverrideTriggers(groupedByHash[key])
-
-      if (overrideEvents) {
-        return { ...acc, [key]: overrideEvents }
-      }
-
-      if (updateTriggerEvent) {
-        return { ...acc, [key]: [updateTriggerEvent] }
-      }
 
       if (executeTriggerEvent) {
         return {
           ...acc,
           [key]: [executeTriggerEvent],
         }
-      }
-
-      if (addOrRemoveEvent) {
-        return { ...acc, [key]: [addOrRemoveEvent] }
       }
 
       return { ...acc, [key]: groupedByHash[key] }
@@ -364,26 +251,6 @@ function parseBigNumbersFields(
   ) as VaultEvent
 }
 
-async function getVaultMultiplyHistory(
-  client: GraphQLClient,
-  urn: string,
-): Promise<ReturnedEvent[]> {
-  const data = await client.request(query, { urn })
-  return data.allVaultMultiplyHistories.nodes
-}
-
-async function getVaultAutomationHistory(
-  client: GraphQLClient,
-  id: BigNumber,
-  chainId: NetworkIds,
-): Promise<ReturnedAutomationEvent[]> {
-  const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
-  return triggersData.allTriggerEvents.nodes.map((item: ReturnedAutomationEvent) => ({
-    ...item,
-    chainId,
-  }))
-}
-
 function addReclaimFlag(events: VaultHistoryEvent[]) {
   return events.map((event, index, array) => {
     if (index === 0) {
@@ -431,19 +298,41 @@ export function createVaultHistory$(
   vault$: (id: BigNumber) => Observable<Vault>,
   vaultId: BigNumber,
 ): Observable<VaultHistoryEvent[]> {
-  const makeClient = memoize(
-    (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
-  )
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ chainId }, { token, address, id }]) => {
-      const { etherscan, cacheApi } = getNetworkContracts(NetworkIds.MAINNET, chainId)
-      return onEveryBlock$.pipe(
-        switchMap(() => {
-          const apiClient = makeClient(cacheApi)
+    switchMap(([{ chainId }, { token, id }]) => {
+      const { etherscan } = getNetworkContracts(NetworkIds.MAINNET, chainId)
 
+      const historyFromSubgraph$ = from(
+        loadSubgraph({
+          subgraph: 'Discover',
+          method: 'getMakerHistoryOld',
+          networkId: chainId,
+          params: {
+            cdpId: id.toNumber(),
+          },
+        }),
+      ) as Observable<SubgraphsResponses['Discover']['getMakerHistoryOld']>
+
+      const automationHistoryFromSubgraph$ = from(
+        loadSubgraph({
+          subgraph: 'Automation',
+          method: 'getMakerAutomationEvents',
+          networkId: chainId,
+          params: { cdpId: id.toNumber() },
+        }),
+      ) as Observable<SubgraphsResponses['Automation']['getMakerAutomationEvents']>
+
+      return combineLatest(
+        historyFromSubgraph$,
+        automationHistoryFromSubgraph$,
+        onEveryBlock$,
+      ).pipe(
+        switchMap(([{ response: _history }, { response: _automationHistory }]) => {
           return combineLatest(
-            getVaultMultiplyHistory(apiClient, address.toLowerCase()),
-            getVaultAutomationHistory(apiClient, id, chainId),
+            of(
+              mapMakerSubgraphHistoryOld(_history.cdps[0].stateLogs, _history.cdps[0].liquidations),
+            ),
+            of(mapMakerSubgraphAutomationHistoryOld(_automationHistory.triggerEvents)),
           )
         }),
         mapEventsToVaultEvents,

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { networksByName } from 'blockchain/networks'
+import { NetworkNames, networksByName } from 'blockchain/networks'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { Icon } from 'components/Icon'
@@ -12,7 +12,7 @@ import { getGradientColor } from 'helpers/getGradientColor'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { arrow_decrease, arrow_increase } from 'theme/icons'
+import { arrow_decrease, arrow_increase, sky } from 'theme/icons'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
 interface PortfolioWalletAssetsProps {
@@ -115,6 +115,20 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
                       </AppLink>
                     </Box>
                   ))}
+                  {['DAI', 'SDAI', 'MKR'].includes(symbol.toUpperCase()) &&
+                    network === NetworkNames.ethereumMainnet && (
+                      <Box as="li">
+                        <AppLink href={`/ethereum/sky/upgrade`}>
+                          <Button
+                            variant="tag"
+                            sx={{ backgroundColor: 'success100', color: 'neutral10' }}
+                          >
+                            <Icon icon={sky} size={16} sx={{ mb: '-4px', mr: 1 }} />
+                            Upgrade DAI & MKR now
+                          </Button>
+                        </AppLink>
+                      </Box>
+                    )}
                 </Flex>
               )}
             </Box>

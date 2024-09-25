@@ -163,7 +163,7 @@ export function VaultActionInput({
       }}
     >
       <Grid
-        columns="1fr 2fr"
+        columns="1.2fr 2fr"
         sx={{
           paddingTop: 0,
           paddingBottom: 2,

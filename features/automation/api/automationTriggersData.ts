@@ -1,54 +1,65 @@
 import { TriggerType } from '@oasisdex/automation'
 import type BigNumber from 'bignumber.js'
-import { getNetworkContracts } from 'blockchain/contracts'
 import { every5Seconds$ } from 'blockchain/network.constants'
 import type { Context } from 'blockchain/network.types'
-import { NetworkIds } from 'blockchain/networks'
-import type { AddressesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
-import type { PositionId } from 'features/aave/types/position-id'
-import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
+import type { NetworkIds } from 'blockchain/networks'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { GraphQLClient } from 'graphql-request'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
+import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { type Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import type { TriggersData } from './automationTriggersData.types'
 
-export async function loadTriggerDataFromCache({
+async function loadTriggerDataFromSubgraph({
   positionId,
-  proxyAddress,
-  cacheApi,
   chainId,
 }: {
   positionId: number
-  cacheApi: string
-  proxyAddress?: string
   chainId: NetworkIds
 }): Promise<TriggersData> {
-  const activeTriggersForVault = await getAllActiveTriggers(
-    new GraphQLClient(cacheApi),
-    positionId.toString(),
-    proxyAddress,
+  const { response } = (await loadSubgraph({
+    subgraph: 'Discover',
+    method: 'getMakerTriggersOld',
+    networkId: chainId,
+    params: {
+      cdpId: positionId,
+    },
+  })) as SubgraphsResponses['Discover']['getMakerTriggersOld']
+
+  // handling for cases where testing on fork
+  // subgraph operates only on mainnet
+  if (!response.cdps[0]) {
+    return {
+      isAutomationDataLoaded: true,
+      isAutomationEnabled: false,
+      triggers: [],
+      chainId,
+    }
+  }
+
+  // get only active triggers
+  const triggers = response.cdps[0].triggers.filter(
+    (trigger) => !trigger.removedBlock && !trigger.executedBlock,
   )
 
   return {
     isAutomationDataLoaded: true,
-    isAutomationEnabled: activeTriggersForVault.length > 0,
-    triggers: activeTriggersForVault,
+    isAutomationEnabled: triggers.length > 0,
+    triggers: triggers.map((item) => ({
+      ...item,
+      triggerId: item.id,
+      executionParams: item.triggerData,
+    })),
     chainId,
   }
 }
 
 export function createAutomationTriggersData(
   context$: Observable<Context>,
-  onEveryBlock$: Observable<number>,
-  proxiesRelatedWithPosition$: (
-    positionId: PositionId,
-    networkId: NetworkIds,
-  ) => Observable<AddressesRelatedWithPosition>,
   id: BigNumber,
   networkId: NetworkIds,
 ): Observable<TriggersData> {
@@ -62,12 +73,10 @@ export function createAutomationTriggersData(
     })
   }
   return every5Seconds$.pipe(
-    withLatestFrom(context$, proxiesRelatedWithPosition$({ vaultId: id.toNumber() }, networkId)),
-    mergeMap(([, context, proxies]) => {
-      return loadTriggerDataFromCache({
+    withLatestFrom(context$),
+    mergeMap(([, context]) => {
+      return loadTriggerDataFromSubgraph({
         positionId: id.toNumber(),
-        proxyAddress: proxies.dpmProxy?.proxy,
-        cacheApi: getNetworkContracts(NetworkIds.MAINNET, context.chainId).cacheApi,
         chainId: context.chainId,
       })
     }),

@@ -28,6 +28,8 @@ export type ActionBannerType = {
   sx?: ThemeUIStyleObject
   title: string
   withClose?: boolean
+  lightText?: boolean
+  customCtaVariant?: string
 } & (ActionBannerWithIcon | ActionBannerWithImage)
 
 export type ActionBannerProps = PropsWithChildren<ActionBannerType>
@@ -45,6 +47,8 @@ export function ActionBanner({
   sx,
   title,
   withClose,
+  lightText = false,
+  customCtaVariant,
 }: ActionBannerProps) {
   const [isBannerClosed, setIsBannerClosed] = useState<boolean>(
     closingSaveKey ? sessionStorage.getItem(getSessionStorageKey(closingSaveKey)) === '1' : false,
@@ -70,11 +74,15 @@ export function ActionBanner({
         </Flex>
       )}
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, rowGap: 1 }}>
-        <Heading as="h3" variant="boldParagraph2">
+        <Heading
+          as="h3"
+          variant="boldParagraph2"
+          sx={{ color: lightText ? 'neutral10' : undefined }}
+        >
           {title}
         </Heading>
         {children && (
-          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: lightText ? 'neutral10' : 'neutral80' }}>
             {children}
           </Text>
         )}
@@ -87,11 +95,20 @@ export function ActionBanner({
               internalInNewTab={cta.targetBlank}
               {...(cta.onClick && { onClick: cta.onClick })}
             >
-              <Button variant="action">{cta.label}</Button>
+              <Button
+                variant={customCtaVariant ?? 'action'}
+                sx={{ color: lightText ? 'neutral10' : undefined }}
+              >
+                {cta.label}
+              </Button>
             </AppLink>
           ) : (
             cta.onClick && (
-              <Button variant="action" onClick={cta.onClick}>
+              <Button
+                variant={customCtaVariant ?? 'action'}
+                sx={{ color: lightText ? 'neutral10' : undefined }}
+                onClick={cta.onClick}
+              >
                 {cta.label}
               </Button>
             )

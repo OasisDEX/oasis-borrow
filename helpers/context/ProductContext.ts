@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { tokenAllowance as tokenAllowanceEthers } from 'blockchain/better-calls/erc20'
+import { skyUsdsStakeDetails, skyUsdsWalletStakeDetails } from 'blockchain/better-calls/sky'
 import { call } from 'blockchain/calls/callsHelpers'
 import { dogIlk } from 'blockchain/calls/dog'
 import { tokenAllowance } from 'blockchain/calls/erc20'
@@ -92,6 +93,7 @@ import { memoize } from 'lodash'
 import { equals } from 'ramda'
 import type { Observable } from 'rxjs'
 import { combineLatest, defer, of } from 'rxjs'
+import { fromPromise } from 'rxjs/internal-compatibility'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import type { MainContext } from './MainContext.types'
@@ -369,9 +371,7 @@ export function setupProductContext(
       `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
   )
 
-  const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
-  )
+  const automationTriggersData$ = memoize(curry(createAutomationTriggersData)(chainContext$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -684,6 +684,12 @@ export function setupProductContext(
         .toString()}-${quotePrice.decimalPlaces(2).toString()}`,
   )
 
+  const skyUsdsWalletStakeDetails$ = (ownerAddress?: string) =>
+    onEveryBlock$.pipe(() => fromPromise(skyUsdsWalletStakeDetails({ ownerAddress })))
+
+  const skyUsdsStakeDetails$ = (mkrPrice?: BigNumber) =>
+    onEveryBlock$.pipe(() => fromPromise(skyUsdsStakeDetails({ mkrPrice })))
+
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
@@ -726,6 +732,8 @@ export function setupProductContext(
     priceInfo$,
     protocols,
     reclaimCollateral$,
+    skyUsdsWalletStakeDetails$,
+    skyUsdsStakeDetails$,
     strategyConfig$,
     tokenPriceUSD$,
     tokenPriceUSDStatic$,

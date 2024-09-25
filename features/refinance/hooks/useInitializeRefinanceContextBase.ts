@@ -75,6 +75,7 @@ export const useInitializeRefinanceContextBase = ({
     // not handled
     [LendingProtocol.AaveV2]: [],
     [LendingProtocol.Ajna]: [],
+    [LendingProtocol.Sky]: [],
   }[contextInput.position.lendingProtocol]
 
   const getTokenUsdPrice = (symbol: string) =>

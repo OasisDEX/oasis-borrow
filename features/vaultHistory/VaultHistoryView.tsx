@@ -40,7 +40,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
                   ? getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan
                   : undefined
               }
-              key={`${item.id}-${item.splitId || item.hash}`}
+              key={`${item.id}${item.kind}-${item.splitId || item.hash}-${'eventType' in item ? item.eventType : ''}-${item.timestamp}`}
             />
           ))}
         </DefinitionList>

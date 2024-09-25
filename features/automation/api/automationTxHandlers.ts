@@ -23,7 +23,7 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { takeUntilTxState } from './takeUntilTxState'
 
 export function removeAutomationTrigger(
-  { sendWithGasEstimation }: TxHelpers,
+  { send }: TxHelpers,
   txData: AutomationRemoveTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
@@ -32,7 +32,7 @@ export function removeAutomationTrigger(
 ) {
   const resolvedTxDef = removeTriggerDef || removeAutomationBotAggregatorTriggers
 
-  sendWithGasEstimation(resolvedTxDef as TransactionDef<AutomationTxData>, txData)
+  send(resolvedTxDef as TransactionDef<AutomationTxData>, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
     .subscribe((txState) =>
       handleTransaction({
@@ -45,7 +45,7 @@ export function removeAutomationTrigger(
 }
 
 export function addAutomationTrigger(
-  { sendWithGasEstimation }: TxHelpers,
+  { send }: TxHelpers,
   txData: AutomationAddTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
@@ -60,7 +60,7 @@ export function addAutomationTrigger(
 
   const resolvedTxDef = addTriggerDef || txDef
 
-  sendWithGasEstimation(resolvedTxDef as TransactionDef<AutomationTxData>, txData)
+  send(resolvedTxDef as TransactionDef<AutomationTxData>, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
     .subscribe((txState) => {
       return handleTransaction({

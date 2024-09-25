@@ -30,7 +30,9 @@ import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/hand
 import type { Erc4626DpmPositionsResponse } from 'handlers/portfolio/positions/handlers/erc-4626/types'
 import type {
   MakerDiscoverPositionsResponse,
+  MakerHistoryOldResponse,
   MakerOsmResponse,
+  MakerTriggersOldResponse,
 } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 import type { Erc4626InterestRatesResponse } from 'handlers/product-hub/update-handlers/erc-4626/erc4626Handler'
@@ -67,6 +69,8 @@ export type Subgraphs = {
   Discover: {
     getMakerDiscoverPositions: { walletAddress: string }
     getOsm: { id: string; block: number }
+    getMakerHistoryOld: { cdpId: number }
+    getMakerTriggersOld: { cdpId: number }
   }
   Morpho: {
     getMorphoVauldIdPositions: { positionId: number }
@@ -92,6 +96,9 @@ export type Subgraphs = {
       dpmProxyAddress: string
       collateralAddress: string
       debtAddress: string
+    }
+    getMakerAutomationEvents: {
+      cdpId: number
     }
   }
 }
@@ -170,6 +177,8 @@ export type SubgraphsResponses = {
   Discover: {
     getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
     getOsm: SubgraphBaseResponse<MakerOsmResponse>
+    getMakerHistoryOld: SubgraphBaseResponse<MakerHistoryOldResponse>
+    getMakerTriggersOld: SubgraphBaseResponse<MakerTriggersOldResponse>
   }
   Morpho: {
     getMorphoVauldIdPositions: SubgraphBaseResponse<MorphoVauldIdPositionsResponse>
@@ -197,6 +206,7 @@ export type SubgraphsResponses = {
   }
   Automation: {
     getAutomationEvents: SubgraphBaseResponse<{ triggerEvents: TriggerEvent[] }>
+    getMakerAutomationEvents: SubgraphBaseResponse<{ triggerEvents: TriggerEvent[] }>
   }
 }
 

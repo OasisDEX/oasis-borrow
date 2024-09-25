@@ -34,8 +34,9 @@ git clone https://github.com/OasisDEX/oasis-borrow.git
 
 Navigate to the project folder and install all dependencies
 
-NOTE: to install private packages from NPM you need to have an env variable called `NPM_TOKEN` containing your personal NPM access token.
-We recommend to set `NPM_TOKEN` in your `.env` file using our `.env.template`, this way you can just `source .env` before install.
+NOTE: to install private packages from NPM you need to have an env variable called `NPM_TOKEN`
+containing your personal NPM access token. We recommend to set `NPM_TOKEN` in your `.env` file using
+our `.env.template`, this way you can just `source .env` before install.
 
 ```sh
 source .env
@@ -135,12 +136,6 @@ PRODUCT_HUB_KEY="<any value of your choice>"
 
 - `MIXPANEL_KEY` - The value will be used for `production` environments. This is the project key
   that is generated from Mixpanel.
-
-- `ADROLL_PIX_ID` - The value will be used for `production` environments. This is the project key
-  that is generated from AdRoll Pixel.
-
-- `ADROLL_ADV_ID` - The value will be used for `production` environments. This is the project key
-  that is generated from AdRoll Pixel.
 
 - `USE_TERMS_OF_SERVICE` - In order to use some functionalities the user should read and accept
   Terms of Service. For development purposes, this feature can be disabled. You can disable this

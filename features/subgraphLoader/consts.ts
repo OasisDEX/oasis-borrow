@@ -897,4 +897,100 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMakerHistoryOld: gql`
+    query getMakerHistoryOld($cdpId: Int!) {
+      cdps(where: { cdp: $cdpId }) {
+        stateLogs {
+          kind
+          collateralBefore
+          collateralAfter
+          collateralDiff
+          debtBefore
+          debtAfter
+          debtDiff
+          normalizedDebtBefore
+          normalizedDebtAfter
+          normalizedDebtDiff
+          beforeMultiple
+          afterMultiple
+          liquidationPriceBefore
+          liquidationPriceAfter
+          collRatioBefore
+          collRatioAfter
+          rate
+          oraclePrice
+          multipleDiff
+          collRatioDiff
+          oazoFee
+          loadFee
+          gasFee
+          totalFee
+          netValue
+          marketPrice
+          collateralMarketPrice
+          logIndex
+          tab
+          flip
+          bought
+          sold
+          depositCollateral
+          depositDai
+          withdrawnCollateral
+          withdrawnDai
+          exitCollateral
+          exitDai
+          debt
+          lockedCollateral
+          block
+          timestamp
+          transaction
+        }
+        liquidations {
+          kind
+          collateralAmount
+          daiAmount
+          remainingDebt
+          remainingCollateral
+          startedTransaction
+          finishedTransaction
+          auctionId
+        }
+      }
+    }
+  `,
+  getMakerTriggersOld: gql`
+    query getMakerTriggersOld($cdpId: Int!) {
+      cdps(where: { cdp: $cdpId }) {
+        triggers {
+          id
+          commandAddress
+          triggerData
+          removedBlock
+          executedBlock
+        }
+      }
+    }
+  `,
+  getMakerAutomationEvents: gql`
+    query getAutomationEvents($cdpId: ID!) {
+      triggerEvents(where: { trigger_: { cdpId: $cdpId } }) {
+        eventType
+        transaction
+        timestamp
+        trigger {
+          id
+          kind
+          simpleName
+          tokens {
+            symbol
+            address
+          }
+          decodedData
+          decodedDataNames
+          triggerData
+          commandAddress
+        }
+      }
+    }
+  `,
 }

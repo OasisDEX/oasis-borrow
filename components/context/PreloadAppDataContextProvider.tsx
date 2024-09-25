@@ -32,6 +32,7 @@ export function PreloadAppDataContextProvider({ children }: PropsWithChildren<{}
               LendingProtocol.AaveV2,
               LendingProtocol.AaveV3,
               LendingProtocol.Maker,
+              LendingProtocol.Sky,
               ...(MorphoSafetySwitch ? [] : [LendingProtocol.MorphoBlue]),
               LendingProtocol.SparkV3,
             ]}`,

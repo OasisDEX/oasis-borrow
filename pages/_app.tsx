@@ -2,7 +2,6 @@ import { CacheProvider, Global } from '@emotion/core'
 import { Web3OnboardProvider } from '@web3-onboard/react'
 import type { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
-import { adRollPixelScript } from 'analytics/adroll'
 import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
 import { trackingEvents } from 'analytics/trackingEvents'
@@ -155,7 +154,10 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       {cookiesValue?.enabledCookies?.marketing && (
-        <Script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
+        // Use when there is a need to load extra script required for marketing
+        // Example usage:
+        // <Script dangerouslySetInnerHTML={{ __html: scriptToBeLoaded }} async />
+        <></>
       )}
       <ThemeUIProvider theme={theme}>
         <CacheProvider value={cache}>
