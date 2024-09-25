@@ -17,11 +17,11 @@ export const partnerLogosConfig: ImagesSliderProps['items'] = [
     height: '30px',
   },
   {
-    imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/maker.svg'),
-    imgAlt: 'Maker',
+    imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/sky.svg'),
+    imgAlt: 'Sky',
     url: '',
-    width: '242px',
-    height: '100px',
+    width: '110px',
+    height: '38px',
   },
   {
     imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/spark.svg'),
