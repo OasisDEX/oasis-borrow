@@ -46,7 +46,7 @@ export const useSky = ({
   contractAddress,
   stake,
   viewWalletAddress,
-  stakingAction,
+  stakingAction = 'stake',
 }: useSkyType) => {
   const { replace } = useRouter()
   const { connect, connecting } = useConnection()
