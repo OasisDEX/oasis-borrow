@@ -58,9 +58,9 @@ export const useMorphoRefinanceContextInputs = ({
   const collateralAmount = castedPosition.collateralAmount.toString()
   const debtAmount = castedPosition.debtAmount.toString()
 
-  const chainFamily = getChainInfoByChainId(networkId)
-  if (!chainFamily) {
-    throw new Error(`ChainFamily with networkId ${networkId} is not supported`)
+  const chainInfo = getChainInfoByChainId(networkId)
+  if (!chainInfo) {
+    throw new Error(`chainInfo with networkId ${networkId} is not supported`)
   }
 
   if (!marketId) {
@@ -71,7 +71,7 @@ export const useMorphoRefinanceContextInputs = ({
     throw new Error(`Dpm proxy not defined`)
   }
 
-  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId) as any as ILendingPoolId
+  const poolId = getMorphoPoolId(chainInfo, marketId) as any as ILendingPoolId
   const positionId = getMorphoPositionId(vaultId) as any as ILendingPositionId
 
   const morphoTriggerId: `morphoblue-${string}` = `morphoblue-${marketId}`

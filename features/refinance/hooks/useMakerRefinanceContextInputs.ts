@@ -50,16 +50,16 @@ export const useMakerRefinanceContextInputs = ({
 }): RefinanceContextInput => {
   const { triggerData } = useAutomationContext()
 
-  const chainFamily = getChainInfoByChainId(networkId)
-  if (!chainFamily) {
-    throw new Error(`ChainFamily with networkId ${networkId} is not supported`)
+  const chainInfo = getChainInfoByChainId(networkId)
+  if (!chainInfo) {
+    throw new Error(`chainInfo with networkId ${networkId} is not supported`)
   }
   const debtTokenSymbol = 'DAI'
-  const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
-  const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
+  const collateralToken = mapTokenToSdkToken(chainInfo, collateralTokenSymbol)
+  const debtToken = mapTokenToSdkToken(chainInfo, debtTokenSymbol)
 
   const poolId = getMakerPoolId(
-    chainFamily.chainInfo,
+    chainInfo,
     ilkType,
     collateralToken,
     debtToken,

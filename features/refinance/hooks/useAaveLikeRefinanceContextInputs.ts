@@ -55,9 +55,9 @@ export const useAaveLikeRefinanceContextInputs = ({
   position: LendingPosition
   dpmProxy?: string
 }): RefinanceContextInput => {
-  const chainFamily = getChainInfoByChainId(networkId)
-  if (!chainFamily) {
-    throw new Error(`ChainFamily with networkId ${networkId} is not supported`)
+  const chainInfo = getChainInfoByChainId(networkId)
+  if (!chainInfo) {
+    throw new Error(`ChainInfo with networkId ${networkId} is not supported`)
   }
 
   const castedPosition = position as AaveLikePositionV2
@@ -69,13 +69,13 @@ export const useAaveLikeRefinanceContextInputs = ({
   const collateralAmount = castedPosition.collateralAmount.toString()
   const debtAmount = castedPosition.debtAmount.toString()
 
-  const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, collateralTokenSymbol)
-  const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, debtTokenSymbol)
+  const collateralToken = mapTokenToSdkToken(chainInfo, collateralTokenSymbol)
+  const debtToken = mapTokenToSdkToken(chainInfo, debtTokenSymbol)
   const emodeType = getEmode(collateralToken, debtToken, lendingProtocol)
 
   const poolId = getAaveLikePoolId(
     lendingProtocol,
-    chainFamily.chainInfo,
+    chainInfo,
     collateralToken,
     debtToken,
     emodeType,

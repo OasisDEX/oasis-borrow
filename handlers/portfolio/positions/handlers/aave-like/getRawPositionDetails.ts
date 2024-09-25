@@ -54,9 +54,9 @@ export function getRawPositionDetails(
   lendingProtocol: LendingProtocol,
   prices: TokensPricesList,
 ) {
-  const chainFamily = getChainInfoByChainId(dpm.networkId)
-  if (!chainFamily) {
-    throw new Error(`ChainFamily with networkId ${dpm.networkId} is not supported`)
+  const chainInfo = getChainInfoByChainId(dpm.networkId)
+  if (!chainInfo) {
+    throw new Error(`chainInfo with networkId ${dpm.networkId} is not supported`)
   }
   const collateral = calculations.collateral
   const debt = calculations.debt
@@ -76,13 +76,13 @@ export function getRawPositionDetails(
     RiskRatio.TYPE.LTV,
   )
 
-  const collateralToken = mapTokenToSdkToken(chainFamily.chainInfo, commonData.primaryToken)
-  const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, commonData.secondaryToken)
+  const collateralToken = mapTokenToSdkToken(chainInfo, commonData.primaryToken)
+  const debtToken = mapTokenToSdkToken(chainInfo, commonData.secondaryToken)
   const emodeType = getEmode(collateralToken, debtToken, lendingProtocol)
 
   const poolId = getAaveLikePoolId(
     lendingProtocol,
-    chainFamily.chainInfo,
+    chainInfo,
     collateralToken,
     debtToken,
     emodeType,

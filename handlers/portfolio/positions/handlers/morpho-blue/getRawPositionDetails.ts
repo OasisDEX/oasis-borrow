@@ -27,9 +27,9 @@ export function getRawPositionDetails(
   proxyAddress: string,
   ownerAddress: string,
 ) {
-  const chainFamily = getChainInfoByChainId(networkId)
-  if (!chainFamily) {
-    throw new Error(`ChainFamily with networkId ${networkId} is not supported`)
+  const chainInfo = getChainInfoByChainId(networkId)
+  if (!chainInfo) {
+    throw new Error(`chainInfo with networkId ${networkId} is not supported`)
   }
 
   const collateralPrice = primaryTokenPrice.toString()
@@ -46,7 +46,7 @@ export function getRawPositionDetails(
 
   const borrowRate = rate
 
-  const poolId = getMorphoPoolId(chainFamily.chainInfo, marketId) as unknown as ILendingPoolId
+  const poolId = getMorphoPoolId(chainInfo, marketId) as unknown as ILendingPoolId
   const positionId = getMorphoPositionId(vaultId) as unknown as ILendingPositionId
 
   const rawPositionDetails: PortfolioPosition['rawPositionDetails'] = {
