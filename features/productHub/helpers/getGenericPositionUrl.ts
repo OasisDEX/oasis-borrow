@@ -138,6 +138,7 @@ export function getGenericPositionUrl({
       })
     case LendingProtocol.Sky:
       if (label === 'SRR') return '/earn/srr/'
+      if (label === 'CLE') return '/earn/cle/'
       return '/'
     case LendingProtocol.Maker:
       if (label === 'DSR') return '/earn/dsr/'

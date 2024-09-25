@@ -14,6 +14,7 @@ import {
   cbeth_circle_color,
   chainlink,
   chainlink_circle_color,
+  cle,
   compound,
   compound_circle_color,
   crv,
@@ -141,6 +142,18 @@ export const tokenConfigs: TokenConfig[] = [
     iconCircle: sky,
     color: '#0B9F74',
     background: 'linear-gradient(143.13deg, #0B9F74 12.24%, #64DFBB 85.9%) #FFFFFF',
+    tags: [],
+  },
+  {
+    // TBD
+    symbol: 'CLE',
+    precision: 18,
+    digits: 5,
+    name: 'Chronicle Points',
+    icon: cle,
+    iconCircle: cle,
+    color: '#30d05b',
+    background: 'linear-gradient(143.13deg, #30d05b 12.24%, #5aaf71 85.9%) #FFFFFF',
     tags: [],
   },
   {

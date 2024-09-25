@@ -244,6 +244,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
     mkrsky: emptyContractDesc('mkrsky'),
     susds: emptyContractDesc('susds'),
     staking: emptyContractDesc('staking'),
+    stakingCle: emptyContractDesc('stakingCle'),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, goerli.ajna.AjnaRewardsReedemer),
