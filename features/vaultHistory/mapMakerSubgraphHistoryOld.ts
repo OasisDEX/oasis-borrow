@@ -55,6 +55,7 @@ export const mapMakerSubgraphHistoryOld = (
       lockedCollateral: item.collateralAfter,
       collateralAmount: item.collateralDiff,
       daiAmount: item.debtDiff,
+      marketPrice: item.collateralMarketPrice,
       ...mappedStartedLiquidationEvent,
       ...mappedFinishedLiquidationEvent,
     }
