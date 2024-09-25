@@ -227,6 +227,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     mkrsky: emptyContractDesc('mkrsky'),
     susds: emptyContractDesc('susds'),
     staking: emptyContractDesc('staking'),
+    stakingCle: emptyContractDesc('stakingCle'),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),

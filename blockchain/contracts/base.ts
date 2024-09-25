@@ -217,6 +217,7 @@ export const baseContracts: MainnetContractsWithOptional = {
     mkrsky: emptyContractDesc('mkrsky'),
     susds: emptyContractDesc('susds'),
     staking: emptyContractDesc('staking'),
+    stakingCle: emptyContractDesc('stakingCle'),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, base.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),
