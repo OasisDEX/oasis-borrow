@@ -976,6 +976,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         transaction
         timestamp
         trigger {
+          id
           kind
           simpleName
           tokens {

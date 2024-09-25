@@ -11,7 +11,6 @@ const triggerKindMap: Record<string, string> = {
 
 export const mapMakerSubgraphAutomationHistoryOld = (triggerEvents: TriggerEvent[]) => {
   return triggerEvents.map((event) => {
-    const debtAddressIndex = event.trigger.decodedDataNames.findIndex((x) => x === 'triggerId')
     const cpdIdIndex = event.trigger.decodedDataNames.findIndex((x) => x === 'cpdId')
 
     return {
@@ -26,7 +25,7 @@ export const mapMakerSubgraphAutomationHistoryOld = (triggerEvents: TriggerEvent
       kind: triggerKindMap[event.trigger.kind],
       timestamp: Number(event.timestamp) * 1000,
       triggerData: event.trigger.triggerData,
-      triggerId: event.trigger.decodedData[debtAddressIndex],
+      triggerId: event.trigger.id,
     }
   })
 }

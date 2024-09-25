@@ -138,6 +138,7 @@ export interface TriggerEvent {
 }
 
 export interface Trigger {
+  id: string
   executedTransaction: string
   decodedDataNames: string[]
   decodedData: string[]
