@@ -111,6 +111,8 @@ export interface MakerTriggersOldResponse {
       id: number
       commandAddress: string
       triggerData: string
+      removedBlock: string
+      executedBlock: string
     }[]
   }[]
 }

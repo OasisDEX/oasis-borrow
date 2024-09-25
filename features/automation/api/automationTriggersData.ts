@@ -30,7 +30,10 @@ async function loadTriggerDataFromSubgraph({
     },
   })) as SubgraphsResponses['Discover']['getMakerTriggersOld']
 
-  const triggers = response.cdps[0].triggers
+  // get only active triggers
+  const triggers = response.cdps[0].triggers.filter(
+    (trigger) => !trigger.removedBlock && !trigger.executedBlock,
+  )
 
   return {
     isAutomationDataLoaded: true,

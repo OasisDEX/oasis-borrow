@@ -965,6 +965,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           id
           commandAddress
           triggerData
+          removedBlock
+          executedBlock
         }
       }
     }
