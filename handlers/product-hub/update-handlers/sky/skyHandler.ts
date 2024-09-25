@@ -1,4 +1,4 @@
-import { skyUsdsStakeDetails } from 'blockchain/better-calls/sky'
+import { skyUsdsStakeCleDetails, skyUsdsStakeDetails } from 'blockchain/better-calls/sky'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
@@ -15,7 +15,8 @@ async function getSkyData(
 ): ProductHubHandlerResponse {
   return Promise.all([
     skyUsdsStakeDetails({ mkrPrice: tickers['mkr-usd'] || tickers['mkr-maker'] }),
-  ]).then(([srrData]) => {
+    skyUsdsStakeCleDetails(),
+  ]).then(([srrData, cleData]) => {
     return {
       table: skyProductHubProducts
         .map((product) => {
@@ -33,6 +34,16 @@ async function getSkyData(
               hasRewards: true,
               weeklyNetApy: srrData.apy.toFixed(2),
               liquidity: srrData.totalUSDSLocked.toString(),
+            }
+          }
+          if (label === 'CLE') {
+            return {
+              ...product,
+              primaryTokenAddress,
+              secondaryTokenAddress,
+              network: networksById[networkId].name as ProductHubSupportedNetworks,
+              hasRewards: true,
+              liquidity: cleData.totalUSDSLocked.toString(),
             }
           }
           return {}

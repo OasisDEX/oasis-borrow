@@ -5,6 +5,7 @@ import { amountToWad } from 'blockchain/utils'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { ethers } from 'ethers'
 import {
+  SkyCleStaking__factory,
   SkyDaiUsds__factory,
   SkyMkrSky__factory,
   SkyStaking__factory,
@@ -78,14 +79,16 @@ export const skyUsdsStake = async ({
   action,
   amount,
   signer,
+  stakeForCle = false,
 }: {
   action: 'stake' | 'unstake' | 'claim'
   amount: BigNumber
   signer: ethers.Signer
+  stakeForCle?: boolean
 }) => {
   const skyStakingContract = new ethers.Contract(
-    mainnetContracts.sky.staking.address,
-    SkyStaking__factory.abi,
+    stakeForCle ? mainnetContracts.sky.stakingCle.address : mainnetContracts.sky.staking.address,
+    stakeForCle ? SkyCleStaking__factory.abi : SkyStaking__factory.abi,
     signer,
   )
   if (action === 'stake') {
@@ -163,6 +166,53 @@ export const skyUsdsStakeDetails = async ({ mkrPrice }: { mkrPrice?: BigNumber }
   const apy = rewardsPerYearPrice.div(totalUSDSLocked)
   return { apy, totalUSDSLocked } as {
     apy: BigNumber
+    totalUSDSLocked: BigNumber
+  }
+}
+
+export const skyUsdsStakeCleDetails = async () => {
+  const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
+  const skyStakingCleContract = new ethers.Contract(
+    mainnetContracts.sky.stakingCle.address,
+    SkyCleStaking__factory.abi,
+    rpcProvider,
+  )
+  const [totalUSDSLocked] = await Promise.all([
+    skyStakingCleContract['totalSupply']().then(
+      (USDSLocked: ethers.BigNumber) => new BigNumber(ethers.utils.formatUnits(USDSLocked, 18)),
+    ),
+  ])
+  return { totalUSDSLocked } as {
+    totalUSDSLocked: BigNumber
+  }
+}
+
+export const skyUsdsWalletStakeCleDetails = async ({ ownerAddress }: { ownerAddress?: string }) => {
+  const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
+  if (!ownerAddress) {
+    return undefined
+  }
+  const skyStakingCleContract = new ethers.Contract(
+    mainnetContracts.sky.stakingCle.address,
+    SkyCleStaking__factory.abi,
+    rpcProvider,
+  )
+  const [balance, earned, totalUSDSLocked] = await Promise.all([
+    skyStakingCleContract['balanceOf(address)'](ownerAddress).then(
+      (tokensStaked: ethers.BigNumber) => {
+        return new BigNumber(ethers.utils.formatUnits(tokensStaked, 18))
+      },
+    ),
+    fetch(
+      `https://info-sky.blockanalitica.com/api/v1/farms/${mainnetContracts.sky.stakingCle.address}/wallets/${ownerAddress}/?format=json`,
+    ).then((resp) => resp.json()),
+    skyStakingCleContract['totalSupply']().then(
+      (USDSLocked: ethers.BigNumber) => new BigNumber(ethers.utils.formatUnits(USDSLocked, 18)),
+    ),
+  ])
+  return { balance, earned: new BigNumber(earned.reward_balance), totalUSDSLocked } as {
+    balance: BigNumber
+    earned: BigNumber
     totalUSDSLocked: BigNumber
   }
 }
