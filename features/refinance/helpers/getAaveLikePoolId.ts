@@ -2,11 +2,9 @@ import {
   AaveV3LendingPoolId,
   AaveV3Protocol,
   type EmodeType,
-  type IAaveV3Protocol,
-  type ISparkProtocol,
   SparkLendingPoolId,
   SparkProtocol,
-} from '@summer_fi/summerfi-protocol-plugins'
+} from '@summer_fi/summerfi-sdk-client'
 import { type ChainInfo, type IToken } from '@summer_fi/summerfi-sdk-common'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -22,7 +20,7 @@ export const getAaveLikePoolId = (
       return AaveV3LendingPoolId.createFrom({
         protocol: AaveV3Protocol.createFrom({
           chainInfo,
-        }) as IAaveV3Protocol,
+        }),
         collateralToken,
         debtToken,
         emodeType,
@@ -31,7 +29,7 @@ export const getAaveLikePoolId = (
       return SparkLendingPoolId.createFrom({
         protocol: SparkProtocol.createFrom({
           chainInfo,
-        }) as ISparkProtocol,
+        }),
         collateralToken,
         debtToken,
         emodeType,

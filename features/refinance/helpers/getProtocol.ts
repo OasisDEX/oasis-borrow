@@ -3,7 +3,7 @@ import {
   MakerProtocol,
   MorphoProtocol,
   SparkProtocol,
-} from '@summer_fi/summerfi-protocol-plugins'
+} from '@summer_fi/summerfi-sdk-client'
 import type { ChainInfo, IProtocol } from '@summer_fi/summerfi-sdk-common'
 import { ProtocolName } from '@summer_fi/summerfi-sdk-common'
 

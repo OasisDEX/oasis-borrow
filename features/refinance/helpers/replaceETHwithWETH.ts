@@ -2,7 +2,7 @@ import {
   isAaveV3LendingPoolId,
   isMakerLendingPoolId,
   isSparkLendingPoolId,
-} from '@summer_fi/summerfi-protocol-plugins'
+} from '@summer_fi/summerfi-sdk-client'
 import { type ILendingPoolId, type ITokenAmount, TokenAmount } from '@summer_fi/summerfi-sdk-common'
 import { mapTokenToSdkToken } from 'features/refinance/helpers/mapTokenToSdkToken'
 

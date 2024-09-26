@@ -1,14 +1,11 @@
 import {
   AaveV3LendingPoolId,
   AaveV3Protocol,
-  type IAaveV3Protocol,
-  type IMorphoProtocol,
-  type ISparkProtocol,
   MorphoLendingPoolId,
   MorphoProtocol,
   SparkLendingPoolId,
   SparkProtocol,
-} from '@summer_fi/summerfi-protocol-plugins'
+} from '@summer_fi/summerfi-sdk-client'
 import { type ILendingPoolId, type IProtocol, ProtocolName } from '@summer_fi/summerfi-sdk-common'
 import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { RefinanceGeneralContextBase } from 'features/refinance/contexts'
@@ -48,14 +45,14 @@ export const getTargetPoolId = (
       throw new Error('Maker is not supported as a target protocol')
     case ProtocolName.Spark:
       return SparkLendingPoolId.createFrom({
-        protocol: SparkProtocol.createFrom({ chainInfo }) as ISparkProtocol,
+        protocol: SparkProtocol.createFrom({ chainInfo }),
         emodeType: getEmode(collateralToken, debtToken, LendingProtocol.SparkV3),
         collateralToken,
         debtToken,
       }) as any as ILendingPoolId
     case ProtocolName.AaveV3:
       return AaveV3LendingPoolId.createFrom({
-        protocol: AaveV3Protocol.createFrom({ chainInfo }) as IAaveV3Protocol,
+        protocol: AaveV3Protocol.createFrom({ chainInfo }),
         emodeType: getEmode(collateralToken, debtToken, LendingProtocol.AaveV3),
         collateralToken,
         debtToken,
@@ -76,7 +73,7 @@ export const getTargetPoolId = (
       }
 
       return MorphoLendingPoolId.createFrom({
-        protocol: MorphoProtocol.createFrom({ chainInfo }) as IMorphoProtocol,
+        protocol: MorphoProtocol.createFrom({ chainInfo }),
         marketId: marketId as `0x${string}`,
       }) as any as ILendingPoolId
 
