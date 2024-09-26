@@ -226,7 +226,6 @@ export const baseContracts: MainnetContractsWithOptional = {
   adaptiveCurveIrm: contractDesc(morphoBlue, base.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, base.common.BalancerVault),
   // NOT contracts
-  cacheApi: 'not-implemented',
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],

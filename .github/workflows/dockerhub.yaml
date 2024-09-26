@@ -38,7 +38,6 @@ jobs:
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg MIXPANEL_ENV=staging \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \
-                     --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL }} \
                      --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
                      --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
                      --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_API_KEY }} \

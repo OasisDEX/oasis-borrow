@@ -35,11 +35,6 @@ export function getCommonPartsFromProductContext(
   refresh$: Observable<unknown>,
   networkId: ChainlinkSupportedNetworks,
 ) {
-  const disconnectedGraphQLClient$ = context$.pipe(
-    distinctUntilKeyChanged('chainId'),
-    map(({ chainId }) => new GraphQLClient(getNetworkContracts(networkId, chainId).cacheApi)),
-  )
-
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
     switchMap(({ account }) => proxyAddress$(account)),
   )
@@ -113,7 +108,6 @@ export function getCommonPartsFromProductContext(
     proxiesRelatedWithPosition$,
     unconsumedDpmProxyForConnectedAccount$: unconsumedDpmForStrategyNetwork,
     contextForAddress$,
-    disconnectedGraphQLClient$,
     chainLinkETHUSDOraclePrice$,
   }
 }
