@@ -13,7 +13,6 @@ const publicRuntimeConfig = {
   exchangeAddress:
     process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
   multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
-  mainnetCacheURL: process.env.MAINNET_CACHE_URL,
   discoverProxyUrl: process.env.DISCOVER_PROXY_URL,
   ajnaSubgraphUrl: process.env.AJNA_SUBGRAPH_URL,
   ajnaSubgraphUrlGoerli: process.env.AJNA_SUBGRAPH_URL_GOERLI,

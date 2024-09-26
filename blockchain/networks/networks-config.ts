@@ -12,10 +12,8 @@ import {
   polygonMainnetRpc,
   polygonMumbaiRpc,
 } from 'config/rpcConfig'
-import { mainnetCacheUrl } from 'config/runtimeConfig'
 import type { ethers } from 'ethers'
 import type { ContractDesc } from 'features/web3Context'
-import { GraphQLClient } from 'graphql-request'
 import type { Abi } from 'helpers/types/Abi.types'
 import { keyBy, memoize } from 'lodash'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
@@ -66,7 +64,6 @@ export type NetworkConfig = {
   rpcUrl: string
   getReadProvider: () => ethers.providers.Provider | undefined
   getParentNetwork: () => NetworkConfig | undefined
-  getCacheApi: () => GraphQLClient | undefined
   isCustomFork?: boolean
   links?: { label: string; url?: string; openBridgeWidget?: boolean }[]
 }
@@ -111,7 +108,6 @@ const mainnetConfig: NetworkConfig = {
         name: NetworkNames.ethereumMainnet,
       }),
   ),
-  getCacheApi: memoize(() => new GraphQLClient(mainnetCacheUrl)),
   isCustomFork: false,
   getParentNetwork: () => undefined,
   links: [{ label: 'Etherscan', url: 'https://etherscan.io/' }],
@@ -142,9 +138,6 @@ const goerliConfig: NetworkConfig = {
         name: NetworkNames.ethereumGoerli,
       }),
   ),
-  getCacheApi: memoize(
-    () => new GraphQLClient('https://cache-goerli-staging.staging.summer.fi/api/v1'),
-  ),
   isCustomFork: false,
   getParentNetwork: () => undefined,
 }
@@ -174,7 +167,6 @@ const arbitrumMainnetConfig: NetworkConfig = {
         name: NetworkNames.arbitrumMainnet,
       }),
   ),
-  getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
   links: [
@@ -210,7 +202,6 @@ const arbitrumGoerliConfig: NetworkConfig = {
       }),
   ),
   getParentNetwork: () => undefined,
-  getCacheApi: () => undefined,
   isCustomFork: false,
 }
 
@@ -233,7 +224,6 @@ const polygonMainnetConfig: NetworkConfig = {
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
   getReadProvider: () => undefined,
-  getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
 }
@@ -258,7 +248,6 @@ const polygonMumbaiConfig: NetworkConfig = {
   rpcUrl: polygonMumbaiRpc,
   getReadProvider: () => undefined,
   getParentNetwork: () => undefined,
-  getCacheApi: () => undefined,
   isCustomFork: false,
 }
 
@@ -287,7 +276,6 @@ const optimismMainnetConfig: NetworkConfig = {
         name: NetworkNames.optimismMainnet,
       }),
   ),
-  getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
   links: [
@@ -317,7 +305,6 @@ const optimismGoerliConfig: NetworkConfig = {
   rpcUrl: optimismGoerliRpc,
   getReadProvider: () => undefined,
   getParentNetwork: () => undefined,
-  getCacheApi: () => undefined,
   isCustomFork: false,
 }
 
@@ -346,7 +333,6 @@ const baseMainnetConfig: NetworkConfig = {
         name: NetworkNames.baseMainnet,
       }),
   ),
-  getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
   links: [
@@ -382,7 +368,6 @@ const baseGoerliConfig: NetworkConfig = {
       }),
   ),
   getParentNetwork: () => undefined,
-  getCacheApi: () => undefined,
   isCustomFork: false,
 }
 
@@ -402,7 +387,6 @@ export const emptyNetworkConfig: NetworkConfig = {
   token: 'ETH',
   rpcUrl: 'empty',
   getReadProvider: () => undefined,
-  getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
 }
@@ -436,7 +420,6 @@ export const defaultForkSettings: NetworkConfig = {
   rpcUrl: '',
   getReadProvider: () => undefined,
   getParentNetwork: () => undefined,
-  getCacheApi: () => undefined,
   isCustomFork: true,
 }
 
