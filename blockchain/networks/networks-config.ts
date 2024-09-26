@@ -14,7 +14,6 @@ import {
 } from 'config/rpcConfig'
 import type { ethers } from 'ethers'
 import type { ContractDesc } from 'features/web3Context'
-import { GraphQLClient } from 'graphql-request'
 import type { Abi } from 'helpers/types/Abi.types'
 import { keyBy, memoize } from 'lodash'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
