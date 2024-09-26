@@ -10,6 +10,7 @@ import makerLogo from 'public/static/img/protocol_icons/maker_logo.svg'
 import morphoBlueIcon from 'public/static/img/protocol_icons/morpho_blue_icon.svg'
 import morphoBlueLogo from 'public/static/img/protocol_icons/morpho_blue_logo.svg'
 import skyIcon from 'public/static/img/protocol_icons/sky.svg'
+import skyLogo from 'public/static/img/protocol_icons/sky_logo.svg'
 import sparkIcon from 'public/static/img/protocol_icons/spark_icon.svg'
 import sparkLogo from 'public/static/img/protocol_icons/spark_logo.svg'
 
@@ -80,7 +81,7 @@ const skyConfig: LendingProtocolConfig = {
   name: LendingProtocol.Sky,
   label: LendingProtocolLabel.sky,
   icon: skyIcon as string,
-  logo: skyIcon as string,
+  logo: skyLogo as string,
   logoScale: 1.6,
   gradient: 'linear-gradient(159deg, #4a87fa 12.26%, #a294ee 86.52%)',
 }

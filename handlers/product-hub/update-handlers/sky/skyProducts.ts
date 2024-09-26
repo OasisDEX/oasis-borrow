@@ -15,4 +15,15 @@ export const skyProductHubProducts: Omit<ProductHubItemWithoutAddress, 'network'
     earnStrategy: EarnStrategies.other,
     earnStrategyDescription: 'Sky Rewards Rate',
   },
+  {
+    product: [OmniProductType.Earn],
+    primaryToken: 'USDS',
+    secondaryToken: 'USDS',
+    depositToken: 'USDS',
+    protocol: LendingProtocol.Sky,
+    label: 'CLE',
+    managementType: 'passive',
+    earnStrategy: EarnStrategies.other,
+    earnStrategyDescription: 'Chronicle Points',
+  },
 ]

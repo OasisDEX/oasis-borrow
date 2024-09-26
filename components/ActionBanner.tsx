@@ -16,15 +16,16 @@ interface ActionBannerWithImage {
   icon?: never
   image?: string
 }
+type CtaType = {
+  label: string
+  onClick?: () => void
+  targetBlank?: boolean
+  url?: string
+}
 
 export type ActionBannerType = {
   closingSaveKey?: string
-  cta?: {
-    label: string
-    onClick?: () => void
-    targetBlank?: boolean
-    url?: string
-  }
+  cta?: CtaType | CtaType[]
   sx?: ThemeUIStyleObject
   title: string
   withClose?: boolean
@@ -36,6 +37,59 @@ export type ActionBannerProps = PropsWithChildren<ActionBannerType>
 
 function getSessionStorageKey(suffix: string): string {
   return `action-banner-${kebabCase(suffix)}`
+}
+
+const CtaComponent = ({
+  cta,
+  customCtaVariant,
+  lightText,
+}: {
+  cta: ActionBannerProps['cta']
+  customCtaVariant: ActionBannerProps['customCtaVariant']
+  lightText: ActionBannerProps['lightText']
+}) => {
+  if (Array.isArray(cta)) {
+    return (
+      <>
+        {cta.map((ctaItem, index) => (
+          <CtaComponent
+            key={`CtaItem_${ctaItem.label}_${ctaItem.url}_${index}`}
+            cta={ctaItem}
+            lightText={lightText}
+            customCtaVariant={customCtaVariant}
+          />
+        ))}
+      </>
+    )
+  }
+  return cta ? (
+    <Box sx={{ flexShrink: 0, ml: 'auto' }}>
+      {cta.url ? (
+        <AppLink
+          href={cta.url}
+          internalInNewTab={cta.targetBlank}
+          {...(cta.onClick && { onClick: cta.onClick })}
+        >
+          <Button
+            variant={customCtaVariant ?? 'action'}
+            sx={{ color: lightText ? 'neutral10' : undefined }}
+          >
+            {cta.label}
+          </Button>
+        </AppLink>
+      ) : (
+        cta.onClick && (
+          <Button
+            variant={customCtaVariant ?? 'action'}
+            sx={{ color: lightText ? 'neutral10' : undefined }}
+            onClick={cta.onClick}
+          >
+            {cta.label}
+          </Button>
+        )
+      )}
+    </Box>
+  ) : null
 }
 
 export function ActionBanner({
@@ -87,34 +141,7 @@ export function ActionBanner({
           </Text>
         )}
       </Flex>
-      {cta && (
-        <Box sx={{ flexShrink: 0, ml: 'auto' }}>
-          {cta.url ? (
-            <AppLink
-              href={cta.url}
-              internalInNewTab={cta.targetBlank}
-              {...(cta.onClick && { onClick: cta.onClick })}
-            >
-              <Button
-                variant={customCtaVariant ?? 'action'}
-                sx={{ color: lightText ? 'neutral10' : undefined }}
-              >
-                {cta.label}
-              </Button>
-            </AppLink>
-          ) : (
-            cta.onClick && (
-              <Button
-                variant={customCtaVariant ?? 'action'}
-                sx={{ color: lightText ? 'neutral10' : undefined }}
-                onClick={cta.onClick}
-              >
-                {cta.label}
-              </Button>
-            )
-          )}
-        </Box>
-      )}
+      {cta && <CtaComponent cta={cta} lightText={lightText} customCtaVariant={customCtaVariant} />}
       {withClose && (
         <Button
           variant="unStyled"

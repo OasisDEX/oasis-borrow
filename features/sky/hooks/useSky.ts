@@ -20,6 +20,7 @@ export type ResolvedDepositParamsType = {
 type useSkyType = {
   primaryToken: string
   secondaryToken: string
+  stakingAction?: 'stake' | 'unstake' | 'claim'
   primaryTokenBalance?: BigNumber
   primaryTokenAllowance?: BigNumber
   secondaryTokenBalance?: BigNumber
@@ -45,6 +46,7 @@ export const useSky = ({
   contractAddress,
   stake,
   viewWalletAddress,
+  stakingAction = 'stake',
 }: useSkyType) => {
   const { replace } = useRouter()
   const { connect, connecting } = useConnection()
@@ -222,7 +224,10 @@ export const useSky = ({
         void replace(`/earn/srr/${walletAddress}`)
       }
     }
-    if (showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance)) {
+    if (
+      stakingAction === 'stake' &&
+      showAllowanceInfo(amount, resolvedPrimaryTokenData.allowance)
+    ) {
       return approveAllowance
     }
     return amount
@@ -234,6 +239,7 @@ export const useSky = ({
     isOwner,
     replace,
     walletAddress,
+    stakingAction,
     viewWalletAddress,
     resolvedPrimaryTokenData.allowance,
     amount,
@@ -250,6 +256,7 @@ export const useSky = ({
       return 'Go to your position'
     }
     if (
+      stakingAction === 'stake' &&
       (!resolvedPrimaryTokenData.allowance ||
         resolvedPrimaryTokenData.allowance.isZero() ||
         resolvedPrimaryTokenData.allowance.isLessThan(amount || 0)) &&
@@ -257,10 +264,17 @@ export const useSky = ({
     ) {
       return 'Set allowance'
     }
-    return stake ? (isTokenSwapped ? `Unstake` : `Stake`) : isTokenSwapped ? `Downgrade` : `Upgrade`
+    return stake
+      ? isTokenSwapped || stakingAction !== 'stake'
+        ? `Unstake`
+        : `Stake`
+      : isTokenSwapped
+        ? `Downgrade`
+        : `Upgrade`
   }, [
     walletAddress,
     viewWalletAddress,
+    stakingAction,
     resolvedPrimaryTokenData.allowance,
     amount,
     isTokenSwapped,
