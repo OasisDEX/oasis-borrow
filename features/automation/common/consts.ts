@@ -84,7 +84,6 @@ export const protocolAutomations = {
     AutomationFeatures.STOP_LOSS,
     AutomationFeatures.AUTO_SELL,
     AutomationFeatures.AUTO_BUY,
-    AutomationFeatures.CONSTANT_MULTIPLE,
     AutomationFeatures.AUTO_TAKE_PROFIT,
   ],
   [VaultProtocol.Aave]: [
