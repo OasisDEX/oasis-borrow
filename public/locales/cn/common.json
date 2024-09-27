@@ -1268,7 +1268,7 @@
     "auto-buy-target-close-to-auto-sell-trigger": "设置较低的目标率有可能启动已设置的  Auto-Sell。如果想要使用较低的目标率，请先调整  Auto-Sell 触发器。",
     "auto-buy-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Buy 即刻执行。如果这不是你预期的结果，请调降触发率。",
     "auto-sell-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Sell 即刻执行。如果这不是你预期的结果，请调降触发率。",
-    "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@summer.fi</0>",
+    "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@summer.fi</0>"
   },
   "vault-info-messages": {
     "earn-overview": "这个 {{token}} 仓位是在 Uniswap V3 赚取交易费用。提供给资金池的 DAI 通过 Maker Protocol 加倍成长，使用户在 Uniswap 资金池里有较大的敞口。目前你可以执行的只有<1>关闭这个金库</1>",
