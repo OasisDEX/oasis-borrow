@@ -16,7 +16,6 @@ import {
   hasMoreDebtThanMaxForStopLoss,
   hasPotentialInsufficientEthFundsForTx,
   isStopLossTriggerCloseToAutoSellTrigger,
-  isStopLossTriggerCloseToConstantMultipleSellTrigger,
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
 import type { ContextWithoutMetadata, StopLossMetadata } from 'features/automation/metadata/types'
@@ -39,7 +38,6 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
     triggerData: {
       autoSellTriggerData,
       stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel, triggerId },
-      constantMultipleTriggerData,
     },
     positionData: {
       positionRatio,
@@ -65,11 +63,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
   const sliderMax = new BigNumber(
     (autoSellTriggerData.isTriggerEnabled
       ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
-      : constantMultipleTriggerData.isTriggerEnabled
-        ? constantMultipleTriggerData.sellExecutionCollRatio
-            .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
-            .div(100)
-        : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+      : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
     )
       .multipliedBy(100)
       .toFixed(0, BigNumber.ROUND_DOWN),
@@ -198,12 +192,6 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
           sliderMax,
           stopLossLevel,
         }),
-        isStopLossTriggerCloseToConstantMultipleSellTrigger:
-          isStopLossTriggerCloseToConstantMultipleSellTrigger({
-            context,
-            sliderMax,
-            stopLossLevel,
-          }),
       }),
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],

@@ -451,9 +451,6 @@
     "basic-buy": "Auto-Buy trigger",
     "basic-sell": "Auto-Sell trigger",
     "auto-take-profit": "Take Profit trigger",
-    "constant-multiple": "Constant-Multiple trigger",
-    "constant-multiple-buy": "Constant-Multiple Buy trigger",
-    "constant-multiple-sell": "Constant-Multiple Sell trigger",
     "close-to": "Close to",
     "trigger-col-ratio": "Trigger Col. Ratio",
     "trigger-price": "Trigger price",
@@ -1332,7 +1329,6 @@
     "take-profit": "Take Profit",
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
-    "constant-multiple": "Constant Multiple",
     "auto-take-profit": "Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
@@ -1449,9 +1445,7 @@
   },
   "vault-errors": {
     "after-coll-ratio-above-auto-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
-    "after-coll-ratio-above-constant-multiple-buy-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Buy Trigger ratio first",
     "after-coll-ratio-below-auto-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
-    "after-coll-ratio-below-constant-multiple-sell-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Sell Trigger ratio first",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop-Loss Col. Ratio at current or next collateral price",
     "auto-buy-execution-ltv-bigger-than-current-ltv": "Your execution LTV is bigger than your current LTV",
     "auto-buy-execution-ltv-bigger-than-target": "Your execution LTV is bigger than your target LTV. Please adjust your target LTV",
@@ -1464,7 +1458,6 @@
     "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
     "auto-take-profit-triggered-immediately": "Please raise your trigger price. The current trigger price would cause your auto-profit sell to execute immediately.",
     "borrow-amount-exceeds-max": "You cannot borrow more than {{maxBorrowAmount}} {{token}}",
-    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing.",
     "custom-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
     "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
@@ -1514,7 +1507,6 @@
     "partial-take-profit-min-price-lower-than-auto-buy-max-price": "Your Auto Take Profit min price is lower than the max price of your Auto-Buy. Increase your Auto Take Profit min price, or update your Auto-Buy"
   },
   "vault-warnings": {
-    "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
     "auto-buy-override": "We recently discovered an issue with Auto-Buy which prevents it from executing and affects your current Auto-Buy setup. It only affects execution and no funds are at risk. Please cancel your existing Auto-Buy from the Optimisation Tab and re-enable it. Summer.fi will refund any gas costs associated with cancelling and re-enabling. If you have any questions, you can contact us at support@summer.fi",
     "partial-take-profit-override": "We recently discovered an issue with Partial Take Profit triggers on Aave V3 and Spark, which prevents them from executing properly. Rest assured, no funds are at risk. Please update your existing Partial Take Profit triggers from the Optimization Tab. Summer.fi will refund any gas costs associated with trigger update. If you have any questions, you can contact us at support@summer.fi.",
     "auto-buy-target-close-to-auto-sell-trigger": "Setting a lower Target Ratio would trigger your existing Auto-Sell. If you want to use a lower target ratio, please adjust your Auto-Sell trigger first.",
@@ -1528,19 +1520,13 @@
     "auto-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first.",
     "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-take-profit-trigger-lower-than-auto-buy-trigger": "Setting your Target Price at this level may result in your Auto-Buy not executing. Find out more <0>here</0>.",
-    "auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger": "Setting your Target Price at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
-    "constant-multiple-auto-buy-triggered-immediately": "Setting your Buy Trigger at this ratio would result in it being executed immediately",
-    "constant-multiple-auto-sell-triggered-immediately": "Setting your Sell Trigger at this ratio would result in it being executed immediately",
-    "constant-multiple-buy-trigger-greater-than-auto-take-profit": "Setting your buy trigger ratio at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
-    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first",
     "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or pay back all your debt",
     "existing-take-profit-trigger-after-vault-reopen": "You have an existing Take Profit Trigger, it will remain active after you reopen this vault.",
     "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for this transaction",
     "no-min-sell-price-when-stop-loss-enabled": "Not setting a Min. Sell Price with Stop-Loss enabled would cause your Stop-Loss to never be triggered",
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
     "stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first.",
-    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
     "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
     "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
     "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
@@ -1642,7 +1628,7 @@
     },
     "token-ceiling-reduced": {
       "header": "{{token}} Vault Debt Ceiling Reductions on Maker and Spark",
-      "subheader1": "The {{token}} debt ceiling has been set to 0 among the most notable adjustments. Your current {{token}} positions will remain unaffected. These changes will prevent further borrowing from these vaults, but liquidation parameters remain unchanged. This is valid both for Maker and Spark. Automations that increase debt on these vaults such as Auto-Buy or Constant Multiple are also affected and will not be eligible for execution.",
+      "subheader1": "The {{token}} debt ceiling has been set to 0 among the most notable adjustments. Your current {{token}} positions will remain unaffected. These changes will prevent further borrowing from these vaults, but liquidation parameters remain unchanged. This is valid both for Maker and Spark. Automations that increase debt on these vaults such as Auto-Buy are also affected and will not be eligible for execution.",
       "subheader2": "You can view your vaults"
     },
     "position": {
@@ -2322,7 +2308,6 @@
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Sell triggers",
     "banner": {
       "button": "Set up Auto-Sell",
-      "cm-warning": "Auto-Sell cannot be used if you have Constant Multiple enabled.",
       "content": "Get peace of mind and set up Auto-Sell to automatically protect your Vault. Sell collateral to repay your debt when you most need it. Find out more about how this works",
       "header": "Stop scrambling to manage a position"
     },
@@ -2426,7 +2411,6 @@
     "banner": {
       "header": "Stop missing buying opportunities",
       "content": "Set up Auto-Buy to automatically buy additional collateral with your Vaults debt when the price of your collateral is increasing so you never miss a buying opportunity again. Find out more about how this works",
-      "cm-warning": "Auto-Buy cannot be used if you have Constant Multiple enabled.",
       "button": "Set up Auto-Buy"
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
@@ -2519,7 +2503,6 @@
       "has-more-debt-than-max-for-stop-loss": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20M DAI",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "is-stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first.",
-      "is-stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
       "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
     },
     "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction.",
@@ -2528,54 +2511,10 @@
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
-    "zero-debt-description": "Summer.fi Optimization allows you to set up a dynamic Auto-Buy and Constant Multiple Strategies on your vault based on the collateralization ratio. This will increase or decrease your exposure to the collateral asset as the price changed. Learn more about how it works",
+    "zero-debt-description": "Summer.fi Optimization allows you to set up a dynamic Auto-Buy on your vault based on the collateralization ratio. This will increase or decrease your exposure to the collateral asset as the price changed. Learn more about how it works",
     "adding-new-triggers-disabled": "Creation of the new Optimization triggers is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Optimization triggers",
     "unable-to-access-optimization": "Unable to access Optimization"
-  },
-  "constant-multiple": {
-    "title": "Constant Multiple",
-    "add-form-title": "Constant Multiple Setup",
-    "setting-form-title": "Setting Constant Multiple",
-    "cancelling-form-title": "Cancelling Constant Multiple",
-    "edit-form-title": "Edit Constant Multiple",
-    "cancel-form-title": "Cancellation confirmation",
-    "trigger-added": "Constant Multiple Enabled",
-    "trigger-cancelled": "Constant Multiple cancellation completed",
-    "trigger-updated": "Constant Multiple Updated",
-    "set-trigger-description": "The Constant Multiple Automation will sell {{token}} at a col. ratio of {{sellExecutionCollRatio}}% and will buy {{token}} at a col. ratio of {{buyExecutionCollRatio}}% returning your vault's multiple to {{multiplier}}x.",
-    "set-trigger-risk": "Please Note - Constant Multiple is an advanced strategy, with risks that should be well understood before set-up. Find out more ",
-    "target-multiple": "Target Multiple",
-    "target-col-ratio": "Target Col. Ratio {{amount}}",
-    "operating-cost": "Operating Cost",
-    "operating-cost-desc": "The cost of setting up and running your Constant Multiple.\nSet up cost + execution costs = Operating Cost",
-    "pnl-since-enabled": "P&L since enabled: {{amount}}",
-    "banner": {
-      "header": "Set and forget with Constant Multiple",
-      "content": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. Find out more about how this works",
-      "button": "Set up Constant Multiple"
-    },
-    "vault-changes": {
-      "general-summary": "General summary",
-      "cancel-summary": "Cancel summary",
-      "buy-sell-trigger-summary": "Buy and Sell Trigger Summary",
-      "target-col-ratio-after-buy-sell": "Target Col. Ratio after each buy/sell",
-      "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
-      "cost-per-adjustment": "Estimated  transaction cost per adjustment",
-      "max-price-buy": "Max price to perform auto buy",
-      "max-price-sell": "Min price to perform auto sell",
-      "estimated-oasis-fee": "Estimated Summer.fi fee",
-      "estimated-max-gas-fee": "Estimated max gas fee"
-    },
-    "adding-constant-multiple": "Adding Constant Multiple trigger",
-    "adjusting-constant-multiple": "Adjusting Constant Multiple trigger",
-    "removing-constant-multiple": "Removing Constant Multiple trigger",
-    "setting-constant-multiple": "Setting up your Constant Multiple",
-    "cancelling-constant-multiple": "Cancelling your Constant Multiple",
-    "adding-new-triggers-disabled": "Creation of the new Constant Multiple trigger is currently disabled.",
-    "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Constant Multiple triggers",
-    "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple.",
-    "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
     "banner": "New: Earn up to 9.9x stETH Yield on Summer.fi Earn. Read more here",
@@ -2654,7 +2593,6 @@
     "stop-loss-executed": "Your Stop-Loss Protection on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-buy-executed": "Your Auto-Buy on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
-    "constant-multiple-executed": "Your Constant Multiple on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "oracle-price-changed": "Oracle price changed ${{usdPrice}}.",
     "action-notifications": "Vault action notifications",
     "action-notifications-description": "Receive a notification when an action occurs on your Vault.",
@@ -3574,7 +3512,6 @@
       "autoBuy": "Auto Buy",
       "autoSell": "Auto Sell",
       "autoTakeProfit": "Auto Take Profit",
-      "constantMultiple": "Constant Multiple",
       "partialTakeProfit": "Partial Take Profit",
       "stopLoss": "Stop-Loss",
       "trailingStopLoss": "Trailing Stop-Loss"

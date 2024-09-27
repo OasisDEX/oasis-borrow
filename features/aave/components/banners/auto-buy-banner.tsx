@@ -4,11 +4,9 @@ import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text } from 'theme-ui'
 
 export function AutoBuyBanner({ buttonClicked }: { buttonClicked: () => void }) {
   const { t } = useTranslation()
-  const isconstantMultipleEnabled = false
 
   return (
     <Banner
@@ -20,13 +18,6 @@ export function AutoBuyBanner({ buttonClicked }: { buttonClicked: () => void }) 
             {t('here')}.
           </AppLink>
         </>,
-        ...(isconstantMultipleEnabled
-          ? [
-              <Text as="span" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
-                {t('auto-buy.banner.cm-warning')}
-              </Text>,
-            ]
-          : []),
       ]}
       image={{
         src: '/static/img/setup-banner/auto-buy.svg',
@@ -38,7 +29,7 @@ export function AutoBuyBanner({ buttonClicked }: { buttonClicked: () => void }) 
           buttonClicked()
         },
         text: t('auto-buy.banner.button'),
-        disabled: isconstantMultipleEnabled,
+        disabled: false,
       }}
     />
   )

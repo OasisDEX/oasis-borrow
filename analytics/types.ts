@@ -32,7 +32,6 @@ export enum MixpanelPages {
   StopLoss = 'StopLoss',
   AutoBuy = 'AutoBuy',
   AutoSell = 'AutoSell',
-  ConstantMultiple = 'ConstantMultiple',
   TakeProfit = 'TakeProfit',
   DAISavingsRate = 'DAISavingsRate',
   ProductHub = 'ProductHub',
@@ -47,7 +46,6 @@ export enum MixpanelAutomationEventIds {
   SelectStopLoss = 'SelectStopLoss',
   SelectAutoSell = 'SelectAutoSell',
   SelectAutoBuy = 'SelectAutoBuy',
-  SelectConstantMultiple = 'SelectConstantMultiple',
   SelectTakeProfit = 'SelectTakeProfit',
 
   AddStopLoss = 'AddStopLoss',
@@ -61,10 +59,6 @@ export enum MixpanelAutomationEventIds {
   AddAutoSell = 'AddAutoSell',
   EditAutoSell = 'EditAutoSell',
   RemoveAutoSell = 'RemoveAutoSell',
-
-  AddConstantMultiple = 'AddConstantMultiple',
-  EditConstantMultiple = 'EditConstantMultiple',
-  RemoveConstantMultiple = 'RemoveConstantMultiple',
 
   AddTakeProfit = 'AddTakeProfit',
   EditTakeProfit = 'EditTakeProfit',

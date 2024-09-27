@@ -7,9 +7,6 @@ export function getAvailableAutomation(protocol: VaultProtocol) {
     isStopLossAvailable: protocolAutomations[protocol].includes(AutomationFeatures.STOP_LOSS),
     isAutoSellAvailable: protocolAutomations[protocol].includes(AutomationFeatures.AUTO_SELL),
     isAutoBuyAvailable: protocolAutomations[protocol].includes(AutomationFeatures.AUTO_BUY),
-    isConstantMultipleAvailable: protocolAutomations[protocol].includes(
-      AutomationFeatures.CONSTANT_MULTIPLE,
-    ),
     isTakeProfitAvailable: protocolAutomations[protocol].includes(
       AutomationFeatures.AUTO_TAKE_PROFIT,
     ),

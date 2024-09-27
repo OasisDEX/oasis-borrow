@@ -55,7 +55,6 @@ export const OmniAutomationAddUpdateTriggerSidebar: FC = ({ children }) => {
       commonForm.state.activeAction === TriggerAction.Remove ? (
         <OmniAutomationCancelNotice content={t('protection.take-profit-cancel-notice')} />
       ) : null,
-    [AutomationFeatures.CONSTANT_MULTIPLE]: null,
     [AutomationFeatures.AUTO_TAKE_PROFIT]: null,
   }[resolvedActiveUiDropdown]
 

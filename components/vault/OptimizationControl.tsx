@@ -8,10 +8,7 @@ import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/a
 import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import { OptimizationDetailsControl } from 'features/automation/optimization/common/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/common/controls/OptimizationFormControl'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
-import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'
@@ -63,32 +60,19 @@ function ZeroDebtOptimizationBanner({
 }
 function getZeroDebtOptimizationBannerProps({
   readOnlyAutoBSEnabled,
-  constantMultipleReadOnlyEnabled,
   readOnlyAutoTakeProfitEnabled,
   isVaultDebtZero,
   vaultHasNoActiveBuyTrigger,
-  vaultHasNoActiveConstantMultipleTriggers,
   vaultHasNoActiveAutoTakeProfitTrigger,
 }: {
   readOnlyAutoBSEnabled: boolean
-  constantMultipleReadOnlyEnabled: boolean
   readOnlyAutoTakeProfitEnabled: boolean
   isVaultDebtZero: boolean
   vaultHasNoActiveBuyTrigger?: boolean
-  vaultHasNoActiveConstantMultipleTriggers?: boolean
   vaultHasNoActiveAutoTakeProfitTrigger?: boolean
 }): ZeroDebtOptimizationBannerProps {
-  if (
-    !readOnlyAutoBSEnabled &&
-    !constantMultipleReadOnlyEnabled &&
-    !readOnlyAutoTakeProfitEnabled
-  ) {
-    if (
-      isVaultDebtZero &&
-      vaultHasNoActiveBuyTrigger &&
-      vaultHasNoActiveConstantMultipleTriggers &&
-      vaultHasNoActiveAutoTakeProfitTrigger
-    ) {
+  if (!readOnlyAutoBSEnabled && !readOnlyAutoTakeProfitEnabled) {
+    if (isVaultDebtZero && vaultHasNoActiveBuyTrigger && vaultHasNoActiveAutoTakeProfitTrigger) {
       return {
         header: 'optimization.zero-debt-heading',
         description: 'optimization.zero-debt-description',
@@ -108,48 +92,34 @@ function getZeroDebtOptimizationBannerProps({
   }
 }
 
-interface OptimizationControlProps {
-  vaultHistory: VaultHistoryEvent[]
-}
-
-export function OptimizationControl({ vaultHistory }: OptimizationControlProps) {
+export function OptimizationControl() {
   const {
     positionData: { debt },
-    triggerData: { autoBuyTriggerData, autoTakeProfitTriggerData, constantMultipleTriggerData },
+    triggerData: { autoBuyTriggerData, autoTakeProfitTriggerData },
   } = useAutomationContext()
   const { txHelpers$ } = useMainContext()
   const [txHelpersData] = useObservable(txHelpers$)
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
-  const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
-    CONSTANT_MULTIPLE_FORM_CHANGE,
-  )
 
   const {
     ReadOnlyBasicBS: readOnlyAutoBSEnabled,
-    ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled,
     ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled,
   } = useAppConfig('features')
 
   const vaultHasActiveAutoBuyTrigger = autoBuyTriggerData.isTriggerEnabled
-  const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData.isTriggerEnabled
   const vaultHasActiveAutoTakeProfitTrigger = autoTakeProfitTriggerData.isTriggerEnabled
 
   return (
     <WithLoadingIndicator
-      value={[autoBuyState, autoTakeProfitState, constantMultipleState]}
+      value={[autoBuyState, autoTakeProfitState]}
       customLoader={<VaultContainerSpinner />}
     >
       {() =>
+        (!vaultHasActiveAutoBuyTrigger && !vaultHasActiveAutoTakeProfitTrigger && debt.isZero()) ||
         (!vaultHasActiveAutoBuyTrigger &&
-          !vaultHasActiveConstantMultipleTrigger &&
-          !vaultHasActiveAutoTakeProfitTrigger &&
-          debt.isZero()) ||
-        (!vaultHasActiveAutoBuyTrigger &&
-          !vaultHasActiveConstantMultipleTrigger &&
           !vaultHasActiveAutoTakeProfitTrigger &&
           readOnlyAutoBSEnabled &&
-          constantMultipleReadOnlyEnabled &&
           readOnlyAutoTakeProfitEnabled) ? (
           <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
             <ZeroDebtOptimizationBanner
@@ -157,16 +127,14 @@ export function OptimizationControl({ vaultHistory }: OptimizationControlProps) 
                 readOnlyAutoBSEnabled,
                 isVaultDebtZero: debt.isZero(),
                 vaultHasNoActiveBuyTrigger: !vaultHasActiveAutoBuyTrigger,
-                constantMultipleReadOnlyEnabled,
                 readOnlyAutoTakeProfitEnabled,
-                vaultHasNoActiveConstantMultipleTriggers: !vaultHasActiveConstantMultipleTrigger,
                 vaultHasNoActiveAutoTakeProfitTrigger: !vaultHasActiveAutoTakeProfitTrigger,
               })}
             />
           </Container>
         ) : (
           <DefaultVaultLayout
-            detailsViewControl={<OptimizationDetailsControl vaultHistory={vaultHistory} />}
+            detailsViewControl={<OptimizationDetailsControl />}
             editForm={<OptimizationFormControl txHelpers={txHelpersData} />}
           />
         )

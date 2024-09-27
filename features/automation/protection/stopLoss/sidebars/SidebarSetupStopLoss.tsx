@@ -76,7 +76,7 @@ export function SidebarSetupStopLoss({
     },
     positionData: { vaultType },
     protocol,
-    triggerData: { autoSellTriggerData, constantMultipleTriggerData, stopLossTriggerData },
+    triggerData: { autoSellTriggerData, stopLossTriggerData },
   } = automationContext
   const { isAwaitingConfirmation } = stopLossState
 
@@ -95,7 +95,6 @@ export function SidebarSetupStopLoss({
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
-    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     vaultType,
     protocol,
   })

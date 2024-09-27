@@ -89,9 +89,6 @@ export const useMorphoRefinanceContextInputs = ({
     takeProfit: {
       enabled: triggerFlags.isPartialTakeProfitEnabled,
     },
-    constantMultiple: {
-      enabled: false,
-    },
   }
 
   const network = getNetworkById(networkId).name

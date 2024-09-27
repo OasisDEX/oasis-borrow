@@ -15,7 +15,6 @@ export interface GetAutoFeaturesSidebarDropdownProps {
   isStopLossEnabled?: boolean
   isAutoSellEnabled?: boolean
   isAutoBuyEnabled?: boolean
-  isAutoConstantMultipleEnabled?: boolean
   isAutoTakeProfitEnabled?: boolean
 }
 export interface GetAutoFeaturesSidebarDropdownItemProps {

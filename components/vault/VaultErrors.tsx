@@ -29,7 +29,6 @@ export function VaultErrors({
   maxGenerateAmount = zero,
   maxWithdrawAmount = zero,
   ilkData: { debtFloor, token } = { debtFloor: zero, token: '' },
-  autoType,
   infoBag,
 }: VaultErrorsProps) {
   const { t } = useTranslation()
@@ -146,10 +145,6 @@ export function VaultErrors({
         return translate('after-coll-ratio-below-auto-sell-ratio')
       case 'afterCollRatioAboveAutoBuyRatio':
         return translate('after-coll-ratio-above-auto-buy-ratio')
-      case 'afterCollRatioBelowConstantMultipleSellRatio':
-        return translate('after-coll-ratio-below-constant-multiple-sell-ratio')
-      case 'afterCollRatioAboveConstantMultipleBuyRatio':
-        return translate('after-coll-ratio-above-constant-multiple-buy-ratio')
       case 'vaultWillBeTakenUnderMinActiveColRatio':
         return translate('vault-will-be-taken-under-min-active-col-ratio')
       case 'stopLossOnNearLiquidationRatio':
@@ -168,8 +163,6 @@ export function VaultErrors({
         return translate('stop-loss-trigger-higher-than-auto-buy-target')
       case 'stopLossTriggerLtvLowerThanAutoBuy':
         return translate('stop-loss-trigger-ltv-lower-than-auto-buy')
-      case 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled':
-        return translate('cant-setup-auto-buy-or-sell-when-constant-multiple-enabled', { autoType })
       case 'minSellPriceWillPreventSellTrigger':
         return translate('min-sell-price-will-prevent-sell-trigger')
       case 'maxBuyPriceWillPreventBuyTrigger':

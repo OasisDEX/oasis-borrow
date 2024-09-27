@@ -385,7 +385,6 @@ export interface AutomationMetadataValues {
     [AutomationFeatures.AUTO_SELL]?: AutoSellTriggersWithDecodedParams
     [AutomationFeatures.AUTO_BUY]?: AutoBuyTriggersWithDecodedParams
     [AutomationFeatures.PARTIAL_TAKE_PROFIT]?: PartialTakeProfitTriggersWithDecodedParams
-    [AutomationFeatures.CONSTANT_MULTIPLE]?: PartialTakeProfitTriggers
     [AutomationFeatures.AUTO_TAKE_PROFIT]?: PartialTakeProfitTriggers
   }
   resolved: {
@@ -560,7 +559,6 @@ export interface ProductContextAutomationForms {
   autoBuy: ReturnType<typeof useOmniAutomationAutoBSFormReducto>
   partialTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
   autoTakeProfit: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
-  constantMultiple: ReturnType<typeof useOmniAutomationPartialTakeProfitFormReducto>
 }
 
 export type ProductContextAutomationForm =

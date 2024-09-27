@@ -2,7 +2,6 @@ import type BigNumber from 'bignumber.js'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
-import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -75,7 +74,6 @@ export function errorsAutoSellValidation({
   isRemoveForm,
   autoSellState,
   autoBuyTriggerData,
-  constantMultipleTriggerData,
 }: {
   debtFloor: BigNumber
   debt: BigNumber
@@ -85,7 +83,6 @@ export function errorsAutoSellValidation({
   isRemoveForm: boolean
   autoSellState: AutoBSFormChange
   autoBuyTriggerData: AutoBSTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
 }) {
   const { execCollRatio, targetCollRatio, withThreshold, maxBuyOrMinSellPrice, txDetails } =
     autoSellState
@@ -103,9 +100,6 @@ export function errorsAutoSellValidation({
     autoBuyTriggerData.isTriggerEnabled &&
     execCollRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).gt(autoBuyTriggerData.targetCollRatio)
 
-  const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
-    constantMultipleTriggerData.isTriggerEnabled
-
   const minSellPriceWillPreventSellTrigger =
     maxBuyOrMinSellPrice?.gt(zero) && maxBuyOrMinSellPrice.gt(executionPrice)
 
@@ -114,7 +108,6 @@ export function errorsAutoSellValidation({
     targetCollRatioExceededDustLimitCollRatio,
     minimumSellPriceNotProvided,
     autoSellTriggerHigherThanAutoBuyTarget,
-    cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
     minSellPriceWillPreventSellTrigger,
   })
 }

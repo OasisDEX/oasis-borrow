@@ -25,7 +25,6 @@ export function getIsLastAutomationOfKind({
 
   const optimizationFeatures = [
     AutomationFeatures.AUTO_BUY,
-    AutomationFeatures.CONSTANT_MULTIPLE,
     AutomationFeatures.AUTO_TAKE_PROFIT,
     AutomationFeatures.PARTIAL_TAKE_PROFIT,
   ]
@@ -36,7 +35,6 @@ export function getIsLastAutomationOfKind({
     [AutomationFeatures.AUTO_SELL]: automationFlags.isAutoSellEnabled,
     [AutomationFeatures.TRAILING_STOP_LOSS]: automationFlags.isTrailingStopLossEnabled,
     [AutomationFeatures.AUTO_BUY]: automationFlags.isAutoBuyEnabled,
-    [AutomationFeatures.CONSTANT_MULTIPLE]: false, // Assuming this feature is always disabled as no flag is provided
     [AutomationFeatures.AUTO_TAKE_PROFIT]: false, // Assuming this feature is always disabled as no flag is provided
     [AutomationFeatures.PARTIAL_TAKE_PROFIT]: automationFlags.isPartialTakeProfitEnabled,
   }

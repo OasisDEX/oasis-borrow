@@ -11,9 +11,7 @@ const autoTakeProfitWarningsValidationBaseData = {
   ethPrice: new BigNumber(1500),
   executionPrice: new BigNumber(1500),
   isAutoBuyEnabled: false,
-  isConstantMultipleEnabled: false,
   autoBuyTriggerPrice: zero,
-  constantMultipleBuyTriggerPrice: zero,
   gasEstimationUsd: new BigNumber(5),
 }
 
@@ -52,43 +50,11 @@ describe('auto take profit warnings', () => {
 
     expect(warnings).toEqual(['autoTakeProfitTriggerLowerThanAutoBuyTrigger'])
   })
-  it('should show warning that ATP is lower than constant-multiple buy trigger', () => {
-    const warnings = warningsAutoTakeProfitValidation({
-      ...autoTakeProfitWarningsValidationBaseData,
-      isConstantMultipleEnabled: true,
-      constantMultipleBuyTriggerPrice: new BigNumber(2000),
-    })
-
-    expect(warnings).toEqual(['autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger'])
-  })
-  it('should show warning that ATP is equal to constant-multiple buy trigger', () => {
-    const warnings = warningsAutoTakeProfitValidation({
-      ...autoTakeProfitWarningsValidationBaseData,
-      isConstantMultipleEnabled: true,
-      constantMultipleBuyTriggerPrice: new BigNumber(1500),
-    })
-
-    expect(warnings).toEqual(['autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger'])
-  })
-  it('should return empty warning array when auto-buy and constant-multiple triggers not created', () => {
-    const warnings = warningsAutoTakeProfitValidation(autoTakeProfitWarningsValidationBaseData)
-
-    expect(warnings).toEqual([])
-  })
   it('should return empty warning array when auto-buy enabled and auto-take profit trigger greater than auto-buy trigger', () => {
     const warnings = warningsAutoTakeProfitValidation({
       ...autoTakeProfitWarningsValidationBaseData,
       isAutoBuyEnabled: true,
       autoBuyTriggerPrice: new BigNumber(1300),
-    })
-
-    expect(warnings).toEqual([])
-  })
-  it('should return empty warning array when constant-multiple enabled and auto-take profit trigger greater than constant-multiple buy trigger', () => {
-    const warnings = warningsAutoTakeProfitValidation({
-      ...autoTakeProfitWarningsValidationBaseData,
-      isConstantMultipleEnabled: true,
-      constantMultipleBuyTriggerPrice: new BigNumber(1300),
     })
 
     expect(warnings).toEqual([])

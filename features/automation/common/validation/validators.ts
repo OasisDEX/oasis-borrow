@@ -70,18 +70,3 @@ export function isStopLossTriggerCloseToAutoSellTrigger({
 }>): AutomationValidationMethodStateResult {
   return autoSellTriggerData.isTriggerEnabled && sliderMax && stopLossLevel?.isEqualTo(sliderMax)
 }
-
-export function isStopLossTriggerCloseToConstantMultipleSellTrigger({
-  context: {
-    triggerData: { constantMultipleTriggerData },
-  },
-  sliderMax,
-  stopLossLevel,
-}: AutomationValidationMethodParams<{
-  sliderMax?: BigNumber
-  stopLossLevel?: BigNumber
-}>): AutomationValidationMethodStateResult {
-  return (
-    constantMultipleTriggerData.isTriggerEnabled && sliderMax && stopLossLevel?.isEqualTo(sliderMax)
-  )
-}

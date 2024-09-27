@@ -26,7 +26,7 @@ export function CancelAutoTakeProfitInfoSection({
 
   return (
     <InfoSection
-      title={t('constant-multiple.vault-changes.general-summary')}
+      title={t('auto-take-profit.vault-changes.general-summary')}
       items={[
         ...(isDebtZero || readOnlyAutoTakeProfitEnabled
           ? [

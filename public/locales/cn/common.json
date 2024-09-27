@@ -201,9 +201,6 @@
     "max-gas-fee-in-gwei": "燃料费的最大值（Gwei）",
     "minimum-sell-price": "最低出售价格",
     "maximum-buy-price": "最高购买价格",
-    "constant-multiple": "Constant-Multiple trigger",
-    "constant-multiple-buy": "Constant-Multiple Buy trigger",
-    "constant-multiple-sell": "Constant-Multiple Sell trigger",
     "buy-trigger-col-ratio": "Buy Trigger Col. Ratio",
     "sell-trigger-col-ratio": "Sell Trigger Col. Ratio",
     "target-multiple": "Target multiple"
@@ -657,7 +654,6 @@
     "stop-loss": "Stop-Loss",
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
-    "constant-multiple": "Constant Multiple",
     "history": "历史",
     "vaultinfo": "金库信息",
     "multiply-buy-coll": "以 DAI 购买 ({{token}})",
@@ -1247,9 +1243,6 @@
     "auto-sell-trigger-higher-than-auto-buy-target": "设置你的 Auto-Sell 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
     "stop-loss-trigger-higher-than-auto-buy-target": "设置你的 Stop-Loss 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
     "auto-buy-trigger-lower-than-auto-sell-target": "设置你的  Auto-Buy 触发器在这个层级将会导致你的 Auto-Sell 执行它。请先调整你的 Auto-Sell 目标比率。",
-    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "如果你已经设置 Constant Multiple， 你就无法设置  {{autoType}}。请移除 Constant MultipleYou 再继续设置。",
-    "after-coll-ratio-below-constant-multiple-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 出售触发器比率",
-    "after-coll-ratio-above-constant-multiple-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 的购买触发器比率",
     "after-coll-ratio-below-auto-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Sell 的金库。请先调整 Auto-sell 的触发器比率。",
     "after-coll-ratio-above-auto-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Buy 的金库。清先调整 Auto-Buy 的触发器比率。",
     "min-sell-price-will-prevent-sell-trigger": "此最低出售价格将会防止启动出售触发器",
@@ -1275,12 +1268,7 @@
     "auto-buy-target-close-to-auto-sell-trigger": "设置较低的目标率有可能启动已设置的  Auto-Sell。如果想要使用较低的目标率，请先调整  Auto-Sell 触发器。",
     "auto-buy-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Buy 即刻执行。如果这不是你预期的结果，请调降触发率。",
     "auto-sell-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Sell 即刻执行。如果这不是你预期的结果，请调降触发率。",
-    "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@summer.fi</0>",
-    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "你无法设置低于你的 Stop-Loss 的 Constant Multiple Sell 触发器。进一步了解此机制<0>如何运作</0>",
-    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "你无法设置高于已设置的 Constant Multiple 触发器的 Stop-Loss 触发器。进一步了解此机制<0>如何运作</0>",
-    "adding-constant-multiple-when-auto-sell-or-buy-enabled": "设置 Constant Multiple 将移除已存在的 {{enabledTriggers}}。确定继续？",
-    "constant-multiple-auto-sell-triggered-immediately": "设置你的 Sell 触发器在这个比率有可能导致它立刻被执行。",
-    "constant-multiple-auto-buy-triggered-immediately": "设置你的 Buy 触发器在这个比率有可能导致它立刻被执行。"
+    "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@summer.fi</0>"
   },
   "vault-info-messages": {
     "earn-overview": "这个 {{token}} 仓位是在 Uniswap V3 赚取交易费用。提供给资金池的 DAI 通过 Maker Protocol 加倍成长，使用户在 Uniswap 资金池里有较大的敞口。目前你可以执行的只有<1>关闭这个金库</1>",
@@ -1621,8 +1609,7 @@
     "banner": {
       "header": "设置 Auto-Sell",
       "content": "设置 Auto-Sell 以确保你的金库抵押率高于特定层级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
-      "button": "设置 Auto Sell",
-      "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Sell。"
+      "button": "设置 Auto Sell"
     },
     "sl-too-high": "当你现有的 Stop-Loss 保护触发点过高时，Auto-Sell 将无法使用。在使用 Stop-Loss 触发器前，请将<0>讓你的 Stop-Loss 触发器调低于</0>{{maxStopLoss}}%。",
     "coll-ratio-too-high": "当你的抵押率太高时，Auto-Sell 将无法使用。在使用 Auto-Sell 前，请先<0>降低你的抵押率</0>。"
@@ -1660,8 +1647,7 @@
     "banner": {
       "header": "设置 Auto-Buy",
       "content": "设置 Auto-Buy 以确保你的金库抵押率高于特点等级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
-      "button": "设置 Auto Buy",
-      "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Buy。"
+      "button": "设置 Auto Buy"
     },
     "setting-auto-buy": "正在设置 Auto-Buy",
     "cancelling-auto-buy": "正在取消 Auto-Buy",
@@ -1686,57 +1672,6 @@
     "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Optimization 触发器。",
     "unable-to-access-auto-buy": "无法使用 Auto-Buy",
     "unable-to-access-optimization": "无法使用 Optimization"
-  },
-  "constant-multiple": {
-    "title": "连续倍率",
-    "target-multiple": "目标倍率",
-    "target-col-ratio": "目标抵押率 {{amount}}",
-    "total-cost-of-feature": "功能的总成本",
-    "pnl-since-enabled": "启用后的损益： {{amount}}",
-    "banner": {
-      "header": "设置连续倍率",
-      "content": " 设置连续倍率以确保你的金库抵押率保持在你选择的特定范围内",
-      "button": "设置连续倍率",
-      "header-no-multiply": "想要设置 Constant Multiple?",
-      "content-no-multiply": "Constant Multiple 让你的金库维持在你选定的倍率。这项功能只可以在杠杆交易的金库上使用，若你想使用此功能，可以到总览页面更改金库类型。了解更多",
-      "button-no-multiply": "前往金库总览"
-    },
-    "vault-changes": {
-      "general-summary": "一般摘要",
-      "buy-sell-trigger-summary": "Buy/Sell 触发器摘要",
-      "target-col-ratio-after-buy-sell": "每次购买或出售后的抵押率",
-      "target-multiple-ratio-after-buy-sell": "每次购买或出售后的目标倍率",
-      "cost-per-adjustment": "单一调整的预估交易成本",
-      "max-price-buy": "执行 Auto-Buy 的最高价格",
-      "max-price-sell": "执行 Auto-Sell 的最低价格",
-      "estimated-oasis-fee": "预估的 Summer.fi 手续费",
-      "estimated-max-gas-fee": "预估的最高燃料费",
-      "cancel-summary": "取消摘要"
-    },
-    "set-trigger-description": "Constant Mulitple Automation 將以 {{sellExecutionCollRatio}}% 的抵押率出售 {{token}}，並且以 {{buyExecutionCollRatio}}% 的抵押率購買 {{token}}，讓你的金庫倍率回到 {{multiplier}}x。",
-    "set-trigger-risk": "注意：Constant Multiple 属于进阶策略，建议你在设置之前，必须充分须明白它的风险。了解更多",
-    "operating-cost": "操作成本",
-    "operating-cost-desc": "设置和执行你的 Constant Multiple 的成本。\n设置成本 + 执行成本 = 操作成本",
-    "cancel-instructions": "你必须点击下方的按钮并确认交易以取消 Constant Multiple。",
-    "adding-constant-multiple": "正在新增 Constant Multiple 触发器",
-    "adjusting-constant-multiple": "正在更改 Constant Multiple 触发器",
-    "removing-constant-multiple": "正在移除 Constant Multiple 触发器",
-    "setting-constant-multiple": "正在设置 Constant Multiple",
-    "cancelling-constant-multiple": "正在取消 Constant Multiple",
-    "adding-new-triggers-disabled": "目前关闭创建新的 Constant Multiple 触发器的功能",
-    "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Constant Multiple 觸發器",
-    "sl-too-high": "由于你现有的 Stop-Loss 触发器过高，所以暂停 Constant Multiple 的服务。請<0>讓 Stop-Loss 觸發器低於</0>{{maxStopLoss}}% 以使用 Constant Multiple。",
-    "coll-ratio-too-close-to-dust-limit": "由於当前的抵押率非常接近 Dust 限度，所以暂停 Constant Multiple 的服务。请调整 <0>你的抵押率</0>以使用 Constant Multiple。",
-    "closed-vault-existing-trigger-header": "你的金库已被关闭，但 Constant Multiple 仍处于活跃状态",
-    "closed-vault-existing-trigger-description": "你可以在这里取消已设置的 Constant Multiple 或在总览页面存入抵押品至你的金库。",
-    "add-form-title": "Constant Multiple Setup",
-    "setting-form-title": "正在設置 Constant Multiple",
-    "cancelling-form-title": "正在取消 Constant Multiple",
-    "edit-form-title": "編輯 Constant Multiple",
-    "cancel-form-title": "取消确认",
-    "trigger-added": "已啟用Constant Multiple",
-    "trigger-cancelled": "已取消 Constant Multiple",
-    "trigger-updated": "已更新 Constant Multiple"
   },
   "ref": {
     "banner": "推荐你的好友，一起来赚取 DAI",

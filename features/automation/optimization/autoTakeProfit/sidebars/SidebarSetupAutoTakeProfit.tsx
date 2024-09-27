@@ -78,7 +78,7 @@ export function SidebarSetupAutoTakeProfit({
     environmentData: { ethMarketPrice, etherscanUrl, nextCollateralPrice, ethBalance },
     positionData: { debt, debtOffset, token, vaultType, lockedCollateral },
     protocol,
-    triggerData: { autoBuyTriggerData, autoTakeProfitTriggerData, constantMultipleTriggerData },
+    triggerData: { autoBuyTriggerData, autoTakeProfitTriggerData },
   } = useAutomationContext()
 
   const { isAwaitingConfirmation } = autoTakeProfitState
@@ -94,7 +94,6 @@ export function SidebarSetupAutoTakeProfit({
     forcePanel: AutomationFeatures.AUTO_TAKE_PROFIT,
     disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
-    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
     protocol,
@@ -152,15 +151,9 @@ export function SidebarSetupAutoTakeProfit({
     ethBalance,
     gasEstimationUsd: gasEstimation?.usdValue,
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
-    isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     executionPrice: autoTakeProfitState.executionPrice,
     autoBuyTriggerPrice: collateralPriceAtRatio({
       colRatio: autoBuyTriggerData.execCollRatio.div(100),
-      collateral: lockedCollateral,
-      vaultDebt: debt,
-    }),
-    constantMultipleBuyTriggerPrice: collateralPriceAtRatio({
-      colRatio: constantMultipleTriggerData.buyExecutionCollRatio.div(100),
       collateral: lockedCollateral,
       vaultDebt: debt,
     }),

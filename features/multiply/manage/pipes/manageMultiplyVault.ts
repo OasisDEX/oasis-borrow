@@ -360,7 +360,6 @@ export function createManageMultiplyVault$(
                     stopLossData: undefined,
                     autoBuyData: undefined,
                     autoSellData: undefined,
-                    constantMultipleData: undefined,
                     balanceInfo,
                     ilkData,
                     account,

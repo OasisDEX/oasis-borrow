@@ -5,7 +5,6 @@ import type { Context } from 'blockchain/network.types'
 import type { NetworkIds } from 'blockchain/networks'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -104,7 +103,6 @@ export function createAutomationTriggersChange$(
         triggersData: triggers,
         triggerType: TriggerType.BasicBuy,
       }),
-      constantMultipleData: extractConstantMultipleData(triggers),
       autoTakeProfitData: extractAutoTakeProfitData(triggers),
     })),
   )

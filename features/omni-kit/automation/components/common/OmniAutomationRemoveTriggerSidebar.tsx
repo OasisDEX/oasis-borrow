@@ -67,7 +67,6 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
     [AutomationFeatures.AUTO_SELL]: [],
     [AutomationFeatures.AUTO_BUY]: [],
     [AutomationFeatures.PARTIAL_TAKE_PROFIT]: [],
-    [AutomationFeatures.CONSTANT_MULTIPLE]: [],
     [AutomationFeatures.AUTO_TAKE_PROFIT]: [],
   }[resolvedActiveUiDropdown]
 
@@ -87,7 +86,6 @@ export const OmniAutomationRemoveTriggerSidebar: FC = ({ children }) => {
     [AutomationFeatures.PARTIAL_TAKE_PROFIT]: (
       <OmniAutomationCancelNotice content={t('protection.take-profit-cancel-notice')} />
     ),
-    [AutomationFeatures.CONSTANT_MULTIPLE]: null,
     [AutomationFeatures.AUTO_TAKE_PROFIT]: null,
   }[resolvedActiveUiDropdown]
 

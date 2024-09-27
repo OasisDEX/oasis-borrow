@@ -21,15 +21,8 @@ export type VaultWarningMessage =
   | 'autoBuyTargetCloseToAutoSellTrigger'
   | 'autoBuyTriggeredImmediately'
   | 'autoSellTriggeredImmediately'
-  | 'constantMultipleSellTriggerCloseToStopLossTrigger'
-  | 'stopLossTriggerCloseToConstantMultipleSellTrigger'
-  | 'addingConstantMultipleWhenAutoSellOrBuyEnabled'
-  | 'constantMultipleAutoSellTriggeredImmediately'
-  | 'constantMultipleAutoBuyTriggeredImmediately'
   | 'autoTakeProfitTriggerLowerThanAutoBuyTrigger'
-  | 'autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger'
   | 'autoBuyTriggerGreaterThanAutoTakeProfit'
-  | 'constantMultipleBuyTriggerGreaterThanAutoTakeProfit'
   | 'existingTakeProfitTriggerAfterVaultReopen'
   | 'stopLossTriggeredImmediately'
   | 'partialTakeProfitTargetHigherThanStopLoss'
@@ -54,15 +47,8 @@ interface WarningMessagesHandler {
   autoBuyTargetCloseToAutoSellTrigger?: boolean
   autoSellTriggeredImmediately?: boolean
   autoBuyTriggeredImmediately?: boolean
-  constantMultipleSellTriggerCloseToStopLossTrigger?: boolean
-  stopLossTriggerCloseToConstantMultipleSellTrigger?: boolean
-  addingConstantMultipleWhenAutoSellOrBuyEnabled?: boolean
-  constantMultipleAutoSellTriggeredImmediately?: boolean
-  constantMultipleAutoBuyTriggeredImmediately?: boolean
   autoTakeProfitTriggerLowerThanAutoBuyTrigger?: boolean
-  autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger?: boolean
   autoBuyTriggerGreaterThanAutoTakeProfit?: boolean
-  constantMultipleBuyTriggerGreaterThanAutoTakeProfit?: boolean
   existingTakeProfitTriggerAfterVaultReopen?: boolean
   partialTakeProfitTargetHigherThanStopLoss?: boolean
 }
@@ -85,15 +71,8 @@ export function warningMessagesHandler({
   autoBuyTargetCloseToAutoSellTrigger,
   autoSellTriggeredImmediately,
   autoBuyTriggeredImmediately,
-  constantMultipleSellTriggerCloseToStopLossTrigger,
-  stopLossTriggerCloseToConstantMultipleSellTrigger,
-  addingConstantMultipleWhenAutoSellOrBuyEnabled,
-  constantMultipleAutoSellTriggeredImmediately,
-  constantMultipleAutoBuyTriggeredImmediately,
   autoTakeProfitTriggerLowerThanAutoBuyTrigger,
-  autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger,
   autoBuyTriggerGreaterThanAutoTakeProfit,
-  constantMultipleBuyTriggerGreaterThanAutoTakeProfit,
   existingTakeProfitTriggerAfterVaultReopen,
   partialTakeProfitTargetHigherThanStopLoss,
 }: WarningMessagesHandler) {
@@ -166,40 +145,12 @@ export function warningMessagesHandler({
     warningMessages.push('autoSellTriggeredImmediately')
   }
 
-  if (constantMultipleSellTriggerCloseToStopLossTrigger) {
-    warningMessages.push('constantMultipleSellTriggerCloseToStopLossTrigger')
-  }
-
-  if (stopLossTriggerCloseToConstantMultipleSellTrigger) {
-    warningMessages.push('stopLossTriggerCloseToConstantMultipleSellTrigger')
-  }
-
-  if (addingConstantMultipleWhenAutoSellOrBuyEnabled) {
-    warningMessages.push('addingConstantMultipleWhenAutoSellOrBuyEnabled')
-  }
-
-  if (constantMultipleAutoSellTriggeredImmediately) {
-    warningMessages.push('constantMultipleAutoSellTriggeredImmediately')
-  }
-
-  if (constantMultipleAutoBuyTriggeredImmediately) {
-    warningMessages.push('constantMultipleAutoBuyTriggeredImmediately')
-  }
-
   if (autoTakeProfitTriggerLowerThanAutoBuyTrigger) {
     warningMessages.push('autoTakeProfitTriggerLowerThanAutoBuyTrigger')
   }
 
-  if (autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger) {
-    warningMessages.push('autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger')
-  }
-
   if (autoBuyTriggerGreaterThanAutoTakeProfit) {
     warningMessages.push('autoBuyTriggerGreaterThanAutoTakeProfit')
-  }
-
-  if (constantMultipleBuyTriggerGreaterThanAutoTakeProfit) {
-    warningMessages.push('constantMultipleBuyTriggerGreaterThanAutoTakeProfit')
   }
 
   if (existingTakeProfitTriggerAfterVaultReopen) {

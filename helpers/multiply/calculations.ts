@@ -1,6 +1,5 @@
 import type BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import { getAddConstantMultipleHistoryEventIndex } from 'features/vaultHistory/getAddConstantMultipleHistoryEventIndex'
 import type { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents.types'
 import { zero } from 'helpers/zero'
 
@@ -106,41 +105,6 @@ export function getCumulativeOasisFeeUSD(total: BigNumber, event: VaultEvent) {
   }
 }
 
-function getCumulativeConstantMultipleFeeUSD(
-  total: BigNumber,
-  event: VaultEvent,
-  currentIndex: number,
-  events: VaultEvent[],
-) {
-  switch (event.kind) {
-    case 'INCREASE_MULTIPLE':
-    case 'DECREASE_MULTIPLE':
-      const potentialExecuteEvent = events[currentIndex + 1]
-
-      if (
-        'eventType' in potentialExecuteEvent &&
-        potentialExecuteEvent.eventType === 'executed' &&
-        event.hash === potentialExecuteEvent.hash
-      ) {
-        return total
-          .plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
-          .plus(event.oazoFee)
-      }
-      return total
-    case 'basic-buy':
-    case 'basic-sell':
-      const potentialEventWithSameHash = events[currentIndex - 1]
-
-      if (!potentialEventWithSameHash || event.hash !== potentialEventWithSameHash?.hash) {
-        return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
-      }
-
-      return total
-    default:
-      return total
-  }
-}
-
 export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber) {
   const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
@@ -179,23 +143,4 @@ export function calculateNetEarnings(events: VaultEvent[], currentNetValueUSD: B
     .minus(cumulativeDepositUSD)
     .plus(cumulativeWithdrawnUSD)
     .minus(cumulativeFeesUSD)
-}
-
-export function calculatePNLFromAddConstantMultipleEvent(
-  events: VaultEvent[],
-  currentNetValueUSD: BigNumber,
-) {
-  const addConstantMultipleIndex = getAddConstantMultipleHistoryEventIndex(events)
-  const totalPnL = calculatePNL(events, currentNetValueUSD)
-  const eventsTillConstantMultiple = events.slice(addConstantMultipleIndex)
-  const PnLTillConstantMultiple = calculatePNL(eventsTillConstantMultiple, currentNetValueUSD)
-
-  return totalPnL.minus(PnLTillConstantMultiple)
-}
-
-export function calculateTotalCostOfConstantMultiple(events: VaultEvent[]) {
-  const addConstantMultipleIndex = getAddConstantMultipleHistoryEventIndex(events)
-  const eventsSinceConstantMultiple = events.slice(0, addConstantMultipleIndex)
-
-  return eventsSinceConstantMultiple.reduce(getCumulativeConstantMultipleFeeUSD, zero)
 }

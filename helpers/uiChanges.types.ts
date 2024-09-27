@@ -11,10 +11,6 @@ import type {
   AutoTakeProfitFormChangeAction,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import type {
-  ConstantMultipleChangeAction,
-  ConstantMultipleFormChange,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
-import type {
   MultiplyPillChange,
   MultiplyPillChangeAction,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
@@ -35,7 +31,6 @@ import type { TxPayloadChange, TxPayloadChangeAction } from './gasEstimate.types
 export type SupportedUIChangeType =
   | StopLossFormChange
   | AutoBSFormChange
-  | ConstantMultipleFormChange
   | TabChange
   | MultiplyPillChange
   | SwapWidgetState
@@ -51,7 +46,6 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
-  ConstantMultipleChangeAction: ConstantMultipleChangeAction
   TxPayloadChange: TxPayloadChangeAction
   AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
   FollowedVaultsLimitReachedChangeAction: FollowedVaultsLimitReachedChangeAction

@@ -4,7 +4,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { auto_buy, auto_sell, constant_multiple, stop_loss, take_profit } from 'theme/icons'
+import { auto_buy, auto_sell, stop_loss, take_profit } from 'theme/icons'
 
 interface AutomationIconProps {
   enabled: boolean
@@ -15,7 +15,6 @@ interface AutomationIconProps {
 const automationIconMap: Record<keyof PortfolioPosition['automations'], IconProps['icon']> = {
   autoBuy: auto_buy,
   autoSell: auto_sell,
-  constantMultiple: constant_multiple,
   stopLoss: stop_loss,
   takeProfit: take_profit,
 }

@@ -217,7 +217,6 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     stopLossData,
     autoSellData,
     autoBuyData,
-    constantMultipleData,
     autoTakeProfitData,
   } = state
 
@@ -473,24 +472,6 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       type: 'above',
     })
 
-  const afterCollRatioBelowConstantMultipleSellRatio =
-    !!constantMultipleData?.isTriggerEnabled &&
-    afterCollRatioThresholdRatioValidator({
-      afterCollateralizationRatio,
-      afterCollateralizationRatioAtNextPrice,
-      threshold: constantMultipleData.sellExecutionCollRatio.div(100),
-      type: 'below',
-    })
-
-  const afterCollRatioAboveConstantMultipleBuyRatio =
-    !!constantMultipleData?.isTriggerEnabled &&
-    afterCollRatioThresholdRatioValidator({
-      afterCollateralizationRatio,
-      afterCollateralizationRatioAtNextPrice,
-      threshold: constantMultipleData.buyExecutionCollRatio.div(100),
-      type: 'above',
-    })
-
   const takeProfitWillTriggerImmediatelyAfterVaultReopen =
     vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
       debt,
@@ -536,8 +517,6 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       afterCollRatioBelowStopLossRatio ||
       afterCollRatioBelowAutoSellRatio ||
       afterCollRatioAboveAutoBuyRatio ||
-      afterCollRatioBelowConstantMultipleSellRatio ||
-      afterCollRatioAboveConstantMultipleBuyRatio ||
       takeProfitWillTriggerImmediatelyAfterVaultReopen)
 
   const editingProgressionDisabledForUncontrolled =
@@ -664,8 +643,6 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowAutoSellRatio,
     afterCollRatioAboveAutoBuyRatio,
-    afterCollRatioBelowConstantMultipleSellRatio,
-    afterCollRatioAboveConstantMultipleBuyRatio,
     takeProfitWillTriggerImmediatelyAfterVaultReopen,
     existingTakeProfitTriggerAfterVaultReopen,
 

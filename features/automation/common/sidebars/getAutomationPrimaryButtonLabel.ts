@@ -12,19 +12,16 @@ function getPrimaryButtonLabelEditingTranslationKey({ flow }: { flow: SidebarAut
     case 'addSl':
     case 'addAutoSell':
     case 'addAutoBuy':
-    case 'addConstantMultiple':
     case 'addAutoTakeProfit':
       return 'automation.add-trigger'
     case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
-    case 'editConstantMultiple':
     case 'editAutoTakeProfit':
       return 'automation.update-trigger'
     case 'cancelSl':
     case 'cancelAutoSell':
     case 'cancelAutoBuy':
-    case 'cancelConstantMultiple':
     case 'cancelAutoTakeProfit':
       return 'automation.cancel-trigger'
     default:
@@ -41,19 +38,16 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({
     case 'addSl':
     case 'addAutoSell':
     case 'addAutoBuy':
-    case 'addConstantMultiple':
     case 'addAutoTakeProfit':
       return 'automation.setting'
     case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
-    case 'editConstantMultiple':
     case 'editAutoTakeProfit':
       return 'automation.updating'
     case 'cancelSl':
     case 'cancelAutoSell':
     case 'cancelAutoBuy':
-    case 'cancelConstantMultiple':
     case 'cancelAutoTakeProfit':
       return 'automation.cancelling'
     default:
@@ -72,9 +66,6 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationF
     case 'cancelAutoBuy':
     case 'editAutoSell':
     case 'editAutoBuy':
-    case 'addConstantMultiple':
-    case 'cancelConstantMultiple':
-    case 'editConstantMultiple':
     case 'addAutoTakeProfit':
     case 'cancelAutoTakeProfit':
     case 'editAutoTakeProfit':

@@ -39,7 +39,6 @@ export function GeneralManageTabBar({
       autoBuyTriggerData,
       autoSellTriggerData,
       autoTakeProfitTriggerData,
-      constantMultipleTriggerData,
       stopLossTriggerData,
     },
   } = useAutomationContext()
@@ -47,9 +46,7 @@ export function GeneralManageTabBar({
   const protectionEnabled =
     stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled
   const optimizationEnabled =
-    autoBuyTriggerData.isTriggerEnabled ||
-    constantMultipleTriggerData.isTriggerEnabled ||
-    autoTakeProfitTriggerData.isTriggerEnabled
+    autoBuyTriggerData.isTriggerEnabled || autoTakeProfitTriggerData.isTriggerEnabled
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -96,7 +93,7 @@ export function GeneralManageTabBar({
                 label: t('system.optimization'),
                 value: VaultViewMode.Optimization,
                 tag: { include: true, active: optimizationEnabled },
-                content: <OptimizationControl vaultHistory={vaultHistory} />,
+                content: <OptimizationControl />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
                     MixpanelAutomationEventIds.SelectOptimization,

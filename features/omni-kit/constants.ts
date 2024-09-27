@@ -142,7 +142,6 @@ export const omniProtectionLikeAutomationFeatures = [
 export const omniOptimizationLikeAutomationFeatures = [
   AutomationFeatures.AUTO_BUY,
   AutomationFeatures.AUTO_TAKE_PROFIT,
-  AutomationFeatures.CONSTANT_MULTIPLE,
   AutomationFeatures.PARTIAL_TAKE_PROFIT,
 ]
 

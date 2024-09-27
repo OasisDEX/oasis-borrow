@@ -8,7 +8,6 @@ import type {
   AutomationRemoveTriggerTxDef,
 } from 'features/automation/common/txDefinitions.types'
 import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
-import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
 import type {
   StopLossFormChange,
   StopLossResetData,
@@ -87,8 +86,6 @@ export interface AutoBSMetadata {}
 
 export interface AutoTakeProfitMetadata {}
 
-export interface ConstantMultipleMetadata {}
-
 export interface AutomationContracts {
   addTrigger: AutomationAddTriggerTxDef
   removeTrigger: AutomationRemoveTriggerTxDef
@@ -126,7 +123,6 @@ export interface AutomationMetadata {
   autoBuy: GetAutomationMetadata<AutoBSMetadata>
   autoSell: GetAutomationMetadata<AutoBSMetadata>
   autoTakeProfit: GetAutomationMetadata<AutoTakeProfitMetadata>
-  constantMultiple: GetAutomationMetadata<ConstantMultipleMetadata>
   stopLoss: GetAutomationMetadata<StopLossMetadata>
 }
 
@@ -136,6 +132,5 @@ export interface OverwriteTriggersDefaults {
   stopLossTriggerData?: StopLossTriggerData
   autoBSTriggerData?: AutoBSTriggerData
   autoSellTriggerData?: AutoBSTriggerData
-  constantMultipleTriggerData?: ConstantMultipleTriggerData
   autoTakeProfitTriggerData?: AutoTakeProfitTriggerData
 }

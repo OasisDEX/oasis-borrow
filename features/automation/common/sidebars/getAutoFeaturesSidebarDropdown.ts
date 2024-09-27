@@ -7,7 +7,6 @@ import type {
   AutomationProtectionFeatures,
 } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
 import { circle_exchange } from 'theme/icons'
@@ -52,9 +51,7 @@ export function getAutoFeaturesSidebarDropdown({
   isStopLossEnabled,
   isAutoSellEnabled,
   isAutoBuyEnabled,
-  isAutoConstantMultipleEnabled,
   isAutoTakeProfitEnabled,
-  vaultType,
   protocol,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
   const stopLossDropdownItem = getAutoFeaturesSidebarDropdownItem({
@@ -75,12 +72,7 @@ export function getAutoFeaturesSidebarDropdown({
     panel: AutomationFeatures.AUTO_BUY,
     isFeatureEnabled: isAutoBuyEnabled,
   })
-  const constantMultipleDropdownItem = getAutoFeaturesSidebarDropdownItem({
-    translationKey: 'system.constant-multiple',
-    type: 'Optimization',
-    panel: AutomationFeatures.CONSTANT_MULTIPLE,
-    isFeatureEnabled: isAutoConstantMultipleEnabled,
-  })
+
   const autoTakeProfitDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.auto-take-profit',
     type: 'Optimization',
@@ -88,27 +80,19 @@ export function getAutoFeaturesSidebarDropdown({
     isFeatureEnabled: isAutoTakeProfitEnabled,
   })
 
-  const {
-    isStopLossAvailable,
-    isAutoSellAvailable,
-    isAutoBuyAvailable,
-    isConstantMultipleAvailable,
-    isTakeProfitAvailable,
-  } = getAvailableAutomation(protocol)
+  const { isStopLossAvailable, isAutoSellAvailable, isAutoBuyAvailable, isTakeProfitAvailable } =
+    getAvailableAutomation(protocol)
 
   const items = [
     ...(type === 'Protection'
       ? [
           ...(isStopLossAvailable ? [stopLossDropdownItem] : []),
-          ...(!isAutoConstantMultipleEnabled && isAutoSellAvailable ? [autoSellDropdownItem] : []),
+          ...(isAutoSellAvailable ? [autoSellDropdownItem] : []),
         ]
       : []),
     ...(type === 'Optimization'
       ? [
-          ...(!isAutoConstantMultipleEnabled && isAutoBuyAvailable ? [basicBuyDropdownItem] : []),
-          ...(vaultType === VaultType.Multiply && isConstantMultipleAvailable
-            ? [constantMultipleDropdownItem]
-            : []),
+          ...(isAutoBuyAvailable ? [basicBuyDropdownItem] : []),
           ...(isTakeProfitAvailable ? [autoTakeProfitDropdownItem] : []),
         ]
       : []),

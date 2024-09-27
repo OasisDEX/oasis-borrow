@@ -41,7 +41,6 @@ export function getRawPositionDetails(
     automations: {
       autoBuy?: { enabled: boolean; price?: number | undefined } | undefined
       autoSell?: { enabled: boolean; price?: number | undefined } | undefined
-      constantMultiple?: { enabled: boolean; price?: number | undefined } | undefined
       stopLoss?: { enabled: boolean; price?: number | undefined } | undefined
       takeProfit?: { enabled: boolean; price?: number | undefined } | undefined
     }

@@ -72,8 +72,6 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   afterCollRatioBelowStopLossRatio: false,
   afterCollRatioBelowAutoSellRatio: false,
   afterCollRatioAboveAutoBuyRatio: false,
-  afterCollRatioBelowConstantMultipleSellRatio: false,
-  afterCollRatioAboveConstantMultipleBuyRatio: false,
   takeProfitWillTriggerImmediatelyAfterVaultReopen: false,
   existingTakeProfitTriggerAfterVaultReopen: false,
 

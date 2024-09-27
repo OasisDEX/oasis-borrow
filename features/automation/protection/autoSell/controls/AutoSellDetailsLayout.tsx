@@ -21,7 +21,6 @@ import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text } from 'theme-ui'
 
 interface AutoSellDetailsLayoutProps {
   triggerColRatio?: BigNumber
@@ -43,13 +42,8 @@ export function AutoSellDetailsLayout({
   const { t } = useTranslation()
   const {
     positionData: { id, ilk, token },
-    triggerData: {
-      autoSellTriggerData,
-      constantMultipleTriggerData: { isTriggerEnabled },
-    },
+    triggerData: { autoSellTriggerData },
   } = useAutomationContext()
-
-  const isConstantMultipleEnabled = isTriggerEnabled
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoSellOn = autoSellTriggerData.isTriggerEnabled
@@ -90,13 +84,6 @@ export function AutoSellDetailsLayout({
                 {t('here')}.
               </AppLink>
             </>,
-            ...(isConstantMultipleEnabled
-              ? [
-                  <Text as="span" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
-                    {t('auto-sell.banner.cm-warning')}
-                  </Text>,
-                ]
-              : []),
           ]}
           image={{
             src: '/static/img/setup-banner/auto-sell.svg',
@@ -117,7 +104,7 @@ export function AutoSellDetailsLayout({
               )
             },
             text: t('auto-sell.banner.button'),
-            disabled: isConstantMultipleEnabled,
+            disabled: false,
           }}
         />
       )}

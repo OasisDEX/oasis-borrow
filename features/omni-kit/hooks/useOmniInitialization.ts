@@ -79,7 +79,6 @@ export function useOmniInitialization<OmniPositionType>({
       autoSell: autoSellForm,
       autoBuy: autoBuyForm,
       partialTakeProfit: partialTakeProfitForm,
-      constantMultiple: partialTakeProfitForm,
       autoTakeProfit: partialTakeProfitForm,
     },
     automationSimulationData,

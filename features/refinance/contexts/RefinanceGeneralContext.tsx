@@ -44,7 +44,6 @@ export type RefinanceContextInputAutomations = {
   autoBuy?: IsAutomationEnabled
   partialTakeProfit?: IsAutomationEnabled
   autoTakeProfit?: IsAutomationEnabled
-  constantMultiple?: IsAutomationEnabled
 }
 
 export type RefinanceContextInput = {

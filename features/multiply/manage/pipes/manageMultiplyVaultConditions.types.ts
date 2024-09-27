@@ -66,8 +66,6 @@ export interface ManageVaultConditions {
   afterCollRatioBelowStopLossRatio: boolean
   afterCollRatioBelowAutoSellRatio: boolean
   afterCollRatioAboveAutoBuyRatio: boolean
-  afterCollRatioBelowConstantMultipleSellRatio: boolean
-  afterCollRatioAboveConstantMultipleBuyRatio: boolean
   takeProfitWillTriggerImmediatelyAfterVaultReopen: boolean
   existingTakeProfitTriggerAfterVaultReopen: boolean
 

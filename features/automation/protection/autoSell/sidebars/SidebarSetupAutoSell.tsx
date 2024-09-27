@@ -77,12 +77,7 @@ export function SidebarSetupAutoSell({
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { nextPositionRatio, debt, debtFloor, liquidationRatio, token, vaultType },
     protocol,
-    triggerData: {
-      autoBuyTriggerData,
-      autoSellTriggerData,
-      constantMultipleTriggerData,
-      stopLossTriggerData,
-    },
+    triggerData: { autoBuyTriggerData, autoSellTriggerData, stopLossTriggerData },
   } = useAutomationContext()
 
   const { isAwaitingConfirmation } = autoSellState
@@ -99,7 +94,6 @@ export function SidebarSetupAutoSell({
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
-    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     vaultType,
     protocol,
   })
@@ -149,7 +143,6 @@ export function SidebarSetupAutoSell({
     debtDeltaAtCurrentCollRatio,
     autoSellState,
     autoBuyTriggerData,
-    constantMultipleTriggerData,
     isRemoveForm,
   })
   const cancelAutoSellWarnings = extractCancelAutomationWarnings(warnings)
