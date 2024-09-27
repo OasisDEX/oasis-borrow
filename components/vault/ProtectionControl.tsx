@@ -128,13 +128,9 @@ function getZeroDebtProtectionBannerProps({
 
 export interface ProtectionControlOverridesProps {
   AutoSellDetailsView?: () => JSX.Element | null
-  AutoSellFormControl?: () => JSX.Element | null
 }
 
-export function ProtectionControl({
-  AutoSellDetailsView,
-  AutoSellFormControl,
-}: ProtectionControlOverridesProps = {}) {
+export function ProtectionControl({ AutoSellDetailsView }: ProtectionControlOverridesProps = {}) {
   const { txHelpers$ } = useMainContext()
   const {
     positionData: { debt, debtFloor, debtToken },
@@ -162,12 +158,7 @@ export function ProtectionControl({
         vaultHasActiveTrigger || (!debt.isZero() && debt.gt(debtFloor)) ? (
           <DefaultVaultLayout
             detailsViewControl={<ProtectionDetailsControl AutoSell={AutoSellDetailsView} />}
-            editForm={
-              <ProtectionFormControl
-                txHelpers={txHelpersData}
-                CustomAutoSellFormControl={AutoSellFormControl}
-              />
-            }
+            editForm={<ProtectionFormControl txHelpers={txHelpersData} />}
           />
         ) : (
           <Container

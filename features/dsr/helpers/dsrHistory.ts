@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
-import { NetworkIds } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getNetworkRpcEndpoint } from 'blockchain/networks/get-network-rpc-endpoint'
 import { funcSigTopic } from 'blockchain/utils'
-import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'
 import type { Observable } from 'rxjs'
 import { combineLatest, merge, of } from 'rxjs'
@@ -62,11 +61,10 @@ const eventSigntures: Dictionary<string[]> = {
 }
 
 async function getBlockTimestamp({ chainId }: Context, blockNumber: number): Promise<number> {
-  const apiClient = new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
-  const block = await apiClient.request(historicalBlockNumbers, {
-    blockNumber,
-  })
-  return new Date(block.allHistoricBlocks.nodes[0].timestamp).getTime() / 1000
+  const provider = getRpcProvider(chainId)
+  const block = await provider.getBlock(blockNumber)
+
+  return new Date(block.timestamp).getTime()
 }
 
 function createEventTypeHistory$(
@@ -153,13 +151,3 @@ export function createDsrHistory$(context: Context, proxyAddress: string): Obser
     }),
   )
 }
-
-export const historicalBlockNumbers = gql`
-  query timestamp($blockNumber: Int) {
-    allHistoricBlocks(first: 1, filter: { number: { equalTo: $blockNumber } }) {
-      nodes {
-        timestamp
-      }
-    }
-  }
-`

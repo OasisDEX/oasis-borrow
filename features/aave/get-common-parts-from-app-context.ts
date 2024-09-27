@@ -2,14 +2,12 @@ import type BigNumber from 'bignumber.js'
 import { tokenAllowance } from 'blockchain/better-calls/erc20'
 import type { ChainlinkSupportedNetworks } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
-import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
-import { GraphQLClient } from 'graphql-request'
 import type { MainContext } from 'helpers/context/MainContext.types'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
 import { makeOneObservable } from 'lendingProtocols/pipelines'
@@ -17,7 +15,7 @@ import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
-import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
+import { map, switchMap } from 'rxjs/operators'
 
 import { getProxiesRelatedWithPosition$ } from './helpers'
 import { getAvailableDPMProxy$, getOperationExecutorTransactionMachine } from './services'
@@ -35,11 +33,6 @@ export function getCommonPartsFromProductContext(
   refresh$: Observable<unknown>,
   networkId: ChainlinkSupportedNetworks,
 ) {
-  const disconnectedGraphQLClient$ = context$.pipe(
-    distinctUntilKeyChanged('chainId'),
-    map(({ chainId }) => new GraphQLClient(getNetworkContracts(networkId, chainId).cacheApi)),
-  )
-
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
     switchMap(({ account }) => proxyAddress$(account)),
   )
@@ -113,7 +106,6 @@ export function getCommonPartsFromProductContext(
     proxiesRelatedWithPosition$,
     unconsumedDpmProxyForConnectedAccount$: unconsumedDpmForStrategyNetwork,
     contextForAddress$,
-    disconnectedGraphQLClient$,
     chainLinkETHUSDOraclePrice$,
   }
 }

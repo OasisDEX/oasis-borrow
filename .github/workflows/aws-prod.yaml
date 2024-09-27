@@ -55,7 +55,6 @@ jobs:
                        --build-arg AJNA_SUBGRAPH_V2_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_V2_URL_GOERLI }} \
                        --build-arg MIXPANEL_ENV=production \
                        --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_KEY_PROD }} \
-                       --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL_PROD }} \
                        --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID_PROD }} \
                        --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
                        --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_API_KEY_PROD }} \

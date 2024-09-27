@@ -258,7 +258,6 @@ export const optimismContracts: OptimismContracts = {
   adaptiveCurveIrm: contractDesc(morphoBlue, optimism.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, optimism.common.BalancerVault),
   // NOT contracts
-  cacheApi: 'not-implemented',
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],

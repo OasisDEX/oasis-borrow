@@ -69,7 +69,7 @@ import {
   supportedIlks,
   tokensMainnet,
 } from 'blockchain/tokens/mainnet'
-import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
+import { etherscanAPIKey } from 'config/runtimeConfig'
 import type { Optional } from 'helpers/types'
 
 import type { OptionalContracts } from './optional-contracts'
@@ -263,7 +263,6 @@ export const mainnetContracts = {
   adaptiveCurveIrm: contractDesc(morphoBlue, mainnet.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(ajnaReedemer, mainnet.common.BalancerVault),
   // not contracts
-  cacheApi: mainnetCacheUrl,
   safeConfirmations: 10,
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],

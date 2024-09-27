@@ -253,7 +253,6 @@ export const goerliContracts: MainnetContractsWithOptional = {
   adaptiveCurveIrm: contractDesc(morphoBlue, goerli.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, goerli.common.BalancerVault),
   // NOT contracts
-  cacheApi: 'https://cache-goerli-staging.staging.summer.fi/api/v1',
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],
