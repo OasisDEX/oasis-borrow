@@ -92,11 +92,7 @@ export const RefinanceProductTableStep = () => {
       perPage={refinanceProductHubItemsPerPage}
       hiddenBanners
       initialFilters={{
-        protocol: [
-          lendingProtocol === LendingProtocol.SparkV3
-            ? LendingProtocol.AaveV3
-            : LendingProtocol.SparkV3,
-        ],
+        protocol: lendingProtocol === LendingProtocol.SparkV3 ? [LendingProtocol.AaveV3] : [],
         network: [network.name],
       }}
       hiddenColumns={refinanceProductHubHiddenColumns}

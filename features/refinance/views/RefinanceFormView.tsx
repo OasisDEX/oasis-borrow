@@ -176,17 +176,19 @@ export const RefinanceFormView: FC = ({ children }) => {
     txDetails,
   })
 
+  const primaryButton = {
+    label: t(primaryButtonLabel),
+    disabled: isPrimaryButtonDisabled,
+    isLoading: isPrimaryButtonLoading,
+    hidden: isPrimaryButtonHidden,
+    withoutNextLink: true,
+    ...primaryButtonActions,
+  }
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: sidebarTitle,
     content: <Grid gap={3}>{children}</Grid>,
-    primaryButton: {
-      label: t(primaryButtonLabel),
-      disabled: isPrimaryButtonDisabled,
-      isLoading: isPrimaryButtonLoading,
-      hidden: isPrimaryButtonHidden,
-      withoutNextLink: true,
-      ...primaryButtonActions,
-    },
+    primaryButton,
     status,
     withMobilePanel: false,
     disableMaxHeight: currentStep === RefinanceSidebarStep.Strategy,

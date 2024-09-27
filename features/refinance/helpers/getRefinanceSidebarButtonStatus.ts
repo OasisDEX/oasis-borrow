@@ -47,7 +47,7 @@ export function getRefinanceSidebarButtonsStatus({
       (isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
 
   const isPrimaryButtonHidden =
-    !!(walletAddress && !isOwner) ||
+    (walletAddress && !isOwner) ||
     safetySwitch ||
     [RefinanceSidebarStep.Option, RefinanceSidebarStep.Strategy].includes(currentStep)
 

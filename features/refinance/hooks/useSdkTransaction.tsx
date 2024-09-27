@@ -18,16 +18,10 @@ export function useSdkRefinanceTransaction({
   const [txRefinance, setTxRefinance] = useState<null | Order>(null)
 
   const {
-    environment: {
-      slippage,
-      chainInfo,
-      marketPrices: { ethPrice },
-      address,
-    },
-    position: { positionId, collateralTokenData, debtTokenData, positionType, lendingProtocol },
-    poolData: { poolId },
+    environment: { chainInfo, address },
+    position: { lendingProtocol },
     form: {
-      state: { strategy, dpm },
+      state: { dpm },
     },
     steps: { currentStep },
   } = useRefinanceContext()
@@ -43,7 +37,11 @@ export function useSdkRefinanceTransaction({
   }, [currentStep])
 
   useEffect(() => {
-    if (!strategy || !dpm?.address || refinanceSimulation == null) {
+    if (
+      !dpm?.address ||
+      refinanceSimulation == null ||
+      (lendingProtocol === LendingProtocol.Maker && importPositionSimulation == null)
+    ) {
       return
     }
     const fetchData = async () => {
@@ -87,18 +85,9 @@ export function useSdkRefinanceTransaction({
   }, [
     sdk,
     dpm?.address,
-    slippage,
-    ethPrice,
     address,
     chainInfo,
-    poolId,
-    positionId,
-    JSON.stringify(collateralTokenData),
-    JSON.stringify(debtTokenData),
-    positionType,
-    strategy?.product,
-    strategy?.primaryToken,
-    strategy?.secondaryToken,
+    lendingProtocol,
     JSON.stringify(importPositionSimulation),
     JSON.stringify(refinanceSimulation),
   ])
