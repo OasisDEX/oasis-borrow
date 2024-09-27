@@ -31,8 +31,6 @@ export type VaultErrorMessage =
   | 'afterCollRatioBelowStopLossRatio'
   | 'afterCollRatioBelowAutoSellRatio'
   | 'afterCollRatioAboveAutoBuyRatio'
-  | 'afterCollRatioBelowConstantMultipleSellRatio'
-  | 'afterCollRatioAboveConstantMultipleBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
   | 'stopLossOnNearLiquidationRatio'
   | 'stopLossHigherThanCurrentOrNext'
@@ -43,7 +41,6 @@ export type VaultErrorMessage =
   | 'autoSellTriggerHigherThanAutoBuyTarget'
   | 'autoBuyTriggerLowerThanAutoSellTarget'
   | 'stopLossTriggerHigherThanAutoBuyTarget'
-  | 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled'
   | 'minSellPriceWillPreventSellTrigger'
   | 'maxBuyPriceWillPreventBuyTrigger'
   | 'autoTakeProfitTriggeredImmediately'
@@ -100,8 +97,6 @@ interface ErrorMessagesHandler {
   afterCollRatioBelowStopLossRatio?: boolean
   afterCollRatioBelowAutoSellRatio?: boolean
   afterCollRatioAboveAutoBuyRatio?: boolean
-  afterCollRatioBelowConstantMultipleSellRatio?: boolean
-  afterCollRatioAboveConstantMultipleBuyRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
   stopLossHigherThanCurrentOrNext?: boolean
   maxDebtForSettingStopLoss?: boolean
@@ -111,7 +106,6 @@ interface ErrorMessagesHandler {
   autoSellTriggerHigherThanAutoBuyTarget?: boolean
   autoBuyTriggerLowerThanAutoSellTarget?: boolean
   stopLossTriggerHigherThanAutoBuyTarget?: boolean
-  cantSetupAutoBuyOrSellWhenConstantMultipleEnabled?: boolean
   minSellPriceWillPreventSellTrigger?: boolean
   maxBuyPriceWillPreventBuyTrigger?: boolean
   autoTakeProfitTriggeredImmediately?: boolean
@@ -155,8 +149,6 @@ export function errorMessagesHandler({
   afterCollRatioBelowStopLossRatio,
   afterCollRatioBelowAutoSellRatio,
   afterCollRatioAboveAutoBuyRatio,
-  afterCollRatioBelowConstantMultipleSellRatio,
-  afterCollRatioAboveConstantMultipleBuyRatio,
   stopLossOnNearLiquidationRatio,
   stopLossHigherThanCurrentOrNext,
   maxDebtForSettingStopLoss,
@@ -166,7 +158,6 @@ export function errorMessagesHandler({
   autoSellTriggerHigherThanAutoBuyTarget,
   autoBuyTriggerLowerThanAutoSellTarget,
   stopLossTriggerHigherThanAutoBuyTarget,
-  cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
   minSellPriceWillPreventSellTrigger,
   maxBuyPriceWillPreventBuyTrigger,
   autoTakeProfitTriggeredImmediately,
@@ -302,14 +293,6 @@ export function errorMessagesHandler({
     errorMessages.push('afterCollRatioAboveAutoBuyRatio')
   }
 
-  if (afterCollRatioBelowConstantMultipleSellRatio) {
-    errorMessages.push('afterCollRatioBelowConstantMultipleSellRatio')
-  }
-
-  if (afterCollRatioAboveConstantMultipleBuyRatio) {
-    errorMessages.push('afterCollRatioAboveConstantMultipleBuyRatio')
-  }
-
   if (insufficientEthFundsForTx) {
     errorMessages.push('insufficientEthFundsForTx')
   }
@@ -347,10 +330,6 @@ export function errorMessagesHandler({
 
   if (stopLossTriggerHigherThanAutoBuyTarget) {
     errorMessages.push('stopLossTriggerHigherThanAutoBuyTarget')
-  }
-
-  if (cantSetupAutoBuyOrSellWhenConstantMultipleEnabled) {
-    errorMessages.push('cantSetupAutoBuyOrSellWhenConstantMultipleEnabled')
   }
 
   if (minSellPriceWillPreventSellTrigger) {

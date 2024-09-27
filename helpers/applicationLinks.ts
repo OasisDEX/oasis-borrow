@@ -44,13 +44,10 @@ export const EXTERNAL_LINKS = {
     WHAT_IS_BORROW: 'https://docs.summer.fi/products/borrow',
     WHAT_IS_DPM: 'https://docs.summer.fi/general/what-is-a-smart-defi-account',
     WHAT_IS_PROXY: 'https://docs.summer.fi/protocols/maker/what-is-a-proxy-contract',
-    WHAT_IS_CONSTANT_MULTIPLE: 'https://docs.summer.fi/automation/constant-multiple',
     REFER_A_FRIEND: 'https://docs.summer.fi/general/referrals-program/how-to-refer-a-friend',
     STOP_LOSS: 'https://docs.summer.fi/automation/stop-loss',
     AUTOMATION: 'https://docs.summer.fi/automation/general',
     MINIMUM_VAULT_DEBT_DUST: 'https://docs.summer.fi/protocols/maker/key-concepts',
-    CONSTANT_MULTIPLE_RISKS:
-      'https://docs.summer.fi/automation/constant-multiple#what-are-the-risks-associated-with-constant-multiple',
     TAKE_PROFIT: 'https://docs.summer.fi/automation/take-profit',
     ORACLE_SECURITY: 'https://docs.summer.fi/protocols/maker/key-concepts',
     AUTO_BUY_SELL: 'https://docs.summer.fi/automation/auto-buy-and-auto-sell',

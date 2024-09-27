@@ -6,7 +6,6 @@ export type AutomationProtectionFeatures =
   | AutomationFeatures.AUTO_SELL
 export type AutomationOptimizationFeatures =
   | AutomationFeatures.AUTO_BUY
-  | AutomationFeatures.CONSTANT_MULTIPLE
   | AutomationFeatures.AUTO_TAKE_PROFIT
 export type AutomationFormType = 'add' | 'remove'
 

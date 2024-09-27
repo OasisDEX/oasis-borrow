@@ -19,10 +19,7 @@ export function automationMultipleRangeSliderAnalytics({
   vaultId: BigNumber
   positionRatio: BigNumber
   ilk: string
-  type:
-    | AutomationFeatures.AUTO_SELL
-    | AutomationFeatures.AUTO_BUY
-    | AutomationFeatures.CONSTANT_MULTIPLE
+  type: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
   targetMultiple?: BigNumber
 }) {
   const analyticsAdditionalParams = {
@@ -35,13 +32,11 @@ export function automationMultipleRangeSliderAnalytics({
   const leftValueKeyMap = {
     [AutomationFeatures.AUTO_SELL]: 'triggerSellValue',
     [AutomationFeatures.AUTO_BUY]: 'targetValue',
-    [AutomationFeatures.CONSTANT_MULTIPLE]: 'triggerSellValue',
   }
 
   const rightValueKeyMap = {
     [AutomationFeatures.AUTO_SELL]: 'targetValue',
     [AutomationFeatures.AUTO_BUY]: 'triggerBuyValue',
-    [AutomationFeatures.CONSTANT_MULTIPLE]: 'triggerBuyValue',
   }
 
   useDebouncedCallback(

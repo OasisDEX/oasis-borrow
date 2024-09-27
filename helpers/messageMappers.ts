@@ -53,8 +53,6 @@ const commonErrors = [
   'afterCollRatioBelowStopLossRatio',
   'afterCollRatioBelowAutoSellRatio',
   'afterCollRatioAboveAutoBuyRatio',
-  'afterCollRatioBelowConstantMultipleSellRatio',
-  'afterCollRatioAboveConstantMultipleBuyRatio',
   'vaultWillBeTakenUnderMinActiveColRatio',
   'stopLossOnNearLiquidationRatio',
   'takeProfitWillTriggerImmediatelyAfterVaultReopen',
@@ -106,49 +104,4 @@ const cancelAutoBuyErrors = ['insufficientEthFundsForTx']
 
 export function extractCancelAutomationErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => cancelAutoBuyErrors.includes(message))
-}
-
-const constantMultipleSliderWarnings = [
-  'constantMultipleSellTriggerCloseToStopLossTrigger',
-  'constantMultipleAutoSellTriggeredImmediately',
-  'constantMultipleAutoBuyTriggeredImmediately',
-  'constantMultipleBuyTriggerGreaterThanAutoTakeProfit',
-]
-
-export function extractConstantMultipleSliderWarnings(warningMessages: VaultWarningMessage[]) {
-  return warningMessages.filter((message) => constantMultipleSliderWarnings.includes(message))
-}
-
-const constantMultipleCommonWarnings = [
-  'potentialInsufficientEthFundsForTx',
-  'addingConstantMultipleWhenAutoSellOrBuyEnabled',
-  'noMinSellPriceWhenStopLossEnabled',
-]
-
-export function extractConstantMultipleCommonWarnings(warningMessages: VaultWarningMessage[]) {
-  return warningMessages.filter((message) => constantMultipleCommonWarnings.includes(message))
-}
-
-const constantMultipleCommonErrors = ['insufficientEthFundsForTx']
-
-export function extractConstantMultipleCommonErrors(errorMessages: VaultErrorMessage[]) {
-  return errorMessages.filter((message) => constantMultipleCommonErrors.includes(message))
-}
-
-const constantMultipleMaxBuyInputErrors = [
-  'maxBuyPriceWillPreventBuyTrigger',
-  'autoBuyMaxBuyPriceNotSpecified',
-]
-
-export function extractConstantMultipleMaxBuyErrors(errorMessages: VaultErrorMessage[]) {
-  return errorMessages.filter((message) => constantMultipleMaxBuyInputErrors.includes(message))
-}
-
-const constantMultipleMinSellInputErrors = [
-  'minSellPriceWillPreventSellTrigger',
-  'minimumSellPriceNotProvided',
-]
-
-export function extractConstantMultipleMinSellErrors(errorMessages: VaultErrorMessage[]) {
-  return errorMessages.filter((message) => constantMultipleMinSellInputErrors.includes(message))
 }

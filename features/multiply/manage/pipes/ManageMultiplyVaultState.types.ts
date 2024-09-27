@@ -1,6 +1,5 @@
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
-import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
 import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -29,6 +28,5 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     stopLossData?: StopLossTriggerData
     autoBuyData?: AutoBSTriggerData
     autoSellData?: AutoBSTriggerData
-    constantMultipleData?: ConstantMultipleTriggerData
     autoTakeProfitData?: AutoTakeProfitTriggerData
   } & HasGasEstimation

@@ -2,7 +2,6 @@ import type {
   AutoBSMetadata,
   AutomationDefinitionMetadata,
   AutoTakeProfitMetadata,
-  ConstantMultipleMetadata,
   ContextWithoutMetadata,
   GetAutomationMetadata,
   StopLossMetadata,
@@ -19,15 +18,13 @@ export function initializeMetadata({
   automationContext: ContextWithoutMetadata
   metadata: AutomationDefinitionMetadata
 }) {
-  const { autoTakeProfit, autoBuy, autoSell, constantMultiple, stopLoss } = metadata
+  const { autoTakeProfit, autoBuy, autoSell, stopLoss } = metadata
 
   return {
     autoBuyMetadata: getDefaultMetadataWithDefault<AutoBSMetadata>(autoBuy)(automationContext),
     autoSellMetadata: getDefaultMetadataWithDefault<AutoBSMetadata>(autoSell)(automationContext),
     autoTakeProfitMetadata:
       getDefaultMetadataWithDefault<AutoTakeProfitMetadata>(autoTakeProfit)(automationContext),
-    constantMultipleMetadata:
-      getDefaultMetadataWithDefault<ConstantMultipleMetadata>(constantMultiple)(automationContext),
     stopLossMetadata: getDefaultMetadataWithDefault<StopLossMetadata>(stopLoss)(automationContext),
   }
 }

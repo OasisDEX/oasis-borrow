@@ -22,18 +22,13 @@ export function automationInputsAnalytics({
   withMinSellPriceThreshold?: boolean
   maxBuyPrice?: BigNumber
   withMaxBuyPriceThreshold?: boolean
-  type:
-    | AutomationFeatures.AUTO_SELL
-    | AutomationFeatures.AUTO_BUY
-    | AutomationFeatures.CONSTANT_MULTIPLE
+  type: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
   vaultId: BigNumber
   positionRatio: BigNumber
   ilk: string
 }) {
-  const shouldTrackMinSellInput =
-    type === AutomationFeatures.CONSTANT_MULTIPLE || type === AutomationFeatures.AUTO_SELL
-  const shouldTrackMaxBuyInput =
-    type === AutomationFeatures.CONSTANT_MULTIPLE || type === AutomationFeatures.AUTO_BUY
+  const shouldTrackMinSellInput = type === AutomationFeatures.AUTO_SELL
+  const shouldTrackMaxBuyInput = type === AutomationFeatures.AUTO_BUY
 
   const analyticsAdditionalParams = {
     vaultId: vaultId.toString(),

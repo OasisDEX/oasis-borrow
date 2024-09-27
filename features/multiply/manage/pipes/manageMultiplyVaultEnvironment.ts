@@ -53,7 +53,6 @@ export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>
       stopLossData: change.stopLossData,
       autoSellData: change.autoSellData,
       autoBuyData: change.autoBuyData,
-      constantMultipleData: change.constantMultipleData,
       autoTakeProfitData: change.autoTakeProfitData,
     }
   }

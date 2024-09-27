@@ -28,29 +28,9 @@ import type { TranslationType } from 'ts_modules/i18next'
 import type { VaultHistoryEvent } from './vaultHistory.types'
 import type { AutomationEntryProps } from './VaultHistoryEntry.types'
 
-function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
-  const isGroup = 'groupId' in event && event.groupId
-  const isExecutionEvent = event.eventType === 'executed'
-
-  if (isGroup) {
-    switch (event.autoKind) {
-      case 'basic-sell':
-        return isExecutionEvent ? 'constant-multiple-sell' : 'constant-multiple'
-      case 'basic-buy':
-        return isExecutionEvent ? 'constant-multiple-buy' : 'constant-multiple'
-      default:
-        return 'constant-multiple'
-    }
-  }
-
-  return event.autoKind
-}
-
 export function getHistoryEventTranslation(t: TranslationType, event: VaultHistoryEvent) {
   if ('triggerId' in event) {
-    const resolveKind = resolveTranslationForEventsWithTriggers(event)
-
-    return `${t(`history.${resolveKind}`)} ${t(`triggers.${event.eventType}`)}`
+    return `${t(`history.${event.autoKind}`)} ${t(`triggers.${event.eventType}`)}`
   }
 
   return t(`history.${event.kind.toLowerCase()}`, {

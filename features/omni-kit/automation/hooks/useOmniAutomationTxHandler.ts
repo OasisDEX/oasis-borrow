@@ -151,10 +151,6 @@ export const useOmniAutomationTxHandler = () => {
         updateHash(VaultViewMode.Protection, true)
         updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_SELL)
       },
-      [AutomationFeatures.CONSTANT_MULTIPLE]: () => {
-        updateHash(VaultViewMode.Optimization, true)
-        updateCommonState('uiDropdownProtection', AutomationFeatures.CONSTANT_MULTIPLE)
-      },
       [AutomationFeatures.AUTO_TAKE_PROFIT]: () => {
         updateHash(VaultViewMode.Optimization, true)
         updateCommonState('uiDropdownProtection', AutomationFeatures.AUTO_TAKE_PROFIT)

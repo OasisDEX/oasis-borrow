@@ -12,19 +12,16 @@ function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarAutomationFl
     case 'addSl':
     case 'addAutoSell':
     case 'addAutoBuy':
-    case 'addConstantMultiple':
     case 'addAutoTakeProfit':
       return 'automation.setting'
     case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
-    case 'editConstantMultiple':
     case 'editAutoTakeProfit':
       return 'automation.updating'
     case 'cancelSl':
     case 'cancelAutoSell':
     case 'cancelAutoBuy':
-    case 'cancelConstantMultiple':
     case 'cancelAutoTakeProfit':
       return 'automation.cancelling'
     default:
@@ -43,9 +40,6 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarAutomationFlow 
     case 'addAutoBuy':
     case 'editAutoBuy':
     case 'cancelAutoBuy':
-    case 'addConstantMultiple':
-    case 'editConstantMultiple':
-    case 'cancelConstantMultiple':
     case 'addAutoTakeProfit':
     case 'cancelAutoTakeProfit':
     case 'editAutoTakeProfit':

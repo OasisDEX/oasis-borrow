@@ -69,9 +69,6 @@ export const useMakerRefinanceContextInputs = ({
     takeProfit: {
       enabled: triggerData.autoTakeProfitTriggerData.isTriggerEnabled,
     },
-    constantMultiple: {
-      enabled: triggerData.constantMultipleTriggerData.isTriggerEnabled,
-    },
   }
 
   const network = getNetworkById(chainId).name

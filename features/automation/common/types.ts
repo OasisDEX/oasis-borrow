@@ -1,6 +1,5 @@
 import type { TriggerType } from '@oasisdex/automation'
 import type { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
-import type { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
 import type { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
 
 import type {
@@ -11,7 +10,6 @@ import type {
 export enum AutomationFeatures {
   AUTO_BUY = 'autoBuy',
   AUTO_SELL = 'autoSell',
-  CONSTANT_MULTIPLE = 'constantMultiple',
   STOP_LOSS = 'stopLoss',
   TRAILING_STOP_LOSS = 'trailingStopLoss',
   AUTO_TAKE_PROFIT = 'autoTakeProfit',
@@ -35,9 +33,6 @@ export type SidebarAutomationFlow =
   | 'addAutoBuy'
   | 'cancelAutoBuy'
   | 'editAutoBuy'
-  | 'addConstantMultiple'
-  | 'cancelConstantMultiple'
-  | 'editConstantMultiple'
   | 'addAutoTakeProfit'
   | 'cancelAutoTakeProfit'
   | 'editAutoTakeProfit'
@@ -70,7 +65,6 @@ export type AutomationBSPublishType = typeof AUTO_SELL_FORM_CHANGE | typeof AUTO
 
 export type AutomationPublishType =
   | AutomationBSPublishType
-  | typeof CONSTANT_MULTIPLE_FORM_CHANGE
   | typeof STOP_LOSS_FORM_CHANGE
   | typeof AUTO_TAKE_PROFIT_FORM_CHANGE
 

@@ -77,7 +77,6 @@ export function SidebarSetupAutoBuy({
       autoBuyTriggerData,
       autoSellTriggerData,
       autoTakeProfitTriggerData,
-      constantMultipleTriggerData,
       stopLossTriggerData,
     },
     protocol,
@@ -96,7 +95,6 @@ export function SidebarSetupAutoBuy({
     forcePanel: AutomationFeatures.AUTO_BUY,
     disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
-    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
     protocol,
@@ -143,7 +141,6 @@ export function SidebarSetupAutoBuy({
   const errors = errorsAutoBuyValidation({
     autoBuyState,
     autoSellTriggerData,
-    constantMultipleTriggerData,
     isRemoveForm,
     executionPrice,
   })

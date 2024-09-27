@@ -10,10 +10,6 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import type { Dictionary } from 'ts-essentials'
 
-const ConstantMultipleKBLink = (
-  <AppLink sx={{ color: 'warning100' }} href={EXTERNAL_LINKS.KB.WHAT_IS_CONSTANT_MULTIPLE} />
-)
-
 const AutoTakeProfitKBLink = (
   <AppLink sx={{ color: 'warning100' }} href={EXTERNAL_LINKS.KB.TAKE_PROFIT} />
 )
@@ -28,8 +24,6 @@ interface VaultWarningsProps {
 export function VaultWarnings({
   warningMessages,
   ilkData: { debtFloor } = { debtFloor: zero },
-  isAutoSellEnabled,
-  isAutoBuyEnabled,
 }: VaultWarningsProps) {
   const { t } = useTranslation()
   if (!warningMessages.length) return null
@@ -88,30 +82,13 @@ export function VaultWarnings({
         return translate('auto-buy-triggered-immediately')
       case 'autoSellTriggeredImmediately':
         return translate('auto-sell-triggered-immediately')
-      case 'constantMultipleAutoSellTriggeredImmediately':
-        return translate('constant-multiple-auto-sell-triggered-immediately')
-      case 'constantMultipleAutoBuyTriggeredImmediately':
-        return translate('constant-multiple-auto-buy-triggered-immediately')
+
       case 'existingTakeProfitTriggerAfterVaultReopen':
         return translate('existing-take-profit-trigger-after-vault-reopen')
-      case 'constantMultipleSellTriggerCloseToStopLossTrigger':
-        return (
-          <Trans
-            i18nKey="vault-warnings.constant-multiple-sell-trigger-close-to-stop-loss-trigger"
-            components={[ConstantMultipleKBLink]}
-          />
-        )
       case 'autoTakeProfitTriggerLowerThanAutoBuyTrigger':
         return (
           <Trans
             i18nKey="vault-warnings.auto-take-profit-trigger-lower-than-auto-buy-trigger"
-            components={[AutoTakeProfitKBLink]}
-          />
-        )
-      case 'autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger':
-        return (
-          <Trans
-            i18nKey="vault-warnings.auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger"
             components={[AutoTakeProfitKBLink]}
           />
         )
@@ -120,37 +97,6 @@ export function VaultWarnings({
           <Trans
             i18nKey="vault-warnings.auto-buy-trigger-greater-than-auto-take-profit"
             components={[AutoTakeProfitKBLink]}
-          />
-        )
-      case 'constantMultipleBuyTriggerGreaterThanAutoTakeProfit':
-        return (
-          <Trans
-            i18nKey="vault-warnings.constant-multiple-buy-trigger-greater-than-auto-take-profit"
-            components={[AutoTakeProfitKBLink]}
-          />
-        )
-      case 'addingConstantMultipleWhenAutoSellOrBuyEnabled':
-        return (
-          <Trans
-            i18nKey="vault-warnings.adding-constant-multiple-when-auto-sell-or-buy-enabled"
-            values={{
-              enabledTriggers:
-                isAutoSellEnabled && isAutoBuyEnabled
-                  ? `Auto-Sell ${t('and')} Auto-Buy`
-                  : isAutoSellEnabled
-                    ? 'Auto-Sell'
-                    : isAutoBuyEnabled
-                      ? 'Auto-Buy'
-                      : t('active-triggers'),
-            }}
-            components={[ConstantMultipleKBLink]}
-          />
-        )
-      case 'stopLossTriggerCloseToConstantMultipleSellTrigger':
-        return (
-          <Trans
-            i18nKey="vault-warnings.stop-loss-trigger-close-to-constant-multiple-sell-trigger"
-            components={[ConstantMultipleKBLink]}
           />
         )
       case 'partialTakeProfitTargetHigherThanStopLoss':

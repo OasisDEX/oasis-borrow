@@ -7,8 +7,6 @@ import { automationChangeFeatureReducer } from 'features/automation/common/state
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { autoTakeProfitFormChangeReducer } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
-import { constantMultipleFormChangeReducer } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
 import { multiplyPillChangeReducer } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import { formChangeReducer } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
@@ -38,10 +36,6 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
-  uiChangesSubject.configureSubject(
-    CONSTANT_MULTIPLE_FORM_CHANGE,
-    constantMultipleFormChangeReducer,
-  )
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
   uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
   uiChangesSubject.configureSubject(

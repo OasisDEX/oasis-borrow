@@ -14,7 +14,7 @@ export function AutoBuyDetailsControl() {
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const {
     positionData: { ilk, id, token, debt, lockedCollateral },
-    triggerData: { autoBuyTriggerData, constantMultipleTriggerData },
+    triggerData: { autoBuyTriggerData },
   } = useAutomationContext()
 
   const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, isTriggerEnabled } =
@@ -53,7 +53,6 @@ export function AutoBuyDetailsControl() {
       vaultId={id}
       token={token}
       autoBuyTriggerData={autoBuyTriggerData}
-      isconstantMultipleEnabled={constantMultipleTriggerData.isTriggerEnabled}
       {...autoBuyDetailsLayoutOptionalParams}
     />
   )

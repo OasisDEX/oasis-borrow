@@ -69,6 +69,5 @@ export const omniAutomationTranslationKeyMap = {
   [AutomationFeatures.AUTO_SELL]: 'auto-sell.title',
   [AutomationFeatures.PARTIAL_TAKE_PROFIT]: 'system.partial-take-profit',
   [AutomationFeatures.AUTO_BUY]: 'auto-buy.title',
-  [AutomationFeatures.CONSTANT_MULTIPLE]: 'system.constant-multiple',
   [AutomationFeatures.AUTO_TAKE_PROFIT]: 'system.auto-take-profit',
 }

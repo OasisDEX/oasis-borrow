@@ -10,9 +10,7 @@ export function warningsAutoTakeProfitValidation({
   ethPrice,
   executionPrice,
   isAutoBuyEnabled,
-  isConstantMultipleEnabled,
   autoBuyTriggerPrice,
-  constantMultipleBuyTriggerPrice,
   gasEstimationUsd,
 }: {
   token: string
@@ -20,9 +18,7 @@ export function warningsAutoTakeProfitValidation({
   ethPrice: BigNumber
   executionPrice: BigNumber
   isAutoBuyEnabled: boolean
-  isConstantMultipleEnabled: boolean
   autoBuyTriggerPrice: BigNumber
-  constantMultipleBuyTriggerPrice: BigNumber
   gasEstimationUsd?: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -35,13 +31,9 @@ export function warningsAutoTakeProfitValidation({
   const autoTakeProfitTriggerLowerThanAutoBuyTrigger =
     isAutoBuyEnabled && executionPrice.lte(autoBuyTriggerPrice)
 
-  const autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger =
-    isConstantMultipleEnabled && executionPrice.lte(constantMultipleBuyTriggerPrice)
-
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     autoTakeProfitTriggerLowerThanAutoBuyTrigger,
-    autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger,
   })
 }
 

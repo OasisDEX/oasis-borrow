@@ -16,7 +16,6 @@ import type {
   AutoBSMetadata,
   AutomationDefinitionMetadata,
   AutoTakeProfitMetadata,
-  ConstantMultipleMetadata,
   OverwriteTriggersDefaults,
   StopLossMetadata,
 } from 'features/automation/metadata/types'
@@ -24,10 +23,6 @@ import { extractAutoTakeProfitData } from 'features/automation/optimization/auto
 import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
 import { defaultAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/defaultAutoTakeProfitData'
 import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
-import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { defaultConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.constants'
-import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
-import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.constants'
 import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
@@ -83,7 +78,6 @@ export interface AutomationContext {
     autoBuyMetadata: AutoBSMetadata
     autoSellMetadata: AutoBSMetadata
     autoTakeProfitMetadata: AutoTakeProfitMetadata
-    constantMultipleMetadata: ConstantMultipleMetadata
     stopLossMetadata: StopLossMetadata
   }
   positionData: AutomationPositionData
@@ -92,7 +86,6 @@ export interface AutomationContext {
     autoBuyTriggerData: AutoBSTriggerData
     autoSellTriggerData: AutoBSTriggerData
     autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-    constantMultipleTriggerData: ConstantMultipleTriggerData
     stopLossTriggerData: StopLossTriggerData
   }
 }
@@ -180,7 +173,6 @@ export function AutomationContextProvider({
     autoBuyTriggerData: defaultAutoBSData,
     autoSellTriggerData: defaultAutoBSData,
     autoTakeProfitTriggerData: defaultAutoTakeProfitData,
-    constantMultipleTriggerData: defaultConstantMultipleData,
     stopLossTriggerData: defaultStopLossData,
   }
 
@@ -235,19 +227,6 @@ export function AutomationContextProvider({
     type: TriggerType.BasicBuy,
   })
 
-  useConstantMultipleStateInitialization({
-    autoBuyTriggerData: autoContext.triggerData.autoBuyTriggerData,
-    autoSellTriggerData: autoContext.triggerData.autoSellTriggerData,
-    constantMultipleTriggerData: autoContext.triggerData.constantMultipleTriggerData,
-    stopLossTriggerData: autoContext.triggerData.stopLossTriggerData,
-    debt: positionData.debt,
-    debtFloor: positionData.debtFloor,
-    ilk: positionData.ilk,
-    liquidationRatio: positionData.liquidationRatio,
-    lockedCollateral: positionData.lockedCollateral,
-    positionRatio: positionData.positionRatio,
-  })
-
   useAutoTakeProfitStateInitializator({
     autoTakeProfitTriggerData: autoContext.triggerData.autoTakeProfitTriggerData,
     debt: positionData.debt,
@@ -275,7 +254,6 @@ export function AutomationContextProvider({
           triggerType: TriggerType.BasicSell,
         }),
         autoTakeProfitTriggerData: extractAutoTakeProfitData(resolvedAutomationTriggersData),
-        constantMultipleTriggerData: extractConstantMultipleData(resolvedAutomationTriggersData),
         stopLossTriggerData: extractStopLossData(
           resolvedAutomationTriggersData,
           overwriteTriggersDefaults.stopLossTriggerData,

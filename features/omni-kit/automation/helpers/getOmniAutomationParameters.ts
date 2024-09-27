@@ -44,10 +44,6 @@ export type OmniGetAutomationDataParams =
       activeUiDropdown: AutomationFeatures.AUTO_TAKE_PROFIT
       automationState: OmniAutomationPartialTakeProfitFormState
     }
-  | {
-      activeUiDropdown: AutomationFeatures.CONSTANT_MULTIPLE
-      automationState: OmniAutomationPartialTakeProfitFormState
-    }
 
 interface GetOmniAutomationParametersParams {
   automation?: AutomationMetadataValues

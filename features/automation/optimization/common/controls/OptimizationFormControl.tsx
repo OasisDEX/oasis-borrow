@@ -7,7 +7,6 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyFormControl'
 import { AutoTakeProfitFormControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
-import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -21,19 +20,17 @@ export function OptimizationFormControl({ txHelpers }: OptimizationFormControlPr
   const {
     automationTriggersData,
     protocol,
-    triggerData: { autoBuyTriggerData, constantMultipleTriggerData, autoTakeProfitTriggerData },
+    triggerData: { autoBuyTriggerData, autoTakeProfitTriggerData },
   } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
-  const { isConstantMultipleActive, isAutoBuyActive, isAutoTakeProfitActive } =
-    getActiveOptimizationFeature({
-      currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
-      isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
-      isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
-      isAutoTakeProfitOn: autoTakeProfitTriggerData.isTriggerEnabled,
-      section: 'form',
-    })
+  const { isAutoBuyActive, isAutoTakeProfitActive } = getActiveOptimizationFeature({
+    currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
+    isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
+    isAutoTakeProfitOn: autoTakeProfitTriggerData.isTriggerEnabled,
+    section: 'form',
+  })
 
   const shouldRemoveAllowance = getShouldRemoveAllowance(automationTriggersData)
 
@@ -44,39 +41,21 @@ export function OptimizationFormControl({ txHelpers }: OptimizationFormControlPr
         currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
       })
     }
-    if (isConstantMultipleActive) {
-      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-        type: 'Optimization',
-        currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
-      })
-    }
     if (isAutoBuyActive) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
       })
     }
-  }, [
-    autoTakeProfitTriggerData.isTriggerEnabled,
-    constantMultipleTriggerData.isTriggerEnabled,
-    autoBuyTriggerData.isTriggerEnabled,
-  ])
+  }, [autoTakeProfitTriggerData.isTriggerEnabled, autoBuyTriggerData.isTriggerEnabled])
 
-  const { isAutoBuyAvailable, isConstantMultipleAvailable, isTakeProfitAvailable } =
-    getAvailableAutomation(protocol)
+  const { isAutoBuyAvailable, isTakeProfitAvailable } = getAvailableAutomation(protocol)
 
   return (
     <>
       {isAutoBuyAvailable && (
         <AutoBuyFormControl
           isAutoBuyActive={isAutoBuyActive}
-          shouldRemoveAllowance={shouldRemoveAllowance}
-          txHelpers={txHelpers}
-        />
-      )}
-      {isConstantMultipleAvailable && (
-        <ConstantMultipleFormControl
-          isConstantMultipleActive={isConstantMultipleActive}
           shouldRemoveAllowance={shouldRemoveAllowance}
           txHelpers={txHelpers}
         />
