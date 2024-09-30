@@ -3134,6 +3134,11 @@
     rpc-websockets "^7.5.1"
     superstruct "^0.14.2"
 
+"@spindl-xyz/attribution@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@spindl-xyz/attribution/-/attribution-1.6.2.tgz#4908250ea6ba7599dae14ea641d43607caed3883"
+  integrity sha512-WZXkMK+3sbg6S8Gzl/0M/gDLwEkDRjLVKbQeCApo6nzS5IT1D16IgY4hZXrnMCX6INPKKNutoHxKi2fWhdMwIQ==
+
 "@stablelib/aead@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@stablelib/aead/-/aead-1.0.1.tgz#c4b1106df9c23d1b867eb9b276d8f42d5fc4c0c3"
