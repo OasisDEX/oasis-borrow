@@ -70,6 +70,7 @@ jobs:
                        --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} \
                        --build-arg BLOG_POSTS_API_KEY=${{ secrets.BLOG_POSTS_API_KEY }} \
                        --build-arg BLOG_POSTS_API_URL=${{ secrets.BLOG_POSTS_API_URL }} \
+                       --build-arg NEXT_PUBLIC_SPINDL_SDK_KEY=${{ secrets.NEXT_PUBLIC_SPINDL_SDK_KEY }} \
                        --build-arg NEWSLETTER_API_KEY=${{ secrets.NEWSLETTER_API_KEY }} \
                        --build-arg NEWSLETTER_PUBLICATION_ID=${{ secrets.NEWSLETTER_PUBLICATION_ID }} \
                        --build-arg NEWSLETTER_ENDPOINT=${{ secrets.NEWSLETTER_ENDPOINT }} \

@@ -1,4 +1,5 @@
 import { CacheProvider, Global } from '@emotion/core'
+import spindl from '@spindl-xyz/attribution'
 import { Web3OnboardProvider } from '@web3-onboard/react'
 import type { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
@@ -95,6 +96,14 @@ const noOverlayWorkaroundScript = `
     }
   })
 `
+
+if (typeof window !== 'undefined') {
+  spindl.configure({
+    sdkKey: process.env.NEXT_PUBLIC_SPINDL_SDK_KEY as string,
+  })
+
+  spindl.enableAutoPageViews()
+}
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const [cookiesValue, cookiesSetValue] = useLocalStorage(
