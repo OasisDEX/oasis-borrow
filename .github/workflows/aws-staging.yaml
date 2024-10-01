@@ -105,6 +105,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           PRODUCT_HUB_KEY: ${{ secrets.PRODUCT_HUB_KEY }}
           ONE_INCH_API_KEY: ${{ secrets.ONE_INCH_API_KEY_STAGING }}
+          NEXT_PUBLIC_SPINDL_SDK_KEY: ${{ secrets.NEXT_PUBLIC_SPINDL_SDK_KEY }}
           ONE_INCH_API_URL: ${{ secrets.ONE_INCH_API_URL_STAGING }}
           REFERRAL_SUBGRAPH_URL: ${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }}
           BLOG_POSTS_API_KEY: ${{ secrets.BLOG_POSTS_API_KEY }}
