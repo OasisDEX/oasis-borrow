@@ -44,7 +44,10 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'MKR-USDC': ['0x97bb820669a19ba5fa6de964a466292edd67957849f9631eb8b830c382f58b7f'],
     'WSTETH-USDA': ['0x423cb007534ac88febb8ce39f544ab303e8b757f8415ed891fc76550f8f4c965'],
     'PTWEETH-USDA': ['0xcc7b191903e4750ad71898a1594d912adbb5bb1c6effcde9c38f0a798112edd1'],
-    'RSETH-ETH': ['0xeeabdcb98e9f7ec216d259a2c026bbb701971efae0b44eec79a86053f9b128b6'],
+    'RSETH-ETH': [
+      '0xeeabdcb98e9f7ec216d259a2c026bbb701971efae0b44eec79a86053f9b128b6',
+      '0xba761af4134efb0855adfba638945f454f0a704af11fc93439e20c7c5ebab942',
+    ],
     'SWBTC-WBTC': ['0x514efda728a646dcafe4fdc9afe4ea214709e110ac1b2b78185ae00c1782cc82'],
     'RSWETH-ETH': ['0xcacd4c39af872ddecd48b650557ff5bcc7d3338194c0f5b2038e0d4dec5dc022'],
     'LBTC-WBTC': ['0xf6a056627a51e511ec7f48332421432ea6971fc148d8f3c451e14ea108026549'],
