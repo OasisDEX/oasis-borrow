@@ -14,7 +14,7 @@ import { SwapCard } from 'features/sky/components/SwapCard'
 import { skySwapTokensConfig } from 'features/sky/config'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
-import { formatAsShorthandNumbers } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
@@ -77,7 +77,7 @@ function SkySwapWrapper() {
     <>
       {balancesData?.[0] && balancesData[0].isGreaterThan(zero) && (
         <ActionBanner
-          title={`You have ${formatAsShorthandNumbers(balancesData[0])} USDS that can earn SKY or Chronicle Points`}
+          title={`You have ${formatCryptoBalance(balancesData[0])} USDS that can earn SKY or Chronicle Points`}
           lightText
           customCtaVariant="outlineSmall"
           cta={[
@@ -98,7 +98,7 @@ function SkySwapWrapper() {
             my: 4,
           }}
         >
-          Deposit you USDS in the SKY Ecosystem to earn Chronicle Points or SKY Rewards. Withdraw
+          Deposit your USDS in the SKY Ecosystem to earn Chronicle Points or SKY Rewards. Withdraw
           anytime.
         </ActionBanner>
       )}

@@ -131,6 +131,9 @@ export const EXTERNAL_LINKS = {
     MORPHO_BLUE: {
       HUB: 'https://docs.summer.fi/protocols/morpho-blue',
     },
+    SKY: {
+      STAKING: 'https://docs.summer.fi/protocols/sky-ecosystem/staking',
+    },
     NAVIGATION: [
       'https://docs.summer.fi/general/get-liquidity-without-selling-your-crypto',
       'https://docs.summer.fi/general/amplify-exposure-to-your-crypto-with-downside-protection',
@@ -156,4 +159,5 @@ export const EXTERNAL_LINKS = {
   LIDO_FI_STETH_LIQUIDITY:
     'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards',
   HOW_TO_SET_UP_AUTO_TAKE_PROFIT_VIDEO: 'https://youtu.be/ZqnvxeccJDQ?feature=shared',
+  CHRONICLE_LABS: 'https://chroniclelabs.org/',
 }

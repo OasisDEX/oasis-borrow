@@ -21,6 +21,7 @@ import { SkeletonLine } from 'components/Skeleton'
 import { TabBar } from 'components/TabBar'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { ethers } from 'ethers'
+import FaqSRR from 'features/content/faqs/sky/srr/en'
 import { showAllowanceInfo } from 'features/sky/helpers'
 import { useSky } from 'features/sky/hooks/useSky'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -28,7 +29,7 @@ import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { sky } from 'theme/icons'
-import { Box, Card, Grid, Heading, Text } from 'theme-ui'
+import { Box, Grid, Heading, Text } from 'theme-ui'
 
 type SkyStakeViewType = {
   usdsBalance: BigNumber
@@ -372,7 +373,7 @@ export const SkyStakePositionView = ({
         {
           value: 'position-info',
           label: t('system.faq'),
-          content: <Card variant="faq">FAQ</Card>,
+          content: <FaqSRR />,
         },
       ]}
     />

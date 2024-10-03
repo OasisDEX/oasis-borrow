@@ -19,13 +19,14 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SkeletonLine } from 'components/Skeleton'
 import { TabBar } from 'components/TabBar'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import FaqCle from 'features/content/faqs/sky/cle/en'
 import { showAllowanceInfo } from 'features/sky/helpers'
 import { useSky } from 'features/sky/hooks/useSky'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Card, Grid, Heading } from 'theme-ui'
+import { Box, Grid, Heading } from 'theme-ui'
 
 type SkyCLEViewType = {
   usdsBalance: BigNumber
@@ -281,7 +282,7 @@ export const SkyCLEPositionView = ({
         {
           value: 'position-info',
           label: t('system.faq'),
-          content: <Card variant="faq">FAQ</Card>,
+          content: <FaqCle />,
         },
       ]}
     />
