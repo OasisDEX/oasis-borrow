@@ -187,7 +187,13 @@ export const skyUsdsStakeCleDetails = async () => {
   }
 }
 
-export const skyUsdsWalletStakeCleDetails = async ({ ownerAddress }: { ownerAddress?: string }) => {
+export const skyUsdsWalletStakeCleDetails = async ({
+  ownerAddress,
+  isServer = false,
+}: {
+  ownerAddress?: string
+  isServer?: boolean
+}) => {
   const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
   if (!ownerAddress) {
     return undefined
@@ -203,7 +209,11 @@ export const skyUsdsWalletStakeCleDetails = async ({ ownerAddress }: { ownerAddr
         return new BigNumber(ethers.utils.formatUnits(tokensStaked, 18))
       },
     ),
-    fetch(`/api/sky/cle?walletAddress=${ownerAddress}`)
+    fetch(
+      isServer
+        ? `https://info-sky.blockanalitica.com/api/v1/farms/${mainnetContracts.sky.stakingCle.address}/wallets/${ownerAddress}/?format=json`
+        : `/api/sky/cle?walletAddress=${ownerAddress}`,
+    )
       .then((resp) => resp.json())
       .catch((error) => {
         console.error('Failed to fetch earned CLE rewards:', error)

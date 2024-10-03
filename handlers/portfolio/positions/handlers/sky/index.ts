@@ -16,7 +16,7 @@ export const skyPositionsHandler: PortfolioPositionsHandler = async ({ address, 
       ownerAddress: address,
     }),
     skyUsdsStakeDetails({ mkrPrice: new BigNumber(prices.MKR) }),
-    skyUsdsWalletStakeCleDetails({ ownerAddress: address }),
+    skyUsdsWalletStakeCleDetails({ ownerAddress: address, isServer: true }),
   ]).then(([usdsWalletStakeDetails, usdsStakeDetails, usdsWalletStakeCleDetails]) => {
     const positions = []
     if (usdsWalletStakeDetails?.balance.isGreaterThan(0)) {
