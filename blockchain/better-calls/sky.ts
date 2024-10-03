@@ -203,9 +203,7 @@ export const skyUsdsWalletStakeCleDetails = async ({ ownerAddress }: { ownerAddr
         return new BigNumber(ethers.utils.formatUnits(tokensStaked, 18))
       },
     ),
-    fetch(
-      `https://info-sky.blockanalitica.com/api/v1/farms/${mainnetContracts.sky.stakingCle.address}/wallets/${ownerAddress}/?format=json`,
-    )
+    fetch(`/api/sky/cle?walletAddress=${ownerAddress}`)
       .then((resp) => resp.json())
       .catch((error) => {
         console.error('Failed to fetch earned CLE rewards:', error)

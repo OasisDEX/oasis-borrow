@@ -2,14 +2,14 @@ import React from 'react'
 export const ldo = {
   path: (
     <>
-      <g clip-path="url(#clip0_14079_7236)">
+      <g clipPath="url(#clip0_14079_7236)">
         <path
           d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
           fill="black"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M12.0046 4.92969L15.5124 10.4076L12.0044 12.4471L8.49683 10.4075L12.0046 4.92969ZM9.57062 10.1485L12.0046 6.34754L14.4385 10.1485L12.0044 11.5637L9.57062 10.1485Z"
           fill="white"
         />

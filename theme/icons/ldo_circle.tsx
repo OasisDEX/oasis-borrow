@@ -2,14 +2,14 @@ import React from 'react'
 export const ldo_circle = {
   path: (
     <>
-      <g clip-path="url(#clip0_14079_5412)">
+      <g clipPath="url(#clip0_14079_5412)">
         <path
           d="M16 29C23.1797 29 29 23.1797 29 16C29 8.8203 23.1797 3 16 3C8.8203 3 3 8.8203 3 16C3 23.1797 8.8203 29 16 29Z"
           fill="#F69988"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M16.0061 6.80859L20.5663 13.9299L16.0059 16.5812L11.446 13.9297L16.0061 6.80859ZM12.842 13.593L16.0061 8.6518L19.1703 13.593L16.0059 15.4328L12.842 13.593Z"
           fill="white"
         />

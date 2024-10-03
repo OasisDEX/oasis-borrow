@@ -2,7 +2,7 @@ import React from 'react'
 export const susd_circle = {
   path: (
     <>
-      <g clip-path="url(#clip0_14079_6971)">
+      <g clipPath="url(#clip0_14079_6971)">
         <mask id="mask0_14079_6971" maskUnits="userSpaceOnUse" x="3" y="3" width="26" height="26">
           <path d="M3 3H29V29H3V3Z" fill="white" />
         </mask>

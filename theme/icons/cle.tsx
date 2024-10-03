@@ -2,7 +2,7 @@ import React from 'react'
 export const cle = {
   path: (
     <>
-      <g clip-path="url(#clip0_15346_4406)">
+      <g clipPath="url(#clip0_15346_4406)">
         <path
           d="M16 29C23.1797 29 29 23.1797 29 16C29 8.8203 23.1797 3 16 3C8.8203 3 3 8.8203 3 16C3 23.1797 8.8203 29 16 29Z"
           fill="#2FD05B"
