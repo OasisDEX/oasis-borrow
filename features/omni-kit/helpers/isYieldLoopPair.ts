@@ -4,7 +4,7 @@ interface IsYieldLoopPairParams {
 }
 
 export const yieldLoopDefinition = {
-  // its a eth yield loop if both the collateral and debt token are on this list
+  // it's a eth yield loop if both the collateral and debt token are on this list
   ethYieldTokens: [
     'CBETH',
     'RETH',
@@ -26,9 +26,10 @@ export const yieldLoopDefinition = {
     'BSDETH',
     'RSETH',
     'RSWETH',
+    'WSUPEROETHB',
   ],
   btcYieldTokens: ['WBTC', 'SWBTC', 'TBTC', 'LBTC'],
-  // its a stable coin yield loop if both the collateral and debt token are on this list
+  // it's a stable coin yield loop if both the collateral and debt token are on this list
   stableCoinYieldTokens: [
     'SUSDE',
     'SDAI',
@@ -62,13 +63,13 @@ export const isYieldLoopPair = (pair: IsYieldLoopPairParams) => {
   const { ethYieldTokens, stableCoinYieldTokens, btcYieldTokens } = yieldLoopDefinition
 
   return (
-    // its an eth yield loop
+    // it's an eth yield loop
     (ethYieldTokens.includes(collateralToken.toLocaleUpperCase()) &&
       ethYieldTokens.includes(debtToken.toLocaleUpperCase())) ||
-    // its an btc yield loop
+    // it's an btc yield loop
     (btcYieldTokens.includes(collateralToken.toLocaleUpperCase()) &&
       btcYieldTokens.includes(debtToken.toLocaleUpperCase())) ||
-    // its a stable coin yield loop
+    // it's a stable coin yield loop
     (stableCoinYieldTokens.includes(collateralToken.toLocaleUpperCase()) &&
       stableCoinYieldTokens.includes(debtToken.toLocaleUpperCase()))
   )
