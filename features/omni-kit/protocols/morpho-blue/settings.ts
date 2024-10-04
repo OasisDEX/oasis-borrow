@@ -67,6 +67,7 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'EZETH-USDC': ['0xf24417ee06adc0b0836cf0dbec3ba56c1059f62f53a55990a38356d42fa75fa2'],
     'EZETH-ETH': ['0xdf13c46bf7bd41597f27e32ae9c306eb63859c134073cb81c796ff20b520c7cf'],
     'BSDETH-ETH': ['0xdf6aa0df4eb647966018f324db97aea09d2a7dde0d3c0a72115e8b20d58ea81f'],
+    'WSUPEROETHB-ETH': ['0x144bf18d6bf4c59602548a825034f73bf1d20177fc5f975fc69d5a5eba929b45'],
   },
 }
 
@@ -100,7 +101,17 @@ export const settings: OmniProtocolSettings = {
       'SWBTC',
       'RSWETH',
     ],
-    [NetworkIds.BASEMAINNET]: ['DAI', 'ETH', 'USDC', 'WBTC', 'WEETH', 'WSTETH', 'CBETH', 'BSDETH'],
+    [NetworkIds.BASEMAINNET]: [
+      'DAI',
+      'ETH',
+      'USDC',
+      'WBTC',
+      'WEETH',
+      'WSTETH',
+      'CBETH',
+      'BSDETH',
+      'WSUPEROETHB',
+    ],
   },
   steps: {
     borrow: {
