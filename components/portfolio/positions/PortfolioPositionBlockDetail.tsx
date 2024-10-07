@@ -32,7 +32,10 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
   }
 
   return (
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', my: [3, 0] }}>
+    <Flex
+      sx={{ flexDirection: 'column', justifyContent: 'flex-start', my: [3, 0] }}
+      data-testid="portfolio-position-details"
+    >
       <Box>
         <Text
           as="div"

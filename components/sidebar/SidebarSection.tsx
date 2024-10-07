@@ -74,7 +74,6 @@ export function SidebarSection({
         status={status}
         requireConnection={requireConnection}
         requiredChainHexId={requiredChainHexId}
-        data-testid="sidebar-footer"
       />
     </Card>
   )

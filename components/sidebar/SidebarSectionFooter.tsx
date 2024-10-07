@@ -125,6 +125,7 @@ export function SidebarSectionFooter({
         p: '24px',
         borderTop: 'lightMuted',
       }}
+      data-testid="sidebar-footer"
     >
       {aboveButton}
       <SidebarSectionFooterButton {...resolvedPrimaryButton} />
