@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
+import { zero } from 'helpers/zero'
 import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'
 
 import type { BaseParameters } from './utils'
@@ -194,21 +195,10 @@ export interface AaveV3EModeForAssetParameters extends BaseParameters {
   token: string
 }
 
-export function getAaveV3EModeCategoryForAsset({
-  token,
-  networkId,
-}: AaveV3EModeForAssetParameters): Promise<BigNumber> {
-  const { contract, tokenMappings } = networkMappings[networkId]()
-  const address = wethToEthAddress(tokenMappings, token)
-  warnIfAddressIsZero(
-    address,
-    networkId,
-    'aaveV3PoolDataProvider',
-    'getAaveV3EModeCategoryForAsset',
-  )
-  return contract.getReserveEModeCategory(address).then((result) => {
-    return new BigNumber(result.toString())
-  })
+export function getAaveV3EModeCategoryForAsset(
+  _props: AaveV3EModeForAssetParameters,
+): Promise<BigNumber> {
+  return Promise.resolve(zero)
 }
 
 export interface AaveV3ReserveCapParameters extends BaseParameters {
