@@ -117,11 +117,9 @@ export function getOneInchCall(
       )
       .otherwise(() => protocols)
 
+    const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
     // on mainnet if WBTC we need to remove CURVE from LP
-    if (
-      networkId === NetworkIds.MAINNET &&
-      from.toLowerCase() === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
-    ) {
+    if (networkId === NetworkIds.MAINNET && from.toLowerCase() === WBTC_ADDRESS) {
       resolvedProcotols = resolvedProcotols.filter((protocol) => protocol !== 'CURVE')
     }
 
