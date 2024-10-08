@@ -98,7 +98,7 @@ export function getOneInchCall(
     slippage: BigNumber,
     protocols: string[] = [],
   ) => {
-    const resolvedProcotols = match({ protocols, networkId })
+    let resolvedProcotols = match({ protocols, networkId })
       .with(
         { protocols: [], networkId: NetworkIds.OPTIMISMMAINNET },
         () => OPTIMISM_DEFAULT_PROCOTOLS,
@@ -116,6 +116,11 @@ export function getOneInchCall(
         () => BASE_DEFAULT_LIQUIDITY_PROVIDERS,
       )
       .otherwise(() => protocols)
+
+    // on mainnet if WBTC we need to remove CURVE from LP
+    if (networkId === NetworkIds.MAINNET && from === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599') {
+      resolvedProcotols = resolvedProcotols.filter((protocol) => protocol !== 'CURVE')
+    }
 
     const response = await swapOneInchTokens(
       from,
