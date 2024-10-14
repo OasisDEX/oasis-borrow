@@ -4,7 +4,7 @@ import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import {
   aaveV3SupportedNetworkList,
   getAaveV3BorrowCap,
-  getAaveV3EModeCategoryForAsset,
+  getAaveV3EModeCategoryForAssets,
   getAaveV3ReserveConfigurationData,
   getAaveV3ReserveData,
   getEModeCategoryData,
@@ -117,7 +117,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const memoizedTokensData = memoize(getAaveV3TokensData)
-  const memoizedEModeCategoryData = memoize(getAaveV3EModeCategoryForAsset)
+  const memoizedEModeCategoryData = memoize(getAaveV3EModeCategoryForAssets)
   const aaveV3NetworksList = [
     ...new Set(aaveV3ProductHubProducts.map((product) => product.network)),
   ]
@@ -156,24 +156,18 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   }, {})
   const earnProductsPromises = earnProducts.map(async (product) => {
     const networkId = networkNameToIdMap[product.network as AaveV3Networks]
-    const [primaryTokenEModeCategory, secondaryTokenEModeCategory, tokensReserveData] =
-      await Promise.all([
-        memoizedEModeCategoryData({
-          token: product.primaryToken,
-          networkId: networkId as AaveV3SupportedNetwork,
-        }),
-        memoizedEModeCategoryData({
-          token: product.secondaryToken,
-          networkId: networkId as AaveV3SupportedNetwork,
-        }),
-        memoizedTokensData(product.network as AaveV3Networks, tickers),
-      ])
-    const isEModeTokenPair =
-      !primaryTokenEModeCategory.isZero() &&
-      primaryTokenEModeCategory.eq(secondaryTokenEModeCategory)
+    const [strategyEmodeCategory, tokensReserveData] = await Promise.all([
+      memoizedEModeCategoryData({
+        collateralToken: product.primaryToken,
+        debtToken: product.secondaryToken,
+        networkId: networkId as AaveV3SupportedNetwork,
+      }),
+      memoizedTokensData(product.network as AaveV3Networks, tickers),
+    ])
+    const isEModeTokenPair = !strategyEmodeCategory.isZero()
     const aaveLikeEmodeRiskRatio =
       (isEModeTokenPair &&
-        earnProductsEmodeLtv[networkId][primaryTokenEModeCategory.toNumber() as 1 | 2]) ||
+        earnProductsEmodeLtv[networkId][strategyEmodeCategory.toNumber() as 1 | 2]) ||
       zero
 
     const ltv = isEModeTokenPair
@@ -242,6 +236,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         ensureGivenTokensExist(networkId, contracts, [primaryToken, secondaryToken])
 
         const { tokens } = contracts
+
+        console.log('maxLtv.toString()', maxLtv.toString())
 
         return {
           ...product,

@@ -48,11 +48,11 @@ export function getAaveV3Services({
     'aaveLikeReserveConfigurationData$',
   )
 
-  const getAaveV3EModeCategoryForAsset$ = makeObservableForNetworkId(
+  const getAaveV3EModeCategoryForAssets$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3EModeCategoryForAsset,
+    blockchainCalls.getAaveV3EModeCategoryForAssets,
     networkId,
-    'getAaveV3EModeCategoryForAsset$',
+    'getAaveV3EModeCategoryForAssets$',
   )
 
   const aaveLikeLiquidations$ = makeObservableForNetworkId(
@@ -136,7 +136,7 @@ export function getAaveV3Services({
   const reserveConfigurationDataWithEMode$ = memoize(
     curry(getReserveConfigurationDataWithEMode$)(
       aaveLikeReserveConfigurationData$,
-      getAaveV3EModeCategoryForAsset$,
+      getAaveV3EModeCategoryForAssets$,
       getEModeCategoryData$,
     ),
     (args: { collateralToken: string; debtToken: string }) =>

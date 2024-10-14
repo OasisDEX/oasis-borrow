@@ -14,22 +14,28 @@ export function getReserveConfigurationDataWithEMode$(
   getReserveConfigurationData: (args: {
     token: string
   }) => Observable<AaveLikeReserveConfigurationData>,
-  getAaveV3EModeCategoryForAsset: (args: { token: string }) => Observable<BigNumber>,
+  getAaveV3EModeCategoryForAssets: (args: {
+    debtToken: string
+    collateralToken: string
+  }) => Observable<BigNumber>,
   getEModeCategoryData: (
     params: Omit<GetEModeCategoryDataParameters, 'networkId'>,
   ) => Observable<GetEModeCategoryDataResult>,
   parameters: GetReserveConfigurationDataWithEModeParameters,
 ): Observable<AaveLikeReserveConfigurationData> {
   return combineLatest(
-    getAaveV3EModeCategoryForAsset({ token: parameters.collateralToken }),
-    getAaveV3EModeCategoryForAsset({ token: parameters.debtToken }),
+    getAaveV3EModeCategoryForAssets({
+      debtToken: parameters.debtToken,
+      collateralToken: parameters.collateralToken,
+    }),
     getReserveConfigurationData({ token: parameters.collateralToken }),
   ).pipe(
-    switchMap(([collateralCategory, debtCategory, reserveData]) => {
-      if (collateralCategory.isZero()) return of(reserveData)
-      if (!collateralCategory.eq(debtCategory)) return of(reserveData)
+    switchMap(([strategyCategory, reserveData]) => {
+      if (strategyCategory.isZero()) return of(reserveData)
 
-      return getEModeCategoryData({ categoryId: collateralCategory })
+      return getEModeCategoryData({
+        categoryId: strategyCategory,
+      })
     }),
   )
 }
