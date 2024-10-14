@@ -90,7 +90,8 @@ export function getEModeCategoryData({
   categoryId,
 }: GetEModeCategoryDataParameters): Promise<GetEModeCategoryDataResult> {
   const { contract } = networkMappings[networkId]()
-  return contract.getEModeCategoryData(categoryId.toString(16)).then((result) => {
+
+  return contract.getEModeCategoryCollateralConfig(categoryId.toString(16)).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000),
       liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000),
