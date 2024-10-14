@@ -77,7 +77,7 @@ export const OmniDetailSectionErc20Claims: FC = () => {
     environment: { protocol, collateralToken, quoteToken },
   } = useOmniGeneralContext()
 
-  const eligibleTokens = ['ENA', 'SUSDE']
+  const eligibleTokens = ['ENA', 'SUSDE', 'USDE']
 
   const isEligible =
     [LendingProtocol.MorphoBlue, LendingProtocol.Ajna].includes(protocol) &&
