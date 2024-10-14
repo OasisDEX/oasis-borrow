@@ -237,8 +237,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         const { tokens } = contracts
 
-        console.log('maxLtv.toString()', maxLtv.toString())
-
         return {
           ...product,
           product: [isMultiply && isYieldLoop ? OmniProductType.Earn : product.product[0]],
