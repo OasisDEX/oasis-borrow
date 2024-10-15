@@ -193,18 +193,27 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       console.warn('No AAVE v3 APY data for', product.label, product.network, response)
     }
     return {
-      [`${product.label}-${product.network}`]:
-        new BigNumber(response?.results?.apy7d || zero).div(lambdaPercentageDenomination) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
-    } as Record<string, BigNumber>
+      [`${product.label}-${product.network}`]: {
+        apy:
+          new BigNumber(response?.results?.apy7d || zero).div(lambdaPercentageDenomination) || {}, // we do 5 as 5% and FE needs 0.05 as 5%
+        ltv,
+      },
+    } as Record<
+      string,
+      {
+        apy: BigNumber
+        ltv: BigNumber
+      }
+    >
   })
   return Promise.all([
     Promise.all(getAaveV3TokensDataPromises),
     Promise.all(earnProductsPromises),
-  ]).then(([aaveV3TokensDataList, earnProductsYields]) => {
+  ]).then(([aaveV3TokensDataList, earnProductsDataArr]) => {
     const aaveV3TokensData = aaveV3TokensDataList.reduce((acc, curr) => {
       return { ...acc, ...curr }
     }, {})
-    const flattenYields = earnProductsYields.reduce((acc, curr) => {
+    const earnProductsData = earnProductsDataArr.reduce((acc, curr) => {
       return { ...acc, ...curr }
     })
     return {
@@ -227,6 +236,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           debtToken: secondaryToken,
         })
         const isMultiply = product.product[0] === OmniProductType.Multiply
+        const isYieldLoopMultiply = isMultiply && isYieldLoop
 
         ensureGivenTokensExist(networkId, contracts, [primaryToken, secondaryToken])
 
@@ -234,20 +244,21 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
         return {
           ...product,
-          product: [isMultiply && isYieldLoop ? OmniProductType.Earn : product.product[0]],
-          ...(isYieldLoop &&
-            isMultiply && {
-              earnStrategy: 'yield_loop',
-              earnStrategyDescription: `${primaryToken}/${secondaryToken} Yield Loop`,
-              managementType: 'active',
-            }),
+          product: [isYieldLoopMultiply ? OmniProductType.Earn : product.product[0]],
+          ...(isYieldLoopMultiply && {
+            earnStrategy: 'yield_loop',
+            earnStrategyDescription: `${primaryToken}/${secondaryToken} Yield Loop`,
+            managementType: 'active',
+          }),
           primaryTokenAddress: tokens[primaryToken].address,
           secondaryTokenAddress: tokens[secondaryToken].address,
           maxMultiply: riskRatio.multiple.toString(),
-          maxLtv: maxLtv.toString(),
+          maxLtv: isYieldLoopMultiply
+            ? earnProductsData[`${label}-${network}`].ltv.toString()
+            : maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),
-          weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
+          weeklyNetApy: earnProductsData[`${label}-${network}`]?.apy.toString(),
           hasRewards: product.hasRewards ?? false,
           automationFeatures: !product.product.includes(OmniProductType.Earn)
             ? settingsV3.availableAutomations[
