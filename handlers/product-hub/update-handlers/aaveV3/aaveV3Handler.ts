@@ -22,7 +22,7 @@ import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
 import { getYieldsRequest } from 'helpers/lambda/yields'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 
 import { aaveV3ProductHubProducts } from './aave-v3-products'
@@ -133,20 +133,16 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   )
   const earnProductsEmodeLtvPromises = await Promise.all(
     aaveV3SupportedNetworkList.map(async (networkId) => {
-      const [cat1, cat2] = await Promise.all([
+      // currently theres only one category - eth correlated
+      const [cat1] = await Promise.all([
         getEModeCategoryData({
           categoryId: new BigNumber(1),
-          networkId: networkId as AaveV3SupportedNetwork,
-        }),
-        getEModeCategoryData({
-          categoryId: new BigNumber(2),
           networkId: networkId as AaveV3SupportedNetwork,
         }),
       ])
       return {
         [networkId]: {
           1: cat1.ltv,
-          2: cat2.ltv,
         },
       }
     }),
@@ -164,13 +160,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       }),
       memoizedTokensData(product.network as AaveV3Networks, tickers),
     ])
-    const isEModeTokenPair = !strategyEmodeCategory.isZero()
+    const isEmodeStrategy = strategyEmodeCategory.eq(one)
     const aaveLikeEmodeRiskRatio =
-      (isEModeTokenPair &&
-        earnProductsEmodeLtv[networkId][strategyEmodeCategory.toNumber() as 1 | 2]) ||
+      (isEmodeStrategy && earnProductsEmodeLtv[networkId][strategyEmodeCategory.toNumber() as 1]) ||
       zero
 
-    const ltv = isEModeTokenPair
+    const ltv = isEmodeStrategy
       ? aaveLikeEmodeRiskRatio
       : ensureFind(
           tokensReserveData[product.network as AaveV3Networks].tokensReserveConfigurationData.find(
@@ -183,7 +178,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
 
     const response = await getYieldsRequest(
       {
-        actionSource: `product-hub handler aaveV3 EMODE:${isEModeTokenPair} ${product.primaryToken}/${product.secondaryToken} ${product.network}`,
+        actionSource: `product-hub handler aaveV3 EMODE:${isEmodeStrategy} ${product.primaryToken}/${product.secondaryToken} ${product.network}`,
         collateralTokenAddress: contracts.tokens[product.primaryToken].address,
         quoteTokenAddress: contracts.tokens[product.secondaryToken].address,
         collateralToken: product.primaryToken,

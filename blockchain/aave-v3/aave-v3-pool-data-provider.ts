@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
-import { one, zero } from 'helpers/zero'
 import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'
 
 import type { BaseParameters } from './utils'
@@ -202,7 +201,8 @@ export function getAaveV3EModeCategoryForAssets({
 }: AaveV3EModeForAssetsParameters): Promise<BigNumber> {
   const isCollateralEthCorrelated = collateralToken.toUpperCase().includes('ETH')
   const isDebtEthCorrelated = debtToken.toUpperCase().includes('ETH')
-  const strategyEModeCategory = isCollateralEthCorrelated || isDebtEthCorrelated ? one : zero
+  const strategyEModeCategory =
+    isCollateralEthCorrelated || isDebtEthCorrelated ? new BigNumber(1) : new BigNumber(0)
 
   return Promise.resolve(strategyEModeCategory)
 }
