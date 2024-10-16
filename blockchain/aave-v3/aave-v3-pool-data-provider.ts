@@ -202,7 +202,7 @@ export function getAaveV3EModeCategoryForAssets({
   const isCollateralEthCorrelated = collateralToken.toUpperCase().includes('ETH')
   const isDebtEthCorrelated = debtToken.toUpperCase().includes('ETH')
   const strategyEModeCategory =
-    isCollateralEthCorrelated || isDebtEthCorrelated ? new BigNumber(1) : new BigNumber(0)
+    isCollateralEthCorrelated && isDebtEthCorrelated ? new BigNumber(1) : new BigNumber(0)
 
   return Promise.resolve(strategyEModeCategory)
 }
