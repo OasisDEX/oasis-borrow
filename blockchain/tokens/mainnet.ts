@@ -134,6 +134,7 @@ export const tokensMainnet = {
   AETHWBTC: contractDesc(erc20, mainnet.common.AETHWBTC),
   AWBTC: contractDesc(erc20, mainnet.common.AWBTC),
   ENA: contractDesc(erc20, mainnet.common.ENA),
+  SENA: contractDesc(erc20, '0x8bE3460A480c80728a8C4D7a5D5303c85ba7B3b9'),
   UNIV2: contractDesc(erc20, mainnet.common['UNI-V2']),
   SYRUPUSDC: contractDesc(erc20, mainnet.common.SYRUPUSDC),
   RSWETH: contractDesc(erc20, mainnet.common.RSWETH),

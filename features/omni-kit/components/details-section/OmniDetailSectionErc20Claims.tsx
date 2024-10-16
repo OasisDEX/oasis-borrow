@@ -11,7 +11,7 @@ import React, { useEffect, useReducer } from 'react'
 import { OmniDetailsSectionContentRewardsLoadingState } from './OmniDetailsSectionContentRewardsLoadingState'
 import { OmniErc20Claims } from './OmniErc20Claims'
 
-const claimableErc20 = ['ENA']
+const claimableErc20 = ['ENA', 'SENA']
 
 type Claim = {
   token: string
@@ -77,7 +77,7 @@ export const OmniDetailSectionErc20Claims: FC = () => {
     environment: { protocol, collateralToken, quoteToken },
   } = useOmniGeneralContext()
 
-  const eligibleTokens = ['ENA', 'SUSDE', 'USDE']
+  const eligibleTokens = ['SUSDE', 'USDE']
 
   const isEligible =
     [LendingProtocol.MorphoBlue, LendingProtocol.Ajna].includes(protocol) &&

@@ -1418,6 +1418,16 @@ export const tokenConfigs: TokenConfig[] = [
     tags: [],
   },
   {
+    symbol: 'SENA',
+    precision: 18,
+    digits: 5,
+    name: 'Staked ENA',
+    icon: ena,
+    iconCircle: ena,
+    coinGeckoTicker: 'ethena-staked-ena',
+    tags: [],
+  },
+  {
     symbol: 'SNX',
     precision: 18,
     digits: 5,
