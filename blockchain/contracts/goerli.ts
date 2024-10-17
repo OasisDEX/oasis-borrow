@@ -46,6 +46,8 @@ import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
 import * as vat from 'blockchain/abi/vat.json'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
+
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -148,6 +150,10 @@ export const goerliContracts: MainnetContractsWithOptional = {
     aaveV2LendingPool,
     goerli.aave.v2.LendingPool,
     AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
+  ),
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    goerli.mpa.core.AaveRewardsProxyActions,
   ),
 
   operationExecutor: contractDesc(operationExecutor, goerli.mpa.core.OperationExecutor),

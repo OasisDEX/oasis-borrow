@@ -1,0 +1,109 @@
+[
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_rewardsController",
+          "type": "address"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_assets",
+          "type": "address[]"
+        }
+      ],
+      "name": "claimAllRewards",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "rewardsList",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "claimedAmounts",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_rewardsController",
+          "type": "address"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_assets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_reward",
+          "type": "address"
+        }
+      ],
+      "name": "claimRewards",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "claimed",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_rewardsController",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_dataProvider",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_user",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "getAllUserRewards",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "rewardsList",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "unclaimedAmounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "assets",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]

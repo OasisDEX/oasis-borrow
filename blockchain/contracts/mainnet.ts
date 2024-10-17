@@ -53,6 +53,8 @@ import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
 import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
 import * as vat from 'blockchain/abi/vat.json'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
+
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -166,6 +168,10 @@ export const mainnetContracts = {
   aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    mainnet.mpa.core.AaveRewardsProxyActions,
+  ),
   sparkV3Pool: contractDesc(
     sparkV3Pool,
     mainnet.spark.LendingPool!,

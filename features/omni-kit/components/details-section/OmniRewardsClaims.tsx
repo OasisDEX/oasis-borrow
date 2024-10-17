@@ -31,7 +31,7 @@ interface OmniErc20ClaimsProps {
   }
 }
 
-export const OmniErc20Claims: FC<OmniErc20ClaimsProps> = ({ token, claimable, tx, prices }) => {
+export const OmniRewardsClaims: FC<OmniErc20ClaimsProps> = ({ token, claimable, tx, prices }) => {
   const { t } = useTranslation()
 
   const { connectedContext$ } = useMainContext()
@@ -57,7 +57,7 @@ export const OmniErc20Claims: FC<OmniErc20ClaimsProps> = ({ token, claimable, tx
             <AssetsTableDataCellAsset
               asset={token}
               icons={[token]}
-              description={getTokenGuarded(token)?.name}
+              description={getTokenGuarded(token)?.name || 'Reward Token'}
             />
           ),
           claimableNow: (
@@ -77,7 +77,6 @@ export const OmniErc20Claims: FC<OmniErc20ClaimsProps> = ({ token, claimable, tx
       },
     ]
   }, [claimable, token, prices])
-
   const txSidebarProgress = t('erc-4626.position-page.earn.transaction.progress')
   const txSidebarSuccess = t('erc-4626.position-page.earn.transaction.success')
   const txSidebarStatus = useMemo(() => {

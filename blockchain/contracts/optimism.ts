@@ -46,6 +46,7 @@ import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
 import * as vat from 'blockchain/abi/vat.json'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -144,6 +145,10 @@ export const optimismContracts: OptimismContracts = {
     optimism.aave.v2.PoolDataProvider,
   ),
   aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, optimism.aave.v2.Oracle),
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    optimism.mpa.core.AaveRewardsProxyActions,
+  ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_ETHUSD),

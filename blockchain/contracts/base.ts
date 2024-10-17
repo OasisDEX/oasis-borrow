@@ -45,6 +45,7 @@ import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
 import * as vat from 'blockchain/abi/vat.json'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -136,7 +137,10 @@ export const baseContracts: MainnetContractsWithOptional = {
     BTCUSD: contractDesc(chainLinkPriceOracle, base.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
-
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    base.mpa.core.AaveRewardsProxyActions,
+  ),
   operationExecutor: contractDesc(operationExecutor, base.mpa.core.OperationExecutor),
   swapAddress: base.mpa.core.Swap,
   accountFactory: contractDesc(accountFactory, base.mpa.core.AccountFactory),
