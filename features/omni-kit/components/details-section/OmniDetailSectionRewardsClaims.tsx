@@ -1,20 +1,20 @@
+import { ADDRESSES } from '@oasisdex/addresses'
+import { Network } from '@oasisdex/dma-library'
+import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import type BigNumber from 'bignumber.js'
+import { encodeClaimAllRewards, getAllUserRewards } from 'blockchain/better-calls/aave-like-rewards'
 import { encodeTransferToOwnerProxyAction, tokenBalance } from 'blockchain/better-calls/erc20'
-import { getAllUserRewards, encodeClaimAllRewards } from 'blockchain/better-calls/aave-like-rewards'
 import { tokenPriceStore } from 'blockchain/prices.constants'
+import { getTokenByAddress } from 'blockchain/tokensMetadata'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniTxData } from 'features/omni-kit/hooks'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'
 import React, { useEffect, useReducer } from 'react'
-import { ADDRESSES } from '@oasisdex/addresses'
 
 import { OmniDetailsSectionContentRewardsLoadingState } from './OmniDetailsSectionContentRewardsLoadingState'
 import { OmniRewardsClaims } from './OmniRewardsClaims'
-import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
-import { Network } from '@oasisdex/dma-library'
-import { getTokenByAddress } from 'blockchain/tokensMetadata'
 
 const claimableErc20 = ['ENA', 'SENA']
 
@@ -94,7 +94,7 @@ const OmniDetailSectionRewardsClaimsInternal: FC = () => {
         })
           .then(async ({ rewardsList, unclaimedAmounts, assets }) => {
             if (unclaimedAmounts.some((amount) => amount.gt(zero))) {
-              const tx = await encodeClaimAllRewards({
+              const tx = encodeClaimAllRewards({
                 networkId,
                 assets: assets as string[],
                 dpmAccount: dpmProxy,

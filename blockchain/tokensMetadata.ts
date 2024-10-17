@@ -1,11 +1,11 @@
 import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { findKey } from 'lodash'
+import { error } from 'theme/icons/error'
 
 import type { tokens } from './tokensMetadata.constants'
 import { ALLOWED_AUTOMATION_ILKS, tokensBySymbol } from './tokensMetadata.constants'
 import type { TokenMetadataType, TokenSymbolType } from './tokensMetadata.types'
-import { error } from 'theme/icons/error'
 
 export const emptyTokenMetadata: TokenMetadataType = {
   symbol: 'UNKNOWN',

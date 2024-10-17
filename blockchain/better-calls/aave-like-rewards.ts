@@ -1,19 +1,12 @@
-import {
-  ensureContractsExist,
-  ensureGivenTokensExist,
-  ensureTokensExist,
-  getNetworkContracts,
-} from 'blockchain/contracts'
+import BigNumber from 'bignumber.js'
+import { ensureContractsExist, ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider } from 'blockchain/networks'
+import { amountFromWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
 import type { OmniTxData } from 'features/omni-kit/hooks'
-import {
-  AccountImplementation__factory,
-  AaveLikeRewardsProxyActions__factory,
-} from 'types/ethers-contracts'
-import { amountFromWei, amountToWei } from 'blockchain/utils'
+import { AaveLikeRewardsProxyActions__factory } from 'types/ethers-contracts'
+
 import type { BaseCallParameters } from './utils'
-import BigNumber from 'bignumber.js'
 
 export interface UserRewardsArgs extends BaseCallParameters {
   token: string
@@ -75,27 +68,22 @@ export async function getAllUserRewards({
     assets,
   }
 }
-export async function encodeClaimAllRewards({
+export function encodeClaimAllRewards({
   networkId,
   assets,
-  dpmAccount,
   rewardsController,
-}: ClaimAllRewardsArgs): Promise<OmniTxData> {
+}: ClaimAllRewardsArgs): OmniTxData {
   const contracts = getNetworkContracts(networkId)
 
   ensureContractsExist(networkId, contracts, ['aaveLikeRewardsProxyActions'])
   // ensureGivenTokensExist(networkId, contracts, assets)
 
-  const { aaveLikeRewardsProxyActions, tokens } = contracts
+  const { aaveLikeRewardsProxyActions } = contracts
 
   const proxyActionContract = AaveLikeRewardsProxyActions__factory.connect(
     aaveLikeRewardsProxyActions.address,
     getRpcProvider(networkId),
   )
-
-  const dpmContract = AccountImplementation__factory.connect(dpmAccount, getRpcProvider(networkId))
-
-  const owner = await dpmContract.owner()
 
   const encodeFunctionData = proxyActionContract.interface.encodeFunctionData('claimAllRewards', [
     rewardsController,

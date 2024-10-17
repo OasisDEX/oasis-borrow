@@ -1,4 +1,5 @@
 import { ADDRESSES } from '@oasisdex/addresses'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import * as aaveV2LendingPool from 'blockchain/abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
@@ -53,8 +54,6 @@ import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
 import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
 import * as vat from 'blockchain/abi/vat.json'
-import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
-
 import {
   getCollateralJoinContracts,
   getCollaterals,
