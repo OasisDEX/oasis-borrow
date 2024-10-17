@@ -4,6 +4,7 @@ import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import type BigNumber from 'bignumber.js'
 import { encodeClaimAllRewards, getAllUserRewards } from 'blockchain/better-calls/aave-like-rewards'
 import { encodeTransferToOwnerProxyAction, tokenBalance } from 'blockchain/better-calls/erc20'
+import { NetworkIds } from 'blockchain/networks'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { getTokenByAddress } from 'blockchain/tokensMetadata'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
@@ -15,7 +16,6 @@ import React, { useEffect, useReducer } from 'react'
 
 import { OmniDetailsSectionContentRewardsLoadingState } from './OmniDetailsSectionContentRewardsLoadingState'
 import { OmniRewardsClaims } from './OmniRewardsClaims'
-import { NetworkIds } from 'blockchain/networks'
 
 const claimableErc20: Record<NetworkIds, string[]> = {
   [NetworkIds.MAINNET]: ['ENA', 'SENA'],
