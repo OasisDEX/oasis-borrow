@@ -405,6 +405,81 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'CBBTC',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'CBBTC',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'CBBTC',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'SDAI',
     debt: 'USDT',
     strategyType: StrategyType.Long,

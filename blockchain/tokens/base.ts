@@ -9,6 +9,7 @@ export const tokensBase = {
   ETH: contractDesc(erc20, base.common.WETH),
   ETH_ACTUAL: contractDesc(erc20, base.common.ETH),
   CBETH: contractDesc(erc20, base.common.CBETH),
+  CBBTC: contractDesc(erc20, '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf'),
   DAI: contractDesc(erc20, base.common.DAI),
   FRAX: contractDesc(erc20, base.common.FRAX),
   GHO: contractDesc(erc20, base.common.GHO),

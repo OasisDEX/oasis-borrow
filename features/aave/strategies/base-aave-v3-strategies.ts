@@ -24,6 +24,31 @@ import { hasBorrowProductType, hasEarnProductType, hasMultiplyProductType } from
 
 const availableTokenPairs: TokenPairConfig[] = [
   {
+    collateral: 'CBBTC',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'CBETH',
     debt: 'USDBC',
     strategyType: StrategyType.Long,

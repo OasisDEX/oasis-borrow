@@ -59,6 +59,7 @@ export const tokensMainnet = {
   ...getCollateralTokens({ ...mainnet.maker.pips, ...mainnet.common }, supportedIlks),
   AJNA: contractDesc(erc20, mainnet.common.AJNA),
   CBETH: contractDesc(erc20, mainnet.common.CBETH),
+  CBBTC: contractDesc(erc20, '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf'),
   DAI: contractDesc(erc20, mainnet.common.DAI),
   ETH: contractDesc(erc20, mainnet.common.WETH),
   // See @oasisdex/addresses package for info
