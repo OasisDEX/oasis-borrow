@@ -4,6 +4,7 @@ import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import type BigNumber from 'bignumber.js'
 import { encodeClaimAllRewards, getAllUserRewards } from 'blockchain/better-calls/aave-like-rewards'
 import { encodeTransferToOwnerProxyAction, tokenBalance } from 'blockchain/better-calls/erc20'
+import { NetworkIds } from 'blockchain/networks'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { getTokenByAddress } from 'blockchain/tokensMetadata'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
@@ -16,7 +17,20 @@ import React, { useEffect, useReducer } from 'react'
 import { OmniDetailsSectionContentRewardsLoadingState } from './OmniDetailsSectionContentRewardsLoadingState'
 import { OmniRewardsClaims } from './OmniRewardsClaims'
 
-const claimableErc20 = ['ENA', 'SENA']
+const claimableErc20: Record<NetworkIds, string[]> = {
+  [NetworkIds.MAINNET]: ['ENA', 'SENA'],
+  [NetworkIds.OPTIMISMMAINNET]: [],
+  [NetworkIds.ARBITRUMMAINNET]: [],
+  [NetworkIds.BASEMAINNET]: [],
+  [NetworkIds.POLYGONMAINNET]: [],
+  [NetworkIds.POLYGONMUMBAI]: [],
+  [NetworkIds.BASEGOERLI]: [],
+  [NetworkIds.EMPTYNET]: [],
+  [NetworkIds.GOERLI]: [],
+  [NetworkIds.HARDHAT]: [],
+  [NetworkIds.ARBITRUMGOERLI]: [],
+  [NetworkIds.OPTIMISMGOERLI]: [],
+}
 
 type Claim = {
   token: string
@@ -36,7 +50,7 @@ const OmniDetailSectionRewardsClaimsInternal: FC = () => {
   useEffect(() => {
     if (dpmProxy) {
       // Existing ERC20 claims logic
-      claimableErc20.forEach((token) => {
+      claimableErc20[networkId].forEach((token) => {
         tokenBalance({ token, account: dpmProxy, networkId: networkId })
           .then((balance) => {
             if (balance.gt(zero)) {
