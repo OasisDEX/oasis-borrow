@@ -76,7 +76,6 @@ export function encodeClaimAllRewards({
   const contracts = getNetworkContracts(networkId)
 
   ensureContractsExist(networkId, contracts, ['aaveLikeRewardsProxyActions'])
-  // ensureGivenTokensExist(networkId, contracts, assets)
 
   const { aaveLikeRewardsProxyActions } = contracts
 
