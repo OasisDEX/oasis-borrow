@@ -51,6 +51,8 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'SWBTC-WBTC': ['0x514efda728a646dcafe4fdc9afe4ea214709e110ac1b2b78185ae00c1782cc82'],
     'RSWETH-ETH': ['0xcacd4c39af872ddecd48b650557ff5bcc7d3338194c0f5b2038e0d4dec5dc022'],
     'LBTC-WBTC': ['0xf6a056627a51e511ec7f48332421432ea6971fc148d8f3c451e14ea108026549'],
+    'CBBTC-USDC': ['0x64d65c9a2d91c36d56fbc42d69e979335320169b3df63bf92789e2c8883fcc64'],
+    'CBBTC-ETH': ['0x2cbfb38723a8d9a2ad1607015591a78cfe3a5949561b39bde42c242b22874ec0'],
   },
   [NetworkIds.BASEMAINNET]: {
     'ETH-USDC': ['0x8793cf302b8ffd655ab97bd1c695dbd967807e8367a65cb2f4edaf1380ba1bda'],
@@ -68,6 +70,8 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'EZETH-ETH': ['0xdf13c46bf7bd41597f27e32ae9c306eb63859c134073cb81c796ff20b520c7cf'],
     'BSDETH-ETH': ['0xdf6aa0df4eb647966018f324db97aea09d2a7dde0d3c0a72115e8b20d58ea81f'],
     'WSUPEROETHB-ETH': ['0x144bf18d6bf4c59602548a825034f73bf1d20177fc5f975fc69d5a5eba929b45'],
+    'CBBTC-USDC': ['0x9103c3b4e834476c9a62ea009ba2c884ee42e94e6e314a26f04d312434191836'],
+    'CBBTC-ETH': ['0x5dffffc7d75dc5abfa8dbe6fad9cbdadf6680cbe1428bafe661497520c84a94c'],
   },
 }
 
@@ -85,6 +89,7 @@ export const settings: OmniProtocolSettings = {
       'ETH',
       'EZETH',
       'OSETH',
+      'CBBTC',
       'RETH',
       'SDAI',
       'SUSDE',
@@ -105,6 +110,7 @@ export const settings: OmniProtocolSettings = {
       'DAI',
       'ETH',
       'USDC',
+      'CBBTC',
       'WBTC',
       'WEETH',
       'WSTETH',

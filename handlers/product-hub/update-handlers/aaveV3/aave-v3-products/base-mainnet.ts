@@ -61,6 +61,12 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     strategyType: 'long',
     types: ['earn'],
   },
+  {
+    collateral: 'CBBTC',
+    debt: 'USDC',
+    strategyType: 'long',
+    types: ['borrow', 'multiply'],
+  },
 ]
 
 const borrowProducts = aaveSeed

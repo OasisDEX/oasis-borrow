@@ -1,4 +1,4 @@
-import { ADDRESSES } from '@oasisdex/addresses'
+import { ADDRESS_ZERO, ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
@@ -16,6 +16,7 @@ const { goerli } = ADDRESSES
 export const tokensGoerli = {
   ...getCollateralTokens({ ...goerli.maker.pips, ...goerli.common }, supportedIlks),
   CBETH: contractDesc(erc20, goerli.common.CBETH),
+  CBBTC: contractDesc(erc20, ADDRESS_ZERO),
   DAI: contractDesc(erc20, goerli.common.DAI),
   GHO: contractDesc(erc20, goerli.common.GHO),
   GUNIV3DAIUSDC1: contractDesc(guniToken, goerli.common.GUNIV3DAIUSDC1),

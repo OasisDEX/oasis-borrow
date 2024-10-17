@@ -1,4 +1,4 @@
-import { ADDRESSES } from '@oasisdex/addresses'
+import { ADDRESS_ZERO, ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { contractDesc } from 'blockchain/networks'
 import type { ContractDesc } from 'features/web3Context'
@@ -11,6 +11,7 @@ const { optimism } = ADDRESSES
 
 export const tokensOptimism = {
   CBETH: contractDesc(erc20, optimism.common.CBETH),
+  CBBTC: contractDesc(erc20, ADDRESS_ZERO),
   ETH_ACTUAL: contractDesc(erc20, optimism.common.ETH),
   OP: contractDesc(erc20, optimism.common.OP),
   DAI: contractDesc(erc20, optimism.common.DAI),

@@ -1,4 +1,4 @@
-import { ADDRESSES } from '@oasisdex/addresses'
+import { ADDRESS_ZERO, ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { contractDesc } from 'blockchain/networks'
 import type { ContractDesc } from 'features/web3Context'
@@ -12,6 +12,7 @@ export const tokensArbitrum = {
   ETH_ACTUAL: contractDesc(erc20, arbitrum.common.ETH),
   ARB: contractDesc(erc20, arbitrum.common.ARB),
   CBETH: contractDesc(erc20, arbitrum.common.CBETH),
+  CBBTC: contractDesc(erc20, ADDRESS_ZERO),
   DAI: contractDesc(erc20, arbitrum.common.DAI),
   FRAX: contractDesc(erc20, arbitrum.common.FRAX),
   GHO: contractDesc(erc20, arbitrum.common.GHO),
