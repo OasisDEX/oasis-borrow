@@ -1,4 +1,5 @@
 import { ADDRESSES } from '@oasisdex/addresses'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
 import * as aaveV3Oracle from 'blockchain/abi/aave-v3-oracle.json'
@@ -136,7 +137,10 @@ export const baseContracts: MainnetContractsWithOptional = {
     BTCUSD: contractDesc(chainLinkPriceOracle, base.common.ChainlinkPriceOracle_BTCUSD),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
-
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    base.mpa.core.AaveRewardsProxyActions,
+  ),
   operationExecutor: contractDesc(operationExecutor, base.mpa.core.OperationExecutor),
   swapAddress: base.mpa.core.Swap,
   accountFactory: contractDesc(accountFactory, base.mpa.core.AccountFactory),

@@ -1,4 +1,5 @@
 import { ADDRESSES } from '@oasisdex/addresses'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import * as aaveV2LendingPool from 'blockchain/abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
@@ -148,6 +149,10 @@ export const goerliContracts: MainnetContractsWithOptional = {
     aaveV2LendingPool,
     goerli.aave.v2.LendingPool,
     AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
+  ),
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    goerli.mpa.core.AaveRewardsProxyActions,
   ),
 
   operationExecutor: contractDesc(operationExecutor, goerli.mpa.core.OperationExecutor),

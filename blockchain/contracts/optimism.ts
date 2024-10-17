@@ -1,4 +1,5 @@
 import { ADDRESSES } from '@oasisdex/addresses'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
 import * as aaveV3Oracle from 'blockchain/abi/aave-v3-oracle.json'
@@ -144,6 +145,10 @@ export const optimismContracts: OptimismContracts = {
     optimism.aave.v2.PoolDataProvider,
   ),
   aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, optimism.aave.v2.Oracle),
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    optimism.mpa.core.AaveRewardsProxyActions,
+  ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_ETHUSD),

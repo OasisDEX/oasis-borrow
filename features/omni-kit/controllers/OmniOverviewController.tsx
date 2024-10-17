@@ -2,7 +2,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { SimulateTitle } from 'components/SimulateTitle'
-import { OmniDetailSectionErc20Claims } from 'features/omni-kit/components/details-section/OmniDetailSectionErc20Claims'
+import { OmniDetailSectionRewardsClaims } from 'features/omni-kit/components/details-section/OmniDetailSectionRewardsClaims'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { getOmniDetailsSectionRaysTitle } from 'features/omni-kit/helpers/getOmniDetailsSectionRaysTitle'
 import { useOmniInPositionAmount } from 'features/omni-kit/hooks'
@@ -70,7 +70,7 @@ export function OmniOverviewController() {
       />
       {overviewBanner}
       {renderOverviewBanner?.()}
-      <OmniDetailSectionErc20Claims />
+      <OmniDetailSectionRewardsClaims />
     </Grid>
   )
 }

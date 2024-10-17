@@ -1,4 +1,5 @@
 import { ADDRESSES } from '@oasisdex/addresses'
+import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import * as aaveV2LendingPool from 'blockchain/abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
@@ -166,6 +167,10 @@ export const mainnetContracts = {
   aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
+  aaveLikeRewardsProxyActions: contractDesc(
+    aaveLikeRewardsProxyActions,
+    mainnet.mpa.core.AaveRewardsProxyActions,
+  ),
   sparkV3Pool: contractDesc(
     sparkV3Pool,
     mainnet.spark.LendingPool!,

@@ -2502,10 +2502,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.84":
-  version "0.1.84"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.84.tgz#5b506551d9454ed621f17fef736e5e27dc27edc2"
-  integrity sha512-qaY7sXUsq4n9i7otCbfmb44Et1rNn9dAe+WSXgyjFost9ZLa/oZC27ojBEoF4QnZDr7Dcje0scHc+6yoJzkYeg==
+"@oasisdex/addresses@0.1.86":
+  version "0.1.86"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.86.tgz#f643210c3774200273dbf28f4d8b9f3eeb009905"
+  integrity sha512-DywUqaSo8lCy4xqU17XPvhRw6FRe+9MqF+vncp+/SWZz2boikDnM+KaEE9ErxxZU2BKQGphQ4qQq6nzUd2glIg==
 
 "@oasisdex/automation@1.6.5-morpho.6":
   version "1.6.5-morpho.6"
