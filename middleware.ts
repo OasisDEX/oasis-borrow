@@ -1,3 +1,4 @@
+import { sampleSize } from 'lodash'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { handleRewrite } from 'server/rewrites'
@@ -13,6 +14,9 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next()
   const origin = request.headers.get('origin') || ''
+  const userAgentHeader = request.headers.get('user-agent') || ''
+  const randomishId = sampleSize('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 10).join('')
+  request.headers.set('user-agent', `${userAgentHeader} Summer.fi/${randomishId}`)
 
   // If the origin is in the ALLOWED_ORIGINS env, add it to the Access-Control-Allow-Origin header
   if (allowedOrigins.includes(origin)) {
