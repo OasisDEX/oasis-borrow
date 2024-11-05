@@ -72,6 +72,8 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string[] }> = 
     'WSUPEROETHB-ETH': ['0x144bf18d6bf4c59602548a825034f73bf1d20177fc5f975fc69d5a5eba929b45'],
     'CBBTC-USDC': ['0x9103c3b4e834476c9a62ea009ba2c884ee42e94e6e314a26f04d312434191836'],
     'CBBTC-ETH': ['0x5dffffc7d75dc5abfa8dbe6fad9cbdadf6680cbe1428bafe661497520c84a94c'],
+    'WSTETH-EURC': ['0xf7e40290f8ca1d5848b3c129502599aa0f0602eb5f5235218797a34242719561'],
+    'CBETH-EURC': ['0x7fc498ddcb7707d6f85f6dc81f61edb6dc8d7f1b47a83b55808904790564929a'],
   },
 }
 
@@ -117,6 +119,7 @@ export const settings: OmniProtocolSettings = {
       'CBETH',
       'BSDETH',
       'WSUPEROETHB',
+      'EURC',
     ],
   },
   steps: {
