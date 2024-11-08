@@ -114,6 +114,7 @@ jobs:
           NEWSLETTER_API_KEY: ${{ secrets.NEWSLETTER_API_KEY }}
           NEWSLETTER_PUBLICATION_ID: ${{ secrets.NEWSLETTER_PUBLICATION_ID }}
           NEWSLETTER_ENDPOINT: ${{ secrets.NEWSLETTER_ENDPOINT }}
+          SUBGRAPH_BASE: ${{ secrets.SUBGRAPH_BASE }}
         run: yarn build
 
       - name: Configure AWS credentials
