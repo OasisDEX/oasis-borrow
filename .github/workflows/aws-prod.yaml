@@ -74,7 +74,6 @@ jobs:
                        --build-arg NEWSLETTER_API_KEY=${{ secrets.NEWSLETTER_API_KEY }} \
                        --build-arg NEWSLETTER_PUBLICATION_ID=${{ secrets.NEWSLETTER_PUBLICATION_ID }} \
                        --build-arg NEWSLETTER_ENDPOINT=${{ secrets.NEWSLETTER_ENDPOINT }} \
-                        --build-arg SUBGRAPH_BASE=${{ secrets.SUBGRAPH_BASE }} \
                        --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
