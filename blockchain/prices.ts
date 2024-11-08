@@ -118,7 +118,8 @@ export function createTokenPriceInUSD$(
               [token]: new BigNumber(tokenPrice),
             })
           } catch (err) {
-            console.error(`could not find price for ${token} - no ticker configured`)
+            console.error(`could not find price for ${token}`)
+            console.error(err)
 
             return of({})
           }
