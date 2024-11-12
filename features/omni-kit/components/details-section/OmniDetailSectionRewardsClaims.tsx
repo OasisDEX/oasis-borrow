@@ -93,15 +93,11 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
     }
     if (isEligibleForMorphoLegacy) {
       const morphoLegacyToken = morphoLegacyByNetwork[networkId]
-      console.log('morphoLegacyToken', morphoLegacyToken)
       if (morphoLegacyToken) {
-        console.log('morphoLegacyToken', morphoLegacyToken)
         const network = networkIdToLibraryNetwork(networkId)
-        console.log('network', network)
         if (network === Network.MAINNET) {
           tokenBalance({ token: morphoLegacyToken, account: dpmProxy, networkId })
             .then((balance) => {
-              console.log('balance mmm', balance)
               if (balance.gt(zero)) {
                 encodeApproveAndWrapProxyAction({
                   oldToken: morphoLegacyToken,
