@@ -96,7 +96,7 @@ export const mapMorphoLendingEvents = (
         }
       }
       default: {
-        console.warn(`No morpho blue event kind found ${event.kind}`)
+        console.warn(`No morpho event kind found ${event.kind}`)
         return {}
       }
     }

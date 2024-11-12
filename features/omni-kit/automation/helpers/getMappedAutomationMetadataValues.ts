@@ -50,7 +50,7 @@ export const getMappedAutomationMetadataValues = ({
   switch (protocol) {
     case LendingProtocol.MorphoBlue:
       if (!morphoBlueFlagGuard(flagSelector)) {
-        throw Error(`Wrong morpho blue flagSelector value ${flagSelector}`)
+        throw Error(`Wrong morpho flagSelector value ${flagSelector}`)
       }
 
       return {
