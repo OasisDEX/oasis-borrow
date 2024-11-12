@@ -16,15 +16,9 @@ export function ReclaimCollateralButton({ amount, token, id }: ReclaimCollateral
   const { reclaimCollateral$ } = useProductContext()
   const [state] = useObservable(reclaimCollateral$(id, token, amount))
 
-  console.debug('ReclaimCollateralButton state:', state)
-
   if (!state) return null
   const { reclaim, txStatus } = state
   const isLoading = txStatus === 'reclaimWaitingForApproval' || txStatus === 'reclaimInProgress'
-
-  console.debug('Recv aimCollateralButton txStatus:', txStatus)
-  console.debug('ReclaimCollateralButton isLoading:', isLoading)
-
   return (
     <Button onClick={reclaim} variant="secondary" disabled={isLoading}>
       {isLoading ? (
