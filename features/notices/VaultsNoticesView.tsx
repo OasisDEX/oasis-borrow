@@ -325,6 +325,7 @@ export function VaultLiquidatedNotice({
           })}
         </Text>
         <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
+        {console.debug('ReclaimCollateralButton props:', { token, id, amount: unlockedCollateral })}
       </>
     ) : (
       fallbackSubheader

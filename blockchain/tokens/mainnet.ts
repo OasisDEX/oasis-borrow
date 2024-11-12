@@ -74,6 +74,7 @@ export const tokensMainnet = {
   LUSD: contractDesc(erc20, mainnet.common.LUSD),
   MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
   MORPHO: contractDesc(erc20, mainnet.common.MORPHO),
+  MORPHO_LEGACY: contractDesc(erc20, mainnet.common.MORPHO_LEGACY),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
   RETH: contractDesc(erc20, mainnet.common.RETH),
   RSETH: contractDesc(erc20, mainnet.common.RSETH),

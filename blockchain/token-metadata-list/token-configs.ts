@@ -998,6 +998,15 @@ export const tokenConfigs: TokenConfig[] = [
     tags: [],
   },
   {
+    symbol: 'MORPHO_LEGACY',
+    precision: 18,
+    digits: 5,
+    name: 'Legacy Morpho Blue',
+    icon: morpho_circle_color,
+    iconCircle: morpho_circle_color,
+    tags: [],
+  },
+  {
     symbol: 'RBN',
     precision: 18,
     digits: 5,
