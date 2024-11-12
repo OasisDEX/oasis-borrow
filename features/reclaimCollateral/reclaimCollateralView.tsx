@@ -19,7 +19,6 @@ export function ReclaimCollateralButton({ amount, token, id }: ReclaimCollateral
   if (!state) return null
   const { reclaim, txStatus } = state
   const isLoading = txStatus === 'reclaimWaitingForApproval' || txStatus === 'reclaimInProgress'
-
   return (
     <Button onClick={reclaim} variant="secondary" disabled={isLoading}>
       {isLoading ? (

@@ -92,6 +92,10 @@ const morphoRewards = {
   token: 'MORPHO',
   label: 'Morpho token rewards',
 }
+const legacyMorphoRewards = {
+  token: 'MORPHO_LEGACY',
+  label: 'Legacy Morpho token rewards',
+}
 const wstethRewards = {
   token: 'WSTETH',
   label: 'Lido rewards in WSTETH',
@@ -112,7 +116,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
     protocol: LendingProtocol.MorphoBlue,
-    rewards: [morphoRewards, wstethRewards],
+    rewards: [morphoRewards, wstethRewards, legacyMorphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'Steakhouse MetaMorpho Vault',
     token: {
@@ -129,7 +133,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
-    rewards: [morphoRewards],
+    rewards: [morphoRewards, legacyMorphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'Steakhouse MetaMorpho Vault',
     token: {
@@ -146,7 +150,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
-    rewards: [morphoRewards],
+    rewards: [morphoRewards, legacyMorphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'Steakhouse MetaMorpho Vault',
     token: {
@@ -163,7 +167,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
-    rewards: [morphoRewards],
+    rewards: [morphoRewards, legacyMorphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'Steakhouse MetaMorpho Vault',
     token: {
@@ -180,7 +184,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
-    rewards: [morphoRewards],
+    rewards: [morphoRewards, legacyMorphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'Flagship MetaMorpho Vault',
     token: {
@@ -197,7 +201,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
-    rewards: [morphoRewards],
+    rewards: [morphoRewards, legacyMorphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'Flagship MetaMorpho Vault',
     token: {
@@ -214,7 +218,7 @@ export const erc4626Vaults: Erc4626Config[] = [
     protocol: LendingProtocol.MorphoBlue,
     networkId: NetworkIds.MAINNET,
     pricePicker: morphoPricePicker,
-    rewards: [morphoRewards],
+    rewards: [morphoRewards, legacyMorphoRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
     strategy: 'Flagship MetaMorpho Vault',
     token: {

@@ -200,3 +200,68 @@ export async function encodeTransferToOwnerProxyAction({
     value: '0',
   }
 }
+
+/**
+ * Encodes a transaction to approve and wrap an ERC20 token using OpenZeppelin's ERC20Wrapper pattern.
+ * This function prepares a transaction that will:
+ * 1. Approve the wrapper contract to spend the old token
+ * 2. Deposit the old token into the wrapper contract ( from proxy)
+ * 3.Send the new wrapped token to the owner
+ *
+ * The wrapper contract must implement the IERC20Wrapper interface which includes:
+ * - depositFor(address account, uint256 value)
+ * - withdrawTo(address account, uint256 value)
+ *
+ * @param {object} params - The parameters object
+ * @param {NetworkIds} params.networkId - The network ID where the transaction will be executed
+ * @param {string} params.oldToken - The symbol of the token to be wrapped (underlying token)
+ * @param {string} params.newToken - The symbol of the wrapped token to receive
+ * @param {string} params.wrapper - The address of the ERC20Wrapper contract
+ * @param {BigNumber} params.amount - The amount of tokens to wrap
+ * @returns {Promise<OmniTxData>} The encoded transaction data ready to be executed
+ * @throws Will throw if the contracts or tokens don't exist in the network configuration
+ * @throws Will throw if the token addresses cannot be resolved
+ */
+export async function encodeApproveAndWrapProxyAction({
+  networkId,
+  oldToken,
+  newToken,
+  wrapper,
+  amount,
+}: {
+  networkId: NetworkIds
+  oldToken: string
+  newToken: string
+  wrapper: string
+  amount: BigNumber
+}): Promise<OmniTxData> {
+  const contracts = getNetworkContracts(networkId)
+
+  ensureContractsExist(networkId, contracts, ['erc20ProxyActions'])
+  ensureGivenTokensExist(networkId, contracts, [oldToken, newToken])
+
+  const { erc20ProxyActions, tokens } = contracts
+
+  const oldTokenAddress = tokens[oldToken].address
+  const newTokenAddress = tokens[newToken].address
+
+  const proxyActionContract = Erc20ProxyActions__factory.connect(
+    erc20ProxyActions.address,
+    getRpcProvider(networkId),
+  )
+
+  const amountInWei = amountToWei(amount, oldToken).toFixed()
+
+  const encodeFunctionData = proxyActionContract.interface.encodeFunctionData('approveAndWrap', [
+    oldTokenAddress,
+    newTokenAddress,
+    wrapper,
+    ethers.BigNumber.from(amountInWei),
+  ])
+
+  return {
+    to: erc20ProxyActions.address,
+    data: encodeFunctionData,
+    value: '0',
+  }
+}
