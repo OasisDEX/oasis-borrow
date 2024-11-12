@@ -10,13 +10,13 @@ export default () => (
     noTitle={true}
     contents={[
       {
-        title: 'What is Summer.fi Borrow with Morpho Blue?',
+        title: 'What is Summer.fi Borrow with Morpho?',
         body: (
           <>
             <Text as="p" sx={{ mb: 3 }}>
-              Summer.fi allows you to easily borrow against your crypto utilizing Morpho Blue. A
-              protocol that allows you to borrow at higher LTVs, since collateral is deposited in
-              the protocol directly, and not lent out.
+              Summer.fi allows you to easily borrow against your crypto utilizing Morpho. A protocol
+              that allows you to borrow at higher LTVs, since collateral is deposited in the
+              protocol directly, and not lent out.
             </Text>
             <Text as="p" sx={{ mb: 3 }}>
               You'll be able to borrow against your crypto by simply choosing a pair with a
@@ -24,8 +24,8 @@ export default () => (
             </Text>
             <Text as="p">
               To start borrowing, enter deposit amount of collateral and a borrow amount of debt.
-              Morpho Blue loans are perpetual with a variable interest rate and can be easily
-              managed on Summer.fi.
+              Morpho loans are perpetual with a variable interest rate and can be easily managed on
+              Summer.fi.
             </Text>
           </>
         ),
@@ -34,12 +34,12 @@ export default () => (
         title: 'How does it work?',
         body: (
           <>
-            <Text>Borrowing on Summer.fi with Morpho Blue happens in 5 Simple Steps.</Text>
+            <Text>Borrowing on Summer.fi with Morpho happens in 5 Simple Steps.</Text>
             <ol>
               <li>Create a Smart DeFi Account that makes position management easier.</li>
               <li>Open a new position with Collateral and and Amount to borrow.</li>
               <li>Choose a Loan to Value (LTV) and Liq Price according to your risk tolerance.</li>
-              <li>Confirm deposit of collateral to Morpho Blue, and borrow your chosen token.</li>
+              <li>Confirm deposit of collateral to Morpho, and borrow your chosen token.</li>
               <li>
                 Borrowed token amount will be received in your wallet after successful transaction.
               </li>
@@ -59,7 +59,7 @@ export default () => (
               risk to your preferred profile, move your risk up or down according to your needs and
               market conditions, and continually monitor your position to avoid liquidations. Your
               position also has risks associated with the underlying protocol: bugs in smart
-              contracts and errors in oracle prices that force an incorrect liquidation. Morpho Blue
+              contracts and errors in oracle prices that force an incorrect liquidation. Morpho
               borrowing has no risk associated with Governance, once deployed each market is
               isolated and its parameters are fixed.
             </Text>
@@ -72,27 +72,27 @@ export default () => (
         body: (
           <>
             <Text>
-              For Summer.fi Borrow, you can choose between Morpho Blue, Maker, AAVE and Ajna. The
-              most important benefits for Morpho Blue are:
+              For Summer.fi Borrow, you can choose between Morpho, Maker, AAVE and Ajna. The most
+              important benefits for Morpho are:
             </Text>
             <ol>
               <li>
-                <strong>Higher Multiple</strong>: Morpho Blue creates isolated markets. Unlike
+                <strong>Higher Multiple</strong>: Morpho creates isolated markets. Unlike
                 multi-asset pools which must consider the riskiest asset in the basket, liquidation
                 parameters for each market only need to consider the loan and collateral assets.
                 Markets can have higher liquidation LTV as a result.
               </li>
               <li>
-                <strong>Wider range of markets</strong>: Morpho Blue features permissionless asset
+                <strong>Wider range of markets</strong>: Morpho features permissionless asset
                 listing. Markets with collateral and loan assets and risk parametrization can be
                 created. This will allow borrowers to unlock liquidity on assets not listed
                 elsewhere.
               </li>
               <li>
                 <strong>Improved interest rates</strong>: Collateral assets are not lent out to
-                borrowers. This allows Morpho Blue to offer higher capital utilization. Moreover,
-                Morpho Blue is fully autonomous, so it does not need to introduce fees to cover
-                costs for platform maintenance and risk managers.
+                borrowers. This allows Morpho to offer higher capital utilization. Moreover, Morpho
+                Blue is fully autonomous, so it does not need to introduce fees to cover costs for
+                platform maintenance and risk managers.
               </li>
               <li>
                 There are some tradeoffs regarding MaxLTV, governance risk, oracle selection and

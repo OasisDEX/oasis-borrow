@@ -1168,11 +1168,11 @@
       "description": "Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. On Summer you do it with one click actions and advanced automations. We are the unified gateway to the best of DeFi."
     },
     "morpho": {
-      "title": "Summer.fi × Morpho Blue",
-      "description": "Morpho Blue is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
+      "title": "Summer.fi × Morpho",
+      "description": "Morpho is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "morphoProductPage": {
-      "title": "{{productType}} - Summer.fi × Morpho Blue"
+      "title": "{{productType}} - Summer.fi × Morpho"
     },
     "aaveProductPage": {
       "title": "{{productType}} - Summer.fi × Aave"
@@ -3679,7 +3679,7 @@
   },
   "og-tags": {
     "morpho-blue": {
-      "title": "Morpho Blue is Better on Summer",
+      "title": "Morpho is Better on Summer",
       "description": "Lower costs, higher liquidation LTVs, and less gas costs than all other leading borrow/lend protocols. On Summer get more exposure to your collateral in one click."
     },
     "aave": {

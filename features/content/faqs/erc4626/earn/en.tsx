@@ -13,8 +13,7 @@ export default () => (
         body: (
           <Text as="p">
             This position risk is managed by the Vault curator. This means the Vault curator takes
-            care of selecting the markets within Morpho Blue to get the best yield at the right
-            risk.
+            care of selecting the markets within Morpho to get the best yield at the right risk.
           </Text>
         ),
       },
@@ -43,9 +42,9 @@ export default () => (
         title: 'Where does the yield come from?',
         body: (
           <Text as="p">
-            The return comes from the interest paid from Morpho Blue borrowers in each underlying
-            market. As the vault deposits on different markets, it earns an interest rate
-            proportional to the allocation on each market.
+            The return comes from the interest paid from Morpho borrowers in each underlying market.
+            As the vault deposits on different markets, it earns an interest rate proportional to
+            the allocation on each market.
           </Text>
         ),
       },
@@ -54,7 +53,7 @@ export default () => (
         body: (
           <Text as="p">
             This Earn position deposits into MetaMorpho Vaults which in turn allocate the funds to
-            different Morpho Blue markets according to the risk parameters set by the Vault Curator.
+            different Morpho markets according to the risk parameters set by the Vault Curator.
           </Text>
         ),
       },

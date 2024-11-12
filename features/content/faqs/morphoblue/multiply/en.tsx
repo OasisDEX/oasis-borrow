@@ -10,14 +10,13 @@ export default () => (
     noTitle={true}
     contents={[
       {
-        title: 'What is Summer.fi Multiply Morpho Blue?',
+        title: 'What is Summer.fi Multiply Morpho?',
         body: (
           <Text as="p" sx={{ mb: 3 }}>
-            Summer.fi multiply with Morpho Blue is a feature that allows you to get increased
-            exposure to your assets with one click. You can deposit supported collaterals into
-            Morpho Blue and with the power of Summer.fi smart contracts you can multiply your
-            exposure to it by borrowing debt within Morpho Blue protocol and gaining extra exposure
-            to your collateral.
+            Summer.fi multiply with Morpho is a feature that allows you to get increased exposure to
+            your assets with one click. You can deposit supported collaterals into Morpho and with
+            the power of Summer.fi smart contracts you can multiply your exposure to it by borrowing
+            debt within Morpho protocol and gaining extra exposure to your collateral.
           </Text>
         ),
       },
@@ -27,11 +26,11 @@ export default () => (
           <Text>
             When you open a new position you will select a collateral and a Loan to Value(LTV)
             according to your desired risk and reward, and in a single transaction, Summer.fi will
-            deposit your collateral to Morpho Blue, borrow the selected debt token and purchase more
+            deposit your collateral to Morpho, borrow the selected debt token and purchase more
             collateral with it, depositing it back into the protocol. This way, you will obtain
             increased exposure to your assets. To start, you will need to create a{' '}
             <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM}>Smart Defi Account</AppLink>, used for all
-            your Morpho Blue positions.
+            your Morpho positions.
           </Text>
         ),
       },
@@ -47,7 +46,7 @@ export default () => (
               risk to your preferred profile, move your risk up or down according to your needs and
               market conditions, and continually monitor your position to avoid liquidations. Your
               position also has risks associated with the underlying protocol: bugs in smart
-              contracts and errors in oracle prices that force an incorrect liquidation. Morpho Blue
+              contracts and errors in oracle prices that force an incorrect liquidation. Morpho
               Multiply has no risk associated with Governance, once deployed each market is isolated
               and its parameters are fixed.
             </Text>
@@ -60,27 +59,27 @@ export default () => (
         body: (
           <>
             <Text>
-              For Summer.fi Multiply, you can choose between Morpho Blue, Maker, AAVE and Ajna. The
-              most important benefits for Morpho Blue are:
+              For Summer.fi Multiply, you can choose between Morpho, Maker, AAVE and Ajna. The most
+              important benefits for Morpho are:
             </Text>
             <ol>
               <li>
-                <strong>Higher Multiple</strong>: Morpho Blue creates isolated markets. Unlike
+                <strong>Higher Multiple</strong>: Morpho creates isolated markets. Unlike
                 multi-asset pools which must consider the riskiest asset in the basket, liquidation
                 parameters for each market only need to consider the loan and collateral assets.
                 Markets can have higher liquidation LTV as a result.
               </li>
               <li>
-                <strong>Wider range of markets</strong>: Morpho Blue features permissionless asset
+                <strong>Wider range of markets</strong>: Morpho features permissionless asset
                 listing. Markets with collateral and loan assets and risk parametrization can be
                 created. This will allow borrowers to unlock liquidity on assets not listed
                 elsewhere.
               </li>
               <li>
                 <strong>Improved interest rates</strong>: Collateral assets are not lent out to
-                borrowers. This allows Morpho Blue to offer higher capital utilization. Moreover,
-                Morpho Blue is fully autonomous, so it does not need to introduce fees to cover
-                costs for platform maintenance and risk managers.
+                borrowers. This allows Morpho to offer higher capital utilization. Moreover, Morpho
+                Blue is fully autonomous, so it does not need to introduce fees to cover costs for
+                platform maintenance and risk managers.
               </li>
               <li>
                 There are some tradeoffs regarding MaxLTV, governance risk, oracle selection and
