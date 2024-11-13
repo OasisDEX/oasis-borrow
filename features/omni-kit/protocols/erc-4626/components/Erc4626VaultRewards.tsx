@@ -8,6 +8,7 @@ import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
+import { TokensGroup } from 'components/TokensGroup'
 import { getOmniTxStatuses, useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import { submitGenericOmniTransaction } from 'features/omni-kit/observables'
@@ -62,30 +63,32 @@ export const Erc4626VaultRewards: FC<Erc4626VaultRewardsProps> = ({ claims, pric
                 />
               ),
               rewardsEarned: (
-                <>
-                  {formatCryptoBalance(earned)} {token}
+                <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
+                  <Flex sx={{ justifyContent: 'flex-end', gap: 1, mb: 1 }}>
+                    {formatCryptoBalance(earned)} <TokensGroup tokens={[token]} forceSize={20} />
+                  </Flex>
                   {prices[token] && (
                     <>
-                      <br />
                       <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
                         {formatUsdValue(earned.times(prices[token]))}
                       </Text>
                     </>
                   )}
-                </>
+                </Flex>
               ),
               claimableNow: (
-                <>
-                  {formatCryptoBalance(claimable)} {token}
+                <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
+                  <Flex sx={{ justifyContent: 'flex-end', gap: 1, mb: 1 }}>
+                    {formatCryptoBalance(claimable)} <TokensGroup tokens={[token]} forceSize={20} />
+                  </Flex>
                   {prices[token] && (
                     <>
-                      <br />
                       <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
                         {formatUsdValue(claimable.times(prices[token]))}
                       </Text>
                     </>
                   )}
-                </>
+                </Flex>
               ),
             },
           },

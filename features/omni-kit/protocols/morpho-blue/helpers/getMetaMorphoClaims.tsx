@@ -96,6 +96,7 @@ export async function getMetaMorphoClaims({
       tx,
     }
   } catch (e) {
+    console.error('getMetaMorphoClaims error', e)
     return {
       claims: [],
     }
