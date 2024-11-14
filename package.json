@@ -45,7 +45,7 @@
     "@metamask/eth-sig-util": "^5.0.2",
     "@oasisdex/addresses": "0.1.89",
     "@oasisdex/automation": "1.6.5-morpho.6",
-    "@oasisdex/dma-library": "0.6.78",
+    "@oasisdex/dma-library": "0.7.0-rc.1",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
