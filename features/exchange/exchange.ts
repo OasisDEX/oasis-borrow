@@ -359,7 +359,9 @@ export function getQuote$({
     ...(protocol === LendingProtocol.Maker && {
       complexityLevel: '1',
     }),
-    origin: eoaAddress,
+    // it doesn't work address is NULL_ADDRESS instead of user wallet address
+    // erroring in the browser on the 1inch side
+    // origin: eoaAddress,
   })
 
   const responseBase = {
