@@ -4,7 +4,7 @@ on:
       - new-staging
   workflow_dispatch:
 
-name: Build and deploy to AWS Staging
+name: Build and deploy Summer Service staging
 env:
   AWS_REGION: eu-central-1
   ENVIRONMENT_TAG: staging
@@ -15,9 +15,10 @@ env:
 
 jobs:
   deploy:
-    name: Build and deploy to AWS Staging
+    name: Build and deploy Summer Service staging
     runs-on: ubuntu-latest
-
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
