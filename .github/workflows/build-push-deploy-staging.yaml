@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - new-staging
+      - dev
   workflow_dispatch:
 
 name: Build and deploy Summer Service staging
