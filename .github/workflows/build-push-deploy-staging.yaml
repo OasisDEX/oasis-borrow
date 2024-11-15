@@ -117,7 +117,7 @@ jobs:
         run: yarn build
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume:  ${{ secrets.BUILD_DEPLOY_OIDC_ROLE_STAGING }}
           aws-region: ${{ env.AWS_REGION }}
@@ -149,12 +149,6 @@ jobs:
         id: service-update
         run: |
           aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
-
-      - name: Wait for all services to become stable
-        uses: oryanmoshe/ecs-wait-action@v1.3
-        with:
-          ecs-cluster: ${{ env.CLUSTER_NAME }}
-          ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
       - name: Invalidate CloudFront
         run:
