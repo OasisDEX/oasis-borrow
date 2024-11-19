@@ -1,0 +1,170 @@
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+name: Build and deploy Summer Service staging
+env:
+  AWS_REGION: eu-central-1
+  ENVIRONMENT_TAG: staging
+  SERVICE_NAME: summer-fi-service-staging
+  CLUSTER_NAME: summer-fi-staging
+  CONFIG_URL: ${{ secrets.CONFIG_URL }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  deploy:
+    name: Build and deploy Summer Service staging
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.19.1
+
+      - name: Check required secrets
+        env:
+          AJNA_SUBGRAPH_URL_GOERLI: ${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }}
+          AJNA_SUBGRAPH_URL_STAGING: ${{ secrets.AJNA_SUBGRAPH_URL_STAGING }}
+          AJNA_SUBGRAPH_V2_URL_GOERLI: ${{ secrets.AJNA_SUBGRAPH_V2_URL_GOERLI }}
+          AJNA_SUBGRAPH_V2_URL_STAGING: ${{ secrets.AJNA_SUBGRAPH_V2_URL_STAGING }}
+          BLOCKNATIVE_API_KEY_STAGING: ${{ secrets.BLOCKNATIVE_API_KEY_STAGING }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          INFURA_PROJECT_ID_STAGING: ${{ secrets.INFURA_PROJECT_ID_STAGING }}
+          MIXPANEL_KEY_STAGING: ${{ secrets.MIXPANEL_KEY_STAGING }}
+          ONE_INCH_API_KEY_STAGING: ${{ secrets.ONE_INCH_API_KEY_STAGING }}
+          ONE_INCH_API_URL_STAGING: ${{ secrets.ONE_INCH_API_URL_STAGING }}
+          PRODUCT_HUB_KEY: ${{ secrets.PRODUCT_HUB_KEY }}
+          REFERRAL_SUBGRAPH_URL_STAGING: ${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NEWSLETTER_API_KEY: ${{ secrets.NEWSLETTER_API_KEY }}
+          NEWSLETTER_PUBLICATION_ID: ${{ secrets.NEWSLETTER_PUBLICATION_ID }}
+          NEWSLETTER_ENDPOINT: ${{ secrets.NEWSLETTER_ENDPOINT }}
+        run: |
+          required_secrets=("AJNA_SUBGRAPH_URL_STAGING" "AJNA_SUBGRAPH_URL_GOERLI" "AJNA_SUBGRAPH_V2_URL_STAGING" "AJNA_SUBGRAPH_V2_URL_GOERLI" "MIXPANEL_KEY_STAGING" "INFURA_PROJECT_ID_STAGING" "ETHERSCAN_API_KEY" "BLOCKNATIVE_API_KEY_STAGING" "SENTRY_AUTH_TOKEN" "PRODUCT_HUB_KEY" "ONE_INCH_API_KEY_STAGING" "ONE_INCH_API_URL_STAGING" "REFERRAL_SUBGRAPH_URL_STAGING" "NEWSLETTER_API_KEY" "NEWSLETTER_PUBLICATION_ID" "NEWSLETTER_ENDPOINT")
+          fail=false
+          for secret in "${required_secrets[@]}"; do
+            secret_value=$(printenv $secret)
+            if [[ -z "$secret_value" ]]; then
+              echo "::error::Secret $secret is not set"
+              fail=true
+            fi
+          done
+          if [[ $fail == true ]]; then
+            echo "::error::One or more secrets are not set. Exiting..."
+            exit 1
+          fi
+
+      - name: Extract commit hash
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Use modules cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --no-progress --non-interactive --frozen-lockfile
+
+      - name: Run postinstall
+        if: steps.yarn-cache.outputs.cache-hit == 'true'
+        run: yarn postinstall
+
+      - name: Use next cache
+        uses: jongwooo/next-cache@v1
+
+      - name: Build standalone app
+        id: build-app
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+          SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+          LATEST_TAG: latest
+          COMMIT_SHA: ${{ steps.vars.outputs.sha_short }}
+          AJNA_SUBGRAPH_URL: ${{ secrets.AJNA_SUBGRAPH_URL_STAGING }}
+          AJNA_SUBGRAPH_URL_GOERLI: ${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }}
+          AJNA_SUBGRAPH_V2_URL: ${{ secrets.AJNA_SUBGRAPH_V2_URL_STAGING }}
+          AJNA_SUBGRAPH_V2_URL_GOERLI: ${{ secrets.AJNA_SUBGRAPH_V2_URL_GOERLI }}
+          MIXPANEL_ENV: staging
+          MIXPANEL_KEY: ${{ secrets.MIXPANEL_KEY_STAGING }}
+          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID_STAGING }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          BLOCKNATIVE_API_KEY: ${{ secrets.BLOCKNATIVE_API_KEY_STAGING }}
+          SHOW_BUILD_INFO: 1
+          NODE_ENV: production
+          NEXT_PUBLIC_SENTRY_ENV: staging
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          PRODUCT_HUB_KEY: ${{ secrets.PRODUCT_HUB_KEY }}
+          ONE_INCH_API_KEY: ${{ secrets.ONE_INCH_API_KEY_STAGING }}
+          NEXT_PUBLIC_SPINDL_SDK_KEY: ${{ secrets.NEXT_PUBLIC_SPINDL_SDK_KEY }}
+          ONE_INCH_API_URL: ${{ secrets.ONE_INCH_API_URL_STAGING }}
+          REFERRAL_SUBGRAPH_URL: ${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }}
+          BLOG_POSTS_API_KEY: ${{ secrets.BLOG_POSTS_API_KEY }}
+          BLOG_POSTS_API_URL: ${{ secrets.BLOG_POSTS_API_URL }}
+          NEWSLETTER_API_KEY: ${{ secrets.NEWSLETTER_API_KEY }}
+          NEWSLETTER_PUBLICATION_ID: ${{ secrets.NEWSLETTER_PUBLICATION_ID }}
+          NEWSLETTER_ENDPOINT: ${{ secrets.NEWSLETTER_ENDPOINT }}
+        run: yarn build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume:  ${{ secrets.BUILD_DEPLOY_OIDC_ROLE_STAGING }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build image
+        id: build-image
+        env:
+          SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+          LATEST_TAG: latest
+          ECR_REPO_NAME: summer-fi-staging
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -f Dockerfile.staging \
+                       --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
+                       .
+          docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
+
+      - name: Update ECS service with latest Docker image
+        id: service-update
+        run: |
+          aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
+
+      - name: Invalidate CloudFront
+        run:
+          AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id
+          ${{secrets.NEW_CF_DIST_ID_STAGING }} --paths "/*"
+
+      - name: Trigger e2e tests in e2e-tests repository
+        env:
+          E2E_TESTS_PAT: ${{ secrets.E2E_TESTS_PAT }}
+        run: |
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ env.E2E_TESTS_PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/OasisDEX/e2e-tests/actions/workflows/ci_e2e_tests.yml/dispatches \
+            -d "{\"ref\":\"main\", \"inputs\":{\"run_id\":\"${{ github.run_id }}\", \"repository\":\"${{ github.repository }}\"}}"
+          echo 'See test results in https://github.com/OasisDEX/e2e-tests/actions/workflows/ci_e2e_tests.yml --> Job with RUN_ID ${{ github.run_id }} in the logs.'
