@@ -88,15 +88,15 @@ const blockAnaliticaBProtocolCurator = {
   icon: '/static/img/block-analitica-b-protocol.svg',
 }
 
-const morphoRewards = {
+export const morphoRewards = {
   token: 'MORPHO',
   label: 'Morpho token rewards',
 }
-const legacyMorphoRewards = {
+export const legacyMorphoRewards = {
   token: 'MORPHO_LEGACY',
   label: 'Legacy Morpho token rewards',
 }
-const wstethRewards = {
+export const wstethRewards = {
   token: 'WSTETH',
   label: 'Lido rewards in WSTETH',
 }

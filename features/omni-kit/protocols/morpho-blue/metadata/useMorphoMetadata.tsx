@@ -16,6 +16,7 @@ import {
 import { useOmniRefinanceBanner } from 'features/omni-kit/hooks/useOmniRefinanceBanner'
 import { useYieldLoopHeadlineDetails } from 'features/omni-kit/hooks/useYieldLoopHeadlineDetails'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
+import { MorphoDetailsSectionContentRewards } from 'features/omni-kit/protocols/morpho-blue/components/details-sections/MorphoDetailsSectionContentRewards'
 import { MorphoDetailsSectionContentWrapper } from 'features/omni-kit/protocols/morpho-blue/components/details-sections/MorphoDetailsSectionContentWrapper'
 import {
   getMorphoBorrowWithdrawMax,
@@ -156,6 +157,9 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
           overviewContent: <MorphoDetailsSectionContentWrapper />,
           overviewFooter: <MorphoDetailsSectionFooter />,
+          overviewBanner: !isOpening && networkId === NetworkIds.MAINNET && (
+            <MorphoDetailsSectionContentRewards />
+          ),
           overviewWithSimulation: isYieldLoopWithData,
           renderOverviewBanner: refinanceBanner?.renderOverviewBanner,
         },

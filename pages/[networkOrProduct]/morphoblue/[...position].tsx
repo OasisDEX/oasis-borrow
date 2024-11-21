@@ -7,7 +7,10 @@ import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue
 import { useMorphoData, useMorphoTxHandler } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { morphoPageSeoTags, MorphoWrapper } from 'features/omni-kit/protocols/morpho-blue/layout'
 import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metadata'
-import { settings } from 'features/omni-kit/protocols/morpho-blue/settings'
+import {
+  morphoBorrowishRewardTokens,
+  settings,
+} from 'features/omni-kit/protocols/morpho-blue/settings'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
 import { RefinanceGeneralContextProvider } from 'features/refinance/contexts'
@@ -33,6 +36,7 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
                     useTxHandler: useMorphoTxHandler,
                   })
                 }
+                extraTokens={morphoBorrowishRewardTokens}
                 protocol={LendingProtocol.MorphoBlue}
                 protocolHook={useMorphoData}
                 seoTags={morphoSeoTags}

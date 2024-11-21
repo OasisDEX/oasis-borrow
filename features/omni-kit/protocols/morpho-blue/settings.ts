@@ -1,6 +1,8 @@
 import { NetworkIds } from 'blockchain/networks'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
+import { legacyMorphoRewards, morphoRewards } from 'features/omni-kit/protocols/erc-4626/settings'
+import { Erc4626RewardsType } from 'features/omni-kit/protocols/erc-4626/types'
 import type { NetworkIdsWithValues, OmniProtocolSettings } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 
@@ -168,3 +170,22 @@ export const morphoMarketsWithAutomation = [
   morphoMarkets?.[NetworkIds.MAINNET]?.['MKR-DAI'][0],
   morphoMarkets?.[NetworkIds.MAINNET]?.['MKR-USDC'][0],
 ]
+
+const usdcRewards = {
+  token: 'USDC',
+  label: 'USD Coin',
+}
+
+// we will most likely need to map rewards per specific markets
+export const morphoBorrowishRewards: NetworkIdsWithValues<{
+  rewards: { token: string; label: string }[]
+  rewardsType: Erc4626RewardsType
+}> = {
+  [NetworkIds.MAINNET]: {
+    rewards: [morphoRewards, legacyMorphoRewards, usdcRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
+  },
+}
+
+// in general there are more, but we currently don't support these markets
+export const morphoBorrowishRewardTokens = ['MORPHO', 'MORPHO_LEGACY', 'USDC']
