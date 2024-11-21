@@ -87,9 +87,10 @@ export const settingsV3: OmniProtocolSettings = {
       'LUSD',
       'RPL',
       'FRAX',
+      'CBBTC',
     ],
     [NetworkIds.ARBITRUMMAINNET]: ['ETH', 'WEETH', 'RETH', 'WSTETH', 'USDC', 'DAI', 'WBTC'],
-    [NetworkIds.BASEMAINNET]: ['ETH', 'WEETH', 'CBETH', 'USDBC', 'USDC'],
+    [NetworkIds.BASEMAINNET]: ['ETH', 'WEETH', 'CBETH', 'USDBC', 'USDC', 'CBBTC'],
     [NetworkIds.OPTIMISMMAINNET]: ['ETH', 'WSTETH', 'USDC', 'USDC.E', 'DAI', 'WBTC'],
   },
   steps: {
