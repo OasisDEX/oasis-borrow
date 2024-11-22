@@ -2,7 +2,7 @@ import type { MorphoCloseClaimRewardsPayload, Network } from '@oasisdex/dma-libr
 import { strategies } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { getRpcProvider } from 'blockchain/networks'
 import { getTokenGuarded, getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { omniNetworkMap } from 'features/omni-kit/constants'
@@ -67,8 +67,8 @@ export async function getMetaMorphoClaims({
       ),
       {
         network: omniNetworkMap[networkId] as Network,
-        operationExecutor: getNetworkContracts(NetworkIds.MAINNET).operationExecutor.address,
-        provider: getRpcProvider(NetworkIds.MAINNET),
+        operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
+        provider: getRpcProvider(networkId),
       },
     )
 

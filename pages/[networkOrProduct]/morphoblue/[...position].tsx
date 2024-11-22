@@ -36,7 +36,7 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
                     useTxHandler: useMorphoTxHandler,
                   })
                 }
-                extraTokens={morphoBorrowishRewardTokens}
+                extraTokens={morphoBorrowishRewardTokens[props.networkId]}
                 protocol={LendingProtocol.MorphoBlue}
                 protocolHook={useMorphoData}
                 seoTags={morphoSeoTags}

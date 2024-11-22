@@ -157,9 +157,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
           overviewContent: <MorphoDetailsSectionContentWrapper />,
           overviewFooter: <MorphoDetailsSectionFooter />,
-          overviewBanner: !isOpening && networkId === NetworkIds.MAINNET && (
-            <MorphoDetailsSectionContentRewards />
-          ),
+          overviewBanner: !isOpening && <MorphoDetailsSectionContentRewards />,
           overviewWithSimulation: isYieldLoopWithData,
           renderOverviewBanner: refinanceBanner?.renderOverviewBanner,
         },

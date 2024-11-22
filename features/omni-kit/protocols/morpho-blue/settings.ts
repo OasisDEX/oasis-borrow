@@ -185,7 +185,14 @@ export const morphoBorrowishRewards: NetworkIdsWithValues<{
     rewards: [morphoRewards, legacyMorphoRewards, usdcRewards],
     rewardsType: Erc4626RewardsType.MetaMorpho,
   },
+  [NetworkIds.BASEMAINNET]: {
+    rewards: [morphoRewards, legacyMorphoRewards, usdcRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
+  },
 }
 
 // in general there are more, but we currently don't support these markets
-export const morphoBorrowishRewardTokens = ['MORPHO', 'MORPHO_LEGACY', 'USDC']
+export const morphoBorrowishRewardTokens: NetworkIdsWithValues<string[]> = {
+  [NetworkIds.MAINNET]: ['MORPHO', 'MORPHO_LEGACY', 'USDC'],
+  [NetworkIds.BASEMAINNET]: ['MORPHO', 'USDC'],
+}
