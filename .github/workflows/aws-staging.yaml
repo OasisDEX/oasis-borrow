@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - dev
+      - dev-old
   workflow_dispatch:
 
 name: Build and deploy to AWS Staging
