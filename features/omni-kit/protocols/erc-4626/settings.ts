@@ -69,6 +69,7 @@ export const settings: OmniProtocolSettings = {
       'AWETH',
       'CETH',
       'CWETHV3',
+      'WUSDL',
     ],
   },
   availableAutomations: {
@@ -225,6 +226,23 @@ export const erc4626Vaults: Erc4626Config[] = [
       address: getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address,
       precision: getToken('USDC').precision,
       symbol: 'USDC',
+    },
+  },
+  {
+    address: '0xbeefc01767ed5086f35decb6c00e6c12bc7476c1',
+    curator: steakhouseCurator,
+    id: 'coinshift-WUSDL',
+    name: 'Coinshift WUSDL',
+    protocol: LendingProtocol.MorphoBlue,
+    networkId: NetworkIds.MAINNET,
+    pricePicker: morphoPricePicker,
+    rewards: [morphoRewards, legacyMorphoRewards],
+    rewardsType: Erc4626RewardsType.MetaMorpho,
+    strategy: 'Coinshift MetaMorpho Vault',
+    token: {
+      address: getNetworkContracts(NetworkIds.MAINNET).tokens.WUSDL.address,
+      precision: getToken('WUSDL').precision,
+      symbol: 'WUSDL',
     },
   },
 ]
