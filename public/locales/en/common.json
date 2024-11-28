@@ -3342,6 +3342,9 @@
       "vault-fee-steakhouse": {
         "modal-description": "MetaMorpho Vaults have a fee charged by the curator of the Vault for performing the risk management and selection of Blue Markets. This fee is charged out of the earnings you make on the pool. The APY shown is after the fee has been applied"
       },
+      "vault-fee-coinshift": {
+        "modal-description": "MetaMorpho Vaults have a fee charged by the curator of the Vault for performing the risk management and selection of Blue Markets. This fee is charged out of the earnings you make on the pool. The APY shown is after the fee has been applied"
+      },
       "earnings-to-date": {
         "footnote": "Not including token rewards"
       }
