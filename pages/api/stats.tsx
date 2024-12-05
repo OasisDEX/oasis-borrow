@@ -2,7 +2,7 @@ import { cacheObject } from 'helpers/api/cacheObject'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getOasisStats } from 'server/services/getOasisStats'
 
-const getStats = cacheObject(getOasisStats, 12 * 60 * 60, 'oasis-stats')
+const getStats = cacheObject(getOasisStats, 6 * 60 * 60, 'oasis-stats')
 
 async function oasisStatsHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
