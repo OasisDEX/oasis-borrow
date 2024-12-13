@@ -145,6 +145,7 @@ export const tokensMainnet = {
   SKY: contractDesc(sky, '0x56072C95FAA701256059aa122697B133aDEd9279'),
   USDS: contractDesc(skyUsds, '0xdC035D45d973E3EC169d2276DDab16f1e407384F'),
   WUSDL: contractDesc(erc20, mainnet.common.WUSDL),
+  MBASIS: contractDesc(erc20, mainnet.common.MBASIS),
 } as Record<string, ContractDesc>
 
 export const ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET = 16183119

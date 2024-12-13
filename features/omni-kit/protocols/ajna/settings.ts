@@ -52,6 +52,7 @@ export const settings: OmniProtocolSettings = {
       'XETH',
       'YFI',
       'WOETH',
+      'MBASIS',
     ],
     [NetworkIds.GOERLI]: [],
     [NetworkIds.BASEMAINNET]: [

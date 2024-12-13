@@ -41,6 +41,7 @@ export const yieldLoopDefinition = {
     'LUSD',
     'GHO',
     'FRAX',
+    'MBASIS',
   ],
 }
 

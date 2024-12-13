@@ -351,6 +351,17 @@ export const tokenConfigs: TokenConfig[] = [
     tags: [],
   },
   {
+    symbol: 'MBASIS',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'MBASIS',
+    icon: question,
+    iconCircle: question,
+    coinGeckoTicker: 'midas-basis-trading-token',
+    tags: [],
+  },
+  {
     symbol: 'UNIV2DAIETH',
     precision: 18,
     digits: 5,
