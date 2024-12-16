@@ -22,7 +22,18 @@ export const settings: OmniProtocolSettings = {
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],
   supportedMultiplyTokens: {
-    [NetworkIds.MAINNET]: ['ETH', 'WSTETH', 'RETH', 'DAI', 'SDAI', 'USDC', 'USDT', 'WBTC'],
+    [NetworkIds.MAINNET]: [
+      'ETH',
+      'WSTETH',
+      'RETH',
+      'DAI',
+      'SDAI',
+      'USDC',
+      'USDT',
+      'WBTC',
+      'CBBTC',
+      'WEETH',
+    ],
   },
   steps: {
     borrow: {
