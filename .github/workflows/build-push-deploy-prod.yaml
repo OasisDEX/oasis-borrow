@@ -14,7 +14,7 @@ jobs:
       env:
         AWS_REGION: us-east-1
         ECR_REPO_NAME: summer-fi-prod
-        SERVICE_NAME: summer-fi-prod
+        SERVICE_NAME: summer-fi-service-prod
         CLUSTER_NAME: summer-fi-prod
   
       steps:
