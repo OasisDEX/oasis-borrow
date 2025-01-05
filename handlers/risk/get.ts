@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { verifyAccessToken } from 'pages/api/auth/check-auth'
 import {
   createRiskForAddress,
   selectRiskForAddress,
@@ -106,6 +107,12 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
   const token = req.cookies[`token-${userAddress}`]
 
   if (!token) {
+    return res.status(401).json({ authenticated: false })
+  }
+
+  const decoded = verifyAccessToken(token)
+
+  if (!decoded) {
     return res.status(401).json({ authenticated: false })
   }
 

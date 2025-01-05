@@ -1,6 +1,7 @@
 import type { User } from '@prisma/client'
 import { getAddress } from 'ethers/lib/utils'
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { verifyAccessToken } from 'pages/api/auth/check-auth'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
@@ -30,6 +31,12 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.cookies[`token-${params.address.toLowerCase()}`]
 
   if (!token) {
+    return res.status(401).json({ authenticated: false })
+  }
+
+  const decoded = verifyAccessToken(token)
+
+  if (!decoded) {
     return res.status(401).json({ authenticated: false })
   }
 

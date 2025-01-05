@@ -1,5 +1,6 @@
 import { getRaysDailyChallengeData, getRaysDailyChallengeDateFormat } from 'helpers/dailyRays'
 import type { NextApiHandler } from 'next'
+import { verifyAccessToken } from 'pages/api/auth/check-auth'
 import { prisma } from 'server/prisma'
 
 export const dailyRaysGetHandler: NextApiHandler = async (req, res) => {
@@ -27,6 +28,12 @@ export const dailyRaysPostHandler: NextApiHandler = async (req, res) => {
   const token = req.cookies[`token-${address.toLocaleLowerCase()}`]
 
   if (!token) {
+    return res.status(401).json({ authenticated: false })
+  }
+
+  const decoded = verifyAccessToken(token)
+
+  if (!decoded) {
     return res.status(401).json({ authenticated: false })
   }
 
