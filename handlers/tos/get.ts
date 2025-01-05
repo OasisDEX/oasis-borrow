@@ -22,7 +22,9 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
   } else {
     const decoded = verifyAccessToken(token)
 
-    if (decoded) {
+    if (decoded?.address.toLowerCase() !== walletAddress.toLowerCase()) {
+      authorized = false
+    } else {
       authorized = true
     }
   }

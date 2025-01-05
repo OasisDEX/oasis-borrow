@@ -1,5 +1,6 @@
 import type { VaultType } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { verifyAccessToken } from 'pages/api/auth/check-auth'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
@@ -20,6 +21,16 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
   const token = req.cookies[`token-${params.walletAddress.toLowerCase()}`]
 
   if (!token) {
+    return res.status(401).json({ authenticated: false })
+  }
+
+  const decoded = verifyAccessToken(token)
+
+  if (!decoded) {
+    return res.status(401).json({ authenticated: false })
+  }
+
+  if (decoded.address.toLowerCase() !== params.walletAddress.toLowerCase()) {
     return res.status(401).json({ authenticated: false })
   }
 

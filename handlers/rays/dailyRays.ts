@@ -1,5 +1,6 @@
 import { getRaysDailyChallengeData, getRaysDailyChallengeDateFormat } from 'helpers/dailyRays'
 import type { NextApiHandler } from 'next'
+import { verifyAccessToken } from 'pages/api/auth/check-auth'
 import { prisma } from 'server/prisma'
 
 export const dailyRaysGetHandler: NextApiHandler = async (req, res) => {
@@ -8,7 +9,7 @@ export const dailyRaysGetHandler: NextApiHandler = async (req, res) => {
   const { walletAddress } = req.query
   const dailyChallengeData = await prisma.raysDailyChallenge.findUnique({
     where: {
-      address: (walletAddress as string).toLocaleLowerCase(),
+      address: (walletAddress as string).toLowerCase(),
     },
   })
   const calculatedData = getRaysDailyChallengeData(dailyChallengeData?.claimed_dates)
@@ -24,9 +25,19 @@ export const dailyRaysPostHandler: NextApiHandler = async (req, res) => {
     return res.status(400).end()
   }
 
-  const token = req.cookies[`token-${address.toLocaleLowerCase()}`]
+  const token = req.cookies[`token-${address.toLowerCase()}`]
 
   if (!token) {
+    return res.status(401).json({ authenticated: false })
+  }
+
+  const decoded = verifyAccessToken(token)
+
+  if (!decoded) {
+    return res.status(401).json({ authenticated: false })
+  }
+
+  if (decoded.address.toLowerCase() !== address.toLowerCase()) {
     return res.status(401).json({ authenticated: false })
   }
 

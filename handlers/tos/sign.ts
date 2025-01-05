@@ -23,6 +23,10 @@ export async function sign(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ authenticated: false })
   }
 
+  if (decoded.address.toLowerCase() !== walletAddress.toLowerCase()) {
+    return res.status(401).json({ authenticated: false })
+  }
+
   const approvalData = {
     address: decoded.address,
     signature: decoded.signature,
