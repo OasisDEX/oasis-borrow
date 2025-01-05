@@ -39,7 +39,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!decoded) {
     return res.status(401).json({ authenticated: false })
   }
-  
+
   if (decoded.address.toLowerCase() !== params.address.toLowerCase()) {
     return res.status(401).json({ authenticated: false })
   }
