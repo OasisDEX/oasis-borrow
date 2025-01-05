@@ -30,6 +30,10 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     return res.status(401).json({ authenticated: false })
   }
 
+  if (decoded.address.toLowerCase() !== params.walletAddress.toLowerCase()) {
+    return res.status(401).json({ authenticated: false })
+  }
+
   const vaultData = {
     vault_id: params.id,
     type: params.type as VaultType,

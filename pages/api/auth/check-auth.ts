@@ -31,5 +31,9 @@ export default function checkAuthHandler(req: NextApiRequest, res: NextApiRespon
     return res.status(401).json({ authenticated: false })
   }
 
+  if (decoded.address.toLowerCase() !== walletAddress.toLowerCase()) {
+    return res.status(401).json({ authenticated: false })
+  }
+
   return res.status(200).json({ authenticated: true })
 }

@@ -116,6 +116,10 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ authenticated: false })
   }
 
+  if (decoded.address.toLowerCase() !== walletAddress.toLowerCase()) {
+    return res.status(401).json({ authenticated: false })
+  }
+
   if (chainId !== 1) {
     return res.status(200).json({ isRisky: false })
   }
