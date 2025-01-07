@@ -67,7 +67,7 @@ export const Erc4626DetailsSectionContentRewards: FC = () => {
         rewardsType,
         claimType: MetaMorphoClaimsType.SUPPLY,
       }).then((data) => {
-        if (data.claims.length > 1) setResponse(data)
+        if (data.claims.length > 0) setResponse(data)
         else
           setResponse({
             claims: rewards.map(({ token }) => ({
