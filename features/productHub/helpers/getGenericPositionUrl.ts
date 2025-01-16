@@ -88,9 +88,13 @@ export function getGenericPositionUrl({
   secondaryTokenAddress,
 }: ProductHubItem & { bypassFeatureFlag?: boolean; networkId?: NetworkIds }): string {
   if (earnStrategy === EarnStrategies.erc_4626) {
-    const { id } = erc4626VaultsByName[label]
-
-    return `/${network}/${Erc4626PseudoProtocol}/${product[0]}/${id}`
+    try {
+      const id = erc4626VaultsByName[label].id
+      return `/${network}/${Erc4626PseudoProtocol}/${product[0]}/${id}`
+    } catch (error) {
+      console.error('Failed to get ERC-4626 vault id', error)
+      return `/`
+    }
   }
 
   const isEarnProduct = product[0] === OmniProductType.Earn
