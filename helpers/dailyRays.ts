@@ -4,6 +4,7 @@ export const dailyRaysAmount = 10
 export const bonusRaysAmount = 30
 
 export const getRaysDailyChallengeDateFormat = () => dayjs().format('YYYY-MM-DD')
+const s1Cutoff = dayjs('2025-01-24').subtract(1, 'day') // because its a full day
 
 export const explodeRays = (smallExplosion: boolean) => {
   const iconsCount = smallExplosion ? 10 : 70
@@ -55,11 +56,13 @@ export const getRaysDailyChallengeData = (claimedDates?: string[]) => {
       streaks: 0,
     }
   }
+  // season 1 cutoff
+  const claimedDatesFiltered = claimedDates.filter((date) => dayjs(date).isAfter(s1Cutoff))
   // every day the user claims the daily challenge, they get 100 points
   // every 7 consecutive days, the user gets a 500 points bonus
-  const dailyChallengeRays = claimedDates.length * dailyRaysAmount
+  const dailyChallengeRays = claimedDatesFiltered.length * dailyRaysAmount
 
-  const consecutiveDaysMap = claimedDates
+  const consecutiveDaysMap = claimedDatesFiltered
     .sort((a, b) => {
       return dayjs(a).isBefore(dayjs(b)) ? -1 : 1
     })
