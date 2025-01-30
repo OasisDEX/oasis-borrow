@@ -2,6 +2,7 @@ import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { summerLightBrandGradient } from 'helpers/getGradientColor'
+import { makeItLazy } from 'helpers/makeItLazy'
 import React from 'react'
 import * as icons from 'theme/icons'
 import { Box, Text } from 'theme-ui'
@@ -18,7 +19,8 @@ type HomepageAnnouncementProps = {
 export function HomepageAnnouncement({ announcement }: HomepageAnnouncementProps) {
   return announcement.enabled ? (
     <AppLink
-      href={announcement.url}
+      href={announcement.url.includes('lazy') ? '' : announcement.url}
+      onClick={announcement.url.includes('lazy') ? makeItLazy(announcement.url) : undefined}
       sx={{
         width: 'fit-content',
         margin: '0 auto',
