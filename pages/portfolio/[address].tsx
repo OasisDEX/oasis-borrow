@@ -1,6 +1,7 @@
 import { Announcement } from 'components/Announcement'
 import { ProductContextProvider } from 'components/context/ProductContextProvider'
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
+import { LazySummerBanner } from 'components/portfolio/LazySummerBanner'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioNonOwnerNotice } from 'components/portfolio/PortfolioNonOwnerNotice'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
@@ -118,6 +119,8 @@ export default function PortfolioView(props: PortfolioViewProps) {
     (position) => position.protocol === LendingProtocol.Ajna,
   )
 
+  const raysData = isOwner ? connectedWalletUserRaysData : displayWalletUserRaysData
+
   return address ? (
     <ProductContextProvider>
       <RefinanceGeneralContextProvider>
@@ -133,6 +136,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   withClose={false}
                 />
               )}
+              <LazySummerBanner address={address} isOwner={isOwner} raysData={raysData} />
               <PortfolioNonOwnerNotice
                 address={address}
                 connectedAssets={portfolioConnectedWalletWalletData?.assets}
@@ -147,7 +151,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   overviewData={overviewData}
                   portfolioWalletData={portfolioWalletData}
                   migrationPositions={migrationPositions}
-                  userRaysData={isOwner ? connectedWalletUserRaysData : displayWalletUserRaysData}
+                  userRaysData={raysData}
                 />
               ) : (
                 <PortfolioOverviewSkeleton />

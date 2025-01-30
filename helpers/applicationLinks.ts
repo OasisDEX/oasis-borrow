@@ -160,4 +160,5 @@ export const EXTERNAL_LINKS = {
     'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards',
   HOW_TO_SET_UP_AUTO_TAKE_PROFIT_VIDEO: 'https://youtu.be/ZqnvxeccJDQ?feature=shared',
   CHRONICLE_LABS: 'https://chroniclelabs.org/',
+  LAZY_SUMMER: 'https://lazy.summer.fi/earn',
 }
