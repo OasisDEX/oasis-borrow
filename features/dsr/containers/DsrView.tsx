@@ -68,7 +68,9 @@ export function DsrView({
 
   return (
     <>
-      {account && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={account} />}
+      {walletAddress && (
+        <LazySummerBannerWithRaysHandling isOwner={isOwner} address={walletAddress} />
+      )}
       {!isOwner && (
         <Box mb={4}>
           <VaultOwnershipBanner account={account} controller={walletAddress} />

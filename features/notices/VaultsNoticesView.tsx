@@ -4,6 +4,7 @@ import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
 import { networksByName } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Icon } from 'components/Icon'
+import { LazySummerBannerWithRaysHandling } from 'components/LazySummerBanner'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
 import dayjs from 'dayjs'
@@ -426,52 +427,67 @@ export function VaultNextPriceUpdateCounter({
   )
 }
 
-export function VaultNoticesView({ id }: { id: BigNumber }) {
+export function VaultNoticesView({ id, isOwner }: { id: BigNumber; isOwner: boolean }) {
   const { vaultBanners$ } = useProductContext()
   const [vaultBanners] = useObservable(vaultBanners$(id))
 
+  const basicBanner = useMemo(() => {
+    if (!vaultBanners) return null
+    const {
+      token,
+      dateNextCollateralPrice,
+      account,
+      controller,
+      unlockedCollateral,
+      banner,
+      isVaultController,
+    } = vaultBanners
+
+    switch (banner) {
+      case 'liquidated':
+        return (
+          <VaultLiquidatedNotice
+            {...{
+              unlockedCollateral,
+              token,
+              isVaultController,
+              controller,
+              id,
+            }}
+          />
+        )
+      case 'liquidating':
+        return <VaultLiquidatingNotice {...{ token, id, controller, isVaultController }} />
+      case 'ownership':
+        return <VaultOwnershipBanner {...{ account, controller }} />
+      case 'liquidatingNextPrice':
+        return (
+          <VaultLiquidatingNextPriceNotice
+            {...{ token, id, dateNextCollateralPrice, isVaultController, controller }}
+          />
+        )
+      case 'wbtcCeilingReduced':
+        return (
+          <TokenCeilingReduced
+            token={token}
+            link={EXTERNAL_LINKS.BLOG.MAKER_WBTC_CEILING_REDUCED}
+          />
+        )
+      default:
+        return null
+    }
+  }, [id, vaultBanners])
+
   if (!vaultBanners) return null
 
-  const {
-    token,
-    dateNextCollateralPrice,
-    account,
-    controller,
-    unlockedCollateral,
-    banner,
-    isVaultController,
-  } = vaultBanners
+  const { controller } = vaultBanners
 
-  switch (banner) {
-    case 'liquidated':
-      return (
-        <VaultLiquidatedNotice
-          {...{
-            unlockedCollateral,
-            token,
-            isVaultController,
-            controller,
-            id,
-          }}
-        />
-      )
-    case 'liquidating':
-      return <VaultLiquidatingNotice {...{ token, id, controller, isVaultController }} />
-    case 'ownership':
-      return <VaultOwnershipBanner {...{ account, controller }} />
-    case 'liquidatingNextPrice':
-      return (
-        <VaultLiquidatingNextPriceNotice
-          {...{ token, id, dateNextCollateralPrice, isVaultController, controller }}
-        />
-      )
-    case 'wbtcCeilingReduced':
-      return (
-        <TokenCeilingReduced token={token} link={EXTERNAL_LINKS.BLOG.MAKER_WBTC_CEILING_REDUCED} />
-      )
-    default:
-      return null
-  }
+  return (
+    <>
+      {controller && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={controller} />}
+      {basicBanner}
+    </>
+  )
 }
 
 export function AavePositionAlreadyOpenedNotice() {
