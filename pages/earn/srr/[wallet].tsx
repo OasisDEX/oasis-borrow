@@ -6,6 +6,7 @@ import { GasEstimationContextProvider } from 'components/context/GasEstimationCo
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLayout } from 'components/layouts/AppLayout'
+import { LazySummerBannerWithRaysHandling } from 'components/LazySummerBanner'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
@@ -125,6 +126,9 @@ const SkyStakeUsdsView = ({ walletAddress }: { walletAddress?: string }) => {
   const [usdsAllowance, skyAllowance] = allowancesData || [undefined, undefined]
   return (
     <Container variant="vaultPageContainer">
+      {walletAddress && (
+        <LazySummerBannerWithRaysHandling isOwner={isOwner} address={walletAddress} />
+      )}
       {!isOwner && walletAddress && (
         <Box mb={4}>
           <VaultOwnershipBanner account={wallet?.accounts[0]?.address} controller={walletAddress} />

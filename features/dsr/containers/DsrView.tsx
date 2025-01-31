@@ -1,5 +1,6 @@
 import type { BigNumber } from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
+import { LazySummerBannerWithRaysHandling } from 'components/LazySummerBanner'
 import { TabBar } from 'components/TabBar'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
@@ -67,6 +68,7 @@ export function DsrView({
 
   return (
     <>
+      {account && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={account} />}
       {!isOwner && (
         <Box mb={4}>
           <VaultOwnershipBanner account={account} controller={walletAddress} />

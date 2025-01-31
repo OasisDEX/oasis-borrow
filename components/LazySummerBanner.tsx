@@ -1,5 +1,6 @@
 import { ActionBanner } from 'components/ActionBanner'
 import type { RaysUserResponse } from 'features/rays/getRaysUser'
+import { useUserRays } from 'features/rays/hooks/useUserRays'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAddress } from 'helpers/formatters/format'
 import React from 'react'
@@ -10,6 +11,16 @@ interface LazySummerBannerProps {
   address: string
   isOwner: boolean
   raysData?: RaysUserResponse
+}
+
+export const LazySummerBannerWithRaysHandling = ({ address, isOwner }: LazySummerBannerProps) => {
+  const { userRaysData } = useUserRays({
+    walletAddress: address,
+  })
+
+  return userRaysData ? (
+    <LazySummerBanner isOwner={isOwner} address={address} raysData={userRaysData} />
+  ) : null
 }
 
 export const LazySummerBanner = ({ address, isOwner, raysData }: LazySummerBannerProps) => {
@@ -26,6 +37,13 @@ export const LazySummerBanner = ({ address, isOwner, raysData }: LazySummerBanne
           label: 'Claim $SUMR',
           url: `${EXTERNAL_LINKS.LAZY_SUMMER}${isOwner ? `/portfolio/${address}` : ''}`,
           targetBlank: true,
+        }}
+        buttonSx={{
+          background: 'linear-gradient(90deg, #FF49A4 0%, #B049FF 100%)',
+          color: 'white',
+          '&:hover': {
+            borderColor: 'transparent',
+          },
         }}
         sx={{
           background: 'white',

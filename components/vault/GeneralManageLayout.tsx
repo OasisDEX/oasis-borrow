@@ -1,6 +1,7 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { LazySummerBannerWithRaysHandling } from 'components/LazySummerBanner'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
@@ -77,6 +78,7 @@ export function GeneralManageLayout({ generalManageVault, chainId }: GeneralMana
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
+      {account && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={account} />}
       {isOwner && SkyUpgrade && <UpgradeToSkyBanner />}
       <VaultNoticesView id={vault.id} />
       <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>

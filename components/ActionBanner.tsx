@@ -27,6 +27,7 @@ export type ActionBannerType = {
   closingSaveKey?: string
   cta?: CtaType | CtaType[]
   sx?: ThemeUIStyleObject
+  buttonSx?: ThemeUIStyleObject
   title: string
   withClose?: boolean
   lightText?: boolean
@@ -43,10 +44,12 @@ const CtaComponent = ({
   cta,
   customCtaVariant,
   lightText,
+  buttonSx,
 }: {
   cta: ActionBannerProps['cta']
   customCtaVariant: ActionBannerProps['customCtaVariant']
   lightText: ActionBannerProps['lightText']
+  buttonSx: ActionBannerProps['buttonSx']
 }) => {
   if (Array.isArray(cta)) {
     return (
@@ -72,7 +75,7 @@ const CtaComponent = ({
         >
           <Button
             variant={customCtaVariant ?? 'action'}
-            sx={{ color: lightText ? 'neutral10' : undefined }}
+            sx={{ color: lightText ? 'neutral10' : undefined, ...buttonSx }}
           >
             {cta.label}
           </Button>
@@ -81,7 +84,7 @@ const CtaComponent = ({
         cta.onClick && (
           <Button
             variant={customCtaVariant ?? 'action'}
-            sx={{ color: lightText ? 'neutral10' : undefined }}
+            sx={{ color: lightText ? 'neutral10' : undefined, ...buttonSx }}
             onClick={cta.onClick}
           >
             {cta.label}
@@ -103,6 +106,7 @@ export function ActionBanner({
   withClose,
   lightText = false,
   customCtaVariant,
+  buttonSx,
 }: ActionBannerProps) {
   const [isBannerClosed, setIsBannerClosed] = useState<boolean>(
     closingSaveKey ? sessionStorage.getItem(getSessionStorageKey(closingSaveKey)) === '1' : false,
@@ -141,7 +145,14 @@ export function ActionBanner({
           </Text>
         )}
       </Flex>
-      {cta && <CtaComponent cta={cta} lightText={lightText} customCtaVariant={customCtaVariant} />}
+      {cta && (
+        <CtaComponent
+          cta={cta}
+          lightText={lightText}
+          customCtaVariant={customCtaVariant}
+          buttonSx={buttonSx}
+        />
+      )}
       {withClose && (
         <Button
           variant="unStyled"

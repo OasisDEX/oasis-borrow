@@ -1,7 +1,7 @@
 import { Announcement } from 'components/Announcement'
 import { ProductContextProvider } from 'components/context/ProductContextProvider'
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
-import { LazySummerBanner } from 'components/portfolio/LazySummerBanner'
+import { LazySummerBanner } from 'components/LazySummerBanner'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioNonOwnerNotice } from 'components/portfolio/PortfolioNonOwnerNotice'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
