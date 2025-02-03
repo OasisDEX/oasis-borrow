@@ -34,7 +34,7 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
       height={['auto ', '128px']}
       sx={{ mt: 3, pt: 4 }}
     >
-      <Grid columns={['1fr', '1fr 1fr 1fr 1fr']}>
+      <Grid columns={['1fr', '1fr 1fr 1fr']}>
         <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
             {oasisStats ? oasisStats.vaultsWithActiveTrigger : '-'}
@@ -64,14 +64,14 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
             {t('landing.stats.actions-executed')}
           </Text>
         </Flex>
-        <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
+        {/* <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
             {oasisStats ? `${oasisStats.triggersSuccessRate}%` : '-'}
           </Text>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.success-rate')}
           </Text>
-        </Flex>
+        </Flex> */}
       </Grid>
     </HomepagePromoBlock.Big>
   )
