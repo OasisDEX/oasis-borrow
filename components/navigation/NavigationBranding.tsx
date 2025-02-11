@@ -32,8 +32,10 @@ export function NavigationBranding({
       }}
     >
       <Image
-        sx={{ height: '22px', width: ['25px', '129px'] }}
-        src={staticFilesRuntimeUrl(`/static/img/logos/${isViewBelowS ? 'dot' : 'logo'}_dark.svg`)}
+        sx={{ height: '22px', width: ['25px', 'auto'] }}
+        src={staticFilesRuntimeUrl(
+          `/static/img/logos/${isViewBelowS ? 'dot_dark.svg' : 'logo_pro.png'}`,
+        )}
       />
       {pill && (
         <Box

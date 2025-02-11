@@ -23,6 +23,7 @@ const assetsList = {
       backgroundGradient: 'linear-gradient(181.14deg, #EBFAFF 1%, #FFE7D8 69.98%, #FFCFA3 119.25%)',
     },
     { imageName: 'logo_dark', backgroundColor: 'white' },
+    { imageName: 'logo_pro', backgroundColor: 'white' },
     { imageName: 'logo_black' },
     { imageName: 'logo_light', backgroundColor: 'black' },
   ],
