@@ -1,8 +1,8 @@
 {
-  "name": "Summer.fi",
-  "description": "Generate Dai on Summer.fi using crypto as your collateral",
+  "name": "Summer.fi Pro",
+  "description": "The best place to Borrow and Earn in DeFi",
   "iconPath": "static/img/logos/logo_color.svg",
-  "short_name": "Summer.fi",
+  "short_name": "Summer.fi Pro",
   "display": "browser",
   "orientation": "portrait",
   "theme_color": "#FFFFFF",
