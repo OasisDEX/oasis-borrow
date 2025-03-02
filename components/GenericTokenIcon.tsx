@@ -27,7 +27,7 @@ export function GenericTokenIcon({ size, sx, symbol }: GenericTokenIconProps) {
     >
       <Avatar
         size={innerSize}
-        name={btoa(symbol)}
+        name={btoa(encodeURIComponent(symbol))}
         variant="marble"
         colors={['#6FD9FF', '#F2FCFF', '#FFE7D8', '#FBB677']}
       />
