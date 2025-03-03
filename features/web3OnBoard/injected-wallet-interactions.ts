@@ -55,6 +55,7 @@ export async function addCustomForkToTheWallet(network: NetworkConfig) {
           symbol: network.token,
           decimals: 18,
         },
+        blockExplorerUrls: null,
       },
     ],
   })
