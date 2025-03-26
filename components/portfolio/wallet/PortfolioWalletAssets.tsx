@@ -65,7 +65,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
                     description={
                       <Text
                         sx={{
-                          ...(networksByName[network].gradient && {
+                          ...(networksByName[network]?.gradient && {
                             fontWeight: 'semiBold',
                             ...getGradientColor(networksByName[network].gradient),
                           }),
