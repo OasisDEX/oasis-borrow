@@ -1,0 +1,97 @@
+on:
+  push:
+    branches:
+      - "new-aws-prod"
+  workflow_dispatch:
+
+name: Build and deploy Summer Service New Prod
+env:
+  AWS_REGION: eu-central-1
+  ENVIRONMENT_TAG: prod
+  ECR_REPO_NAME: summer-fi-production
+  SERVICE_NAME: summer-fi-service-prod
+  CLUSTER_NAME: summer-fi-production
+  CONFIG_URL: ${{ secrets.CONFIG_URL }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  deploy:
+    name: Build and deploy Summer Service staging
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume:  ${{ secrets.BUILD_DEPLOY_OIDC_ROLE_PROD }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Extract commit hash
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+          LATEST_TAG: latest
+          ENVIRONMENT_TAG: prod
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -f Dockerfile.production \
+                       --build-arg COMMIT_SHA='' \
+                       --build-arg AJNA_SUBGRAPH_URL=${{ secrets.AJNA_SUBGRAPH_URL_PROD }} \
+                       --build-arg AJNA_SUBGRAPH_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }} \
+                       --build-arg AJNA_SUBGRAPH_V2_URL=${{ secrets.AJNA_SUBGRAPH_V2_URL_PROD }} \
+                       --build-arg AJNA_SUBGRAPH_V2_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_V2_URL_GOERLI }} \
+                       --build-arg MIXPANEL_ENV=production \
+                       --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_KEY_PROD }} \
+                       --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID_PROD }} \
+                       --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
+                       --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_API_KEY_PROD }} \
+                       --build-arg SHOW_BUILD_INFO=0 \
+                       --build-arg NODE_ENV=production \
+                       --build-arg NEXT_PUBLIC_SENTRY_ENV=production \
+                       --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
+                       --build-arg PRODUCT_HUB_KEY=${{ secrets.PRODUCT_HUB_KEY }} \
+                       --build-arg ONE_INCH_API_KEY=${{ secrets.ONE_INCH_API_KEY_PROD }} \
+                       --build-arg ONE_INCH_API_URL=${{ secrets.ONE_INCH_API_URL_PROD }} \
+                       --build-arg REFERRAL_SUBGRAPH_URL=${{ secrets.REFERRAL_SUBGRAPH_URL_PROD }} \
+                       --build-arg CONFIG_URL=${{ secrets.CONFIG_URL }} \
+                       --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} \
+                       --build-arg BLOG_POSTS_API_KEY=${{ secrets.BLOG_POSTS_API_KEY }} \
+                       --build-arg BLOG_POSTS_API_URL=${{ secrets.BLOG_POSTS_API_URL }} \
+                       --build-arg NEXT_PUBLIC_SPINDL_SDK_KEY=${{ secrets.NEXT_PUBLIC_SPINDL_SDK_KEY }} \
+                       --build-arg NEWSLETTER_API_KEY=${{ secrets.NEWSLETTER_API_KEY }} \
+                       --build-arg NEWSLETTER_PUBLICATION_ID=${{ secrets.NEWSLETTER_PUBLICATION_ID }} \
+                       --build-arg NEWSLETTER_ENDPOINT=${{ secrets.NEWSLETTER_ENDPOINT }} \
+                       --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
+                       .
+          docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
+
+      - name: Update ECS service with latest Docker image
+        id: service-update
+        run: |
+          aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
+
+
+      - name: Invalidate CloudFront
+        run:
+          AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{secrets.CF_DIST_ID_NEW }} --paths "/*"
+  
