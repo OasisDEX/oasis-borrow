@@ -9,7 +9,7 @@ import { Box, Text } from 'theme-ui'
 
 interface LazySummerBannerProps {
   address: string
-  isOwner: boolean
+  isOwner?: boolean
   raysData?: RaysUserResponse
 }
 

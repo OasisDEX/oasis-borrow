@@ -19,10 +19,10 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
 
-      - name: Use Node.js 18.19.1
+      - name: Use Node.js 20.18.0
         uses: actions/setup-node@v3
         with:
-          node-version: 18.19.1
+          node-version: 20.18.0
 
       - name: Generate Cache Key
         id: key
@@ -43,10 +43,10 @@ jobs:
     if: ${{ !needs.search.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 18.19.1
+      - name: Use Node.js 20.18.0
         uses: actions/setup-node@v3
         with:
-          node-version: 18.19.1
+          node-version: 20.18.0
       - name: Check cache
         uses: actions/cache@v3
         id: yarn-cache

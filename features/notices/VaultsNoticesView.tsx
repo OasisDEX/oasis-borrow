@@ -427,7 +427,7 @@ export function VaultNextPriceUpdateCounter({
   )
 }
 
-export function VaultNoticesView({ id, isOwner }: { id: BigNumber; isOwner: boolean }) {
+export function VaultNoticesView({ id, isOwner }: { id: BigNumber; isOwner?: boolean }) {
   const { vaultBanners$ } = useProductContext()
   const [vaultBanners] = useObservable(vaultBanners$(id))
 
