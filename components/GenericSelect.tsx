@@ -215,37 +215,46 @@ export function GenericSelect({
         value={value}
         components={{
           DropdownIndicator: null,
-          Control: (props) => (
-            <Box ref={componentRef} onClick={toggleIsOpen}>
-              <components.Control {...props} />
-            </Box>
-          ),
-          SingleValue: ({ children, data, ...props }) => (
-            <components.SingleValue data={data} {...props}>
-              {data.icon ? (
-                <>
-                  <Icon
-                    size={iconSize}
-                    sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
-                    icon={data.icon}
-                  />
-                  <Text as="span" sx={{ pl: `${iconSize + 12}px` }}>
-                    {children}
-                  </Text>
-                </>
-              ) : (
-                children
-              )}
-            </components.SingleValue>
-          ),
-          Option: ({ children, data, ...props }) => (
-            <components.Option data={data} {...props}>
-              {data.icon && (
-                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />
-              )}
-              {children}
-            </components.Option>
-          ),
+          Control: (props) => {
+            const ControlComponent = components.Control as React.FC<any>
+            return (
+              <Box ref={componentRef} onClick={toggleIsOpen}>
+                <ControlComponent {...props} />
+              </Box>
+            )
+          },
+          SingleValue: ({ children, data, ...props }) => {
+            const SingleValueComponent = components.SingleValue as React.FC<any>
+            return (
+              <SingleValueComponent data={data} {...props}>
+                {data.icon ? (
+                  <>
+                    <Icon
+                      size={iconSize}
+                      sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
+                      icon={data.icon}
+                    />
+                    <Text as="span" sx={{ pl: `${iconSize + 12}px` }}>
+                      {children}
+                    </Text>
+                  </>
+                ) : (
+                  children
+                )}
+              </SingleValueComponent>
+            )
+          },
+          Option: ({ children, data, ...props }) => {
+            const OptionComponent = components.Option as React.FC<any>
+            return (
+              <OptionComponent data={data} {...props}>
+                {data.icon && (
+                  <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />
+                )}
+                {children}
+              </OptionComponent>
+            )
+          },
         }}
         onChange={(option) => {
           const currentValue = option as GenericSelectOption
