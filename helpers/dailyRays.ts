@@ -46,7 +46,8 @@ export const explodeRays = (smallExplosion: boolean) => {
 }
 
 // this function is also used in monorepo -> rays-dashboard, if you make changes here you should also update it there
-export const getRaysDailyChallengeData = (claimedDates?: string[]) => {
+// skipCutoff is used for testing purposes only
+export const getRaysDailyChallengeData = (claimedDates?: string[], skipCutoff?: boolean) => {
   if (!claimedDates) {
     return {
       dailyChallengeRays: 0,
@@ -57,7 +58,9 @@ export const getRaysDailyChallengeData = (claimedDates?: string[]) => {
     }
   }
   // season 1 cutoff
-  const claimedDatesFiltered = claimedDates.filter((date) => dayjs(date).isAfter(s1Cutoff))
+  const claimedDatesFiltered = claimedDates.filter((date) =>
+    skipCutoff ? true : dayjs(date).isAfter(s1Cutoff),
+  )
   // every day the user claims the daily challenge, they get 100 points
   // every 7 consecutive days, the user gets a 500 points bonus
   const dailyChallengeRays = claimedDatesFiltered.length * dailyRaysAmount
