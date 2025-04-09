@@ -335,7 +335,7 @@ export const PreparingPartialTakeProfitSidebarContent = ({
               </Flex>
             )
           }}
-          rightBoundryFormatter={() => null}
+          rightBoundryFormatter={() => ''}
           lastValue={triggerLtv}
           leftBoundry={triggerLtv}
           onChange={setTriggerLtv}

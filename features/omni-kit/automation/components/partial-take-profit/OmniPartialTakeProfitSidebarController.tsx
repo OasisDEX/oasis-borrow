@@ -276,7 +276,7 @@ export const OmniPartialTakeProfitSidebarController = () => {
               maxMultiple={getTriggerLtvMultiple(x)}
             />
           )}
-          rightBoundryFormatter={() => null}
+          rightBoundryFormatter={() => ''}
           lastValue={triggerLtvValue}
           leftBoundry={triggerLtvValue}
           onChange={(triggerLtv) => {

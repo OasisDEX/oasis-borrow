@@ -26,7 +26,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.19.1
+          node-version: 20.18.0
 
       - name: Check required secrets
         env:

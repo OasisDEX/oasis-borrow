@@ -49,7 +49,7 @@ const CtaComponent = ({
   cta: ActionBannerProps['cta']
   customCtaVariant: ActionBannerProps['customCtaVariant']
   lightText: ActionBannerProps['lightText']
-  buttonSx: ActionBannerProps['buttonSx']
+  buttonSx?: ActionBannerProps['buttonSx']
 }) => {
   if (Array.isArray(cta)) {
     return (

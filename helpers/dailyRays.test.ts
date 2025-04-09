@@ -2,16 +2,20 @@ import { getRaysDailyChallengeData } from 'helpers/dailyRays'
 
 describe('Rays daily challenge numbers', () => {
   it('should give 0 points and 0 streak for 0 days', () => {
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData([])
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      [],
+      true,
+    )
     expect(allBonusRays).toBe(0)
     expect(dailyChallengeRays).toBe(0)
     expect(streakRays).toBe(0)
     expect(streaks).toBe(0)
   })
   it('should give 10 points for 1 day', () => {
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData([
-      '2001-09-11',
-    ])
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      ['2001-09-11'],
+      true,
+    )
     expect(allBonusRays).toBe(10)
     expect(dailyChallengeRays).toBe(10)
     expect(streakRays).toBe(0)
@@ -20,8 +24,10 @@ describe('Rays daily challenge numbers', () => {
   it('should give 20 points for 2 random days', () => {
     const datesArray = ['2005-04-02', '2001-09-11']
 
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
-      getRaysDailyChallengeData(datesArray)
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      datesArray,
+      true,
+    )
     expect(allBonusRays).toBe(20)
     expect(dailyChallengeRays).toBe(20)
     expect(streakRays).toBe(0)
@@ -41,8 +47,10 @@ describe('Rays daily challenge numbers', () => {
       '2005-06-22',
     ]
 
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
-      getRaysDailyChallengeData(datesArray)
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      datesArray,
+      true,
+    )
     expect(allBonusRays).toBe(100)
     expect(dailyChallengeRays).toBe(100)
     expect(streakRays).toBe(0)
@@ -62,8 +70,10 @@ describe('Rays daily challenge numbers', () => {
       '2003-03-17',
     ]
 
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
-      getRaysDailyChallengeData(datesArray)
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      datesArray,
+      true,
+    )
     expect(allBonusRays).toBe(100)
     expect(dailyChallengeRays).toBe(100)
     expect(streakRays).toBe(0)
@@ -83,8 +93,10 @@ describe('Rays daily challenge numbers', () => {
       '2002-11-15',
     ]
 
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
-      getRaysDailyChallengeData(datesArray)
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      datesArray,
+      true,
+    )
     expect(allBonusRays).toBe(130)
     expect(dailyChallengeRays).toBe(100)
     expect(streakRays).toBe(30)
@@ -115,8 +127,10 @@ describe('Rays daily challenge numbers', () => {
       '2003-11-17', // <- consevutive 7 days
     ]
 
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
-      getRaysDailyChallengeData(datesArray)
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      datesArray,
+      true,
+    )
     expect(allBonusRays).toBe(300)
     expect(dailyChallengeRays).toBe(210)
     expect(streakRays).toBe(90)
@@ -151,8 +165,10 @@ describe('Rays daily challenge numbers', () => {
       '2003-12-19',
     ]
 
-    const { allBonusRays, streakRays, streaks, dailyChallengeRays } =
-      getRaysDailyChallengeData(datesArray)
+    const { allBonusRays, streakRays, streaks, dailyChallengeRays } = getRaysDailyChallengeData(
+      datesArray,
+      true,
+    )
     expect(allBonusRays).toBe(340)
     expect(dailyChallengeRays).toBe(250)
     expect(streakRays).toBe(90)
