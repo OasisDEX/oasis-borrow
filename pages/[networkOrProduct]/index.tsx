@@ -4,6 +4,7 @@ import { AppLayout } from 'components/layouts/AppLayout'
 import { OmniProductType } from 'features/omni-kit/types'
 import { featuredProducts } from 'features/productHub/meta'
 import { ProductHubView } from 'features/productHub/views'
+import { productHubDefaultFilters } from 'helpers/productHubDefaultFilters'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -31,6 +32,7 @@ function ProductHubPage({ product }: ProductHubPageProps) {
             perPage={20}
             product={product}
             url="/"
+            initialFilters={productHubDefaultFilters}
           />
         </AnimatedWrapper>
       </WithConnection>

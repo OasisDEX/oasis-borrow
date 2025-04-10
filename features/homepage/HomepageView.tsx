@@ -10,6 +10,7 @@ import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
+import { productHubDefaultFilters } from 'helpers/productHubDefaultFilters'
 import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRouter } from 'next/router'
@@ -262,6 +263,7 @@ export function HomepageView() {
           }}
           limitRows={10}
           product={OmniProductType.Earn}
+          initialFilters={productHubDefaultFilters}
         />
       </Box>
       <Box
