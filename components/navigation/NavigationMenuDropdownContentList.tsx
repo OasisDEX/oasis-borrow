@@ -3,6 +3,7 @@ import { NavigationModuleSwap } from 'components/navigation/content/NavigationMo
 import type { NavigationMenuPanelList } from 'components/navigation/Navigation.types'
 import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
 import { WithArrow } from 'components/WithArrow'
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Heading, Link } from 'theme-ui'
 
@@ -11,6 +12,7 @@ type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
   selected?: [number, number]
   onClick?: (selected: [number, number]) => void
   onSelect?: (selected: [number, number]) => void
+  alwaysVisibleNode?: ReactNode
 }
 
 export function NavigationMenuDropdownContentList({
@@ -22,6 +24,7 @@ export function NavigationMenuDropdownContentList({
   parentIndex,
   selected,
   tight,
+  alwaysVisibleNode,
 }: NavigationMenuDropdownContentListProps) {
   const itemHoverEffect = {
     backgroundColor: 'neutral30',
@@ -134,6 +137,7 @@ export function NavigationMenuDropdownContentList({
           </WithArrow>
         </Link>
       )}
+      {alwaysVisibleNode ?? null}
     </>
   )
 }

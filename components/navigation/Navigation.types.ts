@@ -103,6 +103,7 @@ export interface NavigationMenuPanelListItem {
 export interface NavigationMenuPanelType {
   label: string
   lists: NavigationMenuPanelList[]
+  alwaysVisibleNode?: ReactNode
   url?: string
 }
 export type NavigationMenuPanelProps = NavigationMenuPanelType & {

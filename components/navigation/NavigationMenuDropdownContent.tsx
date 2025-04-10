@@ -20,6 +20,7 @@ export function NavigationMenuDropdownContent({
   lists,
   onChange,
   onSelect,
+  alwaysVisibleNode,
 }: NavigationMenuDropdownContentProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [selected, setSelected] = useState<[number, number]>([0, 0])
@@ -124,7 +125,10 @@ export function NavigationMenuDropdownContent({
                       }}
                       {...(selected[0] === i && selected[1] === j && { ref })}
                     >
-                      <NavigationMenuDropdownContentList {...list} />
+                      <NavigationMenuDropdownContentList
+                        {...list}
+                        alwaysVisibleNode={alwaysVisibleNode}
+                      />
                     </Flex>
                   )}
                 </Fragment>
