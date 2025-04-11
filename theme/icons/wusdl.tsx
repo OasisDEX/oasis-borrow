@@ -4,7 +4,7 @@ export const wusdl = {
   path: (
     <>
       <g transform="translate(3.5 3.5) scale(0.78125)">
-        <g clip-path="url(#clip0_1761_483)">
+        <g clipPath="url(#clip0_1761_483)">
           <circle cx="16" cy="16" r="16" fill="#004E76" />
           <ellipse cx="16" cy="16" rx="14.6479" ry="14.6479" fill="url(#paint0_linear_1761_483)" />
           <ellipse cx="16" cy="16" rx="11.8537" ry="11.8537" fill="#004E76" />
@@ -18,14 +18,14 @@ export const wusdl = {
             fill="white"
           />
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M13.2807 23.3111L13.2807 18.4644L13.4754 18.4644L13.4754 23.3111L13.2807 23.3111Z"
             fill="url(#paint1_linear_1761_483)"
           />
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M18.215 23.254L18.215 13.5713L18.4097 13.5713L18.4097 23.254L18.215 23.254Z"
             fill="url(#paint2_linear_1761_483)"
           />
@@ -40,8 +40,8 @@ export const wusdl = {
           y2="35.0283"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.164826" stop-color="#CEFD51" />
-          <stop offset="0.839238" stop-color="#21CFFA" />
+          <stop offset="0.164826" stopColor="#CEFD51" />
+          <stop offset="0.839238" stopColor="#21CFFA" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_1761_483"
@@ -51,8 +51,8 @@ export const wusdl = {
           y2="18.4644"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.22" stop-color="#153F5A" stop-opacity="0" />
-          <stop offset="1" stop-color="#153F5A" />
+          <stop offset="0.22" stopColor="#153F5A" stopOpacity="0" />
+          <stop offset="1" stopColor="#153F5A" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_1761_483"
@@ -62,8 +62,8 @@ export const wusdl = {
           y2="13.5713"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.22" stop-color="#153F5A" stop-opacity="0" />
-          <stop offset="1" stop-color="#153F5A" />
+          <stop offset="0.22" stopColor="#153F5A" stopOpacity="0" />
+          <stop offset="1" stopColor="#153F5A" />
         </linearGradient>
         <clipPath id="clip0_1761_483">
           <rect width="32" height="32" fill="white" />
