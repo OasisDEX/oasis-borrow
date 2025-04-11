@@ -3,6 +3,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import type { AssetsTableSeparator } from 'components/assetsTable/types'
+import { LazySummerProductHubBanner } from 'features/lazy-summer/components/LazySummerProductHubBanner'
 import type { OmniProductType } from 'features/omni-kit/types'
 import {
   ProductHubCategoryController,
@@ -179,6 +180,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
             selectedProduct={selectedProduct}
           />
         )}
+        <LazySummerProductHubBanner />
         <ProductHubTableController
           banner={banner}
           limitRows={limitRows}
