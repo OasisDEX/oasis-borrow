@@ -48,7 +48,7 @@ export const LazySummerSidebarContent: FC<LazySummerSidebarContentProps> = ({ cl
           Earn the best rates all of the time
         </Text>
         <Text as="p" variant="paragraph4" sx={{ color: 'neutral80', fontWeight: '600' }}>
-          Automated rebalancing means no switching times or costs
+          Automated rebalancing means no time wasted or extra costs
         </Text>
         <Text as="p" variant="paragraph4" sx={{ color: 'neutral80', mb: 1 }}>
           Only the top tier protocols, with risk managed by Block Analitica
