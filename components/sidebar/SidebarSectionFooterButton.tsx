@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import React from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Button, Link, Spinner } from 'theme-ui'
 
 export interface SidebarSectionFooterButtonProps {
@@ -12,12 +13,15 @@ export interface SidebarSectionFooterButtonProps {
   variant?: string
   withoutNextLink?: boolean
   action?: () => void
+  sx?: ThemeUIStyleObject
+  target?: string
 }
 
 export function SidebarSectionFooterButton({
   hidden,
   url,
   withoutNextLink,
+  target,
   ...rest
 }: SidebarSectionFooterButtonProps) {
   return (
@@ -25,11 +29,11 @@ export function SidebarSectionFooterButton({
       {!hidden &&
         (url ? (
           withoutNextLink ? (
-            <Link href={url} sx={{ display: 'block' }}>
+            <Link href={url} sx={{ display: 'block' }} target={target}>
               <SidebarSectionFooterButtonIner {...rest} />
             </Link>
           ) : (
-            <AppLink href={url} sx={{ display: 'block' }}>
+            <AppLink href={url} sx={{ display: 'block' }} target={target}>
               <SidebarSectionFooterButtonIner {...rest} />
             </AppLink>
           )
@@ -47,6 +51,7 @@ export function SidebarSectionFooterButtonIner({
   disabled,
   isLoading,
   action,
+  sx,
 }: Omit<SidebarSectionFooterButtonProps, 'hidden' | 'url'>) {
   return (
     <Button
@@ -60,6 +65,7 @@ export function SidebarSectionFooterButtonIner({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
+        ...sx,
       }}
     >
       {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}

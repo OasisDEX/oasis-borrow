@@ -1,9 +1,10 @@
 import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { LazySummerSidebarContent } from 'features/lazy-summer/components/LazySummerSidebarContent'
 import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType, OmniSidebarBorrowPanel } from 'features/omni-kit/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -22,6 +23,9 @@ export function OmniBorrowFormOrder() {
     tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
   const {
+    form: {
+      state: { closeTo, uiDropdown },
+    },
     position: { cachedPosition, currentPosition, isSimulationLoading },
     dynamicMetadata: {
       values: { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow },
@@ -74,7 +78,13 @@ export function OmniBorrowFormOrder() {
     totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
   }
 
-  return (
+  const withLazySummer = isTxSuccess && uiDropdown === OmniSidebarBorrowPanel.Close
+
+  return withLazySummer ? (
+    <LazySummerSidebarContent
+      closeToToken={closeTo === 'collateral' ? collateralToken : quoteToken}
+    />
+  ) : (
     <InfoSection
       title={t('vault-changes.order-information')}
       items={[

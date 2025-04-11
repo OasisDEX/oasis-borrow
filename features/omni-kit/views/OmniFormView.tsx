@@ -25,8 +25,9 @@ import {
 } from 'features/omni-kit/helpers'
 import { getOmniSidebarRaysBanner } from 'features/omni-kit/helpers/getOmniSidebarRaysBanner'
 import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
-import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniMultiplyPanel, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getLocalAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useAccount } from 'helpers/useAccount'
@@ -117,6 +118,13 @@ export function OmniFormView({
   } = useOmniProductContext(productType)
 
   const txHandler = _txHandler()
+
+  const positionClosedTitle =
+    isTxSuccess &&
+    currentStep === OmniSidebarStep.Transaction &&
+    state.uiDropdown === OmniMultiplyPanel.Close
+      ? 'Position Closed'
+      : undefined
 
   const { connect, setChain } = useConnection()
   const { walletAddress } = useAccount()
@@ -300,8 +308,20 @@ export function OmniFormView({
     settings,
   })
 
+  const withLazySummer =
+    isTxSuccess && state.uiDropdown === OmniMultiplyPanel.Close
+      ? {
+          url: EXTERNAL_LINKS.LAZY_SUMMER,
+          target: '_blank',
+          sx: {
+            background: 'linear-gradient(90deg, #FF49A4 0%, #B049FF 93%)',
+            border: 'unset',
+          },
+        }
+      : {}
+
   const sidebarSectionProps: SidebarSectionProps = {
-    title: sidebarTitle ?? genericSidebarTitle,
+    title: positionClosedTitle ?? sidebarTitle ?? genericSidebarTitle,
     dropdown,
     aboveButton: Rays
       ? getOmniSidebarRaysBanner({
@@ -350,6 +370,7 @@ export function OmniFormView({
       hidden: isPrimaryButtonHidden,
       withoutNextLink: true,
       ...primaryButtonActions,
+      ...withLazySummer,
     },
     textButton: {
       label: t('back-to-editing'),
