@@ -199,40 +199,7 @@ export const productHubTags: ProductHubTags = {
   ],
 }
 
-export const featuredProducts: ProductHubFeaturedFilters[] = [
-  {
-    primaryToken: 'USDC',
-    secondaryToken: 'USDC',
-    protocol: LendingProtocol.MorphoBlue,
-    network: NetworkNames.ethereumMainnet,
-    product: OmniProductType.Earn,
-    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
-  },
-  {
-    primaryToken: 'USDT',
-    secondaryToken: 'USDT',
-    protocol: LendingProtocol.MorphoBlue,
-    network: NetworkNames.ethereumMainnet,
-    product: OmniProductType.Earn,
-    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
-  },
-  {
-    primaryToken: 'PYUSD',
-    secondaryToken: 'PYUSD',
-    protocol: LendingProtocol.MorphoBlue,
-    network: NetworkNames.ethereumMainnet,
-    product: OmniProductType.Earn,
-    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
-  },
-  {
-    primaryToken: 'ETH',
-    secondaryToken: 'ETH',
-    protocol: LendingProtocol.MorphoBlue,
-    network: NetworkNames.ethereumMainnet,
-    product: OmniProductType.Earn,
-    earnStrategyDescription: 'Steakhouse MetaMorpho Vault',
-  },
-]
+export const featuredProducts: ProductHubFeaturedFilters[] = []
 
 export const productHubHelp = {
   [OmniProductType.Borrow]: [
