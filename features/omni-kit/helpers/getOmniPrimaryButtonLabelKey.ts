@@ -31,6 +31,7 @@ export function getOmniPrimaryButtonLabelKey({
       return 'i-understand'
     case OmniSidebarStep.Transaction:
       if (isTxSuccess && isOpening) return 'system.go-to-position'
+      else if (isTxSuccess && uiDropdown === OmniMultiplyPanel.Close) return 'system.try-it-now'
       else if (isTxSuccess && !isOpening) return 'continue'
       else if (isTxError) return 'retry'
       else return 'confirm'

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
+import { LazySummerSidebarContent } from 'features/lazy-summer/components/LazySummerSidebarContent'
 import {
   OmniGasEstimation,
   OmniSlippageInfoWithSettings,
@@ -16,6 +17,7 @@ import {
 import {
   OmniBorrowFormAction,
   OmniMultiplyFormAction,
+  OmniMultiplyPanel,
   OmniProductType,
 } from 'features/omni-kit/types'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
@@ -70,7 +72,7 @@ export function OmniMultiplyFormOrder() {
   } = useOmniGeneralContext()
   const {
     form: {
-      state: { action, loanToValue },
+      state: { action, loanToValue, uiDropdown, closeTo },
     },
     position: { cachedPosition, isSimulationLoading, currentPosition, swap },
     dynamicMetadata: {
@@ -204,7 +206,13 @@ export function OmniMultiplyFormOrder() {
     totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
   }
 
-  return (
+  const withLazySummer = isTxSuccess && uiDropdown === OmniMultiplyPanel.Close
+
+  return withLazySummer ? (
+    <LazySummerSidebarContent
+      closeToToken={closeTo === 'collateral' ? collateralToken : quoteToken}
+    />
+  ) : (
     <InfoSection
       title={t('vault-changes.order-information')}
       items={[
