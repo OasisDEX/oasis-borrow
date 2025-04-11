@@ -54,11 +54,11 @@ export const LazySummerProductHubBanner = () => {
           <LazySummerCircle />
           <Flex sx={{ flexDirection: 'column' }}>
             <Text as="p" variant="paragraph3" sx={{ fontWeight: 600 }}>
-              Get Automated Access DeFi’s Highest Quality Yields and earn $SUMR.
+              Get Automated Access to DeFi’s Highest Quality Yields and earn $SUMR.
             </Text>
             <Text as="p" variant="paragraph4" sx={{ color: '#BAB8B9' }}>
               Introducing Lazy Summer Protocol: Effortless access to crypto’s best DeFi yields.
-              Continually rebalanced by AI powered Keepers to
+              Continually rebalanced by AI powered Keepers.
             </Text>
           </Flex>
         </Flex>
