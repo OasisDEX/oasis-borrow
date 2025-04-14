@@ -22,6 +22,7 @@ import type {
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithArrow } from 'components/WithArrow'
+import { LazySummerBigBannerBestRates } from 'features/lazy-summer/components/LazySummerBigBanner'
 import type { PortfolioPosition, PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getLocalAppConfig, useAppConfig } from 'helpers/config'
@@ -219,11 +220,14 @@ export const PortfolioPositionsView = ({
               {isOwner && tPortfolio('empty-states.owner')}
             </EmptyState>
           ) : (
-            sortedPositions.map((position) => (
-              <PortfolioPositionBlock
-                key={`${position.positionId}-${position.protocol}-${position.network}-${position.type}-${position.primaryToken}-${position.secondaryToken}`}
-                position={position}
-              />
+            sortedPositions.map((position, idx) => (
+              <>
+                <PortfolioPositionBlock
+                  key={`${position.positionId}-${position.protocol}-${position.network}-${position.type}-${position.primaryToken}-${position.secondaryToken}`}
+                  position={position}
+                />
+                {idx === 0 && <LazySummerBigBannerBestRates />}
+              </>
             ))
           )}
         </>
