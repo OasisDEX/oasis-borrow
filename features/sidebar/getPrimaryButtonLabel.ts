@@ -84,6 +84,7 @@ export function getPrimaryButtonLabel({
   canTransition = true,
   isClosedVaultPanelVisible = false,
   vaultType,
+  otherAction,
 }: PrimaryButtonLabelParams & { flow: SidebarFlow; vaultType: VaultType }): string {
   const { t } = useTranslation()
   const allowanceToken =
@@ -143,6 +144,10 @@ export function getPrimaryButtonLabel({
     case 'manageFailure':
       return t('retry')
     case 'manageSuccess':
+      if (otherAction === 'closeVault') {
+        return t('system.try-it-now')
+      }
+
       return t('ok')
     case 'txInProgress':
       const txInProgressKey = getPrimaryButtonLabelTxInProgressTranslationKey({ flow })

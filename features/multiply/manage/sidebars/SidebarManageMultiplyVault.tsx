@@ -17,6 +17,7 @@ import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
 import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { mapAutomationEvents } from 'features/vaultHistory/vaultHistory'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
@@ -90,6 +91,18 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     }
   }, [stage, otherAction])
 
+  const withLazySummer =
+    props.otherAction === 'closeVault' && props.stage === 'manageSuccess'
+      ? {
+          url: EXTERNAL_LINKS.LAZY_SUMMER,
+          target: '_blank',
+          sx: {
+            background: 'linear-gradient(90deg, #FF49A4 0%, #B049FF 93%)',
+            border: 'unset',
+          },
+        }
+      : {}
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({
       flow,
@@ -100,6 +113,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         stopLossTriggered,
         autoTakeProfitTriggered,
       }),
+      otherAction: props.otherAction,
     }),
     dropdown: {
       forcePanel,
@@ -219,6 +233,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           progressTrackingEvent({ props })
         } else setIsClosedVaultPanelVisible(false)
       },
+      ...withLazySummer,
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),

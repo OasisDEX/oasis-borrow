@@ -50,8 +50,7 @@ export const LazySummerBanner = ({ address, isOwner, raysData }: LazySummerBanne
         }}
       >
         <Text variant="boldParagraph3" color="#868385">
-          $SUMR powers the Lazy Summer Protocol – DeFi’s best yield optimizer. Claim your $SUMR now
-          and get ready for the protocol launching on February 11th!
+          $SUMR powers the Lazy Summer Protocol – DeFi’s best yield optimizer. Claim your $SUMR now!
         </Text>
       </ActionBanner>
     </Box>
