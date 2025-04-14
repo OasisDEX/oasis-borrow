@@ -10,6 +10,7 @@ import { SimulateTitle } from 'components/SimulateTitle'
 import type { Simulation } from 'features/aave/open/services'
 import { DsrBanner } from 'features/dsr/components/DsrBanner'
 import { getRate } from 'features/dsr/helpers/dsrPot'
+import { LazySummerBigBannerBeatBenchmark } from 'features/lazy-summer/components/LazySummerBigBanner'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -107,6 +108,7 @@ export function DsrSimulationSection({
           </DetailsSectionFooterItemWrapper>
         }
       />
+      <LazySummerBigBannerBeatBenchmark />
       <DsrBanner />
     </>
   )

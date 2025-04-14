@@ -46,7 +46,12 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
               </Text>
             ))}
           </Grid>
-          <Button disabled={button?.disabled} variant="tertiary" onClick={button?.action}>
+          <Button
+            disabled={button?.disabled}
+            variant="tertiary"
+            onClick={button?.action}
+            sx={{ ...button?.sx }}
+          >
             {button?.isLoading ? (
               <AppSpinner
                 variant="styles.spinner.medium"

@@ -23,6 +23,7 @@ import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
+import { LazySummerBigBannerBestRates } from 'features/lazy-summer/components/LazySummerBigBanner'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { RefinanceBanner } from 'features/refinance/components'
 import { useAppConfig } from 'helpers/config'
@@ -243,7 +244,7 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
       {stopLossReadEnabled && stopLossWriteEnabled && (
         <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
-
+      <LazySummerBigBannerBestRates />
       {refinanceEnabled && <RefinanceBanner contextInput={refinanceContextInput} />}
     </Grid>
   )

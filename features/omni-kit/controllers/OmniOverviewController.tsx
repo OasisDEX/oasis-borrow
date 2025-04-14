@@ -2,6 +2,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { SimulateTitle } from 'components/SimulateTitle'
+import { LazySummerBigBannerBestRates } from 'features/lazy-summer/components/LazySummerBigBanner'
 import { OmniDetailSectionRewardsClaims } from 'features/omni-kit/components/details-section/OmniDetailSectionRewardsClaims'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { getOmniDetailsSectionRaysTitle } from 'features/omni-kit/helpers/getOmniDetailsSectionRaysTitle'
@@ -68,6 +69,7 @@ export function OmniOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
+      <LazySummerBigBannerBestRates />
       {overviewBanner}
       {renderOverviewBanner?.()}
       <OmniDetailSectionRewardsClaims />
