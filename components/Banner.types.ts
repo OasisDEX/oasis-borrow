@@ -7,6 +7,7 @@ type BannerButtonProps = {
   isLoading?: boolean
   text?: string | ReactNode
   action: (() => void) | undefined
+  sx?: ThemeUIStyleObject
 }
 
 export type BannerProps = {

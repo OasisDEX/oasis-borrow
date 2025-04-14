@@ -23,7 +23,7 @@ export function DsrBanner() {
         backgroundColor: bannerGradientPresets.stopLoss[0],
         backgroundColorEnd: bannerGradientPresets.stopLoss[1],
       }}
-      sx={{ mt: 4 }}
+      sx={{ mt: 3 }}
     />
   )
 }
