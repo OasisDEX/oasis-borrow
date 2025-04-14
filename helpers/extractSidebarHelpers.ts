@@ -1,5 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import type { AllowanceOption } from 'features/allowance/allowance.types'
+import type { OtherAction } from 'features/multiply/manage/pipes/OtherAction.types'
 import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { pick } from 'ramda'
 
@@ -32,6 +33,7 @@ export interface PrimaryButtonLabelParams extends SharedStateExtractions {
   canTransition?: boolean
   isClosedVaultPanelVisible?: boolean
   shouldRedirectToCloseVault?: boolean
+  otherAction?: OtherAction
 }
 
 export interface SidebarTxData extends SharedStateExtractions {
@@ -78,6 +80,7 @@ export function extractPrimaryButtonLabelParams(state: PrimaryButtonLabelParams)
         'insufficientDaiAllowance',
         'insufficientAllowance',
         'canTransition',
+        'otherAction',
       ],
       state,
     ),

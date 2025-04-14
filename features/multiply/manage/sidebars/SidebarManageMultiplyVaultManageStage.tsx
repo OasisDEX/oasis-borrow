@@ -1,6 +1,7 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
+import { LazySummerSidebarContent } from 'features/lazy-summer/components/LazySummerSidebarContent'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
@@ -11,7 +12,13 @@ import { Text } from 'theme-ui'
 export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
-  const { stage, vaultType, otherAction } = props
+  const {
+    stage,
+    vaultType,
+    otherAction,
+    closeVaultTo,
+    vault: { token },
+  } = props
 
   const [, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
 
@@ -19,10 +26,22 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
     if (props.stage !== 'manageSuccess') setVaultChanges(props)
   }, [props])
 
+  const isClosingToCollateral = closeVaultTo === 'collateral'
+  const closeToTokenSymbol = isClosingToCollateral ? token : 'DAI'
+
   switch (stage) {
     case 'manageInProgress':
       return <OpenVaultAnimation />
     case 'manageSuccess':
+      if (props.originalEditingStage === 'otherActions' && otherAction === 'closeVault') {
+        return (
+          <>
+            <LazySummerSidebarContent closeToToken={closeToTokenSymbol} />
+            <VaultChangesWithADelayCard />
+          </>
+        )
+      }
+
       return (
         <>
           {vaultType === VaultType.Multiply ||

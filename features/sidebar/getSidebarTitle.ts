@@ -1,6 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { autoKindToCopyMap } from 'features/automation/common/consts'
 import type { AutomationKinds } from 'features/automation/common/types'
+import type { OtherAction } from 'features/multiply/manage/pipes/OtherAction.types'
 import type { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { getLocalAppConfig } from 'helpers/config'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -14,6 +15,7 @@ interface GetSidebarTitleParams {
   openFlowWithStopLoss?: boolean
   isStopLossEnabled?: boolean
   automationThatClosedVault?: AutomationKinds.AUTO_TAKE_PROFIT | AutomationKinds.STOP_LOSS
+  otherAction?: OtherAction
 }
 
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
@@ -99,6 +101,7 @@ export function getSidebarTitle({
   openFlowWithStopLoss = false,
   isStopLossEnabled = false,
   automationThatClosedVault,
+  otherAction,
 }: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
@@ -183,6 +186,10 @@ export function getSidebarTitle({
     case 'manageFailure':
       return t('vault-form.header.confirm-manage')
     case 'manageSuccess':
+      if (otherAction === 'closeVault') {
+        return t('system.position-closed')
+      }
+
       return t('vault-form.header.success-manage')
     default:
       throw new UnreachableCaseError(stage)
