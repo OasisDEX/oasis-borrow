@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import type { FC } from 'react'
+import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
 interface LazySummerPorfolioPositionBannerProps {
