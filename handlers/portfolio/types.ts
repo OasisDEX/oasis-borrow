@@ -67,6 +67,10 @@ export type PortfolioPosition = {
     value: string | number
     link?: string
   }
+  lazySummerBestApy?: {
+    value: number
+    link: string
+  }
 }
 interface PortfolioPositionsCommonReply {
   error?: boolean | string
@@ -132,6 +136,7 @@ export type PositionDetailCommon = {
   type: DetailsTypeCommon
   value: string
   symbol?: string
+  rawValue?: number
 }
 export type PositionDetailLendingRange = {
   type: DetailsTypeLendingRange

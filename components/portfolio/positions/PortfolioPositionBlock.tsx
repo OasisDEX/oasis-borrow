@@ -8,6 +8,7 @@ import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/Por
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
 import { isRefinanceSupportedNetwork } from 'features/aave/helpers/isRefinanceSupportedNetwork'
+import { LazySummerPorfolioPositionBanner } from 'features/lazy-summer/components/LazySummerPorfolioPositionBanner'
 import { shouldShowPairId } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { RefinancePortfolioBanner } from 'features/refinance/components'
@@ -132,7 +133,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
           width: '100%',
           p: 3,
           border: '1px solid transparent',
-          borderColor: 'neutral20',
+          borderColor: position.lazySummerBestApy ? 'rgba(255, 73, 164, 0.5)' : 'neutral20',
           borderRadius: 'large',
           transition: 'border-color 200ms, box-shadow 200ms, background 200ms',
           backgroundColor: 'neutral10',
@@ -152,6 +153,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
           position.netValue >= emptyPortfolioPositionNetValueThreshold && (
             <RefinancePortfolioBanner position={position} />
           )}
+        {position.lazySummerBestApy && <LazySummerPorfolioPositionBanner position={position} />}
         <AppLink href={position.url}>
           <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
             <Text
