@@ -2,9 +2,12 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { calculateDsrBalance, getYearlyRate } from 'features/dsr/helpers/dsrPot'
+import { lazySummerFleets } from 'features/lazy-summer/consts'
+import { getVaultsApy } from 'features/lazy-summer/server/get-vaults-apy'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { isZeroAddress } from 'helpers/isZeroAddress'
 import { getPointsPerYear } from 'helpers/rays'
@@ -25,7 +28,10 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
   const DsProxyContractAddress = getNetworkContracts(NetworkIds.MAINNET).dsProxyRegistry.address
   const DsProxyContract = DsProxyFactory.connect(DsProxyContractAddress, rpcProvider)
 
-  const dsProxyAddress = await DsProxyContract.proxies(address)
+  const [dsProxyAddress, vaultsApy] = await Promise.all([
+    DsProxyContract.proxies(address),
+    getVaultsApy({ fleets: lazySummerFleets }),
+  ])
 
   if (dsProxyAddress && !isZeroAddress(dsProxyAddress)) {
     const daiPrice = prices['DAI']
@@ -33,9 +39,11 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
     const PotContractAddress = getNetworkContracts(NetworkIds.MAINNET).mcdPot.address
     const PotContract = PotFactory.connect(PotContractAddress, rpcProvider)
 
-    const dsr = await PotContract.dsr()
-    const chi = await PotContract.chi()
-    const pie = await PotContract.pie(dsProxyAddress)
+    const [dsr, chi, pie] = await Promise.all([
+      PotContract.dsr(),
+      PotContract.chi(),
+      PotContract.pie(dsProxyAddress),
+    ])
 
     const netValue = calculateDsrBalance({
       chi: new BigNumber(chi.toString()),
@@ -52,6 +60,11 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
 
     const raysPerYear = getPointsPerYear(netValue.toNumber())
 
+    // Find the best APY from vaultsApy
+    const bestApy = Object.values(vaultsApy).reduce((max, vault) => {
+      return Math.max(max, vault.apy)
+    }, 0)
+
     return {
       address,
       positions: netValue.gt(zero)
@@ -67,14 +80,17 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
                 {
                   type: 'netValue',
                   value: `${formatCryptoBalance(netValue)} DAI`,
+                  rawValue: netValue.toNumber(),
                 },
                 {
                   type: 'earnings',
                   value: notAvailable,
+                  rawValue: notAvailable,
                 },
                 {
                   type: 'apy',
                   value: formatDecimalAsPercent(apy),
+                  rawValue: apy.toNumber(),
                 },
               ],
               lendingType: 'passive',
@@ -86,6 +102,10 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
               secondaryToken: 'DAI',
               type: OmniProductType.Earn,
               url: `/earn/dsr/${address}`,
+              lazySummerBestApy: {
+                value: bestApy,
+                link: `${EXTERNAL_LINKS.LAZY_SUMMER}/earn`,
+              },
             },
           ]
         : [],

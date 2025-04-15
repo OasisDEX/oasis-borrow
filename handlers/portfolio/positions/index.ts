@@ -47,9 +47,11 @@ export const portfolioPositionsHandler = async ({
   const prices = await getCachedTokensPrices()
 
   if (prices && prices.data.tokens) {
-    const apiVaults = !positionsCount ? await getPositionsFromDatabase({ address }) : undefined
-    const dpmList = await getAllDpmsForWallet({ address })
-    const raysUserMultipliers = await getRaysUserMultipliersServerSide({ address })
+    const [apiVaults, dpmList, raysUserMultipliers] = await Promise.all([
+      !positionsCount ? getPositionsFromDatabase({ address }) : Promise.resolve(undefined),
+      getAllDpmsForWallet({ address }),
+      getRaysUserMultipliersServerSide({ address }),
+    ])
 
     const payload = {
       address,
