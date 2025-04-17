@@ -29,43 +29,40 @@ export function NavigationController({
   const resolvedNavigation = navigation
     .filter((item) => item.label !== 'Use Cases')
     .map((item) => {
-      if (item.label === 'Protocols') {
-        return {
-          ...item,
-          alwaysVisibleNode: (
-            <Card
-              sx={{
-                background:
-                  'linear-gradient(90deg, rgba(255, 73, 164, 0.15) 0%, rgba(176, 73, 255, 0.15) 93%)',
-                border: 'unset',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-            >
-              <Box sx={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}>
-                <LazyBannerNavBackground />
-              </Box>
-              <Text as="p" variant="paragraph4" sx={{ maxWidth: '229px', marginBottom: 3 }}>
-                The Lazy Summer Protocol is now live! Get effortless access to Defi's highest
-                quality yields
-              </Text>
-              <Link href={EXTERNAL_LINKS.LAZY_SUMMER} target="_blank">
-                <Button
-                  variant="secondary"
-                  sx={{
-                    background: 'linear-gradient(90deg, #FF49A4 0%, #B049FF 93%)',
-                  }}
-                >
-                  <WithArrow variant="paragraph3" sx={{ color: 'white' }}>
-                    Try it now
-                  </WithArrow>
-                </Button>
-              </Link>
-            </Card>
-          ),
-        }
+      return {
+        ...item,
+        alwaysVisibleNode: (
+          <Card
+            sx={{
+              background:
+                'linear-gradient(90deg, rgba(255, 73, 164, 0.15) 0%, rgba(176, 73, 255, 0.15) 93%)',
+              border: 'unset',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            <Box sx={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}>
+              <LazyBannerNavBackground />
+            </Box>
+            <Text as="p" variant="paragraph4" sx={{ maxWidth: '229px', marginBottom: 3 }}>
+              The Lazy Summer Protocol is now live! Get effortless access to Defi's highest quality
+              yields
+            </Text>
+            <Link href={EXTERNAL_LINKS.LAZY_SUMMER} target="_blank">
+              <Button
+                variant="secondary"
+                sx={{
+                  background: 'linear-gradient(90deg, #FF49A4 0%, #B049FF 93%)',
+                }}
+              >
+                <WithArrow variant="paragraph3" sx={{ color: 'white' }}>
+                  Try it now
+                </WithArrow>
+              </Button>
+            </Link>
+          </Card>
+        ),
       }
-      return item
     })
 
   return (

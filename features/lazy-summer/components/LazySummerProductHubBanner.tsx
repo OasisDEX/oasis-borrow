@@ -45,6 +45,7 @@ export const LazySummerProductHubBanner = () => {
         boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.1)',
         border: 'unset',
         paddingY: '20px',
+        backgroundColor: '#FBEDFA',
       }}
     >
       <Flex
@@ -54,41 +55,39 @@ export const LazySummerProductHubBanner = () => {
           <LazySummerCircle />
           <Flex sx={{ flexDirection: 'column' }}>
             <Text as="p" variant="paragraph3" sx={{ fontWeight: 600 }}>
-              Get Automated Access to DeFi’s Highest Quality Yields and earn $SUMR.
+              Get automated access to DeFi’s highest quality yields and earn $SUMR token rewards
             </Text>
-            <Text as="p" variant="paragraph4" sx={{ color: '#BAB8B9' }}>
-              Introducing Lazy Summer Protocol: Effortless access to crypto’s best DeFi yields.
-              Continually rebalanced by AI powered Keepers.
+            <Text as="p" variant="paragraph4" sx={{ color: '#777576' }}>
+              Earn more while saving time and cutting costs. Effortless DeFi yield, continually
+              optimized by AI powered keepers.
             </Text>
           </Flex>
         </Flex>
-        <Flex sx={{ gap: 3 }}>
-          <Link href={EXTERNAL_LINKS.LAZY_SUMMER} target="_blank">
-            <Button variant="secondary" sx={{ background: '#333333', height: '36px' }}>
-              <Text variant="paragraph4" sx={{ fontWeight: 600, color: 'white' }}>
-                Learn more
-              </Text>
-            </Button>
-          </Link>
-          <Link href={`${EXTERNAL_LINKS.LAZY_SUMMER}/earn`} target="_blank">
-            <Button
-              variant="secondary"
-              sx={{
-                background: 'linear-gradient(90deg, #FF49A4 0%, #B049FF 93%)',
-                height: '36px',
-                width: 'fit-content',
-                '&:hover': {
-                  opacity: 0.8,
-                },
-                transition: 'opacity 200ms',
-              }}
-            >
-              <Text variant="paragraph4" sx={{ fontWeight: 600, color: 'white' }}>
-                Start Earning
-              </Text>
-            </Button>
-          </Link>
-        </Flex>
+        <Link
+          href={`${EXTERNAL_LINKS.LAZY_SUMMER}/earn`}
+          target="_blank"
+          style={{ textDecoration: 'none' }}
+        >
+          <Button
+            variant="secondary"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'linear-gradient(90deg, #FF49A4 0%, #B049FF 93%)',
+              height: '36px',
+              width: 'fit-content',
+              '&:hover': {
+                opacity: 0.8,
+              },
+              transition: 'opacity 200ms',
+            }}
+          >
+            <Text variant="paragraph4" sx={{ fontWeight: 600, color: 'white' }}>
+              Start Earning
+            </Text>
+          </Button>
+        </Link>
       </Flex>
     </Card>
   )
