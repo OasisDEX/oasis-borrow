@@ -85,7 +85,7 @@ async function checkIfRisky(address: string) {
     }
 
     return trmData.addressRiskIndicators
-      .map((indicator) => Number(indicator.totalVolumeUsd) > 0)
+      .map((indicator) => Number(indicator.totalVolumeUsd) > 100)
       .includes(true)
   } catch (ex) {
     console.error(`TRM_LOG ${address} check failed`)
