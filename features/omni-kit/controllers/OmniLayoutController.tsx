@@ -111,6 +111,9 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
     SkyUpgrade &&
     ([quoteToken, collateralToken].includes('DAI') || [quoteToken, collateralToken].includes('MKR'))
 
+  const hasOptimization = hasActiveOptimization({ poolId, positionTriggers, protocol })
+  const hasProtection = hasActiveProtection({ poolId, positionTriggers, protocol })
+
   return (
     <Container variant="vaultPageContainerStatic">
       {owner && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={owner} />}
@@ -215,11 +218,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           : undefined,
                         tag: {
                           include: true,
-                          active: hasActiveProtection({ poolId, positionTriggers, protocol }),
+                          active: hasProtection,
                         },
                         label: t('system.protection'),
                         content:
-                          netValue?.gt(minNetValue) || LambdaAutomations.DisableNetValueCheck ? (
+                          hasProtection ||
+                          netValue?.gt(minNetValue) ||
+                          LambdaAutomations.DisableNetValueCheck ? (
                             <Grid variant="vaultContainer">
                               <OmniProtectionOverviewController />
                               {uiDropdownProtection && <OmniAutomationFormController />}
@@ -243,11 +248,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
                           : undefined,
                         tag: {
                           include: true,
-                          active: hasActiveOptimization({ poolId, positionTriggers, protocol }),
+                          active: hasOptimization,
                         },
                         label: t('system.optimization'),
                         content:
-                          netValue?.gt(minNetValue) || LambdaAutomations.DisableNetValueCheck ? (
+                          hasOptimization ||
+                          netValue?.gt(minNetValue) ||
+                          LambdaAutomations.DisableNetValueCheck ? (
                             <Grid variant="vaultContainer">
                               <OmniOptimizationOverviewController />
                               {uiDropdownOptimization && <OmniAutomationFormController />}
