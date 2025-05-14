@@ -12,15 +12,15 @@ interface StatsResponse {
   LOCKED_COLLATERAL_ACTIVE_TRIGGER: number
 }
 
-export function getOasisStats(): Promise<OasisStats | null> {
+function getSnowflakeData(): Promise<OasisStats | null> {
   return new Promise((resolve) => {
     const snowFlakeConnection = config.enableSnowflake ? getSnowflakeConnection() : undefined
 
     if (!snowFlakeConnection) {
       return resolve(null)
     }
-    snowFlakeConnection.connect((err, connection) => {
-      if (err) {
+    snowFlakeConnection.connect((connectionError, connection) => {
+      if (connectionError) {
         return resolve(null)
       }
       connection.execute({
@@ -50,4 +50,18 @@ export function getOasisStats(): Promise<OasisStats | null> {
       })
     })
   })
+}
+
+export async function getOasisStats(): Promise<OasisStats | null> {
+  const snowflakeData = await getSnowflakeData()
+
+  const lockedCollateralActiveTriggerDefillama = await fetch(
+    'https://api.llama.fi/tvl/summer.fi-pro',
+  ).then((res) => res.json())
+
+  return {
+    ...snowflakeData,
+    lockedCollateralActiveTrigger:
+      lockedCollateralActiveTriggerDefillama || snowflakeData?.lockedCollateralActiveTrigger,
+  } as OasisStats
 }
