@@ -17,8 +17,8 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
       >
         <Flex
           sx={{
-            flexDirection: 'column',
             alignItems: 'flex-start',
+            flexDirection: 'column',
             justifyContent: 'center',
             mt: [image ? 2 : 3, null, null, 3],
             mr: [3, null, null, 0],
