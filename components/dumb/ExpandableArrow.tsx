@@ -23,8 +23,8 @@ export function ExpandableArrow({
     <Box
       as="span"
       sx={{
-        display: 'inline-block',
         position: 'relative',
+        display: 'inline-block',
         width: '1em',
         height: '0.64705em',
         fontSize: `${size}${adaptSize ? 'em' : 'px'}`,
