@@ -20,8 +20,8 @@ interface ActionPillsProps {
 
 export function ActionPills({
   active,
-  items,
   variant = 'primary',
+  items,
   wrapperSx,
   itemSx,
   itemButtonSx,
