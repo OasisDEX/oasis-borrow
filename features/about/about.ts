@@ -7,8 +7,8 @@ export function getTeamPicsFileNames() {
 
 export interface TeamMember {
   name: string
-  order: string
   title: string
+  order: string
   picFileName: string
 }
 
