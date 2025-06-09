@@ -35,7 +35,7 @@ export const LazySummerBanner = ({ address, isOwner, raysData }: LazySummerBanne
         title={title}
         cta={{
           label: 'Claim $SUMR',
-          url: `${EXTERNAL_LINKS.LAZY_SUMMER}${isOwner ? `/portfolio/${address}` : ''}`,
+          url: `${EXTERNAL_LINKS.LAZY_SUMMER}/earn/sumr`,
           targetBlank: true,
         }}
         buttonSx={{
