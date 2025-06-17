@@ -6,7 +6,7 @@ export const useUserRays = ({
   walletAddress,
   // enabled - small hack to prevent fetching data on portfolio
   // where its provided all the way from the `[address].tsx` page
-  enabled = true,
+  enabled = false,
 }: {
   walletAddress?: string
   enabled?: boolean

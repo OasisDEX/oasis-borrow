@@ -5,7 +5,6 @@ import { SimulateTitle } from 'components/SimulateTitle'
 import { LazySummerBigBannerBestRates } from 'features/lazy-summer/components/LazySummerBigBanner'
 import { OmniDetailSectionRewardsClaims } from 'features/omni-kit/components/details-section/OmniDetailSectionRewardsClaims'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { getOmniDetailsSectionRaysTitle } from 'features/omni-kit/helpers/getOmniDetailsSectionRaysTitle'
 import { useOmniInPositionAmount } from 'features/omni-kit/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
@@ -16,7 +15,7 @@ export function OmniOverviewController() {
   const { t } = useTranslation()
 
   const {
-    environment: { productType, isOpening, quoteToken, entryToken, positionRaysMultipliersData },
+    environment: { productType, isOpening, quoteToken, entryToken },
   } = useOmniGeneralContext()
   const {
     dynamicMetadata: {
@@ -30,17 +29,14 @@ export function OmniOverviewController() {
       },
       notifications,
     },
-    position: {
-      currentPosition: { position },
-    },
   } = useOmniProductContext(productType)
 
   const amountInPosition = useOmniInPositionAmount()
 
-  const raysPerYearElement = getOmniDetailsSectionRaysTitle({
-    position,
-    positionRaysMultipliersData,
-  })
+  // const raysPerYearElement = getOmniDetailsSectionRaysTitle({
+  //   position,
+  //   positionRaysMultipliersData,
+  // })
 
   return (
     <Grid sx={{ rowGap: 3 }}>
@@ -54,7 +50,6 @@ export function OmniOverviewController() {
           )) ||
           t('system.overview')
         }
-        extra={!isOpening && raysPerYearElement}
         notifications={notifications}
         content={
           (productType === OmniProductType.Earn || overviewWithSimulation) && isOpening ? (
