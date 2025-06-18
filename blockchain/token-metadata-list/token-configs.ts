@@ -1491,6 +1491,15 @@ export const tokenConfigs: TokenConfig[] = [
     tags: [],
   },
   {
+    symbol: 'SPK',
+    precision: 18,
+    digits: 5,
+    name: 'Spark',
+    icon: spark_circle_color,
+    iconCircle: spark_circle_color,
+    tags: [],
+  },
+  {
     symbol: 'SNX',
     precision: 18,
     digits: 5,

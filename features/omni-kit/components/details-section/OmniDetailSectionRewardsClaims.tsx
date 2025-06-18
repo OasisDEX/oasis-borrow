@@ -28,7 +28,7 @@ interface OmniDetailSectionRewardsClaimsInternalProps {
 }
 
 const claimableErc20ByNetwork: Record<NetworkIds, string[]> = {
-  [NetworkIds.MAINNET]: ['ENA', 'SENA'],
+  [NetworkIds.MAINNET]: ['ENA', 'SENA', 'SPK'],
   [NetworkIds.OPTIMISMMAINNET]: [],
   [NetworkIds.ARBITRUMMAINNET]: [],
   [NetworkIds.BASEMAINNET]: [],

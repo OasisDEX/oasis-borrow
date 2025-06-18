@@ -87,6 +87,7 @@ export const tokensMainnet = {
   STYETH: contractDesc(erc20, mainnet.common.STYETH),
   SUSDE: contractDesc(erc20, mainnet.common.SUSDE),
   SUSD: contractDesc(erc20, mainnet.common.SUSD),
+  SPK: contractDesc(erc20, '0xc20059e0317de91738d13af027dfc4a50781b066'),
   USDE: contractDesc(erc20, mainnet.common.USDE),
   TBTC: contractDesc(erc20, mainnet.common.TBTC),
   USDA: contractDesc(erc20, mainnet.common.USDA),
