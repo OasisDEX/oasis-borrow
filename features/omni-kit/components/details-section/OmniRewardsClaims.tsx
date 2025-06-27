@@ -1,4 +1,4 @@
-import type { TxMeta, TxState } from '@oasisdex/transactions'
+import { type TxMeta, type TxState, TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
@@ -124,13 +124,40 @@ export const OmniRewardsClaims: FC<OmniErc20ClaimsProps> = ({ token, claimable, 
                 if (!isConnected) connect()
                 else if (shouldSwitchNetwork) setChain(network.hexId)
                 else if (signer && tx && dpmProxy) {
-                  submitGenericOmniTransaction({
-                    networkId: networkId,
-                    proxyAddress: dpmProxy,
-                    setTxState,
-                    signer,
-                    txData: tx,
-                  })()
+                  if (token === 'SPK') {
+                    signer
+                      .sendTransaction({
+                        to: tx.to,
+                        data: tx.data,
+                        value: tx.value || '0x0',
+                      })
+                      .then((txResponse) => {
+                        setTxState({
+                          status: TxStatus.WaitingForConfirmation,
+                          txHash: txResponse.hash,
+                        } as TxState<TxMeta>)
+                        return txResponse.wait()
+                      })
+                      .then((receipt) => {
+                        setTxState({
+                          status: TxStatus.Success,
+                          txHash: receipt.transactionHash,
+                          receipt,
+                        } as TxState<TxMeta>)
+                      })
+                      .catch((error) => {
+                        setTxState({ status: TxStatus.Error, error } as TxState<TxMeta>)
+                      })
+                  } else {
+                    // Standard flow for other tokens through DPM proxy
+                    submitGenericOmniTransaction({
+                      networkId: networkId,
+                      proxyAddress: dpmProxy,
+                      setTxState,
+                      signer,
+                      txData: tx,
+                    })()
+                  }
                 }
               }}
             >

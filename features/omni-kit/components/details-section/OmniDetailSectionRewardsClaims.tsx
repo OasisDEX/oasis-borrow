@@ -1,8 +1,12 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import { Network } from '@oasisdex/dma-library'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
-import type BigNumber from 'bignumber.js'
-import { encodeClaimAllRewards, getAllUserRewards } from 'blockchain/better-calls/aave-like-rewards'
+import BigNumber from 'bignumber.js'
+import {
+  encodeClaimAllRewards,
+  getAllUserRewards,
+  getSPKRewards,
+} from 'blockchain/better-calls/aave-like-rewards'
 import {
   encodeApproveAndWrapProxyAction,
   encodeTransferToOwnerProxyAction,
@@ -147,6 +151,20 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
         throw new Error(`Unsupported protocol or network for rewards: ${protocol} on ${network}`)
       }
 
+      getSPKRewards({ dpmAccount: dpmProxy })
+        .then((spkTokenRewards) => {
+          if (spkTokenRewards.tx) {
+            dispatchClaim({
+              token: 'SPK',
+              claimable: new BigNumber(spkTokenRewards.toClaimFormatted),
+              tx: spkTokenRewards.tx,
+            })
+          }
+        })
+        .catch((error) => {
+          console.error(`Error fetching SPK rewards:`, error)
+        })
+
       getAllUserRewards({
         networkId,
         token: quoteAddress,
@@ -202,7 +220,7 @@ export const OmniDetailSectionRewardsClaims: FC = () => {
     environment: { protocol, collateralToken, quoteToken, networkId },
   } = useOmniGeneralContext()
 
-  const rewardsEligibleTokens = ['SUSDE', 'USDE', 'WETH', 'ETH']
+  const rewardsEligibleTokens = ['SUSDE', 'USDE', 'WETH', 'ETH', 'WSTETH']
 
   // Regular ERC20 claims eligibility
   const isEligibleForErc20Claims = claimableErc20ByNetwork[networkId].length > 0

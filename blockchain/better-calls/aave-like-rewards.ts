@@ -95,3 +95,20 @@ export function encodeClaimAllRewards({
     value: '0',
   }
 }
+
+export async function getSPKRewards({ dpmAccount }: { dpmAccount: string }) {
+  const spkTokenRewards = await fetch(`/api/spk/rewards?address=${dpmAccount}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  return (await spkTokenRewards.json()) as {
+    canClaim: boolean
+    toClaim: string
+    toClaimFormatted: string
+    claimed: string
+    claimedFormatted: string
+    tx?: OmniTxData
+  }
+}
