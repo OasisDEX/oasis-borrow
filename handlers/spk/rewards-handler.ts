@@ -12,12 +12,20 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
     if (!address) {
       return res.status(400).json({ error: 'Address is required' })
     }
+    if (!process.env.SPARK_REWARDS_CLAIM_ENDPOINT) {
+      console.error('SPARK_REWARDS_CLAIM_ENDPOINT is not set')
+      return res.status(500).json({
+        error: 'SPARK_REWARDS_CLAIM_ENDPOINT is not set',
+      })
+    }
     const requesturl = `${process.env.SPARK_REWARDS_CLAIM_ENDPOINT}?account=${address}`
     const apiResult = await fetch(requesturl)
     if (!apiResult.ok) {
-      console.error(`Error while loading tokens from API: ${apiResult.statusText}`)
+      console.error(`Error while loading rewards from API: ${apiResult.statusText}`)
       return res.status(apiResult.status || 500).json({
-        error: 'Error while loading tokens from API',
+        error: 'Error while loading rewards from API',
+        status: apiResult.status,
+        statusText: apiResult.statusText,
       })
     }
     const apiData = await apiResult.json()
@@ -31,9 +39,11 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
       raw: apiData,
     })
   } catch (e) {
-    console.error(`Error while loading tokens from blockchain: ${e}`)
+    console.error(`Error while loading rewards: ${e}`)
     return res.status(e instanceof z.ZodError ? 400 : 500).json({
-      error: 'Error while loading tokens from blockchain',
+      error: 'Error while loading rewards from blockchain',
+      details:
+        e instanceof z.ZodError ? e.errors : e instanceof Error ? e.message : 'Unknown error',
     })
   }
 }
