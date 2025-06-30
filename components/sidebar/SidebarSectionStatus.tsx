@@ -19,7 +19,7 @@ type SidebarSectionStatusTypeDetails = {
 }
 
 export interface SidebarSectionStatusProps {
-  text: string
+  text: string | ReactNode
   txHash: string
   etherscan: string
   etherscanName?: string

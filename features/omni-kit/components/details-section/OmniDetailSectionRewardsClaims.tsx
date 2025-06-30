@@ -243,6 +243,7 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
               key={`External_${claim.token}_${claim.tx.to}`}
               {...claim}
               prices={tokenPriceStore.prices}
+              refreshClaims={getClaimsData}
             />
           ))}
         </>

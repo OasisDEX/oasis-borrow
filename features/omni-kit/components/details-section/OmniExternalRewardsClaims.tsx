@@ -28,6 +28,7 @@ interface OmniErc20ClaimsProps {
   prices: {
     [key: string]: BigNumber
   }
+  refreshClaims: () => Promise<void>
 }
 
 export const OmniExternalRewardsClaimsDescription: FC = () => {
@@ -44,6 +45,7 @@ export const OmniExternalRewardsClaims: FC<OmniErc20ClaimsProps> = ({
   claimable,
   tx,
   prices,
+  refreshClaims,
 }) => {
   const { t } = useTranslation()
 
@@ -91,7 +93,6 @@ export const OmniExternalRewardsClaims: FC<OmniErc20ClaimsProps> = ({
     ]
   }, [claimable, token, prices])
   const txSidebarProgress = t('erc-4626.position-page.earn.transaction.progress')
-  const txSidebarSuccess = t('erc-4626.position-page.earn.transaction.success')
   const txSidebarStatus = useMemo(() => {
     if (txState) {
       const networkContracts = getNetworkContracts(networkId)
@@ -101,7 +102,24 @@ export const OmniExternalRewardsClaims: FC<OmniErc20ClaimsProps> = ({
         etherscanName: networkContracts.etherscan.name,
         isTxInProgress: isTxInProgress,
         isTxSuccess: isTxSuccess,
-        text: isTxSuccess ? txSidebarSuccess : txSidebarProgress,
+        text: isTxSuccess ? (
+          <>
+            Tokens are claimed to the DPM,{' '}
+            <a
+              href=""
+              onClick={() => {
+                refreshClaims().catch((error) => {
+                  console.error('Error fetching claims data:', error)
+                })
+              }}
+            >
+              click here
+            </a>{' '}
+            to refresh the data.
+          </>
+        ) : (
+          txSidebarProgress
+        ),
         txDetails: {
           txCost: zero,
           ...handleTransactionTxState(txState),

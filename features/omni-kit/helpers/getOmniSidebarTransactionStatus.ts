@@ -1,5 +1,6 @@
 import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
 import type { TxDetails } from 'helpers/handleTransaction'
+import type { ReactNode } from 'react'
 
 export function getOmniSidebarTransactionStatus({
   etherscan = '',
@@ -13,7 +14,7 @@ export function getOmniSidebarTransactionStatus({
   etherscanName?: string
   isTxInProgress: boolean
   isTxSuccess: boolean
-  text: string
+  text: string | ReactNode
   txDetails?: TxDetails
 }): SidebarSectionStatusProps[] | undefined {
   return txDetails && (isTxInProgress || isTxSuccess)
