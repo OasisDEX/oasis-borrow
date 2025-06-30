@@ -16,7 +16,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
     const apiResult = await fetch(requesturl)
     if (!apiResult.ok) {
       console.error(`Error while loading tokens from API: ${apiResult.statusText}`)
-      return res.status(200).json({
+      return res.status(apiResult.status || 500).json({
         error: 'Error while loading tokens from API',
       })
     }
@@ -32,7 +32,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
     })
   } catch (e) {
     console.error(`Error while loading tokens from blockchain: ${e}`)
-    return res.status(200).json({
+    return res.status(e instanceof z.ZodError ? 400 : 500).json({
       error: 'Error while loading tokens from blockchain',
     })
   }
