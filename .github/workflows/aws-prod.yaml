@@ -66,6 +66,7 @@ jobs:
                        --build-arg ONE_INCH_API_KEY=${{ secrets.ONE_INCH_API_KEY_PROD }} \
                        --build-arg ONE_INCH_API_URL=${{ secrets.ONE_INCH_API_URL_PROD }} \
                        --build-arg REFERRAL_SUBGRAPH_URL=${{ secrets.REFERRAL_SUBGRAPH_URL_PROD }} \
+                       --build-arg SPARK_REWARDS_CLAIM_ENDPOINT=${{ secrets.SPARK_REWARDS_CLAIM_ENDPOINT }} \
                        --build-arg CONFIG_URL=${{ secrets.CONFIG_URL }} \
                        --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} \
                        --build-arg BLOG_POSTS_API_KEY=${{ secrets.BLOG_POSTS_API_KEY }} \
