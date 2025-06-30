@@ -10,7 +10,6 @@ import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
 import { getOmniTxStatuses, useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import type { OmniTxData } from 'features/omni-kit/hooks'
-import { submitGenericOmniTransaction } from 'features/omni-kit/observables'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { handleTransactionTxState } from 'helpers/handleTransaction'
@@ -31,7 +30,21 @@ interface OmniErc20ClaimsProps {
   }
 }
 
-export const OmniRewardsClaims: FC<OmniErc20ClaimsProps> = ({ token, claimable, tx, prices }) => {
+export const OmniExternalRewardsClaimsDescription: FC = () => {
+  return (
+    <Text variant="paragraph3" as="p" sx={{ color: 'neutral80', paddingBottom: '30px' }}>
+      There's a claimable balance of tokens on this positions DPM proxy contract. To claim them, you
+      need to transfer them into the DPM, and then, in a separate transaction, into your wallet.
+    </Text>
+  )
+}
+
+export const OmniExternalRewardsClaims: FC<OmniErc20ClaimsProps> = ({
+  token,
+  claimable,
+  tx,
+  prices,
+}) => {
   const { t } = useTranslation()
 
   const { connectedContext$ } = useMainContext()
@@ -98,7 +111,7 @@ export const OmniRewardsClaims: FC<OmniErc20ClaimsProps> = ({ token, claimable, 
   }, [isTxInProgress, isTxSuccess, networkId, txSidebarProgress, txSidebarSuccess, txState])
 
   const isClaimButtonDisabled =
-    !isOwner || !tx || isTxInProgress || isTxWaitingForApproval || isTxSuccess
+    !isOwner || !tx || isTxInProgress || isTxWaitingForApproval || isTxSuccess || token !== 'SPK'
   const claimButtonLabel = !isConnected
     ? t('connect-wallet')
     : shouldSwitchNetwork
@@ -109,8 +122,13 @@ export const OmniRewardsClaims: FC<OmniErc20ClaimsProps> = ({ token, claimable, 
 
   return (
     <DetailsSection
-      content={<AssetsResponsiveTable paddless rows={rows} verticalAlign="top" />}
-      title={t('vault-token-rewards.title')}
+      content={
+        <>
+          <OmniExternalRewardsClaimsDescription />
+          <AssetsResponsiveTable paddless rows={rows} verticalAlign="top" />
+        </>
+      }
+      title="DPM-bound token rewards"
       accordion
       accordionOpenByDefault
       footer={
@@ -149,14 +167,8 @@ export const OmniRewardsClaims: FC<OmniErc20ClaimsProps> = ({ token, claimable, 
                         setTxState({ status: TxStatus.Error, error } as TxState<TxMeta>)
                       })
                   } else {
-                    // Standard flow for other tokens through DPM proxy
-                    submitGenericOmniTransaction({
-                      networkId: networkId,
-                      proxyAddress: dpmProxy,
-                      setTxState,
-                      signer,
-                      txData: tx,
-                    })()
+                    // no other token supported as of now
+                    console.warn(`Unsupported token for rewards: ${token}`)
                   }
                 }
               }}

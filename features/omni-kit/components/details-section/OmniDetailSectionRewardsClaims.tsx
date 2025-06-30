@@ -1,8 +1,12 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import { Network } from '@oasisdex/dma-library'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
-import type BigNumber from 'bignumber.js'
-import { encodeClaimAllRewards, getAllUserRewards } from 'blockchain/better-calls/aave-like-rewards'
+import BigNumber from 'bignumber.js'
+import {
+  encodeClaimAllRewards,
+  getAllUserRewards,
+  getSPKRewards,
+} from 'blockchain/better-calls/aave-like-rewards'
 import {
   encodeApproveAndWrapProxyAction,
   encodeTransferToOwnerProxyAction,
@@ -11,12 +15,13 @@ import {
 import { NetworkIds } from 'blockchain/networks'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { getTokenByAddress } from 'blockchain/tokensMetadata'
+import { OmniExternalRewardsClaims } from 'features/omni-kit/components/details-section/OmniExternalRewardsClaims'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniTxData } from 'features/omni-kit/hooks'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'
-import React, { useEffect, useReducer } from 'react'
+import React, { useCallback, useEffect, useReducer } from 'react'
 
 import { OmniDetailsSectionContentRewardsLoadingState } from './OmniDetailsSectionContentRewardsLoadingState'
 import { OmniRewardsClaims } from './OmniRewardsClaims'
@@ -65,7 +70,11 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
     return [...state, element]
   }, [])
 
-  useEffect(() => {
+  const [externalClaims, dispatchExternalClaim] = useReducer((state: Claim[], element: Claim) => {
+    return [...state, element]
+  }, [])
+
+  const getClaimsData = useCallback(async () => {
     if (!dpmProxy) return
     if (isEligibleForErc20Claims) {
       claimableErc20ByNetwork[networkId].forEach((token) => {
@@ -147,6 +156,20 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
         throw new Error(`Unsupported protocol or network for rewards: ${protocol} on ${network}`)
       }
 
+      getSPKRewards({ dpmAccount: dpmProxy })
+        .then((spkTokenRewards) => {
+          if (spkTokenRewards.tx) {
+            dispatchExternalClaim({
+              token: 'SPK',
+              claimable: new BigNumber(spkTokenRewards.toClaimFormatted),
+              tx: spkTokenRewards.tx,
+            })
+          }
+        })
+        .catch((error) => {
+          console.error(`Error fetching SPK rewards:`, error)
+        })
+
       getAllUserRewards({
         networkId,
         token: quoteAddress,
@@ -178,22 +201,53 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
           console.error(`Error fetching ${protocol} rewards:`, error)
         })
     }
-  }, [dpmProxy, networkId, protocol, quoteAddress])
+  }, [
+    dpmProxy,
+    isEligibleForErc20Claims,
+    isEligibleForMorphoLegacy,
+    isEligibleForProtocolRewards,
+    networkId,
+    protocol,
+    quoteAddress,
+  ])
 
-  return claims.length > 0 ? (
+  useEffect(() => {
+    getClaimsData().catch((error) => {
+      console.error('Error fetching claims data:', error)
+    })
+  }, [dpmProxy, getClaimsData, networkId, protocol, quoteAddress])
+
+  return (
     <>
-      {claims && claims.length > 0 && tokenPriceStore.prices ? (
+      {claims.length > 0 ? (
         <>
-          {claims.map((claim) => (
-            <OmniRewardsClaims key={claim.token} {...claim} prices={tokenPriceStore.prices} />
+          {claims && claims.length > 0 && tokenPriceStore.prices ? (
+            <>
+              {claims.map((claim) => (
+                <OmniRewardsClaims
+                  key={`${claim.token}_${claim.tx.to}`}
+                  {...claim}
+                  prices={tokenPriceStore.prices}
+                />
+              ))}
+            </>
+          ) : (
+            <OmniDetailsSectionContentRewardsLoadingState />
+          )}
+        </>
+      ) : null}
+      {externalClaims.length > 0 && (
+        <>
+          {externalClaims.map((claim) => (
+            <OmniExternalRewardsClaims
+              key={`External_${claim.token}_${claim.tx.to}`}
+              {...claim}
+              prices={tokenPriceStore.prices}
+            />
           ))}
         </>
-      ) : (
-        <OmniDetailsSectionContentRewardsLoadingState />
       )}
     </>
-  ) : (
-    <></>
   )
 }
 
@@ -202,7 +256,7 @@ export const OmniDetailSectionRewardsClaims: FC = () => {
     environment: { protocol, collateralToken, quoteToken, networkId },
   } = useOmniGeneralContext()
 
-  const rewardsEligibleTokens = ['SUSDE', 'USDE', 'WETH', 'ETH']
+  const rewardsEligibleTokens = ['SUSDE', 'USDE', 'WETH', 'ETH', 'WSTETH']
 
   // Regular ERC20 claims eligibility
   const isEligibleForErc20Claims = claimableErc20ByNetwork[networkId].length > 0
