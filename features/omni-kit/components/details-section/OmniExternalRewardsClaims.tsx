@@ -126,7 +126,7 @@ export const OmniExternalRewardsClaims: FC<OmniErc20ClaimsProps> = ({
         },
       })?.at(0)
     } else return undefined
-  }, [isTxInProgress, isTxSuccess, networkId, txSidebarProgress, txSidebarSuccess, txState])
+  }, [isTxInProgress, isTxSuccess, networkId, txSidebarProgress, txState])
 
   const isClaimButtonDisabled =
     !isOwner || !tx || isTxInProgress || isTxWaitingForApproval || isTxSuccess || token !== 'SPK'
