@@ -23,6 +23,7 @@ const publicRuntimeConfig = {
   referralSubgraphUrl: process.env.REFERRAL_SUBGRAPH_URL,
   configUrl: process.env.CONFIG_URL,
   rpcGatewayUrl: process.env.RPC_GATEWAY,
+  sparkRewardsClaimEndpoint: process.env.SPARK_REWARDS_CLAIM_ENDPOINT,
   grooveWidgetId: process.env.GROOVE_WIDGET_ID || `27241a63-86b5-47e2-a167-2e2a3e2a621e`,
   awsGasPriceUrl: 'https://rjaw1lt1ch.execute-api.us-east-1.amazonaws.com/staging/',
   contentfulSpaceId: process.env.CONTENTFUL_SPACE_ID,

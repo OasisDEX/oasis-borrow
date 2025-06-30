@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import getConfig from 'next/config'
 import * as z from 'zod'
 
 const paramsSchema = z.object({
@@ -7,18 +8,20 @@ const paramsSchema = z.object({
 })
 
 export async function get(req: NextApiRequest, res: NextApiResponse) {
+  const config = getConfig()
+  const sparkRewardsClaimEndpoint = config?.publicRuntimeConfig.sparkRewardsClaimEndpoint
   const { address } = paramsSchema.parse(req.query)
   try {
     if (!address) {
       return res.status(400).json({ error: 'Address is required' })
     }
-    if (!process.env.SPARK_REWARDS_CLAIM_ENDPOINT) {
-      console.error('SPARK_REWARDS_CLAIM_ENDPOINT is not set')
+    if (!sparkRewardsClaimEndpoint) {
+      console.error('sparkRewardsClaimEndpoint is not set')
       return res.status(500).json({
-        error: 'SPARK_REWARDS_CLAIM_ENDPOINT is not set',
+        error: 'sparkRewardsClaimEndpoint is not set',
       })
     }
-    const requesturl = `${process.env.SPARK_REWARDS_CLAIM_ENDPOINT}?account=${address}`
+    const requesturl = `${sparkRewardsClaimEndpoint}?account=${address}`
     const apiResult = await fetch(requesturl)
     if (!apiResult.ok) {
       console.error(`Error while loading rewards from API: ${apiResult.statusText}`)
