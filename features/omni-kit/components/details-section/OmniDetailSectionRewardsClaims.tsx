@@ -257,7 +257,7 @@ export const OmniDetailSectionRewardsClaims: FC = () => {
     environment: { protocol, collateralToken, quoteToken, networkId },
   } = useOmniGeneralContext()
 
-  const rewardsEligibleTokens = ['SUSDE', 'USDE', 'WETH', 'ETH', 'WSTETH']
+  const rewardsEligibleTokens = ['SUSDE', 'USDE', 'WETH', 'ETH', 'WSTETH', 'WEETH', 'WBTC']
 
   // Regular ERC20 claims eligibility
   const isEligibleForErc20Claims = claimableErc20ByNetwork[networkId].length > 0
