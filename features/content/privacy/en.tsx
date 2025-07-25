@@ -103,10 +103,7 @@ export default () => (
         website, we will automatically collect Technical Data about your equipment, Browser actions
         and patterns. We collect this personal data by using cookies, server logs and other similar
         technologies. Please see our cookie policy{' '}
-        <Link href="https://summer.fi/cookie">
-          https://summer.fi/cookie
-        </Link>{' '}
-        for further details.
+        <Link href="https://summer.fi/cookie">https://summer.fi/cookie</Link> for further details.
       </li>
       <li>
         <Text as="strong">Third parties or publicly available sources.</Text> We will receive
@@ -130,22 +127,22 @@ export default () => (
       </li>
       <li>
         <Text as="strong">Legitimate interests:</Text> We may use your personal data where it is
-        necessary to conduct our business and pursue our legitimate interests, for example to prevent
-        fraud and enable us to give you the best and most secure customer experience. We make sure we
-        consider and balance any potential impact on you and your rights (both positive and negative)
-        before we process your personal data for our legitimate interests. We do not use your personal
-        data for activities where our interests are overridden by the impact on you (unless we have
-        your consent or are otherwise required or permitted to by law).
+        necessary to conduct our business and pursue our legitimate interests, for example to
+        prevent fraud and enable us to give you the best and most secure customer experience. We
+        make sure we consider and balance any potential impact on you and your rights (both positive
+        and negative) before we process your personal data for our legitimate interests. We do not
+        use your personal data for activities where our interests are overridden by the impact on
+        you (unless we have your consent or are otherwise required or permitted to by law).
       </li>
       <li>
-        <Text as="strong">Legal obligation:</Text> We may use your personal data where it is necessary
-        for compliance with a legal obligation that we are subject to. We will identify the relevant
-        legal obligation when we rely on this legal basis.
+        <Text as="strong">Legal obligation:</Text> We may use your personal data where it is
+        necessary for compliance with a legal obligation that we are subject to. We will identify
+        the relevant legal obligation when we rely on this legal basis.
       </li>
       <li>
         <Text as="strong">Consent:</Text> We rely on consent only where we have obtained your active
-        agreement to use your personal data for a specified purpose, for example if you subscribe to an
-        email newsletter.
+        agreement to use your personal data for a specified purpose, for example if you subscribe to
+        an email newsletter.
       </li>
     </ul>
 
@@ -166,49 +163,169 @@ export default () => (
       </thead>
       <tbody>
         <tr>
-          <td>To register you as a new user including by accessing our website via your cryptocurrency wallet</td>
-          <td>(a) Identity<br />(b) Contact</td>
+          <td>
+            To register you as a new user including by accessing our website via your cryptocurrency
+            wallet
+          </td>
+          <td>
+            (a) Identity
+            <br />
+            (b) Contact
+          </td>
           <td>Performance of a contract with you</td>
         </tr>
         <tr>
-          <td>To manage our relationship with you which will include:<br />(a) Notifying you about changes to our terms or privacy policy<br />(b) Dealing with your requests, complaints and queries</td>
-          <td>(a) Identity<br />(b) Contact<br />(c) Profile<br />(d) Marketing and Communications</td>
-          <td>(a) Performance of a contract with you<br />(b) Necessary to comply with a legal obligation<br />(c) Necessary for our legitimate interests (to keep our records updated and manage our relationship with you)</td>
+          <td>
+            To manage our relationship with you which will include:
+            <br />
+            (a) Notifying you about changes to our terms or privacy policy
+            <br />
+            (b) Dealing with your requests, complaints and queries
+          </td>
+          <td>
+            (a) Identity
+            <br />
+            (b) Contact
+            <br />
+            (c) Profile
+            <br />
+            (d) Marketing and Communications
+          </td>
+          <td>
+            (a) Performance of a contract with you
+            <br />
+            (b) Necessary to comply with a legal obligation
+            <br />
+            (c) Necessary for our legitimate interests (to keep our records updated and manage our
+            relationship with you)
+          </td>
         </tr>
         <tr>
-          <td>To enable you to partake in any referral programmes available through the Site, including Beach Club</td>
-          <td>(a) Identity<br />(b) Contact<br />(c) Profile<br />(d) Usage<br />(e) Marketing and Communications</td>
-          <td>(a) Performance of a contract with you<br />(b) Necessary for our legitimate interests (to study how customers use our products/services, to develop them and grow our business)</td>
+          <td>
+            To enable you to partake in any referral programmes available through the Site,
+            including Beach Club
+          </td>
+          <td>
+            (a) Identity
+            <br />
+            (b) Contact
+            <br />
+            (c) Profile
+            <br />
+            (d) Usage
+            <br />
+            (e) Marketing and Communications
+          </td>
+          <td>
+            (a) Performance of a contract with you
+            <br />
+            (b) Necessary for our legitimate interests (to study how customers use our
+            products/services, to develop them and grow our business)
+          </td>
         </tr>
         <tr>
-          <td>To manage your participation in any referral programmes available through the Site, including Beach Club, including verifying your referrals and sending you rewards</td>
-          <td>(a) Identity<br />(b) Contact<br />(c) Profile<br />(d) Usage<br />(e) Marketing and Communications</td>
-          <td>(a) Performance of a contract with you<br />(b) Necessary for our legitimate interests (to study how customers use our products/services, to develop them and grow our business)</td>
+          <td>
+            To manage your participation in any referral programmes available through the Site,
+            including Beach Club, including verifying your referrals and sending you rewards
+          </td>
+          <td>
+            (a) Identity
+            <br />
+            (b) Contact
+            <br />
+            (c) Profile
+            <br />
+            (d) Usage
+            <br />
+            (e) Marketing and Communications
+          </td>
+          <td>
+            (a) Performance of a contract with you
+            <br />
+            (b) Necessary for our legitimate interests (to study how customers use our
+            products/services, to develop them and grow our business)
+          </td>
         </tr>
         <tr>
-          <td>To administer and protect our business and this website (including troubleshooting, data analysis, testing, system maintenance, support, reporting and hosting of data)</td>
-          <td>(a) Identity<br />(b) Contact<br />(c) Technical</td>
-          <td>(a) Necessary for our legitimate interests (for running our business, provision of administration and IT services, network security, to prevent fraud and in the context of a business reorganisation or group restructuring exercise)<br />(b) Necessary to comply with a legal obligation</td>
+          <td>
+            To administer and protect our business and this website (including troubleshooting, data
+            analysis, testing, system maintenance, support, reporting and hosting of data)
+          </td>
+          <td>
+            (a) Identity
+            <br />
+            (b) Contact
+            <br />
+            (c) Technical
+          </td>
+          <td>
+            (a) Necessary for our legitimate interests (for running our business, provision of
+            administration and IT services, network security, to prevent fraud and in the context of
+            a business reorganisation or group restructuring exercise)
+            <br />
+            (b) Necessary to comply with a legal obligation
+          </td>
         </tr>
         <tr>
-          <td>To use data analytics to improve our website, products/services, customer relationships and experiences and to measure the effectiveness of our communications and marketing</td>
-          <td>(a) Technical<br />(b) Usage</td>
-          <td>Necessary for our legitimate interests (to define types of customers for our products and services, to keep our website updated and relevant, to develop our business and to inform our marketing strategy)</td>
+          <td>
+            To use data analytics to improve our website, products/services, customer relationships
+            and experiences and to measure the effectiveness of our communications and marketing
+          </td>
+          <td>
+            (a) Technical
+            <br />
+            (b) Usage
+          </td>
+          <td>
+            Necessary for our legitimate interests (to define types of customers for our products
+            and services, to keep our website updated and relevant, to develop our business and to
+            inform our marketing strategy)
+          </td>
         </tr>
         <tr>
-          <td>To send you relevant marketing communications and make personalised suggestions and recommendations to you about services that may be of interest to you based on your Profile Data</td>
-          <td>(a) Identity<br />(b) Contact<br />(c) Technical<br />(d) Usage<br />(e) Profile<br />(f) Marketing and Communications</td>
-          <td>Necessary for our legitimate interests (to carry out direct marketing, develop our products/services and grow our business)</td>
+          <td>
+            To send you relevant marketing communications and make personalised suggestions and
+            recommendations to you about services that may be of interest to you based on your
+            Profile Data
+          </td>
+          <td>
+            (a) Identity
+            <br />
+            (b) Contact
+            <br />
+            (c) Technical
+            <br />
+            (d) Usage
+            <br />
+            (e) Profile
+            <br />
+            (f) Marketing and Communications
+          </td>
+          <td>
+            Necessary for our legitimate interests (to carry out direct marketing, develop our
+            products/services and grow our business)
+          </td>
         </tr>
         <tr>
           <td>To carry out market research including through your participation in surveys</td>
-          <td>(a) Identity<br />(b) Contact<br />(c) Profile</td>
-          <td>Necessary for our legitimate interests (to study how customers use our products/services and to help us improve and develop our products and services).</td>
+          <td>
+            (a) Identity
+            <br />
+            (b) Contact
+            <br />
+            (c) Profile
+          </td>
+          <td>
+            Necessary for our legitimate interests (to study how customers use our products/services
+            and to help us improve and develop our products and services).
+          </td>
         </tr>
       </tbody>
     </table>
 
-    <Heading as="h3" mt={4}>Blockchain Data</Heading>
+    <Heading as="h3" mt={4}>
+      Blockchain Data
+    </Heading>
     <Text as="p">
       Note that we are not responsible for your use of the Ethereum blockchain and your data
       processed in this decentralized and permissionless network.
@@ -246,16 +363,14 @@ export default () => (
 
     <Heading as="h3">Cookies</Heading>
     <Text as="p">
-      For more information about the cookies we use and how to change your cookie preferences, please
-      see{' '}
-      <Link href="https://summer.fi/cookie">
-        https://summer.fi/cookie
-      </Link>
-      .
+      For more information about the cookies we use and how to change your cookie preferences,
+      please see <Link href="https://summer.fi/cookie">https://summer.fi/cookie</Link>.
     </Text>
 
     <Heading as="h2">Disclosures of your personal data</Heading>
-    <Text as="p">We may share your personal data where necessary with the parties set out below.</Text>
+    <Text as="p">
+      We may share your personal data where necessary with the parties set out below.
+    </Text>
     <ul>
       <li>
         <Text as="strong">Service providers acting as processors</Text> who provide services
@@ -268,17 +383,17 @@ export default () => (
         consultants and who provide legal, accounting and insurance services.
       </li>
       <li>
-        <Text as="strong">Third parties to whom we may choose to sell, transfer or merge</Text> parts
-        of our business or our assets. Alternatively, we may seek to acquire other businesses or merge
-        with them. If a change happens to our business, then the new owners may use your personal data
-        in the same way as set out in this privacy policy.
+        <Text as="strong">Third parties to whom we may choose to sell, transfer or merge</Text>{' '}
+        parts of our business or our assets. Alternatively, we may seek to acquire other businesses
+        or merge with them. If a change happens to our business, then the new owners may use your
+        personal data in the same way as set out in this privacy policy.
       </li>
     </ul>
     <Text as="p">
       We require all third parties to respect the security of your personal data and to treat it in
-      accordance with the law. We do not allow our third-party service providers to use your personal
-      data for their own purposes and only permit them to process your personal data for specified
-      purposes and in accordance with our instructions.
+      accordance with the law. We do not allow our third-party service providers to use your
+      personal data for their own purposes and only permit them to process your personal data for
+      specified purposes and in accordance with our instructions.
     </Text>
 
     <Heading as="h2">International transfers</Heading>
@@ -325,9 +440,9 @@ export default () => (
       reasonably believe there is a prospect of litigation in respect to our relationship with you.
     </Text>
     <Text as="p">
-      To determine the appropriate retention period for personal data, we consider the amount, nature
-      and sensitivity of the personal data, the potential risk of harm from unauthorised use or
-      disclosure of your personal data, the purposes for which we process your personal data and
+      To determine the appropriate retention period for personal data, we consider the amount,
+      nature and sensitivity of the personal data, the potential risk of harm from unauthorised use
+      or disclosure of your personal data, the purposes for which we process your personal data and
       whether we can achieve those purposes through other means, and the applicable legal,
       regulatory, tax, accounting or other requirements.
     </Text>
@@ -401,8 +516,8 @@ export default () => (
         restriction of their use instead;
       </li>
       <li>
-        we no longer need the personal data for the purposes of the processing, but they are required
-        by you for the establishment, exercise or defense of legal claims; and/or
+        we no longer need the personal data for the purposes of the processing, but they are
+        required by you for the establishment, exercise or defense of legal claims; and/or
       </li>
       <li>you have objected to processing pursuant to applicable laws.</li>
     </ul>
@@ -417,9 +532,9 @@ export default () => (
       claims.
     </Text>
     <Text as="p">
-      You also have the absolute right to object any time to the processing of your personal data for
-      direct marketing purposes (see Opting out of marketing above for details of how to object to
-      receiving direct marketing communications).
+      You also have the absolute right to object any time to the processing of your personal data
+      for direct marketing purposes (see Opting out of marketing above for details of how to object
+      to receiving direct marketing communications).
     </Text>
 
     <Heading as="h3">Right to withdraw data protection consent</Heading>
@@ -431,8 +546,8 @@ export default () => (
       your consent.
     </Text>
     <Text as="p">
-      If you wish to exercise any of the rights set out above, please contact us using the details set
-      out in the Contact us section of this Privacy Policy.
+      If you wish to exercise any of the rights set out above, please contact us using the details
+      set out in the Contact us section of this Privacy Policy.
     </Text>
 
     <Heading as="h3">No fee usually required</Heading>
