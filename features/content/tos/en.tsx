@@ -326,7 +326,7 @@ export default () => (
     </Text>
     <Heading as="h2">Privacy and Personal Data</Heading>
     <Text as="p">
-      You may be required to shared certain information about yourself in order to be able to
+      You may be required to share certain information about yourself in order to be able to
       participate in the Programs or to receive the Rewards. If you do not wish to share that
       information you may not participate in Program. Please refer to the Company’s Privacy Policy
       for details on your privacy rights and information on how the Company collects and processes
@@ -350,8 +350,8 @@ export default () => (
     </Text>
     <Text as="p">
       Both the Referrer and the Referred User shall be informed of the Rewards to which they are
-      elible, in accordance to the specific terms of each Program. A Referrer or Referred User may
-      claim their Rewards balance as precribed in the specific Program’s terms.
+      eligible, in accordance to the specific terms of each Program. A Referrer or Referred User may
+      claim their Rewards balance as prescribed in the specific Program’s terms.
     </Text>
     <Text as="p">
       Each Program is subject to its own specific terms and conditions, which shall be communicated
