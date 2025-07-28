@@ -317,7 +317,7 @@ export default () => (
     </Text>
     <Heading as="h2">Eligibility</Heading>
     <Text as="p">
-      This Pogram is void where such programs are prohibited. Users who refer other users who join
+      This Program is void where such programs are prohibited. Users who refer other users who join
       the Program are &quot;Referrers&quot;; those who are referred to the Program are
       &quot;Referred Users.&quot; Referrers may be eligible to receive Rewards for every qualified
       transaction by a Referred User, in accordance to the specific terms of the Program. Referrers
@@ -329,7 +329,7 @@ export default () => (
       You may be required to shared certain information about yourself in order to be able to
       participate in the Programs or to receive the Rewards. If you do not wish to share that
       information you may not participate in Program. Please refer to the Company’s Privacy Policy
-      for details on your privacy rights and information on how the Company colelcts and processes
+      for details on your privacy rights and information on how the Company collects and processes
       personal data.
     </Text>
     <Heading as="h2">How It Works</Heading>
@@ -415,7 +415,7 @@ export default () => (
     <Text as="p">
       Except where prohibited, Users who have accepted these Program Terms agree that by
       participating in the Program, they agree: (1) to be bound by these Program Terms, any
-      applicable terms and condition specifc to a certain Program and to the decisions of the
+      applicable terms and condition specific to a certain Program and to the decisions of the
       Company and/or its designees, its other Terms of Service and its privacy policies; and (2) to
       release and hold harmless the Company and its owners, affiliates, and subsidiaries, together
       with its respective employees, directors, officers, licensees, licensors, shareholders,
@@ -1167,7 +1167,7 @@ export default () => (
       these Terms of Service.
     </Text>
     <Text as="p">
-      You are asked to read the Privacy Policy before you use the Site or Services or aprticipate in
+      You are asked to read the Privacy Policy before you use the Site or Services or participate in
       the Programs. If you are unwilling to accept the terms and conditions of the Privacy Policy,
       please do not use or immediately discontinue use of the Site and the Services.
     </Text>
