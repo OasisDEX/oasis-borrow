@@ -22,11 +22,11 @@ export interface Content {
 
 const v1: Content = {
   tos: {
-    version: 'version-27.08.2024',
+    version: 'version-25.07.2025',
     content: <TranslatedContent content={tosContent} />,
   },
   privacy: {
-    version: 'version-27.08.2024',
+    version: 'version-17.07.2025',
     content: <TranslatedContent content={privacyContent} />,
   },
   cookie: {
