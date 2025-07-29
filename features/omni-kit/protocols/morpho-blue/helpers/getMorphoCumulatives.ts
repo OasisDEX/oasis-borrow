@@ -4,10 +4,14 @@ import { mapOmniLendingCumulatives } from 'features/omni-kit/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import NodeCache from 'node-cache'
 
-// Cache with 5 minute TTL (300 seconds)
-const cache = new NodeCache({ stdTTL: 300 })
+interface CacheEntry {
+  data: MorphoCumulativesData
+  timestamp: number
+}
+
+const cache: Record<string, CacheEntry> = {}
+const CACHE_DURATION_MS = 5 * 60 * 1000 // 5 minutes
 
 const createCacheKey = (
   networkId: OmniSupportedNetworkIds,
@@ -17,16 +21,29 @@ const createCacheKey = (
   return `${networkId}-${proxy.toLowerCase()}-${marketId.toLowerCase()}`
 }
 
+const cleanupExpiredEntries = () => {
+  const now = Date.now()
+  Object.keys(cache).forEach((key) => {
+    if (now - cache[key].timestamp > CACHE_DURATION_MS) {
+      delete cache[key]
+    }
+  })
+}
+
 export const getMorphoCumulatives: (
   networkId: OmniSupportedNetworkIds,
 ) => GetCumulativesData<MorphoCumulativesData> =
   (networkId) => async (proxy: string, marketId: string) => {
     const cacheKey = createCacheKey(networkId, proxy, marketId)
+    const now = Date.now()
 
-    // Check cache first
-    const cachedResult = cache.get<MorphoCumulativesData>(cacheKey)
-    if (cachedResult) {
-      return cachedResult
+    // cleanup expired entries before checking cache
+    cleanupExpiredEntries()
+
+    // check cache first
+    const cachedEntry = cache[cacheKey]
+    if (cachedEntry && now - cachedEntry.timestamp < CACHE_DURATION_MS) {
+      return cachedEntry.data
     }
 
     // Fetch fresh data
@@ -51,8 +68,11 @@ export const getMorphoCumulatives: (
       }
     }
 
-    // Store in cache with automatic expiration
-    cache.set(cacheKey, result)
+    // store in cache
+    cache[cacheKey] = {
+      data: result,
+      timestamp: now,
+    }
 
     return result
   }
