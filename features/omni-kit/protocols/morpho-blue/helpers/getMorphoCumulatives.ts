@@ -11,7 +11,7 @@ interface CacheEntry {
 }
 
 const cache: Record<string, CacheEntry> = {}
-const CACHE_DURATION_MS = 5 * 60 * 1000 // 5 minutes
+const CACHE_DURATION_MS = 1 * 60 * 1000 // 1 minute
 
 const createCacheKey = (
   networkId: OmniSupportedNetworkIds,
