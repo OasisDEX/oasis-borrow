@@ -128,6 +128,7 @@ export const SwapCardWrapper = ({
     depositAction,
   })
   const viewPrimaryToken = resolvedPrimaryTokenData.token.replace('SUS', 'sUS')
+  const isMkrOrSky = ['MKR', 'SKY'].includes(resolvedPrimaryTokenData.token)
   return (
     <Card
       sx={{
@@ -169,7 +170,10 @@ export const SwapCardWrapper = ({
           icon={exchange}
           variant="outlineSmall"
           onClick={() => setIsTokenSwapped(!isTokenSwapped)}
-          sx={{ cursor: 'pointer' }}
+          sx={{
+            cursor: 'pointer',
+            ...(isMkrOrSky ? { cursor: 'not-allowed', pointerEvents: 'none' } : {}),
+          }}
         />
       </Flex>
       {config.description && (

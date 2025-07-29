@@ -288,7 +288,7 @@ export const mainnetContracts = {
   erc20ProxyActions: contractDesc(erc20proxyActions, mainnet.mpa.core.ERC20ProxyActions),
   sky: {
     daiusds: contractDesc(skyDaiUsds, '0x3225737a9Bbb6473CB4a45b7244ACa2BeFdB276A'),
-    mkrsky: contractDesc(skyMkrSky, '0xBDcFCA946b6CDd965f99a839e4435Bcdc1bc470B'),
+    mkrsky: contractDesc(skyMkrSky, '0xA1Ea1bA18E88C381C724a75F23a130420C403f9a'),
     susds: contractDesc(skySusds, '0xa3931d71877C0E7a3148CB7Eb4463524FEc27fbD'),
     staking: contractDesc(skyStaking, '0x0650CAF159C5A49f711e8169D4336ECB9b950275'),
     stakingCle: contractDesc(skyCleStaking, '0x10ab606B067C9C461d8893c47C7512472E19e2Ce'),

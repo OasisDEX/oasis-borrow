@@ -42,8 +42,13 @@ export const skyMkrSkySwap = async ({
   const address = mainnetContracts.sky.mkrsky.address
   const contract = SkyMkrSky__factory.connect(address, signer)
   const signerAddress = await signer.getAddress()
-  const contractMethod = token === 'MKR' ? contract.mkrToSky : contract.skyToMkr
-  return contractMethod(signerAddress, ethers.BigNumber.from(amountToWad(amount).toString()))
+  if (token !== 'MKR') {
+    return () => {
+      // eslint-disable-next-line no-console
+      console.log('There is no SKY to MKR swap anymore.')
+    }
+  }
+  return contract.mkrToSky(signerAddress, ethers.BigNumber.from(amountToWad(amount).toString()))
 }
 
 export const skyUsdsSusdsVault = async ({
