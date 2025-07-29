@@ -5,10 +5,48 @@ import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
+interface CacheEntry {
+  data: MorphoCumulativesData
+  timestamp: number
+}
+
+const cache: Record<string, CacheEntry> = {}
+const CACHE_DURATION_MS = 1 * 60 * 1000 // 1 minute
+
+const createCacheKey = (
+  networkId: OmniSupportedNetworkIds,
+  proxy: string,
+  marketId: string,
+): string => {
+  return `${networkId}-${proxy.toLowerCase()}-${marketId.toLowerCase()}`
+}
+
+const cleanupExpiredEntries = () => {
+  const now = Date.now()
+  Object.keys(cache).forEach((key) => {
+    if (now - cache[key].timestamp > CACHE_DURATION_MS) {
+      delete cache[key]
+    }
+  })
+}
+
 export const getMorphoCumulatives: (
   networkId: OmniSupportedNetworkIds,
 ) => GetCumulativesData<MorphoCumulativesData> =
   (networkId) => async (proxy: string, marketId: string) => {
+    const cacheKey = createCacheKey(networkId, proxy, marketId)
+    const now = Date.now()
+
+    // cleanup expired entries before checking cache
+    cleanupExpiredEntries()
+
+    // check cache first
+    const cachedEntry = cache[cacheKey]
+    if (cachedEntry && now - cachedEntry.timestamp < CACHE_DURATION_MS) {
+      return cachedEntry.data
+    }
+
+    // Fetch fresh data
     const { response } = (await loadSubgraph({
       subgraph: 'Morpho',
       method: 'getMorphoCumulatives',
@@ -21,11 +59,20 @@ export const getMorphoCumulatives: (
 
     const lendingCumulatives = response.account?.borrowPositions[0]
 
+    let result: MorphoCumulativesData
     if (!lendingCumulatives) {
-      return defaultLendingCumulatives
+      result = defaultLendingCumulatives
+    } else {
+      result = {
+        ...mapOmniLendingCumulatives(lendingCumulatives),
+      }
     }
 
-    return {
-      ...mapOmniLendingCumulatives(lendingCumulatives),
+    // store in cache
+    cache[cacheKey] = {
+      data: result,
+      timestamp: now,
     }
+
+    return result
   }
