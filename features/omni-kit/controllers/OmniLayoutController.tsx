@@ -1,3 +1,4 @@
+import { Icon } from 'components/Icon'
 import { LazySummerBannerWithRaysHandling } from 'components/LazySummerBanner'
 import { MessageCard } from 'components/MessageCard'
 import { TabBar } from 'components/TabBar'
@@ -5,7 +6,7 @@ import { DisabledOptimizationControl } from 'components/vault/DisabledOptimizati
 import { DisabledProtectionControl } from 'components/vault/DisabledProtectionControl'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { faultyTakeProfitTriggerIdsByNetwork } from 'features/automation/common/consts'
-import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { VaultNotice, VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { OmniAutomationFormController } from 'features/omni-kit/automation/controllers/'
 import {
   hasActiveOptimization,
@@ -31,9 +32,11 @@ import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatLtvDecimalAsPercent } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { one } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Container, Grid } from 'theme-ui'
+import { warning } from 'theme/icons'
+import { Box, Container, Grid, Link } from 'theme-ui'
 
 export function OmniLayoutController({ txHandler }: { txHandler: () => () => void }) {
   const { ProxyReveal: proxyReveal, LambdaAutomations, SkyUpgrade } = useAppConfig('features')
@@ -114,11 +117,34 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   const hasOptimization = hasActiveOptimization({ poolId, positionTriggers, protocol })
   const hasProtection = hasActiveProtection({ poolId, positionTriggers, protocol })
 
+  const isAave = protocol === LendingProtocol.AaveV3
+  const hasAutomations = automation
+    ? Object.keys(automation.flags).some(
+        (key) => automation.flags[key as keyof typeof automation.flags],
+      )
+    : false
+
   return (
     <Container variant="vaultPageContainerStatic">
       {owner && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={owner} />}
       {contextIsLoaded && !isOwner && !isOpening && (
         <VaultOwnershipBanner controller={owner} account={walletAddress} mb={4} />
+      )}
+      {contextIsLoaded && isAave && hasAutomations && (
+        <VaultNotice
+          header="Important update affecting Aave V3 Automations"
+          color="black"
+          mb="30px"
+          status={<Icon size="34px" icon={warning} style={{ marginTop: '14px' }} />}
+          subheader={
+            <>
+              Due to a recent change in the Aave V3 Smart Contracts, all automations for Aave V3 are
+              unable to be triggered. There is no action needed at this time, and new automations
+              will be available to migrate to soon. Any questions, please{' '}
+              <Link href="https://chat.summer.fi">contact us on Discord.</Link>
+            </>
+          }
+        />
       )}
       {shouldShowOverrideTakeProfit && (
         <Box mb={4}>
