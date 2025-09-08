@@ -50,9 +50,12 @@ export const sendOmniTransaction$ = ({
             })
 
         return from(
-          estimateGasRequest.then((val) =>
-            new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0),
-          ),
+          estimateGasRequest
+            .then((val) => new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0))
+            .catch((error) => {
+              console.warn('Estimating gas failed, fallback to wallet provider gas limit', error)
+              return undefined
+            }),
         ).pipe(
           switchMap((gasLimit) => {
             const sendTxRequest = sendAsSinger
@@ -61,12 +64,12 @@ export const sendOmniTransaction$ = ({
                   to: txData.to,
                   data: txData.data,
                   value: txData.value,
-                  gasLimit: gasLimit ?? undefined,
+                  gasLimit: gasLimit,
                 })
               : dpm.execute(txData.to, txData.data, {
                   ...override,
                   value: txData.value,
-                  gasLimit: gasLimit ?? undefined,
+                  gasLimit: gasLimit,
                 })
 
             return from(sendTxRequest).pipe(
