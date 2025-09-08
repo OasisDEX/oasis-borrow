@@ -53,8 +53,8 @@ export const sendOmniTransaction$ = ({
           estimateGasRequest
             .then((val) => new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0))
             .catch((error) => {
-              console.warn('Estimating gas failed, fallback to wallet provider gas limit', error)
-              return undefined
+              console.warn('Estimating gas failed, fallback to: 5000000', error)
+              return '5000000'
             }),
         ).pipe(
           switchMap((gasLimit) => {
@@ -124,7 +124,7 @@ export const sendOmniTransaction$ = ({
       }),
       takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)),
       catchError((error) => {
-        console.warn('Sending transaction failed', error)
+        console.warn('Sending transaction failed XXX', error)
         onError && onError()
         return of({
           status: TxStatus.Error,
