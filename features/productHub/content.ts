@@ -44,18 +44,6 @@ export const productHubAjnaRewardsTooltip: ProductHubTooltipType = {
   icon: 'sparks',
 }
 
-export const productHubSparkRewardsTooltip: ProductHubTooltipType = {
-  content: {
-    title: {
-      key: 'spark.product-hub-tooltips.elligible-for-spk-airdrop',
-    },
-    description: {
-      key: 'spark.product-hub-tooltips.elligible-for-spk-airdrop-description',
-    },
-  },
-  icon: 'sparks',
-}
-
 export const productHubSparkWstethRewardsTooltip: ProductHubTooltipType = {
   content: {
     title: {

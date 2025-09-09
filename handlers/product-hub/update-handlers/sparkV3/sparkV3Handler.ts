@@ -16,7 +16,6 @@ import { settings } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
-  productHubSparkRewardsTooltip,
   productHubSparkWstethRewardsTooltip,
 } from 'features/productHub/content'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
@@ -223,9 +222,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         const hasAnyRewards = ethDaiDerivativeRewards || ethEthDerivativeRewards || sDaiEthRewards
 
         let feeTooltip = undefined
-        if (hasAnyRewards && ethDaiDerivativeRewards) {
-          feeTooltip = productHubSparkRewardsTooltip
-        }
         if (hasAnyRewards && sDaiEthRewards) {
           feeTooltip = productHubSparkWstethRewardsTooltip
         }
