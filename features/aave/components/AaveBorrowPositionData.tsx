@@ -9,7 +9,6 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCardModal'
-import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
@@ -383,7 +382,6 @@ export function AaveBorrowPositionData({
           </DetailsSectionFooterItemWrapper>
         }
       />
-      {isSparkPosition && isElligibleSparkPosition && <SparkTokensBannerController />}
     </Grid>
   )
 }
