@@ -10,7 +10,6 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCardModal'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
-import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
@@ -36,7 +35,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
@@ -119,12 +118,6 @@ export function AaveBorrowPositionData({
     aaveHistory[0].eventType === 'executed' &&
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
-
-  const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
-  const isElligibleSparkPosition = checkElligibleSparkPosition(
-    collateralToken.symbol,
-    debtToken.symbol,
-  )
 
   const nextNetValue = nextPositionThings
     ? getOmniNetValuePnlData({

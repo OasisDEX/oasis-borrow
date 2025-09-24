@@ -11,7 +11,6 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { CostToBorrowContentCardModal } from 'features/aave/components/CostToBorrowContentCardModal'
 import { lambdaPercentageDenomination } from 'features/aave/constants'
-import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import { mapTrailingStopLossFromLambda } from 'features/aave/manage/helpers/map-trailing-stop-loss-from-lambda'
 import type { TriggersAaveEvent, triggersAaveStateMachine } from 'features/aave/manage/state'
@@ -39,7 +38,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { nbsp } from 'helpers/nbsp'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
@@ -127,11 +126,6 @@ export function AaveMultiplyPositionData({
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
 
-  const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
-  const isElligibleSparkPosition = checkElligibleSparkPosition(
-    collateralToken.symbol,
-    debtToken.symbol,
-  )
   const omniProduct = {
     [ProductType.Borrow]: OmniProductType.Borrow,
     [ProductType.Earn]: OmniProductType.Earn,
