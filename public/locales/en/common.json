@@ -3831,39 +3831,5 @@
   },
   "vault-token-rewards": {
     "title": "Vault token rewards"
-  },
-  "rays": {
-    "sidebar": {
-      "banner": {
-        "instant": {
-          "title": "Earn {{rays}} Rays Instantly",
-          "description": "You'll earn {{raysPerYear}} Rays a year"
-        },
-        "open-non-swap": {
-          "title": "Earn Rays!"
-        },
-        "closing": {
-          "title": "You’ve earned {{rays}} Rays already",
-          "description": "By closing early you'll lose {{raysPerYear}} Rays"
-        },
-        "boost": {
-          "title": "Boost your Rays by an extra {{rays}} Rays a year",
-          "description": "You’ll earn extra Rays each time automation triggers"
-        },
-        "auto-ongoing": {
-          "title": "Earn extra Rays each time automation triggers"
-        },
-        "reduceAuto": {
-          "title": "Reduce Rays by {{rays}} Rays a year",
-          "description": "When you remove this automation"
-        },
-        "reduce": {
-          "title": "You will reduce your yearly Rays on this position by {{rays}} performing this action"
-        },
-        "increase": {
-          "title": "You will increase your yearly Rays on this position by {{rays}} performing this action"
-        }
-      }
-    }
   }
 }

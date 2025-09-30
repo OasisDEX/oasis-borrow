@@ -2,10 +2,9 @@ import { isCorrelatedPosition, RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { getNetworkById, NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
-import { mapAaveLikeRaysMultipliers } from 'features/omni-kit/protocols/aave-like/helpers/mapAaveLikeRaysMultipliers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import {
@@ -22,7 +21,6 @@ import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/position
 import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import { getOraclePriceData } from 'handlers/portfolio/positions/helpers/getOraclePriceData'
-import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type { PortfolioPositionsHandler, PositionDetail } from 'handlers/portfolio/types'
 import {
   formatCryptoBalance,
@@ -31,7 +29,6 @@ import {
 } from 'helpers/formatters/format'
 import type { GetYieldsResponse } from 'helpers/lambda/yields'
 import { getYieldsRequest } from 'helpers/lambda/yields'
-import { getPointsPerYear } from 'helpers/rays'
 import { zero } from 'helpers/zero'
 import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
@@ -45,7 +42,6 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
   allOraclePrices,
   apiVaults,
   debug,
-  raysUserMultipliers,
 }) => {
   const positionAutomations = allPositionsAutomations
     .filter(filterAutomation(dpm))
@@ -100,24 +96,6 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     prices,
   )
 
-  const rawRaysPerYear = getPointsPerYear(calculations.netValue.toNumber())
-
-  const networkName = getNetworkById(dpm.networkId).name
-
-  const positionRaysMultipliersData = mapAaveLikeRaysMultipliers({
-    multipliers: raysUserMultipliers,
-    collateralTokenAddress: dpm.collateralToken,
-    quoteTokenAddress: dpm.debtToken,
-    dpmProxy: dpm.id,
-    protocol: commonData.protocol,
-    networkName,
-  })
-
-  const raysPerYear = getPositionPortfolioRaysWithBoosts({
-    rawRaysPerYear,
-    positionRaysMultipliersData,
-  })
-
   return {
     ...commonData,
     rawPositionDetails,
@@ -153,9 +131,6 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
     debuggingData: debug
       ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
-    raysPerYear: {
-      value: raysPerYear,
-    },
   }
 }
 
@@ -167,7 +142,6 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
   allOraclePrices,
   apiVaults,
   debug,
-  raysUserMultipliers,
 }) => {
   const positionAutomations = allPositionsAutomations
     .filter(filterAutomation(dpm))
@@ -261,24 +235,6 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     prices,
   )
 
-  const rawRaysPerYear = getPointsPerYear(calculations.netValue.toNumber())
-
-  const networkName = getNetworkById(dpm.networkId).name
-
-  const positionRaysMultipliersData = mapAaveLikeRaysMultipliers({
-    multipliers: raysUserMultipliers,
-    collateralTokenAddress: dpm.collateralToken,
-    quoteTokenAddress: dpm.debtToken,
-    dpmProxy: dpm.id,
-    protocol: commonData.protocol,
-    networkName,
-  })
-
-  const raysPerYear = getPositionPortfolioRaysWithBoosts({
-    rawRaysPerYear,
-    positionRaysMultipliersData,
-  })
-
   return {
     ...commonData,
     rawPositionDetails,
@@ -325,9 +281,6 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
     debuggingData: debug
       ? { ...formatBigNumberDebugData({ ...commonRest, positionAutomations, dpm }) }
       : undefined,
-    raysPerYear: {
-      value: raysPerYear,
-    },
   }
 }
 
@@ -337,7 +290,6 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
   allPositionsHistory,
   allOraclePrices,
   debug,
-  raysUserMultipliers,
 }) => {
   const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     dpm,
@@ -415,24 +367,6 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     useDebtTokenAsPnL: isCorrelatedPosition(commonData.primaryToken, commonData.secondaryToken),
   })
 
-  const rawRaysPerYear = getPointsPerYear(calculations.netValue.toNumber())
-
-  const networkName = getNetworkById(dpm.networkId).name
-
-  const positionRaysMultipliersData = mapAaveLikeRaysMultipliers({
-    multipliers: raysUserMultipliers,
-    collateralTokenAddress: dpm.collateralToken,
-    quoteTokenAddress: dpm.debtToken,
-    dpmProxy: dpm.id,
-    protocol,
-    networkName,
-  })
-
-  const raysPerYear = getPositionPortfolioRaysWithBoosts({
-    rawRaysPerYear,
-    positionRaysMultipliersData,
-  })
-
   return {
     ...commonData,
     lendingType: onChainPositionData.debt.amount.gt(zero) ? 'loop' : 'passive',
@@ -468,9 +402,6 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
     ].filter(Boolean) as PositionDetail[],
     netValue: netValuePnlModalData.netValue.inToken.toNumber(),
     debuggingData: debug ? { ...formatBigNumberDebugData(commonRest) } : undefined,
-    raysPerYear: {
-      value: raysPerYear,
-    },
   }
 }
 
@@ -480,7 +411,6 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   positionsCount,
   debug,
-  raysUserMultipliers,
 }) => {
   const aaveLikeDpmList = dpmList
     .map(mapDpmProtocolNameToUIName)
@@ -552,7 +482,6 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
         allOraclePrices,
         apiVaults,
         debug,
-        raysUserMultipliers,
       }
       switch (dpm.positionType.toLowerCase()) {
         case OmniProductType.Multiply:

@@ -406,7 +406,6 @@ interface CommonMetadataValues {
   isFormEmpty: boolean
   sidebarTitle?: string
   automation?: AutomationMetadataValues
-  temporaryRaysMultiplier?: BigNumber
 }
 interface CommonMetadataElements {
   faq: ReactNode

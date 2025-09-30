@@ -1,5 +1,4 @@
 import type { AaveLikePositionV2 } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AaveLiquidatedNotice, TokenCeilingReduced } from 'features/notices/VaultsNoticesView'
@@ -29,9 +28,8 @@ import type { AaveLikeHistoryEvent } from 'features/omni-kit/protocols/aave-like
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { isBetweenDates } from 'helpers/isBetweenDates'
 import { useHash } from 'helpers/useHash'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 
@@ -115,13 +113,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
           />
         ) : undefined
 
-      // temporary spark x2 rays bonus from 1st September to the end of 15th September
-      const temporaryRaysMultiplier =
-        protocol === LendingProtocol.SparkV3 &&
-        isBetweenDates(new Date('2024-09-01T00:00:00'), new Date('2024-09-16T00:00:00'))
-          ? new BigNumber(2)
-          : one
-
       return {
         notifications,
         validations,
@@ -177,7 +168,6 @@ export const useAaveLikeMetadata: GetOmniMetadata = (productContext) => {
             simulationResponse: productContext.automation.simulationData,
             protocol,
           }),
-          temporaryRaysMultiplier,
         },
         elements: {
           faq: getAaveLikeFaq({ productType, isYieldLoopWithData, protocol }),

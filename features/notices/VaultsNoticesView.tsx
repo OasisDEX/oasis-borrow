@@ -4,7 +4,6 @@ import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
 import { networksByName } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { Icon } from 'components/Icon'
-import { LazySummerBannerWithRaysHandling } from 'components/LazySummerBanner'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
 import dayjs from 'dayjs'
@@ -427,7 +426,7 @@ export function VaultNextPriceUpdateCounter({
   )
 }
 
-export function VaultNoticesView({ id, isOwner }: { id: BigNumber; isOwner?: boolean }) {
+export function VaultNoticesView({ id }: { id: BigNumber; isOwner?: boolean }) {
   const { vaultBanners$ } = useProductContext()
   const [vaultBanners] = useObservable(vaultBanners$(id))
 
@@ -480,14 +479,7 @@ export function VaultNoticesView({ id, isOwner }: { id: BigNumber; isOwner?: boo
 
   if (!vaultBanners) return null
 
-  const { controller } = vaultBanners
-
-  return (
-    <>
-      {controller && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={controller} />}
-      {basicBanner}
-    </>
-  )
+  return <>{basicBanner}</>
 }
 
 export function AavePositionAlreadyOpenedNotice() {

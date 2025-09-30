@@ -3,8 +3,6 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { isOmniAutomationFormValid } from 'features/omni-kit/automation/helpers'
-import { getNumberOfActiveTriggers } from 'features/omni-kit/automation/helpers/getNumberOfActiveTriggers'
-import { getOmniAutomationSidebarRaysBanner } from 'features/omni-kit/automation/helpers/getOmniAutomationSidebarRaysBanner'
 import { useOmniAutomationTxHandler } from 'features/omni-kit/automation/hooks/useOmniAutomationTxHandler'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -16,7 +14,6 @@ import {
 import { useOmniAutomationSidebarTitle } from 'features/omni-kit/hooks'
 import { OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
-import { getLocalAppConfig } from 'helpers/config'
 import { TriggerAction } from 'helpers/lambda/triggers'
 import { useAccount } from 'helpers/useAccount'
 import { LendingProtocolLabel } from 'lendingProtocols'
@@ -52,7 +49,6 @@ export function OmniAutomationFormView({
       shouldSwitchNetwork,
       network,
       networkId,
-      positionRaysMultipliersData,
     },
     automationSteps: { currentStep, editingStep, isStepWithTransaction, setNextStep, setStep },
     tx: {
@@ -73,10 +69,7 @@ export function OmniAutomationFormView({
       setSimulation,
       setCachedOrderInfoItems,
     },
-    position: {
-      openFlowResolvedDpmId,
-      currentPosition: { position },
-    },
+    position: { openFlowResolvedDpmId },
     dynamicMetadata: {
       featureToggles: { suppressValidation, safetySwitch },
       validations: { isFormFrozen },
@@ -92,19 +85,14 @@ export function OmniAutomationFormView({
 
   const { state, dispatch } = activeForm
 
-  const automationFlags = automation?.flags
-
   const isTriggerEnabled = activeUiDropdown && automation?.triggers[activeUiDropdown]
 
   const txHandler = useOmniAutomationTxHandler()
 
   const { connect, setChain } = useConnection()
   const { walletAddress } = useAccount()
-  const { Rays } = getLocalAppConfig('features')
 
   const genericSidebarTitle = useOmniAutomationSidebarTitle()
-
-  const activeTriggersNumber = getNumberOfActiveTriggers({ flags: automation.flags })
 
   const {
     isPrimaryButtonDisabled,
@@ -201,17 +189,6 @@ export function OmniAutomationFormView({
     title: sidebarTitle ?? genericSidebarTitle,
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
-    aboveButton: Rays
-      ? getOmniAutomationSidebarRaysBanner({
-          action: state.action,
-          activeTriggersNumber,
-          position,
-          positionRaysMultipliersData,
-          automationFlags,
-          automationFeature: activeUiDropdown,
-          hidden: isTxInProgress || isTxSuccess || isTxError,
-        })
-      : null,
     primaryButton: {
       label: t(primaryButtonLabel),
       disabled: suppressValidation || isTxSuccess ? false : isPrimaryButtonDisabled,

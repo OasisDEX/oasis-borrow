@@ -8,11 +8,6 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { ethers } from 'ethers'
-import {
-  hasActiveOptimization,
-  hasActiveProtection,
-  isSupportingAutomation,
-} from 'features/omni-kit/automation/helpers'
 import { OmniDupePositionModal } from 'features/omni-kit/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
@@ -23,7 +18,6 @@ import {
   getOmniSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
-import { getOmniSidebarRaysBanner } from 'features/omni-kit/helpers/getOmniSidebarRaysBanner'
 import { useOmniProductTypeTransition, useOmniSidebarTitle } from 'features/omni-kit/hooks'
 import { OmniMultiplyPanel, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -74,10 +68,6 @@ export function OmniFormView({
       settings,
       shouldSwitchNetwork,
       positionId,
-      poolId,
-      positionRaysMultipliersData,
-      collateralPrice,
-      isYieldLoop,
     },
     steps: {
       currentStep,
@@ -100,21 +90,15 @@ export function OmniFormView({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    position: {
-      isSimulationLoading,
-      openFlowResolvedDpmId,
-      currentPosition: { position, simulation },
-      swap,
-    },
+    position: { isSimulationLoading, openFlowResolvedDpmId },
     dynamicMetadata: {
       elements: { sidebarContent },
       featureToggles: { suppressValidation, safetySwitch },
       filters: { omniProxyFilter },
       theme,
       validations: { isFormValid, isFormFrozen, hasErrors },
-      values: { interestRate, sidebarTitle, temporaryRaysMultiplier },
+      values: { interestRate, sidebarTitle },
     },
-    automation: { positionTriggers },
   } = useOmniProductContext(productType)
 
   const txHandler = _txHandler()
@@ -130,7 +114,7 @@ export function OmniFormView({
   const { walletAddress } = useAccount()
   const { openModal } = useModalContext()
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
-  const { OmniKitDebug, Rays } = getLocalAppConfig('features')
+  const { OmniKitDebug } = getLocalAppConfig('features')
 
   const genericSidebarTitle = useOmniSidebarTitle()
 
@@ -299,15 +283,6 @@ export function OmniFormView({
     txDetails,
   })
 
-  const { isSupportingOptimization, isSupportingProtection } = isSupportingAutomation({
-    collateralToken,
-    networkId,
-    poolId,
-    protocol,
-    quoteToken,
-    settings,
-  })
-
   const withLazySummer =
     isTxSuccess && state.uiDropdown === OmniMultiplyPanel.Close
       ? {
@@ -323,27 +298,6 @@ export function OmniFormView({
   const sidebarSectionProps: SidebarSectionProps = {
     title: positionClosedTitle ?? sidebarTitle ?? genericSidebarTitle,
     dropdown,
-    aboveButton: Rays
-      ? getOmniSidebarRaysBanner({
-          isOpening,
-          uiDropdown: state.uiDropdown,
-          isSupportingOptimization,
-          isOptimizationActive: hasActiveOptimization({ poolId, positionTriggers, protocol }),
-          isSupportingProtection,
-          isProtectionActive: hasActiveProtection({ poolId, positionTriggers, protocol }),
-          positionRaysMultipliersData,
-          position,
-          simulation,
-          productType,
-          swapData: swap?.current,
-          hidden: isTxInProgress || isTxSuccess || isTxError,
-          protocol,
-          pseudoProtocol,
-          collateralPrice,
-          isYieldLoop,
-          temporaryRaysMultiplier,
-        })
-      : null,
     content: (
       <Grid gap={3}>
         {sidebarContent}

@@ -1,15 +1,12 @@
-import { networksById } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
-import { mapAjnaRaysMultipliers } from 'features/omni-kit/protocols/ajna/helpers/mapAjnaRaysMultipliers'
 import { useAjnaRedirect } from 'features/omni-kit/protocols/ajna/hooks'
 import { getAjnaPositionAggregatedData$ } from 'features/omni-kit/protocols/ajna/observables'
 import type { OmniProductType, OmniProtocolHookProps } from 'features/omni-kit/types'
-import { getRaysUserMultipliers } from 'features/rays/getRaysUserMultipliers'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
 import { useMemo } from 'react'
-import { EMPTY, from } from 'rxjs'
+import { EMPTY } from 'rxjs'
 
 export function useAjnaData({
   collateralToken,
@@ -17,12 +14,8 @@ export function useAjnaData({
   networkId,
   quoteToken,
   tokenPriceUSDData,
-  isOpening,
-  walletAddress,
 }: OmniProtocolHookProps) {
   const { ajnaPosition$ } = useProductContext()
-
-  const networkName = networksById[networkId].name
 
   const isOracless = !!(
     collateralToken &&
@@ -71,36 +64,12 @@ export function useAjnaData({
     ),
   )
 
-  const [multipliers] = useObservable(
-    useMemo(
-      () =>
-        dpmPositionData
-          ? from(
-              getRaysUserMultipliers({
-                walletAddress: isOpening && walletAddress ? walletAddress : dpmPositionData.user,
-              }),
-            )
-          : EMPTY,
-      [dpmPositionData],
-    ),
-  )
-
-  const poolId = ajnaPositionData?.pool.poolAddress
-
-  const positionRaysMultipliersData = mapAjnaRaysMultipliers({
-    multipliers,
-    dpmProxy: dpmPositionData?.proxy,
-    networkName,
-    poolId,
-  })
-
   return {
     data: {
       aggregatedData: ajnaPositionAggregatedData,
       poolId: ajnaPositionData?.pool.poolAddress,
       positionData: ajnaPositionData,
       protocolPricesData: tokenPriceUSDData,
-      positionRaysMultipliersData,
     },
     errors: [ajnaPositionAggregatedError, ajnaPositionError],
   }

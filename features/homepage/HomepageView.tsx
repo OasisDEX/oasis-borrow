@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
-import { WithArrow } from 'components/WithArrow'
 import { OmniProductType } from 'features/omni-kit/types'
 import { featuredProducts } from 'features/productHub/meta'
 import { ProductHubView } from 'features/productHub/views'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
-import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
@@ -79,7 +78,7 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export function HomepageView() {
-  const { EnableRefinance: isRefinanceEnabled, Rays: isRaysEnabled } = useAppConfig('features')
+  const { EnableRefinance: isRefinanceEnabled } = useAppConfig('features')
 
   const { t } = useTranslation()
   const { data: oasisStats } = useOasisStats()
@@ -98,52 +97,6 @@ export function HomepageView() {
     >
       <ReferralHandlerDynamic />
       <ImagesSlider items={partnerLogosConfig} />
-      {isRaysEnabled && (
-        <Grid
-          columns={['1fr', '1.8fr 1.2fr']}
-          sx={{
-            background: 'linear-gradient(111.72deg, #F2FCFF 2.94%, #FFE7D8 100%), #FFFFFF',
-            mt: 6,
-            pl: 4,
-            pr: '20px',
-            py: 5,
-            borderRadius: 'rounder',
-          }}
-        >
-          <HomepageHeadline
-            primaryText={t('landing.why-oasis.sub-headers.rays.title')}
-            sx={{ alignSelf: 'center', mb: [5, 0] }}
-            buttonSx={{ p: 0 }}
-            buttonVariant="textual"
-            textVariant="header4"
-            buttonLike={
-              <Box sx={{ mt: 3 }}>
-                <a
-                  href={
-                    wallet?.address
-                      ? `${INTERNAL_LINKS.rays}?userAddress=${wallet?.address}`
-                      : INTERNAL_LINKS.rays
-                  }
-                  style={{ textDecoration: 'none' }}
-                >
-                  <WithArrow sx={{ color: 'interactive100' }}>
-                    {t('landing.why-oasis.sub-headers.rays.cta')}
-                  </WithArrow>
-                </a>
-              </Box>
-            }
-          />
-
-          <Image
-            src={staticFilesRuntimeUrl('/static/img/homepage/rays-landing.svg')}
-            sx={{
-              height: ['auto', '380px'],
-              width: ['100%', '342px'],
-              justifySelf: ['center', 'right'],
-            }}
-          />
-        </Grid>
-      )}
       <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
         {t('landing.why-oasis.main-header')}
       </Text>
