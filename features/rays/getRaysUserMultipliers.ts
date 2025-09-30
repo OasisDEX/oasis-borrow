@@ -1,4 +1,5 @@
 import type { PositionRaysMultipliersType, UserRaysMultipliersType } from 'features/rays/types'
+import { raysUserMultipliersMockedResponse } from 'handlers/portfolio/positions/helpers/rays-mock'
 
 export interface RaysUserMultipliersResponse {
   address: string
@@ -19,7 +20,5 @@ export const getRaysUserMultipliers = async ({
 }: {
   walletAddress: string
 }): Promise<RaysUserMultipliersResponse> => {
-  const response = await fetch(`/api/rays/multipliers?address=${walletAddress}`)
-
-  return response.json()
+  return Promise.resolve(raysUserMultipliersMockedResponse(walletAddress))
 }

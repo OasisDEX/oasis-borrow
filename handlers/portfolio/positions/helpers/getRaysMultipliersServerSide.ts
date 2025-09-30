@@ -1,12 +1,10 @@
 import type { RaysUserMultipliersResponse } from 'features/rays/getRaysUserMultipliers'
-import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
+import { raysUserMultipliersMockedResponse } from 'handlers/portfolio/positions/helpers/rays-mock'
 
 export const getRaysUserMultipliersServerSide = async ({
   address,
 }: {
   address: string
 }): Promise<RaysUserMultipliersResponse> => {
-  const response = await fetchFromFunctionsApi(`/api/rays/multipliers?address=${address}`)
-
-  return response.json()
+  return Promise.resolve(raysUserMultipliersMockedResponse(address))
 }

@@ -1,4 +1,5 @@
 import type { RaysEligibilityCondition, RaysUserType } from 'features/rays/types'
+import { raysUserMockedResponse } from 'handlers/portfolio/positions/helpers/rays-mock'
 
 export interface RaysUserResponse {
   userRays?: {
@@ -14,15 +15,15 @@ export interface RaysUserResponse {
 }
 
 export const getRaysUser = async ({
-  walletAddress,
+  walletAddress: _walletAddress,
 }: {
   walletAddress: string
 }): Promise<RaysUserResponse> => {
   try {
-    const response = await fetch(`/api/rays?address=${walletAddress}`)
+    const response = await raysUserMockedResponse()
 
     return {
-      userRays: await response.json(),
+      userRays: response.userRays,
     }
   } catch (error) {
     console.error('Error fetching rays user data', error)

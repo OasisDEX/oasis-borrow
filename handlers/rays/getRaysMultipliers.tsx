@@ -1,4 +1,4 @@
-import { fetchFromFunctionsApi } from 'helpers/fetchFromFunctionsApi'
+import { raysUserMultipliersMockedResponse } from 'handlers/portfolio/positions/helpers/rays-mock'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as z from 'zod'
 
@@ -18,9 +18,5 @@ export async function getRaysMultipliers(req: NextApiRequest, res: NextApiRespon
 
   const { address } = querySchema.parse(req.query)
 
-  const response = await fetchFromFunctionsApi(`/api/rays/multipliers?address=${address}`).then(
-    (resp) => resp.json(),
-  )
-
-  return res.status(response.error ? 500 : 200).json(response)
+  return res.status(200).json(Promise.resolve(raysUserMultipliersMockedResponse(address)))
 }
