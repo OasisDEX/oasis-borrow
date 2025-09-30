@@ -27,7 +27,6 @@ export const INTERNAL_LINKS = {
   ajnaPoolCreator: '/ajna/pool-creator',
   sparkRewards:
     'https://forum.makerdao.com/t/sparkdao-spk-pre-farming-airdrop-general-subdao-farming-overview/21595',
-  rays: '/rays',
   skySwapPage: '/ethereum/sky/upgrade',
 }
 
@@ -79,7 +78,6 @@ export const EXTERNAL_LINKS = {
     WHAT_IS_SDAI: 'https://docs.summer.fi/products/earn/dai-savings-rate-dsr/whats-sdai',
     WHAT_IS_SDAI_CONVERSION:
       'https://docs.summer.fi/products/earn/dai-savings-rate-dsr/what-is-sdai-conversion',
-    READ_ABOUT_RAYS: 'https://blog.summer.fi/introducing-rays-points-program',
   },
   BLOG: {
     MAIN: 'https://blog.summer.fi',

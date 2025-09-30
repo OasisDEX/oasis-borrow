@@ -33,11 +33,6 @@ export function OmniOverviewController() {
 
   const amountInPosition = useOmniInPositionAmount()
 
-  // const raysPerYearElement = getOmniDetailsSectionRaysTitle({
-  //   position,
-  //   positionRaysMultipliersData,
-  // })
-
   return (
     <Grid sx={{ rowGap: 3 }}>
       <DetailsSection

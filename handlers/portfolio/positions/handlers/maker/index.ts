@@ -15,13 +15,9 @@ import {
   getMakerPositionDetails,
   getMakerPositionInfo,
 } from 'handlers/portfolio/positions/handlers/maker/helpers'
-import { mapMakerRaysMultipliers } from 'handlers/portfolio/positions/handlers/maker/helpers/mapMakerRaysMultipliers'
 import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
-import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getPointsPerYear } from 'helpers/rays'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -32,7 +28,6 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   address,
   prices,
   positionsCount,
-  raysUserMultipliers,
 }) => {
   const subgraphPositions = (await loadSubgraph({
     subgraph: 'Discover',
@@ -65,7 +60,6 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           openedAt,
           triggers,
           type: initialType,
-          creator,
         }): Promise<PortfolioPosition> => {
           const { collateralPrice, daiPrice, debt, primaryToken, secondaryToken, type, url } =
             await getMakerPositionInfo({
@@ -108,23 +102,6 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           const debtToken = mapTokenToSdkToken(chainFamily.chainInfo, secondaryToken)
           const poolId = getMakerPoolId(chainFamily.chainInfo, ilk.ilk, collateralToken, debtToken)
           const positionId = getMakerPositionId(cdp)
-
-          const rawRaysPerYear = getPointsPerYear(netValue.toNumber())
-
-          const positionRaysMultipliersData = mapMakerRaysMultipliers({
-            multipliers: raysUserMultipliers,
-            dsProxy: creator,
-            ilkId: ilk.id,
-          })
-
-          // Each maker position if created through summer will have at least one position multiplier (can be x1)
-          // If there are no position multipliers it means that position was created through defisaver and is not earning rays
-          const raysPerYear = positionRaysMultipliersData.position.length
-            ? getPositionPortfolioRaysWithBoosts({
-                rawRaysPerYear,
-                positionRaysMultipliersData,
-              })
-            : 'Start earning Rays'
 
           return {
             availableToMigrate: false,
@@ -189,12 +166,6 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             secondaryToken,
             type,
             url,
-            raysPerYear: netValue.gt(zero)
-              ? {
-                  value: raysPerYear,
-                  link: EXTERNAL_LINKS.KB.READ_ABOUT_RAYS,
-                }
-              : undefined,
           }
         },
       ),

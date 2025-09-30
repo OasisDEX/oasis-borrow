@@ -1,7 +1,6 @@
 import { Announcement } from 'components/Announcement'
 import { ProductContextProvider } from 'components/context/ProductContextProvider'
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
-import { LazySummerBanner } from 'components/LazySummerBanner'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioNonOwnerNotice } from 'components/portfolio/PortfolioNonOwnerNotice'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
@@ -10,7 +9,6 @@ import { PortfolioPositionsView } from 'components/portfolio/positions/Portfolio
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
 import { MigrationsContext } from 'features/migrations/context'
-import { useUserRays } from 'features/rays/hooks/useUserRays'
 import { RefinanceGeneralContextProvider } from 'features/refinance/contexts/RefinanceGeneralContext'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -105,27 +103,15 @@ export default function PortfolioView(props: PortfolioViewProps) {
 
   const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
 
-  const { userRaysData: connectedWalletUserRaysData, refreshUserRaysData } = useUserRays({
-    walletAddress: walletAddress?.toLocaleLowerCase(),
-    enabled: isConnected && !!address,
-  })
-
-  const { userRaysData: displayWalletUserRaysData } = useUserRays({
-    walletAddress: address.toLocaleLowerCase(),
-    enabled: !isOwner,
-  })
-
   const hasAjnaPositions = portfolioPositionsData?.positions.some(
     (position) => position.protocol === LendingProtocol.Ajna,
   )
-
-  const raysData = isOwner ? connectedWalletUserRaysData : displayWalletUserRaysData
 
   return address ? (
     <ProductContextProvider>
       <RefinanceGeneralContextProvider>
         <ModalProvider>
-          <PortfolioLayout userRaysData={connectedWalletUserRaysData}>
+          <PortfolioLayout>
             <Box sx={{ width: '100%' }}>
               {ajnaSafetySwitchOn && isOwner && hasAjnaPositions && (
                 <Announcement
@@ -136,7 +122,6 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   withClose={false}
                 />
               )}
-              <LazySummerBanner address={address} isOwner={isOwner} raysData={raysData} />
               <PortfolioNonOwnerNotice
                 address={address}
                 connectedAssets={portfolioConnectedWalletWalletData?.assets}
@@ -151,7 +136,6 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   overviewData={overviewData}
                   portfolioWalletData={portfolioWalletData}
                   migrationPositions={migrationPositions}
-                  userRaysData={raysData}
                 />
               ) : (
                 <PortfolioOverviewSkeleton />
@@ -170,7 +154,6 @@ export default function PortfolioView(props: PortfolioViewProps) {
                         portfolioPositionsData={portfolioPositionsData}
                         portfolioWalletData={portfolioWalletData}
                         migrationPositions={migrationPositions}
-                        refreshUserRaysData={refreshUserRaysData}
                         overviewData={overviewData}
                       />
                     ),

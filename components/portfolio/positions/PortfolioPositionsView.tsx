@@ -4,10 +4,6 @@ import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { emptyPortfolioPositionNetValueThreshold } from 'components/portfolio/constants'
-import {
-  PortfolioDailyRays,
-  PortfolioDailyRaysNotAUser,
-} from 'components/portfolio/positions/PortfolioDailyRays'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
 import { PortfolioPositionBlockLoadingState } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
 import { PortfolioPositionFeatured } from 'components/portfolio/positions/PortfolioPositionFeatured'
@@ -25,7 +21,7 @@ import { WithArrow } from 'components/WithArrow'
 import { LazySummerBigBannerBestRates } from 'features/lazy-summer/components/LazySummerBigBanner'
 import type { PortfolioPosition, PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getLocalAppConfig, useAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatAddress } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
@@ -41,7 +37,6 @@ interface PortfolioPositionsViewProps {
   portfolioPositionsData?: PortfolioPositionsReply
   portfolioWalletData?: PortfolioAssetsResponse
   migrationPositions?: PortfolioPosition[]
-  refreshUserRaysData?: () => void
   overviewData?: PortfolioOverviewResponse
 }
 
@@ -66,11 +61,8 @@ export const PortfolioPositionsView = ({
   isOwner,
   portfolioPositionsData,
   portfolioWalletData,
-  refreshUserRaysData,
-  overviewData,
 }: PortfolioPositionsViewProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { RaysDailyChallenge } = useAppConfig('features')
 
   const [filterState, setFilterState] = useState<PortfolioPositionsViewFiltersType>({
     showEmptyPositions: false,
@@ -280,12 +272,6 @@ export const PortfolioPositionsView = ({
         <PortfolioPositionLearn posts={blogPosts?.learn} />
       </Flex>
       <Box>
-        {RaysDailyChallenge && isOwner && (overviewData?.summerUsdValue || 0) > 1 && (
-          <PortfolioDailyRays refreshUserRaysData={refreshUserRaysData} />
-        )}
-        {RaysDailyChallenge && (overviewData?.summerUsdValue || 0) < 1 && (
-          <PortfolioDailyRaysNotAUser />
-        )}
         <BlogPosts posts={blogPosts?.news} />
       </Box>
     </Grid>

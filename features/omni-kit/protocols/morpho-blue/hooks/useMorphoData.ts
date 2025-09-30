@@ -1,26 +1,19 @@
-import { networksById } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { mapMorphoBlueRaysMultipliers } from 'features/omni-kit/protocols/morpho-blue/helpers/mapMorphoBlueRaysMultipliers'
 import { useMorphoOraclePrices } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { getMorphoPositionAggregatedData$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
-import { getRaysUserMultipliers } from 'features/rays/getRaysUserMultipliers'
 import { useObservable } from 'helpers/observableHook'
 import { useMemo } from 'react'
-import { EMPTY, from } from 'rxjs'
+import { EMPTY } from 'rxjs'
 
 export function useMorphoData({
   dpmPositionData,
   networkId,
-  protocol,
   pairId,
   tokenPriceUSDData,
   tokensPrecision,
-  isOpening,
-  walletAddress,
 }: OmniProtocolHookProps) {
   const { morphoPosition$ } = useProductContext()
-  const networkName = networksById[networkId].name
 
   const oraclePrices = useMorphoOraclePrices({
     networkId,
@@ -66,38 +59,12 @@ export function useMorphoData({
     ),
   )
 
-  const [multipliers] = useObservable(
-    useMemo(
-      () =>
-        dpmPositionData
-          ? from(
-              getRaysUserMultipliers({
-                walletAddress: isOpening && walletAddress ? walletAddress : dpmPositionData.user,
-              }),
-            )
-          : EMPTY,
-      [dpmPositionData],
-    ),
-  )
-
-  const positionRaysMultipliersData = mapMorphoBlueRaysMultipliers({
-    multipliers,
-    collateralToken: dpmPositionData?.collateralToken,
-    quoteToken: dpmPositionData?.quoteToken,
-    dpmProxy: dpmPositionData?.proxy,
-    protocol,
-    networkName,
-    networkId,
-    pairId,
-  })
-
   return {
     data: {
       aggregatedData: morphoPositionAggregatedData,
       poolId: morphoPositionData?.marketParams.id,
       positionData: morphoPositionData,
       protocolPricesData: oraclePrices,
-      positionRaysMultipliersData,
     },
     errors: [morphoPositionError, morphoPositionAggregatedError],
   }

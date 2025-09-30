@@ -5,7 +5,6 @@ import { navigationBreakpoints } from 'components/navigation/Navigation.constant
 import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
 import { WithArrow } from 'components/WithArrow'
 import { NavigationActionsController } from 'features/navigation/controls/NavigationActionsController'
-import type { useUserRays } from 'features/rays/hooks/useUserRays'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useAccount } from 'helpers/useAccount'
@@ -16,11 +15,7 @@ import { useMediaQuery } from 'usehooks-ts'
 
 import { LazyBannerNavBackground } from './LazyBannerNavBackground'
 
-export function NavigationController({
-  userRaysData,
-}: {
-  userRaysData?: ReturnType<typeof useUserRays>['userRaysData']
-}) {
+export function NavigationController() {
   const { navigation } = usePreloadAppDataContext()
   const { isConnected, walletAddress } = useAccount()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
@@ -79,9 +74,7 @@ export function NavigationController({
             : []),
         ]}
         panels={resolvedNavigation}
-        actions={
-          <NavigationActionsController isConnected={isConnected} userRaysData={userRaysData} />
-        }
+        actions={<NavigationActionsController isConnected={isConnected} />}
       />
       <SwapWidgetShowHide />
     </>

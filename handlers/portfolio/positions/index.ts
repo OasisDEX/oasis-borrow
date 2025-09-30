@@ -8,7 +8,6 @@ import { morphoPositionsHandler } from 'handlers/portfolio/positions/handlers/mo
 import { skyPositionsHandler } from 'handlers/portfolio/positions/handlers/sky'
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
-import { getRaysUserMultipliersServerSide } from 'handlers/portfolio/positions/helpers/getRaysMultipliersServerSide'
 import type {
   PortfolioPositionsCountReply,
   PortfolioPositionsReply,
@@ -47,10 +46,9 @@ export const portfolioPositionsHandler = async ({
   const prices = await getCachedTokensPrices()
 
   if (prices && prices.data.tokens) {
-    const [apiVaults, dpmList, raysUserMultipliers] = await Promise.all([
+    const [apiVaults, dpmList] = await Promise.all([
       !positionsCount ? getPositionsFromDatabase({ address }) : Promise.resolve(undefined),
       getAllDpmsForWallet({ address }),
-      getRaysUserMultipliersServerSide({ address }),
     ])
 
     const payload = {
@@ -60,7 +58,6 @@ export const portfolioPositionsHandler = async ({
       prices: prices.data.tokens,
       positionsCount,
       debug,
-      raysUserMultipliers,
     }
 
     const positionsReply = await Promise.all([

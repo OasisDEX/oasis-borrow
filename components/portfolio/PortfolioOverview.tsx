@@ -3,9 +3,8 @@ import { AppLink } from 'components/Links'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
 import { WithArrow } from 'components/WithArrow'
-import type { RaysUserResponse } from 'features/rays/getRaysUser'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
-import { getLocalAppConfig, useAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { isTouchDevice } from 'helpers/isTouchDevice'
@@ -20,19 +19,15 @@ export const PortfolioOverview = ({
   overviewData,
   portfolioWalletData,
   migrationPositions,
-  userRaysData,
 }: {
   address: string
   overviewData: PortfolioOverviewResponse
   portfolioWalletData: PortfolioAssetsResponse
   migrationPositions?: PortfolioPosition[]
-  userRaysData?: RaysUserResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   const isMobile = useOnMobile() && isTouchDevice
-  const { Rays: isRaysEnabled } = useAppConfig('features')
 
-  const totalRays = userRaysData?.userRays?.allPossiblePoints
   const totalValue = overviewData.allAssetsUsdValue + portfolioWalletData.totalAssetsUsdValue
   const availableToMigrateUsdValue =
     migrationPositions == null
@@ -64,16 +59,6 @@ export const PortfolioOverview = ({
           columnGap: '24px',
         }}
       >
-        {isRaysEnabled && (
-          <PortfolioOverviewItem
-            header={tPortfolio('total-rays-earned')}
-            value={
-              <Heading variant="header4" sx={getGradientColor(summerBrandGradient)}>
-                {formatCryptoBalance(new BigNumber(totalRays || 0))}
-              </Heading>
-            }
-          />
-        )}
         <PortfolioOverviewItem
           header={tPortfolio('total-portfolio')}
           value={

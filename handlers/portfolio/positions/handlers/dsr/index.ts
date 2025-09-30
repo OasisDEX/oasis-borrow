@@ -10,7 +10,6 @@ import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { isZeroAddress } from 'helpers/isZeroAddress'
-import { getPointsPerYear } from 'helpers/rays'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { DsProxyRegistry__factory, McdPot__factory } from 'types/ethers-contracts'
@@ -58,8 +57,6 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
       .decimalPlaces(5, BigNumber.ROUND_UP)
       .minus(1)
 
-    const raysPerYear = getPointsPerYear(netValue.toNumber())
-
     // Find the best APY from vaultsApy
     const bestApy = Object.values(vaultsApy).reduce((max, vault) => {
       return Math.max(max, vault.apy)
@@ -70,9 +67,6 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
       positions: netValue.gt(zero)
         ? [
             {
-              raysPerYear: {
-                value: raysPerYear,
-              },
               availableToMigrate: false,
               automations: {},
               description: 'Dai Savings Rate',

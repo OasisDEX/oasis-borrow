@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AppLink } from 'components/Links'
 import { Pill } from 'components/Pill'
@@ -15,7 +14,6 @@ import { RefinancePortfolioBanner } from 'features/refinance/components'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getLocalAppConfig, useAppConfig } from 'helpers/config'
-import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getGradientColor } from 'helpers/getGradientColor'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
@@ -55,11 +53,7 @@ const getMigrationGradientsPerProtocol = (
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const {
-    EnableRefinance: isRefinanceEnabled,
-    Rays: isRaysEnabled,
-    SkyUpgrade,
-  } = useAppConfig('features')
+  const { EnableRefinance: isRefinanceEnabled, SkyUpgrade } = useAppConfig('features')
 
   const resolvedPairId = shouldShowPairId({
     collateralToken: position.primaryToken,
@@ -185,36 +179,6 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
                 justifyContent: 'flex-end',
               }}
             >
-              {!!position.raysPerYear && isRaysEnabled && (
-                <Text
-                  variant="paragraph3"
-                  sx={{
-                    fontWeight: 'semiBold',
-                    ...getGradientColor(
-                      'linear-gradient(270.13deg, #007DA3 0.02%, #E7A77F 56.92%, #E97047 98.44%)',
-                    ),
-                    maxWidth: '200px',
-                  }}
-                >
-                  {typeof position.raysPerYear.value === 'string' ? (
-                    position.raysPerYear.link ? (
-                      <Button
-                        variant="unStyled"
-                        sx={{ fontWeight: 'semiBold' }}
-                        onClick={() => window.open(position.raysPerYear?.link, '_ blank')}
-                      >
-                        {position.raysPerYear.value}
-                      </Button>
-                    ) : (
-                      position.raysPerYear.value
-                    )
-                  ) : (
-                    <>
-                      + {formatCryptoBalance(new BigNumber(position.raysPerYear.value))} Rays / year
-                    </>
-                  )}
-                </Text>
-              )}
               <ProtocolLabel network={position.network} protocol={position.protocol} />
             </Flex>
           </Flex>

@@ -2,10 +2,9 @@ import { isCorrelatedPosition, RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
-import { getNetworkById, NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
-import { mapAaveLikeRaysMultipliers } from 'features/omni-kit/protocols/aave-like/helpers/mapAaveLikeRaysMultipliers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import {
@@ -15,14 +14,12 @@ import {
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
 import { getAaveV2DsProxyPosition } from 'handlers/portfolio/positions/handlers/aave-v2/ds-proxy-position'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
-import { getPositionPortfolioRaysWithBoosts } from 'handlers/portfolio/positions/helpers/getPositionPortfolioRaysWithBoosts'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
   formatUsdValue,
 } from 'helpers/formatters/format'
-import { getPointsPerYear } from 'helpers/rays'
 import { zero } from 'helpers/zero'
 import { isAaveLikeLendingProtocol } from 'lendingProtocols'
 
@@ -30,7 +27,6 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
   prices,
   allPositionsHistory,
-  raysUserMultipliers,
 }) => {
   const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
   const [
@@ -93,29 +89,9 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
     useDebtTokenAsPnL: isCorrelatedPosition(commonData.primaryToken, commonData.secondaryToken),
   })
 
-  const rawRaysPerYear = getPointsPerYear(netValuePnlModalData.netValue.inUsd.toNumber())
-
-  const networkName = getNetworkById(dpm.networkId).name
-
-  const positionRaysMultipliersData = mapAaveLikeRaysMultipliers({
-    multipliers: raysUserMultipliers,
-    collateralTokenAddress: dpm.collateralToken,
-    quoteTokenAddress: dpm.debtToken,
-    dpmProxy: dpm.id,
-    protocol: commonData.protocol,
-    networkName,
-  })
-
-  const raysPerYear = getPositionPortfolioRaysWithBoosts({
-    rawRaysPerYear,
-    positionRaysMultipliersData,
-  })
-
   return {
     ...commonData,
-    raysPerYear: {
-      value: raysPerYear,
-    },
+
     details: [
       {
         type: 'netValue',
@@ -162,7 +138,6 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
   prices,
   dpmList,
   positionsCount,
-  raysUserMultipliers,
   ...rest
 }) => {
   const aaveV2DpmList = dpmList.filter(({ protocol }) => ['AAVE'].includes(protocol))
@@ -171,7 +146,6 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
       address,
       prices,
       dpmList,
-      raysUserMultipliers,
       ...rest,
     })
     return {
@@ -188,7 +162,7 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
     }),
   ])
   const [dsProxyPositions] = await Promise.all([
-    getAaveV2DsProxyPosition({ address, prices, dpmList, raysUserMultipliers, ...rest }),
+    getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest }),
   ])
   const positions = await Promise.all(
     aaveV2DpmList.map(async (dpm) =>
@@ -198,7 +172,6 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
         allPositionsHistory,
         allPositionsAutomations: [], // not needed here
         allOraclePrices: [], // not needed here
-        raysUserMultipliers,
       }),
     ),
   )

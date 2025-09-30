@@ -30,7 +30,6 @@ import type {
 } from 'features/omni-kit/types'
 import { OmniProductType, OmniSidebarAutomationStep } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
-import type { PositionRaysMultipliersData } from 'features/rays/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -73,7 +72,6 @@ interface OmniProductControllerProps<Auction, History, Position> {
       poolId?: string
       positionData?: Position
       protocolPricesData?: Tickers
-      positionRaysMultipliersData: PositionRaysMultipliersData
     }
     errors: string[]
   }
@@ -146,7 +144,7 @@ export const OmniProductController = <Auction, History, Position>({
   })
 
   const {
-    data: { aggregatedData, poolId, positionData, protocolPricesData, positionRaysMultipliersData },
+    data: { aggregatedData, poolId, positionData, protocolPricesData },
     errors: protocolDataErrors,
   } = protocolHook({
     collateralToken,
@@ -309,7 +307,6 @@ export const OmniProductController = <Auction, History, Position>({
                         OmniSidebarAutomationStep.Manage,
                         OmniSidebarAutomationStep.Transaction,
                       ]}
-                      positionRaysMultipliersData={positionRaysMultipliersData}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,

@@ -2,9 +2,7 @@ import { networksById } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { useAaveContext } from 'features/aave'
 import { getAaveHistoryEvents } from 'features/aave/services'
-import { mapAaveLikeRaysMultipliers } from 'features/omni-kit/protocols/aave-like/helpers/mapAaveLikeRaysMultipliers'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
-import { getRaysUserMultipliers } from 'features/rays/getRaysUserMultipliers'
 import { useObservable } from 'helpers/observableHook'
 import { isAaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { useMemo } from 'react'
@@ -16,8 +14,6 @@ export function useAaveLikeData({
   protocol,
   collateralToken,
   quoteToken,
-  isOpening,
-  walletAddress,
 }: OmniProtocolHookProps) {
   if (!isAaveLikeLendingProtocol(protocol)) {
     throw Error('Given protocol is not aave-like')
@@ -103,29 +99,6 @@ export function useAaveLikeData({
     ),
   )
 
-  const [multipliers] = useObservable(
-    useMemo(
-      () =>
-        dpmPositionData
-          ? from(
-              getRaysUserMultipliers({
-                walletAddress: isOpening && walletAddress ? walletAddress : dpmPositionData.user,
-              }),
-            )
-          : EMPTY,
-      [dpmPositionData],
-    ),
-  )
-
-  const positionRaysMultipliersData = mapAaveLikeRaysMultipliers({
-    multipliers,
-    collateralTokenAddress: dpmPositionData?.collateralTokenAddress,
-    quoteTokenAddress: dpmPositionData?.quoteTokenAddress,
-    dpmProxy: dpmPositionData?.proxy,
-    protocol,
-    networkName,
-  })
-
   const historyEvents = aavePositionAggregatedData?.events
   const recentHistoryEvent = historyEvents?.[0]
 
@@ -143,7 +116,6 @@ export function useAaveLikeData({
               [quoteToken]: resolvedQuotePrice,
             }
           : undefined,
-      positionRaysMultipliersData,
     },
     errors: [
       aavePositionError,

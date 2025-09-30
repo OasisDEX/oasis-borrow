@@ -1,5 +1,4 @@
 import { Icon } from 'components/Icon'
-import { LazySummerBannerWithRaysHandling } from 'components/LazySummerBanner'
 import { MessageCard } from 'components/MessageCard'
 import { TabBar } from 'components/TabBar'
 import { DisabledOptimizationControl } from 'components/vault/DisabledOptimizationControl'
@@ -121,7 +120,6 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
 
   return (
     <Container variant="vaultPageContainerStatic">
-      {owner && <LazySummerBannerWithRaysHandling isOwner={isOwner} address={owner} />}
       {contextIsLoaded && !isOwner && !isOpening && (
         <VaultOwnershipBanner controller={owner} account={walletAddress} mb={4} />
       )}
