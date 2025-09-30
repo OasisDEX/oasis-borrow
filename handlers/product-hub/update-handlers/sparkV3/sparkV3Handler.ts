@@ -15,10 +15,7 @@ import { lambdaPercentageDenomination } from 'features/aave/constants'
 import { settings } from 'features/omni-kit/protocols/spark/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
-import {
-  productHubSparkRewardsTooltip,
-  productHubSparkWstethRewardsTooltip,
-} from 'features/productHub/content'
+import { productHubSparkWstethRewardsTooltip } from 'features/productHub/content'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -223,9 +220,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         const hasAnyRewards = ethDaiDerivativeRewards || ethEthDerivativeRewards || sDaiEthRewards
 
         let feeTooltip = undefined
-        if (hasAnyRewards && ethDaiDerivativeRewards) {
-          feeTooltip = productHubSparkRewardsTooltip
-        }
         if (hasAnyRewards && sDaiEthRewards) {
           feeTooltip = productHubSparkWstethRewardsTooltip
         }

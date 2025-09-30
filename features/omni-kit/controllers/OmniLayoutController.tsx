@@ -117,18 +117,13 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
   const hasProtection = hasActiveProtection({ poolId, positionTriggers, protocol })
 
   const isAave = protocol === LendingProtocol.AaveV3
-  const hasAutomations = automation
-    ? Object.keys(automation.flags).some(
-        (key) => automation.flags[key as keyof typeof automation.flags],
-      )
-    : false
 
   return (
     <Container variant="vaultPageContainerStatic">
       {contextIsLoaded && !isOwner && !isOpening && (
         <VaultOwnershipBanner controller={owner} account={walletAddress} mb={4} />
       )}
-      {contextIsLoaded && isAave && hasAutomations && (
+      {contextIsLoaded && isAave && (
         <VaultNotice
           header="Important update affecting Aave V3 Automations"
           color="black"

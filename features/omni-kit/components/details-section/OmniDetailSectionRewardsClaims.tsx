@@ -1,12 +1,8 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import { Network } from '@oasisdex/dma-library'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
-import BigNumber from 'bignumber.js'
-import {
-  encodeClaimAllRewards,
-  getAllUserRewards,
-  getSPKRewards,
-} from 'blockchain/better-calls/aave-like-rewards'
+import type BigNumber from 'bignumber.js'
+import { encodeClaimAllRewards, getAllUserRewards } from 'blockchain/better-calls/aave-like-rewards'
 import {
   encodeApproveAndWrapProxyAction,
   encodeTransferToOwnerProxyAction,
@@ -15,7 +11,6 @@ import {
 import { NetworkIds } from 'blockchain/networks'
 import { tokenPriceStore } from 'blockchain/prices.constants'
 import { getTokenByAddress } from 'blockchain/tokensMetadata'
-import { OmniExternalRewardsClaims } from 'features/omni-kit/components/details-section/OmniExternalRewardsClaims'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniTxData } from 'features/omni-kit/hooks'
 import { zero } from 'helpers/zero'
@@ -67,10 +62,6 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
   } = useOmniGeneralContext()
 
   const [claims, dispatchClaim] = useReducer((state: Claim[], element: Claim) => {
-    return [...state, element]
-  }, [])
-
-  const [externalClaims, dispatchExternalClaim] = useReducer((state: Claim[], element: Claim) => {
     return [...state, element]
   }, [])
 
@@ -156,20 +147,6 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
         throw new Error(`Unsupported protocol or network for rewards: ${protocol} on ${network}`)
       }
 
-      getSPKRewards({ dpmAccount: dpmProxy })
-        .then((spkTokenRewards) => {
-          if (spkTokenRewards.tx) {
-            dispatchExternalClaim({
-              token: 'SPK',
-              claimable: new BigNumber(spkTokenRewards.toClaimFormatted),
-              tx: spkTokenRewards.tx,
-            })
-          }
-        })
-        .catch((error) => {
-          console.error(`Error fetching SPK rewards:`, error)
-        })
-
       getAllUserRewards({
         networkId,
         token: quoteAddress,
@@ -236,18 +213,6 @@ const OmniDetailSectionRewardsClaimsInternal: FC<OmniDetailSectionRewardsClaimsI
           )}
         </>
       ) : null}
-      {externalClaims.length > 0 && (
-        <>
-          {externalClaims.map((claim) => (
-            <OmniExternalRewardsClaims
-              key={`External_${claim.token}_${claim.tx.to}`}
-              {...claim}
-              prices={tokenPriceStore.prices}
-              refreshClaims={getClaimsData}
-            />
-          ))}
-        </>
-      )}
     </>
   )
 }
