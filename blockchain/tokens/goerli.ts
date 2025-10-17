@@ -38,4 +38,5 @@ export const tokensGoerli = {
   WOETH: contractDesc(erc20, goerli.common.WOETH),
   YIELDBTC: contractDesc(erc20, goerli.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, goerli.common.YIELDETH),
+  CANA: contractDesc(erc20, ADDRESS_ZERO),
 } as Record<string, ContractDesc>

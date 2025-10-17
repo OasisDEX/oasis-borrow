@@ -37,4 +37,5 @@ export const tokensArbitrum = {
   WOETH: contractDesc(erc20, arbitrum.common.WOETH),
   YIELDBTC: contractDesc(erc20, arbitrum.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, arbitrum.common.YIELDETH),
+  CANA: contractDesc(erc20, '0xb3b8b3b222020f2db91b8e29a8915f256fdab31f'),
 } as Record<string, ContractDesc>

@@ -1,4 +1,4 @@
-import { ADDRESSES } from '@oasisdex/addresses'
+import { ADDRESS_ZERO, ADDRESSES } from '@oasisdex/addresses'
 import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
@@ -229,6 +229,7 @@ export const optimismContracts: OptimismContracts = {
     'WOETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WOETHETH),
     'SYRUPUSDC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
     'MBASIS-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_MBASISUSDC),
+    'CANA-USDC': contractDesc(ajnaPool, ADDRESS_ZERO),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),

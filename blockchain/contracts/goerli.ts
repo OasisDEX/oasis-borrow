@@ -1,4 +1,4 @@
-import { ADDRESSES } from '@oasisdex/addresses'
+import { ADDRESS_ZERO, ADDRESSES } from '@oasisdex/addresses'
 import * as aaveLikeRewardsProxyActions from 'blockchain/abi/aave-like-rewards-proxy-actions.json'
 import * as aaveV2LendingPool from 'blockchain/abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
@@ -224,6 +224,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
     'WOETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WOETHETH),
     'SYRUPUSDC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
     'MBASIS-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_MBASISUSDC),
+    'CANA-USDC': contractDesc(ajnaPool, ADDRESS_ZERO),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
