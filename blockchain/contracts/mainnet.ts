@@ -241,6 +241,7 @@ export const mainnetContracts = {
     'WOETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WOETHETH),
     'SYRUPUSDC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SYRUPUSDCUSDC),
     'MBASIS-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_MBASISUSDC),
+    'CANA-USDC': contractDesc(ajnaPool, '0x54510e700488da980c3bc158b423d3900a2ef22e'),
   },
   ajnaOraclessPoolPairs: {
     'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),

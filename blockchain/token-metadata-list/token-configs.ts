@@ -114,6 +114,7 @@ import {
   zerox,
   zerox_circle_color,
 } from 'theme/icons'
+import { cana } from 'theme/icons/cana'
 
 const deprecatedTokens = [
   'UNIV2WBTCETH',
@@ -1529,6 +1530,17 @@ export const tokenConfigs: TokenConfig[] = [
     icon: prime,
     iconCircle: prime,
     background: '',
+    tags: [],
+  },
+  {
+    symbol: 'CANA',
+    precision: 18,
+    digits: 2,
+    digitsInstant: 2,
+    name: 'CANA Holdings California Carbon Credits',
+    icon: cana,
+    iconCircle: cana,
+    coinGeckoTicker: 'cana-holdings-california-carbon-credits',
     tags: [],
   },
   {

@@ -45,4 +45,5 @@ export const tokensBase = {
   EURC: contractDesc(erc20, base.common.EURC),
   MORPHO: contractDesc(erc20, base.common.MORPHO),
   MORPHO_LEGACY: contractDesc(erc20, base.common.MORPHO_LEGACY),
+  CANA: contractDesc(erc20, '0x88a3548e2a662936268bfd4366e48d38183e3958'),
 } as Record<string, ContractDesc>

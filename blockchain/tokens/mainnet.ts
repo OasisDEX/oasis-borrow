@@ -145,6 +145,7 @@ export const tokensMainnet = {
   SUSDS: contractDesc(skySusds, '0xa3931d71877C0E7a3148CB7Eb4463524FEc27fbD'),
   SKY: contractDesc(sky, '0x56072C95FAA701256059aa122697B133aDEd9279'),
   USDS: contractDesc(skyUsds, '0xdC035D45d973E3EC169d2276DDab16f1e407384F'),
+  CANA: contractDesc(erc20, '0x01995a697752266d8e748738aaa3f06464b8350b'),
   WUSDL: contractDesc(erc20, mainnet.common.WUSDL),
   MBASIS: contractDesc(erc20, mainnet.common.MBASIS),
 } as Record<string, ContractDesc>
