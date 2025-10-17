@@ -66,6 +66,7 @@ export const settings: OmniProtocolSettings = {
       'USDBC',
       'USDC',
       'WSTETH',
+      'CANA',
     ],
     [NetworkIds.ARBITRUMMAINNET]: [
       'ARB',
