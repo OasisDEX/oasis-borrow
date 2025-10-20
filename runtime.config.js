@@ -25,7 +25,8 @@ const publicRuntimeConfig = {
   rpcGatewayUrl: process.env.RPC_GATEWAY,
   sparkRewardsClaimEndpoint: process.env.SPARK_REWARDS_CLAIM_ENDPOINT,
   grooveWidgetId: process.env.GROOVE_WIDGET_ID || `27241a63-86b5-47e2-a167-2e2a3e2a621e`,
-  awsGasPriceUrl: 'https://rjaw1lt1ch.execute-api.us-east-1.amazonaws.com/staging/',
+  awsGasPriceUrl:
+    'https://s3.amazonaws.com/summer-fi-configuration/gas-mock-response/gas-mock-response-production.json',
   contentfulSpaceId: process.env.CONTENTFUL_SPACE_ID,
   contentfulAccessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
   contentfulPreviewAccessToken: process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN,
