@@ -33,7 +33,8 @@ const handler = async function ({ query }: NextApiRequest, res: NextApiResponse)
     axios
       .request<GasFeesApiResponse>({
         method: 'get',
-        url: `${url}${networkId}`,
+        url: `${url}`,
+        // url: `${url}${networkId}`,
         responseType: 'json',
         headers: gasApiKey
           ? {
