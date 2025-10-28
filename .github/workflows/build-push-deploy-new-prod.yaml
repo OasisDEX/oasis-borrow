@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - 'main'
+      - "main"
   workflow_dispatch:
 
 name: Build and deploy Summer Service New Prod
@@ -64,8 +64,6 @@ jobs:
                        --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_API_KEY_PROD }} \
                        --build-arg SHOW_BUILD_INFO=0 \
                        --build-arg NODE_ENV=production \
-                       --build-arg NEXT_PUBLIC_SENTRY_ENV=production \
-                       --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
                        --build-arg PRODUCT_HUB_KEY=${{ secrets.PRODUCT_HUB_KEY }} \
                        --build-arg ONE_INCH_API_KEY=${{ secrets.ONE_INCH_API_KEY_PROD }} \
                        --build-arg ONE_INCH_API_URL=${{ secrets.ONE_INCH_API_URL_PROD }} \

@@ -1,4 +1,3 @@
-import { setUser } from '@sentry/react'
 import spindl from '@spindl-xyz/attribution'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { trackingEvents } from 'analytics/trackingEvents'
@@ -106,7 +105,6 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
         )
         .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
           if (account) {
-            setUser({ id: account, walletLabel: walletLabel })
             void spindl.attribute(account)
             mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
             trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)

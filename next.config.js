@@ -6,7 +6,6 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 const { publicRuntimeConfig } = require('./runtime.config.js')
 const path = require('path')
-const { withSentryConfig } = require('@sentry/nextjs')
 
 const basePath = ''
 
@@ -25,10 +24,6 @@ const baseConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['tsx', 'ts'],
   publicRuntimeConfig: publicRuntimeConfig,
-  sentry: {
-    disableServerWebpackPlugin: true,
-    disableClientWebpackPlugin: true,
-  },
   webpack: function (config, { isServer, dev }) {
     config.module.rules.push({
       test: /\.(svg|png|jpg|gif)$/,
@@ -180,33 +175,3 @@ const baseConfig = {
 }
 
 module.exports = withBundleAnalyzer(baseConfig)
-
-if (process.env.SENTRY_AUTH_TOKEN !== undefined && process.env.SENTRY_AUTH_TOKEN !== '') {
-  module.exports = withSentryConfig(
-    module.exports,
-    {
-      org: 'oazo-apps',
-      project: 'oazo-apps',
-      url: 'https://sentry.io/',
-    },
-    {
-      // For all available options, see:
-      // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-
-      // Upload a larger set of source maps for prettier stack traces (increases build time)
-      widenClientFileUpload: true,
-
-      // Transpiles SDK to be compatible with IE11 (increases bundle size)
-      transpileClientSDK: true,
-
-      // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
-      tunnelRoute: '/monitoring',
-
-      // Hides source maps from generated client bundles
-      hideSourceMaps: true,
-
-      // Automatically tree-shake Sentry logger statements to reduce bundle size
-      disableLogger: true,
-    },
-  )
-}

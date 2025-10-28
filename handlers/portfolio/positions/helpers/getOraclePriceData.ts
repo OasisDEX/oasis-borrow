@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/nextjs'
 import { ensureIsSupportedAaveV3NetworkId, getAaveV3OracleAssetPrice } from 'blockchain/aave-v3'
 import type { NetworkIds } from 'blockchain/networks'
 import { ensureIsSupportedSparkV3NetworkId, getSparkV3OracleAssetPrice } from 'blockchain/spark-v3'
@@ -50,13 +49,7 @@ export const getOraclePriceData = ({
     }
     return []
   } catch (error) {
-    captureException({
-      region: 'getOraclePriceData',
-      tokens,
-      protocol,
-      network,
-      error,
-    })
+    console.error('Error fetching oracle price data:', error)
     return []
   }
 }

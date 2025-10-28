@@ -116,7 +116,6 @@ Some of the values that are used you can check in the `.env` file.
 INFURA_PROJECT_ID="<API key from Infura>"
 OPTIMISM_MAINNET_RPC_URL="<Optimism URL from Alchemy>"
 ARBITRUM_MAINNET_RPC_URL="<Arbitrum URL from Alchemy>"
-SENTRY_RELEASE="local"
 PRODUCT_HUB_KEY="<any value of your choice>"
 ```
 
@@ -158,11 +157,6 @@ PRODUCT_HUB_KEY="<any value of your choice>"
 - `ETHERSCAN_API_KEY` - The value is used to create the corresponding etherscan endpoint. For each
   transaction, there is a url that leads to that TX details in etherscan.
 
-- `SENTRY_RELEASE` - The release in sentry.io. Used by sentry.io to generate and upload source maps
-  for a given release at build time, and tie those source maps to errors sent to sentry at run time.
-
-- `SENTRY_AUTH_TOKEN` - auth token used by sentry.io to upload source maps.
-
 As mentioned previously, there is also the custom express server part which uses the env variables
 at _run time_
 
@@ -172,12 +166,6 @@ at _run time_
 
 - `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when
   the user signs the Terms of Service.
-
-- `SENTRY_RELEASE` - The release in sentry.io. Used by sentry.io to generate and upload source maps
-  for a given release at build time, and tie those source maps to errors sent to sentry at run time.
-
-- `NEXT_PUBLIC_SENTRY_ENV` - The environment that sentry events are tagged as. `production` |
-  `staging` | `pullrequest` | `development`
 
 _Note: Make sure that you call the process that build the project with the `build-time` vars and
 make sure that you call the process that runs the application with the `run-time` vars._
