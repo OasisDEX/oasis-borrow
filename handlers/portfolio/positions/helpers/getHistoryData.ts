@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/nextjs'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import request, { gql } from 'graphql-request'
@@ -105,12 +104,7 @@ export const getHistoryData = async ({
     })
     return positionsHistoryList
   } catch (error) {
-    captureException({
-      region: 'getHistoryData',
-      error,
-      addresses,
-      network,
-    })
+    console.error('Error fetching history data:', error)
     return []
   }
 }

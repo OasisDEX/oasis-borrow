@@ -12,7 +12,6 @@ yalc.lock
 .run
 .log
 .DS_Store
-.sentryclirc
 *.zip
 artifacts
 *.tsbuildinfo
@@ -35,8 +34,6 @@ next-env.d.ts
 *.typegen.ts
 
 
-# Sentry Auth Token
-.sentryclirc
 .vercel
 
 # .env
