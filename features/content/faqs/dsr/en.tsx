@@ -54,7 +54,7 @@ export default () => (
         body: (
           <ol>
             <li>
-              Lower than expected returns: Maker makes no promise of how long the Dai Savings Rate
+              **1.Lower than expected returns:** Maker makes no promise of how long the Dai Savings Rate
               will be at the shown level. If the Dai Savings Rate changes, users can leave their
               money deposited there until the rate changes again, decide to withdraw or deposit
               more. The changes only affect the rate of earning, the principal deposited is always
@@ -62,7 +62,7 @@ export default () => (
               in any fashion.
             </li>
             <li>
-              Systemic risk: Summer.fi works tirelessly to have the safest and most trusted platform
+              **2.Systemic risk:** Summer.fi works tirelessly to have the safest and most trusted platform
               to deploy capital and conducts regular audits of its contracts and places security as
               the top priority, nevertheless blockchains have unavoidable risks arising from smart
               contract bugs or fatal errors in any protocols being used.
@@ -75,7 +75,7 @@ export default () => (
         body: (
           <>
             <Text>
-              Your Dai is deposited into a
+              Your Dai is deposited into a 
               <AppLink
                 href=" https://etherscan.io/address/0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7#code"
                 target="_blank"
@@ -107,29 +107,21 @@ export default () => (
         ),
       },
       {
-        title: 'How can I learn more?',
+        title: 'How to see my sDAI balance in my wallet',
         body: (
           <Text>
-            You can visit our{' '}
-            <AppLink href="https://chat.makerdao.com" target="_blank">
-              Discord
-            </AppLink>{' '}
-            to ask more questions to our community or the team.
+            If your sDAI balance is not visible in your wallet, you can import the contract -
+            <AppLink href="https://etherscan.io/token/0x83f20f44975d03b1b09e64809b757c47f942beea" target="_blank">sDAI Contract Address</AppLink>
           </Text>
         ),
       },
       {
-        title: 'Why did the rate recently change from 1% to 3.49%?',
-        body: (
-          <Text>
-            On June 12th, 2023, as part of the weekly Maker Governance Cycle, MKR holders voted for
-            several changes in the Maker Protocol, with the Dai Savings Rate (DSR) being one of
-            them, increasing it from 1% to 3.49% annually. You can visit our{' '}
-            <AppLink href="https://blog.oasis.app/dsr-rate-hike/" target="_blank">
-              Blog post
+        title: 'How can I learn more?',
+        You can visit our{' '}
+            <AppLink href="https://discord.gg/summerfi" target="_blank">
+              Discord
             </AppLink>{' '}
-            page to learn more about it.
-          </Text>
+            to ask more questions to our community or the team.
         ),
       },
     ]}
