@@ -188,7 +188,7 @@ export const ETHEREUM_MAINNET_DEFAULT_PROTOCOLS = [
   'SDAI',
   'CURVE_STABLE_NG',
   'FLUID_DEX_T1',
-  'EKUBO'
+  'EKUBO',
   
 ]
 
