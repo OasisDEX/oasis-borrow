@@ -104,8 +104,15 @@ export const getAaveV3FlashLoanToken = (
   )
 
   const resolvedFlashLoanToken = (
-    isIsolatedCollateral ? collateralToken.toUpperCase() : flashloanToken
+    isIsolatedCollateral ? collateralToken.toUpperCase() : flashloanToken || 'WETH'
   ) as keyof AaveLikeStrategyAddresses['tokens']
+  // eslint-disable-next-line no-console
+  console.log(
+    'old resolvedFlashLoanToken',
+    isIsolatedCollateral ? collateralToken.toUpperCase() : flashloanToken,
+  )
+  // eslint-disable-next-line no-console
+  console.log('resolvedFlashLoanToken', resolvedFlashLoanToken)
 
   if (resolvedFlashLoanToken) {
     const tokenAddress = addressesV3.tokens[resolvedFlashLoanToken]
