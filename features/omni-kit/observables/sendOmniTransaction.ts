@@ -70,6 +70,7 @@ export const sendOmniTransaction$ = ({
                   ...override,
                   value: txData.value,
                   gasLimit: gasLimit,
+                  type: 2,
                 })
 
             return from(sendTxRequest).pipe(
