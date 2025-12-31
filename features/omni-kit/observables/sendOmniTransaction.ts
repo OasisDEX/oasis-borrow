@@ -65,6 +65,7 @@ export const sendOmniTransaction$ = ({
                   data: txData.data,
                   value: txData.value,
                   gasLimit: gasLimit,
+                  type: 2,
                 })
               : dpm.execute(txData.to, txData.data, {
                   ...override,
